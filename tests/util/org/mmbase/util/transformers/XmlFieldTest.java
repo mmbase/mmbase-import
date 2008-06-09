@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.10 2008-06-04 14:46:14 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.11 2008-06-09 14:39:58 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -96,14 +96,35 @@ public class XmlFieldTest  extends TestCase {
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
+    public static int IN                      = 0;
+    public static int AFTER_PREHANDLE_HEADERS = 1;
+    public static int AFTER_HANDLE_LIST       = 2;
+    public static int AFTER_HANDLE_TABLES     = 3;
+    public static int AFTER_HANDLE_PARAGRAPHS = 4;
+    public static int AFTER_HANDLE_HEADERS    = 5;
+    public static int AFTER_HANDLE_EM         = 6;
+
     public static String[][] RICH_TO_XML_CASES = {
 
-        {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",
-         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>"},
+        {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                /* IN */
+         "$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                /* PREHANDLE_HEADERS*/
+         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           /* LIST  */
+         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           /* TABLES  */
+         "<p>$TITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",                        /* PARAGRAGPS  */
+         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", /*  HEADERS */
+         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", /*  EM */
+        },
+
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"},
+         "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",                                  /* PRE_HANDLE */
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             /* LIST */
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             /* TABLES */
+         "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",       /* PARAGRAPHS */
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>",   /* HEADERS */
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"    /* EM */
+        },
         {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em><br />eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\nbla bla",
@@ -123,21 +144,77 @@ public class XmlFieldTest  extends TestCase {
 
     };
 
+
+
     public void testRichToXML() {
         List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
-            StringObject in = new StringObject(testCase[0]);
-            XmlField.handleRich(in,
-                                XmlField.SECTIONS,
-                                XmlField.LEAVE_NEWLINES,
-                                XmlField.SURROUNDING_P,
-                                XmlField.LISTS_INSIDE_P);
-            XmlField.handleNewlines(in);
-            result         = ignoreNL(in);
-            expectedResult = testCase[1];
-            if (! expectedResult.equals(result)) {
-                errors.add("\n" + expectedResult + "\n!=\n" + result);
+            StringObject in = XmlField.prepareData(testCase[IN]);
+            if (testCase.length == 7) {
+                {
+                    XmlField.preHandleHeaders(in);
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_PREHANDLE_HEADERS];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("PRE\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+                {
+                    XmlField.handleList(in);
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_HANDLE_LIST];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("LIST\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+                {
+                    XmlField.handleTables(in);
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_HANDLE_TABLES];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("TABLES\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+                {
+                    XmlField.handleParagraphs(in, XmlField.LEAVE_NEWLINES, XmlField.SURROUNDING_P, XmlField.LISTS_INSIDE_P);
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_HANDLE_PARAGRAPHS];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("PARAGRAPHS\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+                {
+                    XmlField.handleHeaders(in);
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_HANDLE_HEADERS];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("HEADERS\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+                {
+                    XmlField.handleEmph(in, '_', "em");
+                    XmlField.handleEmph(in, '*', "strong");
+                    result         = in.toString();
+                    expectedResult = testCase[AFTER_HANDLE_EM];
+                    if (! expectedResult.equals(result)) {
+                        errors.add("EM\n" + expectedResult + "\n!=\n" + result);
+                    }
+                }
+
+            } else {
+                XmlField.handleRich(in,
+                                    XmlField.SECTIONS,
+                                    XmlField.LEAVE_NEWLINES,
+                                    XmlField.SURROUNDING_P,
+                                    XmlField.LISTS_INSIDE_P);
+                result         = ignoreNL(in);
+                expectedResult = testCase[1];
+                if (! expectedResult.equals(result)) {
+                    errors.add("\n" + expectedResult + "\n!=\n" + result);
+                }
             }
+                //XmlField.handleNewlines(in);
+
         }
         assertTrue("" + errors, errors.size() == 0);
 
@@ -153,7 +230,7 @@ public class XmlFieldTest  extends TestCase {
         StringObject in = new StringObject(listData);
         XmlField.handleList(in);
         String list = showNL(in);
-        result =ignoreNL(in);
+        result = ignoreNL(in);
         assertTrue("\n"+ comment + listData + ":\n" + expectedListResult + "\nexpected, but found\n" + result, expectedListResult.equals(result));
         XmlField.handleParagraphs(in, leaveExtraNewLines, surroundingP, placeListsInsideP);
         result =ignoreNL(in);
