@@ -52,12 +52,12 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  * PortletFragmentFooter.jsp. These pages define the header and footer of the
  * portlet.
  * </p>
- * 
+ *
  * @author Wouter Heijke
  */
 public class PortletFragment extends AbstractFragment {
 
-   private static Log log = LogFactory.getLog(PortletFragment.class);
+   private static final Log log = LogFactory.getLog(PortletFragment.class);
 
    public static final String PORTLET_ERROR_MSG = "Error occurred in portlet!";
 
@@ -65,7 +65,7 @@ public class PortletFragment extends AbstractFragment {
    private PortletWindow portletWindow;
    private StringWriter storedWriter;
 
-   private ArrayList<HeaderResource> headerResources;
+   private List<HeaderResource> headerResources;
 
 
    public PortletFragment(ServletConfig config, Fragment parent, String layoutId,
@@ -87,7 +87,7 @@ public class PortletFragment extends AbstractFragment {
          setDefaultPreferences(ps);
 
          List<Object> p = portlet.getPortletparameters();
-         if (p.size() > 0) {
+         if (!p.isEmpty()) {
             Iterator<Object> pparams = p.iterator();
             while (pparams.hasNext()) {
                Object objectParam = pparams.next();
@@ -126,7 +126,7 @@ public class PortletFragment extends AbstractFragment {
    }
 
 
-   protected void setDefaultPreferences(PreferenceSetImpl ps) {
+   protected final void setDefaultPreferences(PreferenceSetImpl ps) {
       ps.add(PortalConstants.CMSC_OM_PORTLET_ID, String.valueOf(portlet.getId()));
       ps.add(PortalConstants.CMSC_OM_PORTLET_DEFINITIONID, String.valueOf(portlet.getDefinition()));
    }
@@ -165,7 +165,7 @@ public class PortletFragment extends AbstractFragment {
       String errorMsg = null;
       try {
           log.debug("|| portletLoad:'" + portletWindow.getId() + "'");
-          
+
          PortletContainerFactory.getPortletContainer().portletLoad(portletWindow, wrappedRequest, response);
 
          PortletDefinition def = portletWindow.getPortletEntity().getPortletDefinition();
@@ -358,7 +358,7 @@ public class PortletFragment extends AbstractFragment {
    }
 
 
-   public String getKey() {
+   public final String getKey() {
       return getId(); // "_" + layoutId;
    }
 

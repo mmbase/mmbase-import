@@ -25,7 +25,7 @@ import org.apache.pluto.om.window.PortletWindow;
 
 /**
  * PortalURL to accomodate CMSC's filter/servlet setup.
- * 
+ *
  * @changes pluto-1.0.1
  * @author Wouter Heijke
  */
@@ -51,7 +51,7 @@ public class PortalURL {
 
    /**
     * Creates and URL pointing to the home of the portal
-    * 
+    *
     * @param request
     *           the servlet request
     * @return the portal URL
@@ -63,7 +63,7 @@ public class PortalURL {
 
    /**
     * Creates and URL pointing to the home of the portal
-    * 
+    *
     * @param env
     *           the portal environment
     * @return the portal URL
@@ -86,7 +86,7 @@ public class PortalURL {
 
    /**
     * Creates and URL pointing to the home of the portal
-    * 
+    *
     * @return the portal URL
     */
    public String getBasePortalURL() {
@@ -118,7 +118,7 @@ public class PortalURL {
 
    /**
     * Creates and URL pointing to the home of the portal
-    * 
+    *
     * @param env
     *           the portal environment
     */
@@ -132,7 +132,7 @@ public class PortalURL {
 
    /**
     * Creates and URL pointing to the home of the portal
-    * 
+    *
     * @param request
     *           the servlet request
     */
@@ -144,11 +144,11 @@ public class PortalURL {
    /**
     * Adds a navigational information pointing to a portal part, e.g. PageGroups
     * or Pages
-    * 
+    *
     * @param nav
     *           the string pointing to a portal part
     */
-   public void addGlobalNavigation(String nav) {
+   public final void addGlobalNavigation(String nav) {
       startGlobalNavigation.add(nav);
    }
 
@@ -165,7 +165,7 @@ public class PortalURL {
    /**
     * Adds a navigational information pointing to a local portal part inside of
     * a global portal part, for example, a portlet on a page.
-    * 
+    *
     * @param nav
     *           the string pointing to a local portal part
     */
@@ -177,7 +177,7 @@ public class PortalURL {
    /**
     * Returns true if the given string is part of the global navigation of this
     * URL
-    * 
+    *
     * @param nav
     *           the string to check
     * @return true, if the string is part of the navigation
@@ -190,7 +190,7 @@ public class PortalURL {
    /**
     * Returns true if the given string is part of the local navigation of this
     * URL
-    * 
+    *
     * @param nav
     *           the string to check
     * @return true, if the string is part of the navigation
@@ -221,7 +221,7 @@ public class PortalURL {
       if (iterator.hasNext()) {
          result.append(iterator.next());
          while (iterator.hasNext()) {
-            result.append("/");
+            result.append('/');
             String st = iterator.next();
             result.append(st);
          }
@@ -257,14 +257,14 @@ public class PortalURL {
       Set<String> encodedNames = new TreeSet<String>(encodedStateFullParams.keySet());
       Iterator<String> iterator = encodedNames.iterator();
       while (iterator.hasNext()) {
-         result.append("/");
+         result.append('/');
          String encodedName = iterator.next();
          String encodedValue = (String) encodedStateFullParams.get(encodedName);
          if (encodedValue != null) {
             // appends the prefix (currently "_") in front of the encoded
             // parameter name
             result.append(PortalControlParameter.encodeParameterName(encodedName));
-            result.append("/");
+            result.append('/');
             result.append(urlEncode(encodedValue));
          }
       }
@@ -318,6 +318,7 @@ public class PortalURL {
    }
 
 
+   @Override
    public String toString() {
       return toString(null, null);
    }
@@ -344,7 +345,7 @@ public class PortalURL {
 
       String global = getGlobalNavigationAsString();
       if (global.length() > 0) {
-         url.append("/");
+         url.append('/');
          url.append(global);
       }
 
@@ -392,8 +393,9 @@ public class PortalURL {
 
 
    void analyzeRequestInformation() {
-      if (analyzed)
+      if (analyzed) {
          return;
+      }
 
       startGlobalNavigation = new ArrayList<String>();
       startLocalNavigation = new ArrayList<String>();

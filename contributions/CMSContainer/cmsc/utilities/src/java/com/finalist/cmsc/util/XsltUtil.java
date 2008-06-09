@@ -13,7 +13,7 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * @author <a href="mailto:nico@klasens.net"> Nico Klasens </A>
  */
-public class XsltUtil {
+public final class XsltUtil {
 
    /** Source if of type Reader */
    private static final int SOURCE_READER = 1;

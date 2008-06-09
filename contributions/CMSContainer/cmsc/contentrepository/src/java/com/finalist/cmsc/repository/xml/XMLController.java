@@ -77,11 +77,11 @@ public class XMLController {
 
 
    private List<String> setypList(List<String> allowedRelationTypes) {
-      if (allowedRelationTypes != null) {
-         return allowedRelationTypes;
+      if (allowedRelationTypes == null) {
+         return new ArrayList<String>();
       }
       else {
-         return new ArrayList<String>();
+         return allowedRelationTypes;
       }
    }
 
@@ -214,13 +214,13 @@ public class XMLController {
 
 
    private Element toXmlNode(Node node, Document document, Element root, boolean addRelations,
-         boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+         boolean fieldsAsAttribute, Map<Integer, Node> processedNodes) {
       return toXmlNode(node, document, root, addRelations, fieldsAsAttribute, processedNodes, new ArrayList<Integer>());
    }
 
 
    private Element toXmlNode(Node node, Document document, Element root, boolean addRelations,
-         boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
+         boolean fieldsAsAttribute, Map<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       NodeManager manager = node.getNodeManager();
       String managerName = manager.getName();
       if (!TypeUtil.isSystemType(managerName)) {
@@ -244,11 +244,11 @@ public class XMLController {
          }
          processedNodes.remove(Integer.valueOf(node.getNumber()));
 
-         if (root != null) {
-            root.appendChild(nodeElement);
+         if (root == null) {
+            document.appendChild(nodeElement);
          }
          else {
-            document.appendChild(nodeElement);
+            root.appendChild(nodeElement);
          }
          return nodeElement;
       }
@@ -374,10 +374,10 @@ public class XMLController {
             if (value != null) {
                if (Field.TYPE_BOOLEAN == type) {
                   if (value instanceof Boolean) {
-                     val = "" + ((Boolean) value).booleanValue();
+                     val = value.toString();
                   }
                   if (value instanceof Integer) {
-                     val = "" + (((Integer) value).intValue() == 1);
+                     val = Boolean.toString( ((Integer) value) == 1 );
                   }
                }
                else if (Field.TYPE_DATETIME == type) {
@@ -412,7 +412,7 @@ public class XMLController {
                   testManager = testManager.getParent();
                }
                catch (NotFoundException nfe) {
-                  testManager = null;
+                  break;
                }
             }
             return false;
@@ -431,7 +431,7 @@ public class XMLController {
                   testManager = testManager.getParent();
                }
                catch (NotFoundException nfe) {
-                  testManager = null;
+                  break;
                }
             }
             return true;
@@ -450,14 +450,14 @@ public class XMLController {
 
 
    public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
-         boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+         boolean addRelations, boolean fieldsAsAttribute, Map<Integer, Node> processedNodes) {
       toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes,
             new ArrayList<Integer>());
    }
 
 
    public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
-         boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes,
+         boolean addRelations, boolean fieldsAsAttribute, Map<Integer, Node> processedNodes,
          List<Integer> nodesSeenButNotProcessed) {
       if (rm.hasField("pos")) {
          Comparator<Node> comparator = new NodeFieldComparator("pos");
@@ -473,7 +473,7 @@ public class XMLController {
 
    private void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
          boolean addRelations, boolean fieldsAsAttribute, Comparator<Node> comparator,
-         HashMap<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
+         Map<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
       String relatedRole = rm.getForwardRole();
       NodeManager destination = rm.getDestinationManager();
       RelationList rl = node.getRelations(relatedRole, destination, "DESTINATION");
@@ -495,18 +495,17 @@ public class XMLController {
       while (rli.hasNext()) {
          Relation relation = rli.nextRelation();
          Node relatedNode = relation.getDestination();
-         if (!processedNodes.containsKey(Integer.valueOf(relatedNode.getNumber()))) {
+         if (processedNodes.containsKey(relatedNode.getNumber())) {
+            // Node already processed.. make sure we don't get circular references
+            skippedChildren++;
+            log.debug("Skipping child " + relatedNode + ", since it was already processed");
+         }
+         else {
             nodesSeenButNotProcessed.remove(Integer.valueOf(relatedNode.getNumber()));
             toXmlNode(relatedNode, document, nodeElement, addRelations, fieldsAsAttribute, processedNodes,
                   nodesSeenButNotProcessed);
             toXmlFields(relation, document, (Element) nodeElement.getLastChild(), true, true);
             ((Element) nodeElement.getLastChild()).setAttribute("relationname", relatedRole);
-         }
-         else {
-            // Node already processed.. make sure we don't get circular
-            // references
-            skippedChildren++;
-            log.debug("Skipping child " + relatedNode + ", since it was already processed");
          }
       }
       if (skippedChildren > 0) {

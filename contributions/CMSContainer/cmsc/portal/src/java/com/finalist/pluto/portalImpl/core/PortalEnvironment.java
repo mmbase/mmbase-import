@@ -50,7 +50,7 @@ public class PortalEnvironment {
    }
 
 
-   public void registerEnvironment() {
+   public final void registerEnvironment() {
       // set Environment in Request for later use
       this.request.setAttribute(REQUEST_PORTALENV, this);
    }

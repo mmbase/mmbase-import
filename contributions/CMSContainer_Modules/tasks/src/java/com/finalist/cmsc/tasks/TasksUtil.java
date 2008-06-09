@@ -14,7 +14,7 @@ import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 
-public class TasksUtil {
+public final class TasksUtil {
 
    public static final String TASK = "task";
    public static final String TASKREL = "taskrel";
@@ -160,7 +160,7 @@ public class TasksUtil {
 
          String language = userNode.getStringValue("language");
          Locale locale = new Locale(language);
-         
+
          String subject = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.expire.subject");
          String emailMessage = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.expire.message");
 
