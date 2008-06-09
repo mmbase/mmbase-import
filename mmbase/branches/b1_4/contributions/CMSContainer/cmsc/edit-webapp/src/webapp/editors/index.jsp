@@ -18,6 +18,7 @@
    </mm:listnodes>
 
    <fmt:setLocale value="${language}" scope="session"/>
+   <fmt:setBundle basename="cmsc" scope="request" /> <%-- Reload the resource bundle again for JSTL --%>
    <mm:write referid="language" jspvar="lang" vartype="String">
       <% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(lang));%>
    </mm:write>
