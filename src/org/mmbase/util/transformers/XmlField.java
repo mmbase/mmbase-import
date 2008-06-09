@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.58 2008-06-09 15:08:46 michiel Exp $
+ * @version $Id: XmlField.java,v 1.59 2008-06-09 16:18:29 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -96,6 +96,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     obj.delete(pos, 1);
                 }
                 if (pos > 0) {
+                    // make sure lists start on a new line, which is essnetial for the correct
+                    // working of 'place lists inside/outside p'.
                     obj.insert(pos, "\n");
                     pos += 1;
                 }
@@ -403,7 +405,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             // if the code starts with a list, and it should be placed outside a paragraph,
             // add a \n to make sure that the list is parsed
             if (!placeListsInsideP && containsListTag(obj,pos)) {
-                obj.insert(pos, "\n");
+                obj.insert(pos, "\n\n");
             }
         }
         boolean start = true;
@@ -431,20 +433,30 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             // we should still terminate the paragraph, as the ul then falls outside
             // the paragraph.
             if (obj.charAt(pos + skip) != '\n') {
-                if (!containsListTag(obj,pos + skip)) {
+                if (!containsListTag(obj, pos + skip)) {
                     continue;
                 }
                 obj.delete(pos, skip);
                 if (placeListsInsideP) {
                     int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
                     if (posEnd != -1) {
-                        pos = posEnd +5;
+                        pos = posEnd + 5;
                         if (obj.length() > pos && obj.charAt(pos) == '\n' &&
-                            (obj.length() == pos + 1 || obj.charAt(pos+1) != '\n')) {
+                            (obj.length() == pos + 1 || obj.charAt(pos + 1) != '\n')) {
                             obj.delete(pos, 1);
+                            continue;
+                        } else {
+                            if (obj.length() > pos + 2) {
+                                obj.delete(pos, 2);
+                            } else {
+                                if (obj.length() > pos + 1) {
+                                    obj.delete(pos, 1);
+                                }
+                                continue;
+                            }
                         }
                     }
-                    continue;
+
                 }
             } else {
                 // delete the 2 new lines of the p.
@@ -740,7 +752,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     protected static void handleNewlines(StringObject obj) {
         obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
-        obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+        obj.replace("\n", "<br />");  // handle new remaining newlines.
     }
 
     /**
