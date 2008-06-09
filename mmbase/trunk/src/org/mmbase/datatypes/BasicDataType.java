@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.85 2008-04-24 11:49:55 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.86 2008-06-09 10:20:35 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -61,7 +61,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     private Object owner;
     private Class<C> classType;
-    private C defaultValue;
+    protected C defaultValue;
 
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
