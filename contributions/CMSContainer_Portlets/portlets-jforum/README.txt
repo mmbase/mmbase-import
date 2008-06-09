@@ -6,7 +6,8 @@ INSTALL GUIDE:
 To install JForum Portlet,there is two step operation you should do.
 
 Step 1 :
-Adding below dependencies to you maven project.xml.You shoud check to prevent duplicated dependencies.
+Add the dependencies below to your maven project.xml. 
+Also check for duplicated dependencies and removed them.
 
 <!-- Hibernate dependencies (for Community Module) -->
    <dependency>
@@ -319,7 +320,7 @@ Step 2: Add below elements to web.xml
 
    Step 3  : Configure DataSouce
 
-   Add DataSouce in the context xml file,e.g.: the name should be jdbc/jforum
+   Add DataSouce in the context xml file,e.g.: the name should be "jdbc/jforum"
 
     <Resource name="jdbc/jforum" auth="Container" type="javax.sql.DataSource"
 		removeAbandoned="true" 
