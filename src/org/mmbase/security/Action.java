@@ -14,11 +14,13 @@ import org.mmbase.util.LocalizedString;
 
 /**
  * An action is something which an authenticated user may want to do, but which is not directly
- * associated with MMBase nodes. Actions are e.g. provided by components (and can be added to
- * component XML's).
+ * associated with MMBase nodes. Actions are e.g. provided by
+ * {@link org.mmbase.framework.Component}s (and can be added to component XML's).
+ *
+ * Actions are checked using {@link Authentication#check(Action, Parameters)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.6 2008-01-21 17:28:15 michiel Exp $
+ * @version $Id: Action.java,v 1.7 2008-06-09 09:52:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
@@ -51,7 +53,7 @@ public class Action implements java.io.Serializable {
     }
 
     /**
-     * Most 'actions' have a namespace. This is normally identical to thye name of the component
+     * Most 'actions' have a namespace. This is normally identical to the name of the component
      * with wich there are associated. It can be <code>null</code> though.
      */
     public String getNameSpace() {
@@ -65,6 +67,10 @@ public class Action implements java.io.Serializable {
     public String toString() {
         return nameSpace + ":" + name + ":" + defaultChecker;
     }
+
+    /**
+     * @see Authentication#check(Action, Parameters)
+     */
     public Parameters createParameters() {
         return new Parameters();
     }
