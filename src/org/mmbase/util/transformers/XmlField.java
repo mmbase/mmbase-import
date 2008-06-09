@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.57 2008-06-09 14:38:57 michiel Exp $
+ * @version $Id: XmlField.java,v 1.58 2008-06-09 15:08:46 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -151,7 +151,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
         // make sure that the list is closed:
         while (inList > 0) { // lists in lists not already supported, but if we will...
-            obj.insert(obj.length(), "</li></" + listTag(listChar) + ">\n");
+            obj.insert(obj.length(), "</li></" + listTag(listChar) + ">");
             inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
         }
 
