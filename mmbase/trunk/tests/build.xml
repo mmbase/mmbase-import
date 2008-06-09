@@ -71,8 +71,8 @@
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
     <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-1.9.0.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-client-1.9.0.jar" todir="${tests.lib}"  preservelastmodified="true" />
+    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci.jar"  preservelastmodified="true" />
+    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-client-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci-client.jar"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${hsqldb.jar}" todir="${tests.lib}" preservelastmodified="true" />
 
