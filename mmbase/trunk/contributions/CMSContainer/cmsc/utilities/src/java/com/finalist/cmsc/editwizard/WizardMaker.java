@@ -16,12 +16,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
-public class WizardMaker {
+public final class WizardMaker {
    private static final Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
 
-   private static String DEFAULT_SESSION_KEY = "editwizard";
+   private static final String DEFAULT_SESSION_KEY = "editwizard";
 
    private Cloud cloud;
 
@@ -90,10 +90,8 @@ public class WizardMaker {
          session.setAttribute("creation", this.creation);
       }
 
-      if (contentType != null) {
-         if (contentTypes == null) {
-            contentTypes = new String[] { contentType };
-         }
+      if (contentType != null && contentTypes == null) {
+         contentTypes = new String[] { contentType };
       }
 
       if (contentTypes == null || contentTypes.length == 0) {

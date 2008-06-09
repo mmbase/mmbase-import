@@ -6,28 +6,24 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.*;
+import javax.mail.internet.*;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
 /**
  * Utility class for sending emails
- * 
+ *
  * @author Cati Macarov
  */
-public class EmailSender {
+public final class EmailSender {
 
-   private static Properties props = new Properties();
    private static EmailSender instance = null;
-   private static String mailHost = null;
+
+   private Properties props = new Properties();
+   private String mailHost = null;
 
 
    /**
@@ -41,17 +37,20 @@ public class EmailSender {
 
    /**
     * Singleton access method
-    * 
+    *
     * @return an instance of the EmailSender
     */
    public static synchronized EmailSender getInstance() {
       String tempMailHost = PropertiesUtil.getProperty("mail.smtp.host");
-      if ((tempMailHost != null) && (!tempMailHost.equals(mailHost))) {
-         instance = new EmailSender(tempMailHost);
-      }
       if (instance == null) {
          instance = new EmailSender(tempMailHost);
       }
+      else {
+         if ((tempMailHost != null) && (!tempMailHost.equals(instance.mailHost))) {
+            instance = new EmailSender(tempMailHost);
+         }
+      }
+
       return instance;
    }
 

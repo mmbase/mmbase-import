@@ -36,7 +36,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
 
 
    @Override
-   protected Serializable loadEntry(Serializable key) throws Exception {
+   protected Serializable loadEntry(Serializable key) {
       return loadPortlet((Integer) key);
    }
 

@@ -38,7 +38,7 @@ import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
 @SuppressWarnings("serial")
 public class PortalServlet extends HttpServlet {
 
-   private static Log log = LogFactory.getLog(PortalServlet.class);
+   private static final Log log = LogFactory.getLog(PortalServlet.class);
 
    protected static final String PATH_SP = "/";
 
@@ -66,7 +66,7 @@ public class PortalServlet extends HttpServlet {
       try {
          ServiceManager.init(sc);
       }
-      catch (Throwable exc) {
+      catch (Exception exc) {
          log.error("Initialization failed!", exc);
          throw new UnavailableException("Initialization of one or more services failed.");
       }
@@ -116,7 +116,6 @@ public class PortalServlet extends HttpServlet {
          PortletContainerFactory.getPortletContainer().shutdown();
          // destroy all services
          ServiceManager.destroy(getServletConfig());
-         System.gc();
       }
       catch (Throwable t) {
          log.error("Destruction failed!", t);

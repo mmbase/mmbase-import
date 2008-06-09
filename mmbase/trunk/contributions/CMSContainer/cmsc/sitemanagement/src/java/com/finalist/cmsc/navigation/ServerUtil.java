@@ -4,30 +4,31 @@
  */
 package com.finalist.cmsc.navigation;
 
+import javax.naming.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 /**
- * Utility methods to check wether we are running in staging or live.
- * 
+ * Utility methods to check whether we are running in staging, live or single.
+ *
  * @author Edwin van der Elst, Finalist IT-Group - Date :Nov 14, 2003
  */
-public class ServerUtil {
+public final class ServerUtil {
 
-   /** MMBase logging system */       
+   /** MMBase logging system */
    private static final Logger log = Logging.getLoggerInstance(ServerUtil.class.getName());
 
    private static boolean live;
    private static boolean single;
-   private static boolean useServerName = false;
+   private static boolean useSvrName = false;
    private static boolean production = false;
 
    private static boolean loaded;
 
+   private ServerUtil() {
+      // Utility
+   }
 
    public static boolean isSingle(){
       getSetting();
@@ -54,7 +55,7 @@ public class ServerUtil {
 
    public static boolean useServerName() {
       getSetting();
-      return useServerName;
+      return useSvrName;
    }
 
 
@@ -67,9 +68,9 @@ public class ServerUtil {
             String liveOrStaging = (String) env.lookup("server/LiveOrStaging");
             live = "live".equals(liveOrStaging);
             single = "single".equals(liveOrStaging);
-            String useServerNameStr = (String) env.lookup("server/useServerName");
+            String useServerNameStr = (String) env.lookup("server/useSvrName");
             if (useServerNameStr != null && useServerNameStr.length() > 0) {
-               useServerName = Boolean.valueOf(useServerNameStr);
+               useSvrName = Boolean.valueOf(useServerNameStr);
             }
 
             String productionStr = (String) env.lookup("server/production");

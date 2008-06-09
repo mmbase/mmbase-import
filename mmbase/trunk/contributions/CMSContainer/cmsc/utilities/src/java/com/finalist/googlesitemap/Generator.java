@@ -56,7 +56,7 @@ public class Generator {
    }
 
 
-   public void setDateFormat(String dateTimeFormat) {
+   public final void setDateFormat(String dateTimeFormat) {
       if (dateTimeFormat == null) {
          dateTimeFormat = "yyyy-MM-dd";
       }
@@ -65,7 +65,7 @@ public class Generator {
    }
 
 
-   public void setChangefreq(String changefreq) {
+   public final void setChangefreq(String changefreq) {
       if (changefreq == null) {
          this.changefreq = "monthly";
       }
@@ -75,7 +75,7 @@ public class Generator {
    }
 
 
-   public String generate(SitemapModel model) throws Exception {
+   public String generate(SitemapModel model) {
       Document sitemap = XmlUtil.createDocument();
       Element urlsetNode = XmlUtil.createRoot(sitemap, "urlset", googleNamespace);
 

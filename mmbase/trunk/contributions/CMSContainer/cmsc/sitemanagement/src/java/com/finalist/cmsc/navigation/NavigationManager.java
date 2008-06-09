@@ -10,13 +10,16 @@ import com.finalist.cmsc.beans.om.NavigationItem;
 /**
  * TODO: when the component frame work is done, this should be done by this
  * framework
- * 
+ *
  * @author freek
  */
-public class NavigationManager {
+public final class NavigationManager {
 
-   private static ArrayList<NavigationItemManager> managers = new ArrayList<NavigationItemManager>();
+   private static List<NavigationItemManager> managers = new ArrayList<NavigationItemManager>();
 
+   private NavigationManager() {
+      // Access object for navigation managers
+   }
 
    public static void registerNavigationManager(NavigationItemManager manager) {
        if (manager.isRoot()) {

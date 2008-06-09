@@ -1,17 +1,11 @@
 package com.finalist.cmsc.util.bundles;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import java.util.Locale;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.io.*;
+import java.util.*;
 
 /**
  * This class is used to load the relationships file.
- * 
+ *
  * @author Eric Olson <eolson@imation.com>
  * @version 1.
  */
@@ -37,7 +31,7 @@ public class RelationshipLoader {
    /**
     * The parent bundles loaded from the relationships file.
     */
-   private Vector<InheritedPropertyResourceBundle> relationships = null;
+   private List<InheritedPropertyResourceBundle> relationships = null;
 
    /**
     * The file extensions which is searched on to obtain the relationships file.
@@ -59,7 +53,7 @@ public class RelationshipLoader {
 
    /**
     * Creates a new RelationshipLoader.
-    * 
+    *
     * @param baseName
     *           the base resource name.
     * @param locale
@@ -83,10 +77,10 @@ public class RelationshipLoader {
     * Subsequent to this method call, the createRelationships() method can be
     * called to set up the parents in the resource bundle.
     */
-   protected void initRelationships() {
+   protected final void initRelationships() {
 
       // all parent bundles defined in the relationships file.
-      relationships = new Vector<InheritedPropertyResourceBundle>();
+      relationships = new ArrayList<InheritedPropertyResourceBundle>();
 
       // gets all parent bundle names from the file.
       Enumeration<String> e = getRelationshipNames();
@@ -107,7 +101,7 @@ public class RelationshipLoader {
 
    /**
     * Adds relationships to the InheritedPropertyResourceBundle.
-    * 
+    *
     * @param source
     *           the InheritedPropertyResourceBundle.
     */
@@ -124,12 +118,12 @@ public class RelationshipLoader {
    /**
     * Retrieves the relationships file from the given ClassLoader and parses the
     * information.
-    * 
+    *
     * @return all resource bundle names defined in the relationships file.
     */
    private Enumeration<String> getRelationshipNames() {
 
-      Vector<String> retVal = new Vector<String>();
+      List<String> retVal = new ArrayList<String>();
 
       InputStream is = null;
       InputStreamReader isr = null;
@@ -138,8 +132,7 @@ public class RelationshipLoader {
       try {
          // convert the resource base name to the file system
          // equivalent.
-         String rName = baseName.replace('.', RESOURCE_SEPARATOR);
-         rName += FILE_EXTENSION;
+         String rName = baseName.replace('.', RESOURCE_SEPARATOR) + FILE_EXTENSION;
 
          // retrieve the resource from the class loader. If no class
          // loader is defined, the system class loader is used.
@@ -151,8 +144,9 @@ public class RelationshipLoader {
          }
 
          // no relationships file was found, return.
-         if (is == null)
-            return retVal.elements();
+         if (is == null) {
+            return Collections.enumeration(retVal);
+         }
 
          isr = new InputStreamReader(is);
          br = new BufferedReader(isr);
@@ -162,13 +156,13 @@ public class RelationshipLoader {
          while ((line = br.readLine()) != null) {
             if (!line.startsWith(COMMENT_ID)) {
                line = line.trim();
-               if (!line.equals("")) {
+               if (!"".equals(line)) {
                   retVal.add(line);
                }
             }
          }
 
-         return retVal.elements();
+         return Collections.enumeration(retVal);
 
       }
       catch (IOException ioe) {
@@ -177,12 +171,15 @@ public class RelationshipLoader {
       }
       finally {
          try {
-            if (br != null)
+            if (br != null) {
                br.close();
-            if (isr != null)
+            }
+            if (isr != null) {
                isr.close();
-            if (is != null)
+            }
+            if (is != null) {
                is.close();
+            }
          }
          catch (IOException ioe2) {
             // this is very bad. System resources could not be cleaned up.
