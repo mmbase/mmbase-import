@@ -8,11 +8,7 @@ Generates a jar for your project.
 You can also do a test. (specify test.class).
 This makes sure you use the right class-path and so on.
 
-Create a build.xml with a DOCTYPE like this:
-<!DOCTYPE project
- [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
->
-(point to this file)
+Import this file.
 
 @author Michiel Meeuwissen.
 
@@ -43,6 +39,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
   <property name="project.templates.dir" value="${project.source.dir}/templates" />
+  <property name="project.mmbase.templates.dir" value="${project.source.dir}/mmbase" />
   <property name="project.templates.include" value="**" />
   <property name="project.examples.dir"  value="${project.source.dir}/examples" />
   <property name="project.config.dir"  value="${project.source.dir}/config" />
@@ -136,7 +133,7 @@ Create a build.xml with a DOCTYPE like this:
     <available property="config.available"        file="${project.config.dir}"/>
 
     <available property="templates.available"      file="${project.templates.dir}"/>
-
+    <available property="mmbase.templates.available"      file="${project.mmbase.templates.dir}"/>
 
     <condition property="do.jar">
       <or>
@@ -477,16 +474,23 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </javadoc>
   </target>
 
-  <target name="install.templates" depends="init" if="templates.available">
-    <copy
-        todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
-      <fileset
-          defaultexcludes="${default.excludes}"
-          dir="${project.templates.dir}">
+  <target name="install.templates" depends="init,install.mmbase.templates" if="templates.available">
+    <copy todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
+      <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
       </fileset>
     </copy>
   </target>
+
+  <target name="install.mmbase.templates" depends="init" if="mmbase.templates.available">
+    <copy todir="${templates.dir}" preservelastmodified="true">
+      <fileset dir="${project.mmbase.templates.dir}">
+        <include name="**" />
+      </fileset>
+    </copy>
+  </target>
+
+
 
   <target name="install.examples" depends="init" if="examples.available">
     <copy
