@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.30 2007-07-26 22:04:23 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.31 2008-06-09 09:53:20 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -101,7 +101,8 @@ public class MMBaseCopConfig {
         watcher.start();
 
         cop = mmbaseCop;
-
+        // force loading of Class security:
+        log.debug(org.mmbase.security.classsecurity.ClassAuthentication.class);
 
     }
 
@@ -165,8 +166,8 @@ public class MMBaseCopConfig {
 
             entry = reader.getElementByPath("security.actions");
             if (entry != null) {
-                String actionsClass = reader.getElementAttributeValue(entry,"class");
-                String actionsUrl = reader.getElementAttributeValue(entry,"url");
+                String actionsClass = reader.getElementAttributeValue(entry, "class");
+                String actionsUrl = reader.getElementAttributeValue(entry, "url");
                 actions = getActions(actionsClass);
                 actions.load(cop, watcher,  actionsUrl);
             } else {
