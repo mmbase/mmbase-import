@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.135 2008-06-06 14:38:59 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.136 2008-06-09 11:08:00 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -250,6 +250,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      * @since MMBase-1.8.6
      */
     protected void setDefaultsWithCloud(MMObjectNode node) {
+        log.debug("Setting default values");
         for (Iterator i = getFields().iterator(); i.hasNext(); ) {
             Field field = (Field) i.next();
             if (field.isVirtual())                         continue;
@@ -257,11 +258,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
-            if (node.isNull(field.getName())) {
+            if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
                 org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 node.setValue(field.getName(), defaultValue);
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("" + field.getName() + " is already non null, but " + node.getValue(field.getName()));
+                }
             }
         }
     }
