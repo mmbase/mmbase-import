@@ -108,7 +108,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Lists the available pages</description>
+        <description>Lists the available child pages</description>
         <name>list-pages</name>
         <tag-class>com.finalist.cmsc.taglib.ListPagesTag</tag-class>
         <body-content>scriptless</body-content>
