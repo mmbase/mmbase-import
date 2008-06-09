@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.5 2008-06-06 14:37:56 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.6 2008-06-09 11:06:00 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -226,7 +226,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // create object as a temporary node
         int id = BasicCloud.uniqueId();
         {
-            String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), "" + id);
             // if we are in a transaction, add the node to the transaction;
             cloud.add(currentObjectContext);
         }
@@ -248,6 +248,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @since MMBase-1.8.6
      */
     protected void setDefaultsWithCloud(MMObjectNode node) {
+        log.debug("Setting default values");
         for (Iterator i = getFields().iterator(); i.hasNext(); ) {
             Field field = (Field) i.next();
             if (field.isVirtual())                         continue;
@@ -255,11 +256,17 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
-            if (node.isNull(field.getName())) {
+
+            if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
+
                 org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 node.setValue(field.getName(), defaultValue);
+            } else {
+                if (Log.isDebugEnabled()) {
+                    log.debug("" + field.getName() + " is already non null, but " + node.getValue(field.getName()));
+                }
             }
         }
     }
