@@ -19,14 +19,14 @@
                         <td class="move">
                             <%--arrow down--%>
                             <mm:last inverse="true">
-                                <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${container}&node=${_nodenr}&direction=up" class="movedown" onclick="return checkSearch(this);">
-                                    <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down_green.png" class="icon" border="0" title="Sortering aanpassen"/>
+                                <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${container}&node=${_nodenr}&direction=up" class="movedown" onclick="return checkSearch(this);">
+                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down_green.png" class="icon" border="0" title="Sortering aanpassen"/>
                                 </a>
                             </mm:last>
                             <%--arrow up--%>
                             <mm:first inverse="true">
-                                <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${container}&node=${_nodenr}&direction=down" class="moveup" onclick="return checkSearch(this);">
-                                    <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up_green.png" class="icon" border="0"title="Sortering aanpassen"/>
+                                <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${container}&node=${_nodenr}&direction=down" class="moveup" onclick="return checkSearch(this);">
+                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up_green.png" class="icon" border="0"title="Sortering aanpassen"/>
                                 </a>
                             </mm:first>
                         </td>
@@ -35,10 +35,10 @@
                                 <mm:relatednodes type="answers" max="1"><c:set var="_answer" ><mm:field name="number"/></c:set></mm:relatednodes>
                             </mm:node>
                             <a href="${wizardfile}.jsp?nodenr=${_answer}" class="edit">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" />
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" />
                             </a>
-                            <a href="/edit/system/deletenode.jsp?nodenr=${_nodenr}">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/delete_green.png" class="icon" border="0" title="Verwijder"/>
+                            <a href="/mmbase/vpro-wizards/system/deletenode.jsp?nodenr=${_nodenr}">
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete_green.png" class="icon" border="0" title="Verwijder"/>
                             </a>
                         </td>
                         <td><mm:field name="${type}.gui()"/></td>

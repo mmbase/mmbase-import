@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
 
 <%@ attribute name="guivalue" type="java.lang.Boolean" description="when true: try to find a resource bundle for this field, and if this succeeds, show the value that is keyd to the value of this field. if not found, show the guivalue for this field" %>
 <%@ include file="fieldinit.tagf" %>

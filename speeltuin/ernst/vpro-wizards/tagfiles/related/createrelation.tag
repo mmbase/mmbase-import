@@ -3,7 +3,7 @@
     that can be a form:container or a related:add or a related:view tag body
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ attribute name="referSource" %>
 <%@ attribute name="source" %>

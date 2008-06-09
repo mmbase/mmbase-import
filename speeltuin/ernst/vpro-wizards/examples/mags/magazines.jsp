@@ -8,11 +8,10 @@
 
     <list:add text="maak een magazine aan" wizardfile="magazine" />
 
-    <list:search nodetype="mags" wizardfile="plaats" >
+    <list:search nodetype="mags" wizardfile="magazine" >
     <list:searchfields fields="title,subtitle,intro" defaultmaxage="365"/>
         <list:parentsearchlist >
             <list:searchrow  fields="title,subtitle,intro"   />
         </list:parentsearchlist>
     </list:search>
 </list:wizard>
-

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="related" tagdir="/WEB-INF/tags/edit/related" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="related" tagdir="/WEB-INF/tags/vpro-wizards/related" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ attribute name="relationrole" %>
 <%@ attribute name="multipart" type="java.lang.Boolean" description="don't set this if you use a fielfield in the body. In that case it's the default"  %>
@@ -24,15 +24,15 @@
 <div class="addFields">
     <div id="addclosed" <c:if test="${param.create eq true}"> style="display:none;"</c:if>>
         <a href="javascript:hideshow('addclosed','addopen')" class="header">
-            <img src="${pageContext.request.contextPath}/edit/system/img/fold_closed.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_closed.png" class="icon fold" border="0"/>
             nieuw
-            <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0"/></a>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0"/></a>
     </div>
     <div id="addopen" <c:if test="${param.create ne true}"> style="display:none;"</c:if>>
         <a href="javascript:hideshow('addopen','addclosed')" class="header">
-            <img src="${pageContext.request.contextPath}/edit/system/img/fold_open.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_open.png" class="icon fold" border="0"/>
             nieuw
-            <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0" />
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" />
         </a>
 
         <jsp:doBody var="body"/>

@@ -1,7 +1,7 @@
 <%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ attribute name="relate" type="java.lang.Boolean" description="wether you can create relations (when there is a parent node). defalts to true." %>
 <%@ attribute name="edit" type="java.lang.Boolean" description="wether you can edit the listed objects (when you are authorized and there is a wizardfile). defaults to true." %>
@@ -128,11 +128,11 @@
                                 </mm:url>
                             </c:set>
                             <a class="delete" href="${url}" onClick="return doConfirm(true, 'Weet je zeker dat je dit wilt verwijderen? Deze actie is niet ongedaan te maken.')">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder">
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder">
                             </a>
                         </c:if>
                         <c:if test="${empty maydelete}">
-                            <img src="${pageContext.request.contextPath}/edit/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"></a>
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"></a>
                         </c:if>
                     </c:if>
                     <c:remove var="maydelete"/>
@@ -183,11 +183,11 @@
                                             </mm:url>
                                         </c:set>
                                         <a class="delete" href="${url}" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
-                                            <img src="${pageContext.request.contextPath}/edit/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
                                         </a>
                                     </c:if>
                                     <c:if test="${empty maydelete}">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/unlink_soft.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink_soft.png" class="icon" border="0" alt="" title="Koppel los"/>
                                     </c:if>
                                 </c:if>
                                 <c:remove var="maydelete"/>
@@ -217,7 +217,7 @@
                                             <mm:url page="/wizard/post">
                                                 <mm:param name="createRelationActions[${nodenrrow}].source" value="${parentnodenr}" />
                                                 <mm:param name="createRelationActions[${nodenrrow}].destination" value="${nodenrrow}" />
-                                                
+
                                                 <mm:param name="createRelationActions[${nodenrrow}].role" value="${relationrole}" />
                                                 <mm:param name="createRelationActions[${nodenrrow}].sortPosition" value="end" />
                                                 <c:if test="${not empty flushname}">
@@ -227,11 +227,11 @@
                                             </mm:url>
                                         </c:set>
                                         <a class="link" href="${url}">
-                                            <img src="${pageContext.request.contextPath}/edit/system/img/link.png" class="icon" border="0" alt="" title="Koppel vast">
+                                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link.png" class="icon" border="0" alt="" title="Koppel vast">
                                         </a>
                                     </c:if>
                                     <c:if test="${empty maycreate}">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/link_soft.png" class="icon" border="0" alt="" title="Koppel vast">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/link_soft.png" class="icon" border="0" alt="" title="Koppel vast">
                                     </c:if>
                                 </c:if>
                             </c:otherwise>
@@ -249,11 +249,11 @@
                             </c:set>
                             <c:if test="${not empty flushnameparam}"><c:set var="flushnameparam" value="&${flushnameparam}"/></c:if>
                             <a class="edit" href="${url}&${extraparams}${flushnameparam}">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
                             </a>
                         </mm:maywrite>
                         <mm:maywrite inverse="true">
-                            <img src="${pageContext.request.contextPath}/edit/system/img/edit_soft.png" class="icon" border="0" alt="" title="Aanpassen"/>
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit_soft.png" class="icon" border="0" alt="" title="Aanpassen"/>
                         </mm:maywrite>
                      </c:if>
 

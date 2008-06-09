@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
 
 <%@ attribute name="dateFormat" %>
 <%@ attribute name="timeFormat" %>
@@ -84,7 +84,7 @@
                             <c:if test="${fn:contains(type, 'time')}">
                                 <input type="hidden" name="${_action}.time" value="${_time}">
                                 <input type="hidden" name="${_action}.timeFormat" value="${timeFormat}" />
-                            </c:if>                        
+                            </c:if>
                         </c:when>
                         <c:otherwise>
                             <%-- when edit is false, and create is false or _action is not of type create, this field is read only --%>

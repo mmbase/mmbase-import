@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ attribute name="nodetype" required="true" %>
 <%@ attribute name="multipart" type="java.lang.Boolean" description="don't set this if you use a fielfield in the body. In that case it's the default" %>
@@ -30,7 +30,7 @@
 
     <%--do the body, and catch an exception if there is one. --%>
     <c:set var="body">
-        <util:try setMessageAs="m" setExceptionAs="ex" stacktrace="false">
+        <util:try setMessageAs="m" setExceptionAs="ex" stacktrace="true">
             <jsp:attribute name="catchit">
                 <div class="error">Er gaat iets fout bij het afdrukken van een veld. reden: ${m}</div>
             </jsp:attribute>

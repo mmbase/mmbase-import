@@ -1,11 +1,12 @@
 todo:
 
 Y   zorg dat de vpro wizards compileren in de mmbase build.
-N   zorg dat de hele applicatie goed installeert met de build.
+Y   pas mmbase buildbase.properties aan: install.tagfiles
+Y   zorg dat de hele applicatie goed installeert met de build.
+N   maak een test beheer omgeving die samen werkt met een van de demo applicaties (news), zodat je kunt testen).
 N   pas de paden aan van de edit jsp's en de tags.
 N   refactor de java code
 N   pas de documentatie aan
-N   pas mmbase buildbase.properties aan: install.tagfiles
 N   zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
 N   zorg dat de build een war file kan bouwen met alle resources erin.
 

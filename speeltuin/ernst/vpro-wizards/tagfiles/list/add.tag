@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="text"  %>
 <%@ attribute name="relationrole"  description="can be picked up from request scope, defaults to 'related'" %>
@@ -40,5 +40,5 @@
         <c:otherwise>
         nieuw(e) ${wizardfile}</c:otherwise>
     </c:choose>
-     <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0" /></a>
+     <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" /></a>
 </div>

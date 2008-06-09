@@ -9,7 +9,7 @@
 <div class="highlighted">
     <div class="header">
         Teasers
-        <img src="${pageContext.request.contextPath}/edit/system/img/lightbulb_green.png" class="icon" border="0" />
+        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/lightbulb_green.png" class="icon" border="0" />
     </div>
 
     <c:set var="teaserClass">eenTeaser</c:set>
@@ -20,11 +20,11 @@
     </mm:cloud method="asis">
 
     <div class="layout layout_${teaserClass}">
-        <a class="eenteaser" href="/edit/system/teasertemplate.jsp?sectionnr=${sectionnr}&amp;template=eenTeaser">
-            <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_1.png" border="0" title="1 teaserpositie" alt="1 teaserpositie"/>
+        <a class="eenteaser" href="/mmbase/vpro-wizards/system/teasertemplate.jsp?sectionnr=${sectionnr}&amp;template=eenTeaser">
+            <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_1.png" border="0" title="1 teaserpositie" alt="1 teaserpositie"/>
         </a>
-        <a class="vierteasers" href="/edit/system/teasertemplate.jsp?sectionnr=${sectionnr}&amp;template=vierTeasers">
-            <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_2.png" border="0" title="4 teaserposities" alt="4 teaserpositie"/>
+        <a class="vierteasers" href="/mmbase/vpro-wizards/system/teasertemplate.jsp?sectionnr=${sectionnr}&amp;template=vierTeasers">
+            <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_2.png" border="0" title="4 teaserposities" alt="4 teaserpositie"/>
         </a>
     </div>
 
@@ -63,13 +63,13 @@
                 <c:set var="pos"><mm:field name="posrel.pos"/></c:set>
                 <c:choose>
                     <c:when  test="${pos == 1}">
-                        <a class="selected" href="/edit/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=-1&amp;teasernr=<mm:field name="${type}.number"/>">
-                            <img class="icon" alt="Teaser vrij laten rouleren" src="${pageContext.request.contextPath}/edit/system/img/box_3.png" border="0" title="Teaser vrij laten rouleren"/>
+                        <a class="selected" href="/mmbase/vpro-wizards/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=-1&amp;teasernr=<mm:field name="${type}.number"/>">
+                            <img class="icon" alt="Teaser vrij laten rouleren" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_3.png" border="0" title="Teaser vrij laten rouleren"/>
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a href="/edit/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=1&amp;teasernr=<mm:field name="${type}.number"/>">
-                            <img class="icon" alt="Zet teaser vast" src="${pageContext.request.contextPath}/edit/system/img/box_3_soft.png" border="0" title="Zet teaser vast"/>
+                        <a href="/mmbase/vpro-wizards/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=1&amp;teasernr=<mm:field name="${type}.number"/>">
+                            <img class="icon" alt="Zet teaser vast" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_3_soft.png" border="0" title="Zet teaser vast"/>
                         </a>
                     </c:otherwise>
                 </c:choose>
@@ -78,37 +78,37 @@
                 <c:forEach begin="1" end="4" step="1" var="index">
                     <c:choose>
                         <c:when test="${index == pos}">
-                            <a class="selected" href="/edit/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=-1&amp;teasernr=<mm:field name="${type}.number"/>">
+                            <a class="selected" href="/mmbase/vpro-wizards/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=-1&amp;teasernr=<mm:field name="${type}.number"/>">
                             <c:choose>
                                 <c:when test="${index == 1}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_up_left.png" border="0" title="Teaser vrij laten rouleren"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_up_left.png" border="0" title="Teaser vrij laten rouleren"/>
                                 </c:when>
                                 <c:when test="${index == 2}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_up_right.png" border="0" title="Teaser vrij laten rouleren"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_up_right.png" border="0" title="Teaser vrij laten rouleren"/>
                                 </c:when>
                                 <c:when test="${index == 3}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_down_left.png" border="0" title="Teaser vrij laten rouleren"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_down_left.png" border="0" title="Teaser vrij laten rouleren"/>
                                 </c:when>
                                 <c:when test="${index == 4}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_down_right.png" border="0" title="Teaser vrij laten rouleren"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_down_right.png" border="0" title="Teaser vrij laten rouleren"/>
                                 </c:when>
                             </c:choose>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <a class="unselected" href="/edit/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=${index}&amp;teasernr=<mm:field name="${type}.number"/>">
+                            <a class="unselected" href="/mmbase/vpro-wizards/system/computeteaser.jsp?sectionnr=${sectionnr}&amp;position=${index}&amp;teasernr=<mm:field name="${type}.number"/>">
                             <c:choose>
                                 <c:when test="${index == 1}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_up_left_soft.png" border="0" title="Zet teaser vast"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_up_left_soft.png" border="0" title="Zet teaser vast"/>
                                 </c:when>
                                 <c:when test="${index == 2}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_up_right_soft.png" border="0" title="Zet teaser vast"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_up_right_soft.png" border="0" title="Zet teaser vast"/>
                                 </c:when>
                                 <c:when test="${index == 3}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_down_left_soft.png" border="0" title="Zet teaser vast"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_down_left_soft.png" border="0" title="Zet teaser vast"/>
                                 </c:when>
                                 <c:when test="${index == 4}">
-                                    <img class="icon" src="${pageContext.request.contextPath}/edit/system/img/box_down_right_soft.png" border="0" title="Zet teaser vast"/>
+                                    <img class="icon" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/box_down_right_soft.png" border="0" title="Zet teaser vast"/>
                                 </c:when>
                             </c:choose>
                             </a>
@@ -120,12 +120,12 @@
                 <c:if test="${not empty path_url}">
                     <c:set var="params">&amp;path_url=${path_url}&amp;path_name=${path_name}</c:set>
                 </c:if>
-                <a onclick="return checkSearch(this);" href="/edit/system/unhighlight.jsp?object=<mm:field name="posrel.number"/>&amp;sectienr=${sectionnr}" class="unhighlight">
-                    <img src="${pageContext.request.contextPath}/edit/system/img/lightbulb_off_green.png" class="icon" border="0" alt="" title="Niet meer uitlichten"/>
+                <a onclick="return checkSearch(this);" href="/mmbase/vpro-wizards/system/unhighlight.jsp?object=<mm:field name="posrel.number"/>&amp;sectienr=${sectionnr}" class="unhighlight">
+                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/lightbulb_off_green.png" class="icon" border="0" alt="" title="Niet meer uitlichten"/>
                 </a>
                 <c:set var="objectNumber"><mm:field name="${type}.number"/></c:set>
                 <a href="${wizardfile}.jsp?nodenr=${objectNumber}${params}" class="edit">
-                    <img src="${pageContext.request.contextPath}/edit/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" >
+                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" >
                 </a>
             </td>
             <td>
