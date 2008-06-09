@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <%@include file="globals.jsp" %>
 <mm:import externid="bottomurl" from="parameters">dashboard.jsp</mm:import>
-
 <mm:cloud loginpage="login.jsp" rank="basic user">
    <mm:cloudinfo type="user" id="username" write="false"/>
    <mm:listnodes type="user" constraints="username='${username}'">
@@ -18,6 +17,7 @@
    </mm:listnodes>
 
    <fmt:setLocale value="${language}" scope="session"/>
+   <fmt:setBundle basename="cmsc" scope="request" /> <%-- Reload the resource bundle again for JSTL --%>
    <mm:write referid="language" jspvar="lang" vartype="String">
       <% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(lang));%>
    </mm:write>
@@ -46,4 +46,3 @@
       </html:html>
    </mm:cloud>
 </mm:locale>
-
