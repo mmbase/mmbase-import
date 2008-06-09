@@ -413,18 +413,35 @@ public class CmscPortlet extends GenericPortlet {
    protected PortletRequestDispatcher getRequestDispatcher(String type, String template) {
       String resourceExtension = "jsp";
       String fullTemplate = getTemplate(type, template, resourceExtension);
+
+      if (!templateExists(fullTemplate)) {
+         fullTemplate = getTemplate(type, "missing.jsp", resourceExtension);
+         if (!templateExists(fullTemplate)) {
+            String aggregationDir = getAggregationDir();
+            fullTemplate = aggregationDir + "missing.jsp";
+         }
+      }
+
       PortletRequestDispatcher rd = getPortletContext().getRequestDispatcher(fullTemplate);
       return rd;
+   }
+
+   private boolean templateExists(String fullTemplate) {
+      Set<String> webInfResources = getPortletContext().getResourcePaths(fullTemplate);
+      /* @see javax.servlet.ServletContext#getResourcePaths(String)
+       * getResourcePaths returns a Set containing the directory listing, or null
+       * if there are no resources in the web application whose path begins with the supplied path.
+       * we are using a full path instead of a partial path. webInfResources.isEmpty() is true when
+       * the resource exists
+       */
+      return webInfResources != null;
    }
 
 
    protected String getTemplate(String type, String template, String resourceExtension) {
       String baseDir = getPortletContext().getInitParameter("cmsc.portal." + type + ".base.dir");
       if (StringUtil.isEmpty(baseDir)) {
-         String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");
-         if (StringUtil.isEmpty(aggregationDir)) {
-            aggregationDir = "/WEB-INF/templates/";
-         }
+         String aggregationDir = getAggregationDir();
          baseDir = aggregationDir + type + "/";
       }
 
@@ -437,6 +454,14 @@ public class CmscPortlet extends GenericPortlet {
          }
       }
       return baseDir + template;
+   }
+
+   private String getAggregationDir() {
+      String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");
+      if (StringUtil.isEmpty(aggregationDir)) {
+         aggregationDir = "/WEB-INF/templates/";
+      }
+      return aggregationDir;
    }
 
 
