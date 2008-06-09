@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
-<%@taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="title" description="the title of the page, also used by the related:view tag" %>
 <%--
@@ -68,18 +68,18 @@
     <html>
         <head>
             <title>${title}</title>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.css">
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.css">
 
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/javascript.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/clock.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/FCKeditor/fckeditor.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/jquery/jquery.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/fckeditor.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
             <jsp:invoke fragment="header"/>
         </head>
         <body class="related">
-            <mm:cloud jspvar="cloud" method="loginpage" loginpage="/edit/login.jsp" >
+            <mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/login.jsp" >
                 <util:header/>
             </mm:cloud>
 
@@ -87,7 +87,7 @@
             <c:if test="${showback}">
                 <div class="terug">
                     <a href="${back}">
-                        <img src="${pageContext.request.contextPath}/edit/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
+                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
                         terug
                     </a>
                 </div>
@@ -114,7 +114,7 @@
                 function disableRelated(){ }
             </script>
             <!--[if lt IE 7]>
-                <script defer type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/pngfix.js"></script>
+                <script defer type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/pngfix.js"></script>
             <![endif]-->
         </body>
     </html>

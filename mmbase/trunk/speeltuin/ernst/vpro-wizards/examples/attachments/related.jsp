@@ -1,7 +1,7 @@
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<%@ taglib prefix="related" tagdir="/WEB-INF/tags/edit/related" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
-<%@ taglib prefix="list" tagdir="/WEB-INF/tags/edit/list" %>
+<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards" %>
+<%@ taglib prefix="related" tagdir="/WEB-INF/tags/vpro-wizards/related" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
+<%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <related:wizard  title="Bijlagen" nodetype="attachments" >

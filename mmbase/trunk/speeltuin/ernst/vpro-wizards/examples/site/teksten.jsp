@@ -1,7 +1,7 @@
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<%@ taglib prefix="list" tagdir="/WEB-INF/tags/edit/list" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards" %>
+<%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--the secion node for plaats van herinnering--%>
 <list:wizard  title="Plaats van Herinnering" >

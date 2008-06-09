@@ -9,7 +9,7 @@
 <div class="highlighted">
     <div class="header">
         uitgelicht
-        <img src="${pageContext.request.contextPath}/edit/system/img/lightbulb_green.png" class="icon" border="0" />
+        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/lightbulb_green.png" class="icon" border="0" />
     </div>
     <table cellspacing="0" cellpadding="0" border="0">
     <tbody>
@@ -39,18 +39,18 @@
                         </c:set>
                         <mm:last inverse="true">
                             <%--
-                            <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${sectionnr}&node=${_nodenr}&direction=up" class="movedown" onclick="return checkSearch(this);">
+                            <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${sectionnr}&node=${_nodenr}&direction=up" class="movedown" onclick="return checkSearch(this);">
                             --%>
                             <a style="text-decoration:none" href="${urlup}" class="movedown" onclick="return checkSearch(this);">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down_green.png" class="icon" border="0" alt="" title="Sortering aanpassen"/>
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down_green.png" class="icon" border="0" alt="" title="Sortering aanpassen"/>
                             </a>
                         </mm:last>
                         <mm:first inverse="true">
                             <%--
-                            <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${sectionnr}&node=${_nodenr}&direction=down" class="moveup" onclick="return checkSearch(this);">
+                            <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${sectionnr}&node=${_nodenr}&direction=down" class="moveup" onclick="return checkSearch(this);">
                             --%>
                             <a style="text-decoration:none" href="${urldown}" class="moveup" onclick="return checkSearch(this);">
-                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up_green.png" class="icon" border="0" alt="" title="Sortering aanpassen"/>
+                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up_green.png" class="icon" border="0" alt="" title="Sortering aanpassen"/>
                             </a>
                         </mm:first>
                     </td>
@@ -58,11 +58,11 @@
                         <c:if test="${not empty path_url}">
                             <c:set var="params">&path_url=${path_url}&path_name=${path_name}</c:set>
                         </c:if>
-                        <a onclick="return checkSearch(this);" href="/edit/system/unhighlight.jsp?object=${_relationnr}&sectienr=${sectionnr}" class="unhighlight">
-                            <img src="${pageContext.request.contextPath}/edit/system/img/lightbulb_off_green.png" class="icon" border="0" alt="" title="Niet meer uitlichten"/>
+                        <a onclick="return checkSearch(this);" href="/mmbase/vpro-wizards/system/unhighlight.jsp?object=${_relationnr}&sectienr=${sectionnr}" class="unhighlight">
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/lightbulb_off_green.png" class="icon" border="0" alt="" title="Niet meer uitlichten"/>
                         </a>
                         <a href="${wizardfile}.jsp?nodenr=${_nodenr}${params}" class="edit">
-                            <img src="${pageContext.request.contextPath}/edit/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" >
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit_green.png" class="icon" border="0" title="Aanpassen" >
                         </a>
                     </td>
                     <td>

@@ -3,7 +3,7 @@
 --%>
 <%@ tag import="java.util.*" body-content="empty"  %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 <%@ attribute name="name" required="true"  %>
 <%@ attribute name="value"   %>
 <%@ attribute name="parameter"   description="when this is set, the value is taken from the request parameters"%>

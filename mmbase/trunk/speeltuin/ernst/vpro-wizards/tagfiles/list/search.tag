@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
-<%@taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="nodetype" description="the node type this search will show" %>
 <%@ attribute name="wizardfile" description="the name of the wizard that is called to edit the node (minus .jsp). when empyt editing is disabled"  %>
@@ -51,18 +51,18 @@
     <c:if test="${collapsed == false}"><c:set var="_style" >display:none</c:set></c:if>
     <div id="searchclosed" style="${_style}">
         <a href="javascript:hideshow('searchclosed','searchopen')" class="header">
-            <img src="${pageContext.request.contextPath}/edit/system/img/fold_closed.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_closed.png" class="icon fold" border="0"/>
             zoeken
-            <img src="${pageContext.request.contextPath}/edit/system/img/search.png" class="icon" border="0" alt=""></a>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/search.png" class="icon" border="0" alt=""></a>
     </div>
 
     <c:remove var="_style"/>
     <c:if test="${collapsed == true}"><c:set var="_style" >display:none</c:set></c:if>
     <div id="searchopen" style="${_style}" >
         <a href="javascript:hideshow('searchopen','searchclosed')" class="header">
-            <img src="${pageContext.request.contextPath}/edit/system/img/fold_open.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_open.png" class="icon fold" border="0"/>
             zoeken
-            <img src="${pageContext.request.contextPath}/edit/system/img/search.png" class="icon" border="0"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/search.png" class="icon" border="0"/>
         </a>
         <jsp:doBody/>
     </div>

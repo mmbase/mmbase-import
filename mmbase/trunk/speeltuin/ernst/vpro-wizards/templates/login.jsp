@@ -4,11 +4,11 @@
 <html>
     <head>
       <title>VPRO Wizards | Inloggen</title>
-      <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
-      <script type="text/javascript" src="${pageContext.request.contextPath}/edit/javascript.js"></script>
+      <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
+      <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/javascript.js"></script>
     </head>
 <body class="login">
-<mm:import externid="referrer">${pageContext.request.contextPath}/edit/index.jsp</mm:import>
+<mm:import externid="referrer"/>
 <mm:cloud method="logout" >
 <div class="loginFields">
     <h3>VPRO Wizards</h3>

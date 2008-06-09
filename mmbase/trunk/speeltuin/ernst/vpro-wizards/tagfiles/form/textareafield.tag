@@ -2,7 +2,7 @@
 <%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="size" %>
 <c:if test="${empty size}"><c:set var="size" value="small"/></c:if>
