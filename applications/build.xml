@@ -40,11 +40,11 @@ Applications build file
 
   <target name="all.not.compiling" depends="" />
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,rmmci" />
-  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,myyahoo,resources,largeobjects,notifications" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter" />
+  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,myyahoo,mynews,jumpers,resources,largeobjects,notifications" />
   <target name="all19" depends="init,all18" />
 
-  <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,rmmci,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
+  <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
   <target name="all18_15" depends="init,email,richtext,jumpers,commandserver,notifications" />
 
   <target name="all"   depends="init,all19" />
@@ -242,7 +242,7 @@ Applications build file
      </ant>
   </target>
 
-  <target name="jumpers">
+  <target name="jumpers" if="init,jumpers.exists">
      <ant dir="jumpers"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
@@ -250,7 +250,7 @@ Applications build file
      </ant>
   </target>
 
-  <target name="myyahoo">
+  <target name="myyahoo" if="init,myyahoo.exists">
      <ant dir="myyahoo"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
