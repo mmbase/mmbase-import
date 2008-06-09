@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.11 2008-06-09 14:39:58 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.12 2008-06-09 16:17:30 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -30,8 +30,13 @@ public class XmlFieldTest  extends TestCase {
         return in.toString().replaceAll("\r", "").replaceAll("\n", "");
     }
 
+    protected static UnicodeEscaper unicode = new UnicodeEscaper();
+    static {
+        unicode.setEscapeLow(true);
+    }
+
     protected String showNL(StringObject in) {
-        return in.toString().replaceAll("\r", "R").replaceAll("\n", "N");
+        return unicode.transform(in.toString());
     }
 
     public void testRichToHTMLBlock1() {
@@ -94,8 +99,8 @@ public class XmlFieldTest  extends TestCase {
         result = XmlField.richToHTMLBlock("hallo\n* eending\n* nogeending\nhallo");
         expectedResult = "<p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
-    }
 
+    }
     public static int IN                      = 0;
     public static int AFTER_PREHANDLE_HEADERS = 1;
     public static int AFTER_HANDLE_LIST       = 2;
@@ -106,101 +111,126 @@ public class XmlFieldTest  extends TestCase {
 
     public static String[][] RICH_TO_XML_CASES = {
 
-        {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                /* IN */
-         "$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                /* PREHANDLE_HEADERS*/
-         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           /* LIST  */
-         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           /* TABLES  */
-         "<p>$TITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",                        /* PARAGRAGPS  */
-         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", /*  HEADERS */
-         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", /*  EM */
+        {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                //IN
+         "$TITEL\nhallo\n* eending\n* nogeending\nhallo",                                                // PREHANDLE_HEADERS
+         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           // LIST
+         "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           // TABLES
+         "<p>$TITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",                        // PARAGRAGPS
+         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", // HEADERS
+         null
         },
 
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",
-         "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",                                  /* PRE_HANDLE */
-         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             /* LIST */
-         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             /* TABLES */
-         "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",       /* PARAGRAPHS */
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>",   /* HEADERS */
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"    /* EM */
+         "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",                                  // PRE_HANDLE
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             // LIST
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             // TABLES
+         "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",       // PARAGRAPHS
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>",   // HEADERS
+         null
         },
-        {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // IN
+         "$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // PRE_HANDLE
+         "$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // LIST
+         "$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // TABLES
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p>_test_\neenalinea</p><p>nogeenalinea</p><p>hallo</p>",         // PARAGRAPHS
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>_test_\neenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>",         // HEADERS
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>\neenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"
+        },
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
+         "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",                                          // PRE
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>",                     //LIST
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol></p>",             //  PARAGRAPHS
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>",      // HEADERS
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"
+        },
+
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\nbla bla",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"},
+         "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\nbla bla",
+         "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\n\nbla bla",            // LIST
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p>", // PARAGRAPH
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>", // HEADERS
+         null
+        },
+
         {"$TITEL\n\n$$SUBTITEL\n*hallo* hoe gaat het",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>"},
+         "$TITEL\n\n$$SUBTITEL\n\n*hallo* hoe gaat het",                                             // EM starting the paragraph, is fixed by PRE
+         null,
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p>*hallo* hoe gaat het</p>",                                // PARAGRAPH
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>*hallo* hoe gaat het</p></section></section>", // SECTION
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>" // EM
+        },
 
         {"$TITEL\n\n$$SUBTITEL\n* a\n* b\n* c",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"} //MMB-1654
+         "$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c",                                                    //MMB-1654
+         "$TITEL\n\n$$SUBTITEL\n\n<ol><li>a</li><li>b</li><li>c</li></ol>",                          //LIST
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p>",             //P
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",   //H
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"
+        }
         ,
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"},
+         null,
+         "$TITEL\n\n$$SUBTITEL\n\n<ol><li>a</li><li>b</li><li>c</li></ol>",   //L
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p>",   //P
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",   //H
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"
+        },
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\nbla",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>bla</p></section></section>"},
+         null,
+         "$TITEL\n\n$$SUBTITEL\n\n<ol><li>a</li><li>b</li><li>c</li></ol>\nbla",  // L   TODO, I think the \n before bla is incorrect
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p>",  // P
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p></section></section>",  // H
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p></section></section>"
+        },
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\n\nbloe",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>"}
+         null,
+         "$TITEL\n\n$$SUBTITEL\n\n<ol><li>a</li><li>b</li><li>c</li></ol>\n\nbloe", // L
+         null,
+         "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p>", // P
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>", // H
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>"
+        }
 
     };
 
 
+
+    protected StringObject testRich(List<String> errors, StringObject in, String expectedResult, String intro) {
+        if (expectedResult != null && in != null) {
+            String result = in.toString();
+            if (! expectedResult.equals(result)) {
+                errors.add("\n\n" + intro + "\n" + unicode.transform(expectedResult) + "\n!=\n" + unicode.transform(result) + "");
+            }
+            //return in;
+        }
+        return expectedResult != null ? new StringObject(expectedResult) : in;
+
+    }
 
     public void testRichToXML() {
         List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
             StringObject in = XmlField.prepareData(testCase[IN]);
             if (testCase.length == 7) {
-                {
-                    XmlField.preHandleHeaders(in);
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_PREHANDLE_HEADERS];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("PRE\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-                {
-                    XmlField.handleList(in);
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_HANDLE_LIST];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("LIST\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-                {
-                    XmlField.handleTables(in);
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_HANDLE_TABLES];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("TABLES\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-                {
-                    XmlField.handleParagraphs(in, XmlField.LEAVE_NEWLINES, XmlField.SURROUNDING_P, XmlField.LISTS_INSIDE_P);
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_HANDLE_PARAGRAPHS];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("PARAGRAPHS\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-                {
-                    XmlField.handleHeaders(in);
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_HANDLE_HEADERS];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("HEADERS\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-                {
-                    XmlField.handleEmph(in, '_', "em");
-                    XmlField.handleEmph(in, '*', "strong");
-                    result         = in.toString();
-                    expectedResult = testCase[AFTER_HANDLE_EM];
-                    if (! expectedResult.equals(result)) {
-                        errors.add("EM\n" + expectedResult + "\n!=\n" + result);
-                    }
-                }
-
+                XmlField.preHandleHeaders(in);
+                in = testRich(errors, in,  testCase[AFTER_PREHANDLE_HEADERS], "PRE");
+                XmlField.handleList(in);
+                in = testRich(errors, in,  testCase[AFTER_HANDLE_LIST], "LIST");
+                XmlField.handleTables(in);
+                in = testRich(errors, in, testCase[AFTER_HANDLE_TABLES], "TABLES");
+                XmlField.handleParagraphs(in, XmlField.LEAVE_NEWLINES, XmlField.SURROUNDING_P, XmlField.LISTS_INSIDE_P);
+                in = testRich(errors, in, testCase[AFTER_HANDLE_PARAGRAPHS], "PARAGRAPHS");
+                XmlField.handleHeaders(in);
+                in = testRich(errors, in, testCase[AFTER_HANDLE_HEADERS], "HEADERS");
+                XmlField.handleEmph(in, '_', "em");
+                XmlField.handleEmph(in, '*', "strong");
+                testRich(errors, in, testCase[AFTER_HANDLE_EM], "EM");
             } else {
                 XmlField.handleRich(in,
                                     XmlField.SECTIONS,
@@ -226,6 +256,7 @@ public class XmlFieldTest  extends TestCase {
     /**
      * Tests handling lists only
      */
+
     public void listTest() {
         StringObject in = new StringObject(listData);
         XmlField.handleList(in);
