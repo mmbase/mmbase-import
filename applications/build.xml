@@ -41,7 +41,7 @@ Applications build file
   <target name="all.not.compiling" depends="" />
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter" />
-  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,myyahoo,mynews,jumpers,resources,largeobjects,notifications" />
+  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,myyahoo,resources,largeobjects,notifications" />
   <target name="all19" depends="init,all18" />
 
   <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
