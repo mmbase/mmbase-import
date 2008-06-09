@@ -5,7 +5,11 @@ foreach $file (@ARGV) {
     if ($file =~ m/\.(xml|jspx|xsl|xslt|tagx|tld)$/) {
 	if (open FIL, "<$file") {
 	    close FIL;
-	    $files .= " $file";
+	    if ($file =~ m/buildbase.xml$/) {
+		print "Ignoring buildbase.xml, because it is known to be invalid xml\n";
+	    } else {
+		$files .= " $file";
+	    }
 	} else {
 	    print "Ignoring file '$file', cannot open it\n";
 	}
