@@ -1,7 +1,7 @@
 <%@ tag body-content="empty"  %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
 <%@ include file="fieldinit.tagf" %>
 <%--set this flag in the request so the form container can set enctype on the form element --%>

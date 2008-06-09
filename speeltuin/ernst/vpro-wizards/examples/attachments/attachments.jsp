@@ -1,6 +1,6 @@
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<%@ taglib prefix="list" tagdir="/WEB-INF/tags/edit/list" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
+<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards" %>
+<%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
 <list:wizard  title="Plaats van Herinnering" >
 
     <edit:path name="bijlagen" session="attachments" />

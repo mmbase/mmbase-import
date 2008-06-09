@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="pvh" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
+<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards" %>
 
 <mm:cloud >
 <html>

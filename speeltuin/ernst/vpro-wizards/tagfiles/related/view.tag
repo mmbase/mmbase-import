@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="util" tagdir="/WEB-INF/tags/edit/util" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
 
 <%@ attribute name="title" %>
@@ -152,17 +152,17 @@
                                         </c:set>
                                         <%--arrow down--%>
                                         <mm:last inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=up${params}" class="movedown" onclick="return checkSearch(this);"> --%>
+                                            <%-- <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=up${params}" class="movedown" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:last>
 
                                         <%--arrow up--%>
                                         <mm:first inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=down${params}" class="moveup" onclick="return checkSearch(this);"> --%>
+                                            <%-- <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=down${params}" class="moveup" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urlup}" class="moveup" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:first>
                                     </c:if>
@@ -178,7 +178,7 @@
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
-                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/edit/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
+                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
                                     </c:if>
                                     <c:remove var="maydelete"/>
                                     <%--edit button--%>
@@ -186,10 +186,10 @@
                                     <%--
                                         <a href="${wizardfile}_${nodetype}.jsp?nodenr=${nodenr}${params}&editnodenr=${_nodenr}" class="edit">
                                         --%>
-                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
                                     </c:if>
                                     <c:if test="${not empty param.openwizard}">
-                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
                                     </c:if>
                                 </div>
 

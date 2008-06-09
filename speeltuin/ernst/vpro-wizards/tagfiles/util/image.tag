@@ -1,7 +1,7 @@
 <%@ tag body-content="empty"  %>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="util" tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
 <%@ attribute name="template" %>
 <%@ attribute name="nodenr" required="true" %>
