@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -57,10 +58,11 @@ public class XMLServlet extends HttpServlet {
     */
    public static final String CS = "/";
 
-   private final XMLController xmlController;
+   private XMLController xmlController;
 
-
-   public XMLServlet() {
+   @Override
+   public void init() throws ServletException {
+      super.init();
       List<String> disallowedTypes = getDisallowedTypes();
       List<String> allowedTypes = getAllowedTypes();
 
@@ -73,7 +75,6 @@ public class XMLServlet extends HttpServlet {
       xmlController = new XMLController(disallowedRelationTypes, allowedRelationTypes, disallowedTypes, allowedTypes,
             disallowedFields, allowedFields);
    }
-
 
    protected List<String> getAllowedFields() {
       return null;
@@ -184,9 +185,8 @@ public class XMLServlet extends HttpServlet {
          else {
             xml = xmlController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
          }
-         xml = transformXml(xsl, xml);
-         HttpUtil.sendXml(xml, response);
-         return;
+         String transformedXml = transformXml(xsl, xml);
+         HttpUtil.sendXml(transformedXml, response);
       }
       catch (IOException e) {
          if (log.isDebugEnabled()) {
@@ -225,8 +225,7 @@ public class XMLServlet extends HttpServlet {
 
    protected Cloud getCloud() {
       // This cloud can only be read from.
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-      return cloud;
+      return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
    }
 
 
@@ -277,7 +276,7 @@ public class XMLServlet extends HttpServlet {
 
       // add other constraints
       if (StringUtils.isNotBlank(filterName) && StringUtils.isNotBlank(filterValue)) {
-         // check if field exsists
+         // check if field exists
          if (queryNodeManager.hasField(filterName)) {
             Field field = queryNodeManager.getField(filterName);
             FieldValueConstraint constraint = query.createConstraint(query.getStepField(field),
@@ -301,17 +300,17 @@ public class XMLServlet extends HttpServlet {
       int contentSize = Queries.count(query);
 
       NodeList contentlist = queryNodeManager.getList(query);
-      String xml = "";
       try {
-         if (Boolean.valueOf(numbersOnly).booleanValue()) {
+         String xml = "";
+         if (Boolean.parseBoolean(numbersOnly)) {
             xml = xmlController.toXmlNumbersOnly(channelNode, contentlist, contentSize);
          }
          else {
             xml = xmlController.toXml(channelNode, contentlist, contentSize);
          }
 
-         xml = transformXml(xsl, xml);
-
+         String transformedXml = transformXml(xsl, xml);
+         HttpUtil.sendXml(transformedXml, response);
       }
       catch (IOException e) {
          if (log.isDebugEnabled()) {
@@ -348,15 +347,13 @@ public class XMLServlet extends HttpServlet {
          sendError("Creating xml failed", response);
          return;
       }
-
-      HttpUtil.sendXml(xml, response);
    }
 
 
    private String transformXml(String xsl, String xml) throws IOException, TransformerException {
       if (StringUtils.isNotEmpty(xsl)) {
          // get xslt source and xml source
-         InputStream xslSrc = getClass().getClassLoader().getResourceAsStream(xsl);
+         InputStream xslSrc = Thread.currentThread().getContextClassLoader().getResourceAsStream(xsl);
          // transform
          XsltUtil xsltUtil = new XsltUtil(xml, xslSrc, null);
          xml = xsltUtil.transformToString(null);

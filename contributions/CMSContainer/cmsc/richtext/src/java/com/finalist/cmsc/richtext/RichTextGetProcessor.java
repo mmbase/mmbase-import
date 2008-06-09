@@ -12,16 +12,15 @@ package com.finalist.cmsc.richtext;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.datatypes.processors.ParameterizedProcessorFactory;
+import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.security.Rank;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.functions.Parameters;
-import org.mmbase.util.functions.Parameter;
 import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 
@@ -60,7 +59,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                }
                catch (Exception e) {
                   log.error("resolve failed " + node.getNumber() + " " + field.getName(), e);
-                  throw new RuntimeException(e);
+                  throw new IllegalStateException(e);
                }
             }
             else {
@@ -75,7 +74,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
    /**
     * Transform given richtext field data links to frontend links using given
     * navigation bean.
-    * 
+    *
     * @param node
     *           MMbase node
     * @param doc

@@ -11,7 +11,6 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.util.*;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
@@ -27,17 +26,15 @@ import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTree;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
 
-public class SiteCache implements RelationEventListener, NodeEventListener {
+public final class SiteCache implements RelationEventListener, NodeEventListener {
 
    /** MMbase logging system */
    private static final Logger log = Logging.getLoggerInstance(SiteCache.class.getName());
 
-   private CloudProvider cloudProvider;
    private Map<String, PageTree> trees = new HashMap<String, PageTree>();
 
 
    public SiteCache() {
-      this.cloudProvider = CloudProviderFactory.getCloudProvider();
       doSetupCache();
       registerListeners();
    }
@@ -60,13 +57,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    }
 
 
-   protected Cloud getAdminCloud() {
-      return cloudProvider.getAdminCloud();
-   }
-
-
    protected Cloud getCloud() {
-      return cloudProvider.getAnonymousCloud();
+      return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
    }
 
    public void createTree(int siteId, String sitefragment) {
@@ -279,7 +271,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
 
    private boolean isChangeTreeEvent(RelationEvent event) {
       int relationNumber = MMBase.getMMBase().getRelDef().getNumberByName(NavigationUtil.NAVREL);
-      if (event.getRole() == relationNumber) { 
+      if (event.getRole() == relationNumber) {
           boolean sourceIsTreeType = NavigationManager.getNavigationManager(event.getRelationSourceType()) != null;
           boolean destinationIsTreeType = NavigationManager.getNavigationManager(event.getRelationDestinationType()) != null;
           return sourceIsTreeType && destinationIsTreeType;
@@ -299,7 +291,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
               if (event.getChangedFields().contains(fragmentField)) {
                   String newFragment = (String) event.getNewValue(fragmentField);
                   if (navigationManager.isRoot()) {
-                     
+
                      //Search for keys to change
                      ArrayList<PageTree> addList = new ArrayList<PageTree>();
                      for (PageTree tree : trees.values()) {
@@ -307,7 +299,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                              addList.add(tree);
                         }
                      }
-                     
+
                      //Now change the 'trees' Map (otherwise the Map gets corrupted)
                      for (PageTree tree : addList) {
                         trees.remove(tree.getRoot().getPathStr().toLowerCase());

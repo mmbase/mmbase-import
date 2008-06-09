@@ -9,9 +9,7 @@
  */
 package org.mmbase.applications.wordfilter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,13 +22,13 @@ import xmlbs.PropertiesDocumentStructure;
 /**
  * This util class removes ugly html code from a string Ugly html code could be
  * a result of copy&paste from ms word to the mmbase editwizards wysiwyg input
- * 
+ *
  * @author Nico Klasens (Finalist IT Group)
  */
-public class WordHtmlCleaner {
+public final class WordHtmlCleaner {
 
    /** MMBase logging system */
-   private static Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
 
    /**
     * xmlbs stuff Document structure configurable using a property file. A
@@ -49,7 +47,7 @@ public class WordHtmlCleaner {
          String propertiesResource = "WordHtmlCleaner.properties";
          InputStream resourceAsStream = WordHtmlCleaner.class.getResourceAsStream(propertiesResource);
          if (resourceAsStream == null) {
-            throw new RuntimeException("resource " + propertiesResource + " is not found");
+            throw new IllegalStateException("resource " + propertiesResource + " is not found");
          }
          prop.load(resourceAsStream);
          xmlbsDTD = new xmlbs.PropertiesDocumentStructure(prop);
@@ -60,6 +58,9 @@ public class WordHtmlCleaner {
       }
    }
 
+   private WordHtmlCleaner() {
+      // utility
+   }
 
    public static String cleanXML(String textStr) {
       String xmlVersion = "";
@@ -97,10 +98,10 @@ public class WordHtmlCleaner {
 
    /**
     * Cleans html code
-    * 
+    *
     * @param textStr
     *           ugly html code
-    * @param replaceHeaders 
+    * @param replaceHeaders
     * @return clean html code
     */
    public static String cleanHtml(String textStr, boolean replaceHeaders) {
@@ -188,7 +189,7 @@ public class WordHtmlCleaner {
 
    /**
     * remove xml namespace declarations
-    * 
+    *
     * @param text
     *           xml string
     * @return xml string with namespace removed
@@ -207,13 +208,13 @@ public class WordHtmlCleaner {
     *  1 We do not know if these fields are used in a template with surrounding <p> tags
     *  2 HTML-editors do not enforce <p> tags around the contents. To make everything
     *  look the same and xhtml just replace them.
-    *  3 Nested <p> tags have issues in several browsers.    
+    *  3 Nested <p> tags have issues in several browsers.
     */
    private static String replaceParagraph(String text) {
        // see CMSC-421 when you are going to change this code
-       
+
       // remove <p></p> (empty paragraphs)
-      text = text.replaceAll("<[pP]{1}>\\s*</[pP]{1}>", ""); 
+      text = text.replaceAll("<[pP]{1}>\\s*</[pP]{1}>", "");
 
       // remove all remaining <p> start tags
       text = text.replaceAll("<\\s*[pP]{1}(\\s{1}.*?)?>", "");
@@ -238,7 +239,7 @@ public class WordHtmlCleaner {
 
    /**
     * Fixes the anchors tags for Wordpad: <U><FONT color=#0000ff> ... </U></FONT>
-    * 
+    *
     * @param xmlStr
     *           xml string
     * @return xml string with fixed anchors
@@ -345,7 +346,7 @@ public class WordHtmlCleaner {
 
    /**
     * Fixes the anchors tags puts the href in the body if the
-    * 
+    *
     * @param xmlStr
     *           xml string
     * @return xml string with fixed anchors
@@ -356,7 +357,7 @@ public class WordHtmlCleaner {
       int end = 0;
       while ((begin = nextResult(xmlStr, "<a ", end)) > -1) {
          xml += xmlStr.substring(end, begin);
-         int endBegin = xmlStr.indexOf(">", begin);
+         int endBegin = xmlStr.indexOf('>', begin);
          end = nextResult(xmlStr, "</a>", begin);
          if (end > -1 && "".equals(stripHtmlFromBody(xmlStr.substring(endBegin + 1, end)))) {
             String atag = xmlStr.substring(begin, endBegin + 1);
@@ -392,7 +393,7 @@ public class WordHtmlCleaner {
       while ((begin = nextResult(xmlStr, "<a ", end)) > -1) {
          xml += xmlStr.substring(end, begin);
 
-         int gt = xmlStr.indexOf(">", begin);
+         int gt = xmlStr.indexOf('>', begin);
          int closinggt = xmlStr.indexOf("/>", begin);
          boolean emptyTag = closinggt != -1 && gt >= closinggt + 1;
          if (emptyTag) {
