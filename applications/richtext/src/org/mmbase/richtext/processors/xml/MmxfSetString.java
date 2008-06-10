@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.23 2008-06-10 14:26:15 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.24 2008-06-10 15:46:11 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -33,11 +33,12 @@ public class MmxfSetString implements  Processor {
     private static final long serialVersionUID = 1L;
 
 
-    private static XmlField xmlField    = new XmlField(XmlField.WIKI);
-    private static XmlField xmlFieldBrs = new XmlField(XmlField.WIKIBRS);
-    private static Kupu     kupu     = new Kupu();
-    private static DocBook  docbook  = new DocBook();
-    private static Wiki     wiki     = new Wiki();
+    private static final XmlField xmlField    = new XmlField(XmlField.WIKI);
+    private static final XmlField xmlFieldBrs = new XmlField(XmlField.WIKIBRS);
+    private static final XmlField xmlFieldBr  = new XmlField(XmlField.WIKIBR);
+    private static final Kupu     kupu     = new Kupu();
+    private static final DocBook  docbook  = new DocBook();
+    private static final Wiki     wiki     = new Wiki();
 
 
 
@@ -57,10 +58,15 @@ public class MmxfSetString implements  Processor {
                 if (log.isTraceEnabled()) {
                     log.trace("Handling wiki-input: " + value);
                 }
-                String xml =
-                    "true".equals(node.getCloud().getProperty(MmxfGetString.MODE_IGNOREBRS)) ?
-                    xmlField.transformBack(Util.toString(value).trim()) :
-                    xmlFieldBrs.transformBack(Util.toString(value).trim());
+                String xml;
+                Object brsMode = node.getCloud().getProperty(MmxfGetString.MODE_BRS);
+                if ("none".equals(brsMode)) {
+                    xml = xmlField.transformBack(Util.toString(value).trim());
+                } else if ("single".equals(brsMode)) {
+                    xml = xmlFieldBr.transformBack(Util.toString(value).trim());
+                } else {
+                    xml = xmlFieldBrs.transformBack(Util.toString(value).trim());
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("XML: " + xml);
                 }
