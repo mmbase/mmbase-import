@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46.2.5 2008-06-09 09:17:04 michiel Exp $
+ * @version $Id: XmlField.java,v 1.46.2.6 2008-06-10 12:26:48 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -97,25 +97,28 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     obj.delete(pos, 1);
                 }
                 if (pos > 0) {
+                    // make sure lists start on a new line, which is essnetial for the correct
+                    // working of 'place lists inside/outside p'.
                     obj.insert(pos, "\n");
                     pos += 1;
                 }
-                obj.insert(pos, "<" + listTag(listChar) + ">\r<li>"); // insert 9 chars.
-                pos += 9;
+                obj.insert(pos, "<" + listTag(listChar) + "><li>"); // insert 9 chars.
+                pos += 8;
 
             } else { // already in list
-                if (obj.charAt(pos + 1) != listChar) { // end of list
+                if (! (obj.length() > pos + 2 && obj.charAt(pos + 1) == listChar && obj.charAt(pos + 2) == ' ')) { // end of list
                     obj.delete(pos, 1); // delete \n
-                    obj.insert(pos, "</li>\r</" + listTag(listChar) + ">\n");
-                    pos += 12;
+                    obj.insert(pos, "</li></" + listTag(listChar) + ">\n");
+                    pos += 11;
                     inList--;
                 } else { // not yet end
                     obj.delete(pos, 2); // delete \n-
                     // remove spaces..
-                    while (pos < obj.length() && obj.charAt(pos) == ' ')
+                    while (pos < obj.length() && obj.charAt(pos) == ' ') {
                         obj.delete(pos, 1);
-                    obj.insert(pos, "</li>\r<li>");
-                    pos += 10;
+                    }
+                    obj.insert(pos, "</li><li>");
+                    pos += 9;
                 }
             }
             if (inList > 0) { // search for new line
@@ -138,7 +141,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 while (true) {
                     int pos1 = obj.indexOf("\n- ", pos);
                     int pos2 = obj.indexOf("\n* ", pos);
-
                     pos = (pos1 > 0 && pos1 < pos2) || pos2 < 0 ? pos1 : pos2;
                     if (pos == -1 || obj.length() <= pos + 3) break;
                     if (! isListChar(obj.charAt(pos + 3))) {
@@ -151,7 +153,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
         // make sure that the list is closed:
         while (inList > 0) { // lists in lists not already supported, but if we will...
-            obj.insert(obj.length(), "</li></" + listTag(listChar) + ">\n");
+            obj.insert(obj.length(), "</li></" + listTag(listChar) + ">");
             inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
         }
 
@@ -377,12 +379,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @param placeListsInsideP (defaults to false) wether a list should be placed inside a &lt;p&gt; (as allowed by xhtml2).
      */
     static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
+
+        log.debug(placeListsInsideP ? "placings lists INSIDE" : "placings lists OUTSIDE");
         // handle paragraphs:
         boolean inParagraph = true;
         int pos = 0;
         // we should actually test if the first bit is a list, and if so, skip it
         if (surroundingP) {
-            if (!placeListsInsideP && containsListTag(obj,pos)) {
+            if (!placeListsInsideP && containsListTag(obj, pos)) {
                 //note: this does not take into account nested lists
                 int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
                 // only continue this if this is a balanced list
@@ -402,7 +406,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             // if the code starts with a list, and it should be placed outside a paragraph,
             // add a \n to make sure that the list is parsed
             if (!placeListsInsideP && containsListTag(obj,pos)) {
-                obj.insert(pos, "\n");
+                obj.insert(pos, "\n\n");
             }
         }
         boolean start = true;
@@ -430,20 +434,30 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             // we should still terminate the paragraph, as the ul then falls outside
             // the paragraph.
             if (obj.charAt(pos + skip) != '\n') {
-                if (!containsListTag(obj,pos + skip)) {
+                if (!containsListTag(obj, pos + skip)) {
                     continue;
                 }
                 obj.delete(pos, skip);
                 if (placeListsInsideP) {
                     int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
                     if (posEnd != -1) {
-                        pos = posEnd +5;
+                        pos = posEnd + 5;
                         if (obj.length() > pos && obj.charAt(pos) == '\n' &&
-                            (obj.length() == pos + 1 || obj.charAt(pos+1) != '\n')) {
+                            (obj.length() == pos + 1 || obj.charAt(pos + 1) != '\n')) {
                             obj.delete(pos, 1);
+                            continue;
+                        } else {
+                            if (obj.length() > pos + 2) {
+                                obj.delete(pos, 2);
+                            } else {
+                                if (obj.length() > pos + 1) {
+                                    obj.delete(pos, 1);
+                                }
+                                continue;
+                            }
                         }
                     }
-                    continue;
+
                 }
             } else {
                 // delete the 2 new lines of the p.
@@ -499,8 +513,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 }
             }
             // next paragraph.
-            obj.insert(pos, "\r<p>");
-            pos += skip + 4;
+            obj.insert(pos, "<p>");
+            pos += skip + 3;
             inParagraph = true;
         }
         if (inParagraph) { // in current impl. this is always true
@@ -724,8 +738,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     protected static void handleNewlines(StringObject obj) {
-        obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
-        obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+        obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br /> the \n was necessary for </ul></p>
+        obj.replace("</ol>\n", "</ol>");
+        obj.replace("\n", "<br />");  // handle new remaining newlines.
     }
 
 
