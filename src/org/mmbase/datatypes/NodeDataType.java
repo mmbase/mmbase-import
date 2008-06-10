@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.30 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.30.2.1 2008-06-10 11:08:45 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -54,9 +54,14 @@ public class NodeDataType extends BasicDataType {
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
+        if (log.isDebugEnabled()) {
+        log.debug("CAsting to validate " + preCast);
+        }
         if (preCast instanceof Node) {
+            log.debug("A Node already");
             return preCast;
         }  else {
+            log.debug("A calling toType");
             Object res = Casting.toType(Node.class, getCloud(node, field), preCast);
             if (res == null) {
                 if (Casting.toString(value).equals("-1")) {
@@ -64,6 +69,9 @@ public class NodeDataType extends BasicDataType {
                 }
                 throw new CastException("No such node " + preCast);
             } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Found " + res);
+                }
                 return res;
             }
         }
