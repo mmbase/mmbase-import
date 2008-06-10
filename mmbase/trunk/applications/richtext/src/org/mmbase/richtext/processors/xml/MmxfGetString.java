@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.14 2008-06-10 14:26:15 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.15 2008-06-10 15:46:11 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -38,7 +38,7 @@ public class MmxfGetString implements  Processor {
     public static String MODE_SHOWBROKEN    = "org.mmbase.richtext.wiki.show_broken";
     public static String MODE_LOADRELATIONS = "org.mmbase.richtext.wiki.load_relations";
     public static String MODE_UNDECORATEIDS = "org.mmbase.richtext.wiki.undecorateids";
-    public static String MODE_IGNOREBRS     = "org.mmbase.richtext.wiki.ignorebrs";
+    public static String MODE_BRS           = "org.mmbase.richtext.wiki.brs";
 
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 

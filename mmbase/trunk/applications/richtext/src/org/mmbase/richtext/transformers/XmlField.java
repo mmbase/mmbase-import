@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.9 2008-06-03 12:24:37 michiel Exp $
+ * @version $Id: XmlField.java,v 1.10 2008-06-10 15:46:11 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -47,8 +47,9 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     public final static int POOR     = 2;
     public final static int BODY     = 3;
     public final static int XML      = 4;
-    public final static int WIKI     = 12;
-    public final static int WIKIBRS  = 13;
+    public final static int WIKI     = 12; // 1 nl ~ space, 2nl ~ p >2 nl ~ p
+    public final static int WIKIBRS  = 13; // can enter more than one br
+    public final static int WIKIBR   = 14; // 1 br is allowed.
 
     // default doctype
     public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"" + Mmxf.DOCUMENTTYPE_PUBLIC + "\" \"" + Mmxf.DOCUMENTTYPE_SYSTEM + "\">\n";
@@ -131,6 +132,7 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
             return XSLTransform("mmxf2rich.xslt", data);
         case WIKI :
         case WIKIBRS :
+        case WIKIBR :
             return XSLTransform("2rich.xslt", data);
         case XHTML :
             return XSLTransform("mmxf2xhtml.xslt", data);
@@ -140,6 +142,8 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
             return super.transform(data);
         }
     }
+
+
 
     public String transformBack(String r) {
         String result = null;
@@ -157,7 +161,10 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
                 result = XML_TAGSTART + wikiToXML(r, false,  LISTS_INSIDE_P) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
-            case WIKIBRS :
+            case WIKIBR:
+                r = r.replaceAll("[\\n\\r]{3,}", "\n\n");
+                //log.info("R " + r);
+             case WIKIBRS :
                 result = XML_TAGSTART + wikiToXML(r, true, LISTS_INSIDE_P) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
@@ -192,6 +199,8 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
             return "MMXF_WIKI";
         case WIKIBRS :
             return "MMXF_WIKIBRS";
+        case WIKIBR :
+            return "MMXF_WIKIBR";
         default :
             return super.getEncoding();
         }
