@@ -59,4 +59,6 @@ public interface NewsletterSubscriptionServices {
    public Subscription getSubscription(int sbId, int nId);
 
    void unSubscribeAllInNewsletter(int integer);
+   
+   public void createSubscription(int userId , int newsletterId);
 }

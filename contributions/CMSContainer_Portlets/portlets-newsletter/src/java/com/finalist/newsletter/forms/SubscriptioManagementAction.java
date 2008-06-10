@@ -5,6 +5,9 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.services.*;
+
+import net.sf.mmapps.commons.util.StringUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -119,6 +122,12 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
          result.put("id", subscription.getId());
          result.put("status",subscription.getStatus().toString());
          result.put("newsletter",newsletterService.getNewsletterBySubscription(subscription.getId()).getTitle());
+         Person tmpPerson =personServices.getPersonByEmail(subscription.getSubscriber().getEmail());
+         if(tmpPerson.getFirstName() != null)
+        	 result.put("username", tmpPerson.getFirstName());
+         if(tmpPerson.getLastName() != null)
+        	 result.put("fullname", tmpPerson.getFirstName() + " " + tmpPerson.getLastName());
+         result.put("email", subscription.getSubscriber().getEmail());
          results.add(result);
       }
       return results;
@@ -171,6 +180,12 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    public ActionForward showImportPage(ActionMapping mapping, ActionForm form,
                                        HttpServletRequest request, HttpServletResponse response) {
       log.debug("Show import page");
+      String importType = (String)request.getParameter("importType");
+      int newsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
+      if(!StringUtil.isEmpty(importType)){
+    	  request.setAttribute("importType",importType);
+    	  request.setAttribute("newsleterId", newsletterId);
+      }
       return mapping.findForward("importpage");
 
    }

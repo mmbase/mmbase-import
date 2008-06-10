@@ -1,10 +1,15 @@
 package com.finalist.newsletter.forms;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
+import com.finalist.cmsc.services.community.security.Authentication;
+import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.logging.Log;
@@ -12,15 +17,22 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.struts.DispatchActionSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.StringTokenizer;
 
 public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
@@ -107,6 +119,46 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          return mapping.findForward("success");
    }
 
+   public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form,
+                                           HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException{
+   SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
+      FormFile myFile = myForm.getDatafile();
+      boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
+      int tmpNewsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
+      if(isCSV){
+         byte[] fileData = myFile.getFileData();
+         String fileString = new String(fileData);
+         BufferedReader br = new BufferedReader(new StringReader(fileString));
+         String tmpLinsStr = br.readLine();
+         PersonService pService = (PersonService) ApplicationContextFactory.getBean("personService");
+         NewsletterSubscriptionServices subServices =(NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
+         
+         while (tmpLinsStr != null ) {
+            String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
+            String tmpUserName = tmpUserInfo.substring(0, tmpUserInfo.indexOf(","));
+            String tmpUserEmail = tmpUserInfo.substring(tmpUserInfo.indexOf(",")+1, tmpUserInfo.length());			   
+            Person tmpPerson = pService.getPersonByEmail(tmpUserEmail);
+            if(tmpPerson == null){
+               AuthenticationService as = getAuthenticationService();
+               Authentication authentication = as.createAuthentication(tmpUserEmail, "cmsc1234");
+               Person tp = pService.createPerson(tmpUserName, "", "",authentication.getId());
+               tp.setEmail(tmpUserEmail);
+               pService.updatePerson(tp);
+               tmpPerson = pService.getPersonByEmail(tmpUserEmail);
+            }
+            int userId = tmpPerson.getId().intValue();
+            Subscription subRet = subServices.getSubscription(userId, tmpNewsletterId);
+            if(subRet == null)
+               subServices.createSubscription(userId, tmpNewsletterId);
+            tmpLinsStr = br.readLine();
+         }
+         return mapping.findForward("success");
+      }
+      else{
+         return mapping.findForward("failed");
+      }
+   }
+   
    private List<Subscription> getSubscriptions(String type, String id) {
       if ("person".equals(type)) {
          return subscriptionServices.getSubscriptionBySubscriber(id);
@@ -151,5 +203,10 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       xstream.alias("subscription", Subscription.class);
       xstream.alias("term", Term.class);
       return xstream;
+   }
+   
+   protected AuthenticationService getAuthenticationService() {
+      WebApplicationContext ctx = getWebApplicationContext();
+      return (AuthenticationService) ctx.getBean("authenticationService");
    }
 }
