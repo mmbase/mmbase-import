@@ -12,6 +12,8 @@ package com.finalist.cmsc.services.community.preferences;
 import java.util.List;
 import java.util.Map;
 
+import com.finalist.cmsc.services.community.domain.PreferenceVO;
+
 
 /**
  * @author Remco Bos
@@ -54,7 +56,13 @@ public interface PreferenceService {
     Map<String, Map<String, String>> getPreferencesByUserId(String userId);
     List<String> getPreferenceValues(String module, String userId, String key);
     void createPreference(String module, String userId, String key, String value);
-	void updatePreference(String module, String userId, String key, String oldValue, String newValue);
-	void deletePreference(String module, String userId, String key, String value);
-    
+	 void updatePreference(String module, String userId, String key, String oldValue, String newValue);
+	 void deletePreference(String module, String userId, String key, String value);	
+	 public List<PreferenceVO> getPreferences(PreferenceVO preference,int offset,int pageSize,String orderBy,String direction);
+	 public List<PreferenceVO> getPreferences(int offset,int pageSize,String orderBy,String direction);
+	 public void createPreference(PreferenceVO preference) ;
+	 public void updatePreference(PreferenceVO preferenceVO);
+	 public void deletePreference(String number) ;
+	 public List<String> getAllUserIds();
+    public int getTotalCount(PreferenceVO preference);
 }
