@@ -72,7 +72,7 @@
                            <tr>
                               <td><input type="checkbox" name="ids" value="${result.id}"/></td>
                               <td>
-                                    ${result.email}
+                                    ${result.username}
                               </td>
                               <td>${result.fullname}</td>
                               <td>${result.email}</td>
@@ -87,6 +87,9 @@
             <input type="button" name="submitButton" class="submit"
                    onclick="exportsubscription()"
                    value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
+            <input type="button" name="submitButton" class="submit"
+                   onclick="showImportPage()"
+                   value="<fmt:message key="subscriptiondetail.link.importcsv"/>"/>
          </form>
       </div>
 
@@ -94,6 +97,11 @@
 </div>
 
 <script>
+   function showImportPage(){
+      document.operationform.action ="SubscriptionManagement.do?action=showImportPage&importType=importCSV&newsletterId=${param.newsletterId}";
+      document.operationform.submit();      
+   }
+
    function exportsubscription() {
       var subscriptions = document.getElementsByName('ids');
       var hasSelection = false;
@@ -108,11 +116,9 @@
          document.forms['operationform'].submit();
       }
       else {
-         alert(<fmt:message key="confirm_noselect"/>);
+         alert("<fmt:message key='confirm_noselect'/>");
       }
 
       return false;
    }
 </script>
-
-
