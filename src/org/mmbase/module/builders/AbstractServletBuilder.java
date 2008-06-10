@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.42.2.3 2008-02-25 12:34:34 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42.2.4 2008-06-10 11:10:30 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -305,7 +305,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    final protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    final public String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = (String) pars.get("field");
         if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
             return getSGUIIndicator(node, pars);
