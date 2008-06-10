@@ -33,12 +33,12 @@
       <html:form action="/editors/newsletter/SubscriptionImportExportAction" enctype="multipart/form-data">
          <html:file property="datafile"/>
          <input type="hidden" name="action" value="importsubscription"/>
-         <input type="hidden" name="newsletterId" value="${requestScope.newsleterId}"/>
+         <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>
          <input type="button" value="Import" onclick="formSubmit()"/>
       </html:form>
       <div style="margin:4px;color:red;">
-         <html:messages id="msg" message="true">
-            <bean:write name="msg"/><br>
+         <html:messages id="file" message="false">
+            <bean:write name="file"/><br>
          </html:messages>
       </div>
    </div>
