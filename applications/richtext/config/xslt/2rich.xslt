@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.9 2008-06-04 12:18:21 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.10 2008-06-10 14:08:30 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -41,7 +41,6 @@
   <xsl:template match="o:field[@format='xml']">
     <xsl:apply-templates  />
   </xsl:template>
-
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
@@ -116,9 +115,9 @@
     <xsl:variable name="id" ><xsl:value-of select="substring-after(substring-after(@id, '_'), '_')" /></xsl:variable>
     <xsl:choose>
       <xsl:when test="$org.mmbase.richtext.wiki.undecorateids = 'true'
-                      and string-length($id) gt 0" >
+                      and string-length($id) &gt; 0" >
         <xsl:choose>
-          <xsl:when test="string-length(substring-after($id, '-')) gt 0">
+          <xsl:when test="string-length(substring-after($id, '-')) &gt; 0">
             <xsl:value-of select="substring-before($id, '-')" />
           </xsl:when>
           <xsl:otherwise>

@@ -2,7 +2,7 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.10 2008-06-10 12:41:08 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.11 2008-06-10 14:08:30 michiel Exp $
   @since:  MMBase-1.6
 -->
 <xsl:stylesheet
@@ -18,18 +18,22 @@
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match = "mmxf:p" >
+  <xsl:template match="mmxf:p" >
+    <xsl:if test="position() != 1">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="." mode="rels" />
     <xsl:apply-templates select="mmxf:a|mmxf:em|mmxf:strong|text()|mmxf:ul|mmxf:ol|mmxf:br" />
-    <xsl:text>&#xA;&#xA;</xsl:text>
+    <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 
-  <xsl:template match = "mmxf:section" >
+  <xsl:template match="mmxf:section" >
     <xsl:param name="depth" />
     <xsl:value-of select="$depth" />
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="." mode="rels" />
     <xsl:value-of select="mmxf:h" />
+    <xsl:text>&#xA;</xsl:text>
     <xsl:text>&#xA;</xsl:text>
     <xsl:apply-templates select="mmxf:p|mmxf:ul|mmxf:ol|mmxf:table" />
     <xsl:apply-templates select="mmxf:section">
@@ -51,21 +55,38 @@
   </xsl:template>
 
   <xsl:template match="mmxf:ul" >
-    <xsl:text>&#xA;</xsl:text>
+    <xsl:if test="position() != 1">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="mmxf:li" mode="ul" />
+    <xsl:if test="position() != last()">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
   </xsl:template>
+
   <xsl:template match="mmxf:ol" >
-    <xsl:text>&#xA;</xsl:text>
+    <xsl:if test="position() != 1">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="mmxf:li" mode="ol" />
+    <xsl:if test="position() != last()">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="mmxf:li" mode="ul" >
-    <xsl:text>- </xsl:text><xsl:apply-templates />
-    <xsl:text>&#xA;</xsl:text>
+    <xsl:if test="position() != 1">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
+    <xsl:text>- </xsl:text>
+    <xsl:apply-templates />
   </xsl:template>
   <xsl:template match="mmxf:li" mode="ol" >
-    <xsl:text>* </xsl:text><xsl:apply-templates />
-    <xsl:text>&#xA;</xsl:text>
+    <xsl:if test="position() != 1">
+      <xsl:text>&#xA;</xsl:text>
+    </xsl:if>
+    <xsl:text>* </xsl:text>
+    <xsl:apply-templates />
   </xsl:template>
 
 
