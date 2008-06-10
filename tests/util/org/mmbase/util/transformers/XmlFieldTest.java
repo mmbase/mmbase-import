@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.14 2008-06-10 12:13:21 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.15 2008-06-10 12:25:44 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -108,6 +108,7 @@ public class XmlFieldTest  extends TestCase {
     public static int AFTER_HANDLE_PARAGRAPHS = 4;
     public static int AFTER_HANDLE_HEADERS    = 5;
     public static int AFTER_HANDLE_EM         = 6;
+    public static int AFTER_NEWLINES          = 7;
 
     public static String[][] RICH_TO_XML_CASES = {
 
@@ -117,6 +118,7 @@ public class XmlFieldTest  extends TestCase {
          "$TITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",                           // TABLES
          "<p>$TITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",                        // PARAGRAGPS
          "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>", // HEADERS
+         null,
          null
         },
 
@@ -126,6 +128,7 @@ public class XmlFieldTest  extends TestCase {
          "$TITEL\n\n$$SUBTITEL\nhallo\n<ol><li>eending</li><li>nogeending</li></ol>\nhallo",             // TABLES
          "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>",       // PARAGRAPHS
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>",   // HEADERS
+         null,
          null
         },
         {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // IN
@@ -134,7 +137,8 @@ public class XmlFieldTest  extends TestCase {
          "$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",                            // TABLES
          "<p>$TITEL</p><p>$$SUBTITEL</p><p>_test_\neenalinea</p><p>nogeenalinea</p><p>hallo</p>",         // PARAGRAPHS
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>_test_\neenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>",         // HEADERS
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>\neenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>\neenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em><br />eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"
         },
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",
          "$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",                                          // PRE
@@ -142,7 +146,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol></p>",             //  PARAGRAPHS
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>",      // HEADERS
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>",
+         null
         },
 
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\nbla bla",
@@ -151,6 +156,7 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL\nhallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p>", // PARAGRAPH
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>", // HEADERS
+         null,
          null
         },
 
@@ -160,7 +166,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL</p><p>*hallo* hoe gaat het</p>",                                // PARAGRAPH
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>*hallo* hoe gaat het</p></section></section>", // SECTION
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>" // EM
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>", // EM
+         null
         },
 
         {"$TITEL\n\n$$SUBTITEL\n* a\n* b\n* c",
@@ -169,7 +176,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p>",             //P
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",   //H
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",
+         null
         }
         ,
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c",
@@ -178,7 +186,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p>",   //P
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",   //H
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>",
+         null
         },
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\nbla",
          null,
@@ -186,7 +195,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p>",  // P
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p></section></section>",  // H
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>\nbla</p></section></section>",
+         null
         },
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\n\nbloe",
          null,
@@ -194,7 +204,8 @@ public class XmlFieldTest  extends TestCase {
          null,
          "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p>", // P
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>", // H
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>"
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>",
+         null
         },
         {"* a\n* b\n* c\n*d",
          null,
@@ -202,7 +213,8 @@ public class XmlFieldTest  extends TestCase {
          null,                                         // T
          "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>", // P
          "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>", // H
-         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>" // EM
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>", // EM
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>*d</p>", // NL
         },
         {"* a\n* b\n* c\n*",
          null,
@@ -210,7 +222,8 @@ public class XmlFieldTest  extends TestCase {
          null,                                         // T
          "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*</p>", // P
          "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*</p>", // H
-         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*</p>" // EM
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*</p>", // EM
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>*</p>" // NL
         }
 
     };
@@ -233,7 +246,7 @@ public class XmlFieldTest  extends TestCase {
         List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
             StringObject in = XmlField.prepareData(testCase[IN]);
-            if (testCase.length == 7) {
+            if (testCase.length == 8) {
                 XmlField.preHandleHeaders(in);
                 in = testRich(errors, in,  testCase[AFTER_PREHANDLE_HEADERS], "PRE");
                 XmlField.handleList(in);
@@ -247,6 +260,8 @@ public class XmlFieldTest  extends TestCase {
                 XmlField.handleEmph(in, '_', "em");
                 XmlField.handleEmph(in, '*', "strong");
                 testRich(errors, in, testCase[AFTER_HANDLE_EM], "EM");
+                XmlField.handleNewlines(in);
+                testRich(errors, in, testCase[AFTER_NEWLINES], "NL");
             } else {
                 XmlField.handleRich(in,
                                     XmlField.SECTIONS,
