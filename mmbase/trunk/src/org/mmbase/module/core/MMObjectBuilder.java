@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.425 2008-06-10 09:25:49 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.426 2008-06-10 12:03:11 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -797,6 +797,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (field.getName().equals(FIELD_OBJECT_TYPE)) continue;
             if (field.getType() == Field.TYPE_NODE)        continue;
 
+            DataType dt = field.getDataType();
             Object defaultValue = dt.getDefaultValue(null, null, field);
             if ((defaultValue == null) && field.isNotNull()) {
                 Class  clazz  = Fields.typeToClass(field.getType());
