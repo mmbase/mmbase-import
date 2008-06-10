@@ -13,7 +13,7 @@ import junit.framework.*;
 
 /**
  * TestSuite that runs all the util junit tests.
- * 
+ *
  * @author Jaco de Groot
  */
 public class UtilTests {
@@ -30,7 +30,7 @@ public class UtilTests {
         // Create the test suite
         TestSuite suite = new TestSuite("Util Tests");
         suite.addTestSuite(ResourceLoaderTest.class);
-        suite.addTestSuite(EncodeTest.class);
+        //suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.XmlFieldTest.class);
         suite.addTestSuite(LocalizedEntryListFactoryTest.class);
