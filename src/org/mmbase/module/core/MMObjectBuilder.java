@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.16 2008-04-12 10:43:04 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.17 2008-06-10 09:19:48 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -540,7 +540,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return true;
     }
 
-    /** clean all acquired resources, because system is shutting down */ 
+    /** clean all acquired resources, because system is shutting down */
     public void shutdown() {
         // on default, nothing needs to be done.
     }
@@ -840,9 +840,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (field.getName().equals(FIELD_NUMBER))      continue;
             if (field.getName().equals(FIELD_OWNER))       continue;
             if (field.getName().equals(FIELD_OBJECT_TYPE)) continue;
-            if (field.getType() == Field.TYPE_NODE)        continue;
 
-            Object defaultValue = field.getDataType().getDefaultValue();
+            DataType dt = field.getDataType();
+            //log.info("" + field.getName() + " " + dt);
+            Object defaultValue = dt.getDefaultValue(null, null, field);
             if ((defaultValue == null) && field.isNotNull()) {
                 Class  clazz  = Fields.typeToClass(field.getType());
                 if (clazz != null) {
@@ -1400,7 +1401,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * A complicated default implementation for GUI.
      * @since MMBase-1.8
      */
-    protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    public String getGUIIndicator(MMObjectNode node, Parameters pars) {
         Locale locale = (Locale) pars.get(Parameter.LOCALE);
         String language = (String) pars.get(Parameter.LANGUAGE);
         if (locale == null) {
@@ -1482,6 +1483,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 }
             }
             rtn = org.mmbase.util.transformers.Xml.XMLEscape(rtn);
+
         }
         return rtn;
     }
@@ -1526,6 +1528,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
      * @param node The node to display
      * @return the display of the node as a <code>String</code>
+     * @deprecated Override getNodeGUIIndicator, use {@link MMObjectNode#getFunctionValue} or {@link #getFunctionValue}.
      */
     public String getGUIIndicator(MMObjectNode node) {
         return GUI_INDICATOR;
