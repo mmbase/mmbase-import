@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.12 2008-06-04 12:15:27 michiel Exp $
+ * @version $Id: Wiki.java,v 1.13 2008-06-10 11:35:19 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -177,10 +177,12 @@ class Wiki {
             }
             String className = a.getAttribute("class");
             a.removeAttribute("class");
+            String id = a.getAttribute("id");
+            if ("".equals(id)) continue;
             Node link = findById(a, links, fieldName, usedIds);
             if (link == null) {
-                String id = a.getAttribute("id");
-                log.service("No relation found with id'" + id + "'. Implicitely creating one now.");
+
+                log.service("No relation found with id '" + id + "'. Implicitely creating one now.");
                 Node node = getNode(cloud, id, fieldName);
                 if (node != null) {
                     try {
@@ -195,7 +197,7 @@ class Wiki {
                         log.warn(e);
                     }
                 } else {
-                    log.warn("No node found for " + id + "");
+                    log.debug("No node found for " + id + "");
                 }
             } else {
                 link.setStringValue("class", className);
