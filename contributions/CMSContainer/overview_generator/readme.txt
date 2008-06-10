@@ -5,7 +5,7 @@ there are 3 approachs for generating report
 The first is generating a jar including all dependencies;
    run it with the command "maven gen:single"
    locate to CMSContainer/overview_generator/target,we'll find a jar generated
-   This jar file is executable,wo can run it with "java -jar jarfilename configfilePath [workfolder] [outputpath]"
+   This jar file is executable,we can run it with "java -jar jarfilename configfilePath [workfolder] [outputpath]"
 
    configfilePath:  absolute path ,the file included urls of cvs and svn ; e.g.  D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties
       workfolder :  the path that the source code,checked out , will be put . e.g. d:/
