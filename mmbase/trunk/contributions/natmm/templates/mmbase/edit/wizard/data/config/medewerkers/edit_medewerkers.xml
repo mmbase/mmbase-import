@@ -10,7 +10,7 @@
    <!-- field name="reageer"><prompt>reageer</prompt></field -->
    <!-- field name="status"><prompt>status</prompt></field -->
    <field name="externid"><prompt>sofinummer (beaufort - medewerkers met importstatus inactive staan niet in de algemene wie-is-wie; vul "extern" als sofinummer in als dit wel gewenst is)</prompt></field>
-   <field name="prefix" ftype="line"><prompt>voorvoegsel</prompt></field>
+   <field name="prefix" ftype="line"><prompt>titel (beaufort)</prompt></field>
    <field name="firstname" ftype="line"><prompt>voornaam (beaufort)</prompt></field>
    <field name="initials" ftype="line"><prompt>initialen (beaufort)</prompt></field>
    <field name="suffix" ftype="line"><prompt>tussenvoegsel (beaufort)</prompt></field>
