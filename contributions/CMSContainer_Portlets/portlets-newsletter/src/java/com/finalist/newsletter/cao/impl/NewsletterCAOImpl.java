@@ -71,11 +71,10 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 
    public Newsletter getNewsletterById(int id) {
       Node newsletterNode = cloud.getNode(id);
-      Newsletter newsletter = new Newsletter();
 
-      newsletter.setId(newsletterNode.getIntValue("number"));
-      newsletter.setTitle(newsletterNode.getStringValue("title"));
 
+      Newsletter newsletter = convertFromNode(newsletterNode);
+      
       List<Node> terms = newsletterNode.getRelatedNodes("term");
       log.debug("get newsletter by id:" + id + ",and get " + terms.size() + " terms with it.");
       Iterator termsIt = terms.iterator();
@@ -89,6 +88,17 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
          newsletter.getTerms().add(term);
       }
 
+      return newsletter;
+   }
+
+   private Newsletter convertFromNode(Node newsletterNode) {
+      Newsletter newsletter = new Newsletter();
+      newsletter.setId(newsletterNode.getIntValue("number"));
+      newsletter.setTitle(newsletterNode.getStringValue("title"));
+      newsletter.setReplyAddress(newsletterNode.getStringValue("replyto_mail"));
+      newsletter.setReplyName(newsletterNode.getStringValue("replyto_name"));
+      newsletter.setFromAddress(newsletterNode.getStringValue("from_mail"));
+      newsletter.setFromName(newsletterNode.getStringValue("from_name"));
       return newsletter;
    }
 
