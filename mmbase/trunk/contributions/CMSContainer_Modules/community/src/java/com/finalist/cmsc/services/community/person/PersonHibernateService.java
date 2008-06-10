@@ -144,5 +144,14 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
       return person;
    }
-
+   
+   @Transactional(readOnly = true)
+   public Person getPersonByEmail(String email){
+	   Person person = null;
+	   if(email != null){
+		   Criteria criteria = getSession().createCriteria(Person.class).add(Restrictions.eq("email", email));
+		   person = findPersonByCriteria(criteria);
+	   }
+	   return person;
+   }
 }

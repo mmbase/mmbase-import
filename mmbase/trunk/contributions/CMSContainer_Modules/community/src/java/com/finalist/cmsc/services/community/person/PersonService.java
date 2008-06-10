@@ -46,6 +46,8 @@ public interface PersonService {
    List<Person> getLikePersons(Person example);
 
    Person getPersonByAuthenticationId(Long authenticationId);
+   
+   Person getPersonByEmail(String email);
 
    Person createPerson(String firstName, String infix, String lastName, Long authenticationId);
 
