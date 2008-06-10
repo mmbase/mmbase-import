@@ -362,4 +362,8 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          subscriptionCAO.modifySubscriptionStauts(subscription);
       }
    }
+
+   public void createSubscription(int userId, int newsletterId) {
+	   subscriptionCAO.createSubscription(userId, newsletterId);
+   }
 }
