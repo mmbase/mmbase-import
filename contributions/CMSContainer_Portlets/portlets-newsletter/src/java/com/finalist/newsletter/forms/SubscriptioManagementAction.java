@@ -181,10 +181,10 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
                                        HttpServletRequest request, HttpServletResponse response) {
       log.debug("Show import page");
       String importType = (String)request.getParameter("importType");
-      int newsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
       if(!StringUtil.isEmpty(importType)){
+    	  int newsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
     	  request.setAttribute("importType",importType);
-    	  request.setAttribute("newsleterId", newsletterId);
+    	  request.setAttribute("newsletterId", newsletterId);
       }
       return mapping.findForward("importpage");
 
