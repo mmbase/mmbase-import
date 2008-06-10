@@ -14,8 +14,9 @@ import java.util.StringTokenizer;
 
 import javax.naming.*;
 import javax.sql.DataSource;
-import javax.servlet.ServletContext;
+
 import java.io.*;
+import javax.servlet.ServletContext;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -39,7 +40,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.4 2007-12-12 12:59:03 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.5 2008-06-10 11:16:32 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -360,6 +361,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return getBinaryFileBasePath(true);
     }
 
+
+
     /**
      * Returns the base path for 'binary file'
      * @param check If the path is only perhaps needed, you may want to provide 'false' here.
@@ -369,16 +372,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (basePath == BASE_PATH_UNSET) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
-                basePath = mmbase.getInitParameter("datadir");
-                if (basePath == null || basePath.equals("")) {
-                    ServletContext sc = MMBaseContext.getServletContext();
-                    basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
-                    if (basePath == null) {
-                        basePath = System.getProperty("user.dir") + File.separator + "data";
-                    }
-                }
-
+                basePath = getDataDir();
             } else {
+                java.text.MessageFormat mf = new java.text.MessageFormat(basePath);
+                basePath = mf.format(new String[] {getDataDir()});
+                log.debug("Base path is now " + basePath + " (" + getDataDir() + ")");
                 java.io.File baseFile = new java.io.File(basePath);
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
@@ -402,6 +400,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 basePath += File.separator;
             }
         }
+        log.debug("Using " + basePath);
         return basePath;
     }
 

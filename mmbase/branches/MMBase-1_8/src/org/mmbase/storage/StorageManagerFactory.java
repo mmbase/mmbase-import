@@ -12,6 +12,7 @@ package org.mmbase.storage;
 import java.util.*;
 
 import org.xml.sax.InputSource;
+import javax.servlet.ServletContext;
 
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.27.2.1 2007-09-13 12:39:52 nklasens Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.27.2.2 2008-06-10 11:16:32 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -66,7 +67,7 @@ public abstract class StorageManagerFactory {
      * The list with objects of which binary data should not be stored in database
      */
     protected List storeBinaryAsFileObjects;
-    
+
     /**
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
      */
@@ -486,12 +487,12 @@ public abstract class StorageManagerFactory {
 
     /**
      * Returns a list of objects of which binary data should be stored in a file.
-     * @return the list of objects of which BLOB fields should not be stored in database. 
+     * @return the list of objects of which BLOB fields should not be stored in database.
      */
     public List getStoreBinaryAsFileObjects() {
     	return Collections.unmodifiableList(storeBinaryAsFileObjects);
     }
-    
+
     /**
      * Returns a map of disallowed field names and their possible alternate values.
      * @return  A Map of disallowed field names
@@ -658,6 +659,18 @@ public abstract class StorageManagerFactory {
      */
     public int getTimeZoneOffset(long time) {
         return TimeZone.getDefault().getOffset(time);
+    }
+
+    protected String getDataDir() {
+        String dataDir = mmbase.getInitParameter("datadir");
+        if (dataDir == null || dataDir.equals("")) {
+            ServletContext sc = MMBaseContext.getServletContext();
+            dataDir = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+            if (dataDir == null) {
+                dataDir = System.getProperty("user.dir") + java.io.File.separator + "data";
+            }
+        }
+        return dataDir;
     }
 
 
