@@ -9,7 +9,6 @@ import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.cmsc.services.community.security.Authentication;
-import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.logging.Log;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,8 +30,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-import java.util.StringTokenizer;
-
 public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
 
@@ -121,7 +117,8 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
 
    public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form,
                                            HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException{
-   SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
+      SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
+      ActionMessages messages = new ActionMessages();
       FormFile myFile = myForm.getDatafile();
       boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
       int tmpNewsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
@@ -155,7 +152,11 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          return mapping.findForward("success");
       }
       else{
-         return mapping.findForward("failed");
+    	  request.setAttribute("importType", "importCSV");
+    	  request.setAttribute("newsletterId", tmpNewsletterId);
+          messages.add("file", new ActionMessage("datafile.unsupport"));
+          saveMessages(request, messages);
+    	  return mapping.findForward("failed");
       }
    }
    
