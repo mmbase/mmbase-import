@@ -3,17 +3,17 @@
 <!-- Generated for MMBase version: 1.7  -->
 <wizard-schema id="formfieldvalue">
    <title>formfieldvalue</title>
-   <action include="config/formfieldvalue/create_formfieldvalue.xml"/>
-   <action include="config/formfieldvalue/delete_formfieldvalue.xml"/>
-   <action include="config/formfieldvalue/load_formfieldvalue.xml"/>
-   
+   <action include="config/formfieldvalue/create_formfieldvalue.xml" />
+   <action include="config/formfieldvalue/delete_formfieldvalue.xml" />
+   <action include="config/formfieldvalue/load_formfieldvalue.xml" />
+
    <lists>
       <optionlist include="config/option_lists/boolean.xml" />
       <optionlist include="config/option_lists/inputtypes.xml" />
    </lists>
 
    <steps>
-      <step form-schema="edit_formfieldvalue"/>
+      <step form-schema="edit_formfieldvalue" />
    </steps>
-   <form-schema id="edit_formfieldvalue" extends="config/formfieldvalue/edit_formfieldvalue.xml"/>
+   <form-schema id="edit_formfieldvalue" extends="config/formfieldvalue/edit_formfieldvalue.xml" />
 </wizard-schema>

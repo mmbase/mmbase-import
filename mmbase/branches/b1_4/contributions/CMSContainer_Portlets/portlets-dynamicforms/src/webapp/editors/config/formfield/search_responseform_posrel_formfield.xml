@@ -5,51 +5,50 @@
    <title xml:lang="en">Form field</title>
    <title xml:lang="zh">表单框</title>
    <item>
-   	  <field name="label" ftype="data">
+      <field name="label" ftype="data">
          <prompt xml:lang="en">Label</prompt>
-		 <prompt xml:lang="nl">Label</prompt>
-		 <prompt xml:lang="zh">标签</prompt>
+         <prompt xml:lang="nl">Label</prompt>
+         <prompt xml:lang="zh">标签</prompt>
       </field>
       <field name="type" ftype="enum" dttype="enum" dtrequired="true">
          <prompt xml:lang="en">Type</prompt>
-		 <prompt xml:lang="nl">Type</prompt>
-		 <prompt xml:lang="zh">类型</prompt>
+         <prompt xml:lang="nl">Type</prompt>
+         <prompt xml:lang="zh">类型</prompt>
          <optionlist select="inputtypes"></optionlist>
       </field>
       <field name="mandatory" ftype="enum" dttype="enum" dtrequired="true">
          <prompt xml:lang="en">Mandatory</prompt>
-		 <prompt xml:lang="nl">Verplicht</prompt>
-		 <prompt xml:lang="zh">强制的</prompt>
+         <prompt xml:lang="nl">Verplicht</prompt>
+         <prompt xml:lang="zh">强制的</prompt>
          <optionlist select="boolean"></optionlist>
-      </field>   
+      </field>
       <!--  
-      <field name="sendemail" ftype="enum" dttype="enum" dtrequired="true">
+         <field name="sendemail" ftype="enum" dttype="enum" dtrequired="true">
          <prompt xml:lang="en">Send email</prompt>
-		 <prompt xml:lang="nl">Mail naar</prompt>
-		 <prompt xml:lang="zh">发送邮件</prompt>
+         <prompt xml:lang="nl">Mail naar</prompt>
+         <prompt xml:lang="zh">发送邮件</prompt>
          <description>Wanneer hier ja wordt ingevuld krijgt de gebruiker een email op het adres wat hij hier invult.</description>
          <optionlist select="boolean"></optionlist>
-      </field>     
-      --> 
+         </field>     
+      -->
       <field ftype="startwizard" wizardname="config/formfield/formfield" />
    </item>
 
-   <command name="search" nodepath="formfield" age="-1"
-		fields="label" pagelength="20">
-   	  <prompt xml:lang="en">Search form field</prompt>
-	  <prompt xml:lang="nl">Zoek formulier veld</prompt>  
-	  <prompt xml:lang="zh">查找表单框</prompt>
-	  <search-filter>
-  		 <name xml:lang="en">label contains</name> 
-  		 <name xml:lang="nl">label bevat</name> 
-		 <name xml:lang="zh">标签包含</name>
-  		 <search-fields>[label]</search-fields> 
-  	  </search-filter>   
+   <command name="search" nodepath="formfield" age="-1" fields="label" pagelength="20">
+      <prompt xml:lang="en">Search form field</prompt>
+      <prompt xml:lang="nl">Zoek formulier veld</prompt>
+      <prompt xml:lang="zh">查找表单框</prompt>
+      <search-filter>
+         <name xml:lang="en">label contains</name>
+         <name xml:lang="nl">label bevat</name>
+         <name xml:lang="zh">标签包含</name>
+         <search-fields>[label]</search-fields>
+      </search-filter>
    </command>
    <command name="startwizard" inline="true" wizardname="config/formfield/formfield" objectnumber="new">
       <prompt xml:lang="en">New</prompt>
       <prompt xml:lang="nl">Nieuw</prompt>
-	  <prompt xml:lang="zh">新建</prompt>
+      <prompt xml:lang="zh">新建</prompt>
    </command>
 
    <action type="create">
