@@ -7,12 +7,19 @@
     version="2.0">
   <jsp:directive.tag description="Generates the 'see alo' back references, for the current node." />
 
-  <jsp:directive.attribute name="see" />
-  <jsp:directive.attribute name="type" />
-  <jsp:directive.attribute name="types" />
+  <jsp:directive.attribute name="see"
+                           description="What sould be said before the list. Defaults to 'See also' (but i18n'd)"
+                           />
+  <jsp:directive.attribute name="type"
+                           description="Type of (id-)related nodes to show. Defaults to 'object'."
+                           />
+  <jsp:directive.attribute name="types"
+                           description="Type-constraints on the related nodes to apply to the query. Defaults to no constraint. This can
+                                        be used if you want to list several types, which have no common base type."
+                           />
   <!--
       TODO. Together with versioning, links not pointing to the _current_ version of the node should be ignored.
-      $Id: referred.tagx,v 1.5 2008-06-05 07:56:48 michiel Exp $
+      $Id: referred.tagx,v 1.6 2008-06-10 14:25:13 michiel Exp $
   -->
   <mm:import id="t">${empty type ? (empty types ? 'texts' : 'object') : type}</mm:import>
   <fmt:bundle basename="org.mmbase.richtext.resources.messages">
