@@ -8,6 +8,7 @@
    <form-beans>
       <form-bean name="communityUserForm" type="com.finalist.cmsc.community.forms.UserForm" />
       <form-bean name="communityGroupForm" type="com.finalist.cmsc.community.forms.GroupForm" />
+      <form-bean name="preferenceForm" type="com.finalist.cmsc.community.forms.PreferenceForm" />
    </form-beans>
    <!-- Global Exceptions Definitions -->
    <!-- Global Forward Definitions -->
@@ -45,6 +46,13 @@
       <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
          unknown="false" validate="false">
          <forward name="success" path="/editors/community/index.jsp" redirect="false" />
+      </action>
+     <!-- ==== Reference management ==== -->
+      <action path="/editors/community/PreferenceAction" name="preferenceForm" type="org.springframework.web.struts.DelegatingActionProxy"
+         validate="false" unknown="true" parameter="method">
+         <forward name="success" path="/editors/community/preferencesearch.jsp" redirect="false" />
+         <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="false" />
+         <forward name="init" path="/editors/community/preferenceadd.jsp" redirect="false" />
       </action>
    </action-mappings>
    <message-resources parameter="cmsc-community" key="COMMUNITY" />
