@@ -48,6 +48,12 @@
                            <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community" /></a>
                         </li>
                      </mm:haspage>
+                     <mm:haspage page="/editors/community/preferencesearch.jsp">
+                        <li class="community">
+                           <c:url var="communityUrl" value="/editors/community/preferencesearch.jsp"/>
+                           <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community.reference" /></a>
+                        </li>
+                     </mm:haspage>
                      <mm:haspage page="/editors/subsite/module-subsite.jsp">
                         <li class="versioning"><a href="<mm:url page="../subsite/SubSiteAction.do"/>" target="rightpane">
                            <fmt:message key="modules.subsite" />

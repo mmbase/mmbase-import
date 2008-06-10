@@ -65,5 +65,10 @@
   <bean name="preferenceService" class="com.finalist.cmsc.services.community.preferences.PreferenceHibernateService" />
   <bean name="personService" class="com.finalist.cmsc.services.community.person.PersonHibernateService" />
   
+  <!-- Actions -->
+  <bean name="/editors/community/PreferenceAction" class="com.finalist.cmsc.community.forms.PreferenceAction">
+      <property name="preferenceService"><ref bean="preferenceService"></ref></property>
+  </bean>
+  
   <import resource="spring-security.xml" />
 </beans>

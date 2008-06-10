@@ -15,12 +15,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.finalist.cmsc.services.HibernateService;
+import com.finalist.cmsc.services.community.domain.PreferenceVO;
+import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
 /**
@@ -161,4 +167,141 @@ public class PreferenceHibernateService extends HibernateService implements Pref
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
+    
+    @Transactional(readOnly = true)
+    public List<PreferenceVO> getPreferences(PreferenceVO preference,int offset,int pageSize,String orderBy,String direction){
+
+       List<PreferenceVO> preferences = new ArrayList<PreferenceVO>();
+       Criteria criteria = getSession().createCriteria(Preference.class);
+       if(preference != null) {
+
+          if(StringUtils.isNotBlank(preference.getUserId())) {
+             Criteria authentication = getSession().createCriteria(Authentication.class);
+             authentication.add(Restrictions.ilike("userId", "%"+preference.getUserId()+"%"));
+             List<Authentication>  authentications = authentication.list();
+             List<Long> authenticationIds = new ArrayList<Long>();
+             for(Authentication authe : authentications) {
+                authenticationIds.add(authe.getId());
+             }
+             if(authenticationIds.size() > 0) {
+                criteria.add(Restrictions.in("authenticationId", authenticationIds));
+             }
+
+          }
+          
+          if(StringUtils.isNotBlank(preference.getModule())) {
+             criteria.add(Restrictions.ilike("module", "%"+preference.getModule()+"%"));
+          }
+          if(StringUtils.isNotBlank(preference.getKey())) {
+             criteria.add(Restrictions.ilike("key", "%"+preference.getKey()+"%"));
+          }
+          if(StringUtils.isNotBlank(preference.getValue())) {
+             criteria.add(Restrictions.ilike("value", "%"+preference.getValue()+"%"));
+          }
+       }
+       criteria.setFirstResult(offset);
+       criteria.setMaxResults(pageSize);
+       if(StringUtils.isNotEmpty(orderBy)) {
+          if(StringUtils.isEmpty(direction) || direction.equalsIgnoreCase("down")) {
+             criteria.addOrder(Order.desc(orderBy));
+          }
+          else {
+             criteria.addOrder(Order.asc(orderBy)); 
+          }
+       }
+      
+       copyPropertiesToVO(preferences,criteria.list());
+       return preferences;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<PreferenceVO> getPreferences(int offset,int pageSize,String orderBy,String direction){
+       return getPreferences(null,offset,pageSize,orderBy,direction);
+    }
+    
+    @Transactional
+   public void createPreference(PreferenceVO preference) {      
+      createPreference(preference.getModule(),preference.getUserId(),preference.getKey(),preference.getValue());
+   }
+    
+    @Transactional
+   public void updatePreference(PreferenceVO preferenceVO) {
+      try {
+         Preference preference = (Preference)getSession().load(Preference.class, Long.parseLong(preferenceVO.getId()));
+         preference.setKey(preferenceVO.getKey());
+         preference.setValue(preferenceVO.getValue());
+         getSession().saveOrUpdate(preference);
+      } catch (HibernateException e) {       
+         e.printStackTrace();
+      }
+  }
+    
+    @Transactional
+   public void deletePreference(String number) {
+      Preference preference = (Preference)getSession().get(Preference.class, Long.parseLong(number));
+      getSession().delete(preference);
+  }
+    
+    @Transactional(readOnly = true)
+   public List<String> getAllUserIds() {
+      List<Authentication> authentications = authenticationService.findAuthentications();
+      List<String> userIds = new ArrayList<String>();
+      for(Authentication authentication : authentications) {
+         userIds.add(authentication.getUserId());
+      }
+      return userIds;
+   }
+    
+    @Transactional(readOnly = true)
+    public int getTotalCount(PreferenceVO preference) {
+       List<PreferenceVO> preferences = new ArrayList<PreferenceVO>();
+       Criteria criteria = getSession().createCriteria(Preference.class);
+       if(preference != null) {
+
+          if(StringUtils.isNotBlank(preference.getUserId())) {
+             Criteria authentication = getSession().createCriteria(Authentication.class);
+             authentication.add(Restrictions.ilike("userId", "%"+preference.getUserId()+"%"));
+             List<Authentication>  authentications = authentication.list();
+             List<Long> authenticationIds = new ArrayList<Long>();
+             for(Authentication authe : authentications) {
+                authenticationIds.add(authe.getId());
+             }
+             if(authenticationIds.size() > 0) {
+                criteria.add(Restrictions.in("authenticationId", authenticationIds));
+             }
+
+          }
+          
+          if(StringUtils.isNotBlank(preference.getModule())) {
+             criteria.add(Restrictions.ilike("module", "%"+preference.getModule()+"%"));
+          }
+          if(StringUtils.isNotBlank(preference.getKey())) {
+             criteria.add(Restrictions.ilike("key", "%"+preference.getKey()+"%"));
+          }
+          if(StringUtils.isNotBlank(preference.getValue())) {
+             criteria.add(Restrictions.ilike("value", "%"+preference.getValue()+"%"));
+          }
+       }
+       return criteria.list().size();
+    }
+   private void copyPropertiesToVO(List<PreferenceVO> dest,List<Preference> src) {
+      if(src == null || src.size() == 0) {
+         return;
+      }
+      for(Preference preference:src ) {
+         PreferenceVO preferenceVO = new PreferenceVO();
+         preferenceVO.setId(String.valueOf(preference.getId()));
+         preferenceVO.setKey(preference.getKey());
+         preferenceVO.setValue(preference.getValue());
+         preferenceVO.setModule(preference.getModule());
+         preferenceVO.setUserId(getUserIdByAuthenticationId(preference.getAuthenticationId()));
+         preferenceVO.setAuthenticationId(String.valueOf(preference.getAuthenticationId()));
+         dest.add(preferenceVO);
+      }
+   }
+   
+   private String getUserIdByAuthenticationId(Long authenticationId){
+      Authentication authentication = authenticationService.getAuthenticationById(authenticationId);
+      return authentication.getUserId();
+   }
 }
