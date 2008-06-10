@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.12 2008-06-09 16:17:30 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.13 2008-06-10 12:06:02 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -195,6 +195,14 @@ public class XmlFieldTest  extends TestCase {
          "<p>$TITEL</p><p>$$SUBTITEL</p><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p>", // P
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>", // H
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>"
+        },
+        {"* a\n* b\n* c\n*d",
+         null,
+         "<ol><li>a</li><li>b</li><li>c</li></ol>\n*d", // L
+         null,                                         // T
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>", // P
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>", // H
+         "<p><ol><li>a</li><li>b</li><li>c</li></ol>\n*d</p>" // EM
         }
 
     };
