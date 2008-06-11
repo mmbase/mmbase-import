@@ -1,10 +1,12 @@
 <table border="0">
  <mm:hasrank minvalue="administrator">
    <tr>
-      <td style="width: 80px"></td>
-      <td><img src="../gfx/icons/new.png" title="<fmt:message key="community.preference.add" />"/><fmt:message key="community.preference.new" />
-      <input type="submit" name="createButton" onclick="create()" 
-            value="<fmt:message key="community.preference.create" />"/></td>
+      <td  style="width: 80px">
+      <ul class="shortcuts">
+         <li class="new"><a href="#" onclick="create()"><fmt:message key="community.preference.new" /></a></li>
+      </ul>
+      </td>
+      <td></td>
    </tr>
  </mm:hasrank>  
    <tr>
