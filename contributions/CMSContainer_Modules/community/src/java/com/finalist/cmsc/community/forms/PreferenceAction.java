@@ -36,7 +36,6 @@ public class PreferenceAction extends DispatchAction {
       PreferenceForm preferenceForm = (PreferenceForm)form;
       PreferenceVO preference= new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
-      preferenceForm.reset(mapping, request);
       setNull(preferenceForm);
       preferenceService.createPreference(preference);
       request.setAttribute("isAddSuccess", "true");
@@ -62,13 +61,14 @@ public class PreferenceAction extends DispatchAction {
    public ActionForward init(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
+      PreferenceForm preferenceForm = (PreferenceForm)form;
+      setNull(preferenceForm);
       return mapping.findForward("success");
    }
    
    public ActionForward delete(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      PreferenceForm preferenceForm = (PreferenceForm)form;
       String id = request.getParameter("id");
       if(id != null) {
          preferenceService.deletePreference(id);
@@ -99,8 +99,15 @@ public class PreferenceAction extends DispatchAction {
       }
       List<PreferenceVO> preferences = preferenceService.getPreferences(preference, Integer.parseInt(preferenceForm.getOffset())*pageSize, pageSize,preferenceForm.getOrder(),preferenceForm.getDirection());
       int totalCount = preferenceService.getTotalCount(preference) ;
-      request.setAttribute("totalCount", totalCount);
       request.setAttribute("offset", preferenceForm.getOffset());
+      if(preferences == null || preferences.size() ==0) {
+         if(Integer.parseInt(preferenceForm.getOffset()) >= 1) {
+            preferences = preferenceService.getPreferences(preference, (Integer.parseInt(preferenceForm.getOffset())-1)*pageSize, pageSize,preferenceForm.getOrder(),preferenceForm.getDirection());
+            request.setAttribute("offset", (Integer.parseInt(preferenceForm.getOffset())-1));
+            preferenceForm.setOffset(String.valueOf((Integer.parseInt(preferenceForm.getOffset())-1)));
+         }
+      }
+      request.setAttribute("totalCount", totalCount);
       request.setAttribute("results", preferences);
       request.setAttribute("isList", "true");
       return mapping.findForward("success");
