@@ -33,8 +33,27 @@
            );
         }
 
+         function deleteInfo(number,offset,resultLength) {
+            if(confirm('<fmt:message key="community.preference.delete.conform" />')) {
+               if(resultLength == "1") {
+                  offset = eval(offset -1);
+               }
+               var url = "${actionUrl}?method=delete";
+               url += "&id="+number+"&offset="+offset;
+               document.location = url;
+            }
+            
+         }
+
+        function create() {
+            // var url = "${actionUrl}?method=addInit";
+           //  document.location = url;
+           document.forms[0].method.value = "addInit";
+           document.forms[0].offset.value = 0;
+           document.forms[0].submit();
+        }
         function postUpdate() {
-           alert('<fmt:message key="community.preference.update.success" />')
+           alert('<fmt:message key="community.preference.update.success" />');
         }
 
 		</script>
@@ -56,7 +75,6 @@
 
      <div class="editor" style="height:500px">
       <div class="body">
-
          <mm:import id="searchinit"><c:url value='/editors/community/PreferenceAction.do'/></mm:import>
          <html:form action="/editors/community/PreferenceAction" method="post">
 			<html:hidden property="method" value="list"/>
@@ -68,7 +86,6 @@
 	</div>
 
 <div class="ruler_green"><div><fmt:message key="community.preference.result" /></div></div>
-
 <div class="body">
 <mm:import jspvar="resultCount" vartype="Integer">${totalCount}</mm:import>
 <mm:import externid="offset" jspvar="offset" vartype="Integer">${offset}</mm:import>
@@ -86,24 +103,22 @@
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
                 <c:forEach var="preference" items="${results}" >
-	                  <tr >
+	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
 	                     <td style="white-space:nowrap;">
-                        <c:if test="${action != 'select'}">
 						         <mm:hasrank minvalue="administrator">
-	                            <a href="<mm:url page="PreferenceAction.do" >
-                                            <mm:param name="method">delete</mm:param>
-                                            <mm:param name="id">${preference.id}</mm:param>
-                                            <mm:param name="offset">${offset}</mm:param>
-                                             </mm:url>">
+	                            <a href="javascript:deleteInfo('${preference.id}','${offset}',${fn:length(results)})">
          	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="community.preference.delete" />"/></a>
-	                        </mm:hasrank>
-	                       </c:if>              
+	                        </mm:hasrank>   
                          </td>
                          <td><a href="${userActionUrl}?authid=${preference.authenticationId}"><c:out  value="${preference.userId}"/></a></td>
 	                      <td ><c:out  value="${preference.module}"/></td>
                          <td ><input type="text" name="key" id="key_${preference.id}"  value="<c:out  value="${preference.key}"/>"/></td>
                          <td ><input type="text" name="value" id="value_${preference.id}"  value="<c:out  value="${preference.value}"/>"/></td>
-                         <td><a href="javascript:update('${preference.id}')"><fmt:message key="view.submit" /></a></td>
+                         <td>
+                          <mm:hasrank minvalue="administrator">
+                         <a href="javascript:update('${preference.id}')"><fmt:message key="view.submit" /></a>
+                          </mm:hasrank>     
+                         </td>
 	                  </tr>
 	               <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
 	           </c:forEach>
