@@ -1,12 +1,17 @@
 DESCRIPTION:
 
-  * Community Module
+* Community Module
+Adds core functionality for User credentials, Personal information, Groups, Roles and User Preferences.  
 
 CONFIGURATION:
+  * add extra community database configuration jdbc.
 
-  * Locatie spring-community.xml (in web.xml) en spring-community.properties (in spring-community.xml)
+  * Location spring-community.xml (in web.xml) and spring-community.properties (in spring-community.xml)
   
-  * web.xml
+  * web.xml changes, see this file for an example:
+  /CMSContainer_Demo*/demo.cmscontainer.org/war-community/src/webapp/WEB-INF/web.xml
+  
+  Example:
   
 	  <context-param>
 	    <param-name>contextConfigLocation</param-name>
@@ -31,18 +36,8 @@ CONFIGURATION:
 	    <url-pattern>/*</url-pattern>
 	  </filter-mapping>
    
-  
-  * modulesmenu.jsp
-
-		<mm:haspage page="/editors/community/index.jsp">
-		  <li class="versioning">
-		    <a href="<mm:url page="../community/index.jsp"/>" target="rightpane"><fmt:message key="modules.community" /></a>
-		  </li>
-		</mm:haspage> 
-
+ 
 TODO:
-
   * Maintenance (Struts) of Authentication, Authorities and Permissions
-  * Login / Logout portlet
-  * Dependencies (all the libraries for Spring, Hibernate)
+  * Login / Logout portlet or even better: implement this using the servlet filter
   * Authorization (Permissions on Resources)
