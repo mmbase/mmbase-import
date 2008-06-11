@@ -2,11 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <%@include file="globals.jsp" %>
 <mm:import externid="bottomurl" from="parameters">dashboard.jsp</mm:import>
+
 <mm:cloud loginpage="login.jsp" rank="basic user">
    <mm:cloudinfo type="user" id="username" write="false"/>
    <mm:listnodes type="user" constraints="username='${username}'">
       <mm:field name="language" id="language" write="false"/>
-      
       <c:if test="${empty language}">
          <c:set var="language" value="<%=request.getHeader ( "Accept-Language" )%>"/>
          <c:if test="${fn:length(language) > 2}">
@@ -14,12 +14,13 @@
          </c:if>
          <mm:setfield name="language">${language}</mm:setfield>
       </c:if>
+      
    </mm:listnodes>
 
-   <fmt:setLocale value="${language}" scope="session"/>
-   <fmt:setBundle basename="cmsc" scope="request" /> <%-- Reload the resource bundle again for JSTL --%>
+   
    <mm:write referid="language" jspvar="lang" vartype="String">
-      <% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(lang));%>
+      <%request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(lang));%>
+     
    </mm:write>
 </mm:cloud>
 
@@ -28,6 +29,8 @@
  This code sets the locale for all editors --%>
 <mm:locale language="${language}">
    <mm:cloud loginpage="login.jsp" rank="basic user">
+   <fmt:setLocale value="${language}" scope="session"/> 
+   <fmt:bundle basename="cmsc">
       <html:html xhtml="true">
          <head><title><fmt:message key="editors.title" /></title>
             <link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
@@ -44,5 +47,7 @@
             <frame src="footer.jsp" name="footerpane" frameborder="0" scrolling="no"/>
          </frameset>
       </html:html>
+    </fmt:bundle>
    </mm:cloud>
 </mm:locale>
+
