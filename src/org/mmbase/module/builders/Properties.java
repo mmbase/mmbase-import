@@ -12,13 +12,36 @@ package org.mmbase.module.builders;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
+import java.util.*;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.bridge.util.Queries;
 
 /**
- * Probably your builder must extend this if 'properties' on its nodes must work decently?
+ * The properties builder can contain key/value pairs for any other node in MMBase.
  *
- * @javadoc
+ * When using bridge, properties can be set and get using the 'nodemanager' function 'get' and 'set'
+ * on this builder.
  *
- * @version $Id: Properties.java,v 1.16 2007-02-25 17:56:59 nklasens Exp $
+ * In core, the (legacy?) methods on MMObjectNode should still work.
+ *
+ * Example code for bridge:
+ <pre>
+      &lt;mm:cloud rank="administrator"&gt;
+        &lt;div&gt;
+          &lt;mm:import id="key"&gt;test&lt;/mm:import&gt;
+          &lt;mm:import id="value"&gt;&lt;mm:time time="now" /&gt;&lt;/mm:import&gt;
+          &lt;mm:listnodes type="news" max="1"&gt;
+            &lt;p&gt;TEST: &lt;mm:function nodemanager="properties" name="get" referids="_node@node,key" /&gt;&lt;/p&gt;
+            &lt;p&gt;TEST: &lt;mm:function nodemanager="properties" name="set" referids="_node@node,key,value" /&gt;&lt;/p&gt;
+            &lt;p&gt;TEST: &lt;mm:function nodemanager="properties" name="get" referids="_node@node,key" /&gt;&lt;/p&gt;
+          &lt;/mm:listnodes&gt;
+        &lt;/div&gt;
+      &lt;/mm:cloud&gt;
+  </pre>
+ *
+ * @version $Id: Properties.java,v 1.17 2008-06-12 11:23:50 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -31,6 +54,94 @@ public class Properties extends MMObjectBuilder {
         } else {
             return str;
         }
+    }
+
+    protected final static Parameter<Node>  NODE   = new Parameter<Node>("node", Node.class, true);
+    protected final static Parameter<String> KEY   = new Parameter<String>("key", String.class, true);
+    protected final static Parameter<Object> VALUE = new Parameter<Object>("value", Object.class);
+    protected final static Parameter[] GET_PARAMETERS = { NODE, KEY };
+    protected final static Parameter[] SET_PARAMETERS = {
+        new Parameter.Wrapper(GET_PARAMETERS),
+        new Parameter<Object>("value", Object.class)
+    };
+
+
+    protected List<Node> getValueNode(Node node, String key) {
+        NodeQuery q = node.getCloud().getNodeManager(Properties.this.getTableName()).createQuery();
+        Queries.addConstraint(q, Queries.createConstraint(q, "parent", FieldCompareConstraint.EQUAL, node));
+        Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
+        return q.getNodeManager().getList(q);
+    }
+    protected Object getValue(List<Node> prop) {
+        if (prop.size() == 0) {
+            return null;
+        } else if (prop.size() == 1) {
+            return prop.get(0).getValue("value");
+        } else {
+            List<Object> result = new ArrayList<Object>();
+            for (Node p : prop) {
+                result.add(p.getValue("value"));
+            }
+            return result;
+        }
+    }
+    protected Object getValue(Node node, String key) {
+        return getValue(getValueNode(node, key));
+
+    }
+
+    {
+        addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
+                public Object getFunctionValue(Parameters parameters) {
+                    return Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
+                }
+            });
+        addFunction(new AbstractFunction<Object>("set", SET_PARAMETERS) {
+                public Object getFunctionValue(Parameters parameters) {
+                    Node node = parameters.get(NODE);
+                    String key = parameters.get(KEY);
+                    List<Node> list = new ArrayList<Node>(Properties.this.getValueNode(node, key));
+                    Object orgValue = getValue(list);
+                    Object newValue = parameters.get(VALUE);
+                    if (newValue == null) {
+                        for (Node n : list) {
+                            n.delete(true);
+                        }
+                    } else if (newValue instanceof Collection) {
+                        Collection c = (Collection) newValue;
+                        while (list.size() > c.size()) {
+                            list.remove(0).delete(true);
+                        }
+                        while (list.size() < c.size()) {
+                            Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
+                            p.setStringValue("key", key);
+                            p.setNodeValue("parent", node);
+                            list.add(p);
+                        }
+                        int i = 0;
+                        for (Object v : c) {
+                            Node n = list.get(i++);
+                            n.setValue("value", v);
+                            n.commit();
+                        }
+
+                    } else {
+                        while (list.size() > 1) {
+                            list.remove(0).delete(true);
+                        }
+                        while (list.size() < 1) {
+                            Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
+                            p.setStringValue("key", key);
+                            p.setNodeValue("parent", node);
+                            list.add(p);
+                        }
+                        Node n = list.get(0);
+                        n.setValue("value", newValue);
+                        n.commit();
+                    }
+                    return orgValue;
+                }
+            });
     }
 
     /* (non-Javadoc)
