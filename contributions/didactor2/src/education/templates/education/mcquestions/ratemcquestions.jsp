@@ -37,7 +37,7 @@
           <mm:node referid="my_givenanswers">
             <mm:setfield name="score"><mm:write referid="questioncorrect"/></mm:setfield>
           </mm:node>
-          <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
+          <mm:createrelation role="related" source="my_givenanswers" destination="givenanswer"/>
         </mm:present>
 
       </mm:compare>
