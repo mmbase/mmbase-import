@@ -273,15 +273,6 @@
 		</dependency>
 		<dependency>
 			<groupId>mmbase</groupId>
-			<artifactId>mmbase-rmmci</artifactId>
-			<version>${mmbasermmci.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<mmbase.config.bundle>false</mmbase.config.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>mmbase</groupId>
 			<artifactId>mmbase-taglib</artifactId>
 			<version>${mmbase.version}</version>
 			<type>jar</type>
