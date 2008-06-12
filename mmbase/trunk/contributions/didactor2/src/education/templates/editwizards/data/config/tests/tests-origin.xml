@@ -11,7 +11,9 @@
 
   <action type="create">
     <object type="tests">
-      <relation destination="$origin" role="posrel" createdir="source"/>
+      <relation destination="$origin" role="posrel" createdir="source">
+        <field name="pos">$newpos</field>
+      </relation>
     </object>
   </action>
 
