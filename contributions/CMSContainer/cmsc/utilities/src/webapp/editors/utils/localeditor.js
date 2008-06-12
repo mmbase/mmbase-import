@@ -90,12 +90,15 @@ InPlaceEditor.Local.prototype = {
     
     this._checkEmpty();
   },
-    _checkEmpty: function(){
-        if( this.element.innerHTML.length == 0 ){
-            this.element.appendChild(
-                Builder.node('span',{className:this.options.emptyClassName},this.options.emptyText));
-        }
-    },
+
+  _checkEmpty: function(){
+    if( this.element.innerHTML.length == 0 ){
+      this.element.appendChild(
+        Builder.node('span', {className: this.options.emptyClassName}, this.options.emptyText)
+      );
+    }
+  },
+  
   enterEditMode: function(evt) {
     this.elementWidth = this.element.offsetWidth;
     this.elementHeight = this.element.offsetHeight;
@@ -127,21 +130,21 @@ InPlaceEditor.Local.prototype = {
       this.form.appendChild(br);
     }    
 
-	if (this.options.saveButton) {
-		saveButton = document.createElement("input");
-		saveButton.type = "submit";
-		saveButton.className = 'portal_button';
-		saveButton.value = this.options.saveButtonText;
-		this.form.appendChild(saveButton);
-	}
-	if (this.options.cancelButton) {
-    	cancelButton = document.createElement("input");
-    	cancelButton.type = "submit";
-  	    cancelButton.onclick = this.onclickCancel.bind(this);
-  	    cancelButton.className = 'portal_button';
-  	    cancelButton.value = this.options.cancelText;
-  	    this.form.appendChild(cancelButton);
-	}		
+    if (this.options.saveButton) {
+      saveButton = document.createElement("input");
+      saveButton.type = "submit";
+      saveButton.className = 'portal_button';
+      saveButton.value = this.options.saveButtonText;
+      this.form.appendChild(saveButton);
+    }
+    if (this.options.cancelButton) {
+      cancelButton = document.createElement("input");
+      cancelButton.type = "submit";
+      cancelButton.onclick = this.onclickCancel.bind(this);
+      cancelButton.className = 'portal_button';
+      cancelButton.value = this.options.cancelText;
+      this.form.appendChild(cancelButton);
+    }
   },
   hasHTMLLineBreaks: function(string) {
     if (!this.options.handleLineBreaks) return false;
@@ -172,17 +175,17 @@ InPlaceEditor.Local.prototype = {
       textArea.obj = this;
       textArea.name = "value";
       if (this.options.htmlarea) {
-	      textArea.value = text;
+        textArea.value = text;
       } else {
-	      textArea.value = this.convertHTMLLineBreaks(text);
-	  }
+        textArea.value = this.convertHTMLLineBreaks(text);
+    }
       textArea.rows = this.options.rows;
       textArea.cols = this.options.cols || 40;
       textArea.className = 'editor_field';      
       this.editField = textArea;
     }
 
-	this.editField.name = this.element.id;
+  this.editField.name = this.element.id;
 
     this.form.appendChild(this.editField);
     
@@ -202,7 +205,7 @@ InPlaceEditor.Local.prototype = {
        this.editor = editor;
   },
   getText: function() {
-    document.getElementsByClassName(this.options.emptyClassName,this.element).each(function(child){
+    this.element.select('.' + this.options.emptyClassName).each(function(child){
         this.element.removeChild(child);
     }.bind(this));
     return this.element.innerHTML;
@@ -214,7 +217,7 @@ InPlaceEditor.Local.prototype = {
   onSubmit: function() {
     if (HTMLArea.checkSupportedBrowser() && this.editor) {
       updateValue(this.editor);
-	}
+    }
     return true;
   },
   removeForm: function() {
