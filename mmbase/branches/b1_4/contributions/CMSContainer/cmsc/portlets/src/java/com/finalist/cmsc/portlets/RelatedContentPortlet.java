@@ -13,8 +13,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.pluto.core.impl.PortletRequestImpl;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
@@ -33,21 +32,10 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
    @Override
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
       String window = req.getPreferences().getValue(WINDOW, null);
-      if (!StringUtil.isEmpty(window)) {
-         String elementId = getElementIdFromRequestParameters(req, window);
-         if (StringUtil.isEmpty(elementId)) {
-            elementId = getElementIdFromScreen(req, window);
-            if (StringUtil.isEmpty(elementId)) {
-               elementId = getElementIdFromContentURL(req);
-               if (StringUtil.isEmpty(elementId)) {
-                  elementId = getElementId(req, window);
-               }
-            }
-         }
+      String elementId = getRelatedElementId(req, window);
 
-         if (!StringUtil.isEmpty(elementId)) {
-            setAttribute(req, ELEMENT_ID, elementId);
-         }
+      if (StringUtils.isNotEmpty(elementId)) {
+         setAttribute(req, ELEMENT_ID, elementId);
       }
       super.doView(req, res);
    }
@@ -67,17 +55,38 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
    }
 
    /**
-    * This method can be overridden to provide your own mechanism for getting an
-    * elementId. The default implementation returns <code>null</code>.
+    * Retrieves the related elementId as a String. The default implementation
+    * tries to retrieve the element in the following order:
     *
-    * @param req
-    *           originating RenderRequest
+    * <ol>
+    * <li>From the parameter of the current request</li>
+    * <li>From contentelement node parameter of the specified portlet</li>
+    * <li>From a given contentURL (assumes that the elementId we want is
+    * exactly that elementId)</li>
+    * </ol>
+    *
+    * The first one to return a non <code>null</code> value will be returned.
+    *
+    * @param request
+    *           the render request
     * @param window
-    *           the passed 'window' parameter.
-    * @return the elementId
+    *           the specified window (might be <code>null</code>)
+    * @return elementId if an elementId could be found, <code>null</code>
+    *         otherwise.
     */
-   protected String getElementId(RenderRequest req, String window) {
-      return null;
+   protected String getRelatedElementId(RenderRequest request, String window) {
+      String elementId = null;
+      if (StringUtils.isNotEmpty(window)) {
+         elementId = getElementIdFromRequestParameters(request, window);
+         if (StringUtils.isEmpty(elementId)) {
+            elementId = getElementIdFromScreen(request, window);
+            if (StringUtils.isEmpty(elementId)) {
+               elementId = getElementIdFromContentURL(request);
+            }
+         }
+      }
+
+      return elementId;
    }
 
    private String getElementIdFromRequestParameters(RenderRequest req, String window) {
@@ -92,16 +101,7 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
          }
          return elementId;
       }
-      return null;
-   }
 
-   private String getElementIdFromContentURL(RenderRequest req) {
-      String requestURL = getServletRequest(req).getRequestURL().toString();
-      Pattern pattern = Pattern.compile(CONTENTURL_ELEMENTID_PATTERN);
-      Matcher matcher = pattern.matcher(requestURL);
-      if (matcher.find() && matcher.groupCount() >= 1) {
-         return matcher.group(1);
-      }
       return null;
    }
 
@@ -115,6 +115,16 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
          if (portlet != null) {
             return portlet.getParameterValue(CONTENTELEMENT);
          }
+      }
+      return null;
+   }
+
+   private String getElementIdFromContentURL(RenderRequest req) {
+      String requestURL = getServletRequest(req).getRequestURL().toString();
+      Pattern pattern = Pattern.compile(CONTENTURL_ELEMENTID_PATTERN);
+      Matcher matcher = pattern.matcher(requestURL);
+      if (matcher.find() && matcher.groupCount() >= 1) {
+         return matcher.group(1);
       }
       return null;
    }
