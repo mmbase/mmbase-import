@@ -15,11 +15,22 @@
            branchOffset="1"
            branchPath="${branchPath}"
            branch="${b}">
-    <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+    <mm:import id="prefix">1</mm:import>
+
+    <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back,prefix">
       <mm:param name="templates">/editwizards/data</mm:param>
       <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
       <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
       <mm:param name="language">${locale.language}</mm:param>
+
+      <mm:relatednodescontainer id="current" type="images" role="background">
+        <mm:maxnumber value="1" />
+      </mm:relatednodescontainer>
+      <mm:listnodescontainer id="repository" type="images" />
+      <mm:write session="${prefix}current"    referid="current" />
+      <mm:write session="${prefix}repository" referid="repository" />
+
+      <mm:param name="tools">searchrelate</mm:param>
       <a href="${_}"
          target="text">
         <mm:import id="href">

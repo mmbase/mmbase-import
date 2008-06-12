@@ -12,7 +12,7 @@
            branch="${b}"
            branchOffset="1"
            branchPath="${branchPath} ">
-    <mm:listrelations role="posrel" type="learnblocks" max="1" orderby="pos" directions="down">
+    <mm:listrelations role="posrel" type="learnobjects" max="1" orderby="pos" directions="down">
       <mm:field name="pos" id="maxpos" write="false" />
     </mm:listrelations>
     <mm:link referid="wizardjsp" referids="_node@origin">

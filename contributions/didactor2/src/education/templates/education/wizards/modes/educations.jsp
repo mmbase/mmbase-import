@@ -159,6 +159,7 @@
                                    searchdir="destination" type="learnobjects">
                     <mm:index id="learnblockcounter" write="false" />
                     <jsp:directive.include file="../whichimage.jsp" />
+
                     <mm:nodeinfo type="type" id="this_node_type" write="false" />
                     <mm:import id="mark_error" reset="true"></mm:import>
                     <mm:compare referid="this_node_type" value="tests">
@@ -224,6 +225,7 @@
 
                     <div id="node_0_0_${learnblockcounter}" style="display:none">
                       <mm:treeinclude
+                          debug="html"
                           page="/education/wizards/learnobject.jsp"
                           objectlist="$includePath"
                           referids="wizardjsp,_node@startnode">
