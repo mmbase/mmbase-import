@@ -15,7 +15,7 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
-import org.mmbase.util.transformers.Base64;
+import org.mmbase.util.transformers.*;
 import org.mmbase.datatypes.processors.*;
 import javax.mail.internet.*;
 import java.util.*;
@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.6 2008-02-03 17:45:39 nklasens Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.7 2008-06-12 15:07:52 michiel Exp $
 
  */
 
@@ -211,103 +211,126 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
         return false;
     }
 
+    private static CharTransformer stripper;
+    static {
+        TagStripperFactory fac = new TagStripperFactory();
+        stripper = (CharTransformer) fac.createTransformer(fac.createParameters());
+    }
     public void commit(Node node, Field field) {
         if (log.isDebugEnabled()) {
             log.debug("Commit for " + node + " " + emailField + " " + node.getChanged());
         }
         if ((node.getChanged().contains(emailField) && ! node.getChanged().contains(field.getName())) || node.isNew()) {
             String email = node.getStringValue(emailField);
-            log.service("Sending confirmation email to '" + email + "'");
-            String key = generateKey();
-            String encryptedKey = encryptKey(node, field, key);
+            if ("".equals(email)) {
+                log.debug("Email field is empty, cannot confirm that");
+            } else {
+                log.service("Sending confirmation email to '" + email + "'");
+                String key = generateKey();
+                String encryptedKey = encryptKey(node, field, key);
 
-            node.setValueWithoutProcess(field.getName(), key + SEP + email);
-            Object originalValue = node.isNew() ? null :
-                org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getNode(node.getNumber()).getValues().get(emailField);
-            log.debug("Found original value " + originalValue);
-            if (originalValue != null) {
-                node.setValueWithoutProcess(emailField, originalValue);
-            }
-;
-            log.debug("Setting " + key + SEP + email + " in " + field);
-
-
-            Cloud cloud = node.getCloud();
-
-            // Send an email.
-            Locale locale = cloud.getLocale();
-
-            ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle, locale);
-
-            Module emailModule   = cloud.getCloudContext().getModule("sendmail");
+                node.setValueWithoutProcess(field.getName(), key + SEP + email);
+                Object originalValue = node.isNew() ? null :
+                    org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getNode(node.getNumber()).getValues().get(emailField);
+                log.debug("Found original value " + originalValue);
+                if (originalValue != null) {
+                    node.setValueWithoutProcess(emailField, originalValue);
+                }
+                ;
+                log.debug("Setting " + key + SEP + email + " in " + field);
 
 
-            NodeManager emailBuilder = cloud.getNodeManager(emailModule.getProperty("emailbuilder"));
+                Cloud cloud = node.getCloud();
 
-            Node emailNode = emailBuilder.createNode();
+                // Send an email.
+                Locale locale = cloud.getLocale();
 
-            String toField       = emailModule.getProperty("emailbuilder.tofield");
-            String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
-            String bodyField     = emailModule.getProperty("emailbuilder.bodyfield");
-            String fromField     = emailModule.getProperty("emailbuilder.fromfield");
+                ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle, locale);
 
-            HttpServletRequest req = (HttpServletRequest) cloud.getProperty("request");
-            StringBuilder u = new StringBuilder();
-            StringBuffer include = new StringBuffer();
-            if (req != null) {
-                String scheme = req.getScheme();
-                u.append(scheme).append("://");
-                u.append(req.getServerName());
-                int port = req.getServerPort();
-                u.append((port == 80 && "http".equals(scheme)) ||
-                         (port == 443 && "https".equals(scheme))
-                         ? "" : ":" + port);
-                u.append(req.getContextPath());
-                log.info("Including " + includeUrl);
-                if (includeUrl != null && ! "".equals(includeUrl)) {
-                    try {
-                        PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
-                                                                 getMethod("getThreadPageContext").invoke(null));
-                        HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
-                        RequestDispatcher requestDispatcher = req.getRequestDispatcher(includeUrl);
-                        HttpServletResponse response = new GenericResponseWrapper((HttpServletResponse) pageContext.getResponse()) {
-                                // don't wrap status to including request.
-                                public void setStatus(int status) {
-                                }
-                                public void sendError(int sc, String mes) {
-                                }
-                                public void sendError(int sc) {
-                                }
-                            };
-                        requestDispatcher.include(requestWrapper, response);
-                        include.append(response.toString());
-                    } catch (Exception e) {
-                        log.error(e);
+                Module emailModule   = cloud.getCloudContext().getModule("sendmail");
+
+
+                NodeManager emailBuilder = cloud.getNodeManager(emailModule.getProperty("emailbuilder"));
+
+                Node emailNode = emailBuilder.createNode();
+
+                String toField       = emailModule.getProperty("emailbuilder.tofield");
+                String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
+                String bodyField     = emailModule.getProperty("emailbuilder.bodyfield");
+                String fromField     = emailModule.getProperty("emailbuilder.fromfield");
+
+                HttpServletRequest req = (HttpServletRequest) cloud.getProperty("request");
+                StringBuilder u = new StringBuilder();
+                StringBuffer include = new StringBuffer();
+                if (req != null) {
+                    String scheme = req.getScheme();
+                    u.append(scheme).append("://");
+                    u.append(req.getServerName());
+                    int port = req.getServerPort();
+                    u.append((port == 80 && "http".equals(scheme)) ||
+                             (port == 443 && "https".equals(scheme))
+                             ? "" : ":" + port);
+                    u.append(req.getContextPath());
+                    log.info("Including " + includeUrl);
+                    if (includeUrl != null && ! "".equals(includeUrl)) {
+                        try {
+                            PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
+                                                                     getMethod("getThreadPageContext").invoke(null));
+                            HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
+                            RequestDispatcher requestDispatcher = req.getRequestDispatcher(includeUrl);
+                            HttpServletResponse response = new GenericResponseWrapper((HttpServletResponse) pageContext.getResponse()) {
+                                    // don't wrap status to including request.
+                                    public void setStatus(int status) {
+                                    }
+                                    public void sendError(int sc, String mes) {
+                                    }
+                                    public void sendError(int sc) {
+                                    }
+                                };
+                            requestDispatcher.include(requestWrapper, response);
+                            include.append(response.toString());
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
                     }
+
+                }
+                u.append(url);
+                String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
+                u.append(sep);
+                u.append("signature=" + encryptedKey);
+
+                emailNode.setStringValue(toField, email);
+                String bodyHtml = MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString());
+
+                String body = "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">\n" +
+                    stripper.transform(bodyHtml) +
+                    "\n</multipart>\n" +
+                    "<multipart alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">\n" +
+                    bodyHtml +
+                    "\n</multipart>\n";
+
+                emailNode.setStringValue(bodyField, body);
+                emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
+
+
+                String from = emailTemplate.getString("from");
+                emailNode.setStringValue(fromField, from);
+
+                try {
+                    emailNode.commit();
+                } catch (Exception e) {
+                    log.error(e);
+                    emailNode.delete();
                 }
 
-            }
-            u.append(url);
-            String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
-            u.append(sep);
-            u.append("signature=" + encryptedKey);
-
-            emailNode.setStringValue(toField, email);
-            emailNode.setStringValue(bodyField,    MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString()));
-            emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
-
-
-            String from = emailTemplate.getString("from");
-            emailNode.setStringValue(fromField, from);
-
-            emailNode.commit();
-
-            emailNode = cloud.getNode(emailNode.getNumber());
-            try {
-                Function mailFunction = emailNode.getFunction("startmail");
-                mailFunction.getFunctionValue((Parameters) null);
-            } catch (NotFoundException nfe) {
-                log.debug("No function 'startmail', assuming that the mail builder mailed on commit");
+                emailNode = cloud.getNode(emailNode.getNumber());
+                try {
+                    Function mailFunction = emailNode.getFunction("startmail");
+                    mailFunction.getFunctionValue((Parameters) null);
+                } catch (NotFoundException nfe) {
+                    log.debug("No function 'startmail', assuming that the mail builder mailed on commit");
+                }
             }
         }
 
