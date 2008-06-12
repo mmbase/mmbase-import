@@ -21,35 +21,33 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.24 2008-04-12 10:43:14 nklasens Exp $
+ * @version $Id: MMEvents.java,v 1.25 2008-06-12 09:44:07 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
     MMEventsProbe probe;
     DateStrings datestrings;
-    private int notifyWindow=3600;
-    private boolean enableNotify=true;
+    private int notifyWindow = 3600;
+    private boolean enableNotify = true;
 
     public MMEvents() {
     }
 
     public boolean init() {
-        String tmp;
-        int nw;
         super.init();
         datestrings = new DateStrings(mmb.getLanguage());
-        tmp=getInitParameter("NotifyWindow");
-        if (tmp!=null) {
+        String tmp = getInitParameter("NotifyWindow");
+        if (tmp != null) {
             try {
-                nw=Integer.parseInt(tmp);
-                notifyWindow=nw;
+                int nw = Integer.parseInt(tmp);
+                notifyWindow = nw;
             } catch (NumberFormatException xx) {}
         }
-        tmp=getInitParameter("EnableNotify");
-        if (tmp!=null && (tmp.equals("false") || tmp.equals("no"))) {
+        tmp = getInitParameter("EnableNotify");
+        if (tmp != null && (tmp.equals("false") || tmp.equals("no"))) {
             enableNotify=false;
         }
-        if (enableNotify) probe=new MMEventsProbe(this);
+        if (enableNotify) probe = new MMEventsProbe(this);
         return true;
     }
 
@@ -62,33 +60,33 @@ public class MMEvents extends MMObjectBuilder {
     }
 
     public String getGUIIndicator(MMObjectNode node) {
-        int tmp=node.getIntValue("start");
+        int tmp = node.getIntValue("start");
         //String str=DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
-        String str=DateSupport.getTime(tmp)+"/"+DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
+        String str = DateSupport.getTime(tmp) + "/" + DateSupport.getMonthDay(tmp) + "/" + DateSupport.getMonth(tmp) + "/" + DateSupport.getYear(tmp);
             return(str);
     }
 
-    public String getGUIIndicator(String field,MMObjectNode node) {
+    public String getGUIIndicator(String field, MMObjectNode node) {
         if (field.equals("start")) {
-            int str=node.getIntValue("start");
-            return(DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str));
+            int str = node.getIntValue("start");
+            return(DateSupport.getTimeSec(str) + " on " + DateSupport.getMonthDay(str) + "/" + DateSupport.getMonth(str) + "/" + DateSupport.getYear(str));
         } else if (field.equals("stop")) {
-            int str=node.getIntValue("stop");
-            return(DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str));
+            int str = node.getIntValue("stop");
+            return(DateSupport.getTimeSec(str) + " on " + DateSupport.getMonthDay(str) + "/" + DateSupport.getMonth(str) + "/" + DateSupport.getYear(str));
         } else if (field.equals("playtime")) {
             int str=node.getIntValue("playtime");
-            return(DateSupport.getTimeSecLen(str));
+            return DateSupport.getTimeSecLen(str);
         }
-        return(null);
+        return null;
     }
 
     public Object getValue(MMObjectNode node, String field) {
-        if (field.indexOf("time_")!=-1) {
+        if (field.indexOf("time_") !=- 1) {
             int str = node.getIntValue(field.substring(5));
             return DateSupport.getTime(str);
         } else if (field.equals("time(start)")) {
             //node.prefix = "mmevents.";
-            int str=node.getIntValue("start");
+            int str = node.getIntValue("start");
             //node.prefix="";
             return DateSupport.getTime(str);
         } else if (field.equals("time(stop)")) {
@@ -96,35 +94,35 @@ public class MMEvents extends MMObjectBuilder {
             int str = node.getIntValue("stop");
             //node.prefix="";
             return DateSupport.getTime(str);
-        } else if (field.indexOf("timesec_")!=-1) {
+        } else if (field.indexOf("timesec_") != -1) {
             int str = node.getIntValue(field.substring(8));
             return DateSupport.getTimeSec(str);
-        } else if (field.indexOf("longmonth_")!=-1) {
+        } else if (field.indexOf("longmonth_") != -1) {
             int str = node.getIntValue(field.substring(10));
             return datestrings.getMonth(DateSupport.getMonthInt(str));
-        } else if (field.indexOf("month_")!=-1) {
+        } else if (field.indexOf("month_") != -1) {
             int str = node.getIntValue(field.substring(6));
             return datestrings.getShortMonth(DateSupport.getMonthInt(str));
-        } else if (field.indexOf("weekday_")!=-1) {
+        } else if (field.indexOf("weekday_") != -1) {
             int str = node.getIntValue(field.substring(8));
             return datestrings.getDay(DateSupport.getWeekDayInt(str));
-        } else if (field.indexOf("shortday_")!=-1) {
+        } else if (field.indexOf("shortday_") != -1) {
             int str = node.getIntValue(field.substring(8));
             return datestrings.getShortDay(DateSupport.getWeekDayInt(str));
-        } else if (field.indexOf("day_")!=-1) {
+        } else if (field.indexOf("day_") != -1) {
             int str = node.getIntValue(field.substring(4));
             return ""+DateSupport.getDayInt(str);
-        } else if (field.indexOf("year_")!=-1) {
+        } else if (field.indexOf("year_") != -1) {
             int str = node.getIntValue(field.substring(5));
             return DateSupport.getYear(str);
         }
-        return super.getValue(node,field);
+        return super.getValue(node, field);
     }
 
     public void probeCall() {
         // the queue is really a bad idea have to make up
         // a better way.
-        Vector<MMObjectNode> also = new Vector<MMObjectNode>();
+        List<MMObjectNode> also = new ArrayList<MMObjectNode>();
         log.debug("MMEvent probe CALL");
         int now=(int)(System.currentTimeMillis()/1000);
         log.debug("The currenttime in seconds NOW="+now);
@@ -139,10 +137,14 @@ public class MMEvents extends MMObjectBuilder {
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0) {
-                snode = also.lastElement();
+                snode = also.get(also.size() - 1);
             }
         } catch (SearchQueryException e) {
             log.error(e);
+        } catch (IllegalArgumentException iea) {
+            if (mmb.getState()) {
+                throw iea;
+            }
         }
 
         try {
@@ -153,7 +155,7 @@ public class MMEvents extends MMObjectBuilder {
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0 ) {
-                enode = also.lastElement();
+                enode =  also.get(also.size() - 1);
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -180,21 +182,20 @@ public class MMEvents extends MMObjectBuilder {
 
         if (sleeptime!=-1) {
             if (log.isDebugEnabled()) {
-                log.debug("SLEEPTIME="+(sleeptime-now)+" wnode="+wnode+" also="+also);
+                log.debug("SLEEPTIME=" + (sleeptime - now) + " wnode=" + wnode + " also=" + also);
             }
             try {
-                Thread.sleep((sleeptime-now)*1000);
+                Thread.sleep((sleeptime - now) * 1000);
             } catch (InterruptedException f) {
                 log.debug("interrupted while sleeping");
+                return;
             }
-            log.debug("Node local change "+wnode.getIntValue("number"));
-            super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
-            Enumeration<MMObjectNode> g=also.elements();
-            while (g.hasMoreElements()) {
-                wnode = g.nextElement();
-                if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) {
-                    log.debug("Node local change "+wnode.getIntValue("number"));
-                    super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
+            log.debug("Node local change " + wnode.getNumber());
+            super.nodeLocalChanged(mmb.getMachineName(), "" + wnode.getNumber(), tableName, "c");
+            for (MMObjectNode a : also) {
+                if ((a.getIntValue("start") == sleeptime) || (a.getIntValue("stop") == sleeptime)) {
+                    log.debug("Node local change " + a.getIntValue("number"));
+                    super.nodeLocalChanged(mmb.getMachineName(),"" + a.getNumber(), tableName,"c");
                 }
             }
         } else {
@@ -202,6 +203,7 @@ public class MMEvents extends MMObjectBuilder {
                 Thread.sleep(300*1000);
             } catch (InterruptedException f) {
                 log.debug("interrupted while sleeping");
+                return;
             }
         }
     }
