@@ -19,6 +19,8 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.util.Casting;
 import org.mmbase.util.SizeOf;
 import org.mmbase.util.DynamicDate;
@@ -38,7 +40,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.217 2008-04-11 15:13:38 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.218 2008-06-12 09:46:21 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -81,9 +83,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Holds the 'extra' name-value pairs (the node's properties)
      * which are retrieved from the 'properties' table.
-     * @scope private
      */
-    public Hashtable<String,MMObjectNode> properties;
+    private Map<String,MMObjectNode> properties;
+    // object to sync access to properties
+    private final Object properties_sync = new Object();
+
 
     /**
      * Set which stores the keys of the fields that were changed
@@ -115,8 +119,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     private Set<String> aliases = null;
 
-    // object to sync access to properties
-    private final Object properties_sync = new Object();
 
     /**
      * temporarily holds a new context for a node
@@ -1164,23 +1166,31 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * Return a the properties for this node.
-     * @return the properties as a <code>Hashtable</code>
+     * Return a the properties for this node. Properties are stored in a dedicated builder
+     * 'properties'. The property values are returned still wrapped in the nodes in that builder.
+     *
+     * @return the properties as an unmodifiable <code>Map</code>
      */
-    public Hashtable<String,MMObjectNode> getProperties() {
+    public Map<String, MMObjectNode> getProperties() {
         synchronized(properties_sync) {
             if (properties == null) {
-                properties = new Hashtable<String,MMObjectNode>();
-                MMObjectBuilder bul = parent.mmb.getMMObject("properties");
-                Enumeration<MMObjectNode> e = bul.search("parent=="+getNumber());
-                while (e.hasMoreElements()) {
-                    MMObjectNode pnode = e.nextElement();
-                    String key = pnode.getStringValue("key");
-                    properties.put(key, pnode);
+                properties = new HashMap<String,MMObjectNode>();
+                MMObjectBuilder bul = parent.mmb.getBuilder("properties");
+                NodeSearchQuery query = new NodeSearchQuery(bul);
+                StepField parentField = query.getField(bul.getField("parent"));
+                BasicFieldValueConstraint cons = new BasicFieldValueConstraint(parentField, getNumber());
+                query.setConstraint(cons);
+                try {
+                    for (MMObjectNode property : bul.getNodes(query)) {
+                        String key = property.getStringValue("key");
+                        properties.put(key, property);
+                    }
+                } catch (SearchQueryException sqe) {
+                    log.error(sqe.getMessage(), sqe);
                 }
             }
         }
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     /**
@@ -1189,17 +1199,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the property object as a <code>MMObjectNode</code>
      */
     public MMObjectNode getProperty(String key) {
-        MMObjectNode n;
         synchronized(properties_sync) {
             if (properties == null) {
                 getProperties();
             }
-            n = properties.get(key);
-        }
-        if (n!=null) {
-            return n;
-        } else {
-            return null;
+            return properties.get(key);
         }
     }
 
@@ -1210,10 +1214,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public void putProperty(MMObjectNode node) {
         synchronized(properties_sync) {
-            if (properties==null) {
+            if (properties == null) {
                 getProperties();
             }
-            properties.put(node.getStringValue("key"),node);
+            properties.put(node.getStringValue("key"), node);
         }
     }
 
