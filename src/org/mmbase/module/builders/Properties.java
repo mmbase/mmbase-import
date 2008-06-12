@@ -41,7 +41,7 @@ import org.mmbase.bridge.util.Queries;
       &lt;/mm:cloud&gt;
   </pre>
  *
- * @version $Id: Properties.java,v 1.15.2.1 2008-06-12 11:42:20 michiel Exp $
+ * @version $Id: Properties.java,v 1.15.2.2 2008-06-12 12:05:13 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -59,7 +59,8 @@ public class Properties extends MMObjectBuilder {
     protected final static Parameter NODE  = new Parameter("node", Node.class, true);
     protected final static Parameter KEY   = new Parameter("key", String.class, true);
     protected final static Parameter VALUE = new Parameter("value", Object.class);
-    protected final static Parameter[] GET_PARAMETERS = { NODE, KEY };
+    protected final static Parameter DEFAULT = new Parameter("default", Object.class);
+    protected final static Parameter[] GET_PARAMETERS = { NODE, KEY, DEFAULT };
     protected final static Parameter[] SET_PARAMETERS = { new Parameter.Wrapper(GET_PARAMETERS), VALUE };
 
     protected List getValueNode(Node node, String key) {
@@ -90,7 +91,9 @@ public class Properties extends MMObjectBuilder {
     {
         addFunction(new AbstractFunction("get", GET_PARAMETERS, ReturnType.UNKNOWN) {
                 public Object getFunctionValue(Parameters parameters) {
-                    return Properties.this.getValue((Node) parameters.get(NODE), (String) parameters.get(KEY));
+                    Object v = Properties.this.getValue((Node) parameters.get(NODE), (String) parameters.get(KEY));
+                    if (v == null) return parameters.get(DEFAULT);
+                    return v;
                 }
             });
         addFunction(new AbstractFunction("set", SET_PARAMETERS, ReturnType.UNKNOWN) {
@@ -138,6 +141,7 @@ public class Properties extends MMObjectBuilder {
                         n.setValue("value", newValue);
                         n.commit();
                     }
+                    if (orgValue == null) return parameters.get(DEFAULT);
                     return orgValue;
                 }
             });
