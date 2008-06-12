@@ -12,10 +12,10 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.10 2007-08-02 13:26:09 michiel Exp $
+ * @version $Id: MMEventsProbe.java,v 1.11 2008-06-12 11:23:11 michiel Exp $
  * @author Daniel Ockeloen
  */
-public class MMEventsProbe implements Runnable {
+class MMEventsProbe implements Runnable {
 
     Thread kicker = null;
     MMEvents parent = null;
