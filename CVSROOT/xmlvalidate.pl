@@ -26,9 +26,9 @@ if ($files ne "") {
     for $line (@output) {
 	print STDERR $line;
     }
-    if ($? != 0) {
-	exit(-1);
-    }
+    #if ($? != 0) {
+    #	exit(-1);
+    #}
     if ($#output > 0) {
 	exit(-1);
     }
