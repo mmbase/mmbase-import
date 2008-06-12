@@ -52,5 +52,15 @@
 
     <property name="verify_email.password">secret</property>
 
+
+    <!--
+        Example, using smtp.gmail.com:
+    <property name="mailhost">smtp.gmail.com</property>
+    <property name="user">mihxiltest</property>
+    <property name="password">*****</property>
+    <property name="mailport">465</property>
+    <property name="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</property>
+    <property name="mail.smtp.socketFactory.fallback">true</property>
+    -->
   </properties>
 </module>
