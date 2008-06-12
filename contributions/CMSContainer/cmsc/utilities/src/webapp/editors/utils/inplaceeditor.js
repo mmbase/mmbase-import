@@ -9,42 +9,45 @@ Ajax.InPlaceHtmlEditor.prototype.__onComplete = Ajax.InPlaceEditor.prototype.onC
 Ajax.InPlaceHtmlEditor.prototype.__enterEditMode = Ajax.InPlaceEditor.prototype.enterEditMode;
 
 Object.extend(Ajax.InPlaceHtmlEditor.prototype, {
-    initialize: function(element, url, options){
-        this.__initialize(element,url,options)
-        this.setOptions(options);
-        this._checkEmpty();
-    },
+  initialize: function(element, url, options){
+    this.__initialize(element,url,options)
+    this.setOptions(options);
+    this._checkEmpty();
+  },
 
-    setOptions: function(options){
-        this.options = Object.extend(Object.extend(this.options,{
-            emptyText: '...',
-            emptyClassName: 'inplaceeditor-empty'
-        }),options||{});
-    },
+  setOptions: function(options){
+    this.options = Object.extend(Object.extend(this.options,{
+      emptyText: '...',
+      emptyClassName: 'inplaceeditor-empty'
+    }),options||{});
+  },
 
-    _checkEmpty: function(){
-        if( this.element.innerHTML.length == 0 ){
-            this.element.appendChild(
-                Builder.node('span',{className:this.options.emptyClassName},this.options.emptyText));
-        }
-    },
+  _checkEmpty: function(){
+    if( this.element.innerHTML.length == 0 ){
+      this.element.appendChild(
+        Builder.node('span',{className:this.options.emptyClassName},this.options.emptyText)
+      );
+    }
+  },
 
-    getText: function(){
-        document.getElementsByClassName(this.options.emptyClassName,this.element).each(function(child){
-            this.element.removeChild(child);
-        }.bind(this));
-        return this.__getText();
-    },
+  getText: function(){
+    this.element.select('.' + this.options.emptyClassName).each(function(child){
+      this.element.removeChild(child);
+    }.bind(this));
+    return this.__getText();
+  },
 
-    onComplete: function(transport){
-        this._checkEmpty();
-        this.__onComplete(transport);
-    },
+  onComplete: function(transport){
+    this._checkEmpty();
+    this.__onComplete(transport);
+  },
+  
   enterEditMode: function(evt) {
     this.elementWidth = this.element.offsetWidth;
     this.elementHeight = this.element.offsetHeight;
-	return this.__enterEditMode(evt);
+    return this.__enterEditMode(evt);
   },
+  
   createEditField: function() {
     var text;
     if(this.options.loadTextURL) {
@@ -75,10 +78,10 @@ Object.extend(Ajax.InPlaceHtmlEditor.prototype, {
       textArea.obj = this;
       textArea.name = "value";
       if (this.options.htmlarea) {
-	      textArea.value = text;
+        textArea.value = text;
       } else {
-	      textArea.value = this.convertHTMLLineBreaks(text);
-	  }
+        textArea.value = this.convertHTMLLineBreaks(text);
+    }
       textArea.rows = this.options.rows;
       textArea.cols = this.options.cols || 40;
       textArea.className = 'editor_field';
@@ -103,6 +106,6 @@ Object.extend(Ajax.InPlaceHtmlEditor.prototype, {
         editor.config.height = this.options.minHeight > this.elementHeight ? this.options.minHeight: this.elementHeight;
         editor.config.sizeIncludesBars = false;
         editor.generate();
-	  }
+    }
   }
 });
