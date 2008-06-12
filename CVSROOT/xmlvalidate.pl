@@ -21,7 +21,7 @@ if ($files ne "") {
 
     #@output = `SGML_CATALOG_FILES=/usr/share/sgml/docbook/xmlcatalog:/usr/share/sgml/docbook/dtd/xml/4.1.2/catalog.xml /usr/bin/xmllint --valid --noout $files 2>&1`;
 
-    @output = `/usr/bin/xmllint --noout $files 2>&1`;
+    @output = `/usr/bin/xmllint --noout $files 2>&1 | grep -v '^warning:'`;
 
     for $line (@output) {
 	print STDERR $line;
