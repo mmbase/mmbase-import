@@ -7,7 +7,7 @@
   <di:html
       styleClass="configuration"
       expires="0" component="core"
-      title="${di:translate('core.configuration')}">
+      title_key="core.configuration">
     <div class="rows">
       <div class="navigationbar">
         <div class="titlebar">
