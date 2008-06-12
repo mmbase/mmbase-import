@@ -41,7 +41,7 @@ import org.mmbase.bridge.util.Queries;
       &lt;/mm:cloud&gt;
   </pre>
  *
- * @version $Id: Properties.java,v 1.17 2008-06-12 11:23:50 michiel Exp $
+ * @version $Id: Properties.java,v 1.18 2008-06-12 12:06:48 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -56,22 +56,29 @@ public class Properties extends MMObjectBuilder {
         }
     }
 
+    /**
+     * @since MMBase-1.8.6
+     */
     protected final static Parameter<Node>  NODE   = new Parameter<Node>("node", Node.class, true);
     protected final static Parameter<String> KEY   = new Parameter<String>("key", String.class, true);
     protected final static Parameter<Object> VALUE = new Parameter<Object>("value", Object.class);
-    protected final static Parameter[] GET_PARAMETERS = { NODE, KEY };
-    protected final static Parameter[] SET_PARAMETERS = {
-        new Parameter.Wrapper(GET_PARAMETERS),
-        new Parameter<Object>("value", Object.class)
-    };
+    protected final static Parameter<Object>  DEFAULT = new Parameter<Object>("default", Object.class);
+    protected final static Parameter[] GET_PARAMETERS = { NODE, KEY, DEFAULT };
+    protected final static Parameter[] SET_PARAMETERS = { new Parameter.Wrapper(GET_PARAMETERS), VALUE };
 
 
+    /**
+     * @since MMBase-1.8.6
+     */
     protected List<Node> getValueNode(Node node, String key) {
         NodeQuery q = node.getCloud().getNodeManager(Properties.this.getTableName()).createQuery();
         Queries.addConstraint(q, Queries.createConstraint(q, "parent", FieldCompareConstraint.EQUAL, node));
         Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
         return q.getNodeManager().getList(q);
     }
+    /**
+     * @since MMBase-1.8.6
+     */
     protected Object getValue(List<Node> prop) {
         if (prop.size() == 0) {
             return null;
@@ -85,6 +92,9 @@ public class Properties extends MMObjectBuilder {
             return result;
         }
     }
+    /**
+     * @since MMBase-1.8.6
+     */
     protected Object getValue(Node node, String key) {
         return getValue(getValueNode(node, key));
 
@@ -93,7 +103,9 @@ public class Properties extends MMObjectBuilder {
     {
         addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
                 public Object getFunctionValue(Parameters parameters) {
-                    return Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
+                    Object v = Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
+                    if (v == null) return parameters.get(DEFAULT);
+                    return v;
                 }
             });
         addFunction(new AbstractFunction<Object>("set", SET_PARAMETERS) {
@@ -139,6 +151,7 @@ public class Properties extends MMObjectBuilder {
                         n.setValue("value", newValue);
                         n.commit();
                     }
+                    if (orgValue == null) return parameters.get(DEFAULT);
                     return orgValue;
                 }
             });
