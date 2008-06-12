@@ -15,6 +15,7 @@
     <mm:haspage page="/education/wizards/new/${_}.jspx">
       <mm:treeinclude page="/education/wizards/new/${_}.jspx"
                       objectlist="$includePath"
+                      debug="html"
                       referids="$referids,branchPath">
       </mm:treeinclude>
     </mm:haspage>

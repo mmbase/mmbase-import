@@ -35,6 +35,7 @@
                     <mm:include page="/education/wizards/show/${_}.jspx"
                                 attributes="status@b"
                                 referids="branchPath"
+                                debug="html"
                                 >
                     </mm:include>
                   </mm:haspage>
