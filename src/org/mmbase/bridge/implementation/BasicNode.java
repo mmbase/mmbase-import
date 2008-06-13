@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.227 2008-03-21 09:07:56 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.228 2008-06-13 10:47:22 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -885,28 +885,17 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         q.setConstraint(c);
         NodeList aliases = oalias.getList(q);
         StringList result = new BasicStringList();
-        NodeIterator i = aliases.nodeIterator();
-        while (i.hasNext()) {
-            Node alias = i.nextNode();
+        for (Node alias : aliases) {
             result.add(alias.getStringValue("name"));
         }
+        if (isNew()) {
+            // for bug #6185.  MMB-617
 
-        // There might be aliases in temporary nodes
-        // This is quite a dirty (and probably also slow) hack
-        // for bug #6185.
-        // Usually the temporaryNodes hashtable shall not be
-        // too full.
-        if (cloud instanceof Transaction) {
-            Map<String, MMObjectNode> tnodes = MMObjectBuilder.temporaryNodes;
-            for (MMObjectNode mynode : tnodes.values()) {
-                if (mynode.getName().equals("oalias")){
-                    String dest = mynode.getStringValue("_destination");
-                    if ((account + "_" + temporaryNodeId).equals(dest)) {
-                        result.add(mynode.getStringValue("name"));
-                    }
-                }
+            if (getNode().aliases != null) {
+                result.addAll(getNode().aliases);
             }
         }
+
 
         return result;
     }
