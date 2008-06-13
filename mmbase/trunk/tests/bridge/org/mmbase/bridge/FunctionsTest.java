@@ -19,7 +19,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.11 2007-03-08 08:51:37 nklasens Exp $
+ * @since $Id: FunctionsTest.java,v 1.12 2008-06-13 09:22:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -150,6 +150,7 @@ public class FunctionsTest extends BridgeTest {
         NodeIterator i = nl.nodeIterator();
         while (i.hasNext()) {
             Node n = i.nextNode();
+            assertTrue("" + nl + " contains nulls", n != null);
             assertTrue(n.getStringValue("bloe").equals("hoi"));
         }
         nl = (NodeList) function.getFunctionValue(params);
