@@ -1,5 +1,4 @@
 <xsl:stylesheet 
-    xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     exclude-result-prefixes=""
     version = "1.0" >  
@@ -9,7 +8,7 @@
       
       See http://cvs.mmbase.org/viewcvs/html/mmbase/admin/index.jsp?revision=1.14&view=markup for a usage example.
       
-      @version $Id: head.xslt,v 1.4 2007-07-18 07:53:37 michiel Exp $
+      @version $Id: head.xslt,v 1.5 2008-06-13 11:50:18 andre Exp $
       @author Michiel Meeuwissen
       @since MMBase-1.9
   -->
