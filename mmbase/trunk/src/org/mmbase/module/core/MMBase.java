@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.242 2008-04-25 16:34:04 michiel Exp $
+ * @version $Id: MMBase.java,v 1.243 2008-06-13 09:56:22 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -468,8 +468,7 @@ public class MMBase extends ProcessorModule {
         mmbaseCop = null;
 
         if (mmobjs != null) {
-            for (Iterator mmbobjecIter = mmobjs.values().iterator(); mmbobjecIter.hasNext();) {
-                MMObjectBuilder builder = (MMObjectBuilder) mmbobjecIter.next();
+            for (MMObjectBuilder builder : mmobjs.values()) {
                 builder.shutdown();
             }
             mmobjs.clear();
