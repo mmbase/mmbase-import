@@ -9,10 +9,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A bean can be accessed through the function framework. 
+ * A bean can be accessed through the function framework.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.11 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: ExampleBean.java,v 1.12 2008-06-13 09:29:42 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -92,7 +92,7 @@ public final class ExampleBean {
      */
     public Node nodeFunction2() {
         Map<String,String> map = new HashMap<String,String>();
-        map.put("bloe", parameter1);   
+        map.put("bloe", parameter1);
         return new org.mmbase.bridge.util.MapNode(map);
     }
 
@@ -106,7 +106,9 @@ public final class ExampleBean {
     public NodeList nodeListFunction1() {
         Collection<Object> col = nodeListFunction();
         col.add(mapFunction());
-        return new org.mmbase.bridge.util.CollectionNodeList(col);
+        //return new org.mmbase.bridge.util.CollectionNodeList(col);
+        // it's safer to specify the cloud too, especially to be able to convert the result of nodeFunction1()
+        return new org.mmbase.bridge.util.CollectionNodeList(col, cloud);
     }
 
     /**
