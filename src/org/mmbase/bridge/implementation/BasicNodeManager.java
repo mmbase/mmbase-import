@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.136 2008-06-09 11:08:00 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.137 2008-06-13 12:17:33 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -262,7 +262,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
                 org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
-                node.setValue(field.getName(), defaultValue);
+                if (defaultValue != null) {
+                    node.setValue(field.getName(), defaultValue);
+                }
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("" + field.getName() + " is already non null, but " + node.getValue(field.getName()));
