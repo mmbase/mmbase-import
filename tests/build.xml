@@ -85,12 +85,9 @@
           <exclude name="mmbase-rmmci.jar"/>
         </fileset>
       </classpath>
-
-
       <classpath id="run.classpath">
         <fileset dir="${tests.lib}">
           <include name="junit.jar" />
-          <include name="backport-util-concurrent.jar" />
           <include name="hsqldb.jar" />
           <include name="log4j.jar" />
           <include name="commons-fileupload.jar" />
@@ -104,7 +101,7 @@
       <classpath id="run.classpath.rmmci">
         <path refid="run.classpath"/>
         <fileset dir="${tests.lib}">
-          <include name="mmbase-rmmci-server.jar" />
+          <include name="mmbase-rmmci.jar" />
         </fileset>
       </classpath>
       <classpath id="run.classpath.clustering">
@@ -117,10 +114,8 @@
         <pathelement location="${tests.source.dir}/fixme" /> <!-- dir must be empty -->
         <pathelement location="${tests.lib}/junit.jar" />
         <pathelement location="${tests.lib}/xercesImpl.jar" /> <!-- should not need this, Document must be somehow serialized as String, and reparsed, probably-->
-        <pathelement location="${tests.lib}/xml-apis.jar" /> <!-- not needed in java 1.5 -->
         <pathelement location="${mmbasetest.jar}" />
-        <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
-        <pathelement location="${tests.lib}/backport-util-concurrent.jar" /> <!-- used by cache manager, which is used by SortedBundle, which is org.mmbase.util. -->
+        <pathelement location="${tests.lib}/mmbase-rmmci-client.jar" />
       </classpath>
     </available>
   </target>
