@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.219 2008-06-13 09:58:26 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.220 2008-06-13 10:47:22 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -117,7 +117,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * New aliases of the node
      */
-    private Set<String> aliases = null;
+    public Set<String> aliases = null;
 
 
     /**
@@ -1456,8 +1456,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * Returns the node's alias.
-     * Does not support multiple aliases.
      */
     void useAliases() {
         if (aliases != null) {
