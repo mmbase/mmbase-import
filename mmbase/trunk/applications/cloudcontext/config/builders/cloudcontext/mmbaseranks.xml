@@ -46,10 +46,11 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" />
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
+      </datatype>
     </field>
     <field name="description">
       <gui>
@@ -57,10 +58,9 @@
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type notnull="false" size="1024" state="persistent">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="1024" enforce="never"/>
+      </datatype>
     </field>
   </fieldlist>
   <indexlist>

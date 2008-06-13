@@ -59,10 +59,9 @@
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <unique value="true" />
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
       </datatype>
-      <db>
-        <type notnull="true" size="32" state="persistent">STRING</type>
-      </db>
     </field>
     <field  name="password">
       <gui>
@@ -76,10 +75,10 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type notnull="true" size="32" state="persistent">STRING</type>
-      </db>
+      <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
+      </datatype>
     </field>
     <field name="confirmpassword" state="virtual">
       <gui>
