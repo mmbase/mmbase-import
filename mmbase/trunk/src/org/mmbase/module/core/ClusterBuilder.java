@@ -13,7 +13,9 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.cache.MultilevelCache;
 import org.mmbase.core.CoreField;
+import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.functions.*;
@@ -50,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.93 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.94 2008-06-13 09:58:26 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -173,7 +175,7 @@ public class ClusterBuilder extends VirtualBuilder {
         for (Entry<String, Object> entry : node.getValues().entrySet()) {
             String key = entry.getKey();
             if (key.endsWith(".name")) {
-                if (s.length() != 0) {
+                if (sb.length() != 0) {
                     sb.append(", ");
                 }
                 sb.append(entry.getValue());
@@ -430,6 +432,42 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
      * query is a Node-query.
+     * This method uses the MultilevelCache for query results
+     *
+     * @param query The query.
+     * @return The clusternodes.
+     * @since MMBase-1.7
+     */
+    public List<MMObjectNode> getClusterNodes(SearchQuery query) {
+
+        // start multilevel cache
+        MultilevelCache multilevelCache = MultilevelCache.getCache();
+        // check multilevel cache if needed
+        List<MMObjectNode> resultList = null;
+        if (query.getCachePolicy().checkPolicy(query)) {
+            resultList = multilevelCache.get(query);
+        }
+        // if unavailable, obtain from database
+        if (resultList == null) {
+            log.debug("result list is null, getting from database");
+            try {
+                resultList = getClusterNodesFromQueryHandler(query);
+            } catch (SearchQueryException sqe) {
+                throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
+            }
+            if (query.getCachePolicy().checkPolicy(query)) {
+                multilevelCache.put(query, resultList);
+            }
+        }
+
+        return resultList;
+    }
+
+    /**
+     * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
+     * query is a Node-query. 
+     * The results are retrieved directly from storage without the MultilevelCache
+     * {@link #getClusterNodes(SearchQuery)} which uses the MultilevelCache
      *
      * @param query The query.
      * @return The clusternodes.
@@ -438,13 +476,12 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
      */
-    public List<MMObjectNode> getClusterNodes(SearchQuery query) throws SearchQueryException {
-
+    public List<MMObjectNode> getClusterNodesFromQueryHandler(SearchQuery query)
+            throws SearchQueryException {
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
 
         return mmb.getSearchQueryHandler().getNodes(query, this);
-
     }
 
     /**

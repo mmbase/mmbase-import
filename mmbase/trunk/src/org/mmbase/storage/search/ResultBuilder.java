@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+
 import org.mmbase.bridge.Field;
+import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.StorageException;
 
 /**
  * A <code>ResultBuilder</code> is a builder for
@@ -21,11 +25,13 @@ import org.mmbase.module.core.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.9 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ResultBuilder.java,v 1.10 2008-06-13 09:58:26 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
 
+    private SearchQuery query;
+    
     /**
      * Creator.
      * Creates new <code>ResultBuilder</code> instance, used to represent
@@ -36,6 +42,7 @@ public class ResultBuilder extends VirtualBuilder {
      */
     public ResultBuilder(MMBase mmbase, SearchQuery query) {
         super(mmbase);
+        this.query = query;
 
         // Create fieldsByAlias map.
         List<StepField> queryFields = query.getFields();
@@ -50,9 +57,22 @@ public class ResultBuilder extends VirtualBuilder {
         }
     }
 
-    // javadoc is inherited
+    /**
+     * @see org.mmbase.module.core.VirtualBuilder#getNewNode(java.lang.String)
+     */
     public MMObjectNode getNewNode(String owner) {
         return new ResultNode(this);
+    }
+
+    public List<MMObjectNode> getResult() throws StorageException, SearchQueryException {
+        AggregatedResultCache cache = AggregatedResultCache.getCache();
+
+        List<MMObjectNode> resultList = cache.get(query);
+        if (resultList == null) {
+            resultList = this.mmb.getSearchQueryHandler().getNodes(query, this);
+            cache.put(query, resultList);
+        }
+        return resultList;
     }
 
 }
