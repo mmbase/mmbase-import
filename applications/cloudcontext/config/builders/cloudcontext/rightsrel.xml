@@ -33,6 +33,8 @@
         </positions>
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+        <maxlength value="15" enforce="never" />
         <default value="read" />
         <enumeration>
           <entry value="read" />
