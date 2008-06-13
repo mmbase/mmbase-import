@@ -160,25 +160,26 @@ public class EncodeTest extends TestCase {
         patterns.add(new Entry<String, String>("aa", "bb"));
         patterns.add(new Entry<String, String>("bb", "AAA"));
         pars.set("patterns", patterns);
+
         CharTransformer reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a a"), "a a");
-        assertEquals(reg.transform("a  a"), "a a");
-        assertEquals(reg.transform("a \n a"), "a a");
-        assertEquals(reg.transform("a \n\t a"), "a a");
-        assertEquals(reg.transform("a  a  a"), "a a a");
+        assertEquals("a a", reg.transform("a a"));
+        assertEquals("a a", reg.transform("a  a"));
+        assertEquals("a a", reg.transform("a \n a"));
+        assertEquals("a a", reg.transform("a \n\t a"));
+        assertEquals("a a a", reg.transform("a  a  a"));
 
         pars.set("replacefirst", "true");  reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a  a  a"), "a a  a");
-        assertEquals(reg.transform("a  aa  a"), "a aa  a");
+        assertEquals("a a  a", reg.transform("a  a  a"));
+        assertEquals("a aa  a", reg.transform("a  aa  a"));
 
         pars.set("replacefirst", "all");  reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a  aa  a"), "a bb  a");
-        assertEquals(reg.transform("a  aa  aa"), "a bb  aa");
+        assertEquals("a bb  a", reg.transform("a  aa  a"));
+        assertEquals("a bb  aa", reg.transform("a  aa  aa"));
 
         pars.set("mode", "WORDS");
         pars.set("replacefirst", "all");  reg = (CharTransformer)fact.createTransformer(pars);
-        assertEquals(reg.transform("a  aa  a"), "a  bb  a");
-        assertEquals(reg.transform("a  aa  aa"), "a  bb  aa");
+        assertEquals("a  bb  a", reg.transform("a  aa  a"));
+        assertEquals("a  bb  aa", reg.transform("a  aa  aa"));
 
     }
 
