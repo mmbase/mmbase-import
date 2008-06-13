@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.41 2008-03-31 16:25:11 michiel Exp $
+# $Id: build.properties.default,v 1.42 2008-06-13 10:31:37 pierre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -37,7 +37,8 @@ jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 # --------------------------------------------------
 
 # ---- Default Sourceforge Mirror ----
-sourceforge.loc=http://kent.dl.sourceforge.net/sourceforge
+sourceforge.loc=http://www.mirrorservice.org/sites/download.sourceforge.net/pub/sourceforge/
+
 # ---- MMBase.org location ---
 mmbase.loc=http://www.mmbase.org/download/jars
 mmaven.loc=http://www.mmbase.org/maven
@@ -58,7 +59,7 @@ jspapi.loc=${mmaven.loc}/jspapi/jars/${jspapi.file}
 hsqldb.version=hsqldb_1_8_0_8
 hsqldb.file=${hsqldb.version}.zip
 hsqldb.dest=${download.dir}/${hsqldb.file}
-hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
+hsqldb.loc=${sourceforge.loc}/h/hs/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
 
