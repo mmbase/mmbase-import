@@ -305,49 +305,55 @@ public abstract class NodeTest extends BridgeTest {
 
 
     public void testSetContext() {
+        if (org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization() instanceof org.mmbase.security.implementation.context.ContextAuthorization) {
+            String context = node.getContext();
+            String otherContext = getOtherContext(node);
 
-        String context = node.getContext();
-        String otherContext = getOtherContext(node);
+            if (otherContext.equals(context)) {
+                otherContext = context + "other";
+                System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            }
 
-        if (otherContext.equals(context)) {
-            otherContext = context + "other";
-            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            // set context to something different:
+            node.setContext(otherContext);
+            // now, the new context must be equal to otherContext
+            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+            assertEquals(node.getContext(), node.getValue("owner"));
+            node.commit();
+
+            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+            assertEquals(node.getContext(), node.getValue("owner"));
+        } else {
+            System.err.println("Warning: could not execute 'set context' test, because security authorization implemention is no instance of ContextAuthorization");
         }
-
-        // set context to something different:
-        node.setContext(otherContext);
-        // now, the new context must be equal to otherContext
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-        node.commit();
-
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
     }
 
     public void testSetOwner() {
-        String context = node.getContext();
-        String otherContext = getOtherContext(node);
+        if (org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization() instanceof org.mmbase.security.implementation.context.ContextAuthorization) {
+            String context = node.getContext();
+            String otherContext = getOtherContext(node);
 
-        if (otherContext.equals(context)) {
-            otherContext = context + "other";
-            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            if (otherContext.equals(context)) {
+                otherContext = context + "other";
+                System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            }
+
+            // set context to something different:
+            node.setValue("owner", otherContext);
+            // now, the new context must be equal to otherContext
+            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+            assertEquals(node.getContext(), node.getValue("owner"));
+
+            node.commit();
+
+            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+            assertEquals(node.getContext(), node.getValue("owner"));
+        } else {
+            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention is no instance of ContextAuthorization");
         }
-
-        // set context to something different:
-        node.setValue("owner", otherContext);
-        // now, the new context must be equal to otherContext
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
-
-        node.commit();
-
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals(node.getContext(), node.getValue("owner"));
 
 
     }
-
     public void testFieldGUI() {
         try {
             node.getStringValue("gui()");
@@ -356,5 +362,6 @@ public abstract class NodeTest extends BridgeTest {
             fail("Should not raise exception but gave: " + e.getMessage() + org.mmbase.util.logging.Logging.stackTrace(e, 20));
         }
     }
+
 
 }
