@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.25 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: BeanFunction.java,v 1.26 2008-06-13 08:39:22 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -212,7 +212,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                     }
                 }
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
-                    nodeParameter = method;
+                    nodeParameter = m;
                 } else {
                     if(defaultValue != null) {
                         if (required) {
@@ -283,7 +283,7 @@ public class BeanFunction extends AbstractFunction<Object> {
             Object ret =  method.invoke(b);
             return ret;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("" + this + " " + e.getMessage(), e);
         }
     }
 
