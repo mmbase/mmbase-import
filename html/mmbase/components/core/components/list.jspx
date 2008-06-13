@@ -104,7 +104,7 @@
         </mm:function>
         <p>
           <mm:link>
-            <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}"  alt="back" /></a>
+            <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}" alt="back" width="21" height="20" /></a>
             <a href="${_}">Return to Components Overview</a>
           </mm:link>
         </p>

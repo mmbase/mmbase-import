@@ -119,7 +119,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
      <mm:link page="modules-actions" referids="module">
        <mm:param name="property"><%= prop.getStringValue("item1") %></mm:param>
        <mm:param name="action">alter</mm:param>
-       <a href="${_}"><img src="<mm:url page="/mmbase/style/images/edit.png" />" alt="change" /></a>
+       <a href="${_}"><img src="<mm:url page="/mmbase/style/images/edit.png" />" alt="change" width="21" height="20" /></a>
      </mm:link>
    </td>
   </tr>
@@ -142,7 +142,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    <td><input name="path" value="/tmp/${module}.xml" size="62" /></td>
    <td class="center">
      <input type="hidden" name="cmd" value="MODULESAVE" />
-     <input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" />
+     <input type="image" src="<mm:url page="/mmbase/style/images/ok.png" />" alt="OK" width="21" height="20" />
    </td>
   </tr>
   </table>
@@ -151,7 +151,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
 <p>
   <mm:link page="modules">
-    <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+    <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" width="21" height="20" /></a>
     <a href="${_}">Return to Module Overview</a>
   </mm:link>
 </p>

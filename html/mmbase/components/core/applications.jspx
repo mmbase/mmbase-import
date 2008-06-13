@@ -39,7 +39,7 @@
             <td class="center">
               <mm:link page="applications">
                 <mm:param name="application"><mm:field name="item1" /></mm:param>
-                <a href="${_}" title="manage application"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="manage" /></mm:link></a>
+                <a href="${_}" title="manage application"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="manage" width="21" height="20" /></mm:link></a>
               </mm:link>
             </td>
           </tr>
@@ -76,7 +76,7 @@
              <mm:link page="applications-actions" referids="application">
                <mm:param name="cmd" value="LOAD" />
                <mm:param name="app"><mm:write referid="application" /></mm:param>
-               <a href="${_}"><mm:link page="/mmbase/style/images/ok.png"><img src="${_}" alt="OK" /></mm:link></a>
+               <a href="${_}"><mm:link page="/mmbase/style/images/ok.png"><img src="${_}" alt="OK" width="21" height="20" /></mm:link></a>
              </mm:link>
            </mm:islessthan>
          </td>
@@ -107,7 +107,7 @@
     
       <p>
         <mm:link page="applications">
-          <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" /></mm:link></a>
+          <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
           <a href="${_}">Return to Applications Overview</a>
         </mm:link>
       </p>

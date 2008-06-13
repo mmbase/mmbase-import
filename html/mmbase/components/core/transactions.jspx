@@ -31,7 +31,7 @@
             <td>
               <mm:link>
                 <mm:param name="transaction">${trans.key}</mm:param>
-                <a href="${_}"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="view" /></mm:link></a>
+                <a href="${_}"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="view" width="21" height="20" /></mm:link></a>
               </mm:link>
             </td>
           </tr>

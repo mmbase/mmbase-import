@@ -60,7 +60,7 @@
             <td><mm:field name="item4" /></td>
             <td class="center">
               <mm:link page="builders-field" referids="builder,field">
-                <a href="${_}"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view properties" /></a>
+                <a href="${_}"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view properties" width="21" height="20" /></a>
               </mm:link>
             </td>
           </tr>
@@ -89,7 +89,7 @@
       
       <p>
         <mm:link page="builders">
-          <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" /></a>
+          <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" width="21" height="20" alt="back" /></a>
           <a href="${_}">Return to Builder Overview</a>
         </mm:link>
       </p>

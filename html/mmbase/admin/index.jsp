@@ -5,8 +5,8 @@
 
   <!-- actually just to help some browsers: -->
   <jsp:output doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.1 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml11-strict.dtd"/>
+              doctype-public="-//W3C//DTD XHTML 1.1//EN"
+              doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"/>
 
   <mm:content expires="0"
               type="application/xhtml+xml"
@@ -22,7 +22,9 @@
         <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
           <head>
             <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
-
+            <style type="text/css"> /* for MSIE compatibility */
+            img { behavior: url("${mm:link('/mmbase/style/pngbehavior.htc')}"); }
+            </style>
             <mm:link page="/mmbase/admin/css/admin.css">
               <link rel="stylesheet" href="${_}" type="text/css" />
             </mm:link>

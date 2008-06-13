@@ -1,6 +1,6 @@
 <%@ page import="org.mmbase.module.core.MMBase" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:cloud rank="administrator" loginpage="login.jspx">
+<mm:cloud rank="administrator">
 <div
   class="mm_c mm_c_core mm_c_b_databases ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
@@ -28,7 +28,7 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
     <td><mm:field name="item4" /></td>
     <td class="view">    
       <mm:link page="databases-connections">
-        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" border="0" alt="view" /></a>
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view" width="21" height="20" /></a>
       </mm:link>
     </td>
 </tr>
@@ -55,7 +55,7 @@ if (org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
     <td><mm:field name="item3" /></td>
     <td class="view">
       <mm:link page="databases-connections">
-        <a href="${_}" title="view connections"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view" /></a>
+        <a href="${_}" title="view connections"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view" width="21" height="20" /></a>
       </mm:link>
     </td>
   </tr>

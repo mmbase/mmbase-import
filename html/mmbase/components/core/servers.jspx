@@ -47,7 +47,7 @@
               <mm:field name="name">
                 <mm:compare value="${mmbase.machineName}">
                   <mm:link page="servers" referids="_@server">
-                    <a href="${_}"><img src="${mm:url('/mmbase/style/images/search.png', pageContext)}"  alt="next" /></a>
+                    <a href="${_}"><img src="${mm:url('/mmbase/style/images/search.png', pageContext)}" alt="next" width="21" height="20" /></a>
                   </mm:link>
                 </mm:compare>
               </mm:field>
@@ -95,7 +95,7 @@
       </table>
       <p>
         <mm:link page="servers">
-          <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}"  alt="back" /></a>
+          <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}" alt="back" width="21" height="20" /></a>
           <a href="${_}">Return to Servers Overview</a>
         </mm:link>
       </p>
