@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.157 2008-04-25 13:40:42 andre Exp $
+ * @version $Id: CloudTag.java,v 1.158 2008-06-13 13:35:12 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -429,7 +429,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         // flow ahead, to give the popup opportunity to pop up.
         try {
             ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.bridge.jsp.taglib.resources.messages", getLocale());
-            pageContext.getOut().print("<h1 class=\"mm_cloud\">" + bundle.getString("cloudtag.fail") + "</h1><p class=\"mm_cloud\">" + message + "</p>");
+            pageContext.getOut().print("<div class=\"mm_cloud\"><h1>" + bundle.getString("cloudtag.fail") + "</h1><p class=\"mm_cloud\">" + message + "</p></div>");
         } catch (IOException ioe) {
             throw new TaglibException(ioe);
         }
