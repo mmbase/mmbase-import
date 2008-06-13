@@ -61,7 +61,7 @@
       
       <p>
         <mm:link page="applications">
-          <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" /></mm:link></a>
+          <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
           <a href="${_}">Return to Applications Administration</a>
         </mm:link>
       </p>

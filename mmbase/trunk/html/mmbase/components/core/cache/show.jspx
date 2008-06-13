@@ -62,7 +62,7 @@
                   <mm:link referids="name@cache">
                     <mm:param name="deletekey" value="$ckey" />
                     <mm:param name="deleteentry" value="${status.index}" />
-                    <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" /></a>
+                    <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" width="21" height="20" /></a>
                   </mm:link>
                 </td>
               </tr>
@@ -76,7 +76,7 @@
 
     <p>
       <mm:link page="cache">
-        <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" /></a>
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" /></a>
       </mm:link>
       Return to Cache Monitor
     </p>

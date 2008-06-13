@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:cloud rank="administrator" loginpage="login.jspx" jspvar="cloud">
+<mm:cloud rank="administrator">
 <div
   class="mm_c mm_c_core mm_c_b_modules ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
@@ -30,7 +30,7 @@
       <td class="center">
         <mm:link page="modules-actions">
           <mm:param name="module"><mm:field name="item1" /></mm:param>
-          <a title="view module" href="${_}"><img src="<mm:url page="/mmbase/style/images/next.png" />" alt="view" /></a>
+          <a title="view module" href="${_}"><img src="${mm:link('/mmbase/style/images/next.png')}" alt="view" width="21" height="20" /></a>
         </mm:link>
       </td>
     </tr>
