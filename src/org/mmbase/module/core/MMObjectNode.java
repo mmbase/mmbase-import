@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.218 2008-06-12 09:46:21 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.219 2008-06-13 09:58:26 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -511,7 +511,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
-     * If a node is still 'new' you must persistify it with {@link #insert}, and otherwise with {@link #commit}.
+     * If a node is still 'new' you must persistify it with {@link #insert(String)}, and otherwise with {@link #commit()}.
      * @since MMBase-1.8
      */
     public boolean isNew() {
@@ -1445,8 +1445,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Sets the node's alias.
      * The code only sets a (memory) property, it does not actually add the alias to the database.
-     * Only works for uninserted Nodes. So this is actually only used for application import.
-     * No need to use this. Use {@link MMObjectBuilder#createAlias}.
+     * Only works for un-inserted Nodes. So this is actually only used for application import.
+     * No need to use this. Use {@link MMObjectBuilder#createAlias(int, String)}.
      */
     public void setAlias(String alias) {
         if (aliases == null) aliases = new HashSet<String>();
@@ -1608,7 +1608,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             List<MMObjectNode> v = relatedCache.get(query);
             if (v == null) {
                 try {
-                    v = clusterBuilder.getClusterNodes(query);
+                    v = clusterBuilder.getClusterNodesFromQueryHandler(query);
                     relatedCache.put(query, v);
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.toString());
@@ -1635,11 +1635,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Loop through the virtuals vector, group all same nodes based on parent and fetch the real nodes from those parents
      *
-     * @param List  of virtual nodes (only type.number and type.otype fields are set)
-     * @param type, needed to retreive the otype, which is set in node as type + ".otype"
+     * @param virtuals  of virtual nodes (only type.number and type.otype fields are set)
+     * @param type needed to retreive the otype, which is set in node as type + ".otype"
      * @returns List of real nodes
      *
-     * @see getRelatedNodes(String type)
+     * @see #getRelatedNodes(String type)
      * @since MMBase-1.6.2
      */
     private List<MMObjectNode> getRealNodes(List<MMObjectNode> virtuals, String type) {

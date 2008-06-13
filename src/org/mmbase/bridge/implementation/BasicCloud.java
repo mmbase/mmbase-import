@@ -14,7 +14,6 @@ import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.183 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.184 2008-06-13 09:58:26 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -660,14 +659,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             if (! checked) {
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
-            AggregatedResultCache cache = AggregatedResultCache.getCache();
-
-            List<MMObjectNode> resultList = cache.get(query);
-            if (resultList == null) {
-                ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
-                resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
-                cache.put(query, resultList);
-            }
+            ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
+            List<MMObjectNode> resultList = resultBuilder.getResult(); 
             query.markUsed();
             NodeManager tempNodeManager = new VirtualNodeManager(query, this);
             NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
@@ -687,31 +680,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @since MMBase-1.7
      */
     protected List<MMObjectNode> getClusterNodes(Query query) {
-
-        // start multilevel cache
-        MultilevelCache multilevelCache = MultilevelCache.getCache();
-
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
-        // check multilevel cache if needed
-        List<MMObjectNode> resultList = null;
-        if (query.getCachePolicy().checkPolicy(query)) {
-            resultList = multilevelCache.get(query);
-        }
-        // if unavailable, obtain from database
-        if (resultList == null) {
-            log.debug("result list is null, getting from database");
-            try {
-                resultList = clusterBuilder.getClusterNodes(query);
-            } catch (SearchQueryException sqe) {
-                throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
-            }
-            if (query.getCachePolicy().checkPolicy(query)) {
-                multilevelCache.put(query, resultList);
-            }
-        }
-
+        List <MMObjectNode> resultList = clusterBuilder.getClusterNodes(query);
         query.markUsed();
-
         return resultList;
     }
 
@@ -1100,9 +1071,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap<Object, Object> props = new HashMap<Object, Object>();
-        Iterator i = properties.entrySet().iterator();
+        Iterator<Map.Entry<Object, Object>> i = properties.entrySet().iterator();
         while(i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<Object, Object> entry = i.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
             if ((key instanceof Serializable) && (value instanceof Serializable)) {
@@ -1111,7 +1082,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
         out.writeObject(props);
         out.writeObject(locale);
-        log.service("Serialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
     }
     private void writeObject(ObjectOutputStream out) throws IOException {
         _writeObject(out);
