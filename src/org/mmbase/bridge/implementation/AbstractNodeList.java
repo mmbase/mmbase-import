@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @since MMBase-1.9
- * @version $Id: AbstractNodeList.java,v 1.11 2008-06-13 09:20:16 michiel Exp $
+ * @version $Id: AbstractNodeList.java,v 1.12 2008-06-13 09:28:03 michiel Exp $
  */
 public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
 
@@ -175,7 +175,13 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
                 if (nodeManager != null) {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, nodeManager);
                 } else {
-                    node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
+                    if (cloud != null) {
+                        node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
+                    } else {
+                        // last resort: use an anonymous cloud
+                        // ? use class security?
+                        node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+                    }
                 }
             } else {
                 node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
