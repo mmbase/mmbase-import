@@ -230,11 +230,11 @@ public class ReleaseStrategyTest extends BridgeTest {
 
     public void testNewRelation(){
         log.debug("method: testMultiStepQueryNewRelation()");
-        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
-        Query q2 = Queries.createQuery(cloud, null, "object,posrel,urls", "object.otype,urls.name",null, null, null, null, false);
-        Query q3 = Queries.createQuery(cloud, null, "news,posrel,object", "news.title,object.owner",null, null, null, null, false);
-        Query q4 = Queries.createQuery(cloud, null, "news,urls", "news.title,urls.name",null, null, null, null, false);
-        Query q5 = Queries.createQuery(cloud, null, "object,object2", "object.otype,object2.otype",null, null, null, null, false);
+        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls",   "news.title,urls.name",       null, null, null, null, false);
+        Query q2 = Queries.createQuery(cloud, null, "object,posrel,urls", "object.otype,urls.name",     null, null, null, null, false);
+        Query q3 = Queries.createQuery(cloud, null, "news,posrel,object", "news.title,object.owner",    null, null, null, null, false);
+        Query q4 = Queries.createQuery(cloud, null, "news,urls",          "news.title,urls.name",       null, null, null, null, false);
+        Query q5 = Queries.createQuery(cloud, null, "object,object2",     "object.otype,object2.otype", null, null, null, null, false);
 
         NodeQuery nq1 = cloud.createNodeQuery();
         {
@@ -247,7 +247,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         {
             Step step = nq2.addStep(newsManager);
             nq2.setNodeStep(step);
-            nq1.addRelationStep(urlsManager, "posrel", "destination");
+            nq2.addRelationStep(urlsManager, "posrel", "destination");
         }
 
         //a new relation node should not flush cache the cache
@@ -270,7 +270,8 @@ public class ReleaseStrategyTest extends BridgeTest {
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache", strategy.evaluate(relEvent, q5, null).shouldRelease());
 
         assertTrue("relation event of new relation between nodes in multi step nodequery should flush the cache", strategy.evaluate(relEvent, nq1, null).shouldRelease());
-        assertTrue("relation event of new relation between nodes in multi step nodequery should flush the cache", strategy.evaluate(relEvent, nq2, null).shouldRelease());
+        assertTrue("relation event of new relation between nodes in multi step nodequery should flush the cache " + nq2.toSql() + "  " + relEvent,
+                   strategy.evaluate(relEvent, nq2, null).shouldRelease());
 
     }
 
