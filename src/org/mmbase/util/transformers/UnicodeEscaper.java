@@ -19,25 +19,31 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: UnicodeEscaper.java,v 1.4 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: UnicodeEscaper.java,v 1.5 2008-06-13 09:17:19 michiel Exp $
  */
 
 public class UnicodeEscaper extends ReaderTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(UnicodeEscaper.class);
+
+    private boolean escapeLow = false;
+
+    public void setEscapeLow(boolean e) {
+        escapeLow = e;
+    }
 
     public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (c > 127) {
+                if (c > 127 || (escapeLow && c < 32)) {
                     String hex = Integer.toHexString(c);
                     int i = hex.length();
                     w.write("\\u");
                     while (i < 4) {
                         w.write('0'); i++;
                     }
-                    w.write(hex); 
+                    w.write(hex);
                 } else {
                     w.write(c);
                 }
