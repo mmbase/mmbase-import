@@ -117,15 +117,19 @@
       <xsd:sequence>
         <xsd:element ref="title" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element name="head"    type="RendererType"  minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element name="body"    type="RendererType"  minOccurs="0" maxOccurs="1" />
-        <xsd:element name="process" type="RendererType"  minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="head" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="body" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="process" minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:ID" />
       <xsd:attribute name="mimetype" type="xsd:token" />
       <xsd:attribute name="classification" type="xsd:token" />
     </xsd:complexType>
   </xsd:element>
+
+  <xsd:element name="head" type="RendererType"/>
+  <xsd:element name="body" type="RendererType"/>
+  <xsd:element name="process" type="RendererType"/>
 
   <xsd:complexType name="RendererType">
     <xsd:sequence>
