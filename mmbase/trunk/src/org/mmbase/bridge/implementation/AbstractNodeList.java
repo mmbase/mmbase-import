@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @since MMBase-1.9
- * @version $Id: AbstractNodeList.java,v 1.10 2008-06-13 09:18:43 michiel Exp $
+ * @version $Id: AbstractNodeList.java,v 1.11 2008-06-13 09:20:16 michiel Exp $
  */
 public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
 
@@ -124,6 +124,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
 
     public static Node convertMMObjectNodetoBridgeNode(Cloud cloud, NodeManager nodeManager, Object o) {
         if (o == null) return null;
+        if (! (o instanceof MMObjectNode)) return null;
         MMObjectNode coreNode = (MMObjectNode) o;
         Node node;
         MMObjectBuilder coreBuilder = coreNode.getBuilder();
