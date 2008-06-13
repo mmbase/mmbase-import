@@ -22,9 +22,6 @@
         <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
           <head>
             <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
-            <style type="text/css"> /* for MSIE compatibility */
-            img { behavior: url("${mm:link('/mmbase/style/pngbehavior.htc')}"); }
-            </style>
             <mm:link page="/mmbase/admin/css/admin.css">
               <link rel="stylesheet" href="${_}" type="text/css" />
             </mm:link>

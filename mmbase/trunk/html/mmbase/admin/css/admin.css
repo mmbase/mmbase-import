@@ -28,39 +28,42 @@ img
     border: 0;
     vertical-align: bottom;
     margin-right: 4px;
+    behavior: url("../style/pngbehavior.htc");
 }
 
 #header
 {
-    background: #002828;
-    height: 56px;
-    margin: 0;
+	background: #002828;
+	height: 80px;
+	margin: 0;
 }
 
 #logo
 {
-    width: 20%;
-    float: left;
-    text-align: right;
+	width: 20%;
+	float: left;
+	text-align: right;
+	margin-top: 20px;
 }
 
-#logo img { margin: 2px 0 0 0; }
+#logo img { margin: 0 4px 0 0; }
 
 #head
 {
     font-family: "Lucida Grande", sans-serif;
     color: #fff;
     float: right;
+	margin-top: 20px;
     width: 80%;
 }
 
 #head h1
 {
     color: #fff;
-    margin: 8px 0 0 0.5em;
+    margin: 2px 0 0 4px;
 }
 
-#head p { margin: 0 0 0 1em; }
+#head p { margin: 0 0 0 4px; }
 #head a:link, #head a:visited { color: #fff; }
 #wrap
 {
@@ -181,14 +184,14 @@ html>body #navigation li a { width: auto; }
 /*********** content classes etc. ***********/
 h2.top
 {
-    padding-left: 6px;
-    font-size: 1.8em;
-    margin-top: 0px;
-    /*text-transform: capitalize;*/
-    background-color: #efefef;
-    border-bottom: 1px solid #002828;
-    border-right: 1px solid #002828;
-    line-height: 1.1em;
+	padding-left: 6px;
+	font-size: 1.8em;
+	margin-top: 0px;
+	/*text-transform: capitalize;*/
+	background-color: #efefef;
+	border-bottom: 1px solid #002828;
+	border-right: 1px solid #002828;
+	line-height: 1.1em;
 }
 
 /* form stuff */
