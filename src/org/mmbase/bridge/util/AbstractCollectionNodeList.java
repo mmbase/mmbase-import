@@ -37,7 +37,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
         this(c, (Cloud) null);
     }
 
-    
+
     @Override
     public int size() {
         return wrappedCollection.size();
@@ -60,7 +60,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
         if (o == null) throw new IllegalArgumentException();
         return super.add(o);
     }
-    
+
     public Collection<Node> getCollection() {
         return wrappedCollection;
     }
@@ -96,6 +96,9 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
                 // last desperate try, depend on a nodelist of cloud (that know how to convert core objects..)
                 // hackery
                 node = AbstractNodeList.convertWithBridgeToNode(cloud, nodeManager, o);
+                if (node == null) {
+                    node = AbstractNodeList.convertMMObjectNodetoBridgeNode(cloud, nodeManager, o);
+                }
             } else {
                 // even more desperate!
                 node = getCloud().getNode(Casting.toString(o));
@@ -104,7 +107,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
         wrappedCollection.set(index, node);
         return node;
     }
- 
+
 
     protected Cloud getCloud() {
         if (cloud == null) {
