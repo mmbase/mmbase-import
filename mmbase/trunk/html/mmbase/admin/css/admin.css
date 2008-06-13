@@ -90,11 +90,11 @@ img
     margin: 0;
     list-style: none;
     font-size: 0.9em;
+    border-top: 1px solid #e8e8e8;
 }
 
 #footer ul
 {
-    border-top: 1px solid #E6E9DD;
     padding: 1em 0 2em 1em;
     margin: 0 0 1em 20%;
 }
@@ -204,7 +204,7 @@ label
 /* table stuff */
 table
 {
-    border-color: #CCC #CCC transparent #CCC;
+    border-color: #e8e8e8 #e8e8e8 transparent #e8e8e8;
     border-width: 1px 1px 0 1px;
     border-style: solid solid none solid;
     margin-bottom: 1em;
@@ -214,7 +214,7 @@ table
 caption
 {
     background: #ccc;
-    border-color: #CCC;
+    border-color: #ccc;
     border-width: 1px 1px 0 1px;
     border-style: solid solid none solid;
     padding: 2px;
@@ -226,7 +226,7 @@ th, td
 {
     margin: 0;
     padding: 4px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #e8e8e8;
     text-align: left;
     vertical-align: top;
 }
