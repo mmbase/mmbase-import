@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.3 2008-03-17 09:30:31 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.4 2008-06-13 08:17:01 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -82,6 +82,9 @@ public class TransactionTest extends BridgeTest {
         assertEquals("yyyyy", node.getStringValue("title"));
     }
 
+    /**
+     * Test for http://www.mmbase.org/jira/browse/MMB-1621
+     */
     public void testGetValue() {
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("bar4");
