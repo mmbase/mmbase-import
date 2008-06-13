@@ -20,12 +20,12 @@ public class MyNewsBuilder extends org.mmbase.util.functions.ExampleBuilder {
         if ("magazine".equals(field)) {
             log.trace("Getting magazine virtual field");
             BasicSearchQuery query = new BasicSearchQuery();
-            BasicStep step = query.addStep(this);
+            query.addStep(this);
             MMObjectBuilder mags = getMMBase().getBuilder("mags");
             BasicRelationStep relation = query.addRelationStep((InsRel) getMMBase().getBuilder("posrel"), mags);
             query.addField(relation.getNext(), mags.getField("number"));
             try {
-                List<MMObjectNode> nodes = getMMBase().getClusterBuilder().getClusterNodes(query);
+                List<MMObjectNode> nodes = getMMBase().getClusterBuilder().getClusterNodesFromQueryHandler(query);
                 if (nodes.size() > 0) {
                     String magNumber = nodes.get(0).getStringValue("mags.number");
                     if (log.isDebugEnabled()) {
