@@ -28,6 +28,7 @@
          classification="taglib.test">
     <body jsp="test/cloud.jspx" />
   </block>
+  
   <block name="test_fieldinfo" mimetype="text/html"
          classification="taglib.test">
     <xi:include href="http://www.mmbase.org/components/jquery.head.xml" />
@@ -38,10 +39,7 @@
          classification="taglib.test">
     <body jsp="test/attributes.jspx" />
   </block>
-  <block name="test_cloud" mimetype="text/html"
-         classification="taglib.test">
-    <body jsp="test/cloud.jspx" />
-  </block>
+
   <block name="test_transaction" mimetype="text/html"
          classification="taglib.test">
     <body jsp="test/transaction.jspx" />
