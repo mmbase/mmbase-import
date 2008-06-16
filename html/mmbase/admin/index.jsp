@@ -13,6 +13,9 @@
               unacceptable="CRIPPLE"
               postprocessor="none" language="client">
 
+    <c:if test="${! empty param.logout}">
+      <mm:cloud method="logout" />
+    </c:if>
     <mm:cloud rank="basic user">
       <mm:import externid="category">about</mm:import>
       <mm:import externid="subcategory"></mm:import>
@@ -52,7 +55,10 @@
               <h1>MMBase</h1>
               <p>
                 You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) |
-                <mm:link page="/mmbase/admin/logout.jsp"><a href="${_}">logout</a></mm:link>
+                <mm:link>
+                  <mm:param name="logout" value="ok" />
+                  <a href="${_}">logout</a>
+                </mm:link>
               </p>
             </div>
            </div>
