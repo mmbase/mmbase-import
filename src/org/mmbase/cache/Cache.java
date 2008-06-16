@@ -15,12 +15,13 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.Cacheable;
+import org.mmbase.cache.implementation.LRUCache;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.36.2.1 2007-01-03 09:16:27 nklasens Exp $
+ * @version $Id: Cache.java,v 1.36.2.2 2008-06-16 13:23:29 sdeboer Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -50,7 +51,7 @@ abstract public class Cache implements SizeMeasurable, Map {
     private int puts = 0;
 
     public Cache(int size) {
-        implementation = new LRUHashtable(size);
+        implementation = new LRUCache(size);
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
