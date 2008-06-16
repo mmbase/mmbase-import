@@ -3,6 +3,11 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+  <!--
+      Changes are administrated in a copy of every 'versioned' builder.
+      This copy must have the following extra fields.
+      This field-list can be xincluded in the _version builder-copy.
+  -->
 
   <field name="version" state="system">
     <gui>
