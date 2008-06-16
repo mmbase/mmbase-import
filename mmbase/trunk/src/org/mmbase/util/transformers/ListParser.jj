@@ -1,0 +1,116 @@
+/* -*- java -*-
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/**
+ * ListParser
+ * This file is parsed by <a href="https://javacc.dev.java.net/">javacc</a>.
+ *
+ * @author Michiel Meeuwisssen
+ * @since MMBase-1-8
+ */
+
+options {
+    LOOKAHEAD = 2;
+    STATIC = false;
+    FORCE_LA_CHECK = false;
+    IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(ListParser)
+
+package org.mmbase.util.transformers;
+import java.io.Reader ;
+import java.io.StringReader ;
+import java.util.*;
+import java.io.*;
+
+
+public class ListParser {
+    int curDepth = 0;
+    LinkedList<Character> stack = new LinkedList<Character>();
+
+    static String transform( String inString ) {
+        Reader reader = new StringReader( inString ) ;
+        ListParser parser = new ListParser( reader ) ;
+        StringBuffer buffer = new StringBuffer() ;
+        try {
+            parser.start(buffer) ; }
+        catch( TokenMgrError e ) {
+            throw new IllegalStateException() ; }
+        catch( ParseException e ) {
+            throw new IllegalStateException() ; }
+        return buffer.toString() ;
+    }
+
+    int getDepth(Token t) {
+        return t.image.length() - 2;
+    }
+    char getType(Token t) {
+        return t.image.charAt(1) == '*' ? 'o' : 'u';
+    }
+    void open(StringBuffer buf, char type) {
+        curDepth++;
+        stack.addFirst(type);
+        buf.append("\n<").append(type).append("l>");
+    }
+    void close(StringBuffer buf) {
+        curDepth--;
+        char t = stack.removeFirst();
+        buf.append("</li></").append(t).append("l>");
+    }
+    void handleList(StringBuffer buf, Token t) {
+        int depth = getDepth(t);
+        char type = getType(t);
+        if (depth == curDepth + 1) {
+            open(buf, type);
+        } else if (depth == curDepth - 1) {
+            close(buf);
+        } else if (depth == curDepth) {
+            buf.append("</li>");
+        }
+
+        buf.append("<li>");
+    }
+    void endLists(StringBuffer buf) {
+        while (stack.size() > 0) {
+            close(buf);
+        }
+    }
+
+    public static void main(String argv[]) throws ParseException, InterruptedException {
+        System.out.println(ListParser.transform((argv[0])));
+    }
+
+
+}
+
+PARSER_END(ListParser)
+
+
+TOKEN : { <OL: ("\n*") ("*")* (" ")> }
+TOKEN : { <UL: ("\n-") ("-")* (" ")> }
+TOKEN : { <END: ("\n")> }
+TOKEN : { <OTHER : ~[] > }
+
+void start(StringBuffer buf) :
+{
+  Token t ;
+}
+{
+
+   (
+    t = <OL>  { handleList(buf, t); }
+    | t = <UL>  { handleList(buf, t); }
+    | <END> { endLists(buf); buf.append("\n");}
+    | (t = <OTHER>) { buf.append(t.image); }
+   )*
+       <EOF> { endLists(buf); }
+}
+
+
