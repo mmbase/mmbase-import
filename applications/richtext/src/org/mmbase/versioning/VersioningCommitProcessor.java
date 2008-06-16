@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.8 2008-06-16 13:01:41 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.9 2008-06-16 13:38:45 michiel Exp $
  * @since
  */
 
@@ -111,9 +111,9 @@ public class VersioningCommitProcessor implements CommitProcessor {
         FieldIterator fields = sourceNm.getFields().fieldIterator();
         while (fields.hasNext()) {
            Field field = fields.nextField();
-           if (field.getState() != Field.STATE_SYSTEM) {
-               String fieldName = field.getName();
-               dest.setValueWithoutProcess(fieldName, source.getValue(fieldName));
+           String fn = field.getName();
+           if (dest.getNodeManager().hasField(fn) && field.getState() != Field.STATE_SYSTEM) {
+               dest.setValueWithoutProcess(fn, source.getValue(fn));
            }
         }
     }
