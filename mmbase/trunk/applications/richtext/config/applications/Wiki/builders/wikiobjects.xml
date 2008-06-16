@@ -21,10 +21,7 @@
   </properties>
 
   <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
-
-  <fieldlist>
-    <xi:include href="http://www.mmbase.org/builders/versioning/version.field.xml" />
-  </fieldlist>
+  <xi:include href="http://www.mmbase.org/builders/versioning/object.fields.xml" />
 
   <functionlist>
     <function name="url" key="{REQUEST.getContextPath}/mmbase/examples/wiki/page?{NODE.number}">

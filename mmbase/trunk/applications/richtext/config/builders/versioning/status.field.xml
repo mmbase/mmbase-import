@@ -6,6 +6,11 @@
     name="status"
     state="system"
     readonly="false">
+  <!--
+      The status field is a small refinement on versioning.
+      With it, versioned objects can be marked 'new' (~ version==0), 'invisible', 'online', 'locked').
+
+  -->
   <gui>
     <guiname xml:lang="nl">Status</guiname>
     <guiname xml:lang="en">Status</guiname>
