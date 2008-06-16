@@ -40,7 +40,7 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
 
           renderer.addParentOptions(element, id);
           
-          if (SecurityUtil.isWebmaster(role)
+          if (SecurityUtil.isChiefEditor(role)
                 || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
              element.addOption(renderer.createTreeOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
           }
