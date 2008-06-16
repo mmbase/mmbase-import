@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.7 2008-06-03 09:43:01 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.8 2008-06-16 13:01:41 michiel Exp $
  * @since
  */
 
@@ -28,6 +28,8 @@ public class VersioningCommitProcessor implements CommitProcessor {
     public static final String VERSION_FIELD   = "version";
     public static final String OBJECT_FIELD    = "object";
     public static final String COMMENTS_FIELD  = "comments";
+
+    private String statusField                 = "status";
 
     public static NodeManager getVersionsManager(NodeManager nm) {
         String versionBuilder = nm.getProperty("versionbuilder");
@@ -48,6 +50,10 @@ public class VersioningCommitProcessor implements CommitProcessor {
         return q.getNodeManager().getList(q);
     }
 
+    public void setStatusField(String f) {
+        statusField = f;
+    }
+
     public void commit(Node node, Field field) {
         if (node.isChanged()) {
             log.debug("Commiting " + node + "setting version in " + field);
@@ -66,6 +72,12 @@ public class VersioningCommitProcessor implements CommitProcessor {
                 //increase the version of the current node
                 int newVersionNo = node.getIntValue(field.getName()) + 1;
                 node.setIntValue(field.getName(), newVersionNo);
+
+                if (! "".equals(statusField) && node.getNodeManager().hasField(statusField)) {
+                    if (node.getIntValue(statusField) == Status.NEW) {
+                        node.setIntValue(statusField, Status.ONLINE);
+                    }
+                }
 
                 cloneNode(node, version);
 
