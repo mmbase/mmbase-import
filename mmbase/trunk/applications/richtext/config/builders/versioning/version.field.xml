@@ -11,7 +11,9 @@
   <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
     <default value="0" />
     <commitprocessor>
-      <class name="org.mmbase.versioning.VersioningCommitProcessor" />
+      <class name="org.mmbase.versioning.VersioningCommitProcessor">
+        <param name="statusField">status</param>
+      </class>
       <class name="org.mmbase.versioning.IdRelVersioningCommitProcessor">
         <param name="fields">body</param>
       </class>
