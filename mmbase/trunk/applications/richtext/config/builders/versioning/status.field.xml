@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<field
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="status" state="system">
+  <gui>
+    <guiname xml:lang="nl">Status</guiname>
+    <guiname xml:lang="en">Status</guiname>
+  </gui>
+  <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+    <default value="0" />
+    <enumeration
+        javaconstants="org.mmbase.versioning.Status"
+        >
+      <entry value="-1" display="Onzichtbaar" xml:lang="nl" />
+      <entry value="0"  display="Nieuw"       xml:lang="nl" />
+      <entry value="1"  display="Online"      xml:lang="nl" />
+      <entry value="2"  display="Op slot"     xml:lang="nl" />
+
+      <entry value="-1" display="Invisible"   xml:lang="en" />
+      <entry value="0"  display="New"         xml:lang="en" />
+      <entry value="1"  display="Online"      xml:lang="en" />
+      <entry value="2"  display="Locked"      xml:lang="en" />
+    </enumeration>
+  </datatype>
+</field>
