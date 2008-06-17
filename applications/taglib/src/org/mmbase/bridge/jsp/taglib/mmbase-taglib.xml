@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.26 2008-03-28 13:02:05 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.27 2008-06-17 13:18:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -97,7 +97,7 @@ version: $Id: mmbase-taglib.xml,v 1.374.2.26 2008-03-28 13:02:05 michiel Exp $
     </description>
     <name>escape</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>java.lang.String escape(java.lang.String, java.lang.String)</function-signature>
+    <function-signature>java.lang.String escape(java.lang.String, java.lang.Object)</function-signature>
     <example>
       &lt;a href="${node.url}" title="${mm:escape('text/html/attribute', node.title)}" .../&gt;
     </example>
@@ -8375,6 +8375,25 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
   </tag>
+  <tag>
+    <extends>cloudreferrer</extends>
+    <type>util.html</type>
+    <name>escape</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.EscapeTag</tagclass>
+    <info>
+      Simply escapes it's body.
+    </info>
+    <since>MMBase-1.8.6</since>
+    <attribute>
+      <name>escape</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="writer" attribute="escape" />
+      <info>
+      </info>
+    </attribute>
+  </tag>
+
   <!--
   <tag>
     <name>datatype</name>
