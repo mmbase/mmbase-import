@@ -21,7 +21,7 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.ApplicationContextFactory;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
+
 import com.finalist.preferences.domain.UserProfile;
 
 public class ProfileUtil {
@@ -132,9 +132,6 @@ public class ProfileUtil {
             String username = ((UserDetails) obj).getUsername();
             person = personService.getPersonByUserId(username);
          }
-      }
-      if(person == null) {
-         person = CommunityModuleAdapter.getCurrentUser();
       }
       return person;
    }
