@@ -12,14 +12,13 @@ See http://www.MMBase.org/license
  * This file is parsed by <a href="https://javacc.dev.java.net/">javacc</a>.
  *
  * @author Michiel Meeuwisssen
- * @since MMBase-1-8
+ * @since MMBase-1.8.6
+ * @version $Id: ListParser.jj,v 1.2 2008-06-17 10:00:45 michiel Exp $
  */
 
 options {
-    LOOKAHEAD = 2;
     STATIC = false;
-    FORCE_LA_CHECK = false;
-    IGNORE_CASE = true;
+    IGNORE_CASE = false;
 }
 
 PARSER_BEGIN(ListParser)
@@ -33,11 +32,12 @@ import java.io.*;
 
 public class ListParser {
     int curDepth = 0;
+    boolean begin = true;
     LinkedList<Character> stack = new LinkedList<Character>();
 
     static String transform( String inString ) {
-        Reader reader = new StringReader( inString ) ;
-        ListParser parser = new ListParser( reader ) ;
+        Reader reader = new StringReader(inString) ;
+        ListParser parser = new ListParser(reader) ;
         StringBuffer buffer = new StringBuffer() ;
         try {
             parser.start(buffer) ; }
@@ -49,20 +49,22 @@ public class ListParser {
     }
 
     int getDepth(Token t) {
-        return t.image.length() - 2;
+        return t.image.length() - (begin ? 1 : 2);
     }
     char getType(Token t) {
-        return t.image.charAt(1) == '*' ? 'o' : 'u';
+        return t.image.charAt(begin ? 0 : 1) == '*' ? 'o' : 'u';
     }
     void open(StringBuffer buf, char type) {
         curDepth++;
         stack.addFirst(type);
-        buf.append("\n<").append(type).append("l>");
+        if (! begin && curDepth == 1) buf.append('\n');
+        buf.append('<').append(type).append("l>");
     }
     void close(StringBuffer buf) {
         curDepth--;
         char t = stack.removeFirst();
         buf.append("</li></").append(t).append("l>");
+        if (curDepth > 0) buf.append("</li>");
     }
     void handleList(StringBuffer buf, Token t) {
         int depth = getDepth(t);
@@ -74,7 +76,6 @@ public class ListParser {
         } else if (depth == curDepth) {
             buf.append("</li>");
         }
-
         buf.append("<li>");
     }
     void endLists(StringBuffer buf) {
@@ -92,9 +93,10 @@ public class ListParser {
 
 PARSER_END(ListParser)
 
-
-TOKEN : { <OL: ("\n*") ("*")* (" ")> }
-TOKEN : { <UL: ("\n-") ("-")* (" ")> }
+TOKEN : { <BOL: "*" ("*")* (" ")> }
+TOKEN : { <BUL: "-" ("-")* (" ")> }
+TOKEN : { <OL: "\n*" ("*")* (" ")> }
+TOKEN : { <UL: "\n-" ("-")* (" ")> }
 TOKEN : { <END: ("\n")> }
 TOKEN : { <OTHER : ~[] > }
 
@@ -105,12 +107,14 @@ void start(StringBuffer buf) :
 {
 
    (
-    t = <OL>  { handleList(buf, t); }
-    | t = <UL>  { handleList(buf, t); }
-    | <END> { endLists(buf); buf.append("\n");}
-    | (t = <OTHER>) { buf.append(t.image); }
+    t = <OL>  {   begin = false; handleList(buf, t); }
+    | t = <UL>  { begin = false;  handleList(buf, t);   }
+    | t = <BOL> { if (begin) { handleList(buf, t); begin = false; } else { buf.append(t.image); }}
+    | t = <BUL> { if (begin) { handleList(buf, t); begin = false; } else { buf.append(t.image); }}
+    | <END> { if (begin) { buf.append("\n"); } else { endLists(buf); buf.append("\n"); } }
+    | (t = <OTHER>) { begin = false; buf.append(t.image); }
    )*
-       <EOF> { endLists(buf); }
+   <EOF> { endLists(buf); }
 }
 
 

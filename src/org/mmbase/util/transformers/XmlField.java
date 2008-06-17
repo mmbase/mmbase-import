@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.61 2008-06-10 12:26:29 michiel Exp $
+ * @version $Id: XmlField.java,v 1.62 2008-06-17 10:00:45 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -61,6 +61,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * Takes a string object, finds list structures and changes those to XML
      */
     static void handleList(StringObject obj) {
+        String result = ListParser.transform(obj.toString());
+        obj.setLength(0);
+        obj.append(result);
+    }
+
+    /**
+     * This is the original implementation of {@link #handleList}, but withouth suppport lists in
+     * lists (MMB-1658). Code pretty much incomprehensible as it is, so didn't add support for this
+     * here, but redid it in ListParser.jj.
+     */
+    private static void handleListLegacy(StringObject obj) {
         // handle lists
         // make <ul> possible (not yet nested), with -'s on the first char of line.
         int inList = 0; //
