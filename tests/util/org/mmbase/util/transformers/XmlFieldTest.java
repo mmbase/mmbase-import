@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.16 2008-06-17 09:54:34 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.17 2008-06-17 09:55:26 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -39,14 +39,14 @@ public class XmlFieldTest  extends TestCase {
         return unicode.transform(in.toString());
     }
 
-    public void notestRichToHTMLBlock1() {
+    public void testRichToHTMLBlock1() {
 
         result = XmlField.richToHTMLBlock("");
         expectedResult = "<p></p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
-    public void notestRichToHTMLBlock1a() {
+    public void testRichToHTMLBlock1a() {
 
         result = XmlField.richToHTMLBlock("hallo");
         expectedResult = "<p>hallo</p>";
