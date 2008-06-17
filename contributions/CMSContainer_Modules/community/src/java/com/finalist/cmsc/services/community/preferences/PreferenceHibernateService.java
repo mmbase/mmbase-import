@@ -138,7 +138,9 @@ public class PreferenceHibernateService extends HibernateService implements Pref
         criteria.add(Restrictions.eq("module", module));
         criteria.add(Restrictions.eq("authenticationId", authenticationId));
         criteria.add(Restrictions.eq("key", key));
-        criteria.add(Restrictions.eq("value", oldvalue));
+        if(oldvalue != null) {
+           criteria.add(Restrictions.eq("value", oldvalue));
+        }
         List preferences = criteria.list();
         if (preferences.size() == 1) {
         	Preference p = (Preference)preferences.get(0);
