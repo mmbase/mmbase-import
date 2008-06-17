@@ -134,10 +134,6 @@ public class Difference
 
     public String toUnixDiff(Object[] aLines, Object[] bLines) {
         StringBuilder buf = new StringBuilder();
-        int        delStart = getDeletedStart();
-        int        delEnd   = getDeletedEnd();
-        int        addStart = getAddedStart();
-        int        addEnd   = getAddedEnd();
         append(buf, delStart, delEnd);
         buf.append(delEnd != Difference.NONE && addEnd != Difference.NONE ? "c" : (delEnd == Difference.NONE ? "a" : "d"));
         append(buf, addStart, addEnd);
@@ -156,6 +152,7 @@ public class Difference
         return buf.toString();
 
     }
+
     protected void append(StringBuilder buf, int start, int end) {
         // match the line numbering from diff(1):
         buf.append(end == Difference.NONE ? start : (1 + start));
