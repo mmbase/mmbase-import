@@ -236,6 +236,7 @@
         <artifactId>maven-mmbase-module-plugin</artifactId>
         <version>1.2</version>
       </plugin -->
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javacc-maven-plugin</artifactId>
@@ -247,8 +248,8 @@
               <goal>javacc</goal>
             </goals>
             <configuration>
-              <!-- outputDirectory>${basedir}/target/classes</outputDirectory -->
-              <sourceDirectory>${basedir}/src/org/mmbase/util/dateparser</sourceDirectory>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <sourceDirectory>${basedir}/src/org/mmbase/util</sourceDirectory>
               <includes>
                 <include>DateParser.jj</include>
               </includes>
@@ -259,8 +260,27 @@
               <isStatic>false</isStatic>
             </configuration>
           </execution>
+          <execution>
+            <id>javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <sourceDirectory>${basedir}/src/org/mmbase/util/transformers</sourceDirectory>
+              <includes>
+                <include>ListParser.jj</include>
+              </includes>
+              <excludes>
+                <include>**/*.java</include>
+              </excludes>
+              <lookAhead>2</lookAhead>
+              <isStatic>false</isStatic>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
+      -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
