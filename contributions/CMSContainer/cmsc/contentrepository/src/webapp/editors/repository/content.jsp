@@ -176,7 +176,8 @@
                 src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />"
                 alt="<fmt:message key="content.icon.versioning.title" />"/></a>
     </mm:haspage>
-    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+    <% if (role != null && SecurityUtil.isEditor(role)) { %>
+           
     <mm:last inverse="true">
         <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
                 src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
@@ -188,7 +189,8 @@
                 src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />"
                 alt="<fmt:message key="content.move.up" />"/></a>
     </mm:first>
-    <% } %>
+          
+    <%}%>
     <cmsc:hasfeature name="savedformmodule">
         <c:set var="typeval">
             <mm:nodeinfo type="type"/>
