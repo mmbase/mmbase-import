@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.6 2008-03-28 13:02:05 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.7 2008-06-18 11:25:54 sdeboer Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -87,7 +87,7 @@ public class Functions {
      * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
      *
      */
-    public static String escape(String escaper, String string) {
+    public static String escape(String escaper, Object string) {
         try {
             CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
             return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
