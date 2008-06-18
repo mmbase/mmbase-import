@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 <fmt:setBundle basename="portlets-prefercences" scope="request" />
+<c:if test="${preferenceFormUrls != null && fn:length(preferenceFormUrls) >0}">
    <div class="heading">
       <h3><fmt:message key="preference.preference.title"/></h3>
    </div>
@@ -28,5 +29,6 @@
              </table>
          </form>
 	</div>
+   </c:if>
 
 
