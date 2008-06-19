@@ -20,7 +20,7 @@
 
   <xsd:complexType name="DataTypes">
     <xsd:sequence>
-      <xsd:element ref="datatype" maxOccurs="11" minOccurs="0" /> <!-- 11: number of 'type_database' -->
+      <xsd:element ref="datatype" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID" />
   </xsd:complexType>
