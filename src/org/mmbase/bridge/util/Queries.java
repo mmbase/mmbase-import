@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.101 2008-06-04 11:54:07 michiel Exp $
+ * @version $Id: Queries.java,v 1.102 2008-06-19 14:53:57 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1282,8 +1282,9 @@ abstract public class Queries {
 
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      * @since MMBase-1.8.6
+     * @returns Newly created node(s)
      */
-    public static void addToResult(Query q, Node n) {
+    public static NodeList addToResult(Query q, Node n) {
         List<Step> steps = q.getSteps();
 
         if (steps.size() < 3) throw new UnsupportedOperationException();
@@ -1312,7 +1313,7 @@ abstract public class Queries {
                 result.add(newRel);
             }
             }
-            return;
+            return result;
         } else {
             throw new UnsupportedOperationException();
         }
@@ -1320,9 +1321,7 @@ abstract public class Queries {
 
 
     /**
-     * Explores a query object, and explores if the node could be in its result. If so, the node is
-     * added to the necessary query step, and relations are found and deleted.
-
+     *
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      * @return Removed relations.
      * @since MMBase-1.8.6
