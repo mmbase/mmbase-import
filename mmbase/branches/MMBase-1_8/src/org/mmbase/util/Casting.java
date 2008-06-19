@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.89.2.4 2008-04-23 13:23:29 michiel Exp $
+ * @version $Id: Casting.java,v 1.89.2.5 2008-06-19 13:00:28 michiel Exp $
  */
 
 import java.util.*;
@@ -294,7 +294,14 @@ public class Casting {
                         NodeManager nm = getNodeManager();
                         if (nm.hasField(fieldName)) {
                             switch(nm.getField(fieldName).getType()) {
-                            case org.mmbase.bridge.Field.TYPE_NODE:     return wrap(getNodeValue(fieldName), escaper);
+                            case org.mmbase.bridge.Field.TYPE_NODE:
+                                // I don't understand why, but the 'number' field is of type NODE,
+                                // which makes no sense whatsoever.
+                                if (! "number".equals(fieldName)) {
+                                    return wrap(getNodeValue(fieldName), escaper);
+                                } else {
+                                    return super.getStringValue(fieldName);
+                                }
                             case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
                             case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
                             default: return escape(escaper, super.getStringValue(fieldName));
@@ -323,6 +330,9 @@ public class Casting {
         } else if (o instanceof byte[]) {
             return escape(escaper, new String((byte[])o));
         } else if (o instanceof String) {
+            // sad this is that this cannont be unwrapped because string cannot be reimplemnented or extended.
+            // But many methods, want a String, not a CharSequence.
+            // 22.
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
