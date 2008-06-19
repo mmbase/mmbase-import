@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.37 2008-06-13 13:56:23 nklasens Exp $
+ * @version $Id: ComponentRepository.java,v 1.38 2008-06-19 20:47:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -176,10 +176,16 @@ public class ComponentRepository {
             for (URL url : loader.getResourceList(resource)) {
                 try {
                     if (url.openConnection().getDoInput()) {
+                        String namespace = ResourceLoader.getDocument(url, false, null).getDocumentElement().getNamespaceURI();
 
+                        if (!NAMESPACE_COMPONENT.equals(namespace)) {
+                            log.debug("Ignoring " + url  + " because namespace is not " + NAMESPACE_COMPONENT + ", but " + namespace);
+                            continue;
+
+                        }
                         Document doc = ResourceLoader.getDocument(url, true, getClass());
                         Element documentElement = doc.getDocumentElement();
-                        String namespace = documentElement.getNamespaceURI();
+
                         if (documentElement.getTagName().equals("component")) {
                             String name = documentElement.getAttribute("name");
                             String fileName = ResourceLoader.getName(resource);
