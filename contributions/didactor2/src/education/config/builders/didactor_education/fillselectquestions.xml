@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="fillselectquestions" maintainer="didactor.nl" version="2" extends="questions">
-  <classfile>nl.didactor.education.builders.MCQuestionBuilder</classfile>
+  <class>nl.didactor.education.builders.MCQuestionBuilder</class>
   <searchage>31</searchage>
 
   <names>
