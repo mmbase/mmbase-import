@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.25 2008-06-04 14:11:14 michiel Exp $
+      @version $Id: relate.tagx,v 1.26 2008-06-19 12:23:51 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -29,7 +29,7 @@
                            description="Whether, or not, the tools should also allow deletion of relations" />
 
   <jsp:directive.attribute name="create"             type="java.lang.Boolean"
-                           description="Whether, or not, the tools should also allow creation of new nodes" />
+                           description="Whether, or not, the tools should also allow creation of new nodes. Defaults to 'false'." />
 
   <jsp:directive.attribute name="transaction "       type="java.lang.String"
                            description="The name of the mmbase transaction to be used" />
