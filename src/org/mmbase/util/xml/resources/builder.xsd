@@ -129,7 +129,7 @@
         <xsd:element ref="dt:datatype"     minOccurs="0" />
         <xsd:element ref="db"     minOccurs="0" />
       </xsd:all>
-      <xsd:attribute name="name" type="xsd:ID" />
+      <xsd:attribute name="name" type="xsd:string" />
       <xsd:attribute name="state">
         <xsd:simpleType>
           <xsd:restriction base="xsd:string">
