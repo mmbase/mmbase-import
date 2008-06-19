@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.174 2008-06-17 10:01:33 michiel Exp $
+$Id: build.xml,v 1.175 2008-06-19 18:52:20 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -1092,28 +1092,10 @@ Build-compiler: ${build.compiler}
 
   </target>
 
-  <target name="javacc.install">
-    <antcall target="downloadgz">
-      <param name="sourcefile" value="${javacc.loc}"/>
-      <param name="destfile" value="${javacc.dest}"/>
-      <param name="expandedfile" value="${javacc.dir}"/>
-    </antcall>
-  </target>
 
-  <target name="javacc" depends="javacc.install">
-    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/dateparser"/>
-    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/tranformers"/>
-    <echo message="${javacc.dir}" />
-    <javacc
-        target="${source-src.dir}/org/mmbase/util/dateparser/DateParser.jj"
-        outputdirectory="${generated-source-src.dir}/org/mmbase/util/dateparser"
-        javacchome="${javacc.dir}"
-        />
-    <javacc
-        target="${source-src.dir}/org/mmbase/util/transformers/ListParser.jj"
-        outputdirectory="${generated-source-src.dir}/org/mmbase/util/tranformers"
-        javacchome="${javacc.dir}"
-        />
+
+  <target name="javacc">
+    <ant antfile="javacc.xml" />
   </target>
 
   <!-- =================================================================== -->
