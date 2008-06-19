@@ -54,7 +54,7 @@
       <editor><positions><list>2</list></positions></editor>
       <datatype base="integer"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="1" />
-        <requred value="true" />
+        <required value="true" />
         <enumeration>
           <entry value="1" xml:lang="nl" display="Werkgroep (alleen door docenten aan te passen)" />
           <entry value="1" xml:lang="en" display="Work group (modifiable only by teachers)" />
