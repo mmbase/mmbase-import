@@ -13,10 +13,15 @@
   <mm:import externid="role">posrel</mm:import>
   <mm:import externid="fields" />
   <mm:import externid="li" />
+  <mm:import externid="precreate" />
 
   <mm:cloud method="asis">
     <mm:node id="source" referid="source" />
-    <mm:createnode type="${type}" id="d"  />
+    <mm:createnode type="${type}" id="d" >
+      <c:if test="${! empty precreate}">
+        <mm:include page="${precreate}" />
+      </c:if>
+    </mm:createnode>
 
     <mm:createrelation source="source" destination="d" role="${role}" />
     <mm:node referid="d">
