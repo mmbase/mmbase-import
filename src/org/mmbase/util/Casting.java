@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.110 2008-04-11 14:50:41 nklasens Exp $
+ * @version $Id: Casting.java,v 1.111 2008-06-19 13:03:18 michiel Exp $
  */
 
 import java.util.*;
@@ -210,11 +210,12 @@ public class Casting {
             } else if (type.equals(java.util.regex.Pattern.class)) {
                 return (C) java.util.regex.Pattern.compile(toString(value));
             } else {
+                log.error("Don't know how to convert to " + type);
                 if (value == null || "".equals(value)) {
                     // just to avoid the error
                     return null;
                 }
-                log.error("Dont know how to convert to " + type);
+
                 // don't know
                 return (C) value;
             }
@@ -340,7 +341,14 @@ public class Casting {
                         NodeManager nm = getNodeManager();
                         if (nm.hasField(fieldName)) {
                             switch(nm.getField(fieldName).getType()) {
-                            case org.mmbase.bridge.Field.TYPE_NODE:     return wrap(getNodeValue(fieldName), escaper);
+                            case org.mmbase.bridge.Field.TYPE_NODE:
+                                // I don't understand why, but the 'number' field is of type NODE,
+                                // which makes no sense whatsoever.
+                                if (! "number".equals(fieldName)) {
+                                    return wrap(getNodeValue(fieldName), escaper);
+                                } else {
+                                    return super.getStringValue(fieldName);
+                                }
                             case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
                             case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
                             default: return escape(escaper, super.getStringValue(fieldName));
