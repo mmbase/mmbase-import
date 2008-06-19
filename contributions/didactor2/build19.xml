@@ -25,7 +25,7 @@
   <property name="download.dir"           location="${basedir}" />
   <property name="war.dir"                value="${build.dir}" />
 
-  <property name="mmbase.version"         value="1.9.0-beta" />
+  <property name="mmbase.version"         value="1.9.0-SNAPSHOT" />
   <property name="mmbase.distro.location" value="http://www.mmbase.org/maven/mmbase/wars" />
   <property name="mmbase.war"             value="example-${mmbase.version}.war" />
   <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.war}" />
@@ -97,8 +97,8 @@
   <target name="webapp"
           depends="create.dirs,build,mmbase.distro">
     <copy todir="${build.webapp.dir}" preservelastmodified="true">
-      <fileset dir="${build.dir}/mmbase/">
-        <include name="**"/>
+      <fileset dir="${build.dir}/mmbase">
+        <include name="mmbase/**"/>
       </fileset>
     </copy>
     <copy todir="${build.webapp.dir}/WEB-INF/lib" preservelastmodified="true">
