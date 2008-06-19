@@ -46,7 +46,7 @@
 		</c:if>
 		
 		<mm:node number="${param.parent}">
-			<mm:relatednodes type="pagealias" orderby="${orderby}" directions="${orderdir}">
+			<mm:relatednodes type="pagealias" role="navrel" orderby="${orderby}" directions="${orderdir}" searchdir="destination">
 			      <mm:first>
 			          <table>
 			            <thead>
@@ -62,13 +62,13 @@
       
 
 				<c:set var="targetUrl" value=""/>
-				<mm:relatednodes type="urls">
+				<mm:relatednodes type="urls" role="related" searchdir="destination" >
 					<c:set var="targetName"><mm:field name="name"/></c:set>
 					<c:set var="targetUrl"><mm:field name="url"/></c:set>
 					<c:set var="targetType" value="url"/>
 					<c:set var="targetIcon" value="urls.png"/>
 				</mm:relatednodes>
-				<mm:relatednodes path="page" searchdir="destination" jspvar="node">
+				<mm:relatednodes type="page" role="related" searchdir="destination" jspvar="node">
 					<mm:import id="pagepath">../../<%= NavigationUtil.getPathToRootString(node, !ServerUtil.useServerName()) %></mm:import>
 					<c:set var="targetName"><mm:field name="title"/></c:set>
 					<c:set var="targetUrl"><mm:write referid="pagepath"/></c:set>
@@ -105,11 +105,11 @@
 							${targetName} (${targetUrl})
 						</c:if>
 					</td>
-					
+					<%-- Turned off, because the workflow on Aliases don't work yet! Jj and Nico. 
 					<c:if test="${hasWorkflow}">
 					    <td width="10" onMouseDown="objClick(this);">
 					        <c:set var="status" value="waiting"/>
-					        <mm:relatednodes type="workflowitem">
+					        <mm:relatednodes type="workflowitem" role="workflowrel" searchdir="source">
 					            <c:set var="status"><mm:field name="status"/></c:set>
 					        </mm:relatednodes>
 					        <c:if test="${status == 'waiting'}">
@@ -123,6 +123,7 @@
 					             title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />"/>
 					    </td>
 					</c:if>
+					--%>
 				</tr>				
 		      <mm:last>
 		            </tbody>
