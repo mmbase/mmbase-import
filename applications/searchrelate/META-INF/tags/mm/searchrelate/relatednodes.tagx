@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.8 2008-06-05 13:34:24 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.9 2008-06-19 12:23:51 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -31,6 +31,13 @@
                            />
   <jsp:directive.attribute name="li"           type="java.lang.String"
                            description="Jsp to use to present one li-item, can be empty for a default presentation."
+                           />
+  <jsp:directive.attribute name="precreate"           type="java.lang.String"
+                           description="Jsp to call just before commit of the create node."
+                           />
+
+  <jsp:directive.attribute name="alt"           type="java.lang.String"
+                           description="Alt text for the create-button. Defaults to '+'."
                            />
 
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
@@ -69,9 +76,11 @@
         <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
 
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?">
+                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?,precreate?">
           <a href="${_}" class="create">
-            <img class="icon" alt="+" src="${icons}/create.png" />
+            <img class="icon"
+                 alt="${empty alt ? '+' : alt}"
+                 src="${icons}/create.png" />
           </a>
         </mm:link>
         <span class="status">...</span>
