@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.243 2008-06-13 09:56:22 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.244 2008-06-19 21:04:10 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1032,14 +1032,14 @@ public class MMBase extends ProcessorModule {
                 return null;
             }
             if (! parser.getRootElement().getTagName().equals("builder")) {
-                log.service(ipath + builderName + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
+                log.service(parser.getSystemId() + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
                 loading.remove(builderName);
                 return null;
             }
 
             String status = parser.getStatus();
             if (status.equals("active")) {
-                log.service("Starting builder: " + builderName);
+                log.service("Starting builder: " + parser.getSystemId());
                 Class newclass;
                 try {
                     String classname = parser.getClassName();
@@ -1328,6 +1328,7 @@ public class MMBase extends ProcessorModule {
 
         if (! dataDir.isAbsolute()) {
             if (sc != null && sc.getRealPath("/" + dataDirString) != null) {
+                log.info(" "  + sc.getRealPath("/" + dataDirString));
                 dataDir = new File(sc.getRealPath("/" + dataDirString));
             } else {
                 dataDir = new File(System.getProperty("user.dir"), dataDirString);
