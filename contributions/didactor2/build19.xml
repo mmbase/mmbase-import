@@ -207,7 +207,7 @@
               preservelastmodified="true">
           <fileset
               defaultexcludes="${defaultexcludes}"
-              dir="src/${component}/lib18">
+              dir="src/${component}/lib19">
             <include name="**"/>
           </fileset>
         </copy>
