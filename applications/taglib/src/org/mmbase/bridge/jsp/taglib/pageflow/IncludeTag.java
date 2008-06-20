@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.86 2008-03-06 13:57:45 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.87 2008-06-20 16:05:48 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -106,6 +106,7 @@ public class IncludeTag extends UrlTag {
     }
     */
 
+    @Override
     protected String getPage() throws JspTagException {
         if (resource != Attribute.NULL) return resource.getString(this);
         return super.getPage();
@@ -120,6 +121,7 @@ public class IncludeTag extends UrlTag {
             throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
         }
     }
+    @Override
     public int doStartTag() throws JspTagException {
         checkAttributes();
         initTag(true);
@@ -127,6 +129,7 @@ public class IncludeTag extends UrlTag {
     }
 
 
+    @Override
     protected void doAfterBodySetValue() throws JspTagException {
         try {
             includePage();
@@ -238,7 +241,7 @@ public class IncludeTag extends UrlTag {
      */
     protected void handleResponse(int code, String result, String url) throws JspTagException {
         pageContext.setAttribute("_responseCode", code);
-        log.info("" + code);
+        log.debug("" + code);
         String output;
         switch(code) {
         case -2:
@@ -424,7 +427,7 @@ public class IncludeTag extends UrlTag {
             String gotUrl = url == null ? null : url.get(false);
             if (gotUrl == null) {
                 gotUrl = page.getString(this);
-                pageLog.service("No URL object found, using: " + gotUrl);
+                pageLog.service("No URL object found (" + url + "), using: " + gotUrl);
             }
 
             if (gotUrl == null || "".equals(gotUrl)) {
