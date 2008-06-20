@@ -31,22 +31,26 @@
                 maxdepth="6">
               <mm:first inverse="true">
                 <mm:nodeinfo type="type">
-                  <mm:haspage page="/education/wizards/show/${_}.jspx">
-                    <mm:include page="/education/wizards/show/${_}.jspx"
+                  <mm:treehaspage page="/education/wizards/show/${_}.jspx" objectlist="$includePath">
+                    <mm:treeinclude page="/education/wizards/show/${_}.jspx"
+                                    objectlist="$includePath"
+                                    attributes="status@b"
+                                    referids="branchPath"
+                                    debug="html"
+                                    >
+                    </mm:treeinclude>
+                  </mm:treehaspage>
+                  <mm:treehaspage page="/education/wizards/show/${_}.jspx"
+                                  objectlist="$includePath"
+                                  inverse="true">
+                    <mm:treeinclude page="/education/wizards/showlearnobject.jsp"
+                                    objectlist="$includePath"
                                 attributes="status@b"
-                                referids="branchPath"
-                                debug="html"
-                                >
-                    </mm:include>
-                  </mm:haspage>
-                  <mm:haspage page="/education/wizards/show/${_}.jspx" inverse="true">
-                    <mm:include page="/education/wizards/showlearnobject.jsp"
-                                attributes="status@b"
                                 debug="html"
                                 referids="branchPath"
                                 >
-                    </mm:include>
-                  </mm:haspage>
+                    </mm:treeinclude>
+                  </mm:treehaspage>
                 </mm:nodeinfo>
               </mm:first>
               <mm:shrink />
