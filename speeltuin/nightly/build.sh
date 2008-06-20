@@ -26,8 +26,8 @@ echo generating version, and some directories
 
 version=`date -u '+%Y-%m-%d'`
 cvsversionoption="-D"
-cvsversion=`date -u '+%Y-%m-%d %H:%M'`
-#revision="-A"
+cvsversion=`date  '+%Y-%m-%d %H:%M'`
+revision="-A"
 #revision="-A"
 
 #version="MMBase-1.9.0.beta"
@@ -53,8 +53,8 @@ if [ 1 == 1 ] ; then
 
     pwd
     echo "CVS" | tee -a ${builddir}/messages.log
-    echo ${CVS} -q update -d -P  ${cvsversionoption} ${cvsversion} | tee -a ${builddir}/message.log
-    ${CVS} -q update -d -P  ${cvsversionoption} "${cvsversion}"  | tee -a ${builddir}/messages.log
+    echo ${CVS} update -d -P  ${cvsversionoption} ${cvsversion} ${revision} | tee -a ${builddir}/messages.log
+    ${CVS} update -d -P  ${cvsversionoption} "${cvsversion}"  ${revision} | tee -a ${builddir}/messages.log
     
     
     echo Starting nightly build
