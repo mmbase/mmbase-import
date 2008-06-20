@@ -24,12 +24,15 @@ export MAILADDRESS=${CCMAILADDRESS}
 
 echo generating version, and some directories
 
-#version=`date '+%Y-%m-%d'`
-#cvsversion=`date '+%Y-%m-%d %H:%M'`
+version=`date -u '+%Y-%m-%d'`
+cvsversionoption="-D"
+cvsversion=`date -u '+%Y-%m-%d %H:%M'`
+#revision="-A"
+#revision="-A"
 
-version="MMBase-1.9.0.beta"
-cvsversion=
-revision="MMBase-1_9_0_beta"
+#version="MMBase-1.9.0.beta"
+#cvsversion=
+#revision="MMBase-1_9_0_beta"
 
 dir=${version}
 
@@ -49,8 +52,9 @@ if [ 1 == 1 ] ; then
     find . -type d -name target -print|xargs rm -rf 
 
     pwd
-    echo ${CVS} -q update -d -P  ${cvsversion} -r ${revision} 
-    ${CVS} -q update -d -P  ${cvsversion} -r ${revision} | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
+    echo "CVS" | tee -a ${builddir}/messages.log
+    echo ${CVS} -q update -d -P  ${cvsversionoption} ${cvsversion} | tee -a ${builddir}/message.log
+    ${CVS} -q update -d -P  ${cvsversionoption} "${cvsversion}"  | tee -a ${builddir}/messages.log
     
     
     echo Starting nightly build
