@@ -13,7 +13,7 @@ import java.util.regex.*;
  * If you make an 'education' typed field, it will be autoamticly filled with the current user's education.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Education.java,v 1.2 2008-06-19 16:32:08 michiel Exp $
+ * @version $Id: Education.java,v 1.3 2008-06-20 10:09:50 michiel Exp $
  */
 public class Education extends NodeDataType  {
     private static final Logger log = Logging.getLoggerInstance(Education.class);
@@ -25,7 +25,6 @@ public class Education extends NodeDataType  {
 
     @Override
     public Node getDefaultValue(Locale locale, Cloud cloud, Field field) {
-        log.info("Getting default value for " + field, new Exception());
         if (cloud == null) {
             log.service("no cloud, returning null");
             if (field == null) return null;
