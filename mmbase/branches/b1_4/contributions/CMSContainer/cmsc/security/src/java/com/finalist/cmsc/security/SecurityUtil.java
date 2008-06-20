@@ -154,20 +154,11 @@ public class SecurityUtil {
 		            Node extraGroup = groups.getNode(i);
 		            fillChannelsWithRole(extraGroup, extraRoles, treeManagers, relationName);
 
-		            for (Map.Entry<String, UserRole> entry : channelsWithRole.entrySet()) {
-		                String path = entry.getKey();
-		                UserRole channelRole = entry.getValue();
-		                UserRole extraRole = getRole(path, extraRoles);
-		                if (extraRole != null && channelRole.getRole().getId() < extraRole.getRole().getId()) {
-		                    channelsWithRole.put(path, extraRole);
-		                }
-		            }
-		            
 		            for (Map.Entry<String, UserRole> entry : extraRoles.entrySet()) {
 		                String extraPath = entry.getKey();
 		                UserRole extraRole = entry.getValue();
 		                UserRole channelRole = getRole(extraPath, channelsWithRole);
-		                if (channelRole != null && channelRole.getRole().getId() < extraRole.getRole().getId()) {
+		                if (channelRole == null || channelRole.getRole().getId() < extraRole.getRole().getId()) {
 		                    channelsWithRole.put(extraPath, extraRole);
 		                }
 		            }
