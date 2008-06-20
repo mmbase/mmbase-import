@@ -198,6 +198,19 @@
         </copy>
       </then>
     </if>
+    <if>
+      <available file="src/${component}/lib18" type="dir" />
+      <then>
+        <copy todir="${build.webapp.dir}/WEB-INF/lib"
+              preservelastmodified="true">
+          <fileset
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/lib18">
+            <include name="**"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
 
     <if>
       <available file="src/${component}/config" type="dir"/>
