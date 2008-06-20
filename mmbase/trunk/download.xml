@@ -13,7 +13,7 @@
     <available property="download.dir.present" file="${download.dir}" />
 
     <antcall target="unzipdownloadzip" />
-
+    <echo message="Making ${download.dir}" />
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
@@ -43,7 +43,7 @@
     <available file="${expandedfile}" property="expanded"/>
   </target>
 
-  <target name="download" unless="exist" depends="setproxy,testexist">
+  <target name="download" unless="exist" depends="setproxy,testexist,init.get">
     <!-- Download the package -->
     <get src="${sourcefile}" dest="${destfile}" verbose="on" />
   </target>
