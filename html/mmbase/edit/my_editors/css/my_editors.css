@@ -179,7 +179,6 @@ label
     width: 12%;
     text-align: right;
     padding-right: 6px;
-    padding-top: 2px;
 }
 
 input
@@ -512,12 +511,7 @@ tr.even:hover { background-color: #d8e8d8; }
     padding: 4px;
 }
 
-/* label for relation fields */
-label.rel
-{
-    width: 4.5em;
-    font-weight: bold;
-}
+.editrelation label { width: 20%; }
 
 #relationssource .small, #relationsdestination .small
 {
