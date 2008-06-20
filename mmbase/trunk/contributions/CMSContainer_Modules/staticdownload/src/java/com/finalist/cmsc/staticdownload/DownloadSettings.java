@@ -14,9 +14,10 @@ public class DownloadSettings {
    private String wgetPath;
    private String downloadUrl;
    private ServletContext servletContext;
+   private String webappName;
 
 
-   public DownloadSettings(int level, String targetPath, String storePath, String wgetPath, String downloadUrl,
+   public DownloadSettings(int level, String targetPath, String storePath, String wgetPath, String downloadUrl,String webappName,
          ServletContext servletContext) {
       this.level = level;
       this.tempPath = targetPath;
@@ -24,6 +25,7 @@ public class DownloadSettings {
       this.wgetPath = wgetPath;
       this.downloadUrl = downloadUrl;
       this.servletContext = servletContext;
+      this.webappName = webappName; 
    }
 
 
@@ -55,5 +57,12 @@ public class DownloadSettings {
    public ServletContext getServletContext() {
       return servletContext;
    }
+
+
+public String getWebappName() {
+	return webappName;
+}
+
+
 
 }
