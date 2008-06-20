@@ -83,7 +83,7 @@
   <target name="mmbase.distro.exists">
     <echo message="Using MMBase ${mmbase.version}" />
     <available file="${mmbase.dest}" property="mmbase.distro.exists"/>
-    <available file="${build.dir}/mmbase" property="mmbase.distro.expanded.exists"/>
+    <available file="${build.dir}/mmbase/WEB-INF/lib" property="mmbase.distro.expanded.exists"/>
   </target>
   <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
     <mkdir dir="${download.dir}" />
