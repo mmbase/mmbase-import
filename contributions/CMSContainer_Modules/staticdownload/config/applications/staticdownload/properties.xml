@@ -12,7 +12,7 @@
 	</node>
 	<node number="984552" owner="admin">
 		<key>staticdownload.wgeturl</key>
-		<value>.../wget</value>
+		<value>...\wget</value>
 		<module>staticdownload</module>
 	</node>
 	<node number="984553" owner="admin">
@@ -25,4 +25,9 @@
 		<value></value>
 		<module>staticdownload</module>
 	</node>
+	<node number="984555" owner="admin">
+      <key>staticdownload.webappName</key>
+      <value></value>
+      <module>staticdownload</module>
+   </node>
 </properties>

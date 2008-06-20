@@ -21,10 +21,11 @@ public class StartTag extends SimpleTagSupport {
       String liveUrl = PropertiesUtil.getProperty("staticdownload.liveurl");
       String tempPath = PropertiesUtil.getProperty("staticdownload.temppath");
       String storePath = PropertiesUtil.getProperty("staticdownload.storepath");
-      String wgetPath = PropertiesUtil.getProperty("staticdownload.wgetpath");
+      String wgetPath = PropertiesUtil.getProperty("staticdownload.wgeturl");
       String downloadUrl = PropertiesUtil.getProperty("staticdownload.downloadurl");
-      DownloadSettings downloadSettings = new DownloadSettings(50, tempPath, storePath, wgetPath, downloadUrl, ctx
-            .getServletContext());
+      String webappName = PropertiesUtil.getProperty("staticdownload.webappName");
+      DownloadSettings downloadSettings = new DownloadSettings(50, tempPath, storePath, wgetPath, downloadUrl,webappName, 
+    		  ctx.getServletContext());
 
       // DownloadThread downloadThread = new
       // DownloadThread("http://www.cmscontainer.org", downloadSettings);
