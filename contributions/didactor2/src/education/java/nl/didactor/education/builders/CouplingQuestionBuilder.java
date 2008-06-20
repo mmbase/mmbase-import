@@ -11,7 +11,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This builder class can score the answer given to a Coupling
  * question.
- * @version $Id: CouplingQuestionBuilder.java,v 1.2 2008-06-20 12:37:39 michiel Exp $
+ * @version $Id: CouplingQuestionBuilder.java,v 1.3 2008-06-20 12:43:45 michiel Exp $
  */
 public class CouplingQuestionBuilder extends QuestionBuilder {
 
@@ -121,7 +121,7 @@ public class CouplingQuestionBuilder extends QuestionBuilder {
             // All tests OK: this is a correct answer
             return 1;
 
-        } catch (SearchQueryException e) {
+        } catch (Throwable e) { // only needed in mmbase 1.8
             log.error(e.getMessage(), e);
         }
         return 1;

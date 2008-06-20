@@ -4,6 +4,8 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.corebuilders.RelDef;
 import java.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This builder class can score the answer given to a Ranking
@@ -11,8 +13,9 @@ import java.util.*;
  */
 public class RankingQuestionBuilder extends QuestionBuilder {
 
+    private static final Logger log = Logging.getLoggerInstance(RankingQuestionBuilder.class);
     /**
-     * Get the score for the given answer to a question. 
+     * Get the score for the given answer to a question.
      */
     public int getScore(MMObjectNode questionNode, MMObjectNode givenAnswer) {
         int score = givenAnswer.getIntValue("score");
@@ -37,7 +40,7 @@ public class RankingQuestionBuilder extends QuestionBuilder {
         BasicStep nodeStep;
         BasicStepField posfield;
         int posrel = rdef.getNumberByName("posrel");
-                
+
         // Builde the query for the given answers
         BasicSearchQuery givenQuery = new BasicSearchQuery();
         bns = givenQuery.addStep(mmb.getBuilder("givenanswers"));
@@ -53,7 +56,7 @@ public class RankingQuestionBuilder extends QuestionBuilder {
             BasicStep bs = (BasicStep)givenQuery.getSteps().get(i);
             givenQuery.addFields(bs);
         }
-       
+
         // Build the query for the good answers
         BasicSearchQuery goodQuery = new BasicSearchQuery();
         bns = goodQuery.addStep(mmb.getBuilder("rankingquestions"));
@@ -73,12 +76,12 @@ public class RankingQuestionBuilder extends QuestionBuilder {
         try {
             List givenAnswers = cb.getClusterNodes(givenQuery);
             List goodAnswers = cb.getClusterNodes(goodQuery);
-    
+
             if (givenAnswers.size() != goodAnswers.size()) {
                 System.err.println("goodAnswers.size() = " + goodAnswers.size() + ", givenAnswers.size() = " + givenAnswers.size());
                 return 0;
             }
-    
+
             for (int i=0; i<givenAnswers.size(); i++) {
                 MMObjectNode theGivenAnswer = (MMObjectNode)givenAnswers.get(i);
                 MMObjectNode goodAnswer = (MMObjectNode)goodAnswers.get(i);
@@ -87,9 +90,8 @@ public class RankingQuestionBuilder extends QuestionBuilder {
                     return 0;
                 }
             }
-        } catch (SearchQueryException e) {
-            System.err.println("Exception while performing query: " + e);
-            e.printStackTrace(System.err);
+        } catch (Throwable e) { // only needed in mmbase 1.8
+            log.error(e.getMessage(), e);
         }
 
         return 1;
