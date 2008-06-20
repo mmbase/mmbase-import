@@ -73,6 +73,10 @@
       :<mm:escape><jsp:expression>url</jsp:expression></mm:escape>
     </mm:write>
 
+    <!-- implicit write -->
+    <mm:import id="test"><mm:link absolute="context" page="/justsomeurl" /></mm:import>
+    <p>${test eq '/justsomeurl' ? 'ok' : 'NOT ok'}: '${test}' NE '/justsomeurl' </p>
+
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
 
