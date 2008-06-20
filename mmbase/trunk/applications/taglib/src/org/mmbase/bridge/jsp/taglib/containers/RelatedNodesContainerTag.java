@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.17 2008-02-26 17:06:44 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.18 2008-06-20 14:38:54 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -85,7 +85,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                                   (String) role.getValue(this), (String) searchDirs.getValue(this));
                 query.setNodeStep(relationStep.getNext());
-                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
+                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer");
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
