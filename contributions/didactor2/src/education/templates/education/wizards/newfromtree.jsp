@@ -12,18 +12,20 @@
 
   <mm:stringlist referid="new_learnobjects">
 
-    <mm:haspage page="/education/wizards/new/${_}.jspx">
+    <mm:treehaspage
+        page="/education/wizards/new/${_}.jspx"  objectlist="$includePath">
+
       <mm:treeinclude page="/education/wizards/new/${_}.jspx"
                       objectlist="$includePath"
                       debug="html"
                       referids="$referids,branchPath">
       </mm:treeinclude>
-    </mm:haspage>
-    <mm:haspage page="/education/wizards/new/${_}.jspx" inverse="true">
+    </mm:treehaspage>
+    <mm:treehaspage page="/education/wizards/new/${_}.jspx" objectlist="$includePath" inverse="true">
       <di:leaf>
         NO /education/wizards/new/${_}.jspx
       </di:leaf>
-    </mm:haspage>
+    </mm:treehaspage>
   </mm:stringlist>
 
 
