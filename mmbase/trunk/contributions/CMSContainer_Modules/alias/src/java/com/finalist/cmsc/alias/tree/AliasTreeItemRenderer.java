@@ -23,6 +23,7 @@ import com.finalist.util.module.ModuleUtil;
 
 public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
 
+    private static final int COLLAPSE_AMOUNT = 5;
     private static final String RESOURCEBUNDLE = "cmsc-modules-alias";
     private static final String FEATURE_WORKFLOW = "workflowitem";
     
@@ -34,7 +35,7 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
          String id = null;
          
          NodeList parentParentAliasses = parentParentNode.getRelatedNodes("pagealias");
-         if(parentParentAliasses.size() >= 5) {
+         if(parentParentAliasses.size() >= COLLAPSE_AMOUNT) {
 	         if(parentNode.getNumber() == parentParentAliasses.getNode(0).getNumber()) {
 	        	 String icon = renderer.getIcon("pagealias_stacked", role); 
 	        	 String label = parentParentAliasses.size()+" "+renderer.getLabel("site.alias.stacked", RESOURCEBUNDLE);

@@ -11,12 +11,17 @@ import com.finalist.cmsc.alias.publish.AliasPublisher;
 import com.finalist.cmsc.alias.tree.AliasTreeItemRenderer;
 import com.finalist.cmsc.alias.util.AliasUtil;
 import com.finalist.cmsc.beans.om.NavigationItem;
+import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.*;
 
 public class AliasNavigationItemManager implements NavigationItemManager {
 
-    private static final Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
-	
+   private static final String RELATED = "related";
+
+   private static final String DESTINATION = "destination";
+
+   private static final Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
+
 	private NavigationItemRenderer renderer = new AliasNavigationRenderer();
 	private NavigationTreeItemRenderer treeRenderer = new AliasTreeItemRenderer();
 
@@ -39,18 +44,18 @@ public class AliasNavigationItemManager implements NavigationItemManager {
         }
 
         Alias alias = MMBaseNodeMapper.copyNode(node, Alias.class);
-        NodeList relatedPages = node.getRelatedNodes("page", "related", "destination");
+        NodeList relatedPages = node.getRelatedNodes(PagesUtil.PAGE, RELATED, DESTINATION);
         if(relatedPages.size() > 0) {
             Node page = relatedPages.getNode(0);
             alias.setPage(page.getNumber());
         }
 
-        NodeList relatedUrls = node.getRelatedNodes("urls", "related", "destination");
+        NodeList relatedUrls = node.getRelatedNodes(ResourcesUtil.URLS, RELATED, DESTINATION);
         if(relatedUrls.size() > 0) {
             Node url = relatedUrls.getNode(0);
             alias.setUrl(url.getStringValue("url"));
         }
-        
+
         return alias;
 	}
 
