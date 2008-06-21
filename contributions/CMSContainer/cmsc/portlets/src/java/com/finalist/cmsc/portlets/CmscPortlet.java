@@ -2,15 +2,32 @@ package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
 
-import javax.portlet.*;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.GenericPortlet;
+import javax.portlet.PortletException;
+import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.WindowState;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
-import net.sf.mmapps.commons.bridge.CloudUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -28,15 +45,24 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
-import com.finalist.pluto.portalImpl.core.*;
+import com.finalist.pluto.portalImpl.core.CmscPortletMode;
+import com.finalist.pluto.portalImpl.core.PortalEnvironment;
+import com.finalist.pluto.portalImpl.core.PortalURL;
+
+import net.sf.mmapps.commons.bridge.CloudUtil;
 
 @SuppressWarnings("unused")
 public class CmscPortlet extends GenericPortlet {
 
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
-   private static Properties routings;
-   private Log log;
 
+   private static final String NODEPARAM_PREFIX = "nodeparam_";
+
+   private static final String PARAM_PREFIX = "param_";
+
+   private static Properties routings;
+
+   private Log log;
 
    protected Log getLogger() {
       if (log == null) {
@@ -47,8 +73,8 @@ public class CmscPortlet extends GenericPortlet {
 
    @Override
    public void init() throws PortletException {
-        super.init();
-        initRoutingRules();
+      super.init();
+      initRoutingRules();
    }
 
    /**
@@ -56,7 +82,8 @@ public class CmscPortlet extends GenericPortlet {
     *      javax.portlet.ActionResponse)
     */
    @Override
-   public void processAction(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processAction(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       if (getLogger().isDebugEnabled()) {
          getLogger().debug("===> process " + getPortletName() + " mode = " + req.getPortletMode());
       }
@@ -65,62 +92,75 @@ public class CmscPortlet extends GenericPortlet {
       if (mode.equals(PortletMode.VIEW)) {
          processView(req, res);
       }
-      else if (mode.equals(CmscPortletMode.ABOUT)) {
-         processAbout(req, res);
-      }
-      else if (mode.equals(CmscPortletMode.CONFIG)) {
-         processConfig(req, res);
-      }
-      else if (mode.equals(PortletMode.EDIT)) {
-         processEdit(req, res);
-      }
-      else if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
-         processEditDefaults(req, res);
-      }
-      else if (mode.equals(PortletMode.HELP)) {
-         processHelp(req, res);
-      }
-      else if (mode.equals(CmscPortletMode.PREVIEW)) {
-         processPreview(req, res);
-      }
-      else if (mode.equals(CmscPortletMode.PRINT)) {
-         processPrint(req, res);
-      }
-      else {
-         throw new PortletException(mode.toString());
-      }
+      else
+         if (mode.equals(CmscPortletMode.ABOUT)) {
+            processAbout(req, res);
+         }
+         else
+            if (mode.equals(CmscPortletMode.CONFIG)) {
+               processConfig(req, res);
+            }
+            else
+               if (mode.equals(PortletMode.EDIT)) {
+                  processEdit(req, res);
+               }
+               else
+                  if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
+                     processEditDefaults(req, res);
+                  }
+                  else
+                     if (mode.equals(PortletMode.HELP)) {
+                        processHelp(req, res);
+                     }
+                     else
+                        if (mode.equals(CmscPortletMode.PREVIEW)) {
+                           processPreview(req, res);
+                        }
+                        else
+                           if (mode.equals(CmscPortletMode.PRINT)) {
+                              processPrint(req, res);
+                           }
+                           else {
+                              throw new PortletException(mode.toString());
+                           }
    }
 
-
-   public void processPrint(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processPrint(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
-
-   public void processPreview(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processPreview(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
-
-   public void processHelp(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processHelp(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
-
-   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processEditDefaults(ActionRequest request, ActionResponse response)
+         throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
       if (portletId != null) {
-         for (Enumeration<String> iterator = request.getParameterNames(); iterator.hasMoreElements();) {
-            String name = iterator.nextElement();
-            String[] values = request.getParameterValues(name);
-            if (name.startsWith("node.")) {
-               setPortletNodeParameter(portletId, name.substring("node.".length()), values);
+         for (Enumeration<String> iterator = request.getParameterNames(); iterator
+               .hasMoreElements();) {
+            String parameterName = iterator.nextElement();
+
+            if (parameterName.toLowerCase().startsWith(PARAM_PREFIX)) {
+               String[] parameterValues = request.getParameterValues(parameterName);
+               setPortletParameter(portletId, parameterName.substring(PARAM_PREFIX.length()),
+                     parameterValues);
             }
-            else {
-               setPortletParameter(portletId, name, values);
+            if (parameterName.toLowerCase().startsWith(NODEPARAM_PREFIX)) {
+               String[] parameterValues = request.getParameterValues(parameterName);
+               setPortletParameter(portletId, parameterName.substring(NODEPARAM_PREFIX.length()),
+                     parameterValues);
             }
          }
+         saveParameters(request, portletId);
       }
       else {
          getLogger().error("No portletId");
@@ -129,37 +169,42 @@ public class CmscPortlet extends GenericPortlet {
       response.setPortletMode(PortletMode.VIEW);
    }
 
-
-   public void processEdit(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   protected void saveParameters(ActionRequest request, String portletId) {
       // convenience method
    }
 
-
-   public void processConfig(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processEdit(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
-
-   public void processAbout(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processConfig(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
-
-   public void processView(ActionRequest req, ActionResponse res) throws PortletException, IOException {
+   public void processAbout(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
       // convenience method
    }
 
+   public void processView(ActionRequest req, ActionResponse res) throws PortletException,
+         IOException {
+      // convenience method
+   }
 
    /**
     * @see javax.portlet.GenericPortlet#doDispatch(javax.portlet.RenderRequest,
     *      javax.portlet.RenderResponse)
     */
    @Override
-   protected void doDispatch(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doDispatch(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
 
       if (getLogger().isDebugEnabled()) {
          getLogger().debug(
-               "===> " + getPortletName() + " mode = " + req.getPortletMode() + " window = " + req.getWindowState());
+               "===> " + getPortletName() + " mode = " + req.getPortletMode() + " window = "
+                     + req.getWindowState());
       }
 
       WindowState state = req.getWindowState();
@@ -170,33 +215,39 @@ public class CmscPortlet extends GenericPortlet {
          if (mode.equals(PortletMode.VIEW)) {
             doView(req, res);
          }
-         else if (mode.equals(CmscPortletMode.ABOUT)) {
-            doAbout(req, res);
-         }
-         else if (mode.equals(CmscPortletMode.CONFIG)) {
-            doConfig(req, res);
-         }
-         else if (mode.equals(PortletMode.EDIT)) {
-            doEdit(req, res);
-         }
-         else if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
-            doEditDefaults(req, res);
-         }
-         else if (mode.equals(PortletMode.HELP)) {
-            doHelp(req, res);
-         }
-         else if (mode.equals(CmscPortletMode.PREVIEW)) {
-            doPreview(req, res);
-         }
-         else if (mode.equals(CmscPortletMode.PRINT)) {
-            doPrint(req, res);
-         }
-         else {
-            throw new PortletException(mode.toString());
-         }
+         else
+            if (mode.equals(CmscPortletMode.ABOUT)) {
+               doAbout(req, res);
+            }
+            else
+               if (mode.equals(CmscPortletMode.CONFIG)) {
+                  doConfig(req, res);
+               }
+               else
+                  if (mode.equals(PortletMode.EDIT)) {
+                     doEdit(req, res);
+                  }
+                  else
+                     if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
+                        doEditDefaults(req, res);
+                     }
+                     else
+                        if (mode.equals(PortletMode.HELP)) {
+                           doHelp(req, res);
+                        }
+                        else
+                           if (mode.equals(CmscPortletMode.PREVIEW)) {
+                              doPreview(req, res);
+                           }
+                           else
+                              if (mode.equals(CmscPortletMode.PRINT)) {
+                                 doPrint(req, res);
+                              }
+                              else {
+                                 throw new PortletException(mode.toString());
+                              }
       }
    }
-
 
    protected List<Locale> getLocales(RenderRequest request) {
       PortletMode mode = request.getPortletMode();
@@ -219,7 +270,6 @@ public class CmscPortlet extends GenericPortlet {
 
       return locales;
    }
-
 
    protected Locale getEditorLocale(RenderRequest request, Locale defaultLocale) {
       Locale editorsLocale = (Locale) request.getAttribute("editorsLocale");
@@ -244,7 +294,6 @@ public class CmscPortlet extends GenericPortlet {
       return editorsLocale;
    }
 
-
    private Locale getUserLocale(Cloud cloud) {
       Locale userLocale = null;
       String username = cloud.getUser().getIdentifier();
@@ -260,11 +309,10 @@ public class CmscPortlet extends GenericPortlet {
       return userLocale;
    }
 
-
    /**
-    * This will set both the primary and the secondary resource bundle (which is
-    * used when in edit modus)
-    *
+    * This will set both the primary and the secondary resource bundle (which is used when in edit
+    * modus)
+    * 
     * @param req
     * @param template
     */
@@ -337,52 +385,68 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    @Override
-   protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
+   protected void doView(RenderRequest req, RenderResponse res) throws PortletException,
+         java.io.IOException {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
 
       String contentType = req.getResponseContentType();
       String location = routings.getProperty(contentType);
 
-      log.debug(String.format("Use %s as view from %s",template,location));
+      log.debug(String.format("Use %s as view from %s", template, location));
       doInclude(location.trim(), template, req, res);
    }
 
-
    @Override
-   protected void doEdit(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doEdit(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
       doInclude("edit", template, req, res);
    }
 
-
    @Override
-   protected void doHelp(RenderRequest req, RenderResponse res) throws PortletException, IOException {
+   protected void doHelp(RenderRequest req, RenderResponse res) throws PortletException,
+         IOException {
       doInclude("help", null, req, res);
    }
 
-
-   protected void doAbout(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doAbout(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
       doInclude("about", null, req, res);
    }
 
-
-   protected void doConfig(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doConfig(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
       doInclude("config", null, req, res);
    }
 
-
-   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
+      PortletPreferences preferences = req.getPreferences();
+      for (Enumeration<String> iterator = preferences.getNames(); iterator.hasMoreElements();) {
+         String parameterName = iterator.nextElement();
+         if (req.getAttribute(parameterName) == null) {
+            String[] parameterValues = preferences.getValues(parameterName, null);
+            if (parameterValues != null && parameterValues.length != 0) {
+               if (parameterValues.length > 1) {
+                  List<String> values = Arrays.asList(parameterValues);
+                  setAttribute(req, parameterName, values);
+               }
+               else {
+                  setAttribute(req, parameterName, parameterValues[0]);
+               }
+            }
+         }
+      }
       doInclude("edit_defaults", null, req, res);
    }
 
-
    protected void addViewInfo(RenderRequest req) {
       PortletPreferences preferences = req.getPreferences();
-      String definitionId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_DEFINITIONID, null);
+      String definitionId = preferences
+            .getValue(PortalConstants.CMSC_OM_PORTLET_DEFINITIONID, null);
 
       List<View> views = SiteManagement.getViews(definitionId);
       setAttribute(req, "views", views);
@@ -393,19 +457,18 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
-   protected void doPreview(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doPreview(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
       doInclude("preview", null, req, res);
    }
 
-
-   protected void doPrint(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+   protected void doPrint(RenderRequest req, RenderResponse res) throws IOException,
+         PortletException {
       doInclude("print", null, req, res);
    }
 
-
-   protected void doInclude(String type, String template, RenderRequest request, RenderResponse response)
-         throws PortletException, IOException {
+   protected void doInclude(String type, String template, RenderRequest request,
+         RenderResponse response) throws PortletException, IOException {
       setResourceBundle(request, template);
 
       String contentType = request.getResponseContentType();
@@ -416,7 +479,6 @@ public class CmscPortlet extends GenericPortlet {
       PortletRequestDispatcher rd = getRequestDispatcher(type, template);
       rd.include(request, response);
    }
-
 
    protected PortletRequestDispatcher getRequestDispatcher(String type, String template) {
       String resourceExtension = "jsp";
@@ -436,15 +498,14 @@ public class CmscPortlet extends GenericPortlet {
 
    private boolean templateExists(String fullTemplate) {
       Set<String> webInfResources = getPortletContext().getResourcePaths(fullTemplate);
-      /* @see javax.servlet.ServletContext#getResourcePaths(String)
-       * getResourcePaths returns a Set containing the directory listing, or null
-       * if there are no resources in the web application whose path begins with the supplied path.
-       * we are using a full path instead of a partial path. webInfResources.isEmpty() is true when
-       * the resource exists
+      /*
+       * @see javax.servlet.ServletContext#getResourcePaths(String) getResourcePaths returns a Set
+       *      containing the directory listing, or null if there are no resources in the web
+       *      application whose path begins with the supplied path. we are using a full path instead
+       *      of a partial path. webInfResources.isEmpty() is true when the resource exists
        */
       return webInfResources != null;
    }
-
 
    protected String getTemplate(String type, String template, String resourceExtension) {
       String baseDir = getPortletContext().getInitParameter("cmsc.portal." + type + ".base.dir");
@@ -465,13 +526,13 @@ public class CmscPortlet extends GenericPortlet {
    }
 
    private String getAggregationDir() {
-      String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");
+      String aggregationDir = getPortletContext().getInitParameter(
+            "cmsc.portal.aggregation.base.dir");
       if (StringUtils.isEmpty(aggregationDir)) {
          aggregationDir = "/WEB-INF/templates/";
       }
       return aggregationDir;
    }
-
 
    protected void setAttribute(RenderRequest request, String var, Object value) {
       if (StringUtils.isNotEmpty(var)) {
@@ -485,14 +546,12 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    protected void setPortletNodeParameter(String portletId, String key, String value) {
       PortletParameter param = new PortletParameter();
       param.setKey(key);
       param.setValue(value);
       SiteManagementAdmin.setPortletNodeParameter(portletId, param);
    }
-
 
    protected void setPortletParameter(String portletId, String key, String value) {
       PortletParameter param = new PortletParameter();
@@ -501,14 +560,12 @@ public class CmscPortlet extends GenericPortlet {
       SiteManagementAdmin.setPortletParameter(portletId, param);
    }
 
-
    protected void setPortletNodeParameter(String portletId, String key, String[] values) {
       PortletParameter param = new PortletParameter();
       param.setKey(key);
       param.setValues(values);
       SiteManagementAdmin.setPortletNodeParameter(portletId, param);
    }
-
 
    protected void setPortletParameter(String portletId, String key, String[] values) {
       PortletParameter param = new PortletParameter();
@@ -517,20 +574,17 @@ public class CmscPortlet extends GenericPortlet {
       SiteManagementAdmin.setPortletParameter(portletId, param);
    }
 
-
    protected void setPortletView(String portletId, String viewId) {
       if (viewId != null) {
          SiteManagementAdmin.setPortletView(portletId, viewId);
       }
    }
 
-
    public String getUrlPath(RenderRequest request) {
       PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
       PortalURL currentURL = env.getRequestedPortalURL();
       return currentURL.getGlobalNavigationAsString();
    }
-
 
    protected void logInitParameters() {
       if (getLogger().isDebugEnabled()) {
@@ -542,14 +596,12 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    protected void logParameters(ActionRequest request) {
       if (getLogger().isDebugEnabled()) {
          Map<String, ?> map = request.getParameterMap();
          logMap(map);
       }
    }
-
 
    protected void logPreference(ActionRequest req) {
       if (getLogger().isDebugEnabled()) {
@@ -559,7 +611,6 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    protected void logPreference(RenderRequest req) {
       if (getLogger().isDebugEnabled()) {
          PortletPreferences preferences = req.getPreferences();
@@ -568,14 +619,14 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    protected void logMap(Map<String, ?> map) {
       for (Map.Entry<String, ?> entry : map.entrySet()) {
          String key = entry.getKey();
          Object value = entry.getValue();
          if (key != null && value != null) {
             if (value instanceof List) {
-               for (Iterator<String> iterator = ((List<String>) value).iterator(); iterator.hasNext();) {
+               for (Iterator<String> iterator = ((List<String>) value).iterator(); iterator
+                     .hasNext();) {
                   String val = iterator.next();
                   if (val != null) {
                      getLogger().debug("key: " + key + " value: " + val);
@@ -606,19 +657,21 @@ public class CmscPortlet extends GenericPortlet {
 
    protected PortletFragment getPortletFragment(PortletRequest request) {
       InternalPortletRequest internalPortletRequest = CoreUtils.getInternalRequest(request);
-      ServletRequest servletRequest = ((HttpServletRequestWrapper) internalPortletRequest).getRequest();
+      ServletRequest servletRequest = ((HttpServletRequestWrapper) internalPortletRequest)
+            .getRequest();
       return (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
    }
 
    private void initRoutingRules() {
-     if (routings == null) {
+      if (routings == null) {
          InputStream inputStream = CmscPortlet.class.getResourceAsStream("viewrouting.properties");
          routings = new Properties();
          try {
             routings.load(inputStream);
-         } catch (IOException e) {
+         }
+         catch (IOException e) {
             log.error(e);
          }
-     }
+      }
    }
 }
