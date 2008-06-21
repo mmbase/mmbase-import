@@ -1,6 +1,7 @@
 package com.finalist.cmsc.beans.om;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.mmapps.commons.beans.NodeBean;
 
@@ -43,7 +44,7 @@ public class Portlet extends NodeBean implements Comparable<Portlet> {
       if (views.isEmpty()) {
          return -1;
       }
-      return views.get(0).intValue();
+      return views.get(0);
    }
 
 
