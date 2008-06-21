@@ -15,18 +15,31 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.applications.editwizard.Config;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.services.workflow.WorkflowException;
-import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.navigation.PagesUtil;
 
 public class WizardWorkflowController extends WizardController {
+
+   private static final String OFF = "off";
+
+   private static final String WORKFLOWCOMMAND = "workflowcommand";
+   private static final String WORKFLOWCOMMENT = "workflowcomment";
+   private static final String ERRORS = "errors";
+
+   private static final String CANCEL = "cancel";
+   private static final String FINISH = "finish";
+   private static final String ACCEPT = "accept";
+   private static final String REJECT = "reject";
+   private static final String PUBLISH = "publish";
 
    /**
     * MMbase logging system
@@ -36,7 +49,7 @@ public class WizardWorkflowController extends WizardController {
 
    /**
     * Additional actions to open the wizard
-    * 
+    *
     * @param request -
     *           http request
     * @param ewconfig -
@@ -55,12 +68,12 @@ public class WizardWorkflowController extends WizardController {
       if (isMainWizard(ewconfig, config) && contenttype != null && !"".equals(contenttype)
             && Workflow.isWorkflowType(contenttype)) {
 
-         params.put("WORKFLOW", "true");
+         params.put("WORKFLOW", TRUE);
          params.put("WORKFLOW-ACCEPTED-ENABLED", Boolean.toString(Workflow.isAcceptedStepEnabled()));
 
          String activity = "DRAFT";
 
-         if (!"new".equals(objectnr)) {
+         if (!NEW_OBJECT.equals(objectnr)) {
             Node node = cloud.getNode(objectnr);
             // The closeWizard() will create one if it is not present
             if (Workflow.hasWorkflow(node)) {
@@ -81,7 +94,7 @@ public class WizardWorkflowController extends WizardController {
             }
 
             if (!Workflow.mayEdit(node, userrole)) {
-               params.put("READONLY", "true");
+               params.put("READONLY", TRUE);
                if (Workflow.STATUS_PUBLISHED.equals(Workflow.getStatus(node))) {
                   params.put("READONLY-REASON", "PUBLISH");
                }
@@ -93,7 +106,7 @@ public class WizardWorkflowController extends WizardController {
          else {
             if (PagesUtil.isPageType(cloud.getNodeManager(contenttype))) {
                // disable workflow for a new page
-               params.put("WORKFLOW", "off");
+               params.put("WORKFLOW", OFF);
             }
          }
          log.debug("activity " + activity);
@@ -101,10 +114,10 @@ public class WizardWorkflowController extends WizardController {
       }
       else {
          if (contenttype != null && !"".equals(contenttype) && Workflow.isWorkflowType(contenttype)) {
-            params.put("WORKFLOW", "false");
+            params.put("WORKFLOW", FALSE);
          }
          else {
-            params.put("WORKFLOW", "off");
+            params.put("WORKFLOW", OFF);
          }
       }
    }
@@ -118,39 +131,39 @@ public class WizardWorkflowController extends WizardController {
 
          String objectnr = wizardConfig.objectNumber;
 
-         String workflowCommand = request.getParameter("workflowcommand");
-         String workflowcomment = request.getParameter("workflowcomment");
+         String workflowCommand = request.getParameter(WORKFLOWCOMMAND);
+         String workflowcomment = request.getParameter(WORKFLOWCOMMENT);
 
          if (wizardConfig.wiz.committed()) {
-            if ("new".equals(objectnr)) {
+            if (NEW_OBJECT.equals(objectnr)) {
                if (wizardConfig.wiz.committed() && !Workflow.hasWorkflow(editNode)) {
                   Workflow.create(editNode, workflowcomment);
                }
             }
             else {
-               if (!Workflow.hasWorkflow(editNode) && !"cancel".equals(workflowCommand)) {
+               if (!Workflow.hasWorkflow(editNode) && !CANCEL.equals(workflowCommand)) {
                   log.debug("object " + objectnr + " missing workflow. creating one. ");
                   Workflow.create(editNode, "");
                }
             }
 
             // wizard command is commit
-            if ("finish".equals(workflowCommand)) {
+            if (FINISH.equals(workflowCommand)) {
                log.debug("finishing object " + objectnr);
                Workflow.finish(editNode, workflowcomment);
             }
-            if ("accept".equals(workflowCommand)) {
+            if (ACCEPT.equals(workflowCommand)) {
                log.debug("accepting object " + objectnr);
                Workflow.accept(editNode, workflowcomment);
             }
-            if ("publish".equals(workflowCommand)) {
+            if (PUBLISH.equals(workflowCommand)) {
                log.debug("publishing object " + objectnr);
                try {
                   Workflow.publish(editNode);
                }
                catch (WorkflowException wfe) {
                   List<Node> errors = wfe.getErrors();
-                  request.setAttribute("errors", errors);
+                  request.setAttribute(ERRORS, errors);
                   log.error("Could not publish object");
                   for (Node errorNode : errors) {
                      log.error(errorNode.getNodeManager().getName() + " " + errorNode.getNumber() + " ");
@@ -170,7 +183,7 @@ public class WizardWorkflowController extends WizardController {
             // wizard command is cancel. This command cannot be called on a new
             // node
             // so there is always a workflow
-            if ("reject".equals(workflowCommand)) {
+            if (REJECT.equals(workflowCommand)) {
                log.debug("rejecting object " + objectnr);
                Workflow.reject(editNode, workflowcomment);
             }
@@ -179,13 +192,13 @@ public class WizardWorkflowController extends WizardController {
       else {
          if (editNode != null && !Workflow.isWorkflowType(contenttype)) {
 
-            String workflowCommand = request.getParameter("workflowcommand");
-            if ("publish".equals(workflowCommand)) {
+            String workflowCommand = request.getParameter(WORKFLOWCOMMAND);
+            if (PUBLISH.equals(workflowCommand)) {
                // update only nodes in live clouds.
                // PublishUtil.PublishOrUpdateNode(editNode);
             }
 
-            if (!"cancel".equals(workflowCommand)) {
+            if (!CANCEL.equals(workflowCommand)) {
                if (RepositoryUtil.isContentChannel(editNode) || RepositoryUtil.isCollectionChannel(editNode)) {
                   if (!Workflow.hasWorkflow(editNode)) {
                      Publish.publish(editNode);
