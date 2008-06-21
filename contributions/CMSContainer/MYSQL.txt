@@ -53,4 +53,7 @@ mysqldump -u admin -p <database> --no-create-info --complete-insert > backup-fil
 mysql database < backup-file.sql
 
 show variables
-max_allowed_packet 
+max_allowed_packet
+
+// update value with replacement string
+UPDATE <table> SET <field_name> = replace(<field_name>, 'old', 'new');
