@@ -4,8 +4,12 @@
  */
 package com.finalist.cmsc.editwizard;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.editwizard.Config;
 import org.mmbase.applications.editwizard.Config.WizardConfig;
 import org.mmbase.bridge.Cloud;
@@ -23,10 +27,6 @@ import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.versioning.VersioningException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.*;
-
 /**
  * @author Nico Klasens This class contains code which extends wizard.jsp
  */
@@ -37,10 +37,22 @@ public class WizardController {
     */
    private static final Logger log = Logging.getLoggerInstance(WizardController.class.getName());
 
+   protected static final String TRUE = "true";
+   protected static final String FALSE = "false";
+
+   protected static final String NEW_OBJECT = "new";
+
+   protected static final String SESSION_CONTENTTYPE = "contenttype";
+   protected static final String SESSION_CREATION = "creation";
+   protected static final String SESSION_READONLY = "readonly";
+
+   protected static final String ACTION_SAVE = "save";
+   protected static final String ACTION_CANCEL = "cancel";
+
 
    /**
     * Additional actions to open the wizard
-    * 
+    *
     * @param request -
     *           http request
     * @param ewconfig -
@@ -57,8 +69,8 @@ public class WizardController {
       HttpSession session = request.getSession();
       String objectnr = config.objectNumber;
       String contenttype = null;
-      if (objectnr != null && "new".equals(objectnr)) {
-         contenttype = (String) session.getAttribute("contenttype");
+      if (objectnr != null && NEW_OBJECT.equals(objectnr)) {
+         contenttype = (String) session.getAttribute(SESSION_CONTENTTYPE);
       }
       else {
          Node node = cloud.getNode(objectnr);
@@ -66,9 +78,9 @@ public class WizardController {
       }
       log.debug("contenttype " + contenttype);
 
-      String readonly = (String) session.getAttribute("readonly");
+      String readonly = (String) session.getAttribute(SESSION_READONLY);
       if (StringUtils.isBlank(readonly)) {
-         readonly = "false";
+         readonly = FALSE;
       }
 
       Map<String, String> params = new HashMap<String, String>();
@@ -78,21 +90,21 @@ public class WizardController {
 
       Node creationNode = null;
       if (StringUtils.isNotEmpty(contenttype)) {
-         String creation = (String) session.getAttribute("creation");
+         String creation = (String) session.getAttribute(SESSION_CREATION);
          if (StringUtils.isNotEmpty(creation)) {
             creationNode = cloud.getNode(creation);
          }
-         if (creationNode == null && objectnr != null && !"new".equals(objectnr)) {
+         if (creationNode == null && objectnr != null && !NEW_OBJECT.equals(objectnr)) {
             Node node = cloud.getNode(objectnr);
 
             if (PagesUtil.isPageType(node)) {
                creationNode = node;
-               session.setAttribute("creation", "" + creationNode.getNumber());
+               session.setAttribute(SESSION_CREATION, "" + creationNode.getNumber());
             }
             if (ContentElementUtil.isContentType(contenttype)) {
                if (RepositoryUtil.hasCreationChannel(node)) {
                   creationNode = RepositoryUtil.getCreationChannel(node);
-                  session.setAttribute("creation", "" + creationNode.getNumber());
+                  session.setAttribute(SESSION_CREATION, "" + creationNode.getNumber());
                }
             }
          }
@@ -112,25 +124,25 @@ public class WizardController {
          log.debug("role = " + userrole.getRole());
          int roleId = userrole.getRole().getId();
          if (roleId >= Role.WEBMASTER.getId()) {
-            params.put("WEBMASTER", "true");
+            params.put("WEBMASTER", TRUE);
          }
          if (roleId >= Role.CHIEFEDITOR.getId()) {
-            params.put("CHIEFEDITOR", "true");
+            params.put("CHIEFEDITOR", TRUE);
          }
          if (roleId >= Role.EDITOR.getId()) {
-            params.put("EDITOR", "true");
+            params.put("EDITOR", TRUE);
          }
          if (roleId >= Role.WRITER.getId()) {
-            params.put("WRITER", "true");
+            params.put("WRITER", TRUE);
          }
          else {
-            params.put("READONLY", "true");
+            params.put("READONLY", TRUE);
             params.put("READONLY-REASON", "RIGHTS");
          }
       }
       else {
          if (Rank.ADMIN_INT <= cloud.getUser().getRank().getInt()) {
-            params.put("WEBMASTER", "true");
+            params.put("WEBMASTER", TRUE);
          }
       }
 
@@ -150,7 +162,7 @@ public class WizardController {
 
    /**
     * Additional actions to close the wizard
-    * 
+    *
     * @param request -
     *           http request
     * @param ewconfig -
@@ -167,10 +179,10 @@ public class WizardController {
 
          if (isMainWizard(ewconfig, wizardConfig)) {
             if (wizardConfig.wiz.committed()) {
-               session.setAttribute("wizardaction", "save");
+               session.setAttribute("wizardaction", ACTION_SAVE);
             }
             else {
-               session.setAttribute("wizardaction", "cancel");
+               session.setAttribute("wizardaction", ACTION_CANCEL);
             }
          }
 
@@ -180,8 +192,8 @@ public class WizardController {
          String objectnr = wizardConfig.objectNumber;
          log.debug("objectnr " + objectnr);
          if (StringUtils.isNotEmpty(objectnr)) {
-            if (!"new".equals(objectnr) || wizardConfig.wiz.committed()) {
-               if ("new".equals(objectnr)) {
+            if (!NEW_OBJECT.equals(objectnr) || wizardConfig.wiz.committed()) {
+               if (NEW_OBJECT.equals(objectnr)) {
                   // We are closing a wizard which was called with
                   // objectnumber=new.
                   // let's find out the objectnumber in mmbase
@@ -198,8 +210,8 @@ public class WizardController {
 
          if (editNode != null) {
             if (ContentElementUtil.isContentElement(editNode)) {
-               if ("new".equals(objectnr)) {
-                  String channelnr = (String) session.getAttribute("creation");
+               if (NEW_OBJECT.equals(objectnr)) {
+                  String channelnr = (String) session.getAttribute(SESSION_CREATION);
                   log.debug("Creation " + channelnr);
 
                   // this has creation channel check is needed, because with it
@@ -224,7 +236,7 @@ public class WizardController {
                   }
 
                   if (!RepositoryUtil.hasCreationChannel(editNode)) {
-                     String channelnr = (String) session.getAttribute("creation");
+                     String channelnr = (String) session.getAttribute(SESSION_CREATION);
                      log.debug("Creation " + channelnr);
 
                      if (StringUtils.isNotEmpty(channelnr)) {
@@ -260,7 +272,7 @@ public class WizardController {
 
    /**
     * Is this wizard the main wizard on the editwizard stack
-    * 
+    *
     * @param ewconfig -
     *           editwizard config
     * @param wconfig -
@@ -269,9 +281,7 @@ public class WizardController {
     */
    public static boolean isMainWizard(Config ewconfig, Config.WizardConfig wconfig) {
       Stack configs = ewconfig.subObjects;
-      Iterator iter = configs.iterator();
-      while (iter.hasNext()) {
-         Object element = iter.next();
+      for(Object element : configs) {
          if (element instanceof Config.WizardConfig) {
             return element == wconfig;
          }
