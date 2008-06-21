@@ -1,44 +1,28 @@
 package com.finalist.newsletter.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.portlets.newsletter.NewsletterContentPortlet;
-import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
-import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
+import com.finalist.newsletter.domain.Schedule;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.impl.StatisticServiceImpl;
-import net.sf.mmapps.commons.bridge.RelationUtil;
-import com.finalist.newsletter.domain.Schedule;
+import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 
 public abstract class NewsletterUtil {
    private static Log log = LogFactory
@@ -93,7 +77,7 @@ public abstract class NewsletterUtil {
       Step step = query.addStep(newsletterLogManager);
       query.setNodeStep(step);
       SearchUtil.addEqualConstraint(query, newsletterLogManager.getField("newsletter"), newsletterNumber);
-      
+
       NodeList logs = query.getList();
       if (logs != null) {
          for (int i = 0; i < logs.size(); i++) {
@@ -191,8 +175,8 @@ public abstract class NewsletterUtil {
 
       String[] numbers = termNumbers.split(",");
       SortedSet<Integer> sort = new TreeSet<Integer>();
-      for (int i = 0; i < numbers.length; i++) {
-         sort.add(new Integer(numbers[i]));
+      for (String number : numbers) {
+         sort.add(new Integer(number));
       }
       if (sort.size() == 0) {
          return (null);
@@ -264,8 +248,8 @@ public abstract class NewsletterUtil {
 
       String[] numbers = termNumbers.split(",");
       SortedSet<Integer> sort = new TreeSet<Integer>();
-      for (int i = 0; i < numbers.length; i++) {
-         sort.add(new Integer(numbers[i]));
+      for (String number : numbers) {
+         sort.add(new Integer(number));
       }
       if (sort.size() == 0) {
          return (0);
@@ -413,7 +397,7 @@ public abstract class NewsletterUtil {
             String portletDefinition = portletdefNodes.get(0).getStringValue("definition");
             if (portletDefinition.equals(NewsletterContentPortlet.DEFINITION)) {
                RelationList relations = portlet.getRelations("portletrel", publicationNode.getNodeManager());
-               String name = relations.getNode(0).getStringValue("name");
+               String name = relations.getRelation(0).getStringValue("name");
                url += "/_rp_".concat(name).concat("_").concat(NewsletterContentPortlet.NEWSLETTER_TERMS_PARAM).concat("/1_").concat(termIds);
             }
          }
@@ -478,7 +462,7 @@ public abstract class NewsletterUtil {
       else {
          Node firstScheduleNode = schedules.getNode(0);
          if(firstScheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue("schedule"))){
-            return;  
+            return;
          }
          for(int i = 0; i < schedules.size(); i ++) {
             Node scheduleNode = schedules.getNode(i);
@@ -491,7 +475,7 @@ public abstract class NewsletterUtil {
          addScheduleNode(newsletterNode,scheduleNodeManager);
       }
    }
-   
+
    public static void addScheduleNode(Node newsletterNode, NodeManager scheduleNodeManager) {
       if(StringUtils.isEmpty(newsletterNode.getStringValue("schedule"))) {
          return;
@@ -516,7 +500,7 @@ public abstract class NewsletterUtil {
          schedule.setScheduleDescription(getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
          schedules.add(schedule);
       }
-      return schedules;      
+      return schedules;
    }
    public static String getScheduleMessageByExpression(String expression){
       if(StringUtils.isEmpty(expression)) {
@@ -555,7 +539,7 @@ public abstract class NewsletterUtil {
          scheduleMessage.append(rb.getString("calendar.weekly")).append(",").append(rb.getString("calendar.start.datetime"));
          scheduleMessage.append(expressions[1]).append(":").append(expressions[2]);
          scheduleMessage.append("<br/>").append(rb.getString("calendar.approach.interval.pre")).append(expressions[3]).append(rb.getString("calendar.approach.interval.week"));
-         
+
          String tempWeek = "";
          for (int i = 0; i < expressions[4].length(); i++) {
             String month = expressions[4].substring(i, i + 1);
@@ -630,7 +614,7 @@ public abstract class NewsletterUtil {
             }
              months = expressions[6];
          }
-         
+
          String temp = "";
          for(int i = 0 ; i < months.length();i++) {
               String month = months.substring(i,i+1);
