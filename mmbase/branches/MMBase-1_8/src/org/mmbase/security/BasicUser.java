@@ -21,7 +21,7 @@ package org.mmbase.security;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.2.2.1 2007-11-19 15:31:34 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.2.2.2 2008-06-23 14:48:26 michiel Exp $
  */
 public class BasicUser implements UserContext {
 
@@ -66,7 +66,11 @@ public class BasicUser implements UserContext {
      * @return a string describing the usercontext
      */
     public String toString() {
-        return getIdentifier() + " (" + getRank() + ")";
+        try {
+            return getIdentifier() + " (" + getRank() + ")";
+        } catch (Throwable t) {
+            return getIdentifier();
+        }
     }
 
     public boolean isValid() {

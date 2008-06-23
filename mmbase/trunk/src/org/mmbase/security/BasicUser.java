@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.6 2008-03-17 15:37:59 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.7 2008-06-23 14:49:07 michiel Exp $
  */
 public class BasicUser implements UserContext {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
@@ -73,7 +73,11 @@ public class BasicUser implements UserContext {
      * @return a string describing the usercontext
      */
     public String toString() {
-        return getIdentifier() + " (" + getRank() + ")";
+        try {
+            return getIdentifier() + " (" + getRank() + ")";
+        } catch (Throwable t) {
+            return getIdentifier();
+        }
     }
 
     public boolean isValid() {
