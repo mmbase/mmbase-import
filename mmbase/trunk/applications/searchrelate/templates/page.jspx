@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.13 2008-06-16 12:13:40 michiel Exp $
+      @version $Id: page.jspx,v 1.14 2008-06-23 14:28:42 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
@@ -25,9 +25,11 @@
         <c:if test="${! empty search}">
           <mm:composite operator="OR">
             <mm:fieldlist container="b" type="search" varStatus="field">
-              <c:if test="${field.current.dataType.class.name eq 'org.mmbase.datatypes.StringDataType'}">
-                <mm:constraint field="${field.current.name}" operator="LIKE" value="%${search}%" casesensitive="false"/>
-              </c:if>
+              <mm:write value="${field.current.dataType.class.name}">
+                <mm:compare regexp="org\.mmbase\.datatypes\.(.*StringDataType|XmlDataType)">
+                  <mm:constraint field="${field.current.name}" operator="LIKE" value="%${search}%" casesensitive="false"/>
+                </mm:compare>
+              </mm:write>
             </mm:fieldlist>
             <mm:compare regexp="[0-9]+" referid="search">
               <mm:constraint field="number" value="${search}" />
