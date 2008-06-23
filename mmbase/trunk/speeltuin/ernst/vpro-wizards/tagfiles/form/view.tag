@@ -254,7 +254,7 @@
                                 <c:choose>
                                     <c:when test="${nodetype eq 'images'}">
                                         <util:image urlvar = "url" nodenr="${_nodenr}"/>
-                                        <util:image urlvar = "previewurl" nodenr="${_nodenr}" template="+s(40)+part(0x0x40x40)+s(!40x!40)"/>
+                                        <util:image urlvar = "previewurl" nodenr="${_nodenr}" template="s(50)"/>
                                         <a target="image" href="${url}">
                                             <img alt="gerelateerde afbeelding" src="${previewurl}" class="image" border="0" />
                                         </a>

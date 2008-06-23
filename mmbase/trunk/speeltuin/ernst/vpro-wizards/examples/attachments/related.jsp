@@ -4,7 +4,16 @@
 <%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<related:wizard  title="Bijlagen" nodetype="attachments" >
+<c:choose>
+    <c:when test="${empty param.relationrole}">
+        <c:set var="relationrole" value="related" />
+    </c:when>
+    <c:otherwise>
+        <c:set var="relationrole" value="${param.relationrole}" />
+    </c:otherwise>
+</c:choose>
+
+<related:wizard  title="Bijlagen" nodetype="attachments" relationrole="${relationrole}">
 
     <edit:sessionpath/>
     <edit:path name="Gekoppelde Bijlagen"/>

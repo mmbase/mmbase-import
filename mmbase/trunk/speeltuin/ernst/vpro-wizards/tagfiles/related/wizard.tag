@@ -31,7 +31,7 @@
 <util:addParam name="editnodenr" parameter="editnodenr"/>
 --%>
 
-<mm:content type="text/html"  expires="0" encoding="utf-8" >
+<mm:content type="text/html"  expires="0" encoding="utf-8" language="nl">
     <c:set var="relationrole" scope="request" value="${relationrole}" />
 
   <%-- set the current url in the referrer cookie--%>
@@ -62,12 +62,13 @@
     </c:if>
     <c:if test="${empty showback}"><c:set var="showback" value="false" /></c:if>
 
-
-    <mm:content expires="0"/>
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
     <html>
         <head>
             <title>${title}</title>
+            <script language="javascript">
+                var contextPath = '${pageContext.request.contextPath}';
+            </script>
             <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
             <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.css">
 
