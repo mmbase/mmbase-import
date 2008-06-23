@@ -64,3 +64,37 @@ De voordelen van het systeem zijn:
 - flexibel. een hoop tags zijn zeer configureerbaar door middel van fragment attributen.
 
 Het zou goed kunnen dat dit systeem een goede vervanger zal blijken te zijn voor de editwizards.
+
+
+
+Issues:
+==================================
+-excepties worden nog niet goed afgevangen en als redelijke errors getoond.
+-wanneer en object gerelateerde objecten heeft van hetzelfde type, raakt het pad in de war. wanneer
+    je een editor opent voor zo'n object, wordt de entry van de 'parent' overschreven.
+    tevens worden de link/unlink icoontjes niet goed getoond waneer parent en child van hetzelfde type zijn.
+-related:edit: als je op een item in de lijst met gerelateerde items klikt, en er wordt voor dat
+    item een mini-editor geopend, moet related:add dicht blijven.
+
+Wensen:
+===================================
+-wanneer je via form:view een nieuw object wilt aanmaken, en er is geen newwizard attribuut gezet,
+    dan is het beter om het formulier inline in de pagina te tonen, ipv. de related pagina. het
+    zelfde geld voor edit. Het idee is dat wanneer de 'newwizard' en 'openwizard' attributen niet worden
+    gezet het om kleine simpele objecten gaat, die:
+    a) geen grote velden hebben
+    b) geen gerelateerde objecten hebben.
+    Het zou mooi zijn deze formulieren inline af te handelen.
+-colom sortering in de zoek lijst.
+-lazy loading versie van form:related
+-validatie van de formulier velden. of: via mmbase data types, of via expliciete validators.
+-in form:wizard kun je een wizardfile opgeven, maar dat is niet zo nuttig. in list:wizard is dat
+    misschien nuttiger, aangezien list:add en list:search daar gebruik van kunnen maken. algemeen:
+    het zou mooi zijn als je veel voorkomende attributen op de wizard kunt zetten (maar het moet
+    niet gaan conflicteren).
+
+Wijzigingen aan MMBase (1.8)
+===================================
+- commons.fileupload is geupdate naar 1.2
+- hierdoor is een nieuwe dependencie ontstaan: commons.io
+- de build ondersteunt nu ook tagfiles als standaard onderdeel van mmbase applicaties.

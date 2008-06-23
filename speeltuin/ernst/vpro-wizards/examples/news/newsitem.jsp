@@ -6,12 +6,12 @@
 
 <form:wizard title="Nieuws Bericht" wizardfile="newsitem" >
 
-    <edit:path name="Nieuws Bericht" node="${nodenr}" session="newsitem"/>
+    <edit:path name="Nieuws Bericht" node="${nodenr}" session="newsitem_${not empty param.secondnews ? 'second' : ''}"/>
     <edit:sessionpath/>
-
 
     <form:container nodetype="news">
         <form:showfield field="number"/>
+        <form:datefield field="date" fieldname="Publicatie datum"/>
         <form:textfield field="title"/>
         <form:textfield field="subtitle"/>
         <form:textareafield field="intro"/>
@@ -30,7 +30,28 @@
                 sortable="true"
                 relatedpage="../news/related"
                 openwizard="newsitem.jsp"
-                name="gekoppelde nieuws berichten"/>
+                name="gekoppelde nieuws berichten">
+                <jsp:attribute name="display">
+                    <mm:include page="item-publishedstatus.jsp" >
+                        <mm:param name="nodenr" value="${_nodenr}" />
+                    </mm:include>
+                </jsp:attribute>
+            </form:view>
+                
+            <form:view nodetype="images"
+                relationrole="posrel" sortable="true"
+                relatedpage="../images/related"
+                name="gekoppelde plaatjes"/>
+                
+            <form:view nodetype="attachments"
+                relationrole="posrel" sortable="true"
+                relatedpage="../attachments/related"
+                name="gekoppelde bijlange"/>
+                
+             <form:view nodetype="people" 
+                relatedpage="../people/related"
+                name="auteur(s) van dit artikel"/>
+                
     </form:related>
 </form:wizard>
 

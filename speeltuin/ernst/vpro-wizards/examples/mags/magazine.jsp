@@ -25,7 +25,14 @@
                 sortable="true"
                 relatedpage="../news/related.jsp"
                 openwizard="../news/newsitem.jsp"
-                name="gekoppelde nieuws berichten"/>
+                newwizard="../news/newsitem.jsp"
+                name="gekoppelde nieuws berichten">
+                <jsp:attribute name="display">
+                    <mm:include page="../news/item-publishedstatus.jsp" >
+                        <mm:param name="nodenr" value="${_nodenr}" />
+                    </mm:include>
+                </jsp:attribute>
+                </form:view>
         <%--
 
         <form:related>
