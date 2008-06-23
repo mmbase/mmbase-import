@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.22 2008-06-23 15:06:38 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.23 2008-06-23 15:13:51 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -237,7 +237,7 @@ MMBaseRelater.prototype.relate = function(tr) {
     // Set up HTML
     if (this.current != null) {
 	if (this.current.searcher.maxNumber > 0 && (this.current.searcher.totalSize() + 1) > this.current.searcher.maxNumber) {
-	    return alert("Can only relate maximally " + this.current.searcher.maxNumber);
+	    return alert('<fmt:message key="relatemax" />'.replace('{0}', this.current.searcher.maxNumber));
 	}
 	// Set up data
 	if (typeof(this.unrelated[number]) == "undefined") {
