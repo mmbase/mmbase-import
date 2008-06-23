@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.26 2008-06-19 12:23:51 michiel Exp $
+      @version $Id: relate.tagx,v 1.27 2008-06-23 15:06:38 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -64,7 +64,10 @@
   <mm:write session="mm_related_${seq}_current"    referid="current" />
   <c:if test="${seq eq 0}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
-    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">
+      <mm:param name="locale">${repository.cloud.locale}</mm:param>
+      <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    </mm:link>
   </c:if>
   <script type="text/javascript">
     $(document).ready(function() {

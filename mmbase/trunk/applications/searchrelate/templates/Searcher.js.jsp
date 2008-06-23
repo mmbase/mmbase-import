@@ -1,6 +1,8 @@
 // -*- mode: javascript; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
-<mm:content type="text/javascript" expires="0">
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<mm:content type="text/javascript" expires="0" language="${param.locale}">
+<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
  * Generic mmbase search & relate tool. Javascript part.
  *
@@ -11,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.21 2008-06-04 13:00:27 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.22 2008-06-23 15:06:38 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -437,7 +439,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
 		    }
 		}
 	       });
-	$(rep).append($("<p>Searching</p>"));
+	$(rep).append($('<p><fmt:message key="searching" /></p>'));
     } else {
 	this.logger.debug("reusing " + offset);
 	this.logger.debug(rep);
@@ -607,4 +609,6 @@ MMBaseSearcher.prototype.resetTrClasses = function() {
     });
 }
 
+
+</fmt:bundle>
 </mm:content>
