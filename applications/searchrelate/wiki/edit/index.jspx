@@ -39,11 +39,12 @@
         <mm:import externid="objectnumber" />
 
         <div id="main">
+          <mm:compare referid="objectnumber" value="new">
+            <mm:remove referid="objectnumber" />
+            <mm:createnode type="wikiobjects" id="objectnumber"  />
+          </mm:compare>
+          <mm:log>Created ${_objectnumber}</mm:log>
           <mm:form id="transaction" page="." commitonclose="false">
-            <mm:compare referid="objectnumber" value="new">
-              <mm:remove referid="objectnumber" />
-              <mm:createnode type="wikiobjects" id="objectnumber"  />
-            </mm:compare>
             <mm:node id="objectnumber" referid="objectnumber" commitonclose="false" jspvar="node">
               <input type="hidden" name="objectnumber" value="${_node}" />
               <table>
