@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.27 2008-04-22 11:16:59 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.28 2008-06-23 08:45:10 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -474,7 +474,6 @@
 
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
-
     <!--
          The most difficult part of this XSL happens here.
          Resolving of the idrels.
@@ -493,6 +492,10 @@
       <xsl:with-param name="relations" select="$relations" />
       <xsl:with-param name="in_a" select="$in_a" />
     </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="mmxf:p[@id != '']" mode="root">
+    <xsl:apply-templates select="." />
   </xsl:template>
 
   <!--
