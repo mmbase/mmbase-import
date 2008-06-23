@@ -15,25 +15,20 @@
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
-
-
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
+    
+    <listener> 
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
 
-    <!-- The Spring editors servlet. -->
+       <!-- The Spring editors servlet. -->
 
     <servlet>
         <servlet-name>vpro-wizards</servlet-name>
-        <servlet-class>
-            org.springframework.web.servlet.DispatcherServlet
-        </servlet-class>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
               <param-name>contextConfigLocation</param-name>
-              <param-value>org.springframework.web.context.vpro-wizards-servlet.xml</param-value>
+              <param-value>classpath:org/mmbase/applications/vpro-wizards/spring/vpro-wizards-servlet.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
