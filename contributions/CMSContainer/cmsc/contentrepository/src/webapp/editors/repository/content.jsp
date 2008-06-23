@@ -7,6 +7,7 @@
 <html:html xhtml="true">
 <cmscedit:head title="content.title">
     <script src="content.js" type="text/javascript"></script>
+    <script src="search.js" type="text/javascript"></script>
 </cmscedit:head>
 <body>
 <script type="text/javascript">
@@ -120,11 +121,14 @@
 <c:set var="orderby" value="${param.orderby}" scope="page" />
 <%@ include file="../pages.jsp" %>
 
-
+<form action="contentMassDelete.do" name="contentForm">
+<input type="hidden" name="offset" value="${param.offset}"/>
+<input type="hidden" name="channelnumber" value="<mm:write referid="parentchannel" />"/>
+<input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
 <table>
 <thead>
     <tr>
-        <th></th>
+        <th><input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/></th>
         <th><a href="javascript:sortBy('otype','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.typecolumn"/></a></th>
         <th><a href="javascript:sortBy('title','<mm:write referid="parentchannel" />')" class="headerlink">
@@ -145,9 +149,9 @@
     <mm:param name="objectnumber" value="$number"/>
     <mm:param name="returnurl" value="$returnurl"/>
 </mm:url>
-<tr
-        <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
-<td style="white-space: nowrap;">
+<tr   <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
+    <td style="white-space: nowrap;">
+    <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
     <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
                                                                  title="<fmt:message key="content.info" />"
                                                                  alt="<fmt:message key="content.info" />"/></a>
@@ -176,8 +180,7 @@
                 src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />"
                 alt="<fmt:message key="content.icon.versioning.title" />"/></a>
     </mm:haspage>
-    <% if (role != null && SecurityUtil.isEditor(role)) { %>
-           
+    <% if (role != null && SecurityUtil.isWriter(role)) { %>
     <mm:last inverse="true">
         <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
                 src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
@@ -189,8 +192,7 @@
                 src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />"
                 alt="<fmt:message key="content.move.up" />"/></a>
     </mm:first>
-          
-    <%}%>
+    <% } %>
     <cmsc:hasfeature name="savedformmodule">
         <c:set var="typeval">
             <mm:nodeinfo type="type"/>
@@ -270,6 +272,8 @@
 </mm:listnodes>
 </tbody>
 </table>
+<input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
+</form>
 <%@ include file="../pages.jsp" %>
 </div>
 </div>

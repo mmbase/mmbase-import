@@ -50,7 +50,7 @@
 	<table>
 	  <tr>
 	    <td width="300">
-	<select size='20' style="width:100%" name="channels">
+	<select size='20' style="width:100%" name="channels" multiple="true">
   <mm:listnodes>
 		<option><mm:field name="title"/></option>
   </mm:listnodes>
