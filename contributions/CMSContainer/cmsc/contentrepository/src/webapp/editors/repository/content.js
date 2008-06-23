@@ -91,13 +91,29 @@ function refreshChannels() {
 function deleteContent(objectnumber, confirmmessage) {
     if (confirmmessage) {
         if (confirm(confirmmessage)) {
-            document.forms[0].deleteContentRequest.value = "permanentDelete:" + objectnumber;
-            document.forms[0].submit();
+           if(objectnumber == 'massdelete'){
+                 var checkboxs = document.getElementsByTagName("input");
+                 var objectnumbers = '';
+                 for(i = 0; i < checkboxs.length; i++) {
+                    if(checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+                       objectnumbers += checkboxs[i].value+",";
+                    }
+                 }
+                 if(objectnumbers == ''){
+                    return ;
+                 }
+                 objectnumbers = objectnumbers.substr(0,objectnumbers.length - 1);
+                 document.forms[0].deleteContentRequest.value = "massDelete:"+objectnumbers;
+                 document.forms[0].submit();
+           }
+           else {
+              document.forms[0].deleteContentRequest.value = "permanentDelete:" + objectnumber;
+              document.forms[0].submit();
+           }
         }
     }
     else {
         document.forms[0].deleteContentRequest.value = "moveToRecyclebin:" + objectnumber;
         document.forms[0].submit();
     }
-
 }

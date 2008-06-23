@@ -322,12 +322,13 @@
       <mm:first>
          <%@include file="searchpages.jsp" %>
 
-
+         <form action="LinkToChannelAction.do" name="linkForm">
+         <mm:compare referid="action" value="link" inverse="true">
+             <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
+         </mm:compare>
           <mm:compare referid="action" value="link" >
-             <form action="LinkToChannelAction.do" name="linkForm">
                 <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
           </mm:compare>
-
           <table>
             <thead>
                <tr>
@@ -335,9 +336,9 @@
                      <mm:compare referid="action" value="link" >
                         <input type="hidden" name="channelnumber" value="<mm:write referid="linktochannel"/>" />
                         <input type="hidden" name="channel" value="<mm:write referid="linktochannel"/>" />
-                        <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-                        <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'link_');" value="on" name="selectall" />
+                        <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>   
                      </mm:compare>
+                      <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
                   </th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
@@ -378,6 +379,16 @@
 
 		      <tr <mm:even inverse="true">class="swap"</mm:even>>
 		         <td style="white-space: nowrap;">
+               <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
+               <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
+                   <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+				   </c:if>
+			   	<c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+                 <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+				   </c:if>
+				       
+              
+		          
 			        <%-- also show the edit icon when we return from an edit wizard! --%>
 		         	<mm:write referid="action" jspvar="action" write="false"/>
 		         	<c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
@@ -387,10 +398,8 @@
 		                </mm:url>">
 		                   <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="searchform.icon.edit.title" />" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
 					</c:if>
-		            <mm:compare referid="action" value="link">
-		               <input type="checkbox" value="<mm:field name="number" />" name="link_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-		            </mm:compare>
-		            <mm:compare referid="action" value="select">
+		          
+	            <mm:compare referid="action" value="select">
 		            	<script>
 		            		function link<mm:field name="number"/>() {
 			            		selectElement('<mm:field name="number" />',
@@ -407,7 +416,7 @@
 		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
 		            </mm:compare>
 
-				<cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
+
 				<c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
 					<a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>' )">
 						<img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
@@ -493,10 +502,15 @@
       <mm:last>
             </tbody>
          </table>
+          <mm:compare referid="action" value="link" inverse="true">
+             <input type="submit" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.removeconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
+         </mm:compare>
             <mm:compare referid="linktochannel" value="" inverse="true">
                      <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
-               </form>
+
             </mm:compare>
+
+          </form>
          <%@include file="searchpages.jsp" %>
       </mm:last>
    </mm:list>

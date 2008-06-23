@@ -4,20 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
-import net.sf.mmapps.commons.util.KeywordUtil;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.commons.util.KeywordUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.LabelValueBean;
-import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldIterator;
+import org.mmbase.bridge.FieldList;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,12 +35,9 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.resources.forms.QueryStringComposer;
-import com.finalist.cmsc.struts.PagerAction;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.finalist.cmsc.struts.PagerAction;
 
 public class SearchAction extends PagerAction {
 
@@ -62,7 +69,12 @@ public class SearchAction extends PagerAction {
         String deleteContentRequest = request.getParameter("deleteContentRequest");
 
         if (StringUtils.isNotEmpty(deleteContentRequest)) {
-            deleteContent(deleteContentRequest);
+           if(deleteContentRequest.startsWith("massDelete:")) {
+              massDeleteContent(deleteContentRequest.substring(11));
+           }
+           else {
+              deleteContent(deleteContentRequest);
+           }
             
             // add a flag to let search result page refresh the channels frame,
             // so that the number of item in recyclebin can update
@@ -250,11 +262,21 @@ public class SearchAction extends PagerAction {
         return super.execute(mapping, form, request, response, cloud);
     }
 
+    private void massDeleteContent(String deleteContent) {
+
+       if(StringUtils.isBlank(deleteContent)){
+          return ;
+       }
+       String[] deleteContents = deleteContent.split(",");
+       for(String content : deleteContents) {
+          deleteContent(content);
+       } 
+    }
+    
     private void deleteContent(String deleteContentRequest) {
         StringTokenizer commandAndNumber = new StringTokenizer(deleteContentRequest, ":");
         String command = commandAndNumber.nextToken();
         String nunmber = commandAndNumber.nextToken();
-
         if ("moveToRecyclebin".equals(command)) {
             moveContentToRecyclebin(nunmber);
         }
