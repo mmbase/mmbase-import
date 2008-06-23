@@ -23,9 +23,12 @@
 <mm:import externid="creationchannel" vartype="Node"/>
 <mm:import externid="contentchannels" vartype="List"/>
 <mm:import externid="trashchannel" vartype="Node"/>
-
+<c:set value="LinkToChannelAction.do" var="url"/>
+<c:if test="${not empty action && action =='massmove'}">
+   <c:set value="contentMassDelete.do" var="url"/>
+</c:if>
 <mm:import externid="returnurl" />
-
+<mm:import externid="offset" />
 <mm:node referid="creationchannel">
 	<mm:import id="creationnumber"><mm:field name="number"/></mm:import>
 </mm:node>
@@ -48,13 +51,16 @@
 	<mm:import id="channelnumber"><mm:field name="number"/></mm:import>
 	
 	<mm:compare referid="channelnumber" referid2="creationnumber" inverse="true">
-        <mm:url page="LinkToChannelAction.do" id="url" write="false" >
+        <mm:url page="${url}" id="url" write="false" >
            <mm:param name="action" value="unlink"/>
            <mm:param name="channelnumber" value="$creationnumber"/>
            <mm:param name="objectnumber" value="$contentnumber"/>
            <mm:param name="destionationchannel" value="$channelnumber"/>
            <mm:present referid="returnurl">
 	           <mm:param name="returnurl" value="$returnurl"/>
+           </mm:present>
+           <mm:present referid="offset">
+	           <mm:param name="offset" value="$offset"/>
            </mm:present>
         </mm:url>
         <li>
@@ -67,11 +73,14 @@
 
 <mm:node referid="trashchannel">
 	<mm:import id="trashnumber"><mm:field name="number"/></mm:import>
-	<mm:url page="LinkToChannelAction.do" id="trashurl" write="false" >
+	<mm:url page="${url}" id="trashurl" write="false" >
 		<mm:param name="action" value="unlink"/>
 		<mm:param name="channelnumber" value="$creationnumber"/>
 		<mm:param name="objectnumber" value="$contentnumber"/>
 		<mm:param name="destionationchannel" value="$trashnumber"/>
+      <mm:present referid="offset">
+	       <mm:param name="offset" value="$offset"/>
+      </mm:present>
 	</mm:url>
 	<li class="trashbin">
 		<a href="<mm:write referid="trashurl"/>"><fmt:message key="unlinkcreation.remove" /></a>
