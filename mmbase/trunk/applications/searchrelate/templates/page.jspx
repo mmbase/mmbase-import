@@ -9,16 +9,16 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.14 2008-06-23 14:28:42 michiel Exp $
+      @version $Id: page.jspx,v 1.15 2008-06-23 14:56:33 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
-  <mm:content expires="0" type="application/xml">
+  <mm:import externid="id" required="true" />
+  <mm:import from="session" externid="${id}" id="query" required="true" />
+  <mm:content expires="0" type="application/xml" language="${query.cloud.locale}">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-      <mm:import externid="id" required="true" />
       <mm:import externid="search" />
       <mm:import externid="pagesize">10</mm:import>
       <mm:import externid="maxpages">20</mm:import>
-      <mm:import from="session" externid="${id}" id="query" required="true" />
       <mm:import externid="offset" vartype="integer">0</mm:import>
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
