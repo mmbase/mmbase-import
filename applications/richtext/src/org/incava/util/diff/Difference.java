@@ -132,41 +132,5 @@ public class Difference
         return buf.toString();
     }
 
-    public String toUnixDiff(Object[] aLines, Object[] bLines) {
-        StringBuilder buf = new StringBuilder();
-        append(buf, delStart, delEnd);
-        buf.append(delEnd != Difference.NONE && addEnd != Difference.NONE ? "c" : (delEnd == Difference.NONE ? "a" : "d"));
-        append(buf, addStart, addEnd);
-
-        buf.append("\n");
-
-        if (delEnd != Difference.NONE) {
-            appendLines(buf, delStart, delEnd, "<", aLines);
-            if (addEnd != Difference.NONE) {
-                buf.append("---\n");
-            }
-        }
-        if (addEnd != Difference.NONE) {
-            appendLines(buf, addStart, addEnd, ">", bLines);
-        }
-        return buf.toString();
-
-    }
-
-    protected void append(StringBuilder buf, int start, int end) {
-        // match the line numbering from diff(1):
-        buf.append(end == Difference.NONE ? start : (1 + start));
-
-        if (end != Difference.NONE && start != end) {
-            buf.append(",").append(1 + end);
-        }
-    }
-
-    protected void appendLines(StringBuilder buf, int start, int end, String ind, Object[] lines) {
-
-        for (int lnum = start; lnum <= end; ++lnum) {
-            buf.append("" + ind + " " + lines[lnum] + "\n");
-        }
-    }
 
 }
