@@ -471,51 +471,5 @@ public class Diff
         return k;
     }
 
-    protected void appendToHtml(StringBuilder buf, Object[] a, int i, String claz) {
-        buf.append("<td class='" + claz + "'>");
-        if (i >= 0 && i < a.length) {
-            buf.append("" + a[i]);
-        }
-        buf.append("</td>");
-    }
-    protected void appendToHtml(StringBuilder buf, int startA, int endA, int startB, int endB, Difference d) {
-        for (int i = 0; i <= Math.max(endA - startA, endB - startB); i++) {
-            buf.append("<tr class='" +
-                       (d != null ?
-                        (i + startB < b.length ? "add " : "") +
-                        (i + startA < a.length ? "delete " : "")
-                        :
-                        "") +
-                       "'>");
-            buf.append("<td class='difference'>" + (i == 0 ? "" + d + ": " : "") + i +"</td>");
-            appendToHtml(buf, a, endA != Difference.NONE ? i + startA : -1, "old");
-            appendToHtml(buf, b, endB != Difference.NONE ? i + startB : -1, "new");
-            buf.append("</tr>");
-        }
-    }
-
-    public String toHtml() {
-        StringBuilder buf = new StringBuilder();
-        int startA = -1;
-        int startB = -1;
-        buf.append("<tr class='difference'><td colspan='100'>" + diff() + "</td></tr>");
-        for (Difference d : diff()) {
-            int delEnd = d.getDeletedEnd();
-            int delStart= d.getDeletedStart();
-            int addEnd = d.getAddedEnd();
-            int addStart = d.getAddedStart();
-            if (delEnd != Difference.NONE) {
-                startA = delEnd;
-            }
-            if (addEnd != Difference.NONE) {
-                 startB = addEnd;
-            }
-            appendToHtml(buf, delStart, delEnd, addStart, addEnd, d);
-
-        }
-        appendToHtml(buf, startA + 1, a.length, startB + 1, b.length, null);
-        return buf.toString();
-
-    }
 
 }
