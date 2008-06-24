@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.24.2.1 2007-06-22 14:55:43 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.24.2.2 2008-06-24 09:57:30 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
@@ -88,6 +88,10 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      */
     public LRUHashtable() {
         this(100, 101, 0.75f);
+    }
+
+    public Object getLock() {
+        return this;
     }
 
     /**
@@ -588,7 +592,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
                 System.err.println("Interrupted");
             }
         }
-                
+
         long ll5 = System.currentTimeMillis();
         if (TREESIZ <= 1024) {
             System.out.println("LRUHashtable afterwards " + treap.toString(true));
