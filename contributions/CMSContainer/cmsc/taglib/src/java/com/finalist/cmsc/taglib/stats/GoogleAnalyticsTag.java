@@ -23,7 +23,6 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
 
    private String account;
 
-
    @Override
    public void doTag() throws IOException {
       if (ServerUtil.isProduction() && (ServerUtil.isLive() || ServerUtil.isSingle())) {
@@ -32,13 +31,14 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
          }
 
          if (StringUtils.isNotBlank(account)) {
-            String javascript = "<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\">\r\n"
-                  + "</script>\r\n"
-                  + "<script type=\"text/javascript\">\r\n"
-                  + "_uacct = \""
-                  + account
-                  + "\";\r\n"
-                  + "urchinTracker();\r\n" + "</script>\r\n";
+            String javascript = "<script type=\"text/javascript\">\r\n"
+                  + "var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\r\n"
+                  + "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\r\n"
+                  + "</script>\r\n" 
+                  + "<script type=\"text/javascript\">\r\n" + "var pageTracker = _gat._getTracker(\"" + account + "\");\r\n" 
+                  + "pageTracker._initData();\r\n" 
+                  + "pageTracker._trackPageview();\r\n"
+                  + "</script>\r\n";
 
             PageContext ctx = (PageContext) getJspContext();
             ctx.getOut().write(javascript);
@@ -46,11 +46,9 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
       }
    }
 
-
    public String getAccount() {
       return account;
    }
-
 
    public void setAccount(String account) {
       this.account = account;
