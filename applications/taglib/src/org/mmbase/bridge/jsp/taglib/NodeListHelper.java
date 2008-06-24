@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.38 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.39 2008-06-24 10:49:05 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -353,6 +353,7 @@ public class NodeListHelper implements ListProvider {
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
+        nodeHelper.doEndTag();
         TimerTag t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {
             t.haltTimer(timerHandle);
