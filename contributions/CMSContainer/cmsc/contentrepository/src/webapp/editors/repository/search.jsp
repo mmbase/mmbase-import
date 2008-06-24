@@ -381,7 +381,7 @@
 		         <td style="white-space: nowrap;">
                <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
 	            <mm:compare referid="action" value="link">
-                   <input type="checkbox" value="<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                   <input type="checkbox" value="<mm:field name="number" />" name="link_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                </mm:compare>
                <mm:compare referid="action" value="link" inverse="true">
                   <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
