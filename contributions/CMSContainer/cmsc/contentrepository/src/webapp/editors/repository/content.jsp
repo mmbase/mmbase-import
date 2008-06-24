@@ -7,7 +7,6 @@
 <html:html xhtml="true">
 <cmscedit:head title="content.title">
     <script src="content.js" type="text/javascript"></script>
-    <script src="search.js" type="text/javascript"></script>
 </cmscedit:head>
 <body>
 <script type="text/javascript">

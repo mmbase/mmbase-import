@@ -117,3 +117,12 @@ function deleteContent(objectnumber, confirmmessage) {
         document.forms[0].submit();
     }
 }
+
+function selectAll(value, formName, elementPrefix) {
+   var elements = document.forms[formName].elements;
+   for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name.indexOf(elementPrefix) == 0) {
+          elements[i].checked = value;
+      }
+   }
+}
