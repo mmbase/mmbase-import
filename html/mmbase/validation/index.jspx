@@ -1,11 +1,12 @@
 <html
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.6 2007-11-26 17:01:20 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.7 2008-06-24 12:28:49 michiel Exp $ --&gt;</jsp:text>
   <mm:content
       expires="600"
       unacceptable="CRIPPLE"
