@@ -10,19 +10,27 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.repository.forms;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.RelationManager;
 
-import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.cmsc.services.workflow.Workflow;
+import com.finalist.cmsc.struts.MMBaseAction;
 
 public class MoveContentToChannelAction extends MMBaseAction {
 
@@ -35,49 +43,61 @@ public class MoveContentToChannelAction extends MMBaseAction {
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
-      int number = Integer.parseInt(request.getParameter(PARAMETER_NUMBER));
+      String objectNumber =  request.getParameter(PARAMETER_NUMBER);
       int channel = Integer.parseInt(request.getParameter(PARAMETER_CHANNEL));
       int newChannel = Integer.parseInt(request.getParameter(PARAMETER_NEW_CHANNEL));
 
+      String message = null;
+      String[] numbers = objectNumber.split(",");
       Locale locale = request.getLocale();
       MessageResources resources = getResources(request, "REPOSITORY");
+      boolean isSuccess = true;
 
-      Node elementNode = cloud.getNode(number);
       Node channelNode = cloud.getNode(channel);
       Node newChannelNode = cloud.getNode(newChannel);
-
-      RelationManager contentRelationManager = cloud.getRelationManager("contentrel");
-      NodeList newContentList = contentRelationManager.getList("(snumber = " + newChannel + " and dnumber = " + number
-            + ") or (snumber = " + number + " and dnumber = " + newChannel + ")", null, null);
-
-      String message = null;
-      // only if we are not already in the other channel
-      if (newContentList.size() == 0) {
-
-         RelationUtil.createCountedRelation(elementNode, newChannelNode, "contentrel", "pos");
-         RelationUtil.createRelation(channelNode, elementNode, "deletionrel");
-         NodeList contentList = contentRelationManager.getList("(snumber = " + channel + " and dnumber = " + number
-               + ") or (snumber = " + number + " and dnumber = " + channel + ")", null, null);
-         for (NodeIterator i = contentList.nodeIterator(); i.hasNext();) {
-            i.nextNode().delete();
+      
+      for(int j = 0 ; j < numbers.length ; j++) {
+         int number = Integer.parseInt(numbers[j]);
+         Node elementNode = cloud.getNode(number);
+      
+         RelationManager contentRelationManager = cloud.getRelationManager("contentrel");
+         NodeList newContentList = contentRelationManager.getList("(snumber = " + newChannel + " and dnumber = " + number
+               + ") or (snumber = " + number + " and dnumber = " + newChannel + ")", null, null);
+      
+      
+         // only if we are not already in the other channel
+         if (newContentList.size() == 0) {
+      
+            RelationUtil.createCountedRelation(elementNode, newChannelNode, "contentrel", "pos");
+            RelationUtil.createRelation(channelNode, elementNode, "deletionrel");
+            NodeList contentList = contentRelationManager.getList("(snumber = " + channel + " and dnumber = " + number
+                  + ") or (snumber = " + number + " and dnumber = " + channel + ")", null, null);
+            for (NodeIterator i = contentList.nodeIterator(); i.hasNext();) {
+               i.nextNode().delete();
+            }
+      
+            RelationManager creationRelationManager = cloud.getRelationManager("creationrel");
+            NodeList creationList = creationRelationManager.getList("(snumber = " + channel + " and dnumber = " + number
+                  + ") or (snumber = " + number + " and dnumber = " + channel + ")", null, null);
+            for (NodeIterator i = creationList.nodeIterator(); i.hasNext();) {
+               i.nextNode().delete();
+               RelationUtil.createRelation(newChannelNode, elementNode, "creationrel");
+            }
+      
+            String remark = resources.getMessage(locale, "content.movetochannel.workflow.message", elementNode
+                  .getStringValue("title"), channelNode.getStringValue("name"), newChannelNode.getStringValue("name"));
+            List<Node> nodes = new ArrayList<Node>();
+            nodes.add(elementNode);
+            Workflow.create(channelNode, remark, nodes);
+            Workflow.create(newChannelNode, remark, nodes);
+            isSuccess = isSuccess && true;
          }
-
-         RelationManager creationRelationManager = cloud.getRelationManager("creationrel");
-         NodeList creationList = creationRelationManager.getList("(snumber = " + channel + " and dnumber = " + number
-               + ") or (snumber = " + number + " and dnumber = " + channel + ")", null, null);
-         for (NodeIterator i = creationList.nodeIterator(); i.hasNext();) {
-            i.nextNode().delete();
-            RelationUtil.createRelation(newChannelNode, elementNode, "creationrel");
+         else {
+            isSuccess = false;
          }
-
-         String remark = resources.getMessage(locale, "content.movetochannel.workflow.message", elementNode
-               .getStringValue("title"), channelNode.getStringValue("name"), newChannelNode.getStringValue("name"));
-         List<Node> nodes = new ArrayList<Node>();
-         nodes.add(elementNode);
-         Workflow.create(channelNode, remark, nodes);
-         Workflow.create(newChannelNode, remark, nodes);
-
-         message = resources.getMessage(locale, "content.movetochannel.success", newChannelNode.getStringValue("name"));
+      }
+      if(isSuccess) {
+         message = resources.getMessage(locale, "content.movetochannel.success", newChannelNode.getStringValue("name"));         
       }
       else {
          message = resources.getMessage(locale, "content.movetochannel.failed", newChannelNode.getStringValue("name"));

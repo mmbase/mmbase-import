@@ -124,6 +124,8 @@
 <input type="hidden" name="offset" value="${param.offset}"/>
 <input type="hidden" name="channelnumber" value="<mm:write referid="parentchannel" />"/>
 <input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
+<input type="button" class="button" value="<fmt:message key="content.delete.massmove" />" onclick="massMove('${parentchannel}','<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />')"/>
+
 <table>
 <thead>
     <tr>
@@ -272,6 +274,7 @@
 </tbody>
 </table>
 <input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
+<input type="button" class="button" value="<fmt:message key="content.delete.massmove" />"  onclick="massMove('${parentchannel}','<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />')"/>
 </form>
 <%@ include file="../pages.jsp" %>
 </div>
