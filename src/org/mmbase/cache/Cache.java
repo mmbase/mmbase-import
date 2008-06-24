@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.49 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: Cache.java,v 1.50 2008-06-24 09:54:44 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -33,6 +33,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * @since MMBase-1.8
      */
     private CacheImplementationInterface<K, V> implementation;
+    protected Object lock;
 
     /**
      * The number of times an element was succesfully retrieved from this cache.
@@ -52,6 +53,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public Cache(int size) {
         // See: http://www.mmbase.org/jira/browse/MMB-1486
         implementation = new LRUCache<K, V>(size);
+        lock =         = implementation.getLock();
         //implementation = new LRUHashtable<K, V>(size);
 
         log.service("Creating cache " + getName() + ": " + getDescription());
@@ -63,6 +65,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
                 implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
                 implementation.config(configValues);
+                lock = implementation.getLock();
             }
         } catch (ClassNotFoundException cnfe) {
             log.error("For cache " + this + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
@@ -115,6 +118,13 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public Set<Map.Entry<K,V>> entrySet() {
         if (! active) return new HashSet<Map.Entry<K,V>>();
         return implementation.entrySet();
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public Class getImplementation() {
+        return implementation.getClass();
     }
 
     /**
