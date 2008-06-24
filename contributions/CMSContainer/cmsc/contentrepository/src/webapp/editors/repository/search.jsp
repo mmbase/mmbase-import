@@ -327,7 +327,7 @@
              <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
          </mm:compare>
           <mm:compare referid="action" value="link" >
-                <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
+             <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
           </mm:compare>
           <table>
             <thead>
@@ -380,13 +380,17 @@
 		      <tr <mm:even inverse="true">class="swap"</mm:even>>
 		         <td style="white-space: nowrap;">
                <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
-               <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
-                   <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-				   </c:if>
-			   	<c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
-                 <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-				   </c:if>
-				       
+	            <mm:compare referid="action" value="link">
+                   <input type="checkbox" value="<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+               </mm:compare>
+               <mm:compare referid="action" value="link" inverse="true">
+                  <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
+                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                  </c:if>
+                  <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                  </c:if>
+				   </mm:compare>    
               
 		          
 			        <%-- also show the edit icon when we return from an edit wizard! --%>
