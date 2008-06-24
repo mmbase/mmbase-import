@@ -126,3 +126,19 @@ function selectAll(value, formName, elementPrefix) {
       }
    }
 }
+
+function massMove( parentChannel,url) {
+   var checkboxs = document.getElementsByTagName("input");
+   var objectnumbers = '';
+   for(i = 0; i < checkboxs.length; i++) {
+      if(checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+         objectnumbers += checkboxs[i].value+",";
+      }
+   }
+   if(objectnumbers == ''){
+      return ;
+   }
+    moveContentNumber = objectnumbers.substr(0,objectnumbers.length - 1);
+    moveParentChannel = parentChannel;
+    openPopupWindow('selectchannel', 340, 400,url);
+}
