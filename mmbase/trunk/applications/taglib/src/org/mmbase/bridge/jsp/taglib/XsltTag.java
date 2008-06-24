@@ -22,9 +22,9 @@ import java.util.Properties;
 
 /**
  * Has to live in a formatter tag, and can provide inline XSLT to it.
- *
+ *X
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.23 2006-09-27 20:48:26 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.24 2008-06-24 06:55:33 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -38,7 +38,7 @@ public class XsltTag extends ContextReferrerTag  {
 
 
     /**
-     * If you use the extends attribute in stead of inline <xsl:import />
+     If you use the extends attribute in stead of inline xsl:import 
      * then the caches can be invalidated (without parsing of xslt beforehand)
      *
      * @todo This has to be implemented still
