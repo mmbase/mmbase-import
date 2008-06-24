@@ -27,14 +27,15 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * one of the types present in the SearchQuery is changed (,created or deleted).
  * This mechanism is not very subtle but it is garanteed to be correct. It means
  * though that your cache can be considerably less effective for queries
- * containing node types from which often node are edited.
+ * containing node types from which often nodes are edited.
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.45 2007-09-17 16:53:01 pierre Exp $
+ * @version $Id: QueryResultCache.java,v 1.46 2008-06-24 09:54:44 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
+ * @todo Perhaps we could put the 'typeCounter' stuff in a sub-class.
  */
 
 abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectNode>> implements NodeEventListener, RelationEventListener {
@@ -43,13 +44,15 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
 
     /**
      * This map contains the possible counts of queries grouped by type in this cache.
-     * A query with multiple steps (types) will increase all counters. 
+     * A query with multiple steps (types) will increase all counters.
      * A relation role name is considered a type
      * This cache will not invalidate when an event does not mention one of these types
      * The cache will be evaluated when a parent type is in this map.
+     * @todo I think that nearly all query result caches contain queries with quite generic or
+     * oftenly changed types. I doubt that the gain is worth the hassle.
      */
     private Map<String, Integer> typeCounters = new HashMap<String, Integer>();
-    
+
 
     /**
      * This is the default release strategy. Actually it is a container for any
@@ -100,13 +103,15 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * Puts a search result in this cache.
      */
-    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+    public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
         if (!checkCachePolicy(query)) return null;
         if (query instanceof BasicQuery) {
             query = ((BasicQuery) query).getQuery();
         }
-        increaseCounters(query, typeCounters);
-        return super.put(query, queryResult);
+        synchronized(lock) {
+            increaseCounters(query, typeCounters);
+            return super.put(query, queryResult);
+        }
     }
 
     /**
@@ -115,13 +120,15 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      *
      * @param key A SearchQuery object.
      */
-    public synchronized List<MMObjectNode> remove(SearchQuery key) {
+    public List<MMObjectNode> remove(SearchQuery key) {
         if (key instanceof BasicQuery) {
             key = ((BasicQuery) key).getQuery();
         }
-        List<MMObjectNode> result = super.remove(key);
-        decreaseCounters(key, typeCounters);
-        return result;
+        synchronized(lock) {
+            List<MMObjectNode> result = super.remove(key);
+            if (result != null) decreaseCounters(key, typeCounters);
+            return result;
+        }
     }
 
     private void increaseCounters(SearchQuery query, Map<String, Integer> counters) {
@@ -130,8 +137,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             if (counters.containsKey(stepName)) {
                 int count = counters.get(stepName);
                 counters.put(stepName, count + 1);
-            }
-            else {
+            } else {
                 counters.put(stepName, 1);
             }
         }
@@ -144,8 +150,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
                 int count = counters.get(stepName);
                 if (count > 1) {
                     counters.put(stepName, count - 1);
-                }
-                else {
+                } else {
                     counters.remove(stepName);
                 }
             }
@@ -165,39 +170,46 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
     }
 
+    /**
+     *
+     * @todo Is the lock necessary?
+     */
     private boolean containsType(RelationEvent event) {
-        if (typeCounters.containsKey("object")) {
-            return true;
-        }
-        if (typeCounters.containsKey(event.getRelationSourceType())
+        synchronized(lock) {
+            if (typeCounters.containsKey("object")) {
+                return true;
+            }
+            if (typeCounters.containsKey(event.getRelationSourceType())
                 || typeCounters.containsKey(event.getRelationDestinationType())) {
-            return true;
-        }
-        MMBase mmb = MMBase.getMMBase();
-        String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
-        if (typeCounters.containsKey(roleName)) {
-            return true;
-        }
-        MMObjectBuilder srcbuilder = mmb.getBuilder(event.getRelationSourceType());
-        if (srcbuilder == null) {
-          return false;
-        }
-        for (MMObjectBuilder parent : srcbuilder.getAncestors()) {
-            if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
-        }
-        MMObjectBuilder destbuilder = mmb.getBuilder(event.getRelationDestinationType());
-        if (destbuilder == null) {
-          return false;
-        }
-        for (MMObjectBuilder parent : destbuilder.getAncestors()) {
-            if (typeCounters.containsKey(parent.getTableName())) {
+            MMBase mmb = MMBase.getMMBase();
+            String roleName = mmb.getRelDef().getBuilderName(Integer.valueOf(event.getRole()));
+            if (typeCounters.containsKey(roleName)) {
                 return true;
             }
+            MMObjectBuilder srcbuilder = mmb.getBuilder(event.getRelationSourceType());
+            if (srcbuilder == null) {
+                return false;
+            }
+            for (MMObjectBuilder parent : srcbuilder.getAncestors()) {
+                if (typeCounters.containsKey(parent.getTableName())) {
+                    return true;
+                }
+            }
+            MMObjectBuilder destbuilder = mmb.getBuilder(event.getRelationDestinationType());
+            if (destbuilder == null) {
+                return false;
+            }
+            for (MMObjectBuilder parent : destbuilder.getAncestors()) {
+                if (typeCounters.containsKey(parent.getTableName())) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
     }
+
 
     /**
      * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
@@ -209,23 +221,25 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
     private boolean containsType(NodeEvent event) {
-        if (typeCounters.containsKey("object")) {
-            return true;
-        }
-        if (typeCounters.containsKey(event.getBuilderName())) {
-            return true;
-        }
-        MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder destBuilder = mmb.getBuilder(event.getBuilderName());
-        if (destBuilder == null) {  // builder is not even available
-            return false;
-        }
-        for (MMObjectBuilder parent : destBuilder.getAncestors()) {
-            if (typeCounters.containsKey(parent.getTableName())) {
+        synchronized(lock) {
+            if (typeCounters.containsKey("object")) {
                 return true;
             }
+            if (typeCounters.containsKey(event.getBuilderName())) {
+                return true;
+            }
+            MMBase mmb = MMBase.getMMBase();
+            MMObjectBuilder destBuilder = mmb.getBuilder(event.getBuilderName());
+            if (destBuilder == null) {  // builder is not even available
+                return false;
+            }
+            for (MMObjectBuilder parent : destBuilder.getAncestors()) {
+                if (typeCounters.containsKey(parent.getTableName())) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
     }
 
     protected int nodeChanged(Event event) throws IllegalArgumentException{
@@ -234,7 +248,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
         Set<SearchQuery> cacheKeys;
         Map<String, Integer> oldTypeCounters;
-        synchronized(this) {
+        synchronized(lock) {
             cacheKeys = new HashSet<SearchQuery>(keySet());
             oldTypeCounters = new HashMap<String, Integer>(typeCounters);
         }
@@ -244,11 +258,11 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
 
         evaluate(event, cacheKeys, removeKeys, foundTypeCounters);
 
-        synchronized(this) {
+        synchronized(lock) {
             for (SearchQuery q : removeKeys) {
                 remove(q);
             }
-            
+
             for (String type : typeCounters.keySet()) {
                 if (foundTypeCounters.containsKey(type)) {
                     if (oldTypeCounters.containsKey(type)) {
@@ -275,7 +289,9 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
         return removeKeys.size();
     }
-
+    /**
+     * @javadoc
+     */
     private void evaluate(Event event, Set<SearchQuery> cacheKeys, Set<SearchQuery> removeKeys, Map<String, Integer> foundTypeCounters) {
         int evaluatedResults = cacheKeys.size();
         long startTime = System.currentTimeMillis();

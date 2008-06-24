@@ -17,7 +17,7 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.3 2008-06-16 13:02:54 sdeboer Exp $
+ * @version $Id: LRUCache.java,v 1.4 2008-06-24 09:54:44 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */
@@ -25,7 +25,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
 
     public int maxSize = 100;
     private final Map<K, V> backing;
-    
+
     public LRUCache() {
         this(100);
     }
@@ -36,10 +36,10 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         backing = Collections.synchronizedMap(new LinkedHashMap<K, V>(size, 0.75f, true) {
                 protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
                     return size() > LRUCache.this.maxSize;
-                }            
+                }
             });
     }
-    
+
     public int getCount(K key) {
         return -1;
     }
@@ -62,12 +62,12 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
             }
         }
     }
- 
+
 
     public int maxSize() {
         return maxSize;
     }
- 
+
     /**
      * Returns size, maxSize.
      */
@@ -80,9 +80,13 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         // needs no configuration.
     }
 
+    public Object getLock() {
+        return backing;
+    }
+
     // wrapping for synchronization
     public int size() { return backing.size(); }
-    public boolean isEmpty() { return backing.isEmpty();}    
+    public boolean isEmpty() { return backing.isEmpty();}
     public boolean containsKey(Object key) { return backing.containsKey(key);}
     public boolean containsValue(Object value){ return backing.containsValue(value);}
     public V get(Object key) { return backing.get(key);}
