@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.50 2008-06-24 09:54:44 michiel Exp $
+ * @version $Id: Cache.java,v 1.51 2008-06-24 10:58:34 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -53,7 +53,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public Cache(int size) {
         // See: http://www.mmbase.org/jira/browse/MMB-1486
         implementation = new LRUCache<K, V>(size);
-        lock =         = implementation.getLock();
+        lock           = implementation.getLock();
         //implementation = new LRUHashtable<K, V>(size);
 
         log.service("Creating cache " + getName() + ": " + getDescription());
