@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.30 2007-08-01 06:44:43 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.31 2008-06-24 10:01:05 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @deprecated use org.mmbase.cache.implementation.LRUCache
  */
@@ -29,7 +29,7 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
 
     private static final Logger log = Logging.getLoggerInstance(LRUHashtable.class);
 
-    private final Hashtable<K, LRUEntry> backing; 
+    private final Hashtable<K, LRUEntry> backing;
 
     /**
      * First (virtual) element of the table.
@@ -87,35 +87,42 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
         this(100, 101, 0.75f);
     }
 
+    public Object getLock() {
+        return backing;
+    }
+
     /**
      * Store an element in the table.
      * @param key the key of the element
      * @param value the value of the element
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
-    public synchronized V put(K key, V value) {
-        LRUEntry work = backing.get(key);
-        V rtn;
-        if (work != null) {
-            rtn = work.value;
-            work.value = value;
-            removeEntry(work);
-            appendEntry(work);
-        } else {
-            rtn = null;
-            work = new LRUEntry(key, value);
-            backing.put(key, work);
-            appendEntry(work);
-            if (backing.size() > maxSize) {
-                K remove = root.next.key;
-                Object was =  remove(remove);
-                assert was != null;
-                if (was == null) {
-                    log.warn("Nothing was removed, while that was expected " + remove + " should have been removed");
+    public  V put(K key, V value) {
+        synchronized(backing) {
+            LRUEntry work = backing.get(key);
+            V rtn;
+            if (work != null) {
+                rtn = work.value;
+                work.value = value;
+                removeEntry(work);
+                appendEntry(work);
+            } else {
+                rtn = null;
+                work = new LRUEntry(key, value);
+                backing.put(key, work);
+                appendEntry(work);
+                if (backing.size() > maxSize) {
+                    K remove = root.next.key;
+                    Object was =  remove(remove);
+                    assert was != null;
+                    if (was == null) {
+                        log.warn("Nothing was removed, while that was expected " + remove + " should have been removed");
+                    }
                 }
             }
+            return rtn;
+
         }
-        return rtn;
     }
 
     public void putAll(Map<? extends K, ? extends V> t) {
@@ -151,16 +158,18 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param key the key of the element
      * @return the value of the element, or <code>null</code> if it could not be found
      */
-    public synchronized V get(Object key) {
-        LRUEntry work =  backing.get(key);
-        if (work != null) {
-            work.requestCount++;
-            V rtn = work.value;
-            removeEntry(work);
-            appendEntry(work);
-            return rtn;
-        } else {
-            return null;
+    public V get(Object key) {
+        synchronized(backing) {
+            LRUEntry work =  backing.get(key);
+            if (work != null) {
+                work.requestCount++;
+                V rtn = work.value;
+                removeEntry(work);
+                appendEntry(work);
+                return rtn;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -169,17 +178,19 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
      * @param key the key of the element
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
-    public synchronized V remove(Object key) {
-        LRUEntry work = backing.remove(key);
-        if (work != null) {
-            V rtn = work.value;
-            removeEntry(work);
-            return rtn;
-        } else {
-            return null;
+    public V remove(Object key) {
+        synchronized(backing) {
+            LRUEntry work = backing.remove(key);
+            if (work != null) {
+                V rtn = work.value;
+                removeEntry(work);
+                return rtn;
+            } else {
+                return null;
+            }
         }
     }
-    
+
 
     /**
      * You should only remove entries from LRUHashtable using the 'remove' function, or using the
@@ -288,22 +299,24 @@ public class LRUHashtable<K, V> implements Cloneable, CacheImplementationInterfa
     /**
      * Clears the table.
      */
-    public synchronized void clear() {
-        while (root.next != dangling) removeEntry(root.next);
-        backing.clear();
+    public void clear() {
+        synchronized(backing) {
+            while (root.next != dangling) removeEntry(root.next);
+            backing.clear();
+        }
     }
 
     /**
      * NOT IMPLEMENTED
      */
-    public synchronized Object clone() {
+    public Object clone() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Returns an <code>Enumeration</code> on the table's element values.
      */
-    public synchronized Enumeration<V> elements() {
+    public Enumeration<V> elements() {
         return new LRUHashtableEnumeration();
     }
 

@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34.2.4 2007-09-17 16:54:39 pierre Exp $
+ * @version $Id: QueryResultCache.java,v 1.34.2.5 2008-06-24 09:52:22 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -43,13 +43,13 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
 
     /**
      * This map contains the possible counts of queries grouped by type in this cache.
-     * A query with multiple steps (types) will increase all counters. 
+     * A query with multiple steps (types) will increase all counters.
      * A relation role name is considered a type
      * This cache will not invalidate when an event does not mention one of these types
      * The cache will be evaluated when a parent type is in this map.
      */
     private Map typeCounters = new HashMap();
-    
+
 
     /**
      * This is the default release strategy. Actually it is a container for any
@@ -109,13 +109,15 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
 
     /**
      * Puts a search result in this cache.
-     * @param query 
+     * @param query
      * @param queryResult
      */
-    public synchronized Object put(SearchQuery query, List queryResult) {
+    public Object put(SearchQuery query, List queryResult) {
         if (!checkCachePolicy(query)) return null;
-        increaseCounters(query, typeCounters);
-        return super.put(query, queryResult);
+        synchronized(lock) {
+            increaseCounters(query, typeCounters);
+            return super.put(query, queryResult);
+        }
     }
 
     /**
@@ -129,17 +131,19 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
         return remove((SearchQuery) key);
     }
 
-    
+
     /**
      * Removes an object from the cache. It alsos remove the watch from the
      * observers which are watching this entry.
      *
      * @param key A SearchQuery object.
      */
-    public synchronized Object remove(SearchQuery query) {
-        Object result = super.remove(query);
-        decreaseCounters(query, typeCounters);
-        return result;
+    public Object remove(SearchQuery query) {
+        synchronized(lock) {
+            Object result = super.remove(query);
+            if (result != null) decreaseCounters(query, typeCounters);
+            return result;
+        }
     }
 
     private void increaseCounters(SearchQuery query, Map counters) {
@@ -149,8 +153,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
             if (counters.containsKey(stepName)) {
                 int count = ((Integer) counters.get(stepName)).intValue();
                 counters.put(stepName, new Integer(count + 1));
-            }
-            else {
+            } else {
                 counters.put(stepName, new Integer(1));
             }
         }
@@ -164,15 +167,14 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
                 int count = ((Integer) counters.get(stepName)).intValue();
                 if (count > 1) {
                     counters.put(stepName, new Integer(count - 1));
-                }
-                else {
+                } else {
                     counters.remove(stepName);
                 }
             }
         }
     }
 
-    
+
     public String toString() {
         return this.getClass().getName() + " " + getName();
     }
@@ -232,24 +234,27 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
     }
 
     private boolean containsType(NodeEvent event) {
-        if (typeCounters.containsKey("object")) {
-            return true;
-        }
-        if (typeCounters.containsKey(event.getBuilderName())) {
-            return true;
-        }
-        MMBase mmb = MMBase.getMMBase();
-        MMObjectBuilder destBuilder = mmb.getBuilder(event.getBuilderName());
-        if (destBuilder == null) {  // builder is not even available
-            return false;
-        }
-        for (Iterator iter = destBuilder.getAncestors().iterator(); iter.hasNext();) {
-            MMObjectBuilder parent = (MMObjectBuilder) iter.next();
-            if (typeCounters.containsKey(parent.getTableName())) {
+        synchronized(lock) {
+            if (typeCounters.containsKey("object")) {
                 return true;
             }
+            if (typeCounters.containsKey(event.getBuilderName())) {
+                return true;
+            }
+
+            MMBase mmb = MMBase.getMMBase();
+            MMObjectBuilder destBuilder = mmb.getBuilder(event.getBuilderName());
+            if (destBuilder == null) {  // builder is not even available
+                return false;
+            }
+            for (Iterator iter = destBuilder.getAncestors().iterator(); iter.hasNext();) {
+                MMObjectBuilder parent = (MMObjectBuilder) iter.next();
+                if (typeCounters.containsKey(parent.getTableName())) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
     }
 
     protected int nodeChanged(Event event) throws IllegalArgumentException{
@@ -258,7 +263,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
         }
         Set cacheKeys;
         Map oldTypeCounters;
-        synchronized(this) {
+        synchronized(lock) {
             cacheKeys = new HashSet(keySet());
             oldTypeCounters = new HashMap(typeCounters);
         }
@@ -268,13 +273,13 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
 
         evaluate(event, cacheKeys, removeKeys, foundTypeCounters);
 
-        synchronized(this) {
-            Iterator removeIter = removeKeys.iterator();
-            while(removeIter.hasNext()) {
-                remove(removeIter.next());
-            }
-            
-            // types in the oldTypesCounter which are not in the typeCounters are removed during the 
+        Iterator removeIter = removeKeys.iterator();
+        while(removeIter.hasNext()) {
+            remove(removeIter.next());
+        }
+
+        synchronized(lock) {
+            // types in the oldTypesCounter which are not in the typeCounters are removed during the
             // evaluation of the keys and are not relevant anymore.
             for (Iterator iter = typeCounters.keySet().iterator(); iter.hasNext();) {
                 String type = (String) iter.next();
@@ -288,15 +293,13 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
                             int newValue = foundValue + (guessedValue - oldValue);
                             foundTypeCounters.put(type, new Integer(newValue));
                         }
-                    }
-                    else {
+                    } else {
                         int guessedValue = ((Integer) typeCounters.get(type)).intValue();
                         int foundValue = ((Integer) foundTypeCounters.get(type)).intValue();
                         int newValue = foundValue + guessedValue;
                         foundTypeCounters.put(type, new Integer(newValue));
                     }
-                }
-                else {
+                } else {
                     Integer guessedValue = (Integer) typeCounters.get(type);
                     foundTypeCounters.put(type, guessedValue);
                 }
@@ -306,6 +309,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
         return removeKeys.size();
     }
 
+    // if I
     private void evaluate(Event event, Set cacheKeys, Set removeKeys, Map foundTypeCounters) {
         int evaluatedResults = cacheKeys.size();
         long startTime = System.currentTimeMillis();
@@ -333,8 +337,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
 
             if (shouldRelease) {
                 removeKeys.add(key);
-            }
-            else {
+            } else {
                 increaseCounters(key, foundTypeCounters);
             }
         }

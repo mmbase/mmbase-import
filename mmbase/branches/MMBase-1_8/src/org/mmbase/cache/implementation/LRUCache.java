@@ -17,7 +17,7 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.2.2.1 2008-06-16 13:01:41 sdeboer Exp $
+ * @version $Id: LRUCache.java,v 1.2.2.2 2008-06-24 09:52:22 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */
@@ -25,7 +25,7 @@ public class LRUCache implements CacheImplementationInterface {
 
     public int maxSize = 100;
     private final Map backing;
-    
+
     public LRUCache() {
         this(100);
     }
@@ -36,10 +36,14 @@ public class LRUCache implements CacheImplementationInterface {
         backing = Collections.synchronizedMap(new LinkedHashMap(size, 0.75f, true) {
                 protected boolean removeEldestEntry(Map.Entry eldest) {
                     return size() > LRUCache.this.maxSize;
-                }            
+                }
             });
     }
-    
+
+    public Object getLock() {
+        return backing;
+    }
+
     public int getCount(Object key) {
         return -1;
     }
@@ -62,12 +66,12 @@ public class LRUCache implements CacheImplementationInterface {
             }
         }
     }
- 
+
 
     public int maxSize() {
         return maxSize;
     }
- 
+
     /**
      * Returns size, maxSize.
      */
@@ -82,7 +86,7 @@ public class LRUCache implements CacheImplementationInterface {
 
     // wrapping for synchronization
     public int size() { return backing.size(); }
-    public boolean isEmpty() { return backing.isEmpty();}    
+    public boolean isEmpty() { return backing.isEmpty();}
     public boolean containsKey(Object key) { return backing.containsKey(key);}
     public boolean containsValue(Object value){ return backing.containsValue(value);}
     public Object get(Object key) { return backing.get(key);}

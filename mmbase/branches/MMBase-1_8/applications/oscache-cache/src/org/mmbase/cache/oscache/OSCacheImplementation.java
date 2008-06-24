@@ -33,15 +33,15 @@ import java.util.Collection;
  */
 public class OSCacheImplementation implements CacheImplementationInterface  {
     private AbstractConcurrentReadCache cacheImpl;
-    private static final String classname = "com.opensymphony.oscache.base.algorithm.LRUCache";
-    private static final String persistanceclass = "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener";
+    private static final String classname = com.opensymphony.oscache.base.algorithm.LRUCache.class.getName();
+    private static final String persistanceclass = com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener.class.getName();
     private static final Logger log = Logging.getLoggerInstance(OSCacheImplementation.class);
 
     public OSCacheImplementation() {
     }
 
     /**
-     * This method is called by MMBase to configure the cache using the given 
+     * This method is called by MMBase to configure the cache using the given
      * map of configuration parameters.
      */
     public void config(Map config) {
@@ -144,7 +144,7 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
     public int hashCode() {
         return cacheImpl.hashCode();
     }
-    
+
     /**
      * Wrapper around the isEmpty() method of the cache implementation.
      */
@@ -201,12 +201,12 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
     public Collection values() {
         return cacheImpl.values();
     }
-    
+
     /**
      * Calculate an unique string key for an object that is not a 'String'.
      * The 'toString()' will not suffice, partly because it doesn't guarantee
-     * a unique value, and also because the toString() method may generate 
-     * keys that are too long. 
+     * a unique value, and also because the toString() method may generate
+     * keys that are too long.
      * This method will concatenate the classname and the hashcode of the object,
      * this combination should be unique.
      */
@@ -226,5 +226,9 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
      */
     public int getByteSize(SizeOf sizeof) {
         throw new UnsupportedOperationException("Size is not available for OSCache");
+    }
+
+    public Object getLock() {
+        return cacheImpl;
     }
 }

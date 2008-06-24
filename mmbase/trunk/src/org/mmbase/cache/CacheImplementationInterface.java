@@ -17,7 +17,7 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.9 2007-08-10 07:53:52 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.10 2008-06-24 09:54:44 michiel Exp $
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface<K, V> extends Map<K, V> {
@@ -42,4 +42,10 @@ public interface CacheImplementationInterface<K, V> extends Map<K, V> {
      */
     void config(Map<String, String> configuration);
 
+    /**
+     * The cache implementation must be somehow thread-safe. This method should
+     * return the object on which to synchronize, e.g. when looping over entrySet.
+     * @since MMBase-1.8.6
+     */
+    Object getLock();
 }

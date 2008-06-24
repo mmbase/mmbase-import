@@ -17,7 +17,7 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.5 2006-02-23 17:36:55 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.5.2.1 2008-06-24 09:52:22 michiel Exp $
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface extends Map {
@@ -41,5 +41,7 @@ public interface CacheImplementationInterface extends Map {
      * Configure the implementation with the given configuration values
      */
     void config(Map configuration);
+
+    Object getLock();
 
 }
