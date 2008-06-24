@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@taglib uri="http://finalist.com/csmc-directreaction" prefix="cmsc-dr"%>
+<%@taglib uri="http://finalist.com/cmsc-directreaction" prefix="cmsc-dr"%>
 
 <%@include file="globals.jsp" %>
 <fmt:setBundle basename="cmsc-reactions" scope="request" />
