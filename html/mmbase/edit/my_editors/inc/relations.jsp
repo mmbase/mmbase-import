@@ -77,7 +77,7 @@ while(relIterator.hasNext()) {
             <mm:param name="nr"><mm:field name="number" /></mm:param>
           </mm:url>" title="edit node"><img src="img/mmbase-edit.png" alt="edit node" width="21" height="20" /></a></mm:maywrite>
           </td>
-          <td> <mm:function name="gui" /> </td>
+          <td class="relgui"> <mm:function name="gui" /> </td>
           <td class="buttons">
             <a onclick="toggle('edit_<mm:write referid="relation" />');return false;" href="#" title="edit or delete relation"><img src="img/mmbase-<%= arrow %>.png" alt="edit relation" width="21" height="20" /></a>
           </td>
