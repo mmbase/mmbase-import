@@ -28,7 +28,7 @@
 
    <command name="search" nodepath="formfieldvalue" age="-1" fields="value" pagelength="20">
       <prompt xml:lang="en">Search form field value</prompt>
-      <prompt xml:lang="nl">Zoek formulier veld waarde</prompt>
+      <prompt xml:lang="nl">Zoek formulierveld waarde</prompt>
       <prompt xml:lang="zh">查找表单框值</prompt>
       <search-filter>
          <name xml:lang="en">value contains</name>

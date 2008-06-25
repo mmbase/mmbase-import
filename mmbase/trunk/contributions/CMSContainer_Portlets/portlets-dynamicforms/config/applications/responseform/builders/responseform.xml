@@ -482,5 +482,28 @@
 				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
 			</db>
 		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Reactie HTML-code</guiname>
+				<guiname xml:lang="en">Thanks HTML code</guiname>				
+				<guiname xml:lang="zh">感谢HTML</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>7</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<db>
+				<name>thank_text</name>
+				<type key="false" notnull="false" size="512000" state="persistent">STRING</type>
+			</db>
+		</field>
 </fieldlist>
 </builder>

@@ -16,6 +16,7 @@
    <field name="useremailbodyafter" />
    <field name="includedata" />
    <field name="confirmation" />
+   <field name="thank_text" />
 
    <relation destination="contentchannel" role="creationrel" />
    <relation destination="contentchannel" role="contentrel" />
