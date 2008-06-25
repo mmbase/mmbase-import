@@ -14,5 +14,6 @@
   <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="shortcut icon" type="image/x-icon" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>my_editors - <mm:write referid="pagetitle" /></title>
+  <mm:include page="/mmbase/jquery/jquery.jspx" />
   <script src="<mm:url absolute="server" page="scripts/tables.js" />" type="text/javascript"><!-- for MSIE --></script>
   <script src="<mm:url absolute="server" page="scripts/showdiv.js" />" type="text/javascript"><!-- for MSIE --></script>
