@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
+<%@ page import="net.sf.mmapps.modules.cloudprovider.CloudProviderFactory,net.sf.mmapps.modules.cloudprovider.CloudProvider,org.mmbase.bridge.*;"%>
 <div class="kolombestel">
 <mm:cloud method="asis">
 	<mm:import externid="elementId" required="true" from="request" />		
@@ -199,10 +200,19 @@
 			</form>		
 		</c:when>
 		<c:otherwise>
+			<%
+				int eleId=Integer.parseInt((String)pageContext.getAttribute("elementId"));
+				CloudProvider mmprovider = CloudProviderFactory.getCloudProvider();
+				Cloud mmCloud = mmprovider.getCloud();
+				Node eleNode=mmCloud.getNode(eleId);
+				String tkHtml=eleNode.getStringValue("thank_text").trim();
+				request.setAttribute("tkHtml",tkHtml);
+			%>
 			<mm:node number="${elementId}" notfound="skip">
 				<mm:field name="confirmation">
 				<mm:isnotempty><p class="body"><mm:write escape="none"/></p></mm:isnotempty></mm:field>	
-			</mm:node>		
+			</mm:node>
+			${tkHtml}
 		</c:otherwise>
 	</c:choose>		
 	
@@ -212,5 +222,3 @@
     
 </mm:cloud>
 </div>
-
-
