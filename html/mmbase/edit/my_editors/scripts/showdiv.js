@@ -1,29 +1,3 @@
-/* 
- * Substrings all gui representations that are to long for the related nodes column.
- * Uses jquery.
- */
-function substrGui() {
-    $('.relgui').each(function(i) {
-        var txt = $(this).text();
-        if (txt.length > 36) {
-            txt = txt.substr(0,36) + "..";
-            $(this).text(txt);
-        }
-    });
-    $(".relgui a").each(function(i) {
-        var txt = $(this).text();
-        if (txt.length > 36) { 
-            txt = txt.substr(0,36) + "..";
-            $(this).text(txt);
-        };
-    });
-}
-
-// (jquery) onload functions
-$(document).ready(function() {
-    substrGui();
-});
-
 /* Shows a div (more or less) at the current cursor position like a tooltip 
  * and gives it the classname 'shown' to be used in css
  * @param id    The id of an html element
