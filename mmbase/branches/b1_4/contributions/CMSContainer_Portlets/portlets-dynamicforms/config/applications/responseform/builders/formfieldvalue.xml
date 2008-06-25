@@ -1,58 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd" 
-	extends="object" maintainer="finalist.com" name="formfieldvalue" version="1">
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+   extends="object" maintainer="finalist.com" name="formfieldvalue" version="1">
    <status>active</status>   
    <!-- The default maximum age of objects in a search
    used by some MMBase editors to limit the results of a search -->
    <searchage>70</searchage>
-   <!-- Names defines the different names used in user visible parts
-    Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
-    Names can be provided in various languages. -->
+   <!--
+      Names defines the different names used in user visible parts Singular names are used when talking about one object
+      (Url,Person) and plurar when talking about multiple objects (Urls, people). Names can be provided in various
+      languages.
+   -->
    <names>
       <!-- singular names per language as defined by ISO 639 -->
       <singular xml:lang="nl">Formulier veldwaarden</singular>
       <singular xml:lang="en">Form Field Value</singular>
-	   <singular xml:lang="zh">表单框值</singular>
+      <singular xml:lang="zh">表单框值</singular>
       <!-- plural names per language as defined by ISO 639 -->
       <plural xml:lang="nl">Formulier veldwaarden</plural>
       <plural xml:lang="en">Form field values</plural>
-	  <plural xml:lang="zh">表单框值</plural>
+      <plural xml:lang="zh">表单框值</plural>
    </names>
-   <!-- Descriptions are meant to provide some additional clarification to an object.
- They are useful for GUI editors to provide helptexts.
- Descriptions can be provided in various languages. -->
+   <!--
+      Descriptions are meant to provide some additional clarification to an object. They are useful for GUI editors to
+      provide helptexts. Descriptions can be provided in various languages.
+   -->
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
-	   <description xml:lang="zh"></description>
+      <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
-
-   <!-- You can define properties to be used by the classfile.
- Properties are entered using name/value pairs.
- The actual properties available differ by class. -->
-   <properties>      
+   <!--
+      You can define properties to be used by the classfile. Properties are entered using name/value pairs. The actual
+      properties available differ by class.
+   -->
+   <properties>
    </properties>
-
    <fieldlist>
       <field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			   <description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Waarde</guiname>
             <guiname xml:lang="en">Value</guiname>
-			   <guiname xml:lang="zh">值</guiname>
+            <guiname xml:lang="zh">值</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -74,20 +76,21 @@
          </db>
       </field>
       <field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			   <description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Tekst</guiname>
             <guiname xml:lang="en">Text</guiname>
-		    	<guiname xml:lang="zh">文本框</guiname>
+            <guiname xml:lang="zh">文本框</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -109,20 +112,21 @@
          </db>
       </field>
       <field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
-            <guiname xml:lang="nl">Default waarde</guiname>
+            <guiname xml:lang="nl">Standaard waarde</guiname>
             <guiname xml:lang="en">Default value</guiname>
-			   <guiname xml:lang="zh">默认值</guiname>
+            <guiname xml:lang="zh">默认值</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -143,5 +147,5 @@
             <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
-</fieldlist>
+   </fieldlist>
 </builder>

@@ -489,8 +489,8 @@
 				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Thanks HTML</guiname>
-				<guiname xml:lang="en">Thanks HTML</guiname>				
+				<guiname xml:lang="nl">Reactie HTML-code</guiname>
+				<guiname xml:lang="en">Thanks HTML code</guiname>				
 				<guiname xml:lang="zh">感谢HTML</guiname>
 			</gui>
 			<editor>

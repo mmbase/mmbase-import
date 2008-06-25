@@ -1,59 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"
-	extends="object" maintainer="mmbase.org" name="savedfieldvalue" version="1">
+   extends="object" maintainer="mmbase.org" name="savedfieldvalue" version="1">
    <!-- Status of the builder: active or inactive -->
    <status>active</status>   
    <!-- The default maximum age of objects in a search
    used by some MMBase editors to limit the results of a search -->
    <searchage>70</searchage>
-   <!-- Names defines the different names used in user visible parts
-    Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
-    Names can be provided in various languages. -->
+   <!--
+      Names defines the different names used in user visible parts Singular names are used when talking about one object
+      (Url,Person) and plurar when talking about multiple objects (Urls, people). Names can be provided in various
+      languages.
+   -->
    <names>
       <!-- singular names per language as defined by ISO 639 -->
       <singular xml:lang="nl">Opgeslagen veldwaarde</singular>
       <singular xml:lang="en">Saved field value</singular>
-	   <singular xml:lang="zh">保存框值</singular>
+      <singular xml:lang="zh">保存框值</singular>
       <!-- plural names per language as defined by ISO 639 -->
       <plural xml:lang="nl">Opgeslagen veldwaarden</plural>
       <plural xml:lang="en">Saved field value</plural>
-	   <plural xml:lang="zh">保存框值</plural>
+      <plural xml:lang="zh">保存框值</plural>
    </names>
-   <!-- Descriptions are meant to provide some additional clarification to an object.
- They are useful for GUI editors to provide helptexts.
- Descriptions can be provided in various languages. -->
+   <!--
+      Descriptions are meant to provide some additional clarification to an object. They are useful for GUI editors to
+      provide helptexts. Descriptions can be provided in various languages.
+   -->
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
-	  <description xml:lang="zh"></description>
+      <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
-
-   <!-- You can define properties to be used by the classfile.
- Properties are entered using name/value pairs.
- The actual properties available differ by class. -->
-   <properties>      
+   <!--
+      You can define properties to be used by the classfile. Properties are entered using name/value pairs. The actual
+      properties available differ by class.
+   -->
+   <properties>
    </properties>
-
    <fieldlist>
       <field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			   <description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Veld</guiname>
             <guiname xml:lang="en">Field</guiname>
-			   <guiname xml:lang="zh">框</guiname>
+            <guiname xml:lang="zh">框</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -75,20 +77,21 @@
          </db>
       </field>
       <field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Waarde</guiname>
             <guiname xml:lang="en">Value</guiname>
-			   <guiname xml:lang="zh">值</guiname>
+            <guiname xml:lang="zh">值</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -109,5 +112,5 @@
             <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
          </db>
       </field>
-</fieldlist>
+   </fieldlist>
 </builder>
