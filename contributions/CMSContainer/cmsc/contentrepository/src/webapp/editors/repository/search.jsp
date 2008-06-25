@@ -324,7 +324,9 @@
 
          <form action="LinkToChannelAction.do" name="linkForm">
          <mm:compare referid="action" value="link" inverse="true">
-             <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
+             <mm:hasrank minvalue="administrator">
+                <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
+              </mm:hasrank> 
          </mm:compare>
           <mm:compare referid="action" value="link" >
              <input type="submit" class="button" value="<fmt:message key="searchform.link.submit" />"/>
@@ -338,6 +340,7 @@
                         <input type="hidden" name="channel" value="<mm:write referid="linktochannel"/>" />
                         <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>   
                      </mm:compare>
+
                       <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
                   </th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
