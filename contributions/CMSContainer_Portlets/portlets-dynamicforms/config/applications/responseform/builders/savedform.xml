@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated for MMBase version: 1.7  -->
-<builder xmlns="http://www.mmbase.org/xmlns/builder"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"
-extends="object" maintainer="mmbase.org" name="savedform" version="0">
+   extends="object" maintainer="mmbase.org" name="savedform" version="0">
 <!--
 -->
 
@@ -13,47 +12,50 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
    <!-- The default maximum age of objects in a search
    used by some MMBase editors to limit the results of a search -->
    <searchage>70</searchage>
-   <!-- Names defines the different names used in user visible parts
-    Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
-    Names can be provided in various languages. -->
+   <!--
+      Names defines the different names used in user visible parts Singular names are used when talking about one object
+      (Url,Person) and plural when talking about multiple objects (Urls, people). Names can be provided in various
+      languages.
+   -->
    <names>
       <!-- singular names per language as defined by ISO 639 -->
       <singular xml:lang="nl">Bewaard formulier</singular>
       <singular xml:lang="en">Saved form</singular>
-	  <singular xml:lang="zh"></singular>
+      <singular xml:lang="zh"></singular>
       <!-- plural names per language as defined by ISO 639 -->
       <plural xml:lang="nl">Bewaarde formulieren</plural>
       <plural xml:lang="en">Saved forms</plural>
-	  <plural xml:lang="zh">保存表单</plural>
+      <plural xml:lang="zh">保存表单</plural>
    </names>
-   <!-- Descriptions are meant to provide some additional clarification to an object.
- They are useful for GUI editors to provide helptexts.
- Descriptions can be provided in various languages. -->
+   <!--
+      Descriptions are meant to provide some additional clarification to an object. They are useful for GUI editors to
+      provide helptexts. Descriptions can be provided in various languages.
+   -->
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
-	  <description xml:lang="zh"></description>
+      <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
-    <properties>     
-    </properties>
-
-  	<fieldlist>
-  	<field>
-         <!-- Descriptions.
-               They are useful for GUI editors to provide helptexts.
-               Descriptions can be provided in various languages. -->
+   <properties>
+   </properties>
+   <fieldlist>
+      <field>
+         <!--
+            Descriptions. They are useful for GUI editors to provide helptexts. Descriptions can be provided in various
+            languages.
+         -->
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Teller</guiname>
             <guiname xml:lang="en">Count</guiname>
-			<guiname xml:lang="zh">数量</guiname>
+            <guiname xml:lang="zh">数量</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -73,6 +75,6 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
             <!-- MMBase datatype and demands on it -->
             <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
-	</field>
-	</fieldlist>
+      </field>
+   </fieldlist>
 </builder>

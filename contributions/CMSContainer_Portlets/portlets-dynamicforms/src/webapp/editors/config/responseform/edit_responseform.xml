@@ -73,5 +73,10 @@
       <prompt xml:lang="en">Confirmation message</prompt>
       <prompt xml:lang="zh">确认信息</prompt>
    </field>
+   <field name="thank_text" dtmaxlength="512000" ftype="text" rows="10">
+      <prompt xml:lang="nl">Reactie HTML-code</prompt>
+      <prompt xml:lang="en">Thanks HTML code</prompt>
+      <prompt xml:lang="zh">感谢 HTML</prompt>
+   </field>
    <list include="config/formfield/search_responseform_posrel_formfield.xml" />
 </form-schema>

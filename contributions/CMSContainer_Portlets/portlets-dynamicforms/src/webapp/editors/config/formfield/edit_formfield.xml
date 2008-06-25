@@ -42,7 +42,7 @@
    </field>
    <field name="defaultvalue" ftype="text" rows="3">
       <prompt xml:lang="en">Default value</prompt>
-      <prompt xml:lang="nl">Default waarde</prompt>
+      <prompt xml:lang="nl">Standaard waarde</prompt>
       <prompt xml:lang="zh">默认值</prompt>
       <description>De default waarde, deze waarde wordt niet gebruikt bij select velden en radiobuttons.</description>
    </field>
@@ -56,7 +56,7 @@
       <optionlist select="boolean" />
    </field>
    <field name="maxlength" ftype="line" dttype="int" dtmin="-1">
-      <prompt xml:lang="en">Maxlength</prompt>
+      <prompt xml:lang="en">Max length</prompt>
       <prompt xml:lang="nl">Maximum lengte</prompt>
       <description>The maxlength of the field</description>
    </field>
