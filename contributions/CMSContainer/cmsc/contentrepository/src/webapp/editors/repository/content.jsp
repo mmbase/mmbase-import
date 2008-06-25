@@ -123,13 +123,17 @@
 <form action="contentMassDelete.do" name="contentForm">
 <input type="hidden" name="offset" value="${param.offset}"/>
 <input type="hidden" name="channelnumber" value="<mm:write referid="parentchannel" />"/>
+<% if (role != null && SecurityUtil.isWriter(role)) { %>
 <input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
 <input type="button" class="button" value="<fmt:message key="content.delete.massmove" />" onclick="massMove('${parentchannel}','<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />')"/>
-
+<% } %>
 <table>
 <thead>
     <tr>
-        <th><input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/></th>
+        <th><% if (role != null && SecurityUtil.isWriter(role)) { %>
+        <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/>
+        <% } %>
+        </th>
         <th><a href="javascript:sortBy('otype','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.typecolumn"/></a></th>
         <th><a href="javascript:sortBy('title','<mm:write referid="parentchannel" />')" class="headerlink">
@@ -152,7 +156,9 @@
 </mm:url>
 <tr   <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
     <td style="white-space: nowrap;">
-    <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
+    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+      <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
+    <% } %>
     <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
                                                                  title="<fmt:message key="content.info" />"
                                                                  alt="<fmt:message key="content.info" />"/></a>
@@ -273,8 +279,10 @@
 </mm:listnodes>
 </tbody>
 </table>
+<% if (role != null && SecurityUtil.isWriter(role)) { %>
 <input type="submit" class="button" value="<fmt:message key="content.delete.massdelete" />"/>
 <input type="button" class="button" value="<fmt:message key="content.delete.massmove" />"  onclick="massMove('${parentchannel}','<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />')"/>
+<% } %>
 </form>
 <%@ include file="../pages.jsp" %>
 </div>
