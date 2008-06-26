@@ -40,24 +40,23 @@
                   <mm:constraint field="score"  referid="TESTSCORE_INCOMPLETE" inverse="true"/>
                   <mm:constraint field="copybooks.number"  value="$copybookNo" />
                   <mm:relatednodes>
-                    <mm:field id="madetestNo" name="number" write="false"/>
-                    <mm:field id="madetestscore" name="score" write="false"/>
+                    <mm:node id="madetest" />
                   </mm:relatednodes>
                 </mm:relatednodescontainer>
               </mm:present>
 
               <jsp:text>&lt;!-- made test no: ${madetestNo} --&gt;</jsp:text>
 
-              <mm:present referid="madetestNo">
+              <mm:present referid="madetest">
                 <!-- Made already, show the result -->
                 <mm:treeinclude
                     debug="html"
                     page="/education/tests/buildtestresult.jsp" objectlist="$includePath"
-                    referids="$referids,testNo@learnobject,madetestscore" />
+                    referids="$referids,testNo@learnobject,madetest" />
               </mm:present>
 
 
-              <mm:present referid="madetestNo" inverse="true">
+              <mm:present referid="madetest" inverse="true">
                 <!-- Not made already, build the test, and let the user make it -->
                 <mm:treeinclude
                     debug="html"

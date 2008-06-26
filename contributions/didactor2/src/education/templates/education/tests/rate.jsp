@@ -40,7 +40,9 @@
 
           <!-- rate the given answers, and lay (new) relations -->
           <mm:import id="ratepage" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
+
           <mm:treeinclude page="$ratepage" objectlist="$includePath" referids="$referids,madetest,_node@question" />
+
         </mm:listnodes>
 
         <c:choose>
@@ -49,19 +51,20 @@
                  If "done" pressed then show the feedback
             -->
             <div>
-              <mm:field name="feedbackpage">
-                <mm:compare value="0">
-                  <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath"
-                                  referids="$referids,madetest,_node@tests" />
-                  <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath"
-                                  referids="$referids,madetest,_node@tests" />
-                </mm:compare>
+              <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath"
+                              referids="$referids,madetest,_node@tests" />
 
-                <mm:compare value="0" inverse="true">
-                  <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"
+              <mm:field name="feedbackpage" write="false">
+                <c:choose>
+                  <c:when test="${_ eq 0}">
+                    <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath"
+                                    referids="$referids,madetest,_node@tests" />
+                  </c:when>
+                  <c:otherwise>
+                    <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"
                                   referids="$referids,_node@testNo,madetest@madetestNo,user@userNo" />
-                </mm:compare>
-
+                  </c:otherwise>
+                </c:choose>
               </mm:field>
             </div>
           </c:when>
