@@ -74,12 +74,21 @@ public class LanguageRedirectServlet extends BridgeServlet {
          response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }
       String redirect = getRedirectUrl(request, pagePath);
-      response.sendRedirect(redirect);
+      if (redirect == null) {
+         response.sendError(HttpServletResponse.SC_NOT_FOUND, "pagePath: " + pagePath);
+      }
+      else {
+         response.sendRedirect(redirect);
+      }
    }
 
 
    private String getRedirectUrl(HttpServletRequest request, String path) {
       NavigationItem item = SiteManagement.getNavigationItemFromPath(path);
+      if (item == null) {
+         return null;
+      }
+      
       String link = SiteManagement.getPath(item, !ServerUtil.useServerName());
 
       String host = null;
