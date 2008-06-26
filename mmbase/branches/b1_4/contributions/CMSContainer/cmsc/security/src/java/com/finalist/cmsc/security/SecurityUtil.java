@@ -154,14 +154,32 @@ public class SecurityUtil {
 		            Node extraGroup = groups.getNode(i);
 		            fillChannelsWithRole(extraGroup, extraRoles, treeManagers, relationName);
 
-		            for (Map.Entry<String, UserRole> entry : extraRoles.entrySet()) {
-		                String extraPath = entry.getKey();
-		                UserRole extraRole = entry.getValue();
-		                UserRole channelRole = getRole(extraPath, channelsWithRole);
-		                if (channelRole == null || channelRole.getRole().getId() < extraRole.getRole().getId()) {
-		                    channelsWithRole.put(extraPath, extraRole);
-		                }
-		            }
+		            // upgrade user role map based on the data of the new group data map
+                  for (Map.Entry<String, UserRole> entry : channelsWithRole.entrySet()) {
+                     String path = entry.getKey();
+                     UserRole userRole = entry.getValue();
+                     UserRole newGroupRole = getRole(path, extraRoles);
+                     if (newGroupRole != null && userRole.getRole().getId() < newGroupRole.getRole().getId()) {
+                         channelsWithRole.put(path, newGroupRole);
+                     }
+                 }
+                 
+                 // add missing data to user role map based on new group data map
+                 for (Map.Entry<String, UserRole> entry : extraRoles.entrySet()) {
+                     String extraPath = entry.getKey();
+                     UserRole newGroupRole = entry.getValue();
+                     UserRole channelRole = getRole(extraPath, channelsWithRole);
+                     Role userRole;
+                     if (channelRole == null) {
+                        userRole = Role.NONE;
+                     }
+                     else {
+                        userRole = channelRole.getRole();
+                     }
+                     if (userRole.getId() < newGroupRole.getRole().getId()) {
+                         channelsWithRole.put(extraPath, newGroupRole);
+                     }
+                 }
 		        }
 		    }
 		}
