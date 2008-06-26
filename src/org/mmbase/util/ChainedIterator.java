@@ -17,19 +17,23 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ChainedIterator.java,v 1.5 2008-06-26 11:26:34 michiel Exp $
  */
 public class ChainedIterator<E> implements Iterator<E> {
 
     List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
     Iterator<Iterator<E>> iteratorIterator = null;
     Iterator<E> iterator = null;
-    public ChainedIterator() {
+    public ChainedIterator(Iterator<E>... is) {
+        for (Iterator<E> i : is) {
+            iterators.add(i);
+        }
     }
 
-    public void addIterator(Iterator<E> i) {
+    public ChainedIterator<E>  addIterator(Iterator<E> i) {
         if (iteratorIterator != null) throw new IllegalStateException();
         iterators.add(i);
+        return this;
     }
 
 
