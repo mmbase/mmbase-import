@@ -20,15 +20,15 @@ import org.mmbase.util.logging.Logging;
 /**
  * A thread-local is used to store a stack of JSP PageContext.objects. MMBase Functions and other
  * objects can use this class to retrieve the current PageContext while it was not passed in as a parameter
- *  
- * @since MMBase-1.8.7
+ *
+ * @since MMBase-1.8.6
  */
 public class PageContextThreadLocal {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(PageContextThreadLocal.class.getName());
-    
-    private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts 
+
+    private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts
                         = new ThreadLocal<LinkedList<PageContextInfo>>() {
         protected LinkedList<PageContextInfo> initialValue() {
                 return new LinkedList<PageContextInfo>();
@@ -73,12 +73,12 @@ public class PageContextThreadLocal {
     private static class PageContextInfo {
         PageContext pageContext;
         ContextReferrerTag firstTagWithPageContext;
-        
+
         PageContextInfo(PageContext pc, ContextReferrerTag contextReferrerTag) {
             this.pageContext = pc;
             this.firstTagWithPageContext = contextReferrerTag;
         }
-        
+
     }
 
 }
