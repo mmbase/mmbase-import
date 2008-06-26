@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.16 2007-07-14 09:25:16 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.17 2008-06-26 10:30:13 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -79,63 +79,64 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     public Set<Map.Entry<String, Object>> entrySet() {
         return new AbstractSet<Map.Entry<String, Object>>() {
-                Collection<String> names = unwrapped.keySet();
-                public Iterator<Map.Entry<String, Object>> iterator() {
-                    return new Iterator<Map.Entry<String, Object>>() {
-                            Iterator<String> back = names.iterator();
-                            Iterator<String> nul  = null;
-                            String name;
-                            public Map.Entry<String, Object> next() {
-                                if (nul == null) {
-                                    name = back.next();
-                                } else {
-                                    name = nul.next();
+            Set<String> names = new HashSet<String>(Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE)));
+
+            {
+                names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE)));
+                if (pageContext.getSession() != null) {
+                    names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.SESSION_SCOPE)));
+                }
+                names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.APPLICATION_SCOPE)));
+                names.addAll(nulls);
+            }
+
+            ///Collection<String> names = unwrapped.keySet();
+            public Iterator<Map.Entry<String, Object>> iterator() {
+                return new Iterator<Map.Entry<String, Object>>() {
+                    Iterator<String> i = names.iterator();
+                    String name;
+                    public Map.Entry<String, Object> next() {
+                        name = i.next();
+
+                        return new Map.Entry<String, Object>() {
+                            public String  getKey() {
+                                return name;
+                            }
+                            public Object getValue() {
+                                try {
+                                    return pageContext.findAttribute(name);
+                                } catch (java.lang.IllegalStateException ise) {
+                                    // e.g.: session invalid
+                                    log.warn(ise);
+                                    return null;
                                 }
-                                return new Map.Entry<String, Object>() {
-                                        public String  getKey() {
-                                            return name;
-                                        }
-                                        public Object getValue() {
-                                            if (nul == null) {
-                                                try {
-                                                    return pageContext.findAttribute(name);
-                                                } catch (java.lang.IllegalStateException ise) {
-                                                    // e.g.: session invalid
-                                                    log.warn(ise);
-                                                    return null;
-                                                }
-                                            } else {
-                                                return null;
-                                            }
-                                        }
-                                        public Object setValue(Object value) {
-                                            Object was = pageContext.findAttribute(name);
-                                            if (value != null) {
-                                                pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-                                            } else {
-                                                pageContext.removeAttribute(name, SCOPE);
-                                                nulls.add(name);
-                                            }
-                                            return was;
-                                        }
-                                    };
                             }
-                            public boolean hasNext() {
-                                if (back.hasNext()) return true;
-                                if (nul == null) nul = nulls.iterator();
-                                return nul.hasNext();
-                            }
-                            public void remove() {
-                                pageContext.removeAttribute(name, SCOPE);
-                                nulls.remove(name);
-                                unwrapped.remove(name);
+                            public Object setValue(Object value) {
+                                Object was = pageContext.findAttribute(name);
+                                if (value != null) {
+                                    pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+                                } else {
+                                    pageContext.removeAttribute(name, SCOPE);
+                                    nulls.add(name);
+                                }
+                                return was;
                             }
                         };
-                }
-                public int size() {
-                    return names.size();
-                }
-            };
+                    }
+                    public boolean hasNext() {
+                        return i.hasNext();
+                    }
+                    public void remove() {
+                        pageContext.removeAttribute(name, SCOPE);
+                        nulls.remove(name);
+                        unwrapped.remove(name);
+                    }
+                };
+            }
+            public int size() {
+                return names.size();
+            }
+        };
     }
 
 
@@ -149,6 +150,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
         return unwrapped.put(key, value);
     }
+
     public Object get(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key);
@@ -180,7 +182,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     public String toString() {
-        return "PAGECONTEXT BACKING " + super.toString() + " backed by " + pageContext;
+        return "PAGECONTEXT BACKING " + super.toString();
     }
 
 }
