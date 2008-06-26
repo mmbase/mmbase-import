@@ -146,6 +146,9 @@
         <mm:notpresent referid="copybookNo">
           <di:translate key="education.nocopybookfound" />
         </mm:notpresent>
+
+        <di:blocks classification="after_test" />
+
       </div>
     </mm:cloud>
   </mm:content>

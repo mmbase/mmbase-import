@@ -29,6 +29,7 @@
                 <mm:field name="online_date">
                   <mm:time format=":FULL" /></mm:field> - <mm:field name="offline_date"><mm:time format=":FULL" />
                 </mm:field>
+                <di:blocks classification="after_test" />
               </div>
             </c:when>
             <c:otherwise>
