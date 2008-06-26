@@ -27,6 +27,7 @@
         </mm:notpresent>
       </mm:present>
 
+      <jsp:text>&lt;!-- Made test: ${madetest} --&gt;</jsp:text>
 
       <div class="content learnenvironment tests">
         <!-- Take care: form name is used in JavaScript of the specific question jsp pages! -->
@@ -36,11 +37,9 @@
               method="POST">
 
           <mm:node number="$learnobject" id="test">
-            <mm:field name="showtitle">
-              <mm:compare value="1">
-                <h1><mm:field name="name"/></h1>
-              </mm:compare>
-            </mm:field>
+
+            <di:title field="name" />
+
 
             <mm:hasfield name="text">
               <mm:field name="text" escape="toxml"/>
@@ -68,6 +67,8 @@
             <mm:nodelistfunction name="questions" id="my_questions" referids="copybookNo?@seed,page" />
 
             <mm:write session="my_questions" referid="my_questions" />
+
+            <jsp:text>&lt;!-- givenanswers: ${givenanswers}, my questions: ${my_questions} --&gt;</jsp:text>
 
             <mm:listnodes referid="my_questions">
 
