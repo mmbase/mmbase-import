@@ -5,86 +5,96 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     >
-  <mm:content postprocessor="none" expires="0">
-    <mm:import externid="madetestscore" required="true" />
-    <jsp:directive.include file="/education/tests/definitions.jsp"  />
+  <mm:import externid="madetest" required="true" />
+  <mm:import externid="learnobject" required="true" />
+  <mm:node referid="madetest" id="madetest" />
 
-    <mm:cloud rank="didactor user">
-      <div class="learnenvironment">
-        <di:title field="name" />
+  <jsp:directive.include file="/education/tests/definitions.jsp"  />
 
-        <mm:field id="maychange" name="maychange"    write="false"/>
-        <mm:field id="mayview"   name="mayview"      write="false"/>
-        <mm:field id="feedback"  name="feedbackpage" write="false"/>
-        <mm:import externid="justposted" />
+  <div class="content learnenvironment testresults">
 
-        <mm:field name="number">
-          <mm:compare referid2="justposted" inverse="true">
-            <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
-              <p><di:translate key="education.alreadymade_tobescored" /></p>
-            </mm:compare>
+    <di:title field="name" />
 
-            <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
-              <!-- if madestestscore larger or equal than requiredscore -->
-              <mm:field id="requiredscore" name="requiredscore" write="false"/>
+    <mm:field id="maychange" name="maychange"    write="false"/>
+    <mm:field id="mayview"   name="mayview"      write="false"/>
+    <mm:field id="feedback"  name="feedbackpage" write="false"/>
 
-              <mm:islessthan referid="feedback" value="1">
-                <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
+    <mm:import externid="justposted" />
+
+    <c:if test="${justposted ne _node.number}">
+
+      <c:choose>
+        <c:when test="${madetest.score eq TESTSCORE_TBS}">
+          <jsp:text>&lt;!-- Score is ${madetest.score}, which means that is still has to be evaluated --&gt;</jsp:text>
+          <p><di:translate key="education.alreadymade_tobescored" /></p>
+        </c:when>
+        <c:otherwise>
+          <jsp:text>&lt;!-- Show feedback, score is ${madetest.score}  (required ${_node.requiredscore}) --&gt;</jsp:text>
+
+
+          <c:choose>
+            <c:when test="${_node.feedbackpage eq 1}">
+              <di:translate key="education.alreadymade" /> <p/>
+            </c:when>
+            <c:when test="${_node.feedbackpage lt 1}">
+              <c:choose>
+                <c:when test="${madetestscore ge _node.requiredscore }">
                   <di:translate key="education.alreadymade_success" /><p/>
-                </mm:islessthan>
-                <mm:islessthan referid="madetestscore" referid2="requiredscore">
+                </c:when>
+                <c:otherwise>
                   <di:translate key="education.alreadymade_fail" /><p/>
-                </mm:islessthan>
-              </mm:islessthan>
+                </c:otherwise>
+              </c:choose>
+            </c:when>
+          </c:choose>
 
-              <mm:compare referid="feedback" value="1">
-                <di:translate key="education.alreadymade" /> <p/>
+
+          <table>
+            <tr>
+              <mm:compare referid="mayview" value="1">
+                <td>
+                  <div class="button1">
+                    <mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"  write="false"
+                                 referids="$referids,learnobject@testNo,madetest@madetestNo,user@userNo"
+                                 >
+                      <a href="${_}" onclick="requestContent('${_}'); return false;"><di:translate key="education.view" /></a>
+                    </mm:treefile>
+                  </div>
+                </td>
               </mm:compare>
 
-              <table>
-                <tr>
-                  <mm:compare referid="mayview" value="1">
-                    <td>
-                      <div class="button1">
-                        <mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"  write="false"
-                                     referids="$referids,testNo,madetestNo,user@userNo"
-                                     >
-                          <a href="${_}" onclick="requestContent('${_}'); return false;"><di:translate key="education.view" /></a>
-                        </mm:treefile>
-                      </div>
-                    </td>
-                  </mm:compare>
-
-                  <mm:compare referid="maychange" value="1">
-                    <td>
-                      <div class="button1">
-                        <mm:treefile
-                            page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
-                            referids="$referids,testNo@learnobject">
-                          <a href="${_}">
-                            <mm:compare referid="feedback" value="1"><di:translate key="education.again" /></mm:compare>
-                            <mm:compare referid="feedback" value="0"><di:translate key="education.retry" /></mm:compare>
-                          </a>
-                        </mm:treefile>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="button1">
-                        <mm:treefile
-                            page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
-                            referids="$referids,testNo@learnobject">
-                          <mm:param name="clearmadetest">true</mm:param>
-                          <a href="${_}"><di:translate key="education.clear" /></a>
-                        </mm:treefile>
-                      </div>
-                    </td>
-                  </mm:compare>
-                </tr>
-              </table>
-            </mm:compare>
-          </mm:compare>
-        </mm:field>
-      </div>
-    </mm:cloud>
-  </mm:content>
+              <mm:compare referid="maychange" value="1">
+                <td>
+                  <div class="button1">
+                    <mm:treefile
+                        page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
+                        referids="$referids,learnobject">
+                      <a href="${_}"
+                         onclick="requestContent('${_}'); return false;"
+                         >
+                        <mm:compare referid="feedback" value="1"><di:translate key="education.again" /></mm:compare>
+                        <mm:compare referid="feedback" value="0"><di:translate key="education.retry" /></mm:compare>
+                      </a>
+                    </mm:treefile>
+                  </div>
+                </td>
+                <td>
+                  <div class="button1">
+                    <mm:treefile
+                        page="/education/tests/buildtest.jsp" objectlist="$includePath" write="false"
+                        referids="$referids,learnobject">
+                      <mm:param name="clearmadetest">true</mm:param>
+                      <a href="${_}"
+                         onclick="requestContent('${_}'); return false;"
+                         ><di:translate key="education.clear" /></a>
+                    </mm:treefile>
+                  </div>
+                </td>
+              </mm:compare>
+            </tr>
+          </table>
+        </c:otherwise>
+      </c:choose>
+    </c:if>
+  </div>
 </jsp:root>

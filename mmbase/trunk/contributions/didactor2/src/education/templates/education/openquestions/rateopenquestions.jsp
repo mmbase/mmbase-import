@@ -38,7 +38,7 @@
               </mm:createnode>
             </c:when>
             <c:otherwise>
-              <!-- Save the answer if type_of_score=1 -->
+              <!-- Save the answer if type_of_score=1, will be checked using example answers -->
               <mm:listnodes referid="openanswers">
                 <mm:field name="text" id="text">
                   <mm:compare referid="givenanswer" referid2="text">
