@@ -80,6 +80,15 @@
 		<td><cmsc:text var="name" /></td>
 	</tr>
 	<tr>
+		<td><fmt:message key="edit_defaults.usetable" />:</td>
+		<td><cmsc:select var="useTable">
+				<cmsc:option value="true" message="edit_defaults.usetable.yes" />
+				<cmsc:option value="false" message="edit_defaults.usetable.no" />
+			</cmsc:select>
+		</td>
+	</tr>
+
+	<tr>
 		<td colspan="2">
 			<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
 				<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>

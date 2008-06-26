@@ -53,6 +53,7 @@ public class IFramePortlet extends CmscPortlet {
    public static final String STYLE_ATTR_PARAM = "style";
 
    public static final String WIDTH_ATTR_PARAM = "width";
+   public static final String USE_TABLE_ATTR_PARAM = "useTable";
 
    /**
     * Configuration default constants.
@@ -72,6 +73,7 @@ public class IFramePortlet extends CmscPortlet {
    public static final String SOURCE_ATTR_DEFAULT = "about:blank";
 
    public static final String WIDTH_ATTR_DEFAULT = "100%";
+   public static final String USE_TABLE_DEFAULT = "true";
 
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response)
@@ -97,6 +99,7 @@ public class IFramePortlet extends CmscPortlet {
          setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
          setPortletParameter(portletId, STYLE_ATTR_PARAM, request.getParameter(STYLE_ATTR_PARAM));
          setPortletParameter(portletId, WIDTH_ATTR_PARAM, request.getParameter(WIDTH_ATTR_PARAM));
+         setPortletParameter(portletId, USE_TABLE_ATTR_PARAM, request.getParameter(USE_TABLE_ATTR_PARAM));
 
       }
       else {
@@ -144,12 +147,17 @@ public class IFramePortlet extends CmscPortlet {
       String styleAttr = getPreference(preferences, STYLE_ATTR_PARAM, null);
       String widthAttr = getPreference(preferences, WIDTH_ATTR_PARAM, WIDTH_ATTR_DEFAULT);
 
+      String useTableAttr = getPreference(preferences, USE_TABLE_ATTR_PARAM, USE_TABLE_DEFAULT);
+      boolean useTable = Boolean.parseBoolean(useTableAttr);
+
       // render IFRAME content
       // generate HTML IFRAME content
       StringBuffer content = new StringBuffer(4096);
 
-      content.append("<table width='100%'><tr><td>");
-
+      if (useTable) {
+         content.append("<table width='100%'><tr><td>");
+      }
+      
       content.append("<iframe");
       content.append(" src=\"").append(source).append("\"");
       if (alignAttr != null) content.append(" align=\"").append(alignAttr).append("\"");
@@ -172,7 +180,9 @@ public class IFramePortlet extends CmscPortlet {
             .append(source).append("</a></p>");
       content.append("</iframe>");
 
-      content.append("</td></tr></table>");
+      if (useTable) {
+         content.append("</td></tr></table>");
+      }
 
       // set required content type and write HTML IFRAME content
       response.setContentType("text/html");
