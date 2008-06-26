@@ -96,5 +96,8 @@
         </c:otherwise>
       </c:choose>
     </c:if>
+
+    <di:blocks classification="after_test" />
+
   </div>
 </jsp:root>
