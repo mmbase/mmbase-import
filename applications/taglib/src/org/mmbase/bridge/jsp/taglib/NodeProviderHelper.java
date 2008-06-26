@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.27 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.28 2008-06-26 13:58:00 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -135,6 +135,7 @@ public class NodeProviderHelper implements NodeProvider {
         _Stack = (Stack<NodeChanger>) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
         if (_Stack == null) {
             _Stack = new Stack<NodeChanger>();
+            pushed = 0;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);
@@ -166,6 +167,12 @@ public class NodeProviderHelper implements NodeProvider {
             PageContext pageContext = thisTag.getPageContext();
             if (_Stack.empty()) {
                 pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
+                if (pushed != 0) {
+                    // would otherwise come in infinite loop in doEndTag. But it should not have
+                    // happend in the first place
+                    log.warn("The _Stack was empty while there should still be things on it ", new Exception());
+                    pushed = 0;
+                }
                 _Stack = null;
             } else {
                 pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
@@ -220,6 +227,7 @@ public class NodeProviderHelper implements NodeProvider {
     public void doFinally () {
         node = null;
         _Stack = null;
+        pushed = 0;
         query = null;
     }
 }
