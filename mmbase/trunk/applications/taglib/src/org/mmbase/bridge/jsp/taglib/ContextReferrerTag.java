@@ -34,7 +34,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.105 2008-05-02 07:44:14 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.106 2008-06-26 10:19:38 michiel Exp $
  * @see ContextTag
  */
 
@@ -99,7 +99,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     public static PageContext getThreadPageContext() {
         return PageContextThreadLocal.getThreadPageContext();
     }
-    
+
     /**
      * Just exposes the (otherwise protected) pageContext member. Needed by some helper classes in
      * the neighbourhood. Lacking concept of friends.
@@ -171,6 +171,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         pageLog.trace("req " + Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE)));
     }
 
+    @Override
     public void setPageContext(PageContext pc) {
         if (EVAL_BODY == -1) { // as yet unset
             EVAL_BODY =  "true".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
@@ -200,6 +201,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         referid = getAttribute(r);
     }
 
+    @Override
     public void setId(String i) {
         try {
             if ("_".equals(i)) {
@@ -211,6 +213,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
     }
 
+    @Override
     public String getId() {
         try {
             return (String) id.getValue(this);
@@ -276,7 +279,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         writerid = getAttribute(w);
     }
 
-    @SuppressWarnings("unused")
+    @Override
     public int doEndTag() throws JspTagException {
         return EVAL_PAGE;
     }
@@ -297,6 +300,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Release all allocated resources.
      */
+    @Override
     public void release() {
         super.release();
         if (log.isDebugEnabled()) {
@@ -345,7 +349,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * @param attribute name of attribute
      * @return Value of attribute
      * @throws JspTagException when parsing of attributes fails
-     * 
+     *
      * @deprecated Call getAttribute in the set-method and 'toString(tag)' when using
      *             it. This is better for performance and makes sure the impl. works in all servlet
      *             containers.
@@ -412,7 +416,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Finds a parent tag by class and id. This is a base function for
      * 'getContext', but it is handy in itself, so also available for
      * extended classes.
-     * @param <C>       type of the tag class 
+     * @param <C>       type of the tag class
      * @param clazz     the class of the Tag to find.
      * @param tagId     the id of the Tag to find.
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).
@@ -451,7 +455,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
                 id = cTag instanceof TagSupport ? ((TagSupport) cTag).getId() : "";
             }
         }
-        
+
         return (C) cTag;
     }
 
@@ -460,7 +464,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * @param tagId     the id of the Tag to find.
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      * @return Tag
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      * @since MMBase-1.8
      */
     public Tag findLoopOrQuery(String tagId, boolean exception) throws JspTagException {
@@ -480,11 +484,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Finds a parent tag by class and id. This is a base function for
      * 'getContext', but it is handy in itself, so also available for
      * extended classes.
-     * @param <C>       type of the tag class 
+     * @param <C>       type of the tag class
      * @param clazz     the class of the Tag to find.
      * @param id        the id of the Tag to find.
      * @return Parent tag
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      * @since MMBase-1.7
      */
     final protected <C> C  findParentTag(Class<C> clazz, String id) throws JspTagException {
@@ -493,7 +497,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
     /**
      * Finds the parent context provider.
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      * @return ContextProvider
      * @since MMBase-1.7
      */
@@ -505,7 +509,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Finds the parent context tag. In MMBase 1.7 and higher,
      * normally you would like to use getContextProvider in stead.
      * @return ContextTag
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      */
     public ContextTag getContextTag() throws JspTagException {
         return getContextProvider((String) contextId.getValue(this), ContextTag.class);
@@ -514,11 +518,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Finds a parent context tag using an id, and a class. The class
      * is ContextProvider or ContextTag.
-     * @param <E> SubType of ContextProvider 
+     * @param <E> SubType of ContextProvider
      * @param contextid the id of the ContextProvider to find.
      * @param cl the class of the ContextProvider to find.
      * @return ContextProvider
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      * @since MMBase-1.7
      */
     private <E extends ContextProvider> E getContextProvider(String contextid, Class<E> cl) throws JspTagException {
@@ -557,7 +561,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Gets an object from the Context.
      * @param key key the object is stored under
      * @return stored object
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      */
     public Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
@@ -579,7 +583,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * If not ends with ?, it simply behaves like {@link #getObject(String)}.
      * @param key key the object is stored under
      * @return stored object
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      * @since MMBase-1.8.1
      */
     public Object getObjectConditional(String key) throws JspTagException {
@@ -600,7 +604,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * If the object is 'not present' then it returns an empty string.
      * @param key key the string is stored under
      * @return stored string
-     * @throws JspTagException when context provider is not found 
+     * @throws JspTagException when context provider is not found
      */
     protected String getString(String key) throws JspTagException {
         return Casting.toString(getObject(key));
@@ -610,7 +614,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Returns the content-tag in which this context-referrer is in,
      * or a default (compatible with MMBase 1.6) if there is none.
      * @return ContextTag
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      * @since MMBase-1.7
      */
     public ContentTag getContentTag() throws JspTagException {
@@ -625,7 +629,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Get the locale which is defined by surrounding tags or the cloud
      * @return a locale when defined or otherwise the mmbase locale.
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      * @since MMBase-1.7.1
      */
     public Locale getLocale() throws JspTagException {
@@ -639,7 +643,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Get the locale which is defined by surrounding tags or the cloud
      * @return a locale when defined or otherwise <code>null</code>
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      *
      * @since  MMBase-1.8.1
      */
@@ -691,7 +695,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Fill standard parameters like request, response, language and locale
      * @param p the parameters
-     * @throws JspTagException when parent tag is not found 
+     * @throws JspTagException when parent tag is not found
      * @since MMBase-1.7.4
      */
     public void fillStandardParameters(Parameters p) throws JspTagException {
@@ -746,7 +750,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     final public void haveBody() { helper.haveBody(); }
 
     /**
-     * Returns the escaped value associated with this tag, but only if the escape attribute was set 
+     * Returns the escaped value associated with this tag, but only if the escape attribute was set
      * explicitly (so not when only inherited from content-tag).
      * @param value initial value
      * @return escaped value
@@ -758,7 +762,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 //            if(value instanceof NodeList) {
 //                return value;
 //            }
-            
+
             // do wrap though, to maintain EL compatibility (also e.g. when written to request)
             return value == null ? null : Casting.wrap(value, null);
         } else {
