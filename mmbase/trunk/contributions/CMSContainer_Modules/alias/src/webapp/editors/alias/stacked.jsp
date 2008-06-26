@@ -30,7 +30,6 @@
     <div class="tab_active">
         <div class="body">
             <div>
-
                 <a name="activetab"><fmt:message key="stacked.title" /></a>
             </div>
         </div>
@@ -47,19 +46,18 @@
 		
 		<mm:node number="${param.parent}">
 			<mm:relatednodes type="pagealias" role="navrel" orderby="${orderby}" directions="${orderdir}" searchdir="destination">
-			      <mm:first>
-			          <table>
-			            <thead>
-			               <tr>
-			                  <th></th>
-			                  <th><a href="?parent=${param.parent}&orderby=title&orderdir=${(orderby == 'title' && orderdir == 'up')?'down':'up'}"><fmt:message key="stacked.header.title" /></a></th>
-			                  <th><a href="?parent=${param.parent}&orderby=urlfragment&orderdir=${(orderby == 'urlfragment' && orderdir == 'up')?'down':'up'}" class="headerlink" onclick="orderBy('urlfragment');" ><fmt:message key="stacked.header.urlfragment" /></a></th>
-			                  <th><fmt:message key="stacked.header.target"/></th>
-			               </tr>
-			            </thead>
-			            <tbody class="hover">
-			      </mm:first>
-      
+		      <mm:first>
+		          <table>
+		            <thead>
+		               <tr>
+		                  <th width="76px"></th>
+		                  <th><a href="?parent=${param.parent}&orderby=title&orderdir=${(orderby == 'title' && orderdir == 'up')?'down':'up'}"><fmt:message key="stacked.header.title" /></a></th>
+		                  <th><a href="?parent=${param.parent}&orderby=urlfragment&orderdir=${(orderby == 'urlfragment' && orderdir == 'up')?'down':'up'}" class="headerlink" onclick="orderBy('urlfragment');" ><fmt:message key="stacked.header.urlfragment" /></a></th>
+		                  <th><fmt:message key="stacked.header.target"/></th>
+		               </tr>
+		            </thead>
+		            <tbody class="hover">
+		      </mm:first>
 
 				<c:set var="targetUrl" value=""/>
 				<mm:relatednodes type="urls" role="related" searchdir="destination" >
