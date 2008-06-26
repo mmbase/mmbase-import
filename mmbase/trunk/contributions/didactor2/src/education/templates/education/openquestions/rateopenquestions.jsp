@@ -11,7 +11,6 @@
       <mm:import externid="question" required="true"/>
       <mm:import externid="madetest" required="true"/>
 
-      <jsp:directive.include file="/shared/setImports.jsp"  />
       <jsp:directive.include file="/education/tests/definitions.jsp" />
 
       <mm:node number="$question" id="my_question">
@@ -19,22 +18,22 @@
         <!-- Which answer has been given on the question -->
         <mm:import externid="$question" id="givenanswer" />
 
-
         <mm:relatednodes type="openanswers" id="openanswers" />
+
         <mm:field name="type_of_score" write="false">
           <c:choose>
-            <c:when test="${_ eq 0 or fn:length(openanswers) eq 0}">
-              <!-- Save the answer if type_of_score=0, will be checked by coach-->
-              <mm:createnode type="givenanswers" id="my_givenanswers">
-                <mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
-                <mm:setfield name="score"><mm:write referid="TESTSCORE_TBS"/></mm:setfield>
-              </mm:createnode>
-            </c:when>
             <c:when test="${_ eq 2}">
               <!-- Save the answer if type_of_score=2, no scoring -->
               <mm:createnode type="givenanswers" id="my_givenanswers">
                 <mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
                 <mm:setfield name="score"><mm:write referid="TESTSCORE_COR"/></mm:setfield>
+              </mm:createnode>
+            </c:when>
+            <c:when test="${_ eq 0 or fn:length(openanswers) eq 0}">
+              <!-- Save the answer if type_of_score=0, will be checked by coach-->
+              <mm:createnode type="givenanswers" id="my_givenanswers">
+                <mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
+                <mm:setfield name="score"><mm:write referid="TESTSCORE_TBS"/></mm:setfield>
               </mm:createnode>
             </c:when>
             <c:otherwise>
