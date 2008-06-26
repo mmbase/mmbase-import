@@ -104,7 +104,7 @@ public class PortalErrorServlet extends PortalServlet {
           }
           // The incoming request has a servletPath of /PortalError. The mapped url to this servlet.
           // Pretend it is the uri which has the error in it
-          HttpServletRequest errorUriRequest = new ErrorHttpServletRequest(request, errorUri);
+          HttpServletRequest errorUriRequest = new InternalDispatchNavigationRequest(request, errorUri);
 
          PortalEnvironment env = new PortalEnvironment(errorUriRequest, response);
          PortalURL currentURL = env.getRequestedPortalURL();
@@ -130,7 +130,7 @@ public class PortalErrorServlet extends PortalServlet {
             }
             logError(request);
             if (errorPageSite != null) {
-                HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode));
+                HttpServletRequest errorRequest = new InternalDispatchNavigationRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode));
                 PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response);
 
                 String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
@@ -209,39 +209,4 @@ public class PortalErrorServlet extends PortalServlet {
       }
    }
 
-   class ErrorHttpServletRequest extends HttpServletRequestWrapper {
-
-      private String errorPagePath;
-      private String serverName;
-
-
-      public ErrorHttpServletRequest(HttpServletRequest request, String errorServletPath) {
-          super(request);
-          this.errorPagePath = errorServletPath;
-      }
-
-      public ErrorHttpServletRequest(HttpServletRequest request, String errorSitePath, String errorServletPath) {
-         super(request);
-         if (ServerUtil.useServerName()) {
-             serverName = errorSitePath;
-             errorPagePath = errorServletPath;
-         }
-         else {
-             this.errorPagePath = errorSitePath + PATH_SP + errorServletPath;
-         }
-      }
-
-      @Override
-      public String getServletPath() {
-         return errorPagePath;
-      }
-
-      @Override
-      public String getServerName() {
-        if (serverName != null) {
-            return serverName;
-        }
-        return super.getServerName();
-      }
-   }
 }

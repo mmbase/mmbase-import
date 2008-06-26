@@ -79,8 +79,8 @@ public class PortalErrorServlet extends PortalServlet {
               }
           }
           // The incoming request has a servletPath of /PortalError. The mapped url to this servlet.
-          // Pretend it is  the uri which has the error in itss
-          HttpServletRequest errorUriRequest = new ErrorHttpServletRequest(request, errorUri);
+          // Pretend it is  the uri which has the error in it
+          HttpServletRequest errorUriRequest = new InternalDispatchNavigationRequest(request, errorUri);
           
          PortalEnvironment env = new PortalEnvironment(errorUriRequest, response, config);
          PortalURL currentURL = env.getRequestedPortalURL();
@@ -104,10 +104,9 @@ public class PortalErrorServlet extends PortalServlet {
                   }
                }
             }
+            logError(request); 
             if (errorPageSite != null) {
-                logError(request); 
-
-                HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode)); 
+                HttpServletRequest errorRequest = new InternalDispatchNavigationRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode)); 
                 PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
 
                 response.setContentType(CONTENT_TYPE);
@@ -142,7 +141,6 @@ public class PortalErrorServlet extends PortalServlet {
          rd.forward(request, response);
       }
       else {
-         logError(request);
          basicErrorPage(request, response);
       }
    }
@@ -163,12 +161,12 @@ public class PortalErrorServlet extends PortalServlet {
 
    public void logError(HttpServletRequest request) {
       Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
-      Throwable exception = (Throwable) request.getAttribute(ERROR_EXCEPTION);
       if (statusCode == 500) {
          String version = VersionUtil.getApplicationVersion(config.getServletContext());
          // prepare error ticket
          long ticket = System.currentTimeMillis();
 
+         Throwable exception = (Throwable) request.getAttribute(ERROR_EXCEPTION);
          String msg = HttpUtil.getErrorInfo(request, exception, ticket, version);
 
          String message = "";
@@ -181,41 +179,12 @@ public class PortalErrorServlet extends PortalServlet {
          // write errors to mmbase log
          log.error(ticket + ":\n" + msg);
       }
+      if (statusCode == 404) {
+         if (!ServerUtil.isProduction()) {
+            String path = (String) request.getAttribute(ERROR_REQUEST_URI);
+            log.error("missing resource: " + path);
+         }
+      }
    }
    
-   class ErrorHttpServletRequest extends HttpServletRequestWrapper {
-
-      private String errorPagePath;
-      private String serverName;
-
-
-      public ErrorHttpServletRequest(HttpServletRequest request, String errorServletPath) {
-          super(request);
-          this.errorPagePath = errorServletPath;
-      }
-      
-      public ErrorHttpServletRequest(HttpServletRequest request, String errorSitePath, String errorServletPath) {
-         super(request);
-         if (ServerUtil.useServerName()) {
-             serverName = errorSitePath;
-             errorPagePath = errorServletPath;
-         }
-         else {
-             this.errorPagePath = errorSitePath + PATH_SP + errorServletPath;
-         }
-      }
-
-      @Override
-      public String getServletPath() {
-         return errorPagePath;
-      }
-      
-      @Override
-      public String getServerName() {
-        if (serverName != null) {
-            return serverName;
-        }
-        return super.getServerName();
-      }
-   }
 }

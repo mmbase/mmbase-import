@@ -1,6 +1,7 @@
 package com.finalist.cmsc.alias.util;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.util.SearchUtil;
 
 public class AliasUtil {
    public static final String ALIAS = "pagealias";
@@ -10,4 +11,21 @@ public class AliasUtil {
    public static boolean isAliasType(Node node) {
       return node.getNodeManager().getName().equals(ALIAS);
    }
+   
+   public static Node getPage(Node node) {
+       return SearchUtil.findRelatedNode(node, "page", "related");
+   }
+
+   public static Node getUrl(Node node) {
+       return SearchUtil.findRelatedNode(node, "urls", "related");
+   }
+
+   public static String getUrlStr(Node node) {
+       Node url = getUrl(node);
+       if (url != null) {
+           return url.getStringValue("url");
+       }
+       return null;
+   }
+
 }

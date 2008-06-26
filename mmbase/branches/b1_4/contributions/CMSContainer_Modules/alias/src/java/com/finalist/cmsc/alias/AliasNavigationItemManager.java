@@ -2,6 +2,7 @@ package com.finalist.cmsc.alias;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -15,8 +16,8 @@ import com.finalist.cmsc.navigation.*;
 
 public class AliasNavigationItemManager implements NavigationItemManager {
 
-    private static Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
-	
+   private static final Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
+
 	private NavigationItemRenderer renderer = new AliasNavigationRenderer();
 	private NavigationTreeItemRenderer treeRenderer = new AliasTreeItemRenderer();
 
@@ -39,18 +40,18 @@ public class AliasNavigationItemManager implements NavigationItemManager {
         }
 
         Alias alias = MMBaseNodeMapper.copyNode(node, Alias.class);
-        NodeList relatedPages = node.getRelatedNodes("page", "related", "destination");
-        if(relatedPages.size() > 0) {
-            Node page = relatedPages.getNode(0);
+        
+        Node page = AliasUtil.getPage(node);
+        if (page != null) {
             alias.setPage(page.getNumber());
         }
-
-        NodeList relatedUrls = node.getRelatedNodes("urls", "related", "destination");
-        if(relatedUrls.size() > 0) {
-            Node url = relatedUrls.getNode(0);
-            alias.setUrl(url.getStringValue("url"));
+        else {
+            String externalUrl = AliasUtil.getUrlStr(node);
+            if (!StringUtils.isAlpha(externalUrl)) {
+                alias.setUrl(externalUrl);
+            }
         }
-        
+
         return alias;
 	}
 
