@@ -1,4 +1,4 @@
-<project name="didactor2" default="webapp" basedir=".">
+<project name="didactor2_19" default="webapp" basedir=".">
 
   <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
   <taskdef resource="net/sf/antcontrib/antcontrib.properties">
@@ -414,6 +414,20 @@
           <then>
             <property name="mergeXmlFile"
                       location="src/${component}/webinf/web-extra.xml" />
+            <xslt style="merge-web.xml.xslt"
+                  in="${build.webapp.dir}/WEB-INF/web.xml"
+                  out="${build.webapp.dir}/WEB-INF/web.help.xml">
+              <param name="mergeXmlFile" expression="${mergeXmlFile}" />
+            </xslt>
+            <move file="${build.webapp.dir}/WEB-INF/web.help.xml"
+                  tofile="${build.webapp.dir}/WEB-INF/web.xml" />
+          </then>
+        </if>
+        <if>
+          <available file="src/${component}/webinf/web19.xml" />
+          <then>
+            <property name="mergeXmlFile"
+                      location="src/${component}/webinf/web19.xml" />
             <xslt style="merge-web.xml.xslt"
                   in="${build.webapp.dir}/WEB-INF/web.xml"
                   out="${build.webapp.dir}/WEB-INF/web.help.xml">
