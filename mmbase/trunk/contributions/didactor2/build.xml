@@ -1,5 +1,5 @@
 <project name="didactor2" default="webapp" basedir=".">
 
-  <import file="build18.xml" />
+  <import file="build19.xml" />
 
 </project>
