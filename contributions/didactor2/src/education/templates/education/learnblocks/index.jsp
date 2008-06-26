@@ -20,7 +20,7 @@
 
         <mm:node number="$learnobject">
 
-          <di:include page="/education/learnblocks/subnavigation.jspx" />
+          <di:include debug="html" page="/education/learnblocks/subnavigation.jspx" />
 
 
           <di:background>

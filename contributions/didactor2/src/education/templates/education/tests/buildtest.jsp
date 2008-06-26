@@ -5,7 +5,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     >
-  <mm:content postprocessor="none" expires="0">
+  <mm:content type="application/xml" postprocessor="reducespace" expires="0">
     <mm:cloud rank="didactor user">
 
       <mm:import externid="learnobject" required="true"/>
