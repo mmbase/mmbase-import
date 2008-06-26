@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.31 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: FunctionSets.java,v 1.32 2008-06-26 16:40:26 michiel Exp $
  */
 public class FunctionSets {
 
@@ -90,10 +90,10 @@ public class FunctionSets {
                         readSets(this);
                     }
                 };
+            readSets(watcher);
             watcher.start();
-            watcher.onChange("functionsets.xml");
         } catch (Throwable t) {
-            log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+            log.error(t.getClass().getName(), t);
         }
 
     }
@@ -138,14 +138,18 @@ public class FunctionSets {
                     DocumentReader reader = new DocumentReader(source, FunctionSets.class);
 
                     for (Element n: reader.getChildElements("functionsets", "functionset")) {
-                        String setName     = n.getAttribute("name");
-                        if (functionSets.containsKey(setName)) {
-                            log.warn("The function-set '" + setName + "' did exist already");
+                        try {
+                            String setName     = n.getAttribute("name");
+                            if (functionSets.containsKey(setName)) {
+                                log.warn("The function-set '" + setName + "' did exist already");
+                            }
+                            String setResource = n.getAttribute("resource");
+                            if (setResource.equals("")) setResource = n.getAttribute("file"); // deprecated, it's not necessarily a file
+                            watcher.add(setResource);
+                            decodeFunctionSet(watcher.getResourceLoader(), setResource, setName);
+                        } catch (Throwable t) {
+                            log.error(t.getMessage());
                         }
-                        String setResource = n.getAttribute("resource");
-                        if (setResource.equals("")) setResource = n.getAttribute("file"); // deprecated, it's not necessarily a file
-                        watcher.add(setResource);
-                        decodeFunctionSet(watcher.getResourceLoader(), setResource, setName);
                     }
                 }
             } catch (Exception e) {
@@ -163,6 +167,7 @@ public class FunctionSets {
     private static void decodeFunctionSet(ResourceLoader loader, String setResource, String setName) throws IOException {
         DocumentReader reader = new DocumentReader(loader.getInputSource(setResource), FunctionSets.class);
 
+        log.service("Parsing " + reader.getSystemId());
         String setDescription = reader.getElementValue("functionset.description");
 
         FunctionSet functionSet = new FunctionSet(setName, setDescription);
