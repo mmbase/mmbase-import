@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.61 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.62 2008-06-26 10:28:29 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -122,6 +122,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
 
+    @Override
     public Set<Entry<String, Object>> entrySet() {
         return getBacking().entrySet();
     }
@@ -174,7 +175,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      */
-
+    @Override
     public Object put(String key, Object value) {
         if (key.indexOf('.') != -1) {
             throw new RuntimeException("Key may not contain dots (" + key + ")");
@@ -261,8 +262,14 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         }
     }
 
-    public boolean containsKey(String key) throws JspTagException {
-        return containsKey(key, true);
+    @Override
+    public boolean containsKey(Object key) {
+        try {
+            return containsKey((String) key, true);
+        } catch (Exception e) {
+            log.error(e);
+            return false;
+        }
     }
 
     /**
@@ -290,15 +297,17 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
 
-    public Object get(String key) {
+    @Override
+    public Object get(Object key) {
         try {
-            return get(key, true);
+            return get((String) key, true);
         } catch (JspTagException e) {
             log.warn("Exception when trying to get value '" + key + "': " + e, e);
         }
         return null;
     }
 
+    @Override
     public Set<String> keySet() {
         HashSet<String> result = new HashSet<String>(getBacking().keySet());
         if (parent != null) {
@@ -741,7 +750,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         if (id == null) {
             return "the context without id " + getBacking().toString();
         } else {
-            return "context '" + id  + "'" + getBacking().toString();
+            return "context '" + id  + "'";
         }
     }
 }
