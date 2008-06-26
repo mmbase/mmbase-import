@@ -25,12 +25,17 @@
 
           <di:background>
             <di:include debug="xml" page="/education/learnblocks/node.jspx" />
+
+            <di:blocks classification="after_learnblock" />
+
           </di:background>
 
           <di:include page="/education/prev_next.jsp" />
 
           <!-- hmm: -->
           <jsp:directive.include file="../includes/component_link.jsp" />
+
+
         </mm:node>
       </mm:cloud>
     </div>
