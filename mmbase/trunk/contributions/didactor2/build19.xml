@@ -396,6 +396,19 @@
     </if>
 
 
+    <!-- copy component blocks -->
+    <if>
+     <available file="src/${component}/blocks" type="dir" />
+     <then>
+       <copy todir="${build.webapp.dir}/mmbase/components/${component}" overwrite="true" preservelastmodified="true">
+         <fileset
+             defaultexcludes="${defaultexcludes}"
+             dir="src/${component}/block">
+         </fileset>
+       </copy>
+     </then>
+    </if>
+
     <!-- copy webinf -->
     <if>
       <available file="src/${component}/webinf" type="dir" />
