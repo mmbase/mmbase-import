@@ -6,12 +6,13 @@
     version="2.0">
   <jsp:directive.tag
       description="Didactor specific (tree) includes" />
-  <jsp:directive.attribute name="page" type="java.lang.String" />
+  <jsp:directive.attribute name="page"  type="java.lang.String" />
   <jsp:directive.attribute name="debug" type="java.lang.String" />
+
   <mm:treeinclude debug="${debug}"
                   page="${page}"
                   notfound="message"
-                  objectlist="$includePath" referids="$referids">
+                  objectlist="$includePath" >
     <mm:param name="extraheader">
       <jsp:doBody />
     </mm:param>
