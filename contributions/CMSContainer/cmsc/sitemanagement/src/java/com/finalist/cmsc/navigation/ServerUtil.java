@@ -68,7 +68,7 @@ public final class ServerUtil {
             String liveOrStaging = (String) env.lookup("server/LiveOrStaging");
             live = "live".equals(liveOrStaging);
             single = "single".equals(liveOrStaging);
-            String useServerNameStr = (String) env.lookup("server/useSvrName");
+            String useServerNameStr = (String) env.lookup("server/useServerName");
             if (useServerNameStr != null && useServerNameStr.length() > 0) {
                useSvrName = Boolean.valueOf(useServerNameStr);
             }
