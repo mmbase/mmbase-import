@@ -4,21 +4,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.8 2008-06-06 14:40:33 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.9 2008-06-26 15:29:28 michiel Exp $
 
-  These are didactor specific datatypes.
+       These are didactor specific datatypes.
 
-  They are mentioned in the builder XML's.
+       They are mentioned in the builder XML's.
 
-  You can change this file if you desire other settings (e.g. other values for 'required').
+       You can change this file if you desire other settings (e.g. other values for 'required').
 
-  The convention for the id's is didactor_[builder name]_[field name]
+       The convention for the id's is didactor_[builder name]_[field name]
   -->
 
   <datatype base="node" id="didactor_education">
-    <description>
-      A field pointing directory to the associated education object.
-    </description>
+    <description xml:lang="en">A field pointing directly to the associated education object.</description>
     <class name="nl.didactor.datatypes.Education" />
   </datatype>
 
@@ -59,7 +57,7 @@
   </datatype>
 
   <datatype base="integer" id="didactor_layout">
-    <description>
+    <description xml:lang="en">
       Indicates where an image must be formatted?
     </description>
     <default value="0" />
@@ -77,9 +75,7 @@
   </datatype>
 
   <datatype base="integer" id="didactor_imagelayout">
-    <description>
-      Indicates how an image must be formatted?
-    </description>
+    <description xml:lang="en">Indicates how an image must be formatted?</description>
     <default value="0" />
     <required value="true" />
     <enumeration>
@@ -91,9 +87,7 @@
   </datatype>
 
   <datatype base="integer" id="didactor_imageposition">
-    <description>
-      Indicates how an image must be formatted?
-    </description>
+    <description xml:lang="en">Indicates how an image must be formatted?</description>
     <default value="0" />
     <required value="true" />
     <enumeration>
@@ -117,23 +111,19 @@
   </datatype>
 
   <datatype base="integer" id="didactor_openquestions_type_of_score">
-    <description>
-    </description>
     <default value="0" />
     <required value="true" />
     <enumeration>
       <entry value="0" xml:lang="nl" display="De docent kijkt de vraag na" />
       <entry value="1" xml:lang="nl" display="Kijk na met behulp van bijbehorende antwoorden" />
-    	<entry value="2" xml:lang="nl" display="Geen score" />
+      <entry value="2" xml:lang="nl" display="Geen score" />
       <entry value="0" xml:lang="en" display="A teacher checks the answer" />
       <entry value="1" xml:lang="en" display="Checks with the help of related answers" />
-    	<entry value="2" xml:lang="en" display="No scoring" />
+      <entry value="2" xml:lang="en" display="No scoring" />
     </enumeration>
   </datatype>
 
   <datatype base="integer" id="didactor_openquestions_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-    <description>
-    </description>
     <default value="0" />
     <required value="true" />
     <enumeration>
