@@ -77,14 +77,14 @@
       			<tr <mm:even inverse="true">class="swap"</mm:even>>
       				<td>
 						<c:if test="${hasRights}">
-							<c:if test="${hasWorkflow}">
-		      					<a href="../workflow/publish.jsp?number=<mm:field name="number"/>">
-									<img src="../gfx/icons/publish.png" title="<fmt:message key="stacked.icon.publish" />" alt="<fmt:message key="stacked.icon.publish" />"/></a>
-							</c:if>
-	      					<a href="AliasEdit.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
-			                   <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="stacked.icon.edit" />" title="<fmt:message key="stacked.icon.edit" />" /></a>
-	      					<a href="AliasDelete.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
-								<img src="../gfx/icons/delete.png" title="<fmt:message key="stacked.icon.delete" />" alt="<fmt:message key="stacked.icon.delete" />"/></a>
+      					<a href="AliasEdit.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
+		                   <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="stacked.icon.edit" />" title="<fmt:message key="stacked.icon.edit" />" /></a>
+      					<a href="AliasDelete.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
+							<img src="../gfx/icons/delete.png" title="<fmt:message key="stacked.icon.delete" />" alt="<fmt:message key="stacked.icon.delete" />"/></a>
+                     <c:if test="${hasWorkflow}">
+                           <a href="../workflow/publish.jsp?number=<mm:field name="number"/>">
+                           <img src="../gfx/icons/publish.png" title="<fmt:message key="stacked.icon.publish" />" alt="<fmt:message key="stacked.icon.publish" />"/></a>
+                     </c:if>
 						</c:if>
 						<c:if test="${!empty targetUrl}">
 		      				<a href="${targetUrl}">
