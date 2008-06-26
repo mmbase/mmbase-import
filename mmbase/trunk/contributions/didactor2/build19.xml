@@ -403,7 +403,7 @@
        <copy todir="${build.webapp.dir}/mmbase/components/${component}" overwrite="true" preservelastmodified="true">
          <fileset
              defaultexcludes="${defaultexcludes}"
-             dir="src/${component}/block">
+             dir="src/${component}/blocks">
          </fileset>
        </copy>
      </then>
