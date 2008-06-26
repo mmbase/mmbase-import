@@ -13,7 +13,7 @@
       <mm:compare value="1">
         <mm:field name="${empty field ? 'title' : field}">
           <mm:isnotempty>
-            <h1><mm:write /></h1>
+            <h1 class="node_${_node}"><mm:write /></h1>
           </mm:isnotempty>
         </mm:field>
       </mm:compare>
@@ -22,7 +22,7 @@
   <mm:hasfield name="showtitle" inverse="true">
     <mm:field name="${empty field ? 'title' : field}">
       <mm:isnotempty>
-        <h1><mm:write /></h1>
+        <h1 class="node_${_node}"><mm:write /></h1>
       </mm:isnotempty>
     </mm:field>
   </mm:hasfield>
