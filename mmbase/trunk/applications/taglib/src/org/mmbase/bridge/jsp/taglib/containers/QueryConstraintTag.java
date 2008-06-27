@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.8 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -157,9 +157,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
     }
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-
-        Query query = c.getQuery();
+        Query query = getQuery(container);
         Constraint cons = addConstraint(query);
         if (inverse.getBoolean(this, false)) {
             query.setInverse(cons, true);

@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.8 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -53,9 +53,7 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     }
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-
-        Query query = c.getQuery();
+        Query query = getQuery(container);
         int order = Queries.getSortOrder(direction.getString(this));
         int orderPart = Queries.getDateTimePart(part.getString(this));
         StepField stepField = query.createStepField(field.getString(this));

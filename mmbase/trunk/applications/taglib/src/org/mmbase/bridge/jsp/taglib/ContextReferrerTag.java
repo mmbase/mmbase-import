@@ -17,6 +17,7 @@ import javax.servlet.jsp.jstl.core.*;
 import java.io.*;
 
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
@@ -34,7 +35,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.106 2008-06-26 10:19:38 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.107 2008-06-27 09:07:10 michiel Exp $
  * @see ContextTag
  */
 
@@ -64,7 +65,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             ClassLoader cl = ContextReferrerTag.class.getClassLoader();
             InputStream is = cl.getResourceAsStream("org/mmbase/taglib/version");
             if (is == null) {
-                return "1.1";
+                return "2.0";
             }
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             return r.readLine();
@@ -788,5 +789,22 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             formTag = findParentTag(FormTag.class, form != null ? (String) form.getValue(this) : null, true);
         }
         return formTag;
+    }
+
+    /**
+     * Implements a getQuery for QueryContainerReferrers
+     * @since MMBase-1.9.0
+     */
+    protected Query getQuery(Attribute container) throws JspTagException {
+        Query query;
+        if (container == null || container == Attribute.NULL) {
+            query = (Query) pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+            if (query == null) throw new JspTagException("No query found (" + QueryContainer.KEY + ")");
+        } else {
+            QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+            query = c.getQuery();
+        }
+        return query;
+
     }
 }

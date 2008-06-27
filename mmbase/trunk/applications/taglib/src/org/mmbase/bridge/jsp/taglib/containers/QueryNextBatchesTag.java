@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.10 2008-06-27 09:07:10 michiel Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -57,8 +57,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
 
     protected List<String> getList() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();
+        Query query = getQuery(container);
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
         if (maxNumber == SearchQuery.DEFAULT_MAX_NUMBER) {
@@ -79,11 +78,11 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         if (maxTotalSize > 0) {
             maxSize = (maxTotalSize - 1) / 2; // half for both, 1 for current
-            int numberOfPreviousBatches = offset / maxNumber; 
+            int numberOfPreviousBatches = offset / maxNumber;
             int availableForPrevious = maxTotalSize / 2;   // == maxSize in QueryPreviousBatches
             if (numberOfPreviousBatches < availableForPrevious) { // previousbatches did not use all
-                maxSize += (availableForPrevious - numberOfPreviousBatches);            
-            } 
+                maxSize += (availableForPrevious - numberOfPreviousBatches);
+            }
 
             int max = getMaxNumber();
             if (max > 0 && maxSize > max) maxSize = max;
