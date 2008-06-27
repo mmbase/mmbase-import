@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.9 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.10 2008-06-27 09:07:10 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
@@ -55,9 +55,9 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
                 indexOffset += (returnList.size() - m);
                 log.error("Setting index offset to " + indexOffset);
                 returnList = returnList.subList(returnList.size() - m, returnList.size());
-                
+
             }
-        }        
+        }
     }
 
     public int getIndexOffset() {
@@ -66,8 +66,7 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
 
 
     protected List<String> getList() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();
+        Query query = getQuery(container);
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
         if (maxNumber == SearchQuery.DEFAULT_MAX_NUMBER) {
@@ -78,14 +77,14 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
 
 
-        int maxTotalSize = maxtotal.getInt(this, -1); 
+        int maxTotalSize = maxtotal.getInt(this, -1);
 
         int maxSize; // the size of this list.
 
         if (maxTotalSize > 0) {
             maxSize = maxTotalSize / 2;              // first guess
 
-            int totalSize = Queries.count(query);    
+            int totalSize = Queries.count(query);
             int nextSize  = totalSize - offset - maxNumber;
             int numberOfNextBatches = nextSize/ maxNumber;         // number of complete pages
             if (nextSize % maxNumber > 0) numberOfNextBatches++;   // last page may be incomplete
