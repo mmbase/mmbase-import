@@ -9,7 +9,7 @@
   <mm:import externid="cmd" jspvar="cmd" />
   
   <div
-      class="mm_c c_core c_b_builders-actions ${requestScope.componentClassName}"
+      class="mm_c c_core b_builders-actions ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
       
       <h3>Administrate builder ${builder}</h3>

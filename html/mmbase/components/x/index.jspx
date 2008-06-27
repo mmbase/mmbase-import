@@ -9,7 +9,7 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud method="asis">
   <div
-      class="mm_c mm_c_x mm_c_b_index ${requestScope.componentClassName}"
+      class="c_ c_x b_index ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <mm:import externid="nodemanager">object</mm:import>
     <mm:import externid="only" />

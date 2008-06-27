@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    class="mm_c c_core c_b_components ${requestScope.componentClassName}"
+    class="mm_c c_core b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"

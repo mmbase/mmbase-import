@@ -10,7 +10,7 @@
   <mm:cloud rank="administrator">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c c_core c_b_blobs ${requestScope.className}"
+      class="mm_c c_core b_blobs ${requestScope.className}"
       id="${requestScope.componentId}">
     <mm:import externid="convertnow" />
 

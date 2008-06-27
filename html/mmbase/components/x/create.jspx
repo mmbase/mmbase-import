@@ -6,7 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
+      class="c_ c_core b_servers ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <script type="text/javascript">
       var validator = new MMBaseValidator();
@@ -21,7 +21,7 @@
     <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.5 2008-03-21 16:42:12 michiel Exp $
+         $Id: create.jspx,v 1.6 2008-06-27 12:41:40 michiel Exp $
     -->
     <mm:import id="referids" from="request">nodemanager,only?</mm:import>
     <mm:cloud rank="basic user">
