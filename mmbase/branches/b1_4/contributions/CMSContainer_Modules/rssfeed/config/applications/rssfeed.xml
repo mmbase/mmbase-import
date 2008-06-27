@@ -18,6 +18,7 @@
       <relation from="page" to="rssfeed" type="navrel" />
       <relation from="rssfeed" to="contentchannel" type="related" />
       <relation from="rssfeed" to="typedef" type="allowrel" />
+      <relation from="mmbasegroups" to="rssfeed" type="rolerel" />
    </allowedrelationlist>
 
    <datasourcelist>
