@@ -10,7 +10,7 @@
   <jsp:directive.page import="org.mmbase.core.event.*,org.mmbase.module.core.*,java.util.Iterator" />
   <mm:cloud rank="administrator">
   <div
-      class="mm_c c_core c_b_events ${requestScope.className}"
+      class="mm_c c_core b_events ${requestScope.className}"
       id="${requestScope.componentId}">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <jsp:scriptlet>

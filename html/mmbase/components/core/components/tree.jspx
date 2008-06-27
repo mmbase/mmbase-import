@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <div
-    class="mm_c c_core c_b_component-block-tree ${requestScope.componentClassName}"
+    class="mm_c c_core b_component-block-tree ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 

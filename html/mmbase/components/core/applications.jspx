@@ -6,7 +6,7 @@
   <mm:import externid="application" />
   <mm:import externid="app" />
   <div
-      class="mm_c c_core c_b_applications ${requestScope.componentClassName}"
+      class="mm_c c_core b_applications ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
 
     <mm:notpresent referid="application">

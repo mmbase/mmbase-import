@@ -10,7 +10,7 @@
   <mm:import externid="b" >B</mm:import>
 
   <div
-      class="test mm_c mm_c_test mm_c_b_urls ${requestScope.componentClassName}"
+      class="test mm_c c_test b_urls ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
 
     <mm:import id="seq" vartype="integer">${empty requestScope.suburls_sequence ? 1 : requestScope.suburls_sequence + 1}</mm:import>

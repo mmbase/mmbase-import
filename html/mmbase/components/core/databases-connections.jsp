@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <div
-	class="mm_c c_core c_b_connections ${requestScope.componentClassName}"
+	class="mm_c c_core b_connections ${requestScope.componentClassName}"
 	id="${requestScope.componentId}">
 
 <h3>Database connections overview</h3>

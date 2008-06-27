@@ -9,7 +9,7 @@
   <mm:import externid="path" />
 
   <div
-    class="mm_c c_core c_b_applications-actions ${requestScope.componentClassName}"
+    class="mm_c c_core b_applications-actions ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   
     <h3>Applications results</h3>

@@ -3,7 +3,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c mm_c_taglib mm_c_b_test_fieldinfo ${requestScope.componentClassName}"
+    class="mm_c c_taglib b_test_fieldinfo ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <div id="test1" class="test">
@@ -54,7 +54,7 @@
   </pre>
   <script type="text/javascript">
     $(document).ready(function() {
-      $(document).find(".mm_c_taglib.mm_c_b_test_fieldinfo .test").css("display", "none");
+      $(document).find(".c_taglib.b_test_fieldinfo .test").css("display", "none");
       $("#errors").append("\n1 " + ($("#test1").find("select[name = '_owner']").length == 1));
       $("#errors").append("\n2 " + ($("#test2").find("select[name = 'test2_owner']").length == 1));
       $("#errors").append("\n3 " + ($("#test3").find("select[name = 'test3_owner']").length == 1));

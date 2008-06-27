@@ -8,7 +8,7 @@
     >
   <jsp:output omit-xml-declaration="yes" />
   <div
-      class="mm_c c_core c_b_security ${requestScope.componentClassName}"
+      class="mm_c c_core b_security ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
