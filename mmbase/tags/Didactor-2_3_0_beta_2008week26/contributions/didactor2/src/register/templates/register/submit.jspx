@@ -1,0 +1,25 @@
+<jsp:root
+    version="2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <!-- template for password: 6 alphanumerics -->
+  <mm:import id="template">CCCCCC</mm:import>
+
+  <!-- Create the person, and relate him to the education -->
+  <mm:createnode type="people" id="person" >
+    <mm:fieldlist nodetype="people" fields="gender,${di:setting('core', 'admin_personfields')},username,address,zipcode,city,email,country,remarks" >
+      <mm:fieldinfo type="useinput" />
+    </mm:fieldlist>
+    <mm:setfield name="password"><mm:function id="password" set="utils" name="generatePassword" referids="template" /></mm:setfield>
+    <mm:setfield name="username">
+  </mm:createnode>
+
+  <mm:createrelation role="related" source="education" destination="person" />
+  <mm:log>Created person ${person.username}, for education ${education}</mm:log>
+
+  <mm:write session="registerPerson" referid="person" escape="none"/>
+  <mm:write session="registerPassword" referid="password" escape="none" />
+</jsp:root>

@@ -1,0 +1,32 @@
+<!-- used in config/metavocabulary/metavocabulary.xml -->
+<list destination="metavocabulary" role="constraints" minoccurs="0" maxoccurs="*" searchdir="destination">
+      <title xml:lang="en">Constraint for metavocabulary</title>
+      <title xml:lang="nl">Beperking voor metadatawaarde</title>
+      <item> 
+        <field name="value" ftype="data" dtminlength="1" >
+          <prompt>Metavocabulary waarde</prompt>
+        </field>
+        <field fdatapath="field[@name='type']" ftype="enum" >
+            <prompt xml:lang="nl">Constraint type</prompt>
+            <prompt xml:lang="en">Constraint type</prompt>
+            <optionlist select="constraint_type" />
+        </field>
+        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
+      </item> 
+
+     <action type="create">
+       <relation destinationtype="metavocabulary" role="constraints" />
+     </action>
+
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
+
+    <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down"  >
+        <prompt xml:lang="nl">Zoeken naar metadatawaarde</prompt>
+        <prompt xml:lang="en">Search on metavocabulary</prompt>
+        <search-filter>
+            <name>Waarde bevat</name>
+            <search-fields>value</search-fields>
+        </search-filter>
+    </command>
+
+</list>

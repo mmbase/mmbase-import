@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="gender">
+   <!-- compare this file with boolean.xml and wonder. Sigh. -->
+
+   <option id="0">
+     <prompt xml:lang="nl">Man</prompt>
+     <prompt xml:lang="en">Male</prompt>
+     <prompt xml:lang="eo">Vira</prompt>
+     <prompt xml:lang="fr">Homme</prompt>
+   </option>
+   <option id="1">
+     <prompt xml:lang="nl">Vrouw</prompt>
+     <prompt xml:lang="en">Female</prompt>
+     <prompt xml:lang="eo">Ina</prompt>
+     <prompt xml:lang="fr">Femme</prompt>
+   </option>
+</optionlist>

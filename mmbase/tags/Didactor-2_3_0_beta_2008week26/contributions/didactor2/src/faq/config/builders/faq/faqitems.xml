@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="faqitems" maintainer="didactor.nl" version="3" extends="object">
+
+  <searchage>1000</searchage>
+
+  <names>
+    <singular xml:lang="en">Faqitem</singular>
+    <singular xml:lang="nl">Faqitem</singular> <!-- I don't understand what is dutch about 'Faqitem' -->
+    <plural xml:lang="en">Faqitems</plural>
+    <plural xml:lang="nl">Faqitems</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">WTF, please don't describe, or type something informative. Please.</description>
+    <description xml:lang="nl">Faq Items</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="question">
+      <gui>
+        <guiname xml:lang="en">Question</guiname>
+        <guiname xml:lang="nl">Vraag</guiname>
+      </gui>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <minLength value="1" enforce="onchange" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="answer">
+      <gui>
+        <guiname xml:lang="en">Answer</guiname>
+        <guiname xml:lang="nl">Antwoord</guiname>
+      </gui>
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" />
+        <minLength value="1" enforce="onchange" />
+        <maxLength value="512" />
+      </datatype>
+    </field>
+
+    <field name="active">
+      <gui>
+        <guiname xml:lang="en">Active</guiname>
+        <guiname xml:lang="nl">Item zichtbaar maken</guiname>
+      </gui>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <!-- WTF is order_number. Perhaps the same as pos in posrel?
+         Why then is it a string???
+         Why not use posrel?
+         -->
+    <field name="order_number">
+      <gui>
+        <guiname xml:lang="en">Order Number</guiname>
+        <guiname xml:lang="nl">Positie</guiname>
+      </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <minLength value="1" enforce="onchange" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+ </fieldlist>
+</builder>

@@ -1,0 +1,34 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="workgroups" role="related" minoccurs="0" maxoccurs="*" ordertype="number">
+  <title xml:lang="nl">Bijbehorende werkgroepen</title>
+  <title xml:lang="en">Related workgroups</title>
+  <item>
+    <field name="name" ftype="data">
+      <description xml:lang="nl">Naam van de werkgroep</description>
+      <description xml:lang="en">Name of the workgroup</description>
+    </field>
+    <field wizardname="config/workgroup/workgroups" ftype="startwizard" inline="true" />
+  </item>
+  
+  <action type="create">
+    <relation destinationtype="classes" role="related">
+    </relation>
+  </action>
+
+  <action type="add">
+    <relation destinationtype="classes" role="related">
+    </relation>
+  </action>
+  
+  <command name="startwizard" inline="true" wizardname="config/workgroup/workgroups" objectnumber="new" />
+  
+  <command name="search" nodepath="workgroups" fields="name" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar werkgroepen</prompt>
+    <prompt xml:lang="en">Search workgroups</prompt>
+    <search-filter>
+      <name xml:lang="nl">Naam bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>name</search-fields>
+    </search-filter>
+  </command>
+</list>

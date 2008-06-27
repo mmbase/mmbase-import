@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment name="defaultClientConfig"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"
+    xmlns:handler="http://xml.apache.org/axis/wsdd/providers/handler" xmlns="http://xml.apache.org/axis/wsdd/">
+    <globalConfiguration name="GlobalConfiguration1" type="" regenerateElement="false">
+        <requestFlow name="RequestFlow1" type="" regenerateElement="false">
+            <handler name="Handler1"
+                type="java:org.apache.axis.handlers.JWSHandler" regenerateElement="false">
+                <parameter name="scope" value="session" regenerateElement="false"/>
+            </handler>
+            <handler name="Handler2"
+                type="java:org.apache.axis.handlers.JWSHandler" regenerateElement="false">
+                <parameter name="scope" value="request" regenerateElement="false"/>
+                <parameter name="extension" value=".jwr" regenerateElement="false"/>
+            </handler>
+        </requestFlow>
+        <parameter name="sendMultiRefs" value="false"/>
+        <parameter name="sendXsiTypes" value="false"/>
+    </globalConfiguration>
+    <handler name="URLMapper"
+        type="java:org.apache.axis.handlers.http.URLMapper" regenerateElement="false"/>
+    <handler name="LocalResponder"
+        type="java:org.apache.axis.transport.local.LocalResponder" regenerateElement="false"/>
+    <handler name="Authenticate"
+        type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" regenerateElement="false"/>
+    <transport name="http" type="" regenerateElement="false">
+        <requestFlow name="RequestFlow1" type="" regenerateElement="false">
+            <handler name="Handler1" type="URLMapper" regenerateElement="false"/>
+            <handler name="Handler2"
+                type="java:org.apache.axis.handlers.http.HTTPAuthHandler" regenerateElement="false"/>
+        </requestFlow>
+    </transport>
+    <transport name="local" type="" regenerateElement="false">
+        <responseFlow name="ResponseFlow1" type="" regenerateElement="false">
+            <handler name="Handler1" type="LocalResponder" regenerateElement="false"/>
+        </responseFlow>
+    </transport>
+    <service name="AdminService" type="" regenerateElement="false" provider="java:MSG">
+        <parameter name="allowedMethods" value="AdminService" regenerateElement="false"/>
+        <parameter name="enableRemoteAdmin" value="false" regenerateElement="false"/>
+        <parameter name="className" value="org.apache.axis.utils.Admin" regenerateElement="false"/>
+        <namespace>http://xml.apache.org/axis/wsdd/</namespace>
+    </service>
+    <service name="Version" type="" regenerateElement="false" provider="java:RPC">
+        <parameter name="allowedMethods" value="getVersion" regenerateElement="false"/>
+        <parameter name="className" value="org.apache.axis.Version" regenerateElement="false"/>
+    </service>
+    <service name="RedSpider" type="" regenerateElement="false" provider="java:RPC">
+        <parameter name="allowedMethods" value="publishParticipant" regenerateElement="false"/>
+        <parameter name="className" value="nl.redspider.www.Didactor.definitions.DidactorBindingImpl" regenerateElement="false"/>
+    </service>
+</deployment>

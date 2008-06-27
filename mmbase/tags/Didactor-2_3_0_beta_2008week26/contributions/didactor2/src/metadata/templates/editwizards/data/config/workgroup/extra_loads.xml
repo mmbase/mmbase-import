@@ -1,0 +1,3 @@
+   <relation destination="synonym" role="related" />
+   <relation destination="metastandard" role="posrel" />
+

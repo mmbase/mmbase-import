@@ -1,0 +1,36 @@
+$Id: HTML.txt,v 1.2 2008-03-20 17:18:14 michiel Exp $
+
+This is schematicly the structure of the HTML which appear in didactor pages. CSS supposes more or
+less this.
+
+I started to maintain this, because it is a bit (overly) complicated.
+
+
+                                                              remarks
+body
+  div.componentBody
+    div.*bar
+    div.di_body.mm_c_*
+[     div#rows.rows                                            comp: education
+        div.navigationbar
+        div.mainContent
+	  div.contentHeader
+          div.contentBodywit                                   pretty stupid class name
+            div#contentFrame
+              div.content
+                *
+                div.learnenvironment
+|
+      div.columns                                              'comp': login, cockpit
+        div.columnLeft
+        div.columnMiddle
+          [div#contentFrame]
+        div.columnRight
+|
+      *                                                    other pages
+]
+  div.footer
+
+
+
+

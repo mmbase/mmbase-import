@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+    <title>Nieuws Categorie Editor</title>
+
+    <action type="create">
+		  <object type="newsnodes">
+		    <relation role="related" destination="{$origin}" />
+		  </object>  
+    </action>
+
+    <action type="load">
+        <object type="newsnodes"/>
+        <relation destinationtype="simplecontents" role="related"/> 
+        <relation destination="paragraphs" role="posrel">
+            <object>
+                <relation destination="attachments" role="posrel" />
+                <relation destination="images" role="pos2rel" />
+                <relation destination="urls" role="posrel" />
+            </object>
+        </relation>        
+    </action>
+    
+    <action type="delete" />
+    
+    <lists>
+        <optionlist include="config/option_list/images_position.xml" />
+        <optionlist include="config/option_list/boolean.xml" />
+        <optionlist include="config/option_list/layout.xml" />
+        <optionlist include="config/option_list/imagelayout.xml" />
+    </lists>
+    
+    <steps>
+        <step form-schema="step1" />
+        <step form-schema="step2" />
+    </steps>
+
+    <form-schema id="step1">
+        <title>Naam</title>
+        <field name="name" >
+            <prompt>Naam</prompt>
+        </field>
+        <field name="body" ftype="html">
+            <prompt>Tekst</prompt>
+        </field>        
+        <list role="related" destination="simplecontents" minoccurs="0" maxoccurs="*">
+									<title>Nieuws</title>
+									<!-- Show the 'item' in a list (the object) -->
+									<item>
+										<field name="title">
+											<prompt>Titel</prompt>
+											<description></description>
+										</field>
+										<field wizardname="config/portalpages/simplecontents" ftype="startwizard" />
+									</item>	
+									<command name="startwizard" inline="true" wizardname="config/portalpages/simplecontents" objectnumber="new" />
+									<command name="search" nodepath="simplecontents" fields="title" age="-1">
+										<prompt>Search Content</prompt>
+										<search-filter>
+											<name>titel bevat</name>
+											<search-fields>title</search-fields>
+										</search-filter>
+									</command>									
+									<action type="create">
+										<relation destinationtype="simplecontents" role="related" >
+										  <object type="simplecontents"/>
+										</relation>
+									</action>	
+									<action type="add">
+										<relation destinationtype="simplecontents" role="related" />
+									</action>																	
+				</list>  
+        <list role="related" destination="educations" minoccurs="0" maxoccurs="*">
+									<title>Bijbehorende Opleidingen</title>
+									<!-- Show the 'item' in a list (the object) -->
+									<item>
+										<field name="name">
+											<prompt>Naam</prompt>
+											<description></description>
+										</field>
+										<field wizardname="config/education/educations" ftype="startwizard" />
+									</item>	
+									<command name="startwizard" inline="true" wizardname="config/education/educations" objectnumber="new" />
+									<command name="search" nodepath="educations" fields="name" age="-1">
+										<prompt>Search Opleidingen</prompt>
+										<search-filter>
+											<name>naam bevat</name>
+											<search-fields>name</search-fields>
+										</search-filter>
+									</command>									
+									<action type="create">
+										<relation destinationtype="educations" role="related" >
+										  <object type="educations"/>
+										</relation>
+									</action>	
+									<action type="add">
+										<relation destinationtype="educations" role="related" />
+									</action>																	
+				</list> 		
+        <list role="related" destination="roles" minoccurs="0" maxoccurs="*">
+									<title>Bijbehorende Rol</title>
+									<!-- Show the 'item' in a list (the object) -->
+									<item>
+										<field name="name">
+											<prompt>Naam</prompt>
+											<description></description>
+										</field>
+										<field wizardname="config/role/roles" ftype="startwizard" />
+									</item>	
+									<command name="startwizard" inline="true" wizardname="config/role/roles" objectnumber="new" />
+									<command name="search" nodepath="roles" fields="name" age="-1">
+										<prompt>Search Roles</prompt>
+										<search-filter>
+											<name>naam bevat</name>
+											<search-fields>name</search-fields>
+										</search-filter>
+									</command>																		
+									<action type="create">
+										<relation destinationtype="roles" role="related" >
+										  <object type="roles"/>
+										</relation>
+									</action>	
+									<action type="add">
+										<relation destinationtype="roles" role="related" />
+									</action>																	
+				</list> 	    
+    </form-schema>
+    
+    <form-schema id="step2">
+        <title xml:lang="nl">Alineas invoeren</title>
+        <title xml:lang="en">Enter paragraphs</title>
+        
+        <field name="name" ftype="data"/>
+        <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+    </form-schema>
+</wizard-schema>

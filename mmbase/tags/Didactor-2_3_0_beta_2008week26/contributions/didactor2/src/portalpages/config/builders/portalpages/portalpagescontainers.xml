@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="portalpagescontainers" maintainer="didactor.nl" version="3" extends="object">
+  <names>
+    <singular xml:lang="en">Portalpagescontainer</singular>
+    <plural xml:lang="en">Portalpagescontainers</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Portal Pages Container</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="name">
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+ </fieldlist>
+</builder>

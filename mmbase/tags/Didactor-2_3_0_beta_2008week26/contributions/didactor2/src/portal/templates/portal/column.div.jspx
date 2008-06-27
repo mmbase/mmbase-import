@@ -1,0 +1,42 @@
+<mm:cloud
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <mm:import externid="education"    />
+  <mm:import externid="col"         required="true" />
+  <mm:import externid="includePath" required="true" />
+  <mm:import externid="referids"    required="true" />
+
+  <mm:content type="application/xhtml+xml">
+
+    <mm:notpresent referid="education">
+      <jsp:directive.include file="/shared/warnEducation.jspx" />
+    </mm:notpresent>
+    <mm:node referid="education" notfound="skip">
+      <mm:relatednodescontainer type="webblocks" role="blockposrel">
+        <mm:constraint field="blockposrel.x" value="${col}" />
+        <mm:sortorder field="blockposrel.y" />
+        <mm:relatednodes>
+          <jsp:scriptlet>
+            try {
+          </jsp:scriptlet>
+          <mm:haspage page="webblock-${_node.type}.jspx">
+            <mm:include debug="html" page="webblock-${_node.type}.jspx" />
+          </mm:haspage>
+          <mm:haspage page="webblock-${_node.type}.jspx" inverse="true">
+            <mm:include debug="html" page="webblock.jspx" />
+          </mm:haspage>
+          <jsp:scriptlet>
+            } catch (Exception e) {
+               out.println(e.getMessage());
+            }
+          </jsp:scriptlet>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </mm:node>
+
+  </mm:content>
+</mm:cloud>
