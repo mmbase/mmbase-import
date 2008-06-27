@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.12 2008-01-24 14:20:35 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.13 2008-06-27 14:35:32 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -69,9 +69,13 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
-            if (c != null) {
-                query = c.getNodeQuery();
+            Query q = (Query) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+            if (q != null && (q instanceof NodeQuery)) query = (NodeQuery) q;
+            if (query == null) {
+                NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
+                if (c != null) {
+                    query = c.getNodeQuery();
+                }
             }
         } else if (! "".equals(container)) {
             log.debug("container attribute, trying container");
@@ -99,6 +103,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     }
 
     public int doStartTag() throws JspTagException {
+        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 
         query = getStartQuery(this, container, parentNodeId);
@@ -127,6 +132,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, tree);
         }
+        pageContext.setAttribute(QueryContainer.KEY, getNodeQuery(), QueryContainer.SCOPE);
         return EVAL_BODY;
     }
 
