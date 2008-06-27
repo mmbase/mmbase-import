@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="addresses" maintainer="eo.nl" version="0" extends="object">
+	<!-- @version $Id: addresses.xml,v 1.1 2006-10-13 17:11:09 nklasens Exp $ -->
+	<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+	<status>active</status>
+	<searchage>30</searchage>
+	<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		(Urls, people).
+-->
+	<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Address</singular>
+		<singular xml:lang="nl">Adres</singular>
+		<singular xml:lang="fr">Address</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Addresses</plural>
+		<plural xml:lang="nl">Adressen</plural>
+		<plural xml:lang="fr">Addresses</plural>
+	</names>
+	<!-- <descriptions>
+		small description of the builder for human reading
+-->
+	<descriptions>
+		<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Address</description>
+		<description xml:lang="nl">Adres</description>
+		<description xml:lang="fr">Address</description>
+	</descriptions>
+	<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+	<fieldlist>
+		<!-- POS 3 : <field> 'address'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Street name and house number</description>
+				<description xml:lang="nl">Staatnaam en huisnummer</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Address</guiname>
+				<guiname xml:lang="nl">Adres</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>1</input>
+					<!-- position in list area of the editor -->
+					<list>1</list>
+					<!-- position in search area of the editor -->
+					<search>1</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>address</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 4 : <field> 'city'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">City of residence</description>
+				<description xml:lang="nl">Woon of vestigingsplaats</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">City</guiname>
+				<guiname xml:lang="nl">Woonplaats</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>3</input>
+					<!-- position in list area of the editor -->
+					<list>3</list>
+					<!-- position in search area of the editor -->
+					<search>3</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>city</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 5 : <field> 'zipcode'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Zipcode</description>
+				<description xml:lang="nl">Postcode</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Zipcode</guiname>
+				<guiname xml:lang="nl">Postcode</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>4</input>
+					<!-- position in list area of the editor -->
+					<list>4</list>
+					<!-- position in search area of the editor -->
+					<search>4</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>zipcode</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 6 : <field> 'pobox'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">PO Box</description>
+				<description xml:lang="nl">Postbus nummer</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">PO Box</guiname>
+				<guiname xml:lang="nl">Postbus</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>5</input>
+					<!-- position in list area of the editor -->
+					<list>5</list>
+					<!-- position in search area of the editor -->
+					<search>5</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>pobox</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 7 : <field> 'phone'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Telephone number</description>
+				<description xml:lang="nl">Telefoonnummer</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Phone</guiname>
+				<guiname xml:lang="nl">Telefoon</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>9</input>
+					<!-- position in list area of the editor -->
+					<list>9</list>
+					<!-- position in search area of the editor -->
+					<search>9</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>phone</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 8 : <field> 'fax'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Fax number</description>
+				<description xml:lang="nl">Fax nummer</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Fax</guiname>
+				<guiname xml:lang="nl">Fax</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>10</input>
+					<!-- position in list area of the editor -->
+					<list>10</list>
+					<!-- position in search area of the editor -->
+					<search>10</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>fax</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 9 : <field> 'mobile'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Mobile number or pager</description>
+				<description xml:lang="nl">Mobiel nummer of pager</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Mobile</guiname>
+				<guiname xml:lang="nl">Mobiel</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>11</input>
+					<!-- position in list area of the editor -->
+					<list>11</list>
+					<!-- position in search area of the editor -->
+					<search>11</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>mobile</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			</db>
+		</field>
+		<!-- POS 10 : <field> 'country'  -->
+		<field>
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Country/state</description>
+				<description xml:lang="nl">Land/staat</description>
+			</descriptions>
+			<!-- gui related -->
+			<gui>
+				<guiname xml:lang="en">Country</guiname>
+				<guiname xml:lang="nl">Land</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>10</input>
+					<!-- position in list area of the editor -->
+					<list>-1</list>
+					<!-- position in search area of the editor -->
+					<search>10</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>country</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" size="255" notnull="true" key="false">STRING</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>
+

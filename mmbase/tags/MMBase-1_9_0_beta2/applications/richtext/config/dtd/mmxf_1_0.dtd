@@ -1,0 +1,20 @@
+<!ELEMENT mmxf (p | section )* >
+<!ATTLIST mmxf 
+    version    NMTOKEN  #IMPLIED
+>
+<!ELEMENT section ( p | section | ul )* > 
+<!ATTLIST section 
+    title CDATA   #REQUIRED 
+    id    NMTOKEN  #IMPLIED
+>
+<!ELEMENT p  ( #PCDATA | em | ul | a)* >
+<!ATTLIST p id  NMTOKEN  #IMPLIED > 
+
+<!ELEMENT ul ( li )+ >
+<!ATTLIST ul id  NMTOKEN  #IMPLIED > 
+<!ELEMENT li ( #PCDATA | em | a)* >
+
+<!ELEMENT em ( #PCDATA )* >
+<!ELEMENT a  ( #PCDATA | em )* >
+<!ATTLIST a id  NMTOKEN  #REQUIRED > 
+

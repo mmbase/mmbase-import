@@ -1,0 +1,35 @@
+<PROCESSOR MMBASE>
+
+<HTML>
+<HEAD>
+<STYLE TYPE="text/css"><!--
+        a { text-decoration: none }
+        font { font-size: 15px }-->
+</STYLE>
+
+
+<TITLE>MMBASE</TITLE>
+</HEAD>
+
+<BODY bgcolor="#00425A" TEXT="#000000" LINK="#000000" ALINK="#000000" VLINK="#000000">
+
+<table cellpadding=0 cellspacing=0 BORDER=0 WIDTH="90%">
+<TR>
+
+<TD WIDTH="50">
+<img src="beeld/logo-green.gif" BORDER=0>
+</TD>
+<TD WIDTH="850" BORDER=0>
+        <PART nav/nav_top.shtml>
+        <IMG SRC="beeld/wit.gif" WIDTH="800" HEIGHT="1" ALIGN="top"><BR>
+        <IF $PARAM1=N>
+        <PART nav/nav$PARAM1.shtml?$PARAM1+$PARAM2>
+        </IF>
+</TD>
+</TR>
+</TABLE>
+
+
+
+</BODY>
+</HTML>

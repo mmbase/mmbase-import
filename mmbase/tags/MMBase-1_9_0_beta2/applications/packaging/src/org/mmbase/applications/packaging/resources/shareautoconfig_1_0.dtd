@@ -1,0 +1,13 @@
+<!--
+    shareautoconfig.dtd
+-->
+
+<!ELEMENT shareautoconfig (name,method,maintainer,account,password,path)>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT method (#PCDATA)>
+<!ELEMENT maintainer (#PCDATA)>
+<!ELEMENT account (#PCDATA)>
+<!ELEMENT password (#PCDATA)>
+<!ELEMENT path (#PCDATA)>
+

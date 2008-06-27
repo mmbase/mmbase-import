@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core"
+         xmlns:maven="jelly:maven"
+         xmlns:ant="jelly:ant"
+         xmlns:artifact="artifact"
+         xmlns:util="jelly:util">
+  <!--
+	 These goals and pre/post goals are inherited by
+	 any subproject that extends the POM in maven-base
+	-->
+
+	<!--
+	 This pregoal takes any simple html docs in the xdocs folder and turns them
+	 into xdoc xml,	 before they are turned back into maven-style html docs.
+	 Why?  html is easier to write in a WYSIWIG editor than xdoc xml
+	-->
+	<preGoal name="xdoc:jelly-transform">
+	    <attainGoal name="html2xdoc"/>
+	</preGoal>
+
+	<goal name="printProject">
+		<echo>${pom.groupId}:${pom.artifactId}</echo>
+	</goal>
+
+	<goal name="all:install" description="Install ALL Subprojects">
+		<attainGoal name="multiproject:install" />
+	</goal>
+
+	<goal name="all:install-snapshot" prereqs="all:install" description="Install snapshot ALL Subprojects">
+		<maven:reactor basedir="${maven.multiproject.basedir}" banner="Gathering project list"
+			includes="${maven.multiproject.includes}" excludes="${maven.multiproject.excludes}" postProcessing="true"
+			ignoreFailures="${maven.multiproject.ignoreFailures}" collectOnly="true" />
+
+		<j:forEach var="reactorProject" items="${reactorProjects}">
+			<j:set var="projectType" value="${reactorProject.context.getVariable('maven.multiproject.type')}" />
+			<j:set var="projectBuildDir" value="${reactorProject.context.getVariable('maven.build.dir')}" />
+			<j:set var="projectPom" value="${reactorProject.context.getVariable('pom')}" />
+
+			<j:choose>
+				<j:when test="${projectType == 'war'}">
+					<j:set var="projectFinalName" value="${projectPom}" />
+				</j:when>
+				<j:when test="${projectType == 'mmbase-module'}">
+					<j:set var="projectFinalName" value="${reactorProject.context.getVariable('maven.final.name')}" />
+				    <artifact:install-snapshot
+				      artifact="${projectBuildDir}/${projectFinalName}.jar"
+				      type="jar"
+				      project="${projectPom}"
+				    />
+				</j:when>
+				<j:otherwise>
+					<j:set var="projectFinalName" value="${reactorProject.context.getVariable('maven.final.name')}" />
+				</j:otherwise>
+			</j:choose>
+
+		    <artifact:install-snapshot
+		      artifact="${projectBuildDir}/${projectFinalName}.${projectType}"
+		      type="${projectType}"
+		      project="${projectPom}"
+		    />
+
+		</j:forEach>
+	</goal>
+
+	<!--
+		===========================================================================
+		ALL:CLEAN Performs a Maven 'clean' on all projects.
+		It doesn't use Maven's builtin 'clean' goal to prevent it from breaking
+		when it can't resolve a new dependency.
+		===========================================================================
+	-->
+	<goal name="all:clean" description="Clean ALL Subprojects">
+		<maven:reactor basedir="${maven.multiproject.basedir}" banner="Gathering project list"
+			includes="${maven.multiproject.includes}" excludes="${maven.multiproject.excludes}" postProcessing="true"
+			ignoreFailures="${maven.multiproject.ignoreFailures}" collectOnly="true" />
+
+		<j:forEach var="reactorProject" items="${reactorProjects}">
+			<!-- this list of things to delete is lifted from
+				clean:clean -->
+			<ant:delete dir="${reactorProject.context.getVariable('maven.build.dest')}" />
+			<ant:delete dir="${reactorProject.context.getVariable('maven.build.dir')}" />
+			<ant:delete file="${reactorProject.context.getVariable('basedir')}/velocity.log" quiet="true"
+				failonerror="false" />
+		</j:forEach>
+	</goal>
+
+	<goal name="all:clean-install" description="Clean and install ALL Subprojects">
+		<attainGoal name="all:clean" />
+		<attainGoal name="all:install" />
+	</goal>
+
+	<goal name="all:clean-install-snapshot" description="Clean and install snapshot ALL Subprojects">
+		<attainGoal name="all:clean" />
+		<attainGoal name="all:install-snapshot" />
+	</goal>
+
+	<goal name="all:site" description="Generate sites ALL Subprojects">
+		<attainGoal name="multiproject:site" />
+	</goal>
+
+	<goal name="all:eclipse" description="Generate Eclipse files for ALL Subprojects">
+		<j:set var="goal" value="eclipse" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<goal name="all:idea" description="Generate IntelliJ IDEA files for ALL Subprojects">
+		<attainGoal name="idea:multiproject" />
+	</goal>
+
+
+	<preGoal name="jar:jar">
+    <util:available file="${maven.build.dest}/org/mmbase/config">
+      <fileScanner var="scanner">
+        <fileset dir="${maven.build.dest}/org/mmbase/config"/>
+      </fileScanner>
+      <j:forEach var="dir" items="${scanner.directories()}">
+        <fileScanner var="filescan">
+          <fileset dir="${dir.path}" >
+            <exclude name="INDEX"/>
+		    		<include name="*"/>
+          </fileset>
+        </fileScanner>
+<!-- ## Generate INDEX file with each filename and directory on a new line ## -->
+<echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
+</j:forEach><j:forEach var="filedir" items="${filescan.directories()}">${filedir.name}/
+</j:forEach></echo>
+    	</j:forEach>
+    	</util:available>
+	</preGoal>
+
+  <goal name="jellyVars">
+    <ant:echo>POM ARTIFACT: ${pom.artifactId}</ant:echo>
+    <ant:echo>POM ID: ${pom.id}</ant:echo>
+    <ant:echo>POM NAME: ${pom.name}</ant:echo>
+    <ant:echo>POM GROUP: ${pom.groupId}</ant:echo>
+    <ant:echo>POM VERSION: ${pom.currentVersion}</ant:echo>
+    <ant:echo>POM DESCRIPTION: ${pom.shortDescription}</ant:echo>
+    <ant:echo>POM ORGANIZATION: ${pom.organization.name}</ant:echo>
+    <ant:echo>POM URL: ${pom.organization.url}</ant:echo>
+    <ant:echo></ant:echo>
+
+    <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}"/>
+      <j:set var="name" value="${lib.file.name}"/>
+      <j:set var="parent" value="${lib.file.parent}"/>
+      <j:set var="artifact" value="${dep.artifact}"/>
+      <j:set var="id" value="${dep.id}"/>
+      <j:set var="group" value="${dep.artifactDirectory}"/>
+      <j:set var="version" value="${dep.version}"/>
+      <j:set var="type" value="${dep.type}"/>
+      <j:set var="depname" value="${dep.artifactId}"/>
+
+      <ant:echo>LIB: ${lib}</ant:echo>
+      <ant:echo>DEP: ${dep}</ant:echo>
+      <ant:echo>NAME: ${name}</ant:echo>
+      <ant:echo>PARENT: ${parent}</ant:echo>
+      <ant:echo>ARTIFACT: ${artifact}</ant:echo>
+      <ant:echo>ID: ${id}</ant:echo>
+      <ant:echo>GROUP: ${group}</ant:echo>
+      <ant:echo>VERSION: ${version}</ant:echo>
+      <ant:echo>TYPE: ${type}</ant:echo>
+      <ant:echo>DEPNAME: ${depname}</ant:echo>
+      <ant:echo></ant:echo>
+    </j:forEach>
+  </goal>
+
+
+  <preGoal name="test:test">
+    <ant:echo>Testing</ant:echo>
+    <ant:echo>base dir: ${basedir}</ant:echo>
+
+    <!-- Why work automaticly, if you can also require horrible configuration. -->
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory',
+    'com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+
+  </preGoal>
+
+    <preGoal name="site">
+        <util:available file="${maven.sdocbook.src.dir}">    
+            <attainGoal name="sdocbook:generate-html"/>
+        </util:available>
+    </preGoal>
+
+    <postGoal name="sdocbook:prepare-filesystem">
+        <maven:get var="maven.sdocbook.stylesheets.dir"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.stylesheets.dir"/>
+
+		<echo>${maven.sdocbook.stylesheets.dir} from ${maven.sdocbook.stylesheets.mmbase}</echo>
+
+        <!-- use a custom html stylesheet -->
+        <copy todir="${maven.sdocbook.stylesheets.dir}/html">
+            <fileset dir="${maven.sdocbook.stylesheets.mmbase}/style"/>
+        </copy>
+        <replace file="${maven.sdocbook.stylesheets.dir}/html/docbook2xhtml.xslt"
+                 token="[BASESTYLESHEET]"
+                 value="../xhtml/docbook.xsl" />
+
+        <!-- copy images -->
+        <copy todir="${maven.sdocbook.stylesheets.dir}/images">
+            <fileset dir="${maven.sdocbook.stylesheets.mmbase}/style"/>
+        </copy>
+    </postGoal>
+
+	<!-- Add support for subdirs in output folder -->
+	<preGoal name="sdocbook:transform">
+        <maven:get var="srcdir"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.src.dir"/>
+        <maven:get var="docfile"
+            plugin="maven-sdocbook-plugin"
+            property="file"/>
+
+        <maven:get var="userparams"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.userparams"/>
+		<j:if test="${empty(userparams)}">
+	        <maven:get var="userparams"
+	            plugin="maven-sdocbook-plugin"
+	            property="maven.sdocbook.params"/>
+			<maven:set plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.userparams"
+		        value="${userparams}"/>
+		</j:if>
+
+    	<j:set var="rootString" value="./"/>
+
+        <!-- mu;tiproject adds some relativeness to the path which breaks the calculations of the output file -->
+    	<ant:dirname property="projectdir" file="${srcdir}" />
+    	<ant:basename property="projectdoc" file="${srcdir}" />
+        <j:set var="docdir">${projectdir}/${projectdoc}</j:set>
+
+		<j:if test="${docfile.parent.length() > docdir.length()}">
+	        <maven:get var="generatedir"
+	            plugin="maven-sdocbook-plugin"
+	            property="maven.sdocbook.generated"/>
+		    <maven:get var="outpath"
+		        plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.out"/>
+		
+			<j:set var="inputdir" value="${docfile.parent.substring(docdir.length())}"/>
+			<j:set var="outputname" value="${outpath.substring(generatedir.length())}"/>
+
+			<mkdir dir="${generatedir}${inputdir}"/>
+
+		    <util:tokenize delim="${inputdir.substring(0,1)}" var="tokens">${inputdir}</util:tokenize>
+		    <j:forEach var="token" items="${tokens}">
+		    	<j:set var="rootString" value="${rootString}../"/>
+		    </j:forEach>
+		    
+			<maven:set plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.out" 
+		        value="${generatedir}${inputdir}${outputname}"/>
+		</j:if>
+		<maven:set plugin="maven-sdocbook-plugin"
+	        property="maven.sdocbook.params"
+	        value="${userparams} -param root ${rootString}"/>
+	</preGoal>
+
+</project>

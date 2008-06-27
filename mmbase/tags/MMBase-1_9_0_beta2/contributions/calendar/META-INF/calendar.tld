@@ -1,0 +1,41 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+        version="2.0"
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" 
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>mm-cal</short-name>
+  <uri>http://www.mmbase.org/tags/mm/calendar</uri>
+  <tag-file>
+    <name>items</name>
+    <path>/META-INF/tags/mm/calendar/items.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>axis</name>
+    <path>/META-INF/tags/mm/calendar/axis.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>month</name>
+    <path>/META-INF/tags/mm/calendar/month.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>monthsOverview</name>
+    <path>/META-INF/tags/mm/calendar/monthsOverview.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>localeSelector</name>
+    <path>/META-INF/tags/mm/calendar/localeSelector.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>navigation</name>
+    <path>/META-INF/tags/mm/calendar/navigation.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>css</name>
+    <path>/META-INF/tags/mm/calendar/css.tagx</path>
+  </tag-file>
+<!--  <tag-file>
+    <name>periods</name>
+    <path>/META-INF/tags/mm/calendar/periods.tagx</path>
+  </tag-file>
+-->
+</taglib> 

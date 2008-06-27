@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<status>active</status>
+<version>1</version>
+<description>functions for principletracker</description>
+
+	<function name="getNextPatchLevel">
+		<description>generate the next version number</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>getNextPatchLevel</method>
+                <param name="version" type="String" description="Current version" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getNextPrincipleNumber">
+		<description>do a best guess on next Principle Number</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>getNextPrincipleNumber</method>
+                <param name="principleset" type="String" description="current set" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="isOlderVersion">
+		<description>Is this a older version true or false</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>isOlderVersion</method>
+                <param name="currentversion" type="String" description="current version" />
+                <param name="checkversion" type="String" description="check version" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="isOlderPatchLevel">
+		<description>Is this a older pathlevel within a version true or false</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>isOlderPatchLevel</method>
+                <param name="currentversion" type="String" description="current version" />
+                <param name="checkversion" type="String" description="check version" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="exportPrincipleSet">
+		<description>export a set of principles</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>exportPrincipleSet</method>
+                <param name="exportsetid" type="String" description="defined setid" />
+                <param name="filepath" type="String" description="file path" />
+                <param name="wantedstate" type="String" description="wanted state" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="docbookPrincipleSet">
+		<description>write a docbook of a principle set</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>exportToDocbook</method>
+                <param name="exportsetid" type="String" description="defined setid" />
+                <param name="filepath" type="String" description="file path" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="importPrincipleSet">
+		<description>export a set of principles</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>importPrincipleSet</method>
+                <param name="setname" type="String" description="defined setid" />
+                <param name="filepath" type="String" description="file path" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+</functionset>

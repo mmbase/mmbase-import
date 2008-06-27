@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<PROCESSOR MMBASE>
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+<title>MMBase Communities</title>
+<link rel="stylesheet" type="text/css" href="../../share/community/css/mmbase.css" />
+</head>
+<body class="basic">
+<table summary="communities" width="93%" cellspacing="1" cellpadding="3" border="0">
+
+<IF $PARAM3==community>
+    $MOD-communityprc-COMMUNITY-$PARAM1-$PARAM2
+</IF>
+
+<IF $PARAM3==channel>
+    $MOD-communityprc-CHANNEL-$PARAM1-$PARAM2
+</IF>
+
+<LIST OBJECTS TYPE="community" FIELDS="number,title,kind">
+<LIF $ITEM3=EFORUM>
+<tr align="left">
+  <th class="header" colspan="2">$ITEM2</th>
+  <th class="linkdata"><a href="community.shtml?$ITEM1+OPEN+community">Open all channels</a></th>
+  <th class="linkdata"><a href="community.shtml?$ITEM1+CLOSE+community">Close all channels</a></th>
+</tr>
+<tr>
+  <td class="multidata" colspan="4">
+    <PART communitypart.shtml?$ITEM1>
+  </td>
+</tr>
+</IF>
+</LIST>
+</table>
+</body></html>

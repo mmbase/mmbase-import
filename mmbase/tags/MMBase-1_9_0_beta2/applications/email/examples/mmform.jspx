@@ -1,0 +1,67 @@
+<mm:cloud
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    method="delegate" authenticate="class">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="email" />
+  <!-- form is like a transaction -->
+  <mm:form mode="form">
+
+
+    <!-- because in transaction now actual object will be created until commit -->
+    <mm:createnode type="email" commitonclose="false">
+
+      <!-- set some values to appear in the form -->
+      <mm:setfield name="subject">Just a demo</mm:setfield>
+      <mm:setfield name="to">${email}</mm:setfield>
+      <mm:setfield name="from">${email}</mm:setfield>
+      <mm:setfield name="body">Hello, world!. Eĥoŝanĝo, ĉiuĵaŭde. Café tweeëntwintig.</mm:setfield>
+
+      <!-- start creating actual form-entries -->
+      <mm:fieldlist fields="subject,from,body">
+        <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input" /> <mm:fieldinfo type="errors" /></p>
+      </mm:fieldlist>
+
+      <mm:setfield name="cc"><mm:field name="from" escape="none" /></mm:setfield>
+
+      <mm:fieldlist fields="to,cc">
+        <p><mm:fieldinfo type="guiname" />: <mm:fieldinfo type="guivalue" escape="links" /></p>
+      </mm:fieldlist>
+
+      <input type="submit" name="mail" value="Mail" />
+
+      <!-- if form is valid, and submitted, start actually sending the mail -->
+      <mm:valid>
+        <mm:import externid="mail" />
+        <mm:present referid="mail">
+
+          <!-- commit it -->
+          <mm:commit />
+
+          <!-- and call the function to mail -->
+          <mm:function name="mail" />
+          <!--
+              could e.g. also redirect if you don't want to see the form again.
+          -->
+        </mm:present>
+        <p>Thanks, for sending the above mail.</p>
+        <p>
+          Status was:
+          <mm:functioncontainer>
+            <mm:param name="field">mailstatus</mm:param>
+            <mm:function name="gui" />
+          </mm:functioncontainer>
+        </p>
+      </mm:valid>
+      <!-- if not valid, the form is still showed, so that people can fix its content -->
+      <mm:valid inverse="true">
+        <p>The form was not valid, no mail was sent. Please retry.</p>
+      </mm:valid>
+    </mm:createnode>
+  </mm:form>
+</mm:cloud>
+
+
+
+

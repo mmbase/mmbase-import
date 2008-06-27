@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-myyahoo</artifactId>
+  <name>MyYahoo</name>
+  <shortDescription>MMBase 'Yahoo' example</shortDescription>
+  <description>
+    The MyYahoo application is one of the oldest MMBase examples that still exists. It shows you a very simple
+    approach to a site containing URLs in categories.
+    In its simplicity it is a good example to see how the basic MMBase taglib works.
+  </description>
+  <properties>
+    <type>example</type>
+    <status>stable</status>
+  </properties>
+  <dependencies>
+      <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-jumpers</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+  </dependencies>
+</project>

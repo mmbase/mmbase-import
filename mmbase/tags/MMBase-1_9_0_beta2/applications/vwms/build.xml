@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project name="vwms" default="jar" basedir=".">
+  <property name="project.name"     value="vwms" />
+  <property name="project.package"   value="org/mmbase/applications/vwms" />
+  <property name="project.target.templates.dir"   value="vwms" />
+
+  <property name="project.jars.includes" value="email/build/mmbase-email.jar" />
+
+  <import file="../buildbase-include.xml" />
+
+
+  <target name="email">
+    <echo message="${applications.dir}/email" />
+    <ant dir="${applications.dir}/email" inheritAll="false" />
+  </target>
+
+  <target name="jar" depends="email,buildbase.jar" />
+
+
+</project>
+
+
+

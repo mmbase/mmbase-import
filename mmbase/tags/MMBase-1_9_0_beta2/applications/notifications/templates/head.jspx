@@ -1,0 +1,10 @@
+<head xmlns="http://www.w3.org/1999/xhtml" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <title>Notifications admin tool</title>
+  <mm:link page="/mmbase/style/css/mmbase.css">
+    <link rel="stylesheet" href="${_}" type="text/css" />
+  </mm:link>
+  <mm:link page="/mmbase/style/images/favicon.ico">
+    <link rel="icon" href="${_}" type="image/x-icon" />
+    <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+  </mm:link>
+</head>

@@ -1,0 +1,7 @@
+./richtext/blocks.xml
+./richtext/idrel.xml
+./versioning/versioning.fields.xml
+./versioning/version.field.xml
+./versioning/status.field.xml
+./versioning/object.fields.xml
+./versioning/versioning.indexes.xml

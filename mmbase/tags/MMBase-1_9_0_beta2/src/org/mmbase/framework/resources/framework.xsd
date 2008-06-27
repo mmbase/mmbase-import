@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!--
+  @version $Id: framework.xsd,v 1.9 2008-03-25 09:20:24 michiel Exp $
+-->
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/framework"
+    targetNamespace="http://www.mmbase.org/xmlns/framework"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+
+  <xsd:element name="framework">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param"        minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description"  minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="class" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!--
+  <xsd:element name="settings">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="setting" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="setting">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="component" type="xsd:string" />
+        <xsd:attribute name="name" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:element>
+  -->
+
+  <xsd:element name="urlconverters">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="urlconverter">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="class" type="xsd:string" />
+      <xsd:attribute name="position" type="xsd:integer"  />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="param">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="name" type="xsd:string" />
+          <xsd:attribute name="type" type="xsd:string" default="String" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+</xsd:schema>

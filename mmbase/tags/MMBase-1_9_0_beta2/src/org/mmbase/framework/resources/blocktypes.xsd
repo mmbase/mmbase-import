@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  @version $Id: blocktypes.xsd,v 1.1 2008-03-25 09:20:24 michiel Exp $
+-->
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/blocktypes"
+    targetNamespace="http://www.mmbase.org/xmlns/blocktypes"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+
+  <xsd:element name="blocktypes">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="blocktype"    minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="blocktype">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="title"       minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="weight" type="xsd:integer"  />
+      <xsd:attribute name="name" type="xsd:string"  />
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="title">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+</xsd:schema>

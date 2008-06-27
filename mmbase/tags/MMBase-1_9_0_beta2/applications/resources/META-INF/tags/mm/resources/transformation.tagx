@@ -1,0 +1,53 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag import="java.util.*" />
+  <jsp:directive.attribute name="template" type="java.lang.String" />
+  <jsp:directive.attribute name="link"     />
+  <jsp:directive.attribute name="transparam"        type="java.lang.String" />
+  <jsp:directive.attribute name="fileparam"     type="java.lang.String" />
+  <jsp:directive.attribute name="file"     type="java.lang.String" />
+  <jsp:scriptlet>
+    Map&lt;String, String&gt; transformations = (Map) session.getAttribute("transformations");
+    if (transformations == null) {
+       transformations = new HashMap();
+    }
+    session.setAttribute("transformations", transformations);
+
+  </jsp:scriptlet>
+  <c:choose>
+    <c:when test="${empty link}">
+      <mm:import id="trans" externid="${empty transparam ? 'trans' : transparam}" jspvar="trans" />
+      <mm:present referid="trans">
+        <mm:import id="f"    externid="${fileparam}" required="true" jspvar="f" />
+        <jsp:scriptlet>
+          if ("r(0)".equals(trans)) {
+          transformations.remove(f);
+          } else {
+          transformations.put(f,  trans);
+          }
+        </jsp:scriptlet>
+      </mm:present>
+    </c:when>
+    <c:otherwise>
+      <c:choose>
+        <c:when test="${transformations[file] eq template or (empty transformations[file]
+                      and '' eq template)}">
+          <jsp:doBody />
+        </c:when>
+        <c:otherwise>
+          <mm:link page="${link}">
+            <mm:param name="${empty transparam ? 'trans' : transparam}">${template}</mm:param>
+            <a href="${_}#${file}">
+              <jsp:doBody />
+            </a>
+          </mm:link>
+        </c:otherwise>
+      </c:choose>
+    </c:otherwise>
+  </c:choose>
+
+
+</jsp:root>

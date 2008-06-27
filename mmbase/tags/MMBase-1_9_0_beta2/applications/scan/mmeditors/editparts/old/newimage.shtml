@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<TITLE>Aanpassen $PARAM2</TITLE>
+</HEAD>
+<PROCESSOR Artikelen>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<SECURE>
+<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml" TARGET="Content" ENCTYPE="multipart/form-data">
+<BR><BR><BR>
+<BR><BR><BR>
+<BR>
+<CENTER>
+<P><TABLE BORDER=0 CELLSPACING=4 CELLPADDING=4>
+   <TR>
+      <TD COLSPAN=2>
+         <P><B><FONT FACE="HELVETICA,ARIAL" COLOR="#000000">
+		selecteer een nieuwe afbeelding :</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top COLSPAN=2 bgcolor="#C0C0C0">
+		<B><FONT SIZE="+1" FACE="helvetica,arial">
+ 		<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
+		<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
+ 		<INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-EDIT-SETFIELDFILE_IMG-$PARAM1">
+				<INPUT TYPE="file" NAME="file"><BR>
+		</B>
+      </TD></TR>
+   <TR>
+      <TD COLSPAN=2 bgcolor="#C0C0C0">
+				<CENTER>
+				<INPUT TYPE="SUBMIT" VALUE="Ok">
+      </TD></TR>
+</TABLE>
+&nbsp;
+<TABLE CELLSPACING=0 COLS=14 BGCOLOR="#CCCCCC" WIDTH="352">
+<TR>
+<TD>
+<INCLUDE /mmeditors/help/$MOD-MMEDIT-STATE-GETBUILDER^/$PARAM1.shtml>
+</TD>
+</TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>
+

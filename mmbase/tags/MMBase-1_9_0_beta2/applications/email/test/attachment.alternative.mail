@@ -1,0 +1,82 @@
+Subject: $(DATA) Simple multipart/alternative mail, with an attachment  (apple mail?) $(CURRENTDATE)
+X-Header-Test: test
+From: ppuk@m.meeuw.org
+Content-Type: multipart/alternative; boundary="==boundary-1"
+
+Text displayed only to non-MIME-compliant mailers.
+
+--==boundary-1
+Content-Type: text/plain
+
+Bla bla bla bla (text/plain)
+
+--==boundary-1
+Content-Type: multipart/mixed; boundary="==boundary-2"
+
+--==boundary-2
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+        charset=US-ASCII
+
+<HTML><BODY style="word-wrap: break-word; -khtml-nbsp-mode: space; -khtml-line-break: after-white-space; "><SPAN>Bla bla bla bla (text/html)</SPAN></BODY></HTML>
+--==boundary-2
+Content-Transfer-Encoding: base64
+Content-Type: image/gif;
+        x-mac-type=5738424E;
+        x-unix-mode=0644;
+        x-mac-creator=4D535744;
+        name=Translation Guidgelines for Didactor.gif
+Content-Disposition: attachment; 
+										 filename="red-test-image.gif"								
+
+R0lGODlhdQAgAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+Z
+zP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8A
+zP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZ
+zMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wA
+zMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZ
+zJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kA
+zJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZ
+zGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YA
+zGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZ
+zDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMA
+zDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZ
+zACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAA
+zAAAmQAAZgAAM+4AAN0AALsAAKoAAIgAAHcAAFUAAEQAACIAABEAAADuAADdAAC7AACqAACI
+AAB3AABVAABEAAAiAAARAAAA7gAA3QAAuwAAqgAAiAAAdwAAVQAARAAAIgAAEe7u7t3d3bu7
+u6qqqoiIiHd3d1VVVURERCIiIhEREQAAACH5BAAAAAAALAAAAAB1ACAAQAj/AP8JHEiwoMGD
+CBMqXMiwocOGIyJKnEixosWLGDNq3MixY0aBFKuJrBZypMiIJ0ekrLhSpUmSKEdObMkSpsuY
+OG/qTMnzJUWQHoMKHUq0KEagRpMqXaoUaU6dG2lKlOqRKtOkTq9q3VrV5sd/XMOKZZp1rNmz
+GsuiXct2hNq2cMVmXdkzZ12LLe/ehYrXpsy/MPUGHvw04lzCdhFbzasYMd+aUxsnnrzTq1uw
+cTN3tVrxrebPWDGDHr3UM+nTHE2jXn1RNevXEl3Dfi179urDJrte5BzVcknNhyNHZiyzJnGv
+uWMuppu7uHLkyV1Kxe1ccOGZ0Cn/xshcu8/K2g2LQ8bJGPJj4eh3+/WNHb118PAtBn8aXTrn
+6s7tl2QP9b399fhNN55tbe31FYEITlRbgqAtyCBwAz5I20MUVmjhhRgyFBAAOw==
+--==boundary-2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+        charset=US-ASCII
+
+<HTML><BODY style=3D"word-wrap: break-word; -khtml-nbsp-mode: space; =
+-khtml-line-break: after-white-space; "><SPAN></SPAN><BR><DIV> <SPAN =
+class=3D"Apple-style-span" style=3D"border-collapse: separate; =
+border-spacing: 0px 0px; color: rgb(0, 0, 0); font-family: Helvetica; =
+font-size: 12px; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; text-align: auto; =
+-khtml-text-decorations-in-effect: none; text-indent: 0px; =
+-apple-text-size-adjust: auto; text-transform: none; orphans: 2; =
+white-space: normal; widows: 2; word-spacing: 0px; "><SPAN =
+class=3D"Apple-style-span" style=3D"border-collapse: separate; =
+border-spacing: 0px 0px; color: rgb(0, 0, 0); font-family: Helvetica; =
+font-size: 12px; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; text-align: auto; =
+-khtml-text-decorations-in-effect: none; text-indent: 0px; =
+-apple-text-size-adjust: auto; text-transform: none; orphans: 2; =
+white-space: normal; widows: 2; word-spacing: 0px; "><DIV>didactor test =
+</DIV><DIV>mail: <A =
+href=3D"mailto:foo@bar.nl">foo@bar.nl</A></DIV><DI=
+V>phone: +31 35 6474204</DIV><BR =
+class=3D"Apple-interchange-newline"></SPAN></SPAN> =
+</DIV><BR></BODY></HTML>=
+
+--==boundary-2--
+
+--==boundary-1--

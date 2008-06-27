@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-rmmci</artifactId>
+  <name>Remote Bridge interface</name>
+  <shortDescription>MMBase Remote Bridge interface</shortDescription>
+  <description>
+    The RMMCI module consists of two parts: the 'rmmci-server' and the 'rmmci-client'. The server needs to be included in MMBase if you want clients to connect to MMBase using RMI: this way you can write java clients that talk to a central MMBase server as if they are running MMBase locally. Ideal for creating small client-side applications that need to talk to a shared repository.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
+</project>

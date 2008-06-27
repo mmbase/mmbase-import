@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="MMBase A-Select authentication" default="dependent.jar" basedir=".">
+  <property name="java.source.version" value="1.5" />
+  <property name="project.name"   value="aselect" />
+  <property name="project.package"   value="org/mmbase/security/implementation/aselect" />
+
+
+  <property name="aselect.system.jar"   value="org.aselect.system.jar" />
+  <!-- hack hack, just to get it working for now --> 
+  <property name="applications.dir"   location="../../applications" />
+  <property name="project.jars.dir"      location="../.." />
+  <property name="project.jars.includes" value="applications/cloudcontext/build/mmbase-cloudcontextsecurity.jar,contributions/aselect/${aselect.system.jar}" />
+  <property name="project.classes.dir"      location="../../applications/cloudcontext/build/classes" />
+  <property name="project.classes.includes" value="**/*.class,**/*.properties,org/mmbase/config/builders/**,org/mmbase/config/applications/**" />
+
+  <import file="../../applications/buildbase-include.xml" />
+
+  <target name="cloudcontext">
+    <echo message="${applications.dir}/cloudcontext" />
+    <ant dir="${applications.dir}/cloudcontext" inheritAll="false" />
+  </target>
+
+  <target name="check.dependency">
+    <available property="aselect.jar.present" file="${aselect.system.jar}" />
+  </target>
+
+  <target name="warn.dependency" depends="check.dependency" unless="aselect.jar.present">
+    <echo message="The file ${aselect.system.ar} is not present. Download A-Select from www.a-select.org and place this jar in the current directory" />
+  </target>
+  <target name="dependent.jar" depends="warn.dependency,cloudcontext,jar" if="aselect.jar.present" />
+  <target name="dependent.package" depends="dependent.jar,package" />
+
+</project>

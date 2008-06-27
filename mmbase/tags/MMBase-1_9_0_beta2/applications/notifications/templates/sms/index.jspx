@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page import="org.mmbase.sms.*" />
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="../head.jspx" />
+  <mm:content type="text/html" language="en" expires="0" timezone="Europe/Amsterdam">
+    <body class="basic">
+      <h1>SMS</h1>
+      <h2>You can send an SMS with this interface (for testing)</h2>
+      <mm:import externid="send" />
+      <mm:import externid="mobile" jspvar="mobile" />
+      <mm:import externid="message" jspvar="message">Your message</mm:import>
+      <mm:import externid="immediate" jspvar="immediate"/>
+      <mm:present referid="send">
+        <p>Sending with <jsp:expression>Sender.getInstance()</jsp:expression> (${immediate eq 'true'})</p>
+        <jsp:scriptlet>
+          SMS sms = new BasicSMS(mobile, message);
+          boolean result;
+          if ("true".equals(immediate)) {
+             result = Sender.getInstance().send(sms);
+          } else {
+             result = Sender.getInstance().offer(sms);
+          }
+        </jsp:scriptlet>
+        <p><jsp:expression>result ? "success" : "failed"</jsp:expression></p>
+      </mm:present>
+      <mm:cloud rank="administrator">
+        <table>
+          <form method="post">
+            <tr>
+              <th>Phone number</th>
+              <td><input type="text" name="mobile" value="${mobile}" /></td>
+            </tr>
+            <tr>
+              <th>Message</th><td><textarea name="message">${message}</textarea></td>
+            </tr>
+            <tr>
+              <th>Immediate</th><td><mm:radio type="checkbox" name="immediate" value="true" compare="${immediate}" /></td>
+            </tr>
+            <tr>
+              <th colspan="2">
+                <input type="submit" name="send" />
+              </th>
+            </tr>
+          </form>
+        </table>
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>

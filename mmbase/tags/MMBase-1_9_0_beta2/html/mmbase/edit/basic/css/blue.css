@@ -1,0 +1,109 @@
+
+/* 
+   only tested/working for mozilla.
+ */
+
+@import url(base.css);
+@import url(buttons_ascii.css);
+
+
+body.basic { 
+  background-color: #aaa;
+  margin-top: 1em;
+  color: #004; 
+}
+
+body.navigationbar {
+  background-color: #004;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+a:active  { color: yellow; }
+a:hover   { 
+	  color: yellow; 
+          background-color: #66f;
+	  }
+
+span {
+  align: right;
+}
+
+span.alt {
+  display: none;
+}
+
+table { 
+    width : 100%; 
+    float: center;
+}
+
+
+td {
+    color: #000;
+    vertical-align : top;
+    horizontal-align : left;	
+    border-width: 1;		
+}	
+
+table.list td {
+     background-color: #004;
+     color:white;
+}
+table.edit td {
+     background-color: #004;
+     color: white;
+}
+table.edit td.navigate {
+   background-color: #339;
+}
+table.list td.navigate {
+   background-color: #339;
+}
+th {
+   background-color: #339;
+   color: #fff;
+   font-weight:bold
+}
+
+.data {
+     background-color: #004;
+     color: #fff;
+}
+.navigate {
+    text-align: right;
+    background-color: #339;
+    color: #fff;
+}
+
+.edit {
+     background-color: #004;
+     color: white;
+}
+.search {
+     background-color: white;
+     color: black;
+}
+
+.linkdata {
+     background-color: #004;
+     color: white;
+     text-align: center;
+}
+
+.listdata {
+     background-color: #004;
+     color: #339;
+     text-align: left;
+}
+
+.multidata  {
+     background-color: #004;
+     color: #339;
+     padding-top: 1em;
+}
+

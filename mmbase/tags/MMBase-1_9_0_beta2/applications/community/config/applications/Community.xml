@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Community" maintainer="mmbase.org" version="1" auto-deploy="false">
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">insrel</builder>
+    <builder maintainer="mmbase.org" version="0">community</builder>
+    <builder maintainer="mmbase.org" version="0">channel</builder>
+    <builder maintainer="mmbase.org" version="0">message</builder>
+    <builder maintainer="mmbase.org" version="0">chatter</builder>
+    <builder maintainer="mmbase.org" version="0">people</builder>
+    <builder maintainer="mmbase.org" version="0">pools</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="parent" target="child" direction="bidirectional" guisourcename="Parent" guitargetname="Child" builder="insrel" />
+    <reldef source="creator" target="subject" direction="bidirectional" guisourcename="Creator" guitargetname="Subject" builder="insrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="community" to="channel" type="related" />
+    <relation from="channel" to="message" type="parent" />
+    <relation from="message" to="message" type="parent" />
+    <relation from="chatter" to="people" type="related" />
+    <relation from="chatter" to="channel" type="related" />
+    <relation from="chatter" to="message" type="creator" />
+    <relation from="pools" to="chatter" type="related" />
+    <relation from="pools" to="community" type="related" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="community" path="Community/community.xml" />
+    <datasource builder="channel" path="Community/channel.xml" />
+    <datasource builder="message" path="Community/message.xml" />
+    <datasource builder="chatter" path="Community/chatter.xml" />
+    <datasource builder="people" path="Community/people.xml" />
+    <datasource builder="pools" path="Community/pools.xml" />
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="insrel" path="Community/insrel.xml" />
+  </relationsourcelist>
+
+  <contextsourcelist>
+    <contextsource path="Community/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
+
+  <description><![CDATA[Example application for a forum and and a chat.
+  ]]></description>
+
+  <install-notice>
+    <![CDATA[
+The example community forum is installed.  The community module must be active and
+installed (perhaps it is already). If not, you can activate the Community module by looking for
+the file "communityprc.xml" in the modules directory of your MMBase configuration, place it if missing, and setting
+the content of the "status' tag to "active". A restart of MMBase is needed then.
+ ]]></install-notice>
+
+</application>

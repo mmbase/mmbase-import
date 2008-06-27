@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../applications/app-base/project.xml</extend>
+  <artifactId>mmbase-aselect</artifactId>     
+  <name>A-Select</name>
+  <shortDescription>MMBase Aselect integration</shortDescription>
+  <description>MMBase Aselect integretion
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>aselect</groupId>
+      <artifactId>org.aselect.system</artifactId>
+      <version>1.5</version>
+      <url>http://www.aselect.org/</url>
+    </dependency>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-cloudcontext</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+    </dependency>
+  </dependencies>
+</project>
+

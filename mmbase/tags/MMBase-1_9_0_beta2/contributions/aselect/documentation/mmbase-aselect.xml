@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[]>
+<article>
+
+  <articleinfo>
+    <title>MMBase-ASelect</title>
+    <date>2005-03-01</date>
+    <edition>$Id: mmbase-aselect.xml,v 1.2 2007-04-28 08:49:28 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>      
+    </authorgroup>
+  </articleinfo>
+
+  <section id="intro">
+    <title>Introduction</title>
+    <para>
+      Surfnet wanted to supply support between MMBase web-sites and the ASelect authentication
+      mechanism. MMBase did already provide a way to plug in Authentication-mechanisms, but the
+      actual plug-in still needed to be made. This plug-in was finally implemented by Publieke
+      Omroep (an important MMBase implementor) and Alfa&amp;Ariss (the supliers of ASelect itself).
+    </para>  
+  </section>
+
+  <section id="authenticationandauthorisation">
+    <title>Authentication and Authorization in MMBase</title>
+    <para>
+      MMBase has a pluggable authentication mechanism, which creates 'User' objects associated with
+      an identifier and a 'Rank'. Authorization mechanisms (which decide who may do what) are then
+      based on those User objects. Authorization in MMBase is principally done on node level
+      (normally by use of the 'owner' field of the node), so for every MMBase node Authorization
+      should determin if the current user may edit, delete or change it.
+    </para>
+    <para>
+      The 'rank' of a user is normally used to bypass this node-level authorization. E.g. the
+      authorization implementation can decide to simplify itself drasticly when the current user is
+      of rank 'Anonymous' (may only read, never change, regardless of which node is under consideration), or 'Administrator' (may do everything). The
+      rank can also be used to grant or disallow access to certain pages. This is easiest done by
+      explicitely requiring a certain minimal rank on the 'cloud' tag (which is normally arround
+      your complete jsp-page). For example:      
+      <programlisting id="mmcloud"><![CDATA[
+<%@page language="java" contentType="text/html;charset=utf-8"  errorPage="error.jsp" %>
+<mm:content type="text/html">
+<mm:cloud rank="basic user" method="delegate">
+<html>
+... 
+</html>
+</mm:cloud>
+</mm:content>
+]]></programlisting>
+      This page is not visible by anyone with rank lower then 'basic user'. The 'basic user' rank is
+      normally the MMBase rank just a bit higher then 'anonymous', so this page basicly is visible
+      by anyone who succeeded to log in (but not by others). It is possible to add more ranks to the
+      security implementation, but as a start the three mentioned ranks ('anonymous', 'basic user'
+      and 'administrator') are available.
+    </para>
+    <para>
+      So, in the simplest case, the MMBase ASelect authentication implementation does not need to
+      know itself about the users. It can simply trust the ASelect server and create User objects with rank 'basic
+      user' for every user it does not know, provided of course that the chosen Authorization
+      implementation does also know how to handle unknown, but logged in users.
+    </para>
+    <para>
+      For most useful Authorization mechanisms the user need to be actually known. Very simple
+      authorization could be based only on rank. Therefore the MMBase ASelect authentication
+      implementation can be configured by a simple property file (security/accounts.properties),
+      linking user names with an alternative rank. Every user logon of ASelect is checked with this property file, and if the
+      user is present, the given Rank will be used in stead of 'basic user'. In this way it is
+      simple to e.g. grant access to editor pages only to certain users. This is an example of such
+      an accounts.properties files:     
+      <programlisting id="accounts.properties"><![CDATA[
+Michiel\ Meeuwissen=administrator
+Jo\ Lahaye=editor
+]]></programlisting>
+      Now Michiel can likely do everything (authorization implementations usually grant everything
+      to administrators) and Jo can e.g. be granted access to the editor-pages. (If the editors
+      start with "&lt;mm:cloud rank="editor")
+    </para>
+    <para>
+      Because you often need extra ranks, extra ranks can also be configured with a property file (security/ranks.properties),
+      which links a rank identifier with an integer value, indicating its 'height'. For example:
+      <programlisting id="ranks.properties"><![CDATA[
+editor=500
+]]></programlisting>
+    </para>
+    <para>
+      It is also possible to consider the authentication strength used by the user in the ASelect
+      login when authorizing a page. The trick is to define several 'applications' in your aselect
+      server. Define e.g. 'mmbase' and 'mmbase_strong' (only strong authentications) and you can
+      then select the application with the mmbase cloud-tag like this:
+      <programlisting id="mmcloudstrong"><![CDATA[
+<%@page language="java" contentType="text/html;charset=utf-8"  errorPage="error.jsp" %>
+<mm:content type="text/html">
+<mm:cloud rank="administrator" method="delegate" authenticate="mmbase_strong">
+<html>
+... 
+</html>
+</mm:cloud>
+</mm:content>
+]]></programlisting>
+     which means that this page is only accessible for users with rank 'administrator', but only if
+     they are logged in 'strongly'. If the administrator did not authenticate herself strongly,
+     automaticly a new ASelect authentication window will appear.
+    </para>      
+  </section>
+
+
+  <section id="setup">
+    <title>Setup</title>
+    <para>
+      The ASelect Authentication plug can communicate directly to the ASelect server, or it can make
+      use of the ASelect agent, which therefor must be present on the server.  A typical setups with
+      MMBase and ASelect would then look like this.
+      <graphic fileref="ASelect2.png"/>
+      <graphic fileref="ASelect.png"/>
+    </para>
+    <para>
+      So to set up an ASelect authenticated MMBase you firstly need an ASelect-Server.
+    </para>
+    
+    
+  </section>
+
+  <section id="installationandconfiguration">
+    <title>Installation &amp; configuration</title>
+    <para>
+      If you want to use the ASelect Authentication plugin for MMBase, then you need to have MMBase
+      version 1.8 or higher. The first version of this plugin also worked with MMBase 1.7 (only by
+      agent, without cloud-context), and this version is availabe on request. 
+    </para>
+    <para>
+      To install the MMBase-ASelect plugin you need to place mmbase-aselect.jar in your WEB-INF/lib
+      directory. You need to remove other security implemenations like mmbase-cloudcontextsecurity.jar.
+    </para>
+    <section id="authorization">
+      <para>
+        It is needed to decide what kind of `authorization' must be used. There are two
+        possibilities. The first one is 'OwnerAuthorization' which is provided in mmbase.jar. The
+        other one is the cloud context security authorization implementation based on user, context,
+        group and rank objects in the MMBase cloud. The mmbase-aselect.jar included the needed
+        resources from cloud context security, so you need <emphasis>not</emphasis> place
+        mmbase-cloudcontextsecurity.jar.
+      </para>
+      <para>
+        OwnerAuthorization is very straight-forward. Logged in users may only edit their own object,
+        and view all other objects. On default users have the rank 'basic user', but other ranks can
+        be assigned with a 'accounts.properties', which can be configured as the URL of OwnerAuthorization.
+      </para>
+      <para>
+        And to configure it as your authentication implementation. WEB-INF/config/security/security.xml might look like this then:
+      <programlisting id="web.xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD security config 1.0//EN" "http://www.mmbase.org/dtd/security_1_0.dtd">
+<security active="true">
+
+  <authentication class="org.mmbase.security.implementation.aselect.ASelectAuthentication" url="/e/as/aselect/conf/agent.conf" />
+  <authorization  class="org.mmbase.security.implementation.basic.OwnerAuthorization"      url="accounts.properties" /> <!-- only for 'getPossibleContexts' -->
+
+  <sharedsecret></sharedsecret>
+</security>
+]]></programlisting>
+      In this example for the Authorization part of the security implementation 'OwnerAuthorization'
+      was chosen. OwnerAuthorization is a simple authorization mechanism which allows only for
+      changing your 'own' nodes. More sophisticated implementations could be created, but a way to
+      synchronize ASelect users with MMBase users would be required then.
+      </para>
+      <para>
+        The ASelectAuthentication is configured with the same configuration file as the ASelect
+        agent. It uses only a few properties of it (mainly to decide to which server an authentication
+        request must be redirected).
+      </para>
+      <para>
+        MMBase templates must can be changed to use the 'delegate' method of the cloud-tag, and
+        perhaps 'rank' and 'authenticate' attributes should be added as well.
+      </para>
+    </section>
+  </section>
+</article>

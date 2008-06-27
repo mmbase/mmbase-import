@@ -1,0 +1,29 @@
+<jsp:root version="1.2"
+          xmlns:jsp="http://java.sun.com/JSP/Page" 
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <!--
+      This simple JSP simply reports whether MMBase seems to be running correctly.
+      @since MMBase-1.8.5
+  -->
+  <mm:log jspvar="log">
+  <mm:content expires="0" type="text/plain">
+    <jsp:scriptlet>
+      try {
+    </jsp:scriptlet>
+    <mm:cloud>
+      <mm:listnodescontainer type="object" cachepolicy="never">
+        <mm:maxnumber value="1" />
+        <mm:listnodes>
+          <mm:write value="OK" id="ok" />
+        </mm:listnodes>
+      </mm:listnodescontainer>
+    </mm:cloud>
+    <jsp:scriptlet>
+      } catch (Throwable t) {
+      log.warn(t.getMessage(), t);
+      }
+    </jsp:scriptlet>
+    <mm:notpresent referid="ok">ERROR</mm:notpresent>
+  </mm:content>
+  </mm:log>
+</jsp:root>

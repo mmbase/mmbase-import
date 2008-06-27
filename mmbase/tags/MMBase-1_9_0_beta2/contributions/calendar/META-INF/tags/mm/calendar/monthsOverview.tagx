@@ -1,0 +1,226 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"
+    version="2.0" >
+  <!--
+     This can be useful during development
+     xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"         
+
+  -->
+  <jsp:directive.tag import="java.util.*" />
+
+  <jsp:directive.attribute name="context" type="java.util.Map" />
+  <jsp:directive.attribute name="referids"  />
+
+  <jsp:directive.attribute name="offset"  /><!-- first month to show (0 = current month, default = -1) -->
+
+  <jsp:directive.attribute name="buttons"  /><!-- directory containing images for buttons -->
+
+  <jsp:directive.attribute name="cols" required="true"  /><!-- number of columns to show -->
+  <jsp:directive.attribute name="rows" required="true"  /><!-- number of rows to show -->
+                  <!-- total number of months shown is cols x rows -->
+  
+  <jsp:directive.attribute name="layout"  />
+  <jsp:directive.attribute name="weeklayout"  /> <!-- not yet supported -->
+
+  <jsp:directive.attribute name="prev"    fragment="true"  />
+  <jsp:directive.attribute name="next"    fragment="true"  />
+
+  <jsp:directive.variable  name-given="day" />
+  <jsp:directive.variable  name-given="dayend" />
+  <jsp:directive.variable  name-given="noon" />
+
+  <mm:import id="o" externid="offset">${empty offset ? '-1' : offset}</mm:import>
+  <jsp:scriptlet>
+    Calendar cal = Calendar.getInstance((TimeZone) request.getAttribute("org.mmbase.timezone"), 
+    (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request")); 
+  </jsp:scriptlet>
+
+  <table class="mm_calendar monthsOverview">
+    <c:choose>
+      <!-- HORIZONTAL -->
+      
+      <c:when test="${empty layout or layout eq 'horizontal'}">
+
+        <!-- produced columns when 'horizontal': -->
+        <col class="weeknr month" /> <!-- 0 - 5 -->
+        
+        <c:forEach begin="1" end="${cols}">
+          <!-- one week is presented by 9 colums, monthname, the week number followed by one column per day -->
+          <col class="monthname" />
+          <col class="weeknr year" />
+          <jsp:scriptlet>
+            int firstDay = cal.getFirstDayOfWeek();
+            for (int i = firstDay; i &lt;= firstDay + 6; i++) {
+            cal.set(Calendar.DAY_OF_WEEK, i);
+          </jsp:scriptlet>
+          <mm:context>
+            <mm:import id="wday"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+            <mm:locale language="en" country="US"><mm:time referid="wday" format="EEEEE" id="weekday" write="false" /></mm:locale>
+            <col class="${weekday}" />
+          </mm:context>              
+          <jsp:scriptlet>
+            }
+          </jsp:scriptlet>
+        </c:forEach><!-- cols -->
+
+        <thead>
+          <!-- navigation for the complete table -->
+          <tr>
+            <th class="navigate" colspan="${cols * 9 + 1}">
+              <c:if test="${offset gt 0}">
+                <mm:link referids="${referids}">
+                  <mm:param name="offset" value="0" />
+                  <a href="${_}">
+                    <mm-cal:navigation dir="${buttons}" name="pprev.png" alt="&amp;lt;&amp;lt;" />
+                  </a>
+                </mm:link>
+              </c:if>
+              <mm:link referids="${referids}">
+                <mm:param name="offset" value="${o - cols}" />
+                <a href="${_}">
+                  <mm-cal:navigation dir="${buttons}" name="prev.png" alt="&amp;lt;" />
+                </a>
+              </mm:link>
+              <mm:link referids="${referids}">
+                <mm:param name="offset" value="${o + cols}" />
+                <a href="${_}">
+                  <mm-cal:navigation dir="${buttons}" name="next.png" alt="&amp;gt;" />
+                </a>
+              </mm:link>
+            </th>
+          </tr>
+
+          <!-- show week days  -->
+          <tr>
+            <th><!-- week of month --></th>
+            <c:forEach begin="1" end="${cols}">
+              <th><!-- month name --></th>
+              <th>#</th>
+              <jsp:scriptlet>
+                int firstDay = cal.getFirstDayOfWeek();
+                for (int i = firstDay; i &lt;= firstDay + 6; i++) {
+                cal.set(Calendar.DAY_OF_WEEK, i);
+              </jsp:scriptlet>
+              <mm:context>
+                <mm:import id="wday"><jsp:expression>cal.getTime().getTime() / 1000</jsp:expression></mm:import>
+                <mm:locale language="en" country="US"><mm:time referid="wday" format="EEEEE" id="weekday" write="false" /></mm:locale>
+                <th class="${weekday}"><mm:time referid="wday" format="E" /></th>
+              </mm:context>              
+              <jsp:scriptlet>
+                }
+              </jsp:scriptlet>
+            </c:forEach>
+          </tr>
+        </thead>
+
+
+        <tbody>
+          <c:forEach begin="0" end="${rows - 1}" var="r">
+            <jsp:scriptlet>
+              int firstWeek = 1;
+              int lastWeek = 4;
+            </jsp:scriptlet>
+            <tr>
+              <c:forEach begin="0" end="${cols - 1}" var="c">
+                <mm:context>
+                  <mm:import id="m">${cols * r + c + o}</mm:import>
+                  <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
+                  <mm:locale language="en" country="US"><mm:time referid="month" format="MMMM" id="monthname" write="false" /></mm:locale>
+                  <th colspan="${c eq 0 ? 10 : 9}" class="${monthname}">
+                    <mm:time referid="month" format="MMMM yyyy" />
+                  </th>
+                  <mm:time referid="month" jspvar="month" vartype="date" write="false">
+                    <jsp:scriptlet>
+                      cal.setTime(month);
+                      cal.set(Calendar.DAY_OF_MONTH, 1);
+                      if (cal.get(Calendar.WEEK_OF_MONTH) &lt; 1) firstWeek = 0;
+                      cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                      if (cal.get(Calendar.WEEK_OF_MONTH) &gt; lastWeek) lastWeek = cal.get(Calendar.WEEK_OF_MONTH);
+                    </jsp:scriptlet>
+                  </mm:time>
+                </mm:context>
+              </c:forEach>
+            </tr>
+            <mm:import reset="true" id="firstWeek"><jsp:expression>firstWeek</jsp:expression></mm:import>
+            <mm:import reset="true" id="lastWeek"><jsp:expression>lastWeek</jsp:expression></mm:import>
+            <c:forEach begin="${firstWeek}" end="${lastWeek}" var="week">
+              <tr>
+                <td class="weeknr month">${week}</td>
+                <c:forEach begin="0" end="${cols - 1}" var="c">                  
+                  <mm:context>
+                    <mm:import id="m">${cols * r + c + o}</mm:import>
+                    <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
+                    <mm-cal:axis date="${month}" name="week" index="${week}">
+                      <jsp:attribute name="left">
+                        <c:if test="${week eq firstWeek}">
+                          <th rowspan="${lastWeek - firstWeek + 1}" class="vertical ${formonthname}">
+                            <mm:time referid="month" format="MMM" />
+                          </th>
+                        </c:if>
+                        <th class="weeknr year"><mm:time referid="day" format="w"/></th>
+                      </jsp:attribute>
+                      <td class="${dayofweek} ${monthname} ${whichmonth}_month">
+                        <jsp:doBody />
+                      </td>
+                    </mm-cal:axis>
+                  </mm:context>
+                </c:forEach>
+              </tr>
+            </c:forEach>
+          </c:forEach>
+        </tbody>
+      </c:when>
+
+
+
+      <!--- VERTICAL -->
+      <c:otherwise>
+        
+        <c:forEach begin="1" end="${cols}">
+          <!-- one month is presented a maximum of 6 collums, one for each week. -->
+          <c:forEach begin="0" end="5" var="week">
+            <col class="week" />
+          </c:forEach>
+        </c:forEach><!-- cols -->
+
+
+        <tbody>
+          <c:forEach begin="0" end="${rows - 1}" var="r">
+            <!-- show month names -->
+            <tr>
+              <c:forEach begin="0" end="${cols - 1}" var="c">
+                <mm:context>
+                  <mm:import id="m">${rows * r + c + o}</mm:import>
+                  <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
+                  <mm:locale language="en" country="US"><mm:time referid="month" format="MMMM" id="monthname" write="false" /></mm:locale>
+                  <th colspan="5" class="${monthname}">
+                    <mm:time referid="month" format="MMMM yyyy" />
+                  </th>
+                </mm:context>
+              </c:forEach>
+            </tr>
+            <c:forEach begin="0" end="6" var="weekday">
+              <tr>
+                <c:forEach begin="0" end="${cols - 1}" var="c">
+                  <mm:context>
+                    <mm:import id="m">${rows * r + c + o}</mm:import>
+                    <mm:time time="tomonth  ${m ge 0 ? '+' : ''} ${m} month" id="month" write="false" vartype="date" />
+                    <mm-cal:axis date="${month}" name="day" index="${weekday}">
+                      <td class="${dayofweek} ${monthname} ${whichmonth}_month">
+                        <jsp:doBody />
+                      </td>
+                    </mm-cal:axis>
+                  </mm:context>
+                </c:forEach>
+              </tr>
+            </c:forEach>
+          </c:forEach>
+        </tbody>
+      </c:otherwise>
+    </c:choose>
+  </table>
+
+</jsp:root>

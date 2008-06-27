@@ -1,0 +1,64 @@
+<jsp:root
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:os="http://www.opensymphony.com/oscache"
+    version="2.0">
+  <jsp:directive.tag description="Renders a nice table to show diffs between tables." />
+  <jsp:directive.tag import="org.mmbase.versioning.*,java.util.*" />
+
+
+  <mm:nodeinfo type="nodemanager">
+    BLA
+    <mm:listnodescontainer type="${_}_versions">
+      <mm:constraint field="object" value="${_node}" />
+      <mm:sortorder field="version" direction="down" />
+      <form action="versions.jspx" method="POST">
+        <ul class="versionselector">
+          <mm:listnodes id="versions" varStatus="status">
+            <c:if test="${status.index eq 1}">
+              <mm:import externid="version1" vartype="integer">${_node.number}</mm:import>
+            </c:if>
+            <c:if test="${status.index eq 0}">
+              <mm:import externid="version2" vartype="integer">${_node.number}</mm:import>
+            </c:if>
+          </mm:listnodes>
+          <mm:listnodes referid="versions">
+            <li>
+              <mm:field name="number" id="number" write="false" vartype="integer" />
+              <mm:radio name="version1"  value="${_node.number}" compare="${version1}" style="visibility: ${number lt version2 ? 'visible' : 'hidden'};" />
+              <mm:radio name="version2"  value="${_node.number}" compare="${version2}" style="visibility: ${number ge version1 ? 'visible' : 'hidden'};" />
+            v${_node.version}: <mm:node number="${_node.lastmodifiedby}"><mm:nodeinfo type="gui" /></mm:node>: <mm:field name="comments" /></li>
+          </mm:listnodes>
+        </ul>
+        <input type="submit" name="submit" value="See differences" />
+      </form>
+    </mm:listnodescontainer>
+
+    <c:if test="${not empty version1 and not empty version2}">
+      <mm:node id="version1" referid="version1" />
+      <mm:node id="version2" referid="version2" />
+      <h2>Diff between v${version1.version} and v${version2.version}</h2>
+      <mm:import jspvar="bodynow"><mm:node referid="version1"><mm:field name="body"  /></mm:node></mm:import>
+      <mm:import jspvar="bodythen"><mm:node referid="version2"><mm:field name="body"  /></mm:node></mm:import>
+      <jsp:scriptlet>
+        String[] linesNow  = bodynow.split("\n");
+        String[] linesThen = bodythen.split("\n");
+      </jsp:scriptlet>
+      <table class="versions">
+        <tr><th class="difference"/><th>v${version1.version}</th><th>v${version2.version}</th></tr>
+        <jsp:scriptlet>
+          Diff diff = new Diff(Arrays.asList(linesNow), Arrays.asList(linesThen));
+        </jsp:scriptlet>
+        <jsp:expression>diff.toHtml()</jsp:expression>
+      </table>
+    </c:if>
+  </mm:nodeinfo>
+
+
+</jsp:root>
+
+
+
+

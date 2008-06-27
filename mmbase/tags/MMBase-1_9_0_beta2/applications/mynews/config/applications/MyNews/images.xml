@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<images exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
+    <node number="1234" owner="default" alias="test.transparency">
+        <title>Test transparency image</title>
+        <description>Test transparency image</description>
+        <itype>png</itype>
+        <filename>transparent.png</filename>
+        <handle file="images/1234.handle" />
+    </node>
+</images>

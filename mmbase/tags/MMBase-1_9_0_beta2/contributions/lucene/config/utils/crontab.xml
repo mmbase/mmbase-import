@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <!-- 
+       You may want to schedule a full index.
+       Actually not needed because notifiers would keep index up to date.
+  -->  
+  <properties>
+    <!--
+                                     time       imple                              description       config (name of the index, can be empty for all indices)
+    <property name="lucenefullindex">/5 * * * *|org.mmbase.module.lucene.FullIndex|Lucene Full Index|forum</property>
+    -->
+  </properties>
+</util>

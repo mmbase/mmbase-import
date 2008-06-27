@@ -1,0 +1,45 @@
+<div class="poll" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm-poll="http://www.mmbase.org/tags/mm/poll"                   
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <!--     
+       xmlns:mm-poll="urn:jsptagdir:/WEB-INF/tags/mm/poll"     
+  -->
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:content expires="0" type="application/xhtml+xml">
+    <mm:cloud>
+      <mm:url id="baseurl" page="frontend" write="false" />
+      
+      <mm-poll:vote redirect="${baseurl}" checkip="- 5 day" />
+      
+      <mm:time id="now" precision="minutes" write="false" time="now" />
+      <mm:listnodescontainer type="poll">
+        <mm:constraint field="begin" operator="LESS" value="$now" />
+        <mm:constraint field="end"   operator="GREATER" value="$now" />
+        <mm:sortorder field="begin" direction="down" />
+        <mm:listnodes id="poll">
+          <h1><mm:field name="question" /></h1>
+          <mm:field name="description" escape="p" />
+          <ul>
+            <mm-poll:poll poll="${poll}">
+              <jsp:attribute name="canvote">
+                <li title="${_node.description}">
+                  <mm:link referid="baseurl" referids="_node@answer,poll">
+                    <a href="${_}">${_node.answer}</a>
+                  </mm:link>
+                </li>
+              </jsp:attribute>
+	      <jsp:body>
+                <li title="${_node.description}">
+                  <jsp:text>${_node.answer}: ${_node.total_answers}</jsp:text>
+                </li>
+              </jsp:body>
+            </mm-poll:poll>
+          </ul>
+        </mm:listnodes>
+      </mm:listnodescontainer>
+      
+    </mm:cloud>
+  </mm:content>
+</div>
