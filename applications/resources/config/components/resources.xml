@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="resources"
+    version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
 
-  <description xml:lang="nl">Resources</description>
-  <description xml:lang="en">Resources</description>
+  <title xml:lang="nl">Resources</title>
+  <title xml:lang="en">Resources</title>
 
   <dependency component="core" version="9" />
 
-  <block name="recent" 
+  <block name="recent"
          classification="mmbase.examples resources"
          mimetype="text/html">
     <description xml:lang="en">Displays recent resources</description>
