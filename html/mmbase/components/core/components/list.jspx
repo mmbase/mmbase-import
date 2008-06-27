@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
+    class="mm_c c_core c_b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -17,10 +17,8 @@
 
       <mm:notpresent referid="component">
         <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-	    <table summary="components" border="0" cellspacing="0" cellpadding="3">
-		  <caption>
-            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
-          </caption>
+        <table summary="components" border="0" cellspacing="0" cellpadding="3">
+          <caption>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</caption>
           <tr>
             <th>Component</th>
             <th>Description</th>
@@ -46,25 +44,21 @@
             </th>
           </tr>
         </table>
-      
+
 	    <table summary="framework" border="0" cellspacing="0" cellpadding="3">
-		  <caption>
-            Current Framework 
-          </caption>
-          <mm:function set="utils" name="framework">
-            <tr><th>Framework</th><td>${_}</td></tr>
-          </mm:function>
-          <tr><th>Failed components</th><td><mm:function set="components" name="failed" /></td></tr>
-        </table>
+        <caption>Current Framework</caption>
+        <mm:function set="utils" name="framework">
+          <tr><th>Framework</th><td>${_}</td></tr>
+        </mm:function>
+        <tr><th>Failed components</th><td><mm:function set="components" name="failed" /></td></tr>
+      </table>
       </mm:notpresent>
-      
+
       <mm:present referid="component">
         <h2>Component '${component}'</h2>
         <mm:function set="components" name="get" referids="component@name" id="c">
           <table summary="component" border="0" cellspacing="0" cellpadding="3">
-            <caption>
-              ${c.description}
-            </caption>
+            <caption>${c.description}</caption>
             <tr><th>Version</th><td>${c.version}</td></tr>
             <tr><th>Defined in</th><td>${c.uri}</td></tr>
             <tr><th>Translations</th><td>${c.bundle}</td></tr>
@@ -93,12 +87,11 @@
           <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
             <h4>${b.name}</h4>
             <table summary="block" border="0" cellspacing="0" cellpadding="3">
-              <caption>
-                ${mm:string(b.description)}
-              </caption>
+              <caption>${mm:string(b.description)}</caption>
               <tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
               <tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
               <tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
+              <tr><th>Classification</th><td><jsp:expression>Arrays.asList(b.getClassification())</jsp:expression></td></tr>
             </table>
           </mm:stringlist>
         </mm:function>

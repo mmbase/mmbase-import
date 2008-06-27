@@ -8,7 +8,7 @@
 <mm:import externid="cmd"      jspvar="cmd" />
 <mm:import externid="action" />
 <div
-  class="mm_c mm_c_core mm_c_b_modules ${requestScope.componentClassName}"
+  class="mm_c c_core c_b_modules ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 
 <%

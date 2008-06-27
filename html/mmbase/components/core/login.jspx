@@ -2,9 +2,9 @@
   Reuseable generic login-page.
 -->
 <div
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     class="component ${requestScope.componentClassName}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     id="${requestScope.componentId}">
@@ -15,7 +15,7 @@
   <mm:import from="request" externid="language">en</mm:import>
   <mm:import from="request" externid="country"></mm:import>
   <mm:import from="request" externid="sessionname">cloud_mmbase</mm:import>
-  
+
   <mm:content type="text/html" language="$language" country="$country" expires="0" jspvar="locale">
     <fmt:bundle basename="org.mmbase.security.resources.parameters">
       <mm:import from="request"  externid="reason">please</mm:import>
@@ -45,7 +45,7 @@
             for (int j = 0; j &lt; params.length ; j++) {
             Parameter param = params[j];
             Class type = param.getTypeAsClass();
-            if (type.isAssignableFrom(String.class) &amp;&amp; param.isRequired()) {         
+            if (type.isAssignableFrom(String.class) &amp;&amp; param.isRequired()) {
             pageContext.setAttribute("parameter", param, PageContext.PAGE_SCOPE);
           </jsp:scriptlet>
           <tr>
