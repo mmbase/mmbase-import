@@ -7,8 +7,7 @@
 
     <date>2007-02-09</date>
 
-    <edition>$Id: components.xml,v 1.0 2006/10/03 08:17:09 henk Exp
-    $</edition>
+    <edition>$Id: components.xml,v 1.16 2008-06-27 12:36:33 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -154,11 +153,11 @@
     '/mmbase/admin/components/core' looks as follows (its a bit simplified to
     make it easier to read):</para>
 
-    <programlisting>&lt;mm:cloud 
+    <programlisting>&lt;mm:cloud
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"&gt;
   &lt;jsp:output omit-xml-declaration="true" /&gt;
-  &lt;div class="mm_c mm_c_core mm_c_b_welcome"&gt;
+  &lt;div class="mm_c c_core b_welcome"&gt;
     &lt;h2&gt;Welcome to MMBase&lt;/h2&gt;
     &lt;h3&gt;You are running &lt;mm:cloudinfo type="mmbaseversion" /&gt;&lt;/h3&gt;
     &lt;p&gt;With some more text here...&lt;/p&gt;
@@ -295,12 +294,12 @@
       produce any output.</para>
 
       <para>The renderer for body with mimetype="text/html" by convention
-      should render a &lt;div /&gt; with class="mm_c mm_c_&lt;component
-      name&gt; mm_c_b_&lt;block name&gt; ${requestScope.className}". The
+      should render a &lt;div /&gt; with class="mm_c c_&lt;component
+      name&gt; b_&lt;block name&gt; ${requestScope.className}". The
       framework will assign a value to request attribute
       ${requestScope.componentClassName} . For example a framework could
-      render the poll component within the div &lt;class="mm_c mm_c_ecard
-      mm_c_b_home left"&gt;. The basic implementation of the MMBase framework
+      render the poll component within the div &lt;class="mm_c c_ecard
+      b_home left"&gt;. The basic implementation of the MMBase framework
       does not implement ${requestScope.className}, leaving the last part of
       the class definition empty.</para>
 
@@ -309,7 +308,7 @@
       contain:</para>
 
       <programlisting>&lt;div
-    class="mm_c mm_c_core mm_c_b_welcome ${requestScope.componentClassName}"
+    class="mm_c c_core b_welcome ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
 &gt;</programlisting>
 

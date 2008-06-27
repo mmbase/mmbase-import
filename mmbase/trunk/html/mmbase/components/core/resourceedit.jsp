@@ -2,7 +2,7 @@
 <%@page import="org.mmbase.util.transformers.*,org.mmbase.util.*,java.util.*,java.net.*,org.w3c.dom.*,java.io.*" %>
 <mm:content>
 <div
-    class="mm_c mm_c_core mm_c_b_resourceedit ${requestScope.componentClassName}"
+    class="mm_c c_core c_b_resourceedit ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml"
    >

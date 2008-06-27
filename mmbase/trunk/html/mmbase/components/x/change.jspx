@@ -6,7 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c mm_c_x mm_c_b_change ${requestScope.componentClassName}"
+      class="c_ c_x b_change ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <!--
          Offers a form for one existing MMBase node.
@@ -14,7 +14,7 @@
 
          TODO: Some way to edit relations? NODE-field editor?
 
-         $Id: change.jspx,v 1.5 2008-03-21 16:42:12 michiel Exp $
+         $Id: change.jspx,v 1.6 2008-06-27 12:41:40 michiel Exp $
     -->
     <mm:import externid="ok" from="request">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
