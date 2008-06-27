@@ -3,7 +3,7 @@
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    class="mm_c mm_c_mynews mm_c_b_magazine ${requestScope.componentClassName}"
+    class="mm_c c_mynews b_magazine ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud>

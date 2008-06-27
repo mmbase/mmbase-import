@@ -6,7 +6,7 @@
   <mm:import externid="application" />
   <mm:import externid="app" />
   <div
-      class="mm_c mm_c_core mm_c_b_builders ${requestScope.componentClassName}"
+      class="mm_c c_core c_b_builders ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
 
   <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
