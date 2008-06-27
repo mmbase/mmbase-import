@@ -8,12 +8,13 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="source" required="true" />
   <mm:import externid="fields" />
+  <mm:import externid="confirm" />
   <li>
     <mm:form id="node${_node}">
       <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
         <mm:fieldinfo type="input" />
         <c:if test="${status.first}">
-          <mm-sr:delete source="${source}" />
+          <mm-sr:delete source="${source}" confirm="${confirm}" />
         </c:if>
         <mm:fieldinfo type="errors" />
       </mm:fieldlist>

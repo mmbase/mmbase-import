@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.11 2008-06-27 09:16:07 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.12 2008-06-27 15:05:26 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -43,6 +43,10 @@
                            description="Alt text for the create-button. Defaults to '+'."
                            />
 
+  <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
+                           description="Whether deleting must be confirmed"
+                           />
+
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
@@ -72,7 +76,7 @@
             <jsp:invoke fragment="constraints" />
             <mm:relatednodes>
               <mm:include page="${empty li ? '/mmbase/searchrelate/list/li.jspx' : li}"
-                          referids="source,f@fields,icondir?" />
+                          referids="source,f@fields,icondir?,confirm?" />
             </mm:relatednodes>
           </mm:relatednodescontainer>
         </ol>
