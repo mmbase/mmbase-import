@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="sitemanagement" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
+   </requirements>
+   <neededbuilderlist>
+      <!-- These are the application specific relation builders -->
+      <builder maintainer="finalist.com" version="0">allowrel</builder>
+      <builder maintainer="finalist.com" version="0">definitionrel</builder>
+      <builder maintainer="finalist.com" version="1">layoutrel</builder>
+      <builder maintainer="finalist.com" version="0">namedallowrel</builder>
+      <builder maintainer="finalist.com" version="1">navrel</builder>
+      <builder maintainer="finalist.com" version="0">parameterrel</builder>
+      <builder maintainer="finalist.com" version="1">portletrel</builder>
+      <builder maintainer="finalist.com" version="0">stylerel</builder>
+      <builder maintainer="finalist.com" version="0">viewrel</builder>
+      <!-- These are the application specific builders -->
+      <builder maintainer="finalist.com" version="1">layout</builder>
+      <builder maintainer="finalist.com" version="0">namedrel</builder>
+      <builder maintainer="finalist.com" version="0">nodeparameter</builder>
+      <builder maintainer="finalist.com" version="1">page</builder>
+      <builder maintainer="finalist.com" version="1">portlet</builder>
+      <builder maintainer="finalist.com" version="0">portletdefinition</builder>
+      <builder maintainer="finalist.com" version="1">portletparameter</builder>
+      <builder maintainer="finalist.com" version="1">properties</builder>
+      <builder maintainer="finalist.com" version="1">site</builder>
+      <builder maintainer="finalist.com" version="0">stylesheet</builder>
+      <builder maintainer="finalist.com" version="1">view</builder>
+    </neededbuilderlist>
+    <neededreldeflist>
+        <reldef source="allowrel" target="allowrel" direction="bidirectional" guisourcename="allowrel" guitargetname="allowrel" builder="allowrel" />
+        <reldef source="definitionrel" target="definitionrel" direction="bidirectional" guisourcename="definitionrel" guitargetname="definitionrel" builder="definitionrel" />
+        <reldef source="layoutrel" target="layoutrel" direction="bidirectional" guisourcename="layoutrel" guitargetname="layoutrel" builder="layoutrel" />
+        <reldef source="namedrel" target="namedrel" direction="bidirectional" guisourcename="namedrel" guitargetname="namedrel" builder="namedrel" />
+        <reldef source="namedallowrel" target="namedallowrel" direction="bidirectional" guisourcename="namedallowrel" guitargetname="namedallowrel" builder="namedallowrel" />
+        <reldef source="navrel" target="navrel" direction="bidirectional" guisourcename="navrel" guitargetname="navrel" builder="navrel" />
+        <reldef source="parameterrel" target="parameterrel" direction="bidirectional" guisourcename="parameterrel" guitargetname="parameterrel" builder="parameterrel" />
+        <reldef source="portletrel" target="portletrel" direction="bidirectional" guisourcename="portletrel" guitargetname="portletrel" builder="portletrel" />
+        <reldef source="requiresrel" target="requiresrel" direction="bidirectional" guisourcename="requiresrel" guitargetname="requiresrel" builder="insrel" />
+        <reldef source="stylerel" target="stylerel" direction="bidirectional" guisourcename="stylerel" guitargetname="stylerel" builder="stylerel" />
+        <reldef source="viewrel" target="viewrel" direction="bidirectional" guisourcename="viewrel" guitargetname="viewrel" builder="viewrel" />
+   </neededreldeflist>
+   <allowedrelationlist>
+      <relation from="layout" to="portletdefinition" type="namedallowrel" />
+      <relation from="page" to="images" type="namedrel" />
+      <relation from="page" to="layout" type="allowrel" />
+      <relation from="page" to="layout" type="layoutrel" />
+      <relation from="page" to="page" type="navrel" />
+      <relation from="page" to="popupinfo" type="related" />
+      <relation from="page" to="portlet" type="portletrel" />
+      <relation from="page" to="stylesheet" type="allowrel" />
+      <relation from="page" to="stylesheet" type="stylerel" />
+      <relation from="portlet" to="nodeparameter" type="parameterrel" />
+      <relation from="portlet" to="portletdefinition" type="definitionrel" />
+      <relation from="portlet" to="portletparameter" type="parameterrel" />
+      <relation from="portlet" to="view" type="viewrel" />
+      <relation from="portletdefinition" to="typedef" type="allowrel" />
+      <relation from="portletdefinition" to="view" type="allowrel" />
+      <relation from="portletdefinition" to="mmbaseranks" type="requiresrel" />
+      <relation from="site" to="typedef" type="allowrel" />
+      <relation from="mmbasegroups" to="page" type="rolerel" />
+      <relation from="view" to="typedef" type="allowrel" />
+      <relation from="contentelement" to="page" type="posrel" />
+      <relation from="contentelement" to="page" type="inlinerel" />
+   </allowedrelationlist>
+
+
+   <datasourcelist>
+   <!-- A testdata/back up skelet is generated. If the testdata is not available, it will still work. -->
+      <datasource builder="portlet" path="sitemanagement/portlet.xml" />
+      <datasource builder="portletparameter" path="sitemanagement/portletparameter.xml" />
+      <datasource builder="view" path="sitemanagement/view.xml" />
+      <datasource builder="page" path="sitemanagement/page.xml" />
+      <datasource builder="layout" path="sitemanagement/layout.xml" />
+      <datasource builder="site" path="sitemanagement/site.xml" />
+      <datasource builder="stylesheet" path="sitemanagement/stylesheet.xml" />
+      <datasource builder="portletdefinition" path="sitemanagement/portletdefinition.xml" />
+      <datasource builder="nodeparameter" path="sitemanagement/nodeparameter.xml" />
+      <datasource builder="editwizards" path="sitemanagement/editwizards.xml" />
+      <datasource builder="properties" path="sitemanagement/properties.xml" />
+      <datasource builder="popupinfo" path="sitemanagement/popupinfo.xml" />
+
+      <datasource builder="typedef" path="sitemanagement/typedef.xml" />
+   </datasourcelist>
+
+   <relationsourcelist>
+   <!-- A testdata/backup skelet is generated for relation data. If the testdata is not available, it will still work. -->
+      <relationsource builder="insrel" path="sitemanagement/insrel.xml"/>
+      <relationsource builder="posrel" path="sitemanagement/posrel.xml"/>
+      <relationsource builder="rolerel" path="sitemanagement/rolerel.xml"/>
+      <relationsource builder="navrel" path="sitemanagement/navrel.xml"/>
+      <relationsource builder="portletrel" path="sitemanagement/portletrel.xml"/>
+      <relationsource builder="layoutrel" path="sitemanagement/layoutrel.xml"/>
+      <relationsource builder="viewrel" path="sitemanagement/viewrel.xml"/>
+      <relationsource builder="definitionrel" path="sitemanagement/definitionrel.xml"/>
+      <relationsource builder="allowrel" path="sitemanagement/allowrel.xml"/>
+      <relationsource builder="parameterrel" path="sitemanagement/parameterrel.xml"/>
+      <relationsource builder="stylerel" path="sitemanagement/stylerel.xml"/>
+      <relationsource builder="namedallowrel" path="sitemanagement/namedallowrel.xml"/>
+   </relationsourcelist>
+
+   <contextsourcelist>
+      <contextsource goal="backup" type="depth" path="sitemanagement/backup.xml"/>
+   </contextsourcelist>
+
+   <description><![CDATA[Installs the application. Included are all the builders.]]></description>
+   <install-notice><![CDATA[You have installed the application.]]></install-notice>
+</application>

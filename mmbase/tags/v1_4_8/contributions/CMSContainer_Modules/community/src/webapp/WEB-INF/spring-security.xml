@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-autowire="byName"
+        xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!-- Acegi Security -->
+
+  <!-- AuthenticationManager (our own Hibernate implementation of UserDetailsService. User Cache not yet implemented -->
+  <bean name="authenticationProvider" class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+    <property name="userDetailsService" ref="userDetailsService" />
+    <property name="passwordEncoder">
+      <bean class="org.acegisecurity.providers.encoding.PlaintextPasswordEncoder" />
+      <!--  <bean class="org.acegisecurity.providers.encoding.Md5PasswordEncoder" /> -->
+    </property>
+<!-- 
+    <property name="saltSource">
+      <bean class="org.acegisecurity.providers.dao.salt.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="username" />
+      </bean>
+    </property>
+ -->    
+  </bean>
+  <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+    <property name="providers">
+      <list>
+        <ref bean="authenticationProvider"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- AccessDecisionManager (unanimous based, allow access if ALL voters vote to grant access) -->
+  <bean id="accessDecisionManager" class="org.acegisecurity.vote.UnanimousBased">
+    <property name="decisionVoters">
+      <list>
+        <ref bean="roleVoter"/>
+        <ref bean="groupVoter"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- voters -->
+  <bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter" />
+
+  <bean id="groupVoter" class="org.acegisecurity.vote.RoleVoter">
+    <property name="rolePrefix" value="GROUP_" />
+  </bean>
+
+  <!-- filters -->
+  <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+    <property name="filterInvocationDefinitionSource">
+      <value>
+        CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+        PATTERN_TYPE_APACHE_ANT
+        /**=httpSessionIntegrationFilter,securityContextHolderAwareRequestFilter
+      </value>
+    </property>
+  </bean>
+
+  <bean id="httpSessionIntegrationFilter" class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"/>
+    
+<!--
+  <bean id="authenticationProcessingFilter" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="authenticationFailureUrl" value="/" />
+    <property name="defaultTargetUrl" value="/" />
+    <property name="filterProcessesUrl" value="/j_acegi_security_check" />
+  </bean>
+-->
+  
+  <bean id="securityContextHolderAwareRequestFilter" class="org.acegisecurity.wrapper.SecurityContextHolderAwareRequestFilter"/>
+  
+</beans>

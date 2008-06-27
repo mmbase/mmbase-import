@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/responseform" timestamp="20050101000000">
+
+	<node number="300" owner="admin">
+		<key>email.regex</key>
+		<value>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$</value>
+	</node>
+</properties>

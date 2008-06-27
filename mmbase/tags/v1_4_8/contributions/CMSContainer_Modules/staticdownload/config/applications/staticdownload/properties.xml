@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/utilities" timestamp="20050101000000">
+	<node number="984550" owner="admin">
+		<key>staticdownload.liveurl</key>
+		<value>http://.../...-live</value>
+		<module>staticdownload</module>
+	</node>
+	<node number="984551" owner="admin">
+		<key>staticdownload.downloadurl</key>
+		<value>http://</value>
+		<module>staticdownload</module>
+	</node>
+	<node number="984552" owner="admin">
+		<key>staticdownload.wgeturl</key>
+		<value>.../wget</value>
+		<module>staticdownload</module>
+	</node>
+	<node number="984553" owner="admin">
+		<key>staticdownload.storepath</key>
+		<value></value>
+		<module>staticdownload</module>
+	</node>
+	<node number="984554" owner="admin">
+		<key>staticdownload.temppath</key>
+		<value></value>
+		<module>staticdownload</module>
+	</node>
+</properties>

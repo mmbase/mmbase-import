@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<!-- ========== Form Bean Definitions =================================== -->
+	<form-beans>
+		<form-bean name="EgemSearchForm" type="com.finalist.cmsc.egemmail.forms.EgemSearchForm" />
+		<form-bean name="EgemExportForm" type="com.finalist.cmsc.egemmail.forms.EgemExportForm" />
+	</form-beans>
+
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+		<!-- ==== Content Repository ==== -->
+
+		<action path="/editors/egemmail/EgemSearchAction" type="com.finalist.cmsc.egemmail.forms.EgemSearchAction" 
+				name="EgemSearchForm" scope="request" input="/editors/egemmail/search.jsp" 
+				unknown="false" validate="false">
+			<forward name="search" path="/editors/egemmail/EgemExportAction.do" redirect="false" />
+		</action>
+		
+		<action path="/editors/egemmail/EgemSearchInitAction" type="com.finalist.cmsc.egemmail.forms.EgemSearchInitAction"
+                name="EgemSearchForm" scope="request" input="/editors/egemmail/search.jsp" 
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/egemmail/search.jsp" redirect="false" />
+        </action>
+
+		<action path="/editors/egemmail/EgemExportAction" type="com.finalist.cmsc.egemmail.forms.EgemExportAction"
+		        name="EgemExportForm" scope="session" input="/editors/egemmail/search.jsp" 
+				unknown="false" validate="false">
+			<forward name="search" path="/editors/egemmail/search.jsp" redirect="false" />
+			<forward name="export" path="/editors/egemmail/exportdone.jsp" redirect="false" />
+		</action>
+	</action-mappings>
+
+	<message-resources parameter="cmsc-egemmail" key="EGEMMAIL" />
+</struts-config>
