@@ -25,7 +25,7 @@
   <property name="download.dir"           location="${basedir}" />
   <property name="war.dir"                value="${build.dir}" />
 
-  <property name="mmbase.version"         value="1.9.0-SNAPSHOT" />
+  <property name="mmbase.version"         value="1.9.0-beta2" />
   <property name="mmbase.distro.location" value="http://www.mmbase.org/maven/mmbase/wars" />
   <property name="mmbase.war"             value="example-${mmbase.version}.war" />
   <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.war}" />
@@ -34,6 +34,7 @@
   <property name="mmbaseroot.language"     value="en" />
   <property name="mmbaseroot.datadir"      value="." /> <!-- defaults to WEB-INF/data -->
 
+  <property name="example.war.filter"      value="mynews,myyahoo,mycompany" />
 
 
 
@@ -99,6 +100,14 @@
     <copy todir="${build.webapp.dir}" preservelastmodified="true">
       <fileset dir="${build.dir}/mmbase">
         <include name="mmbase/**"/>
+        <exclude name="mmbase/components/mynews/**" />
+        <exclude name="mmbase/components/myyahoo/**" />
+        <exclude name="mmbase/components/mycomponay/**" />
+        <!-- ANT is horrible
+        <foreach target="example.war.filter" param="file">
+          <exclude name="mmbase/components/${file}/**" />
+        </foreach>
+        -->
       </fileset>
     </copy>
     <copy todir="${build.webapp.dir}/WEB-INF/lib" preservelastmodified="true">
@@ -108,6 +117,11 @@
         <exclude name="mmbase-mynews-${mmbase.version}.jar" />
         <exclude name="mmbase-myyahoo-${mmbase.version}.jar" />
         <exclude name="mmbase-mycompany-${mmbase.version}.jar" />
+        <!-- ANT is a horrible horrible product
+        <foreach target="example.war.filter" param="file">
+          <exclude name="mmbase-${file}-${mmbase.version}.jar" />
+        </foreach>
+        -->
       </fileset>
     </copy>
   </target>
