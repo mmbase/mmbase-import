@@ -28,10 +28,16 @@ public class ContentMassDeleteAction extends MMBaseFormlessAction {
       String action = getParameter(request, "action");
       String channelnumber = getParameter(request, "channelnumber");
       String offset = getParameter(request, "offset");
+      String orderBy = getParameter(request, "orderby");
+      String direction = getParameter(request, "direction");
       Node channelNode = cloud.getNode(channelnumber);
       List<Integer> numbers = new ArrayList<Integer>();
+      
+      if(StringUtils.isEmpty(direction)) {
+         direction = "down";
+      }
+      
       if (action == null) {
-
          Enumeration<String> parameters = request.getParameterNames();
          while (parameters.hasMoreElements()) {
             String parameter = parameters.nextElement();
@@ -105,13 +111,22 @@ public class ContentMassDeleteAction extends MMBaseFormlessAction {
                addToRequest(request, "trashchannel", RepositoryUtil.getTrashNode(cloud));
                addToRequest(request, "action", "massmove");
                addToRequest(request, "offset", offset);
+               addToRequest(request, "orderby", orderBy);
+               addToRequest(request, "direction", direction);
                return mapping.findForward("unlinkcreation");
             }
 
          }
+        
          String url = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + channelnumber;
          if(StringUtils.isNotEmpty(offset)) {
             url += "&offset="+offset;
+         }
+         if(StringUtils.isNotEmpty(orderBy)) {
+            url += "&orderby="+orderBy;
+         }
+         if(StringUtils.isNotEmpty(direction)) {
+            url += "&direction="+direction;
          }
          return new ActionForward(url, true);
    }

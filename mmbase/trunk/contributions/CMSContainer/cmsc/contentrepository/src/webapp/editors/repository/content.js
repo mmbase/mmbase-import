@@ -78,7 +78,10 @@ function moveContent(objectNumber, parentChannel) {
 }
 
 function selectChannel(channel, path) {
-    document.location = "../MoveContentToChannel.do?parentchannel=" + moveParentChannel + "&newparentchannel=" + channel + "&objectnumber=" + moveContentNumber;
+    var newDirection=document.forms[0].direction.value;
+    var type=document.forms[0].order.value;
+    var offset = document.forms[0].offset.value;
+    document.location = "../Content.do?action=moveContentToChannel&parentchannel=" + moveParentChannel + "&newparentchannel=" + channel + "&objectnumber=" + moveContentNumber+"&orderby="+type+"&direction="+newDirection+'&offset='+offset;;
 }
 
 function refreshChannels() {
