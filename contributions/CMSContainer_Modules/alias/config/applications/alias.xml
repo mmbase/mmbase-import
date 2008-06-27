@@ -18,6 +18,7 @@
       <relation from="page" to="pagealias" type="navrel" />
       <relation from="pagealias" to="page" type="related" />
       <relation from="pagealias" to="urls" type="related" />
+      <relation from="mmbasegroups" to="pagealias" type="rolerel" />
    </allowedrelationlist>
 
    <datasourcelist>
