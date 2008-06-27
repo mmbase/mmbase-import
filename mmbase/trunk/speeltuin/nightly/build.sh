@@ -24,15 +24,16 @@ export MAILADDRESS=${CCMAILADDRESS}
 
 echo generating version, and some directories
 
-version=`date -u '+%Y-%m-%d'`
-cvsversionoption="-D"
-cvsversion=`date  '+%Y-%m-%d %H:%M'`
-revision="-A"
+#version=`date -u '+%Y-%m-%d'`
+#cvsversionoption="-D"
+#cvsversion=`date  '+%Y-%m-%d %H:%M'`
 #revision="-A"
 
-#version="MMBase-1.9.0.beta"
-#cvsversion=
-#revision="MMBase-1_9_0_beta"
+
+version="MMBase-1.9.0.beta2"
+cvsversion=
+cvsversionoption="-r"
+revision="MMBase-1_9_0_beta2"
 
 dir=${version}
 
@@ -49,12 +50,12 @@ if [ 1 == 1 ] ; then
     echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
 # removes all 'target' directories 
 # the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
-    find . -type d -name target -print|xargs rm -rf 
+    find . -type d -name target -print | xargs rm -rf 
 
     pwd
     echo "CVS" | tee -a ${builddir}/messages.log
     echo ${CVS} update -d -P  ${cvsversionoption} ${cvsversion} ${revision} | tee -a ${builddir}/messages.log
-    ${CVS} update -d -P  ${cvsversionoption} "${cvsversion}"  ${revision} | tee -a ${builddir}/messages.log
+    ${CVS} update -d -P  ${cvsversionoption} ${cvsversion}  ${revision} | tee -a ${builddir}/messages.log
     
     
     echo Starting nightly build
