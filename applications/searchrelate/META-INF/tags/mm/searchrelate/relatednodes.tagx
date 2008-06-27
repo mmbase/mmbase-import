@@ -6,12 +6,12 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.12 2008-06-27 15:05:26 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.13 2008-06-27 15:07:00 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
       description="This tag produces 1 ol with nodes of certain type, related to the current node. The nodes can be edited, and added.
-                   The user interface is very minimalistic. Withough any commit button or so. Everything is arranged using javascript." />
+                   The user interface is very minimalistic. Without any commit button or so. Everything is arranged using javascript." />
 
 
   <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
