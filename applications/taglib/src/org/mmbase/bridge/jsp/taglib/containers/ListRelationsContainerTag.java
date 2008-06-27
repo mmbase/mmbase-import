@@ -24,11 +24,12 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.18 2008-02-26 15:45:02 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.19 2008-06-27 14:39:25 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
     private NodeQuery   query        = null;
+    private Object      prevQuery    = null;
     private NodeQuery   relatedQuery        = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute type       = Attribute.NULL;
@@ -86,6 +87,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
 
     public int doStartTag() throws JspTagException {
+        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
@@ -109,6 +111,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
         }
+        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }
 
@@ -125,6 +128,8 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
+        pageContext.setAttribute(KEY, prevQuery, SCOPE);
+        prevQuery = null;
         query = null;
         relatedQuery = null;
         return super.doEndTag();
