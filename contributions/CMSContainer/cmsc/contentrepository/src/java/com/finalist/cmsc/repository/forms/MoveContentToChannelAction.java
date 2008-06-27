@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -37,16 +38,22 @@ public class MoveContentToChannelAction extends MMBaseAction {
    private static final String PARAMETER_CHANNEL = "parentchannel";
    private static final String PARAMETER_NEW_CHANNEL = "newparentchannel";
    private static final String PARAMETER_NUMBER = "objectnumber";
-
+   private static final String PARAMETER_PAGING_ODERBY = "orderby";
+   private static final String PARAMETER_PAGING_OFFSET = "offset";
+   private static final String PARAMETER_PAGING_DIRECTION = "direction";
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
+
       String objectNumber =  request.getParameter(PARAMETER_NUMBER);
+      String orderBy =  request.getParameter(PARAMETER_PAGING_ODERBY);
+      String offset =  request.getParameter(PARAMETER_PAGING_OFFSET);
+      String direction =  request.getParameter(PARAMETER_PAGING_DIRECTION);
       int channel = Integer.parseInt(request.getParameter(PARAMETER_CHANNEL));
       int newChannel = Integer.parseInt(request.getParameter(PARAMETER_NEW_CHANNEL));
-
+           
       String message = null;
       String[] numbers = objectNumber.split(",");
       Locale locale = request.getLocale();
@@ -102,9 +109,21 @@ public class MoveContentToChannelAction extends MMBaseAction {
       else {
          message = resources.getMessage(locale, "content.movetochannel.failed", newChannelNode.getStringValue("name"));
       }
-      String path = mapping.findForward(SUCCESS).getPath() + "?" + PARAMETER_CHANNEL + "=" + channel
-            + "&direction=down&message=" + URLEncoder.encode(message, "UTF-8");
-      return new ActionForward(path);
+      String path = mapping.findForward(SUCCESS).getPath() + "?" + PARAMETER_CHANNEL + "=" + channel;
+            
+      if(StringUtils.isNotEmpty(offset)) {
+         path += "&offset="+offset;
+      }
+      if(StringUtils.isNotEmpty(orderBy)) {
+         path += "&orderby="+orderBy;
+      }
+      if(StringUtils.isNotEmpty(direction)) {
+         path += "&direction="+direction;
+      }
+      path += "&message=" + URLEncoder.encode(message, "UTF-8");
+      ActionForward actionForward = new ActionForward(path);
+      actionForward.setRedirect(true);
+      return actionForward;
    }
 
 }

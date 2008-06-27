@@ -32,7 +32,6 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
       String action = getParameter(request, "action");
       String channelnumber = getParameter(request, "channelnumber");
       Node channelNode = cloud.getNode(channelnumber);
-
       String objectnumber = getParameter(request, "objectnumber");
 
       if (action != null && action.equals("unlink")) {
@@ -95,8 +94,7 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
          Enumeration<String> parameters = request.getParameterNames();
          while (parameters.hasMoreElements()) {
             String parameter = parameters.nextElement();
-
-            if (parameter.startsWith("link_")) {
+            if (parameter.startsWith("chk_")) {
                String link = request.getParameter(parameter);
                Node contentNode = cloud.getNode(link);
                linkedNodes.add(contentNode);

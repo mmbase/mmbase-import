@@ -27,10 +27,15 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class ContentAction extends MMBaseAction {
    
+   private final static String MOVECONTENTTOCHANNEL = "moveContentToChannel";
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
+      String action = request.getParameter("action");
+      if(StringUtils.isNotEmpty(action) && action.equals(MOVECONTENTTOCHANNEL)) {
+         return mapping.findForward(MOVECONTENTTOCHANNEL);
+      }
       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
       List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);

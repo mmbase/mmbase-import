@@ -29,6 +29,8 @@
 </c:if>
 <mm:import externid="returnurl" />
 <mm:import externid="offset" />
+<mm:import externid="orderby" />
+<mm:import externid="direction" />
 <mm:node referid="creationchannel">
 	<mm:import id="creationnumber"><mm:field name="number"/></mm:import>
 </mm:node>
@@ -62,6 +64,12 @@
            <mm:present referid="offset">
 	           <mm:param name="offset" value="$offset"/>
            </mm:present>
+           <mm:present referid="orderby">
+	           <mm:param name="orderby" value="$orderby"/>
+           </mm:present>
+           <mm:present referid="direction">
+	           <mm:param name="direction" value="$direction"/>
+           </mm:present>
         </mm:url>
         <li>
 	        <a href="<mm:write referid="url"/>">
@@ -81,6 +89,12 @@
       <mm:present referid="offset">
 	       <mm:param name="offset" value="$offset"/>
       </mm:present>
+     <mm:present referid="orderby">
+        <mm:param name="orderby" value="$orderby"/>
+     </mm:present>
+     <mm:present referid="direction">
+        <mm:param name="direction" value="$direction"/>
+     </mm:present>
 	</mm:url>
 	<li class="trashbin">
 		<a href="<mm:write referid="trashurl"/>"><fmt:message key="unlinkcreation.remove" /></a>
