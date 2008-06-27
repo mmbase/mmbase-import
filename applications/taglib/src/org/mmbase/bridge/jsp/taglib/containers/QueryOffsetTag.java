@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryOffsetTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryOffsetTag.java,v 1.3 2008-06-27 09:07:10 michiel Exp $
  */
 public class QueryOffsetTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -40,10 +40,8 @@ public class QueryOffsetTag extends CloudReferrerTag implements QueryContainerRe
     }
 
 
-    public int doStartTag() throws JspTagException { 
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();
-        
+    public int doStartTag() throws JspTagException {
+        Query query = getQuery(container);
         query.setOffset(offset.getInt(this, 0));
         return SKIP_BODY;
     }

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -99,8 +99,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         if (minAge == Attribute.NULL && maxAge == Attribute.NULL) {
             throw new JspTagException("Either 'minage' or 'maxage' (or both) attributes must be present");
         }
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();
+        Query query = getQuery(container);
 
         String fieldName;
         if (field == Attribute.NULL && element == Attribute.NULL) {

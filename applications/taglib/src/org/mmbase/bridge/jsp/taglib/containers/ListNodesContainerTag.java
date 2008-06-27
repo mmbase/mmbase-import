@@ -23,12 +23,13 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.24 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.25 2008-06-27 09:07:10 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
 
     protected NodeQuery   query       = null;
+    protected Object      prevQuery   = null;
     protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute   path        = Attribute.NULL;
     protected Attribute   searchDirs  = Attribute.NULL;
@@ -106,6 +107,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     }
 
     public int doStartTag() throws JspTagException {
+        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
@@ -156,6 +158,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
         }
+        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
 
         return EVAL_BODY;
     }
@@ -173,6 +176,8 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
+        pageContext.setAttribute(KEY, prevQuery, SCOPE);
+        prevQuery = null;
         if (markused.getBoolean(this, false)) {
             query.markUsed();
         }

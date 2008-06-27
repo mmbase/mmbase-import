@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.11 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.12 2008-06-27 09:07:10 michiel Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -72,8 +72,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();
+        Query query = getQuery(container);
         String elementString = element.getString(this);
         Step step;
         if (elementString.length() == 0) {
