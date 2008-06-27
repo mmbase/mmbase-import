@@ -5,7 +5,7 @@
     name="mmbase" method="asis">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c c_core c_b_welcome ${requestScope.className}"
+      class="mm_c c_core b_welcome ${requestScope.className}"
       id="${requestScope.componentId}">
     <h2><fmt:message key="welcome.title" /></h2>
     <h3>

@@ -4,7 +4,7 @@
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c mm_c_wiki mm_c_b_page ${requestScope.componentClassName}"
+    class="mm_c c_wiki b_page ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="o" required="true" />

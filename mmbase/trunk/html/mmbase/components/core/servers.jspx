@@ -5,7 +5,7 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="server" from="request" />
   <div
-      class="mm_c c_core c_b_servers ${requestScope.componentClassName}"
+      class="mm_c c_core b_servers ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     PATH: <jsp:expression>org.mmbase.framework.FrameworkFilter.getPath(request)</jsp:expression>

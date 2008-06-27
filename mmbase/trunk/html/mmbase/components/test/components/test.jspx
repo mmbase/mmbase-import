@@ -18,7 +18,7 @@
     </c:when>
     <c:otherwise>
       <div
-          class="test mm_c mm_c_test mm_c_b_test ${requestScope.componentClassName}"
+          class="test mm_c c_test b_test ${requestScope.componentClassName}"
           id="${requestScope.componentId}">
         <h1>a = ${a}</h1>
         <h1>b = ${b}</h1>

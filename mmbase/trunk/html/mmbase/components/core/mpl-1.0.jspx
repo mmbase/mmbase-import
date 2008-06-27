@@ -1,6 +1,6 @@
 <div
     xmlns:jsp="http://java.sun.com/JSP/Page" 
-	class="mm_c c_core c_b_welcome ${requestScope.className}"
+	class="mm_c c_core b_welcome ${requestScope.className}"
 	id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <h1>MOZILLA PUBLIC LICENSE</h1>

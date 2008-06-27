@@ -8,9 +8,9 @@
   <jsp:directive.page buffer="200kb" />
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c mm_c_searchrelate mm_c_b_examples ${requestScope.componentClassName}"
+      class="mm_c c_searchrelate b_examples ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
-    
+
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
     <script type="text/javascript">
       <!-- some javascript to make the examples slide away/slideToggable -->
@@ -24,22 +24,24 @@
     </script>
     <h1>${title}</h1>
     <mm:cloud rank="basic user">
-	
+
       <mm:import externid="mag">default.mags</mm:import>
-      
+
       <mm:hasnode number="$mag" inverse="true">
 	<p>
 	  You need to have the MyNews application installed.
 	</p>
       </mm:hasnode>
       <mm:hasnode number="$mag">
-	<mm:node number="$mag">
-	  <h1>Using node ${_node}</h1>
-	  <mm:include page="/mmexamples/searchrelate/example1.jspx" />
-	  <mm:include page="/mmexamples/searchrelate/example2.jspx" />
-	  <mm:include page="/mmexamples/searchrelate/example3.jspx" />
-	  <mm:include page="/mmexamples/searchrelate/example4.jspx" />
-	</mm:node>
+        <mm:node number="$mag">
+          <h1>Using node ${_node}</h1>
+          <mm:include page="/mmexamples/searchrelate/example1.jspx" />
+          <mm:include page="/mmexamples/searchrelate/example2.jspx" />
+          <mm:include page="/mmexamples/searchrelate/example3.jspx" />
+          <mm:include page="/mmexamples/searchrelate/example4.jspx" />
+          <mm:include page="/mmexamples/searchrelate/example5.jspx" />
+          <mm:include page="/mmexamples/searchrelate/relatednodes.jspx" />
+        </mm:node>
       </mm:hasnode>
     </mm:cloud>
   </div>
