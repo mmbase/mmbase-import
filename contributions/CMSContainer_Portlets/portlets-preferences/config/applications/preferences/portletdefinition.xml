@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<portletdefinition exportsource="jdbc:mysql://localhost/teasers" timestamp="20050919142139">
-	<node number="55701" owner="default">
-		<title>ProfilePortlet</title>
-		<description>Profile Portlet</description>
-		<definition>profileportlet</definition>
-		<type>multiple</type>
-	</node>
-</portletdefinition>

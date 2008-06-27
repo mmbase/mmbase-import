@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<proactivemailscheduler exportsource="mmbase://www.didactor.org/version2.0" timestamp="20060910021535">
-    <node number="18111" owner="system" alias="proactivemailscheduler.twomonthsnologin">
-        <name>DayleWorkDayScheduler</name>
-        <cronpattern>0 0 9 ? * MON-FRI</cronpattern>
-        <active>0</active>
-        <description>Scheduler triggered once per day, in 9 o'clock, every working day</description>
-    </node>
-</proactivemailscheduler>

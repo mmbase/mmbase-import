@@ -1,25 +1,24 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           version="1.2"
     >
   <mm:import externid="blockType" from="request" />
+  <h2>${blockType.name} (${blockType.weight})</h2>
   <ul>
-    <c:forEach items="${blockType.subTypes}" var="bt">
-      <mm:write request="blockType" referid="bt" />
+    <mm:stringlist referid="blockType.subTypes">
+      <mm:write request="blockType" />
       <li>
-        <jsp:text>${bt.name}: ${mm:string(bt.title)} (${bt.weight})</jsp:text>
+        ${requestScope.blockType.name} (${requestScope.blockType.weight})
         <mm:include  page="blockType.jspx" />
       </li>
-    </c:forEach>
+    </mm:stringlist>
   </ul>
   <ul>
     <mm:stringlist referid="blockType.blocks" id="block">
       <li>
         <mm:link page="components">
           <mm:param name="component">${block.component.name}</mm:param>
-          <a href="${_}">${block.component.name}</a>
-          <jsp:text>: ${block.name}: ${mm:string(block.title)}</jsp:text>
+          <a href="${_}">${block.component.name}</a> : ${block.name}
         </mm:link>
       </li>
     </mm:stringlist>

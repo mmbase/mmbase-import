@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20050624084259">
-	<node number="249" owner="system" alias="component.core">
-		<name>core</name>
-		<classname>nl.didactor.component.core.DidactorCore</classname>
-	</node>
-</components>

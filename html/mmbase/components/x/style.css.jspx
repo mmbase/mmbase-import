@@ -10,11 +10,11 @@
     <mm:url write="false" id="ok"     page="/mmbase/style/images/ok.png" />
     <mm:url write="false" id="logout" page="/mmbase/style/images/reload.png" />
 
-.c_x.c_ {
+.mm_c_x.mm_c {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
-.c_x .table { 
+.mm_c_x .table { 
   margin-left: 0px;
   margin-right: 0px;
   padding-left: 1px;
@@ -23,58 +23,58 @@
   
 }
 
-.c_x img { 
+.mm_c_x img { 
   border: none;
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
 }
 
-.c_x #searchresult tbody tr:hover { 
+.mm_c_x #searchresult tbody tr:hover { 
   cursor: pointer;
 }
-.c_x #searchresult tbody tr.odd:hover { 
+.mm_c_x #searchresult tbody tr.odd:hover { 
   background-color: #e0f0e0;
 }
-.c_x #searchresult tbody tr.even:hover { 
+.mm_c_x #searchresult tbody tr.even:hover { 
   background-color: #d8e8d8;
 }
-.c_x #searchresult tbody tr.odd.readonly:hover { 
+.mm_c_x #searchresult tbody tr.odd.readonly:hover { 
   background-color: #f0e0e0;
 }
-.c_x #searchresult tbody tr.even.readonly:hover { 
+.mm_c_x #searchresult tbody tr.even.readonly:hover { 
   background-color: #e8d8d8;
 }
 
-.c_x #searchresult.delete tbody tr.selected.odd {
+.mm_c_x #searchresult.delete tbody tr.selected.odd {
     background-color: #ffffaa;
 }
-.c_x #searchresult.delete tbody tr.selected.even {
+.mm_c_x #searchresult.delete tbody tr.selected.even {
  background-color: #ffff00;
 }
 
-.c_x #searchresult tbody tr.selected.odd {
+.mm_c_x #searchresult tbody tr.selected.odd {
   background-color: #f0f0e0;
 }
-.c_x #searchresult tbody tr.selected.even {
+.mm_c_x #searchresult tbody tr.selected.even {
   background-color: #e8e8d8;
 }
 
-.c_x #searchresult tbody tr.selected.odd:hover {
+.mm_c_x #searchresult tbody tr.selected.odd:hover {
   background-color: #e0f0e0;
 }
-.c_x #searchresult tbody tr.selected.even:hover {
+.mm_c_x #searchresult tbody tr.selected.even:hover {
   background-color: #d8e8d8;
 }
 
-.c_x #searchresult tbody tr.selected.odd.readonly:hover { 
+.mm_c_x #searchresult tbody tr.selected.odd.readonly:hover { 
   background-color: #f0e0e0;
 }
-.c_x #searchresult tbody tr.selected.even.readonly:hover { 
+.mm_c_x #searchresult tbody tr.selected.even.readonly:hover { 
   background-color: #e8d8d8;
 }
 
 
-.c_x #searchresult tfoot { 
+.mm_c_x #searchresult tfoot { 
   display: block;
   position: fixed;
   bottom: 0px;
@@ -85,17 +85,17 @@
   background-color: #ddd;
 }
 
-.c_x #searchresult { 
+.mm_c_x #searchresult { 
   margin-bottom: 50px;
 }
-.c_x .c_heck_error {
+.mm_c_x .mm_check_error {
   background-color: #f0e0e0;
 }
 
-.c_x input.small, .c_x input.big, .c_x textarea { 
+.mm_c_x input.small, .mm_c_x input.big, .mm_c_x textarea { 
   width: 100%;
 }
-.c_x h1 {
+.mm_c_x h1 {
   display: block;
   width: 100%;
   top: 0px;
@@ -107,69 +107,69 @@
   padding: 0px 0px 0px 0px;  
   overflow: hidden;
 }
-.c_x h1 img { 
+.mm_c_x h1 img { 
   vertical-align: top;
 }
-.c_x h1 a { 
+.mm_c_x h1 a { 
 }
 
-.c_x h1.submitted { 
+.mm_c_x h1.submitted { 
   background-color: #f0e0e0;
 }
-.c_x h1.ok { 
+.mm_c_x h1.ok { 
   background-color: #e0f0e0;
 }
-.c_x h1.new { 
+.mm_c_x h1.new { 
   background-color: #f0f0e0;
 }
-.c_x h1.readonly {
+.mm_c_x h1.readonly {
   background-color: #f0a0a0;
 }
-.c_x td {
+.mm_c_x td {
   vertical-align: top;
 }
-.c_x span.currentpage { 
+.mm_c_x span.currentpage { 
   font: larger bold;
 }
 
-.c_x a span.navigate {
+.mm_c_x a span.navigate {
  display: none;
 }
 
-.c_x a.create::before {
+.mm_c_x a.create::before {
  content: url(${create});
 }
-.c_x a.back::before {
+.mm_c_x a.back::before {
  content: url(${back});
 }
-.c_x a.search::before{
+.mm_c_x a.search::before{
  content: url(${search});
 }
-.c_x a.ok::before{
+.mm_c_x a.ok::before{
  content: url(${ok});
 }
 
-.c_x .logininfo {  
+.mm_c_x .logininfo {  
 
   display: block;
   position: fixed;
   right: 0px;
   top: 0px;
 }
-.c_x a.logout::before {
+.mm_c_x a.logout::before {
   content: url(${logout});
 }
 
-.c_x h2 {
+.mm_c_x h2 {
   font-size: smaller;
   border-top: 1px solid;
   background-color: #ddd;
 }
 
-.c_x .valid *, .c_x .valid {
+.mm_c_x .valid *, .mm_c_x .valid {
     background-color: #f0fff0;
 }
-.c_x .invalid *, .c_x .invalid  {
+.mm_c_x .invalid *, .mm_c_x .invalid  {
     background-color: #fff0f0;
 }
 

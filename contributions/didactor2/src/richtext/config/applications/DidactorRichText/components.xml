@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://didactor.nl" timestamp="200801180000">
-  <node number="7000" owner="system" alias="component.richtext">
-    <name>richtext</name>
-    <classname></classname>
-  </node>
-</components>

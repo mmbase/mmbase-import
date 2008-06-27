@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<view exportsource="jdbc:mysql://localhost/reactform" timestamp="20060906000000">
-	<node number="44040" owner="default">
-		<title>reactform/basic</title>
-		<resource>reactform/basic.jsp</resource>
-	</node>
-</view>

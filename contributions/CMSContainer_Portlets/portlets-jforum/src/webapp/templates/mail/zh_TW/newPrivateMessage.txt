@@ -1,9 +1,0 @@
-<#setting number_format = "#"/>
-${user.username} 您好,
-
-您在 JForum.net 有個私人訊息. 您可以利用下列的連結來閱讀它:
-
-${path}
-
----
-JForum.net 工作團隊敬上
