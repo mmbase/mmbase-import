@@ -71,7 +71,7 @@
         </form>
     </li>
     <li class="link">
-        <mm:url page="SearchInitAction.do" jspvar="search_init_action_url" write="false">
+        <mm:url page="SearchInitAction.do" id="search_init_action_url" write="false">
             <mm:param name="linktochannel" value="$parentchannel"/>
             <mm:param name="returnurl" value="${returnurl}"/>
             <mm:param name="mode" value="advanced"/>
@@ -82,7 +82,7 @@
         </a>
     </li>
     <% if (SecurityUtil.isEditor(role)) { %>
-    <mm:url page="ReorderAction.do" jspvar="reorder_action_url" write="false">
+    <mm:url page="ReorderAction.do" id="reorder_action_url" write="false">
         <mm:param name="parent" value="$parentchannel"/>
     </mm:url>
     <li class="reorder">
@@ -92,7 +92,7 @@
     </li>
     <!--display openoffice file upload function enter point-->
     <mm:haspage page="/editors/repository/uploadodt.jsp">
-        <mm:url page="/editors/upload/display_unsaved_files.do" jspvar="display_unsaved_files_url" write="false">
+        <mm:url page="/editors/upload/display_unsaved_files.do" id="display_unsaved_files_url" write="false">
             <mm:param name="parent" value="$parentchannel"/>
         </mm:url>
         <li class="reorder">
@@ -227,14 +227,14 @@
     <mm:nodeinfo type="guitype"/>
 </td>
 <td onMouseDown="objClick(this);">
-    <mm:field jspvar="title" write="false" name="title"/>
+    <mm:field id="title" write="false" name="title"/>
     <c:if test="${fn:length(title) > 50}">
         <c:set var="title">${fn:substring(title,0,49)}...</c:set>
     </c:if>
         ${title}
 </td>
 <td onMouseDown="objClick(this);" style="white-space: nowrap;">
-    <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
+    <mm:field name="lastmodifier" id="lastmodifier" write="false"/>
     <mm:listnodes type="user" constraints="username = '${lastmodifier}'">
         <c:set var="lastmodifierFull"><mm:field name="firstname"/> <mm:field name="prefix"/> <mm:field
                 name="surname"/></c:set>
@@ -252,10 +252,10 @@
     </c:when>
     <c:otherwise>
     <mm:relatednodes role="creationrel" type="contentchannel">
-    <mm:field name="number" jspvar="channelNumber" write="false"/>
+    <mm:field name="number" id="channelNumber" write="false"/>
     <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
 
-    <mm:field name="name" jspvar="channelName" write="false"/>
+    <mm:field name="name" id="channelName" write="false"/>
     <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
     <c:set var="channelIconMessage"><fmt:message key="role.${rights}"/></c:set>
     <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
