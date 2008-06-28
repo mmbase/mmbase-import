@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.48.2.1 2006-10-13 15:56:18 nklasens Exp $
+ * @version $Id: Users.java,v 1.48.2.2 2008-06-28 11:57:59 nklasens Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -336,7 +336,7 @@ public class Users extends MMObjectBuilder {
         // sometimes, I quite hate the 'core version' query-framework.
 
         try {
-            List result = mmb.getClusterBuilder().getClusterNodes(query);
+            List result = mmb.getClusterBuilder().getClusterNodesFromQueryHandler(query);
             if (log.isDebugEnabled()) {
                 log.debug("Executing " + query + " --> " + result);
             }

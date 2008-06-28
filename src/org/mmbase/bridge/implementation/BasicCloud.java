@@ -13,7 +13,6 @@ import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.4 2007-10-12 11:53:08 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.5 2008-06-28 11:57:23 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
@@ -113,7 +112,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      */
     BasicCloud(String name, String authenticationType, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
-        this.cloudContext = (BasicCloudContext) cloudContext;
+        this.cloudContext = cloudContext;
         init();
         userContext = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
         if (userContext == null) {
@@ -682,14 +681,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
             if (! checked) {
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
-            Cache cache = AggregatedResultCache.getCache();
-
-            List resultList = (List) cache.get(query);
-            if (resultList == null) {
-                ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
-                resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
-                cache.put(query, resultList);
-            }
+            ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
+            List resultList = resultBuilder.getResult();
             query.markUsed();
             NodeManager tempNodeManager = new VirtualNodeManager(query, this);
             NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
@@ -709,31 +702,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @since MMBase-1.7
      */
     protected List    getClusterNodes(Query query) {
-
-        // start multilevel cache
-        Cache multilevelCache = MultilevelCache.getCache();
-
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
-        // check multilevel cache if needed
-        List resultList = null;
-        if (query.getCachePolicy().checkPolicy(query)) {
-            resultList = (List)multilevelCache.get(query);
-        }
-        // if unavailable, obtain from database
-        if (resultList == null) {
-            log.debug("result list is null, getting from database");
-            try {
-                resultList = clusterBuilder.getClusterNodes(query);
-            } catch (SearchQueryException sqe) {
-                throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
-            }
-            if (query.getCachePolicy().checkPolicy(query)) {
-                multilevelCache.put(query, resultList);
-            }
-        }
-
+        List resultList = clusterBuilder.getClusterNodes(query);
         query.markUsed();
-
         return resultList;
     }
 
@@ -1094,7 +1065,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
         out.writeObject(props);
         out.writeObject(locale);
-        log.service("Serialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
     }
     private void writeObject(ObjectOutputStream out) throws IOException {
         _writeObject(out);
