@@ -15,6 +15,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.cache.CachePolicy;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.32.2.5 2007-11-06 17:00:47 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.32.2.6 2008-06-28 11:57:10 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -56,6 +57,12 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Two variables to speed up hashCode() by caching the result */
     private boolean hasChangedHashcode = true;
     private int savedHashcode = -1;
+
+
+    /**
+     * Whether this Query is cacheable.
+     */
+    protected CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
     /**
      * Constructor.
@@ -557,6 +564,15 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     //javadoc is inherited
     public int getOffset() {
         return offset;
+    }
+
+
+    public CachePolicy getCachePolicy() {
+        return cachePolicy;
+    }
+
+    public void setCachePolicy(CachePolicy policy) {
+        this.cachePolicy = policy;
     }
 
     // javadoc is inherited

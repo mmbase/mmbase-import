@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.11 2008-04-11 15:18:30 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.12 2008-06-28 11:57:10 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1703,7 +1703,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             List v = (List) relatedCache.get(query);
             if (v == null) {
                 try {
-                    v = clusterBuilder.getClusterNodes(query);
+                    v = clusterBuilder.getClusterNodesFromQueryHandler(query);
                     relatedCache.put(query, v);
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.toString());

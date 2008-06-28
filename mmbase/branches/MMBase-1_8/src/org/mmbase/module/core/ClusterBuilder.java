@@ -10,17 +10,25 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.core.CoreField;
+
+import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.Field;
+import org.mmbase.cache.Cache;
+import org.mmbase.cache.MultilevelCache;
+import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.util.functions.*;
-import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.DataTypes;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.QueryConvertor;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -49,7 +57,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.85.2.1 2008-06-10 09:20:19 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.85.2.2 2008-06-28 11:57:10 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -437,13 +445,37 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
      */
-    public List getClusterNodes(SearchQuery query) throws SearchQueryException {
+    public List getClusterNodes(SearchQuery query) {
+        // start multilevel cache
+        Cache multilevelCache = MultilevelCache.getCache();
 
+        // check multilevel cache if needed
+        List resultList = null;
+        if (query.getCachePolicy().checkPolicy(query)) {
+            resultList = (List)multilevelCache.get(query);
+        }
+        // if unavailable, obtain from database
+        if (resultList == null) {
+            log.debug("result list is null, getting from database");
+            try {
+                resultList = getClusterNodesFromQueryHandler(query);
+            } catch (SearchQueryException sqe) {
+                throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
+            }
+            if (query.getCachePolicy().checkPolicy(query)) {
+                multilevelCache.put(query, resultList);
+            }
+        }
+
+        return resultList;
+
+    }
+
+    public List getClusterNodesFromQueryHandler(SearchQuery query) throws SearchQueryException {
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
 
         return mmb.getSearchQueryHandler().getNodes(query, this);
-
     }
 
     /**

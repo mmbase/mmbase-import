@@ -9,10 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+
 import org.mmbase.bridge.Field;
+import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.storage.StorageException;
 
 /**
  * A <code>ResultBuilder</code> is a builder for
@@ -22,13 +26,13 @@ import org.mmbase.util.logging.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.8 2005-11-04 23:34:42 michiel Exp $
+ * @version $Id: ResultBuilder.java,v 1.8.2.1 2008-06-28 11:57:10 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
 
-    private static final Logger log = Logging.getLoggerInstance(ResultBuilder.class);
-
+    private SearchQuery query;
+    
     /**
      * Creator.
      * Creates new <code>ResultBuilder</code> instance, used to represent
@@ -39,7 +43,8 @@ public class ResultBuilder extends VirtualBuilder {
      */
     public ResultBuilder(MMBase mmbase, SearchQuery query) {
         super(mmbase);
-
+        this.query = query;
+        
         // Create fieldsByAlias map.
         List queryFields = query.getFields();
         Iterator i = queryFields.iterator();
@@ -53,9 +58,21 @@ public class ResultBuilder extends VirtualBuilder {
         }
     }
 
-    // javadoc is inherited
+    /**
+     * @see org.mmbase.module.core.VirtualBuilder#getNewNode(java.lang.String)
+     */
     public MMObjectNode getNewNode(String owner) {
         return new ResultNode(this);
     }
 
+    public List getResult() throws StorageException, SearchQueryException {
+        Cache cache = AggregatedResultCache.getCache();
+
+        List resultList = (List) cache.get(query);
+        if (resultList == null) {
+            resultList = this.mmb.getSearchQueryHandler().getNodes(query, this);
+            cache.put(query, resultList);
+        }
+        return resultList;
+    }
 }
