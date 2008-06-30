@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<view exportsource="jdbc:mysql://localhost/poll" timestamp="20060906000000">
-	<node number="44020" owner="default">
-		<title>poll/basic</title>
-		<resource>poll/basic.jsp</resource>
-	</node>
-</view>

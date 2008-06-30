@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<allowrel exportsource="jdbc:mysql://localhost/responseform" timestamp="20060906000000">
-   <node number="802" owner="default" snumber="44003" dnumber="44030" rtype="allowrel" dir="bidirectional">
-      <allow>yes</allow>
-   </node>
-</allowrel>
