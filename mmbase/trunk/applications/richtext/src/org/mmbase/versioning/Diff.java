@@ -8,7 +8,7 @@ import java.util.*;
  * Utility to present diffs.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Diff.java,v 1.3 2008-06-30 10:03:55 michiel Exp $
+ * @version $Id: Diff.java,v 1.4 2008-06-30 11:18:03 michiel Exp $
  * @since
  */
 
@@ -44,8 +44,8 @@ public class Diff extends org.incava.util.diff.Diff {
         for (int i = 0; i <= Math.max(endA - startA, endB - startB); i++) {
             buf.append("<tr class='" +
                        (d != null ?
-                        (endB > 0 ? "add " : "") +
-                        (endA > 0 ? "delete " : "")
+                        (endB >= 0 ? "add " : "") +
+                        (endA >= 0 ? "delete " : "")
                         :
                         "") +
                        "'>");
