@@ -10,7 +10,7 @@
 
   <jsp:directive.attribute name="format" />
 
-  <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
+  <mm:include page="/mmbase/jquery/jquery.jspx" />
   <script type="text/javascript">
 $(document).ready(function() {
 
@@ -27,7 +27,7 @@ $(document).ready(function() {
     });
 });
   </script>
-
+  <fmt:bundle basename="org.mmbase.richtext.resources.messages">
   <mm:nodeinfo type="nodemanager">
     <mm:listnodescontainer type="${_}_versions">
       <mm:constraint field="object" value="${_node}" />
@@ -51,7 +51,8 @@ $(document).ready(function() {
             v${_node.version}: <mm:node number="${_node.lastmodifiedby}"><mm:nodeinfo type="gui" /></mm:node>: <mm:field name="comments" /></li>
           </mm:listnodes>
         </ul>
-        <input type="submit" name="submit" value="See differences" />
+        <fmt:message key="seediff" var="see" />
+        <input type="submit" name="submit" value="${see}" />
       </form>
     </mm:listnodescontainer>
 
@@ -59,7 +60,10 @@ $(document).ready(function() {
       <mm:node id="version1" referid="version1" />
       <mm:node id="version2" referid="version2" />
       <h2>
-        <jsp:text>Diff between v${version1.version} and v${version2.version}</jsp:text>
+        <fmt:message key="diff12">
+          <fmt:param>v${version1.version}</fmt:param>
+          <fmt:param>v${version2.version}</fmt:param>
+        </fmt:message>
         <c:if test="${version2.version - 1 eq version1.version}"> (${version2.comments})</c:if>
       </h2>
       <mm:import jspvar="body1"><mm:node referid="version1"><mm:field name="body"  /></mm:node></mm:import>
@@ -86,7 +90,7 @@ $(document).ready(function() {
     </c:if>
   </mm:nodeinfo>
 
-
+  </fmt:bundle>
 </jsp:root>
 
 
