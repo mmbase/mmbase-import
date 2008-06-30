@@ -32,7 +32,7 @@ $(document).ready(function() {
     <mm:listnodescontainer type="${_}_versions">
       <mm:constraint field="object" value="${_node}" />
       <mm:sortorder field="version" direction="down" />
-      <form action="versions.jspx" method="POST">
+      <form  method="POST">
         <input name="n" type="hidden" value="${_node}" />
         <ul class="versionselector">
           <mm:listnodes id="versions" varStatus="status">
