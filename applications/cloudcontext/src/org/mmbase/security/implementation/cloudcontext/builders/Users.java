@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.55 2008-06-13 09:58:42 nklasens Exp $
+ * @version $Id: Users.java,v 1.56 2008-06-30 08:16:20 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -435,7 +435,7 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * Makes sure unique values and not-null's are filed    
+     * Makes sure unique values and not-null's are filed
      */
     /*
     public void setDefaults(MMObjectNode node) {
@@ -462,7 +462,7 @@ public class Users extends MMObjectBuilder {
    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (function.equals("info")) {
             List<Object> empty = new ArrayList<Object>();
-            java.util.Map<String,String> info = 
+            java.util.Map<String,String> info =
                 (java.util.Map<String,String>) super.executeFunction(node, function, empty);
             info.put("gui", "(status..) Gui representation of this object.");
                  if (args == null || args.size() == 0) {
@@ -527,16 +527,18 @@ public class Users extends MMObjectBuilder {
     protected void invalidateCaches(int nodeNumber) {
         rankCache.remove(new Integer(nodeNumber));
 
-        Iterator<Map.Entry<String,MMObjectNode>> i =  userCache.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<String,MMObjectNode> entry = i.next();
-            Object value = entry.getValue();
-            if (value == null) {
-                i.remove();
-            } else {
-                MMObjectNode node = (MMObjectNode) value;
-                if (node.getNumber() == nodeNumber) {
+        synchronized(userCache.getLock()) {
+            Iterator<Map.Entry<String,MMObjectNode>> i =  userCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry<String,MMObjectNode> entry = i.next();
+                Object value = entry.getValue();
+                if (value == null) {
                     i.remove();
+                } else {
+                    MMObjectNode node = (MMObjectNode) value;
+                    if (node.getNumber() == nodeNumber) {
+                        i.remove();
+                    }
                 }
             }
         }
@@ -555,17 +557,19 @@ public class Users extends MMObjectBuilder {
 
             MMObjectNode node = getNode(number);
             Map<String,MMObjectNode> users = new HashMap<String,MMObjectNode>();
-            Iterator<Map.Entry<String,MMObjectNode>> i = userCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<String,MMObjectNode> entry = i.next();
-                MMObjectNode value = entry.getValue();
-                if (value == null) {
-                    i.remove();
-                } else {
-                    MMObjectNode cacheNode = value;
-                    if (cacheNode.getNumber() == node.getNumber()) {
-                        users.put(entry.getKey(), node);
+            synchronized(userCache.getLock()) {
+                Iterator<Map.Entry<String,MMObjectNode>> i = userCache.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry<String,MMObjectNode> entry = i.next();
+                    MMObjectNode value = entry.getValue();
+                    if (value == null) {
                         i.remove();
+                    } else {
+                        MMObjectNode cacheNode = value;
+                        if (cacheNode.getNumber() == node.getNumber()) {
+                            users.put(entry.getKey(), node);
+                            i.remove();
+                        }
                     }
                 }
             }
