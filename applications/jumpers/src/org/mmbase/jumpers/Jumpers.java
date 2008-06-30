@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.9 2008-02-06 15:40:14 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.10 2008-06-30 15:07:27 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -215,11 +215,7 @@ public class Jumpers extends MMObjectBuilder {
             url = org.mmbase.util.transformers.Xml.XMLEscape(url);
             return "<a href=\"" + link + "\" target=\"extern\">" + url + "</a>";
         } else {
-            if (field == null || field.equals("")) {
-                return super.getGUIIndicator(node);
-            } else {
-                return super.getGUIIndicator(field, node);
-            }
+            return super.getGUIIndicator(node, args);
         }
 
     }
