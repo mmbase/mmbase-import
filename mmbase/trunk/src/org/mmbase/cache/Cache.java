@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.51 2008-06-24 10:58:34 michiel Exp $
+ * @version $Id: Cache.java,v 1.52 2008-06-30 08:11:08 michiel Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -74,6 +74,15 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         } catch (IllegalAccessException iae) {
             log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
         }
+    }
+
+    /**
+     * If you want to structurally modify this cache, synchronize on this object.
+     *
+     * @since MMBase-1.8.6
+     */
+    public final Object getLock() {
+        return lock;
     }
 
     /**

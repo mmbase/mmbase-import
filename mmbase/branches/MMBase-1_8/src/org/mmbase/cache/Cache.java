@@ -21,7 +21,7 @@ import org.mmbase.cache.implementation.LRUCache;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.36.2.3 2008-06-24 09:52:22 michiel Exp $
+ * @version $Id: Cache.java,v 1.36.2.4 2008-06-30 08:08:53 michiel Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -75,6 +75,14 @@ abstract public class Cache implements SizeMeasurable, Map {
         } catch (IllegalAccessException iae) {
             log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
         }
+    }
+
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public Object getLock() {
+        return lock;
     }
 
     /**
