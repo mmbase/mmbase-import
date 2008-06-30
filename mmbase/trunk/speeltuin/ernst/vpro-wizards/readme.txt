@@ -1,28 +1,10 @@
-todo:
-
-Y   zorg dat de vpro wizards compileren in de mmbase build.
-Y   pas mmbase buildbase.properties aan: install.tagfiles
-Y   zorg dat de hele applicatie goed installeert met de build.
-N   maak een test beheer omgeving die samen werkt met een van de demo applicaties (news), zodat je kunt testen).
-N   pas de paden aan van de edit jsp's en de tags.
-N   refactor de java code
-N   pas de documentatie aan
-N   zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
-N   zorg dat de build een war file kan bouwen met alle resources erin.
-
-wat is er qua paden veranderd:
-1 het mapje /edit is nu /mmbase/vpro-wizards
-2 de tags staan nu van tags/edit/ in /tags/vpro-wizards
-3 de classes gaan verhuizen van nl.vpro.redactie naar org.mmbase.applications.vpro-wizards
-
-
-
 vpro-wizards
+===================================
 
 De vpro-wizards zijn een beheer omgeving bouw doos, a la de editwizards, met de volgende verschillen:
 -de editors zijn gewoon jsp. Een serie taglibs levert standaard bouwstenen.
 -de backend is in java, en maakt gebruik van spring. Middels spring data binding
-worden geposte formulieren omgezet in actie beans die worden gerund.
+worden geposte formulieren omgezet in actie beans die worden uitgevoerd.
 
 frontend en backend zijn totaal ontkoppeld. Alle standaard acties die je nodig hebt zijn aanwezig.
 Deze zijn:
@@ -33,7 +15,7 @@ Deze zijn:
 - relatie maken
 - relatie sorteren.
 
-het is heel makkelijk om je eigen specialistische acties toe te voegen.
+het is heel makkelijk om je eigen specialistische acties toe te voegen (na de refactoring fase).
 
 Tevens is er een kleine mmbase applicatie waarmee je in de start pagina van de editor een
 sort desktop met links en notieties voor de redactie.
@@ -65,6 +47,26 @@ De voordelen van het systeem zijn:
 
 Het zou goed kunnen dat dit systeem een goede vervanger zal blijken te zijn voor de editwizards.
 
+integratie pad
+===================================
+De volgende stappen moeten worden gezet voor een volledige integratie van de 
+vpro-wizards in mmbase:
+
+status 		omschrijving
+Y 		  	zorg dat de vpro wizards compileren in de mmbase build.
+Y   		pas mmbase buildbase.properties aan: install.tagfiles
+Y   		zorg dat de hele applicatie goed installeert met de build (de locaties van bestanden moeten veranderd worden).
+Y   		maak een test beheer omgeving die samen werkt met een van de demo applicaties (news), zodat je kunt testen).
+P   		refactor de java code.
+N   		Documentatie: gedeeltijk bestaande omzetten naar docbook, gedeeltelijk nieuw.
+P			Tool voor het generern van documentatie uit de tagfiles.
+N   		zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
+N			NekoHtml met xerces dependency: is er een vervanging?
+
+
+Y = gedaan
+P = onderweg
+N = niet gedaan
 
 
 Issues:
@@ -93,7 +95,7 @@ Wensen:
     het zou mooi zijn als je veel voorkomende attributen op de wizard kunt zetten (maar het moet
     niet gaan conflicteren).
 
-Wijzigingen aan MMBase (1.8)
+Wijzigingen aan MMBase (1.8/1.9)
 ===================================
 - commons.fileupload is geupdate naar 1.2
 - hierdoor is een nieuwe dependencie ontstaan: commons.io
