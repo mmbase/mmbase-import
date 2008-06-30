@@ -12,19 +12,20 @@
 
   <mm:include page="/mmbase/jquery/jquery.jspx" />
   <script type="text/javascript">
-$(document).ready(function() {
-
-    // enables/disables only the logically possible options
-    $("ul.versionselector input[type=radio]").change(function() {
+var changer = function() {
 	var oldSelected = $("ul.versionselector li input[name=version1]:checked")[0].value;
 	var newSelected = $("ul.versionselector li input[name=version2]:checked")[0].value;
 	$("ul.versionselector li").each(function() {
 	    var version1 = $(this).find("input[name=version1]")[0];
 	    var version2 = $(this).find("input[name=version2]")[0];
-	    $(version1).css("visibility", (version1.value &lt; newSelected ? 'visible' : 'hidden'));
-	    $(version2).css("visibility", (version2.value &gt; oldSelected ? 'visible' : 'hidden'));
+	    $(version1).css("visibility", (parseInt(version1.value) &lt; parseInt(newSelected) ? 'visible' : 'hidden'));
+	    $(version2).css("visibility", (parseInt(version2.value) &gt; parseInt(oldSelected) ? 'visible' : 'hidden'));
 	});
-    });
+};
+$(document).ready(function() {
+    changer();
+    // enables/disables only the logically possible options
+    $("ul.versionselector input[type=radio]").change(changer);
 });
   </script>
   <fmt:bundle basename="org.mmbase.richtext.resources.messages">
@@ -37,18 +38,20 @@ $(document).ready(function() {
         <ul class="versionselector">
           <mm:listnodes id="versions" varStatus="status">
             <c:if test="${status.index eq 1}">
-              <mm:import externid="version1" vartype="integer">${_node.number}</mm:import>
+              <mm:import externid="version1" vartype="integer"><mm:field name="version" /></mm:import>
             </c:if>
             <c:if test="${status.index eq 0}">
-              <mm:import externid="version2" vartype="integer">${_node.number}</mm:import>
+              <mm:import externid="version2" vartype="integer"><mm:field name="version" /></mm:import>
             </c:if>
           </mm:listnodes>
           <mm:listnodes referid="versions">
             <li>
-              <mm:field name="number" id="number" write="false" vartype="integer" />
-              <mm:radio name="version1"  value="${_node.number}" compare="${version1}" style="visibility: ${number lt version2 ? 'visible' : 'hidden'};" />
-              <mm:radio name="version2"  value="${_node.number}" compare="${version2}" style="visibility: ${number gt version1 ? 'visible' : 'hidden'};" />
-            v${_node.version}: <mm:node number="${_node.lastmodifiedby}"><mm:nodeinfo type="gui" /></mm:node>: <mm:field name="comments" /></li>
+              <mm:radio name="version1"  value="${_node.version}" compare="${version1}"  />
+              <mm:radio name="version2"  value="${_node.version}" compare="${version2}"  />
+              <jsp:text>v${_node.version}: </jsp:text>
+              <mm:node element="lastmodifiedby"><mm:nodeinfo type="gui" /></mm:node>
+              <jsp:text>: </jsp:text><mm:field name="comments" />
+            </li>
           </mm:listnodes>
         </ul>
         <fmt:message key="seediff" var="see" />
@@ -56,37 +59,54 @@ $(document).ready(function() {
       </form>
     </mm:listnodescontainer>
 
-    <c:if test="${not empty version1 and not empty version2}">
-      <mm:node id="version1" referid="version1" />
-      <mm:node id="version2" referid="version2" />
-      <h2>
-        <fmt:message key="diff12">
-          <fmt:param>v${version1.version}</fmt:param>
-          <fmt:param>v${version2.version}</fmt:param>
-        </fmt:message>
-        <c:if test="${version2.version - 1 eq version1.version}"> (${version2.comments})</c:if>
-      </h2>
-      <mm:import jspvar="body1"><mm:node referid="version1"><mm:field name="body"  /></mm:node></mm:import>
-      <mm:import jspvar="body2"><mm:node referid="version2"><mm:field name="body"  /></mm:node></mm:import>
-      <jsp:scriptlet>
-        String[] lines1 = body1.split("\n+");
-        String[] lines2 = body2.split("\n+");
 
-        Diff diff = new Diff(Arrays.asList(lines1), Arrays.asList(lines2));
-      </jsp:scriptlet>
-      <c:choose>
-        <c:when test="${empty format or format == 'html'}">
-          <table class="versions">
-            <tr><th class="difference"/><th>v${version1.version}</th><th>v${version2.version}</th></tr>
-            <jsp:expression>diff.toHtml()</jsp:expression>
-          </table>
-        </c:when>
-        <c:otherwise>
-          <pre>
-            <jsp:expression>diff.toUnixDiff()</jsp:expression>
-          </pre>
+    <c:if test="${not empty version1 and not empty version2}">
+
+      <mm:listnodescontainer type="${_}_versions">
+        <mm:constraint field="object" value="${_node.number}" />
+        <mm:constraint field="version" value="${version1}" />
+        <mm:listnodes>
+          <mm:node id="version1node" />
+        </mm:listnodes>
+      </mm:listnodescontainer>
+      <mm:listnodescontainer type="${_}_versions">
+        <mm:constraint field="object" value="${_node.number}" />
+        <mm:constraint field="version" value="${version2}" />
+        <mm:listnodes>
+          <mm:node id="version2node" />
+        </mm:listnodes>
+      </mm:listnodescontainer>
+
+      <c:if test="${! empty version1node and ! empty version2node}">
+        <h2>
+          <fmt:message key="diff12">
+            <fmt:param>v${version1}</fmt:param>
+            <fmt:param>v${version2}</fmt:param>
+          </fmt:message>
+          <c:if test="${version2 - 1 eq version1 and ! empty version2node.comments}"> (${version2node.comments})</c:if>
+        </h2>
+        <mm:import jspvar="body1"><mm:node referid="version1node"><mm:field name="body"  /></mm:node></mm:import>
+        <mm:import jspvar="body2"><mm:node referid="version2node"><mm:field name="body"  /></mm:node></mm:import>
+        <jsp:scriptlet>
+          String[] lines1 = body1.split("\n+");
+          String[] lines2 = body2.split("\n+");
+
+          Diff diff = new Diff(Arrays.asList(lines1), Arrays.asList(lines2));
+        </jsp:scriptlet>
+        <c:choose>
+          <c:when test="${empty format or format == 'html'}">
+            <table class="versions">
+              <tr><th class="difference"/><th>v${version1}</th><th>v${version2}</th></tr>
+              <jsp:expression>diff.toHtml()</jsp:expression>
+            </table>
+          </c:when>
+          <c:otherwise>
+            <pre>
+              <jsp:expression>diff.toUnixDiff()</jsp:expression>
+            </pre>
         </c:otherwise>
-      </c:choose>
+        </c:choose>
+      </c:if>
     </c:if>
   </mm:nodeinfo>
 
