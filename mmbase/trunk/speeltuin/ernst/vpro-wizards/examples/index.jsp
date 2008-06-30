@@ -3,7 +3,7 @@
 <%@taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 <%@taglib prefix="edit" tagdir="/WEB-INF/tags/vpro-wizards"%>
 
-<mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/login.jsp" />
+<mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" />
 
 
 

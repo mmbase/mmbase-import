@@ -10,7 +10,7 @@
 <%@ attribute name="noreferrer" type="java.lang.Boolean" description="by default a referer cookie is set to indicate the current page, and it is used by other pages to return to it. if you include an editor, you may not want to set this here"%>
 <%@ attribute name="header" fragment="true" description="include some stuff in the html header element"  %>
 
-<mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/login.jsp" >
+<mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
     <mm:content expires="0" type="text/html" encoding="utf-8" language="nl" >
     <%--
         Deze tag vormt de root van het hoofdformulier. De huidige pagina url wordt in een cookie gezet.
