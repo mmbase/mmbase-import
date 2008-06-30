@@ -8,7 +8,7 @@ import java.util.*;
  * Utility to present diffs.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Diff.java,v 1.1 2008-06-24 12:10:04 michiel Exp $
+ * @version $Id: Diff.java,v 1.2 2008-06-30 09:15:36 michiel Exp $
  * @since
  */
 
@@ -80,9 +80,17 @@ public class Diff extends org.incava.util.diff.Diff {
 
     }
 
-
-    public static String toUnixDiff(Difference difference, Object[] aLines, Object[] bLines) {
+    public String toUnixDiff() {
         StringBuilder buf = new StringBuilder();
+        for (Difference difference : diff()) {
+            toUnixDiff(buf, difference, a, b);
+        }
+        return buf.toString();
+    }
+
+
+    public static void toUnixDiff(StringBuilder buf, Difference difference, Object[] aLines, Object[] bLines) {
+
         append(buf, difference.getDeletedStart(), difference.getDeletedEnd());
         buf.append(difference.getDeletedEnd() != Difference.NONE &&
                    difference.getAddedEnd() != Difference.NONE ? "c" : (difference.getDeletedEnd() == Difference.NONE ? "a" : "d"));
@@ -99,7 +107,6 @@ public class Diff extends org.incava.util.diff.Diff {
         if (difference.getAddedEnd() != Difference.NONE) {
             appendLines(difference, buf, difference.getAddedStart(), difference.getAddedEnd(), ">", bLines);
         }
-        return buf.toString();
 
     }
 
