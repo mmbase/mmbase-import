@@ -16,4 +16,8 @@
 		<title>basicmodel/article/intro</title>
 		<resource>basicmodel/article/intro.jsp</resource>
 	</node>
+   <node number="34005" owner="default">
+      <title>basicmodel/html/html</title>
+      <resource>basicmodel/html/html.jsp</resource>
+   </node>
 </view>

@@ -60,4 +60,12 @@
 		<search>yes</search>
 	</node>
 
+   <node number="33010" owner="admin">
+      <name>HTML Fragment</name>
+      <description>HTML Fragment</description>
+      <wizard>config/html/html</wizard>
+      <nodepath>html</nodepath>
+      <fields>code</fields>
+   </node>
+
 </editwizards>
