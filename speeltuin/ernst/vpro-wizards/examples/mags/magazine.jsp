@@ -23,7 +23,7 @@
             <form:view nodetype="news"
                 relationrole="posrel"
                 sortable="true"
-                relatedpage="../news/related.jsp"
+                relatedpage="../news/related"
                 openwizard="../news/newsitem.jsp"
                 newwizard="../news/newsitem.jsp"
                 name="gekoppelde nieuws berichten">

@@ -15,7 +15,8 @@
         <list:parentsearchlist >
             <list:searchrow  fields="title,subtitle,intro" >
                 <jsp:attribute name="headerfragment" >
-                    <th> Publicatie </th>
+                    <th>Publicatie</th>
+                    <th>Magazine</th>
                 </jsp:attribute>
                 <jsp:attribute name="rowfragment" >
                     <td>
@@ -23,6 +24,13 @@
                             <mm:param name="nodenr" value="${nodenrrow}" />
                             <mm:param name="detail" value="false" />
                         </mm:include>
+                    </td>
+                    <td>
+                        <mm:node number="${nodenrrow}">
+                            <mm:relatednodes type="mags" max="1">
+                                <mm:field name="title" />
+                            </mm:relatednodes>
+                        </mm:node>
                     </td>
                 </jsp:attribute>
             </list:searchrow>

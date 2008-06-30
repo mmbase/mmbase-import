@@ -10,7 +10,7 @@
 <mm:content type="text/html" expires="0">
     <html>
         <head>
-            <title>Test Editors</title>
+            <title>MyNews Editors met de VPRO-Wizards</title>
             <link rel="stylesheet" type="text/css"
                 href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
             <style >
