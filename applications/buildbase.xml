@@ -79,6 +79,7 @@ Import this file.
   <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
+  <property name="tagfile.dir"         value="${web.dir}/tags"/>
   <property name="mmdocs.dir"      value="${webapp.dir}/mmdocs"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
   <property name="mmbase.jar"      value="${build.dir}/mmbase.jar"/>
@@ -127,6 +128,7 @@ Import this file.
     <available property="metainf.available"           file="${project.source.dir}/META-INF"/>
     <available property="documentation.available" file="${project.source.dir}/documentation" />
     <available property="documentation.build.available" file="${project.build.dir}/documentation" />
+    <available property="tagfiles.available"        file="${project.source.dir}/tagfiles" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
     <available property="templates.available"     file="${project.templates.dir}"/>
@@ -524,8 +526,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </fileset>
     </copy>
   </target>
+  
+   <target name="install.tagfiles" depends="init" if="tagfiles.available">
+    <copy todir="${tagfile.dir}/${project.name}" preservelastmodified="true">
+      <fileset dir="${project.source.dir}/tagfiles"/>
+    </copy>
+  </target>
 
-  <target name="install.dependencies" depends="jar,install.templates,install.examples,install.config,install.documentation" />
+  <target name="install.dependencies" depends="jar,install.templates,install.examples,install.config,install.documentation,install.tagfiles" />
   <target name="install" depends="install.dependencies">
     <copy todir="${release.lib.dir}" preservelastmodified="true" flatten="true">
       <fileset dir="${project.jar.dir}">
