@@ -14,24 +14,8 @@
 <div class="message">
     <h4>FOUT</h4>
     <mm:import id="text">
-        <c:if test="${param.error == 1}">
-            Je hebt geen rechten om dingen uit te lichten.<br/>
-            Neem contact op met Ron van der Sterren (12560).
-        </c:if>
-        <c:if test="${param.error == 2}">
-            Je hebt geen rechten om voor categorien en / of bookmarkfolders.<br/>
-            Neem contact op met Ron van der Sterren (12560).
-        </c:if>
-        <c:if test="${param.error == 3}">
-            Je heb geen rechten om een relatie aan te maken tussen ${param.source} en ${param.destination}
-            Neem contact op met Ron van der Sterren (12560).
-        </c:if>
-
-        <c:if test="${not empty errors}">
-            <c:forEach var="error" items="${errors}">
-                ${error.message}<br/>
-            </c:forEach>
-        </c:if>
+        <p>TODO: How about a really meaningfull error page? Maybe not. Maybe i want
+        to see the error in the context of the page that coused it. Dunno yet.
     </mm:import>
     <mm:write referid="text"/>
     <a href="javascript:location=document.referrer;">terug</a>
@@ -39,22 +23,6 @@
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="/edit/login.jsp">
     <mm:import id="user"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
 </mm:cloud>
-
-<%--
-<mt:mail>
-    <mt:server>localhost</mt:server>
-    <mt:setrecipient type="to">r.vermeulen@vpro.nl,R.vander.Sterren@vpro.nl</mt:setrecipient>
-    <mt:from>3V12Redactiesysteem@vpro.nl</mt:from>
-    <mt:subject>Error 3V12 Redactiesysteem</mt:subject>
-    <mt:message>
-<mm:write referid="text"/>
-User: <mm:write referid="user"/>
-Referer: <%=request.getHeader("referer")%>
-URI: <%="http://"+request.getServerName()+":"+request.getServerPort()+request.getRequestURI()+"?"+request.getQueryString()%>
-    </mt:message>
-<mt:send/>
-</mt:mail>
---%>
 
 </body>
 </html>
