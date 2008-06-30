@@ -9,6 +9,7 @@
   <jsp:directive.tag import="org.mmbase.versioning.*,java.util.*" />
 
   <jsp:directive.attribute name="format" />
+  <jsp:directive.attribute name="fields" />
 
   <mm:include page="/mmbase/jquery/jquery.jspx" />
   <script type="text/javascript">
@@ -85,27 +86,34 @@ $(document).ready(function() {
           </fmt:message>
           <c:if test="${version2 - 1 eq version1 and ! empty version2node.comments}"> (${version2node.comments})</c:if>
         </h2>
-        <mm:import jspvar="body1"><mm:node referid="version1node"><mm:field name="body"  /></mm:node></mm:import>
-        <mm:import jspvar="body2"><mm:node referid="version2node"><mm:field name="body"  /></mm:node></mm:import>
-        <jsp:scriptlet>
-          String[] lines1 = body1.split("\n+");
-          String[] lines2 = body2.split("\n+");
+        <mm:import id="f" vartype="list">${empty fields ? 'body' : fields}</mm:import>
+        <c:if test="${empty format or format == 'html'}">
+          &lt;table class="versions"&gt;
+          <tr><th class="difference"/><th>v${version1}</th><th>v${version2}</th></tr>
+        </c:if>
+        <c:forEach items="${f}" var="field">
+          <mm:import jspvar="body1"><mm:node referid="version1node"><mm:field name="${field}" /></mm:node></mm:import>
+          <mm:import jspvar="body2"><mm:node referid="version2node"><mm:field name="${field}" /></mm:node></mm:import>
+          <jsp:scriptlet>
+            String[] lines1 = body1.split("\n+");
+            String[] lines2 = body2.split("\n+");
 
-          Diff diff = new Diff(Arrays.asList(lines1), Arrays.asList(lines2));
-        </jsp:scriptlet>
-        <c:choose>
-          <c:when test="${empty format or format == 'html'}">
-            <table class="versions">
-              <tr><th class="difference"/><th>v${version1}</th><th>v${version2}</th></tr>
+            Diff diff = new Diff(Arrays.asList(lines1), Arrays.asList(lines2));
+          </jsp:scriptlet>
+          <c:choose>
+            <c:when test="${empty format or format == 'html'}">
               <jsp:expression>diff.toHtml()</jsp:expression>
-            </table>
-          </c:when>
-          <c:otherwise>
-            <pre>
-              <jsp:expression>diff.toUnixDiff()</jsp:expression>
-            </pre>
-        </c:otherwise>
-        </c:choose>
+            </c:when>
+            <c:otherwise>
+              <pre>
+                <jsp:expression>diff.toUnixDiff()</jsp:expression>
+              </pre>
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
+      </c:if>
+      <c:if test="${empty format or format == 'html'}">
+        &lt;/table&gt;
       </c:if>
     </c:if>
   </mm:nodeinfo>
