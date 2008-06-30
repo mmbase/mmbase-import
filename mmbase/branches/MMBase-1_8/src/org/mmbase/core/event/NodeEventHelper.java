@@ -73,11 +73,13 @@ public class NodeEventHelper {
 
     private static Map removeBinaryValues(Map oldEventValues) {
         Set toremove = null;
-        for (Iterator iterator = oldEventValues.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
-                if (toremove == null) toremove = new HashSet();
-                toremove.add(entry.getKey());
+        synchronized(oldEventValues) {
+            for (Iterator iterator = oldEventValues.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
+                    if (toremove == null) toremove = new HashSet();
+                    toremove.add(entry.getKey());
+                }
             }
         }
         if (toremove != null) {

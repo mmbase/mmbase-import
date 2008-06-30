@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.11 2008-02-07 16:22:34 michiel Exp $
+ * @version $Id: NodeEventHelper.java,v 1.12 2008-06-30 08:25:35 michiel Exp $
 
  */
 public class NodeEventHelper {
@@ -53,8 +53,8 @@ public class NodeEventHelper {
             newEventValues = new HashMap<String, Object>();
             Map<String, Object> values = node.getValues();
             for (String key : oldEventValues.keySet()) {
-                    newEventValues.put(key, values.get(key));
-                }
+                newEventValues.put(key, values.get(key));
+            }
             newEventValues = removeBinaryValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
@@ -73,10 +73,12 @@ public class NodeEventHelper {
 
     private static Map<String, Object> removeBinaryValues(Map<String, Object> oldEventValues) {
         Set<String> toremove = null;
-        for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
-            if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
-                if (toremove == null) toremove = new HashSet<String>();
-                toremove.add(entry.getKey());
+        synchronized(oldEventValues) {
+            for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
+                if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
+                    if (toremove == null) toremove = new HashSet<String>();
+                    toremove.add(entry.getKey());
+                }
             }
         }
         if (toremove != null) {
