@@ -80,7 +80,7 @@
             <jsp:invoke fragment="header"/>
         </head>
         <body class="related">
-            <mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/login.jsp" >
+            <mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
                 <util:header/>
             </mm:cloud>
 
