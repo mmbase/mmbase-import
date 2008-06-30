@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.220 2008-06-13 10:47:22 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.221 2008-06-30 08:29:33 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1155,6 +1155,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
     }
 
+    /**
+     * Returns an (unmodifiable) map representing all key/values present in this node.
+     * This can be modified by other users of this object though. You'll need to synchronize on it,
+     * when iterating (see {@link java.util.Collections#synchronizedMap}).
+     */
     public Map<String, Object> getValues() {
         return  Collections.unmodifiableMap(values);
     }
