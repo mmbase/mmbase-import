@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.26.2.5 2008-03-31 16:24:59 michiel Exp $
+# $Id: build.properties.default,v 1.26.2.6 2008-06-30 09:09:32 ernst Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -123,14 +123,19 @@ serializer.jar=${expand.dir}/${xalan.fullversion}/serializer.jar
 xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 
-# ----- Jakarta file upload ----------
-fileupload.version=commons-fileupload-1.0
+# ----- Apache Commons file upload ----------
+fileupload.version=commons-fileupload-1.2
 fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
 fileupload.loc=http://www.mmbase.org/download/jars/${fileupload.file}
-fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
+fileupload.jar=${expand.dir}/${fileupload.version}/lib/${fileupload.version}.jar
 
-
+# ----- Apache Commons IO ----------
+io.version=commons-io-1.4
+io.file=${io.version}.tar.gz
+io.dest=${download.dir}/${io.file}
+io.loc=http://www.mmbase.org/download/jars/${io.file}
+io.jar=${expand.dir}/${io.version}/${io.version}.jar
 
 # ----- Standard taglib + jstl ------------
 taglibs-standard.version=jakarta-taglibs-standard-1.1.2
