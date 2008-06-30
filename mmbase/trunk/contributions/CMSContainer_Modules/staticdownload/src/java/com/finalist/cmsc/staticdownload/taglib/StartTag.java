@@ -24,7 +24,7 @@ public class StartTag extends SimpleTagSupport {
       String wgetPath = PropertiesUtil.getProperty("staticdownload.wgeturl");
       String downloadUrl = PropertiesUtil.getProperty("staticdownload.downloadurl");
       String webappName = PropertiesUtil.getProperty("staticdownload.webappName");
-      DownloadSettings downloadSettings = new DownloadSettings(50, tempPath, storePath, wgetPath, downloadUrl,webappName, 
+      DownloadSettings downloadSettings = new DownloadSettings(50,liveUrl, tempPath, storePath, wgetPath, downloadUrl,webappName, 
     		  ctx.getServletContext());
 
       // DownloadThread downloadThread = new
