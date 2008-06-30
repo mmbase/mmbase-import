@@ -30,7 +30,7 @@
 
   <target name="javacc" depends="javacc.install">
     <mkdir dir="${generated-source-src.dir}/org/mmbase/util/dateparser"/>
-    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/tranformers"/>
+    <mkdir dir="${generated-source-src.dir}/org/mmbase/util/transformers"/>
     <echo message="SOURCE: ${generated-source-src.dir}" />
 
     <javacc
@@ -40,7 +40,7 @@
         />
     <javacc
         target="${source-src.dir}/org/mmbase/util/transformers/ListParser.jj"
-        outputdirectory="${generated-source-src.dir}/org/mmbase/util/tranformers"
+        outputdirectory="${generated-source-src.dir}/org/mmbase/util/transformers"
         javacchome="${javacc.dir}"
         />
   </target>
