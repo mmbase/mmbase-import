@@ -182,7 +182,7 @@
       <dependency>
          <groupId>mmapps</groupId>
          <artifactId>remotepublishing</artifactId>
-         <version>1.0.14</version>
+         <version>1.0.15</version>
          <type>mmbase-module</type>
       </dependency>
 
@@ -289,7 +289,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.4.2</version>
+			<version>1.4.3</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
