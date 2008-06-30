@@ -12,6 +12,7 @@
       <builder maintainer="finalist.com" version="1">faqcategory</builder>
       <builder maintainer="finalist.com" version="1">faqitem</builder>
       <builder maintainer="finalist.com" version="1">link</builder>
+      <builder maintainer="finalist.com" version="1">html</builder>
     </neededbuilderlist>
     <neededreldeflist>
    </neededreldeflist>
