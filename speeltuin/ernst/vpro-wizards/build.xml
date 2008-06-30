@@ -4,7 +4,7 @@
   <property name="project.package"   value="org/mmbase/applications/vpro-wizards" />
   <property name="project.comment"   value="The VPRO wizard toolkit for MMBase" />
 
-  <property name="project.jars.includes"   value="spring.jar,spring-webmvc.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar" />
+  <property name="project.jars.includes"   value="spring.jar,spring-webmvc.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
   <property name="project.jars.dir" location="build" />
   <property name="java.source.version" value="1.5"/>
 
@@ -60,7 +60,7 @@
         </antcall>
         <copy file="${download.dir}/${nekohtml.file}" todir="${project.jar.dir}" preservelastmodified="true" />
 
-        <!--xerces: if not present yet. we rename this one, so we don't get twoo versions when mmbase has one too. this is a hack :-(-->
+        <!--xerces: if not present yet. we rename this one, so we don't get 2 versions when mmbase has one too. this is a hack :-(-->
         <antcall target="download.xerces"/>
 
         <!--oscache-->
@@ -81,7 +81,7 @@
       </antcall>
       <!--rename to generic name (no version)-->
       <move file="${download.dir}/${xerces.file}" tofile="${download.dir}/${xerces.file.noversion}"/>
-      <copy file="${download.dir}/${xerces.file.noversion}" todir="${project.jar.dir}" preservelastmodified="true" />
+      <copy file="${download.dir}/${xerces.file.noversion}" todir="${project.jar.dir}" preservelastmodified="false" />
   </target>
 
   <!--** test **-->
@@ -97,6 +97,7 @@
         <echo message="project.build.dir: ${project.build.dir}"/>
         <echo message="project.source.dir: ${project.source.dir}"/>
         <echo message="tagfiles.available: ${tagfiles.available}"/>
+        <echo message="xerces.available: ${xerces.available}"/>
     </target>
 
 </project>
