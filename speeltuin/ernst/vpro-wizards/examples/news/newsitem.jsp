@@ -4,12 +4,20 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
 
-<form:wizard title="Nieuws Bericht" wizardfile="newsitem" >
+<form:wizard title="Nieuws Berichtje" wizardfile="newsitem" >
 
     <edit:path name="Nieuws Bericht" node="${nodenr}" session="newsitem_${not empty param.secondnews ? 'second' : ''}"/>
     <edit:sessionpath/>
+    
+    <%--
+        This editor has one special feature: among the field list there is a dropdown
+        with the available magazines. When you create it, you can select on, and
+        the newsitem will be connected to that. it also works for existing news items.
+    --%>
 
+    
     <form:container nodetype="news">
+        <form:createrelation source="${param.parentnodenr}" referDestination="new" role="${param.relationrole}"/>
         <form:showfield field="number"/>
         <form:datefield field="date" fieldname="Publicatie datum"/>
         <form:textfield field="title"/>
