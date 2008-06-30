@@ -183,41 +183,20 @@
                                     <c:remove var="maydelete"/>
                                     <%--edit button--%>
                                     <c:if test="${edit}">
-                                    <%--
-                                        <a href="${wizardfile}_${nodetype}.jsp?nodenr=${nodenr}${params}&editnodenr=${_nodenr}" class="edit">
-                                        --%>
-                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
-                                    </c:if>
-                                    <c:if test="${not empty param.openwizard}">
-                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                        <c:choose>
+                                            <c:when test="${not empty param.openwizard}">
+                                                <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit">
+                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                </a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit">
+                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                </a>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:if>
                                 </div>
-
-                                <%--
-                                <c:choose>
-                                    <c:when test="${nodetype eq 'images'}">
-                                        <util:image nodenr="${_nodenr}" urlvar="url"/>
-                                        <util:image nodenr="${_nodenr}" template="+s(40)+part(0x0x40x40)+s(!40x!40)" urlvar="previewurl"/>
-                                        <a target="image" href="${url}">
-                                            <img src="${previewurl}" class="image" border="0"/>
-                                        </a>
-                                    </c:when>
-
-                                    <c:when test="${nodetype eq 'attachments'}">
-                                        <mm:node element="${nodetype}">
-                                            <c:set var="number" ><mm:field name="number" /></c:set>
-                                            <util:attachment nodenr="${number}" urlvar="url"/>
-                                            <a href="${url}"><mm:field name="title" /></a>
-                                        </mm:node>
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <mm:node element="${nodetype}">
-                                            <mm:field name="gui()"/>
-                                        </mm:node>
-                                    </c:otherwise>
-                                </c:choose>
-                                --%>
 
                                 <%--
                                     show the gui value for this node.
