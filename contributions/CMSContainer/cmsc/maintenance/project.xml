@@ -52,7 +52,7 @@ See http://www.MMBase.org/license
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>remotepublishing</artifactId>
-			<version>1.0.14</version>
+			<version>1.0.15</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>
