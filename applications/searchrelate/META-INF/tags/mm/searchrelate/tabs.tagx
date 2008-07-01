@@ -1,0 +1,178 @@
+<jsp:root
+    version="2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:x="http://java.sun.com/jsp/jstl/xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.tag
+      description="This tag creates tabs. Every tab contains the result of a certain jsp. Every tab is part of the same transaction. This tag also provides the save and cancel butons." />
+
+  <jsp:directive.attribute name="path"
+                           description="Comma seperated path of tabs. Every entry is interpreted as a jsp which must be dynamiclly included to show the tab."
+                           />
+  <jsp:directive.attribute name="extension"
+                           description="Extension used for tab-implementing jsp"
+                           />
+  <jsp:directive.attribute name="form"
+                           description="Identification of this set of forms. Also used as parameter name"
+                           />
+
+  <jsp:directive.attribute name="objectlist"
+                           description="Actually the tabs are tree-included, if you provide an objectlist"
+                           />
+  <jsp:directive.attribute name="directory"
+                           description="Directory to include the jsps from. Defaults to the current directory."
+                           />
+  <jsp:directive.attribute name="styleClass"
+                           description="Extra classes to be added on the generated table"
+                           />
+
+  <jsp:directive.attribute name="page"
+                           description="As page attribute of mm:url, used to generate the urls. Defaults to empty string (current page)"
+                           />
+
+  <mm:import id="e">.${empty extension ? 'jspx' : extension}</mm:import>
+  <mm:import id="p" externid="path" from="this" vartype="list">${empty path ? 'a,b,c' : path}</mm:import>
+  <mm:import id="f" externid="form" from="this">${empty form ? 'form' : form}</mm:import>
+
+  <mm:import externid="${f}" id="currentpage">${p[0]}</mm:import>
+
+  <!--
+  <mm:treefile   absolute="true" id="page" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+
+  -->
+  <mm:import id="tabs">
+
+    <mm:stringlist referid="p" id="q">
+
+      <mm:import id="available">
+        <mm:treehaspage page="${directory}${_}${e}" objectlist="${objectlist}" inverse="true">notavailable</mm:treehaspage>
+      </mm:import>
+      <mm:treehaspage page="${directory}${q}${e}" objectlist="${objectlist}">
+        <x:parse var="source">
+          <mm:treeinclude cite="true" objectlist="${objectlist}" page="${directory}${q}${e}" />
+        </x:parse>
+      </mm:treehaspage>
+      <c:choose>
+        <c:when test="${currentpage eq _}">
+          <mm:import id="className">current ${available}</mm:import>
+          <mm:index id="current" offset="0" write="false" />
+        </c:when>
+        <c:otherwise>
+          <mm:import id="className">${available}</mm:import>
+        </c:otherwise>
+      </c:choose>
+      <mm:link page="${page}" referids="q@${f}">
+        <a class="${className}"
+           href="${_}"
+           onclick="document.forms['${f}_form']['${f}_next'].value = '${q}'; document.forms['${f}_form'].submit(); return false;"
+           >
+          <mm:import id="title">
+            <mm:treehaspage page="${directory}${q}${e}" objectlist="${objectlist}">
+              <x:out select="$source/descendant::h1" />
+            </mm:treehaspage>
+          </mm:import>
+
+          <mm:import id="tabClass">
+            <mm:treehaspage page="${directory}${q}${e}" objectlist="${objectlist}">
+              <x:out select="$source/*/@class" />
+            </mm:treehaspage>
+          </mm:import>
+
+
+          <mm:write referid="title" write="true">
+            <mm:isempty>${q}</mm:isempty>
+          </mm:write>
+          <c:if test="${currentpage eq q}">
+            <mm:import id="currentpagetitle" from="this" externid="title" />
+          </c:if>
+
+        </a>
+      </mm:link>
+      <span class="separator">
+        <mm:last inverse="true">, </mm:last>
+      </span>
+    </mm:stringlist>
+  </mm:import>
+
+
+  <div class="tabs">
+    <h1>
+      <span class="index"><jsp:text>${current + 1} / ${fn:length(p)} </jsp:text></span>
+      ${empty currentpagetitle ? currentpage : currentpagetitle}
+    </h1>
+    <script type="text/javascript">
+      if (typeof(window["MMBaseValidator"]) != "undefined") {
+      var val = new MMBaseValidator(window);
+      }
+    </script>
+      <div class="top links">
+        <mm:write referid="tabs" escape="none" />
+      </div>
+      <div class="body ${currentpage}${e} ${styleClass}">
+        <mm:compare referid="tabClass" regexp=".*\boutside\b.*">
+          <mm:treeinclude debug="html" notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+        </mm:compare>
+        <mm:form page="" id="${f}_form"  jspvar="transaction">
+          <mm:import id="cancel" externid="${f}_cancel" />
+          <mm:present referid="cancel">
+            <mm:log>Canceling</mm:log>
+            <mm:cancel />
+            <script type="text/javascript">
+              window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>'
+            </script>
+          </mm:present>
+          <mm:notpresent referid="cancel">
+            <mm:compare referid="tabClass" regexp=".*\boutside\b.*" inverse="true">
+              <mm:treeinclude debug="html" notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+            </mm:compare>
+
+            <c:if test="${empty nosubmit}">
+              <input type="submit" name="${f}_submit" id="${f}_submit" value="Sla op" />
+              <input type="submit" name="${f}_cancel" id="${f}_cancel" value="Annuleer" />
+            </c:if>
+            <input type="hidden" name="${f}" value="${currentpage}" />
+            <input type="hidden" name="${f}_next" id="${f}_next" value="" />
+
+            <mm:valid>
+              <mm:import externid="${f}_next" id="next" />
+              <mm:log>Valid now going to ${next}</mm:log>
+
+              <mm:import id="submit" externid="${f}_submit" />
+              <mm:present referid="submit">
+                <mm:log>committing</mm:log>
+                <mm:commit />
+              </mm:present>
+
+              <script type="text/javascript">
+                <c:choose>
+                  <c:when test="${! empty submit}">
+                    <c:choose>
+                      <c:when test="${empty p[current + 1]}">
+                        window.close();
+                      </c:when>
+                      <c:otherwise>
+                        window.location = '<mm:url page="${page}"><mm:param name="${f}">${p[current + 1]}</mm:param></mm:url>';
+                      </c:otherwise>
+                    </c:choose>
+                  </c:when>
+                  <c:when test="${! empty next}">
+                    window.location = '<mm:url page="${page}"><mm:param name="${f}">${next}</mm:param></mm:url>';
+                  </c:when>
+                  <c:otherwise>
+                    //alert("don't know what to do");
+                  </c:otherwise>
+                </c:choose>
+              </script>
+            </mm:valid>
+          </mm:notpresent>
+        </mm:form>
+      </div>
+      <div class="bottom links">
+        <mm:write referid="tabs" escape="none" />
+      </div>
+  </div>
+
+</jsp:root>

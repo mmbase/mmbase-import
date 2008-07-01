@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.13 2008-06-27 15:07:00 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.14 2008-07-01 08:22:15 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -83,7 +83,7 @@
         <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
 
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?,precreate?">
+                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?,precreate?,confirm?">
           <a href="${_}" class="create">
             <img class="icon"
                  alt="${empty alt ? '+' : alt}"
