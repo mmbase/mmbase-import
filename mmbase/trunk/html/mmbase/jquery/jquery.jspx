@@ -9,7 +9,7 @@
       <mm:link page="/mmbase/jquery/jquery-1.2.3.min.js">
         <script src="${_}" type="text/javascript"><!-- help msie --></script>
       </mm:link>
-      <mm:write session="org.mmbase.jquery" value="yes" />
+      <mm:write request="org.mmbase.jquery" value="yes" />
     </mm:notpresent>
   </mm:context>
 </jsp:root>
