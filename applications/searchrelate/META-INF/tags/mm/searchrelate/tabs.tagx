@@ -43,6 +43,8 @@
 
   <jsp:directive.attribute name="intro" fragment="true"
                            />
+  <jsp:directive.attribute name="aftercommit" fragment="true"
+                           />
 
   <mm:import id="e">.${empty extension ? 'jspx' : extension}</mm:import>
   <mm:import id="p" externid="path" from="this" vartype="list">${empty path ? 'a,b,c' : path}</mm:import>
@@ -168,6 +170,7 @@
                     });
                   </script>
                 </c:if>
+                <jsp:invoke fragment="aftercommit" />
               </mm:present>
 
               <script type="text/javascript">
