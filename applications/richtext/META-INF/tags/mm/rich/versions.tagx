@@ -50,7 +50,7 @@ $(document).ready(function() {
               <mm:radio name="version1"  value="${_node.version}" compare="${version1}"  />
               <mm:radio name="version2"  value="${_node.version}" compare="${version2}"  />
               <jsp:text>v${_node.version}: </jsp:text>
-              <mm:node element="lastmodifiedby"><mm:nodeinfo type="gui" /></mm:node>
+              <jsp:doBody />
               <jsp:text>: </jsp:text><mm:field name="comments" />
             </li>
           </mm:listnodes>
