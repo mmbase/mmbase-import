@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.5 2008-06-28 11:57:23 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.6 2008-07-01 15:32:00 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
@@ -45,7 +45,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     private static int lastRequestId = Integer.MIN_VALUE;
 
 
-    private final long count = ++counter;
+    protected final long count = ++counter;
 
     // link to cloud context
     private CloudContext cloudContext = null;
@@ -226,9 +226,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public Node getNode(String nodeNumber) throws NotFoundException {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            BasicCloudContext.tmpObjectManager.getObject(getAccount(), nodeNumber, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + account, e);
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
         }
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
@@ -266,7 +267,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     private boolean hasNode(String nodeNumber, boolean isrelation) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (Throwable e) {
             return false; // error - node inaccessible or does not exist
         }
@@ -561,10 +562,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public Transaction getTransaction(String name) {
         Transaction tran = (Transaction)transactions.get(name);
         if (tran == null) {
-            tran = createTransaction(name, false);
+            return createTransaction(name, false);
         } else {
+            log.debug("Using existing transaction " + tran);
+            return tran;
         }
-        return tran;
     }
 
     public CloudContext getCloudContext() {
@@ -868,7 +870,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public boolean mayRead(String nodeNumber) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
             throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage(), e);
         }
@@ -1087,8 +1089,21 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
     }
 
+
+    protected void finalize() throws Throwable {
+        log.debug("Finalizing cloud of " + getUser() + " with id " + getAccount() + " transactions: " + transactions.keySet());
+        super.finalize();
+    }
+
     public String toString() {
         UserContext uc = getUser();
         return  "BasicCloud " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
+
+    /*
+    public Cloud getNonTransactionalCloud() {
+        return this;
+    }
+    */
+
 }
