@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.23 2008-06-23 15:13:51 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.24 2008-07-01 15:40:17 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -73,6 +73,7 @@ function MMBaseRelater(d) {
     }
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
+    this.logger.debug("found " + this.repository + " in ");
     if (this.repository != null) this.addSearcher(this.repository, "repository");
     this.relateCallBack = null;
     for (var i = 0; i < MMBaseRelater.readyFunctions.length; i++) {
