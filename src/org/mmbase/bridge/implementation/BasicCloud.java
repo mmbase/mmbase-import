@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.6 2008-07-01 15:32:00 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.7 2008-07-01 15:41:20 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
@@ -226,7 +226,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public Node getNode(String nodeNumber) throws NotFoundException {
         MMObjectNode node;
         try {
-            BasicCloudContext.tmpObjectManager.getObject(getAccount(), nodeNumber, nodeNumber);
+            //BasicCloudContext.tmpObjectManager.getObject(getAccount(), nodeNumber, nodeNumber);
             node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
             throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
