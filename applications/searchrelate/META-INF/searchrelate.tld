@@ -21,5 +21,10 @@
     <path>/META-INF/tags/mm/searchrelate/delete.tagx</path>
   </tag-file>
 
+  <tag-file>
+    <name>tabs</name>
+    <path>/META-INF/tags/mm/searchrelate/tabs.tagx</path>
+  </tag-file>
+
 
 </taglib>
