@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.8 2008-04-01 14:46:07 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.9 2008-07-01 15:32:00 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -72,6 +72,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 throw new BridgeException(e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     */
+    String getAccount() {
+        return transactionContext;
     }
 
 
@@ -151,7 +157,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void add(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.addNode(transactionContext, account, currentObjectContext);
+            BasicCloudContext.transactionManager.addNode(transactionContext, getAccount(), currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -163,7 +169,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void remove(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.removeNode(transactionContext, account, currentObjectContext);
+            BasicCloudContext.transactionManager.removeNode(transactionContext, getAccount(), currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -178,7 +184,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void delete(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.deleteObject(transactionContext, account, currentObjectContext);
+            BasicCloudContext.transactionManager.deleteObject(transactionContext, getAccount(), currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -190,7 +196,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return false;
         }
         try {
-            Collection transaction = BasicCloudContext.transactionManager.get(account, transactionContext);
+            Collection transaction = BasicCloudContext.transactionManager.get(getAccount(), transactionContext);
             return transaction.contains(node);
         } catch (TransactionManagerException tme) {
             throw new BridgeException(tme.getMessage(), tme);
@@ -276,7 +282,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public String toString() {
         UserContext uc = getUser();
-        return  "BasicTransaction '" + getName() + "' of " + parentCloud.toString();
+        return  "BasicTransaction" + count + " '" + getName() + "' of " + parentCloud.toString();
     }
 
     /*
