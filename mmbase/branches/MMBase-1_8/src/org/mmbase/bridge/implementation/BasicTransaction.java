@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.9 2008-07-01 15:32:00 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.10 2008-07-01 16:20:13 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -157,7 +157,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void add(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.addNode(transactionContext, getAccount(), currentObjectContext);
+            BasicCloudContext.transactionManager.addNode(transactionContext, account, currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -169,7 +169,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void remove(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.removeNode(transactionContext, getAccount(), currentObjectContext);
+            BasicCloudContext.transactionManager.removeNode(transactionContext, account, currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -184,7 +184,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     void delete(String currentObjectContext) {
         try {
-            BasicCloudContext.transactionManager.deleteObject(transactionContext, getAccount(), currentObjectContext);
+            BasicCloudContext.transactionManager.deleteObject(transactionContext, account, currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
@@ -196,7 +196,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return false;
         }
         try {
-            Collection transaction = BasicCloudContext.transactionManager.get(getAccount(), transactionContext);
+            Collection transaction = BasicCloudContext.transactionManager.get(account, transactionContext);
             return transaction.contains(node);
         } catch (TransactionManagerException tme) {
             throw new BridgeException(tme.getMessage(), tme);
