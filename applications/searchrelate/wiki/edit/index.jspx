@@ -61,8 +61,6 @@
                 </mm:fieldlist>
               </table>
 
-              <input type="submit" name="submit" id="submit" value="submit" onclick="return false" />
-              <input type="submit" name="cancel" id="cancel" value="cancel" />
               <input type="text" name="comments" value="Beschrijf uw verandering hier" />
               <hr />
               <mm:link page="../versions" referids="_node@objectnumber">
