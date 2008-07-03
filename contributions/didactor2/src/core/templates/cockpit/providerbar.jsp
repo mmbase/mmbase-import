@@ -12,7 +12,6 @@
 
   -->
   <mm:cloud method="asis">
-    <di:include page="/shared/keepalive.jsp" /> <!-- not necessary when using di:html, but it has a duplicate-include-protection -->
 
     <div class="providerMenubar">
       <mm:hasrank minvalue="didactor user">
