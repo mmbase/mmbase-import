@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.19 2007-08-21 14:53:10 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.20 2008-07-03 12:16:33 michiel Exp $
  */
 public class StorageConnector {
 
@@ -218,7 +218,7 @@ public class StorageConnector {
         log.debug("Getting node from storage");
         node = mmb.getStorageManager().getNode(nodeBuilder, number);
         if (nodeBuilder == mmb.getInsRel() && node.getOType() != nodeBuilder.getObjectType()) {
-            // the builder was unknown en we falled back to insrel. 
+            // the builder was unknown en we falled back to insrel.
             // Perhaps it would have been better to fall back to object?
             if (node.getNumber() <= 0) {
                 node = mmb.getStorageManager().getNode(mmb.getRootBuilder(), number);
@@ -359,7 +359,7 @@ public class StorageConnector {
          // would the creation of this Map not somehow be avoidable?
         Map<Integer, MMObjectNode> rawMap = new HashMap<Integer, MMObjectNode>();
         for (MMObjectNode n : rawNodes) {
-            rawMap.put(n.getNumber(), n); 
+            rawMap.put(n.getNumber(), n);
         }
         for (Integer n : subResult) {
             result.add(rawMap.get(n));
@@ -430,7 +430,7 @@ public class StorageConnector {
      * implementation only makes the distinction between queries for the 'related nodes caches' and
      * for the 'node list caches'. Multilevel queries are not done here, so are at the moment not
      * anticipated.
-     * 
+     *
      * It returns a Map rather then a Cache. The idea behind this is that if in the future a
      * query-result can be in more than one cache, a kind of 'chained map' can be returned, to
      * reflect that.
@@ -476,7 +476,7 @@ public class StorageConnector {
             results = builder.getMMBase().getSearchQueryHandler().getNodes(query, builder);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Found from cache" + getCache(query).getName() + " " + results);
+                log.debug("Found from cache '" + getCache(query).getName() + "' " + results);
             }
         }
         return results;
