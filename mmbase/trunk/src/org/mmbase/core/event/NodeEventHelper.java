@@ -12,6 +12,8 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This is a utility class to create node event and relation event instances. the reason for it is
@@ -19,10 +21,11 @@ import org.mmbase.module.corebuilders.InsRel;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.12 2008-06-30 08:25:35 michiel Exp $
+ * @version $Id: NodeEventHelper.java,v 1.13 2008-07-03 15:29:40 michiel Exp $
 
  */
 public class NodeEventHelper {
+    private static final Logger log = Logging.getLoggerInstance(NodeEventHelper.class);
 
     public static NodeEvent createNodeEventInstance(Node node, int eventType, String machineName){
         if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
@@ -45,21 +48,21 @@ public class NodeEventHelper {
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues = removeBinaryValues(node.getValues());
+            newEventValues = removeNonSerializingValues(node.getValues());
             oldEventValues = Collections.emptyMap();
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues = removeBinaryValues(node.getOldValues());
+            oldEventValues = removeNonSerializingValues(node.getOldValues());
             newEventValues = new HashMap<String, Object>();
             Map<String, Object> values = node.getValues();
             for (String key : oldEventValues.keySet()) {
                 newEventValues.put(key, values.get(key));
             }
-            newEventValues = removeBinaryValues(newEventValues);
+            newEventValues = removeNonSerializingValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
             newEventValues = Collections.emptyMap();
-            oldEventValues = removeBinaryValues(node.getValues());
+            oldEventValues = removeNonSerializingValues(node.getValues());
             break;
         default: {
             oldEventValues = Collections.emptyMap();
@@ -71,13 +74,25 @@ public class NodeEventHelper {
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    private static Map<String, Object> removeBinaryValues(Map<String, Object> oldEventValues) {
+    /**
+     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
+     * because they are too big).
+     */
+    private static Map<String, Object> removeNonSerializingValues(Map<String, Object> oldEventValues) {
         Set<String> toremove = null;
         synchronized(oldEventValues) {
             for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
-                if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
-                    if (toremove == null) toremove = new HashSet<String>();
-                    toremove.add(entry.getKey());
+                Object value = entry.getValue();
+                if (value != null) {
+                    if (value instanceof byte[]) {
+                        if (toremove == null) toremove = new HashSet<String>();
+                        toremove.add(entry.getKey());
+                    } else if (! (value instanceof java.io.Serializable)) {
+                        log.warn("Found non serializable '" + entry.getKey() + "' in " + oldEventValues);
+                        if (toremove == null) toremove = new HashSet<String>();
+                        toremove.add(entry.getKey());
+
+                    }
                 }
             }
         }
