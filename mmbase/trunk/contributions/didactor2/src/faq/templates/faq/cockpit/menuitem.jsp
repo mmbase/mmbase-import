@@ -3,23 +3,24 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<mm:import id="scope" externid="scope"/>   
+<mm:import id="scope" externid="scope"/>
 
 <mm:compare referid="scope" value="education">
-  <mm:import jspvar="link" id="link"><mm:treefile page="/faq/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>&node=</mm:import>
-  <mm:listnodes type="faqcontainers">    
-    <mm:first>  
+  <mm:listnodes type="faqcontainers">
+    <mm:first>
       <mm:field id="faqcontainer" name="number" write="false" />
-    </mm:first>   
-  </mm:listnodes> 
+    </mm:first>
+  </mm:listnodes>
   <mm:node number="$faqcontainer" notfound="skipbody">
-    <mm:relatednodes type="faqnodes">   
-      <mm:import id="faqname" reset="true"><mm:field name="name"/></mm:import> 
-      <mm:import id="faqnumber" jspvar="faqNumber" reset="true"><mm:field name="number"/></mm:import>
+    <mm:relatednodes type="faqnodes" id="faq">
+      <mm:import id="faqname" reset="true"><mm:field name="name"/></mm:import>
       <mm:related path="educations,people" constraints="people.number='$user'">
           <div class="menuSeperator"></div>
           <div class="menuItem">
-            <a title="<mm:write referid="faqname"/>" href="<%=link%><%=faqNumber%>" class="menubar"><mm:write referid="faqname"/></a>
+            <mm:treefile page="/faq/frontoffice/index.jsp" objectlist="$includePath" referids="$referids,faq@node">
+              aaaaaaaaaa
+              <a title="<mm:write referid="faqname"/>" href="${_}" class="menubar"><mm:write referid="faqname"/></a>
+            </mm:treefile>
           </div>
       </mm:related>
     </mm:relatednodes>
