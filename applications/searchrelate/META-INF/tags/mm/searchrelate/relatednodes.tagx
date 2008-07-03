@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.14 2008-07-01 08:22:15 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.15 2008-07-03 16:16:11 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -47,13 +47,18 @@
                            description="Whether deleting must be confirmed"
                            />
 
+  <jsp:directive.attribute name="load"      type="java.lang.Boolean"
+                           description="Whether javascript must be loaded. Normally this default to the correct value (only on first use), but sometimes,
+                                        e.g. if you use this tag again in the 'li', then you may want to put this explicitely to false"
+                           />
+
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
   <mm:import from="request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_list_sequence" value="${seq + 1}" />
-  <c:if test="${seq eq 0}">
+  <c:if test="${(seq eq 0 and empty load) or load}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
 
