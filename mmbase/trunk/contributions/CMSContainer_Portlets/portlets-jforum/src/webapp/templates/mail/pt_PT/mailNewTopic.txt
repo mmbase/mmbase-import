@@ -1,8 +1,0 @@
-Olá,
-
-Recebeu este e-mail porque foi criado um novo tópico no nosso fórum. O título do tópico é "${topic.title}",
-pode usar o seguinte link para o ler:
-
-${path}
-
-Se não desejar receber novas notificações sobre este fórum, aceda p.f. a ${unwatch}
