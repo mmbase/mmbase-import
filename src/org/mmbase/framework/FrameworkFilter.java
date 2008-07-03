@@ -30,13 +30,13 @@ import org.mmbase.util.logging.Logging;
  * corresponding page (technical URL) within the website. When the recieved URL is not
  * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original
  * form. The filtering and conversion to an URL pointing to an existing JSP template is done by
- * an {@link basic/UrlConverter}.
- * 
+ * an {@link org.mmbase.framework.basic.UrlConverter}.
+ *
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.26 2008-06-02 17:36:17 ernst Exp $
+ * @version $Id: FrameworkFilter.java,v 1.27 2008-07-03 13:51:38 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -158,7 +158,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (path != null) {
                 try {
                     if (excludePattern != null && excludePattern.matcher(path).find()) {
-   
+
                         chain.doFilter(request, response);  // url is excluded from further actions
                         return;
                     }
@@ -177,7 +177,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             Parameters params = fw.createParameters();
             if (params.containsParameter(Parameter.REQUEST)) {
                 params.set(Parameter.REQUEST, req);
-            } 
+            }
             if (params.containsParameter(Parameter.RESPONSE)) {
                 params.set(Parameter.RESPONSE, res);
             }
@@ -187,7 +187,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 if (log.isDebugEnabled()) {
                     log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + params);
                 }
-                
+
                 if (forwardUrl != null && !forwardUrl.equals("")) {
                     res.setHeader("X-MMBase-forward", forwardUrl);
                     /*
