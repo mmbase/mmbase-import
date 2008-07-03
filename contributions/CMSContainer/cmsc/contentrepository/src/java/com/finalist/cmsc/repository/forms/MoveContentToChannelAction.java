@@ -97,7 +97,7 @@ public class MoveContentToChannelAction extends MMBaseAction {
             nodes.add(elementNode);
             Workflow.create(channelNode, remark, nodes);
             Workflow.create(newChannelNode, remark, nodes);
-            isSuccess = isSuccess && true;
+            isSuccess = true;
          }
          else {
             isSuccess = false;

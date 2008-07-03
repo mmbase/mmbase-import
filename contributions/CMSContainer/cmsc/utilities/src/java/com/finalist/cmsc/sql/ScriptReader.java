@@ -43,7 +43,7 @@ public class ScriptReader {
 
 
    /**
-    * Creates a new instance which automaticly runs load and execute
+    * Creates a new instance which automatically runs load and execute
     * 
     * @param fileName -
     *           file to load

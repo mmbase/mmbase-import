@@ -43,7 +43,7 @@ import com.finalist.pluto.container.factory.impl.PortletFactoryImpl;
  * Servlet to handle Portlets
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PortletServlet extends HttpServlet {
    private static Log log = LogFactory.getLog(PortletServlet.class);
@@ -125,7 +125,7 @@ public class PortletServlet extends HttpServlet {
       try {
          portletClass = portletFactory.getPortletInstance(this.getServletContext(), portletDefinition);
          Integer method_id = (Integer) request.getAttribute(Constants.METHOD_ID);
-         if (method_id == Constants.METHOD_RENDER) {
+         if (method_id.equals(Constants.METHOD_RENDER)) {
             RenderRequest renderRequest = (RenderRequest) request.getAttribute(Constants.PORTLET_REQUEST);
             RenderResponse renderResponse = (RenderResponse) request.getAttribute(Constants.PORTLET_RESPONSE);
 
@@ -135,7 +135,7 @@ public class PortletServlet extends HttpServlet {
             
             portletClass.render(renderRequest, renderResponse);
          }
-         else if (method_id == Constants.METHOD_ACTION) {
+         else if (method_id.equals(Constants.METHOD_ACTION)) {
             ActionRequest actionRequest = (ActionRequest) request.getAttribute(Constants.PORTLET_REQUEST);
             ActionResponse actionResponse = (ActionResponse) request.getAttribute(Constants.PORTLET_RESPONSE);
 
@@ -145,7 +145,7 @@ public class PortletServlet extends HttpServlet {
 
             portletClass.processAction(actionRequest, actionResponse);
          }
-         else if (method_id == Constants.METHOD_NOOP) { // AKA Load
+         else if (method_id.equals(Constants.METHOD_NOOP)) { // AKA Load
             PortletContext portletContext = null;
             PortletConfig portletConfig = null;
 
