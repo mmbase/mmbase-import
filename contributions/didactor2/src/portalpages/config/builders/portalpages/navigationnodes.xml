@@ -50,7 +50,7 @@
         <guiname xml:lang="nl">Tekst</guiname>
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field">
-        <maxLength value="1024" />
+        <maxLength value="640000" />
       </datatype>
     </field>
 
