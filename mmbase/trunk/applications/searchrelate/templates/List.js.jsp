@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.14 2008-06-27 15:23:19 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.15 2008-07-03 16:13:00 michiel Exp $
  */
 
 
@@ -142,28 +142,32 @@ List.prototype.bindCreate = function(a) {
 	var params = {};
 	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
-		    if ( status == "success" || status == "notmodified" ) {
-			var r = $(res.responseText)[0];
+		    try {
+			if ( status == "success" || status == "notmodified" ) {
+			    var r = $(res.responseText)[0];
 
-			// remove default value on focus
-			$(r).find("input").one("focus", function() {
-			    this.value = "";
-			    a.list.validator.validateElement(this);
-			});
-			a.list.find(a.list.div, "ol").append(r);
-			a.list.validator.addValidation(r);
-			a.list.find(r, "a.delete").each(function() {
-			    a.list.bindDelete(this);
-			});
-			$(r).find("* div.list").each(function() {
-			    var div = this;
-			    if (div.list == null) {
-				div.list = new List(div);
+			    // remove default value on focus
+			    $(r).find("input").one("focus", function() {
+				this.value = "";
+				a.list.validator.validateElement(this);
+			    });
+			    a.list.find(a.list.div, "ol").append(r);
+			    a.list.validator.addValidation(r);
+			    a.list.find(r, "a.delete").each(function() {
+				a.list.bindDelete(this);
+			    });
+			    $(r).find("* div.list").each(function() {
+				var div = this;
+				if (div.list == null) {
+				    div.list = new List(div);
 			    }
-			});
-			a.list.executeCallBack("create", r);
-
+			    });
+			    a.list.executeCallBack("create", r);
+			}
+		    } catch (ex) {
+			alert(ex);
 		    }
+
 		}
 	       });
 	return false;
