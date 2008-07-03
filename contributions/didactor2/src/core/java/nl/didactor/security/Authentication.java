@@ -18,8 +18,11 @@ import org.mmbase.security.classsecurity.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.transformers.*;
+
 
 import java.util.concurrent.CopyOnWriteArrayList;
+
 
 import nl.didactor.events.*;
 import nl.didactor.builders.*;
@@ -132,6 +135,8 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.warn("Cannot log out a user whose session is null");
         }
     }
+
+    private static final CharTransformer PARAM_ESCAPER= new Url(Url.ESCAPE);
     /**
      * Login method: it tests the given credentials against MMBase.
      * The flow is as following:
@@ -319,7 +324,10 @@ public class Authentication extends org.mmbase.security.Authentication {
                     } else {
                         referUrl.append('?');
                     }
-                    referUrl.append("referrer=").append(request.getRequestURI());
+                    referUrl.append("referrer=");
+                    String q = request.getQueryString();
+                    String referrer = PARAM_ESCAPER.transform(request.getServletPath() + (q != null ? ("?" + q) : ""));
+                    referUrl.append(referrer);
                     if (referUrl.toString().startsWith("/")) {
                         referUrl.insert(0, request.getContextPath());
                     }
