@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.8 2008-06-13 12:18:49 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.9 2008-07-03 15:55:50 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -263,6 +263,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {
+                    if (defaultValue instanceof Node) {
+                        defaultValue = new Integer(((Node) defaultValue).getNumber());
+                    }
                     node.setValue(field.getName(), defaultValue);
                 }
             } else {
