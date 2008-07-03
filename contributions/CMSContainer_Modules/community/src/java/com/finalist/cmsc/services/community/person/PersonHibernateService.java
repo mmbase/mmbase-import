@@ -47,7 +47,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          return Collections.emptyList();
       }
 
-      List personList = getSession().createCriteria(Person.class).add(Example.create(example)).list();
+      List<Person> personList = getSession().createCriteria(Person.class).add(Example.create(example)).list();
       return personList;
 
    }
@@ -63,7 +63,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
             enableLike(MatchMode.ANYWHERE).
             excludeZeroes().
             ignoreCase();
-      List personList = getSession().createCriteria(Person.class).add(userExample).list();
+      List<Person> personList = getSession().createCriteria(Person.class).add(userExample).list();
       return personList;
    }
 
@@ -125,8 +125,8 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
    @SuppressWarnings("unchecked")
    private Person findPersonByCriteria(Criteria criteria) {
-      List personList = criteria.list();
-      return personList.size() == 1 ? (Person) personList.get(0) : null;
+      List<Person> personList = criteria.list();
+      return personList.size() == 1 ? personList.get(0) : null;
    }
 
    @Required
