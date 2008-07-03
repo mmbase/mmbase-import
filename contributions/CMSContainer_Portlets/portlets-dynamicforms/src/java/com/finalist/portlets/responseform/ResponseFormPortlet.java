@@ -139,7 +139,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                   
                   if (type == TYPE_CHECKBOX) {
                      if(value != null && value instanceof String){
-                        textValue = (value == null) ? CHECKBOX_NO : value.toString();
+                        textValue = value.toString();
                      }
                      else if (value != null && value instanceof ArrayList){
                         textValue = transferParameterValues((ArrayList)value);

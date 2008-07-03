@@ -216,7 +216,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 			return;
 		}
 		NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
-		Node newsletter = cloud.getNode(newsletterId);
+		//Node newsletter = cloud.getNode(newsletterId);
 		Node logNode = logManager.createNode();
 		logNode.setIntValue("newsletter", newsletterId);
 		logNode.setIntValue("post", 0);
