@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.37 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: ClusterManager.java,v 1.38 2008-07-03 15:08:29 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -78,12 +78,16 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         //we only want to propagate the local events into the cluster
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
             byte[] message = createMessage(event);
-            if (message.length > 5000) {
-                log.warn("Sending large event to the cluster. Serialization of  " + event + " is " + message.length + " long!");
+            if (message != null) {
+                if (message.length > 5000) {
+                    log.warn("Sending large event to the cluster. Serialization of  " + event + " is " + message.length + " long!");
+                } else {
+                    log.debug("Sending an event to the cluster");
+                }
+                nodesToSend.offer(message);
             } else {
-                log.debug("Sending an event to the cluster");
+                log.debug("MEssage was null");
             }
-            nodesToSend.offer(message);
         } else {
             log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
