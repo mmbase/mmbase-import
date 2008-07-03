@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.221 2008-06-30 08:29:33 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.222 2008-07-03 15:53:58 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -457,6 +457,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
+     * MMObjectNode's are serializable (which is used by e.g. NodeEvent's). So all values must be
+     * serializable too.
+     * This methods check that, and logs a warning if not so.
+     * @since MMBase-1.9
+     */
+    protected Object checkSerializable(String fieldName, Object fieldValue) {
+        if (fieldValue != null && (! (fieldValue instanceof Serializable))) {
+            log.warn("Value for " + fieldName + " is not serializable: " + fieldValue, new Exception());
+        }
+        return fieldValue;
+    }
+
+    /**
      * Stores a value in the values hashtable.
      * This is a low-level method that circumvents typechecking and the triggers of extended classes.
      * You should normally call {@link #setValue} to change fields.
@@ -471,6 +484,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             // This is just a hack to make app1 import/export working, withough exposing the values map.
             values.remove(fieldName);
         }
+        fieldValue = checkSerializable(fieldName, fieldValue);
         if (checkFieldExistance(fieldName)) {
             values.put(fieldName, fieldValue);
         }
@@ -486,6 +500,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     private void storeOldValue(String fieldName, Object object) {
         if (! oldValues.containsKey(fieldName)) {
+            object = checkSerializable(fieldName,  object);
             oldValues.put(fieldName, object);
         }
     }
@@ -730,6 +745,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if(doc != null) {
                 // store the document inside the field.. much faster...
                 value = doc;
+                value = checkSerializable(fieldName, value);
                 values.put(fieldName, value);
             } else {
                 values.put(fieldName, null);
