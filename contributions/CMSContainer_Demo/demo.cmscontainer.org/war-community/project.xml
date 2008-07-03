@@ -286,6 +286,9 @@
             <artifactId>jforum</artifactId>
             <version>2.1.8</version>
             <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
         </dependency>
 -->
 <!-- jboss -->
