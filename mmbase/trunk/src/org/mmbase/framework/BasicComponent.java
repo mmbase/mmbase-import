@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
+import java.util.concurrent.*;
 import org.w3c.dom.*;
 import java.net.URI;
 import org.mmbase.security.*;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.45 2008-04-11 09:57:24 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.46 2008-07-03 13:51:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -33,14 +34,14 @@ public class BasicComponent implements Component {
     private final String name;
     private String bundle;
     private final LocalizedString description;
-    private final Map<String, Block> blocks        = new HashMap<String, Block>();
-    private final Map<String, Setting<?>> settings = new HashMap<String, Setting<?>>();
+    private final Map<String, Block> blocks        = new ConcurrentHashMap<String, Block>();
+    private final Map<String, Setting<?>> settings = new ConcurrentHashMap<String, Setting<?>>();
     private Block defaultBlock = null;
     private URI uri;
     private int version = -1;
 
-    protected final Collection<Component> dependencies        = new HashSet<Component>();
-    protected final Collection<VirtualComponent> unsatisfied  = new HashSet<VirtualComponent>();
+    protected final Collection<Component> dependencies        = new CopyOnWriteArraySet<Component>();
+    protected final Collection<VirtualComponent> unsatisfied  = new CopyOnWriteArraySet<VirtualComponent>();
 
 
     public BasicComponent(String name) {
