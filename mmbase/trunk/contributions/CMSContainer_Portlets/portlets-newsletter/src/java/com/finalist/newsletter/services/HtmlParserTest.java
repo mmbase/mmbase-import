@@ -68,9 +68,9 @@ public class HtmlParserTest extends TestCase {
          e.printStackTrace();
       }
 
-      String textInPage = visitor.getTitle();
-        NodeList nodelist ;
-        nodelist = visitor.getBody();
+      //String textInPage = visitor.getTitle();
+      //NodeList nodelist ;
+      //nodelist = visitor.getBody();
    }
 
 }

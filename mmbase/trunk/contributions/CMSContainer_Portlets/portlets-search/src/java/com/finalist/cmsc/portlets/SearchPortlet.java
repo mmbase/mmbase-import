@@ -19,7 +19,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Fulltext search portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class SearchPortlet extends CmscPortlet {
 
@@ -105,7 +105,7 @@ public class SearchPortlet extends CmscPortlet {
       String searchText = request.getParameter(SEARCH_TEXT);
       String searchCategory = request.getParameter(SEARCH_CATEGORY);
       if (searchText != null) {
-         String searchTarget = request.getParameter(SEARCH_TARGET);
+         //String searchTarget = request.getParameter(SEARCH_TARGET);
          setAttribute(request, SEARCH_TEXT, searchText);
       }
       if (searchCategory != null) {
