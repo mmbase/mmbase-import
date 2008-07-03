@@ -7,7 +7,7 @@
   <script type="text/javascript">
 	  function openHelpContent( number ) {
 	    if ( number > 0 ) {
-	      frames['content'].location.href='<mm:treefile page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&node='+number;
+	      frames['content'].location.href='<mm:treefile page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids" />'+'&amp;node='+number;
 	    }
 	  }
   </script>
@@ -19,12 +19,12 @@
       </mm:relatednodes>
     </mm:relatednodescontainer>
   </mm:node>
-  <mm:present referid="showcmshelp">  
-    <mm:listnodes type="helpcontainers">    
-      <mm:first>  
+  <mm:present referid="showcmshelp">
+    <mm:listnodes type="helpcontainers">
+      <mm:first>
         <mm:field id="helpcontainer" name="number" write="false" />
-      </mm:first>   
-    </mm:listnodes> 
+      </mm:first>
+    </mm:listnodes>
     <mm:node number="$helpcontainer" notfound="skipbody">
     	<mm:relatednodes type="helpnodes">
     	  <mm:remove referid="notgeneral"/>
@@ -33,17 +33,17 @@
     	  </mm:relatednodes>
     	  <mm:relatednodes type="roles">
     	    <mm:import id="notgeneral" reset="true">true</mm:import>
-    	  </mm:relatednodes>    
+    	  </mm:relatednodes>
     	  <mm:notpresent referid="notgeneral">
     	    <div class="menuSeparator"> | </div>
             <div class="menuItem">
     	      <a class="menubar" href="javascript:openHelpContent('<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
-    	    </div>  
+    	    </div>
     	  </mm:notpresent>
-    	</mm:relatednodes> 
+    	</mm:relatednodes>
     </mm:node>
   </mm:present>
 </mm:cloud>
 </mm:content>
 
-						    
+
