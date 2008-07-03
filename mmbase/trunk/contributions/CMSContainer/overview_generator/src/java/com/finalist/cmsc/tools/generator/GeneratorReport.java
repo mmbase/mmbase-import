@@ -314,6 +314,7 @@ public class GeneratorReport extends BatchOperation {
         switch (args.length) {
             case 0:
                 printUsage();
+                break;
             case 1:
                 comeOn(args[0], ".", ".");
                 break;
