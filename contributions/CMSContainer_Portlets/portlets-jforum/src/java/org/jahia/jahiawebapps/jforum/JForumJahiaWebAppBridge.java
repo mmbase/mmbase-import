@@ -39,7 +39,7 @@ public class JForumJahiaWebAppBridge extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         Servlet instance = null;
-
+        System.out.println("JForumJahiaWebAppBridge-------------------->init");
         //init
         try {
 
@@ -91,6 +91,7 @@ public class JForumJahiaWebAppBridge extends HttpServlet {
            */
         logger.debug("Request uri: " + request.getRequestURI());
         logger.debug("QueryString: " + request.getQueryString());
+        System.out.println("JForumJahiaWebAppBridge-------------------->service");
         try {
             if (isAlreadyInstalled()) {
                 Servlet instance = (Servlet) getServletContext().getAttribute(JFORUM_KEY);
@@ -191,7 +192,7 @@ public class JForumJahiaWebAppBridge extends HttpServlet {
      * @param response Render response object
      */
     private void callServletServiceMethod(HttpServletRequest request, HttpServletResponse response) {
-
+       System.out.println("JForumJahiaWebAppBridge-------------------->callServletServiceMethod");
         // default case of : Install wizard
         String defaultRequestUri = "install/install.page";
         String defaultModule = "install";
