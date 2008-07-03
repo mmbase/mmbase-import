@@ -79,7 +79,7 @@ public class PortalAutoConnectUserManager {
 		request.getSession().setAttribute(SystemGlobals.getValue(ConfigKeys.SSO_PASSWORD_ATTRIBUTE), password);
 		//set it's group
 		if (isAdministrator()) {
-			request.getSession().setAttribute(SystemGlobals.getValue(ConfigKeys.SSO_ROLE_ATTRIBUTE), ConfigKeys.ROLE_ADMIN);
+			request.getSession().setAttribute(SystemGlobals.getValue("sso.role.attribute"), "ROLE_ADMIN");
 
 		}
 
