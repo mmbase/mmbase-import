@@ -7,8 +7,8 @@ import javax.portlet.*;
 /** Class to wrap a HttpSession so it can be used as a PortletSession */
 public class PortletSessionWrapper implements PortletSession {
 
-	public static int APPLICATION_SCOPE = PortletSession.APPLICATION_SCOPE;
-	public static int PORTLET_SCOPE = PortletSession.PORTLET_SCOPE;
+	public final static int APPLICATION_SCOPE = PortletSession.APPLICATION_SCOPE;
+	public final static int PORTLET_SCOPE = PortletSession.PORTLET_SCOPE;
 
 	private HttpSession session;
 	private int SCOPE = APPLICATION_SCOPE;
