@@ -26,6 +26,36 @@
   </descriptions>
 
   <fieldlist>
+
+    <field name="username">
+      <gui>
+        <guiname xml:lang="nl">Gebruikersnaam</guiname>
+        <guiname xml:lang="en">Username</guiname>
+        <guiname xml:lang="fr">Nom d'utilisateur</guiname>
+        <guiname xml:lang="bg">Потребителско име</guiname>
+        <guiname xml:lang="ro">Utilizator</guiname>
+        <guiname xml:lang="eo">Uzulo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>6</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <class name="nl.didactor.datatypes.UserName" />
+        <unique value="true" />
+        <required value="false" />
+        <minLength value="5" />
+        <maxLength value="32" />
+        <pattern value="\S{5,32}" enforce="oncreate" />
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.FunctionValueIfEmptyCommitProcessor">
+            <param name="functionName">generateUserName</param>
+          </class>
+        </commitprocessor>
+      </datatype>
+    </field>
+
     <field name="firstname">
       <descriptions>
         <description xml:lang="en">Person's first name</description>
@@ -286,37 +316,10 @@
       </gui>
       <datatype base="gender" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="0" />
+        <required value="false" />
       </datatype>
     </field>
 
-    <field name="username">
-      <gui>
-        <guiname xml:lang="nl">Gebruikersnaam</guiname>
-        <guiname xml:lang="en">Username</guiname>
-        <guiname xml:lang="fr">Nom d'utilisateur</guiname>
-        <guiname xml:lang="bg">Потребителско име</guiname>
-        <guiname xml:lang="ro">Utilizator</guiname>
-        <guiname xml:lang="eo">Uzulo</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <list>6</list>
-        </positions>
-      </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <class name="nl.didactor.datatypes.UserName" />
-        <unique value="true" />
-        <required value="false" />
-        <minLength value="5" />
-        <maxLength value="32" />
-        <pattern value="\S{5,32}" enforce="oncreate" />
-        <commitprocessor>
-          <class name="org.mmbase.datatypes.processors.FunctionValueIfEmptyCommitProcessor">
-            <param name="functionName">generateUserName</param>
-          </class>
-        </commitprocessor>
-      </datatype>
-    </field>
 
     <field name="password">
       <descriptions>
