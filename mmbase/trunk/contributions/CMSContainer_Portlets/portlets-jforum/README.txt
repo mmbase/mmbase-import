@@ -320,7 +320,7 @@ Step 2: Add below elements to web.xml
 
    Step 3  : Configure DataSouce
 
-   Add DataSouce in the context xml file,e.g.: the name should be "jdbc/jforum"
+   Add DataSouce in the context xml file,e.g.: the name should be "jdbc/jforum",create database "jforum"
 
     <Resource name="jdbc/jforum" auth="Container" type="javax.sql.DataSource"
 		removeAbandoned="true" 
@@ -333,4 +333,8 @@ Step 2: Add below elements to web.xml
 		password="1234"
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/jforum" />
+
+  Step 4  : configuate database properties for installing tables . e.g . if you use mysql , modify   mysql.properties which  is in directory $app/WEB-INF/config/database/mysql/
+
+
 
