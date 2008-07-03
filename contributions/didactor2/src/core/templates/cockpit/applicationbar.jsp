@@ -10,7 +10,7 @@
           <mm:import externid="referrer">
             <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids" />
           </mm:import>
-          <form method="post" action="${referrer}">
+          <form method="post" action="${mm:link(referrer)}">
             <p>
               <input type="hidden" name="authenticate"  value="plain"  />
               <input type="hidden" name="command"       value="login" />
@@ -43,7 +43,10 @@
         </div>
       </mm:compare>
       <mm:hasrank minvalue="didactor user">
+
+
         <div class="menuItemApplicationMenubar start">
+
           <mm:import externid="reset" />
           <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="reset?" write="false">
             <a title="${di:translate('core.home')}" href="${_}" class="menubar"><di:translate key="core.home" /></a>
@@ -64,12 +67,19 @@
           </mm:node>
         </div>
 
+        <di:blocks styleClass="menuItemApplicationMenubar"
+                  classification="applicationbar">
+          <jsp:attribute name="separator">
+            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+          </jsp:attribute>
+        </di:blocks>
         <!--
             WTF WTF, specific code for yet another certain component
             This must be gone!
         -->
 
         <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+
 
         <div class="menuItemApplicationMenubar">
           <mm:hasnode number="component.portfolio">
@@ -86,7 +96,6 @@
             </mm:treefile>
           </mm:hasnode>
         </div>
-
 
         <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
         <div class="menuItemApplicationMenubar">
