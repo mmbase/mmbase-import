@@ -51,7 +51,6 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
         } else {
             setGetMethod();
         }
-
     }
 
 
@@ -102,6 +101,7 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
             // add others name parameters
             if (superParamNames != null) {
                 while (superParamNames.hasMoreElements()) {
+                   
                     String name = (String) superParamNames.nextElement();
                     if (!name.equalsIgnoreCase("module") &&
                             !name.equalsIgnoreCase("action")) {
@@ -125,11 +125,12 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
      * @return The QueryString value
      */
     public String getQueryString() {
-        String s = getParameter("queryString");
-        if (s == null && isFirstAction()) {
-            s = "module=" + defaultModule + "&action=" + defaultAction;
-        }
-        return s;
+     //   String s = getParameter("queryString");
+//        if (s == null && isFirstAction()) {
+//            s = "module=" + defaultModule + "&action=" + defaultAction;
+//        }
+       // return s;
+      return "aaa";
     }
 
 
@@ -269,7 +270,7 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
      * @todo Implement this javax.servlet.http.HttpServletRequest method
      */
     public String getHeader(String name) {
-        return "";
+        return null;
     }
 
 
