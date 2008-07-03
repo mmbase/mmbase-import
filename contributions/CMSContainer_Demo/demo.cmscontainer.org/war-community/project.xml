@@ -281,6 +281,12 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>jforum</groupId>
+            <artifactId>jforum</artifactId>
+            <version>2.1.8</version>
+            <type>jar</type>
+        </dependency>
 -->
 <!-- jboss -->
 <!--
