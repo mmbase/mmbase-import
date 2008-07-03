@@ -141,7 +141,7 @@ public class PortalAutoConnectUserManager {
 		request.getPortletSession().setAttribute(SystemGlobals.getValue(ConfigKeys.SSO_PASSWORD_ATTRIBUTE), password, PortletSession.APPLICATION_SCOPE);
 		//set it's group
 		if (isAdministrator()) {
-			request.getPortletSession().setAttribute(SystemGlobals.getValue(ConfigKeys.SSO_ROLE_ATTRIBUTE), ConfigKeys.ROLE_ADMIN, PortletSession.APPLICATION_SCOPE);
+			request.getPortletSession().setAttribute(SystemGlobals.getValue("ROLE_ADMIN"), "ROLE_ADMIN", PortletSession.APPLICATION_SCOPE);
 
 		}
 

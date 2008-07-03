@@ -135,10 +135,10 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
 	 */
 	public String encodeURL(String url) {
 		logger.debug("Encode url: " + url);
+		
 
 		// replace special graphe before parsing
 		url = StringUtil.replaceSpecialGraphics(url);
-
 		//remove anchor
 		int indexSharp = url.indexOf('#');
 		if (indexSharp > -1) {
@@ -162,7 +162,6 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
                 if(!uri.endsWith(SystemGlobals.getValue(ConfigKeys.SERVLET_EXTENSION))){
                     uri = uri + SystemGlobals.getValue(ConfigKeys.SERVLET_EXTENSION);
                 }
-
 		// set requestUri
 		pUrl.setParameter("requestURI", uri);
 
@@ -172,9 +171,9 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
 			//query is like: a='xxx'& b='xxx'&c='xxx'&d='xxx'
 			String query = (String) uriAndQuery.nextElement();
 			logger.debug("Found query string: " + query);
-
 			// set query
-			pUrl.setParameter("queryString", query);
+			//upgrade to Jform 2.1.8
+			//pUrl.setParameter("queryString", query);
 
 			// paramNameAndValue is a collection if string like: a='xxx'
 			Enumeration paramNameAndValue = new StringTokenizer(query, "&");
@@ -183,10 +182,8 @@ public class HttpServletResponseWrapper extends ServletResponseWrapper implement
 				// pAnd is like: a="xxx"
 				String pAndV = (String) paramNameAndValue.nextElement();
 				Enumeration param = new StringTokenizer(pAndV, "=");
-
 				// name is like: a
 				String name = (String) param.nextElement();
-
 				// value is like: xxx
 				String value = (String) param.nextElement();
 				pUrl.setParameter(name, value);
