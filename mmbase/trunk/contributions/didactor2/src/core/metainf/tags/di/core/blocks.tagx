@@ -7,17 +7,30 @@
       description="" />
 
   <jsp:directive.attribute name="classification"    required="true" />
+  <jsp:directive.attribute name="styleClass"   />
+  <jsp:directive.attribute name="separator"         fragment="true" />
+  <jsp:directive.attribute name="beforefirst"       fragment="true" />
+  <jsp:directive.attribute name="afterlast"         fragment="true" />
 
   <mm:hasfunction set="components" name="blockClassification">
-    <div class="mmbase_fw_blocks ${classification}">
+    <div class="mmbase_fw_blocks ${classification} ${styleClass}">
       <mm:functioncontainer>
         <mm:param name="id">didactor.${classification}</mm:param>
         <mm:listfunction set="components" name="blockClassification">
           <mm:stringlist referid="_.blocks">
+            <mm:first>
+              <jsp:invoke fragment="beforefirst" />
+            </mm:first>
             <mm:include page="/shared/component.jspx">
               <mm:param name="name">${_.component.name}</mm:param>
               <mm:param name="block">${_.name}</mm:param>
             </mm:include>
+            <mm:last inverse="true">
+              <jsp:invoke fragment="separator" />
+            </mm:last>
+            <mm:last>
+              <jsp:invoke fragment="afterlast" />
+            </mm:last>
           </mm:stringlist>
         </mm:listfunction>
       </mm:functioncontainer>
