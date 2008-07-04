@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.184 2008-06-13 09:58:26 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.185 2008-07-04 10:11:50 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -209,9 +209,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     public Node getNode(String nodeNumber) throws NotFoundException {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + account, e);
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
         }
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
@@ -249,7 +249,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     private boolean hasNode(String nodeNumber, boolean isrelation) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (Throwable e) {
             return false; // error - node inaccessible or does not exist
         }
@@ -303,7 +303,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     BasicNodeManager getBasicNodeManager(String nodeManagerName) throws NotFoundException {
-        MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
+        if (BasicCloudContext.mmb == null || (! BasicCloudContext.mmb.getState())) {
+            throw new NotFoundException("MMBase not yet, or not successfully initialized (check mmbase log)");
+        }
+        MMObjectBuilder bul = BasicCloudContext.mmb.getBuilder(nodeManagerName);
         // always look if builder exists, since otherwise
         if (bul == null) {
             throw new NotFoundException("Node manager with name '" + nodeManagerName + "' does not exist.");
@@ -660,7 +663,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
             ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
-            List<MMObjectNode> resultList = resultBuilder.getResult(); 
+            List<MMObjectNode> resultList = resultBuilder.getResult();
             query.markUsed();
             NodeManager tempNodeManager = new VirtualNodeManager(query, this);
             NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
@@ -724,9 +727,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     List<MMObjectNode> checkNodes(List<MMObjectNode> in, Query query) {
 
-        
+
         List<MMObjectNode> resultNodeList = new ArrayList<MMObjectNode>(in);
-            
+
         Authorization auth = BasicCloudContext.mmb.getMMBaseCop().getAuthorization();
 
         if (log.isTraceEnabled()) {
@@ -734,7 +737,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
 
         log.debug("Starting read-check");
-  
+
         List<Step> steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
@@ -844,7 +847,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     public boolean mayRead(String nodeNumber) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
             throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage(), e);
         }
@@ -1112,5 +1115,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
         UserContext uc = getUser();
         return  n + " '" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
+    }
+
+    public Cloud getNonTransactionalCloud() {
+        return this;
     }
 }
