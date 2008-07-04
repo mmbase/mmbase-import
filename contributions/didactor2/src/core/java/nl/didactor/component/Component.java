@@ -90,10 +90,17 @@ public abstract class Component {
      * installation is restarted.
      */
     public void init() {
-        String configFile = "components/" + getName() + ".xml";
         try {
-            if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
-                Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, true, Component.class);
+            String xml = getName() + ".xml";
+            Document doc = null;
+            if (ResourceLoader.getConfigurationRoot().getResource("di_components/" + xml).openConnection().getDoInput()) {
+                doc = ResourceLoader.getConfigurationRoot().getDocument("di_components/" + xml, true, Component.class);
+            } else if (ResourceLoader.getConfigurationRoot().getResource("components/" + xml).openConnection().getDoInput()) {
+                // legacy support, didactor used to use that dir, but it is not resereved for mmbase components.
+                doc = ResourceLoader.getConfigurationRoot().getDocument("components/" + xml, true, Component.class);
+            }
+
+            if (doc != null) {
                 log.service("Reading component configuration from '" + doc.getDocumentURI() + "'");
                 Element componentNode = (Element) doc.getDocumentElement();
                 this.templatepath = getAttribute(componentNode, "templatepath");
