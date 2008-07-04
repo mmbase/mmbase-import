@@ -19,10 +19,6 @@
   </properties>
   <fieldlist>
     <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
@@ -41,10 +37,6 @@
       </db>
     </field>
     <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
       <gui>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="en">Description</guiname>
