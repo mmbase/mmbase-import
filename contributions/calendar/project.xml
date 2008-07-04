@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <artifactId>mmbase-calendar</artifactId>     
+  <extend>${basedir}/../../applications/app-base/project.xml</extend>
+  <artifactId>mmbase-calendar</artifactId>
   <name>Calendar</name>
   <groupId>mmbase</groupId>
-  <currentVersion>${mmbase.version}</currentVersion>
   <shortDescription>An MMBase calendar</shortDescription>
   <description>This is an MMBased 'calendar' applictions. It demonstrates the MMBase datetime field, with timezone
 and locale options. Also it uses the newest MMBase taglib features and itself provides new tags
@@ -26,62 +26,5 @@ Michiel Meeuwissen, July 2006</description>
     <type>component</type>
     <status>beta</status>
   </properties>
-  <dependencies>
-        <dependency>
-            <groupId>mmbase</groupId>
-            <artifactId>mmbase</artifactId>
-            <version>${mmbase.version}</version>
-            <url>http://www.mmbase.org/</url>
-            <properties>
-		        <eclipse.dependency>true</eclipse.dependency>
-            </properties>
-        </dependency>
-  </dependencies>
-    <build>
-        <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
-        <sourceDirectory>${basedir}/src</sourceDirectory>
-        <!-- J A R  R E S O U R C E S -->
-        <!-- Resources that are packaged up inside the JAR file -->
-        <resources>
-            <resource>
-                <directory>${basedir}/src</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.dtd</include>
-                    <include>**/*.xsd</include>
-                    <include>**/*.properties</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>META-INF</directory>
-                <excludes>
-                    <exclude>"**/CVS"</exclude>
-                </excludes>
-            </resource>
-<!-- This does not work the same way as the ant build does.
-	We have to change more in the build to get it working -->
-            <resource>
-                <targetPath>org/mmbase/config</targetPath>
-                <directory>config</directory>
-                <excludes>
-                    <exclude>"**/CVS"</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <!-- Unit test cases -->
-        <unitTestSourceDirectory>${basedir}/tests</unitTestSourceDirectory>
-        <unitTest>
-            <includes>
-                <include>**/*Tests.java</include>
-                <include>**/*Test.java</include>
-                <include>**/*Suite.java</include>
-            </includes>
-            <excludes>
-                <exclude>**/Abstract*Test.java</exclude>
-            </excludes>
-        </unitTest>
-    </build>
 </project>
 
