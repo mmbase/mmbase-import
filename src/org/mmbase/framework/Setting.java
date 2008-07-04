@@ -12,20 +12,23 @@ import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.Entry;
+import org.mmbase.bridge.*;
 import org.w3c.dom.Element;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Representation of {@link Component} related settings. 
+ * Representation of {@link Component} related settings.
  * These settings can be defined in their proper Component XML.
  *
  * @todo The <em>values</em> of the settings can still only be set in memory and in the component
  * xml. There must be some way to persistify them. There should also be a editor in the admin pages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.7 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: Setting.java,v 1.8 2008-07-04 16:34:34 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
@@ -36,7 +39,7 @@ public class Setting<C> {
     private final String name;
     private final LocalizedString description;
     private final Component parent;
-    private final DataType<C> dataType;
+    private final org.mmbase.datatypes.DataType<C> dataType;
 
 
     public Setting(Component component, Element element) {
@@ -70,7 +73,7 @@ public class Setting<C> {
     /**
      *
      */
-    public DataType<C> getDataType() {
+    public org.mmbase.datatypes.DataType<C> getDataType() {
         return dataType;
     }
 
@@ -89,5 +92,40 @@ public class Setting<C> {
             return false;
         }
     }
+
+    public static class DataType extends org.mmbase.datatypes.StringDataType {
+
+        private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
+        private final String componentField  = "component";
+        /**
+         * Constructor for string data type.
+         * @param name the name of the data type
+         */
+        public DataType(String name) {
+            super(name);
+        }
+
+        public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+
+            final Component component = ComponentRepository.getInstance().toMap().get(node == null ? field.getNodeManager().getField(componentField).getDataType().getDefaultValue()
+                                                                                      : node.getStringValue(componentField));
+            return new Iterator<Map.Entry<String, String>> () {
+                Iterator<Setting<?>> iterator = component.getSettings().iterator();
+                public boolean hasNext() {
+                    return iterator.hasNext();
+                }
+                public Map.Entry<String, String> next() {
+                    String val = iterator.next().getName();
+                    return new Entry<String, String>(val, val);
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+
+    }
+
 
 }
