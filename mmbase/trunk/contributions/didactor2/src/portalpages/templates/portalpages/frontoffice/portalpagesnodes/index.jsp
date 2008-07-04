@@ -14,7 +14,7 @@
         <mm:node referid="object">
           <h1><mm:field name="name" /></h1>
 
-          <mm:field name="body" escape="none" />
+          <mm:field name="body" escape="tagstripper(xss)" />
         </mm:node>
       </div>
     </mm:cloud>
