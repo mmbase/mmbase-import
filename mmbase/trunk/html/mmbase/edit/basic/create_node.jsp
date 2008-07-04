@@ -18,7 +18,7 @@
        document.getElementById('okbutton').disabled = this.invalidElements != 0;
     }
     validator.lang = '${config.lang}';
-    validator.setup(window);
+    validator.setup(document);
   </script>
 
 
