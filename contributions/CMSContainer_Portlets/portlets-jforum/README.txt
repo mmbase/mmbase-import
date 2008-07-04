@@ -145,50 +145,96 @@ Also check for duplicated dependencies and removed them.
    <!--begin dependency by JForum portlet. -->
 
    <dependency>
-      <groupId>freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-      <version>2.3.8</version>
-      <type>jar</type>
-      <properties>
-         <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-   </dependency>
-   <dependency>
-      <groupId>htmlparser</groupId>
-      <artifactId>htmlparser</artifactId>
-      <version>1.5</version>
-      <type>jar</type>
-      <properties>
-         <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-   </dependency>
-   <dependency>
-      <groupId>quartz</groupId>
-      <artifactId>quartz</artifactId>
-      <version>1.5.1</version>
-      <type>jar</type>
-      <properties>
-         <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-   </dependency>
-   <dependency>
-      <groupId>c3p0</groupId>
-      <artifactId>c3p0</artifactId>
-      <version>0.9.1</version>
-      <type>jar</type>
-      <properties>
-         <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-   </dependency>
-   <dependency>
-      <groupId>com.octo.captcha</groupId>
-      <artifactId>jcaptcha-all</artifactId>
-      <version>1.0-RC-2.0.1</version>
-      <type>jar</type>
-      <properties>
-         <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-   </dependency>
+         <groupId>freemarker</groupId>
+         <artifactId>freemarker</artifactId>
+         <version>2.3.9</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+
+     <dependency>
+         <groupId>quartz</groupId>
+         <artifactId>quartz</artifactId>
+         <version>1.5.1</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <groupId>c3p0</groupId>
+         <artifactId>c3p0</artifactId>
+         <version>0.9.1</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <groupId>com.octo.captcha</groupId>
+         <artifactId>jcaptcha-all</artifactId>
+         <version>1.0-RC-2.0.1</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <groupId>lucene</groupId>
+         <artifactId>lucene-core</artifactId>
+         <version>2.3.2</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <groupId>lucene</groupId>
+         <artifactId>lucene-highlighter</artifactId>
+         <version>2.3.2</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <groupId>lucene</groupId>
+         <artifactId>lucene-analyzers</artifactId>
+         <version>2.3.2</version>
+         <type>jar</type>
+         <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+     </dependency>
+    <dependency>
+         <groupId>jforum</groupId>
+         <artifactId>jforum</artifactId>
+         <version>2.1.8</version>
+         <type>jar</type>
+        <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+        </properties>
+     </dependency>
+     <dependency>
+         <groupId>javamail</groupId>
+         <artifactId>mail</artifactId>
+         <version>1.4</version>
+         <type>jar</type>
+        <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+        </properties>
+     </dependency>
+     <dependency>
+         <groupId>concurrent</groupId>
+         <artifactId>concurrent</artifactId>
+         <version>1.3.2</version>
+         <type>jar</type>
+        <properties>
+             <war.bundle>${war.bundle}</war.bundle>
+        </properties>
+     </dependency>
    <!-- jboss -->
    <dependency>
       <groupId>jboss</groupId>
@@ -289,29 +335,6 @@ Step 2: Add below elements to web.xml
       </init-param>
    </servlet>
 
-   <!-- JForum JahiaWebapps bridge-->
-   <servlet>
-      <servlet-name>jForumJahiaWebApp</servlet-name>
-      <servlet-class>org.jahia.jahiawebapps.jforum.JForumJahiaWebAppBridge</servlet-class>
-   </servlet>
-   <!-- AJAX -->
-   <servlet>
-      <servlet-name>dwr-invoker</servlet-name>
-      <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
-      <init-param>
-         <param-name>configJForum</param-name>
-         <param-value>WEB-INF/dwr-jforum.xml</param-value>
-      </init-param>
-      <init-param>
-         <param-name>debug</param-name>
-         <param-value>true</param-value>
-      </init-param>
-   </servlet>
-
-   <servlet-mapping>
-      <servlet-name>dwr-invoker</servlet-name>
-      <url-pattern>/dwr/*</url-pattern>
-   </servlet-mapping>
    <servlet-mapping>
       <servlet-name>jforum</servlet-name>
       <url-pattern>*.page</url-pattern>
