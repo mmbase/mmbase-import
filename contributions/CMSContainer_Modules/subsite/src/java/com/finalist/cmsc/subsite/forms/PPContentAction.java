@@ -49,11 +49,11 @@ public class PPContentAction extends MMBaseAction {
 	        direction = null;
 	     }
 	     
-	     Cloud remoteCloud = null;
+	     //Cloud remoteCloud = null;
 	     
 	     //Retrieve live-cloud (if exists) and continue to search Live for content Elements
 	     try {
-	        remoteCloud = CloudManager.getCloud(cloud, "live.server");	
+	        //Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");	
 
 	        //Retrieve Node & live-channel
 		    //int liveNumber = Publish.getRemoteNumber(ppChannel);
@@ -61,9 +61,8 @@ public class PPContentAction extends MMBaseAction {
 		    
 		    ppChannel = Publish.getRemoteNode(ppChannel);
 
-		    cloud = remoteCloud; //Use the remoteCloud from now on.
 		 } catch (BridgeException e) {
-			//When the remoteCloud could not be found, use the normal cloud and we're fine.
+			//When no remote nodes are found, use the normal ppChannel and it is fine.
 		 }
 	     
          NodeList elements = RepositoryUtil.getLinkedElements(ppChannel, null, orderby, direction, false, -1, -1, -1, -1, -1);
