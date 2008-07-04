@@ -82,16 +82,15 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          throw new IllegalArgumentException("authenticationId is not filled in. ");
       }
 
-      if (authenticationId != null) {
-         Person person = new Person();
-         person.setFirstName(firstName);
-         person.setInfix(infix);
-         person.setLastName(lastName);
-         person.setAuthenticationId(authenticationId); // used to find account
-         getSession().save(person);
-         return person;
-      }
-      return null;
+      //Create a new person and store it 
+      Person person = new Person();
+      person.setFirstName(firstName);
+      person.setInfix(infix);
+      person.setLastName(lastName);
+      person.setAuthenticationId(authenticationId); // used to find account
+      getSession().save(person);
+      return person;
+      
    }
 
    /** {@inheritDoc} */
