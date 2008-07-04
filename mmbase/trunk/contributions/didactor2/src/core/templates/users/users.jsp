@@ -17,7 +17,7 @@
         <mm:relatednodes role="classrel" type="educations" id="directly_related" />
 
         <mm:relatednodes add="directly_related"
-                         comparator="nl.didactor.component.users.PeopleComparator"
+                         element="educations"
                          path="people,classrel,classes,classrel,educations">
           <!-- Do check: is anybody online for this education -->
           <mm:import id="show_this_item" reset="true">false</mm:import>
