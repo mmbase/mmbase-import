@@ -11,8 +11,7 @@ package org.mmbase.framework;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
 import org.mmbase.datatypes.util.xml.DependencyException;
-import org.mmbase.util.LocalizedString;
-import org.mmbase.util.Entry;
+import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.w3c.dom.Element;
 import java.util.*;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * xml. There must be some way to persistify them. There should also be a editor in the admin pages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.8 2008-07-04 16:34:34 michiel Exp $
+ * @version $Id: Setting.java,v 1.9 2008-07-04 16:41:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
@@ -108,10 +107,18 @@ public class Setting<C> {
 
         public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
 
-            final Component component = ComponentRepository.getInstance().toMap().get(node == null ? field.getNodeManager().getField(componentField).getDataType().getDefaultValue()
-                                                                                      : node.getStringValue(componentField));
+            final Iterator<Setting<?>> iterator;
+            if (node != null) {
+                iterator = ComponentRepository.getInstance().toMap().get(node.getStringValue(componentField)).getSettings().iterator();
+            } else {
+                ChainedIterator chain = new ChainedIterator<Setting<?>>();
+                for (Component comp : ComponentRepository.getInstance().toMap().values()) {
+                    chain.addIterator(comp.getSettings().iterator());
+                }
+                iterator = chain;
+            }
             return new Iterator<Map.Entry<String, String>> () {
-                Iterator<Setting<?>> iterator = component.getSettings().iterator();
+
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
