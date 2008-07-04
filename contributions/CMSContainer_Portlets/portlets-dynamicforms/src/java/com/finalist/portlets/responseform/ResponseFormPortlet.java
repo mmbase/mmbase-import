@@ -71,7 +71,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    private static final int TYPE_CHECKBOX = 6;
    private static final int TYPE_ATTACHEMENT = 7;
    private static final String CHECKBOX_NO = "nee";
-   private static final String CHECKBOX_YES = "ja";
+//   private static final String CHECKBOX_YES = "ja";
    private static final String RADIO_EMPTY = "[niets gekozen]";
    private static final String TEXTBOX_EMPTY = "[niet ingevuld]";
    private static final String REGEX = " ";
@@ -117,7 +117,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                   Object value = parameterMap.get(fieldIdentifier);
                   String textValue = null;
                   if (sendEmail) {
-                     userEmailAddress = value.toString();
+                     userEmailAddress = value.toString().trim();
                   }
                   if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
                      errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
@@ -152,7 +152,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                      textValue = (value == null) ? RADIO_EMPTY : value.toString();
                   }
                   else {
-                     textValue = (value == null || value.toString().trim().length() ==0) ? TEXTBOX_EMPTY : value.toString();
+                     textValue = (value == null || value.toString().trim().length() == 0) ? TEXTBOX_EMPTY : value.toString();
                   }
                   addFormFieldsData(data, label, textValue);
                   formfields.put(number, textValue);
@@ -255,9 +255,9 @@ public class ResponseFormPortlet extends ContentPortlet {
    protected boolean sendUserEmail(Node responseform, String userEmailAddress, String responseformData,
          Map<String, Object> parameterMap) {
       boolean sent = false;
-      String userEmailSubject = responseform.getStringValue("useremailsubject");
-      String userEmailSenderAddress = responseform.getStringValue("useremailsender");
-      String userEmailSenderName = responseform.getStringValue("useremailsendername");
+      String userEmailSubject = responseform.getStringValue("useremailsubject").trim();
+      String userEmailSenderAddress = responseform.getStringValue("useremailsender").trim();
+      String userEmailSenderName = responseform.getStringValue("useremailsendername").trim();
       String userEmailTextBefore = responseform.getStringValue("useremailbody");
       String userEmailTextAfter = responseform.getStringValue("useremailbodyafter");
       boolean includedata = responseform.getBooleanValue("includedata");
@@ -301,7 +301,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
 
-   private boolean sendResponseFormEmail(Node responseform, String userEmailAddress, String responseformData,
+   private boolean sendResponseFormEmail(Node responseform, final String userEmailAddress, String responseformData,
          DataSource attachment) {
       boolean sent = false;
       StringBuffer emailText = new StringBuffer();
@@ -312,8 +312,8 @@ public class ResponseFormPortlet extends ContentPortlet {
       String senderEmailAddress = userEmailAddress;
       String senderName = userEmailAddress;
       if (StringUtils.isBlank(userEmailAddress)) {
-         senderEmailAddress = responseform.getStringValue("useremailsender");
-         senderName = responseform.getStringValue("useremailsendername");
+         senderEmailAddress = responseform.getStringValue("useremailsender").trim();
+         senderName = responseform.getStringValue("useremailsendername").trim();
       }
       if (!isEmailAddress(senderEmailAddress)) return false; //Last check email address
       
@@ -327,8 +327,8 @@ public class ResponseFormPortlet extends ContentPortlet {
          emailText.append(emailTextAfter);
       }
 
-      String emailAddressesValue = responseform.getStringValue("emailaddresses");
-      String emailSubject = responseform.getStringValue("emailsubject");
+      String emailAddressesValue = responseform.getStringValue("emailaddresses").replaceAll(" ","");
+      String emailSubject = responseform.getStringValue("emailsubject").trim();
       List<String> emailList = Arrays.asList(emailAddressesValue.split(";"));
       if (!isEmailAddress(emailList)) {
          getLogger().error("error sending email. Some of the following emailaddresses are incorrect: " + emailList.toString());
@@ -477,7 +477,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       if (StringUtils.isBlank(emailAddress)) return false;
       
       String emailRegex = getEmailRegex();
-      return emailAddress.matches(emailRegex);
+      return emailAddress.trim().matches(emailRegex);
    }
 	   
    public boolean isEmailAddress(List<String> emailList) {
