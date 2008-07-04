@@ -26,12 +26,6 @@
 
   <fieldlist>
     <field>
-      <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Rank</description>
-        <description xml:lang="en">Rank</description>
-      </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Rank</guiname>
         <guiname xml:lang="en">Rank</guiname>
