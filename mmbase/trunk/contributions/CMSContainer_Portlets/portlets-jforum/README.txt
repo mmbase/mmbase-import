@@ -3,7 +3,7 @@ This Portlet integrate JForum to CMSC.
 
 INSTALL GUIDE:
 
-To install JForum Portlet,there is three step operation you should do.
+To install JForum Portlet, there are three steps you should do.
 
 Step 1 :
 Add the dependencies below to your maven project.xml. 
@@ -147,7 +147,7 @@ Also check for duplicated dependencies and removed them.
    <dependency>
          <groupId>freemarker</groupId>
          <artifactId>freemarker</artifactId>
-         <version>2.3.9</version>
+         <version>2.3.13</version>
          <type>jar</type>
          <properties>
              <war.bundle>${war.bundle}</war.bundle>
