@@ -240,6 +240,7 @@
             <include name="applications/**" />
             <include name="builders/**" />
             <include name="components/**" />
+            <include name="di_components/**" />
             <include name="translations/**" />
             <include name="datatypes.xml" />
           </fileset>
