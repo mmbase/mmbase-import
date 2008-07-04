@@ -203,12 +203,12 @@
                      </html:select>
                   </td>
                   <td>
-                     <mm:hasrank minvalue="administrator">
+                     <mm:hasrank minvalue="siteadmin">
                         <fmt:message key="searchform.useraccount" />
                      </mm:hasrank>
                   </td>
                   <td>
-                     <mm:hasrank minvalue="administrator">
+                     <mm:hasrank minvalue="siteadmin">
                         <html:select property="useraccount" size="1">
                            <html:option value=""> - </html:option>
                             <mm:listnodes type='user' orderby='username'>
@@ -324,7 +324,7 @@
 
          <form action="LinkToChannelAction.do" name="linkForm">
          <mm:compare referid="action" value="link" inverse="true">
-             <mm:hasrank minvalue="administrator">
+             <mm:hasrank minvalue="siteadmin">
                <c:if test="${fn:length(results) >1}">
                <div align="left"> <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/></div>
                </c:if>

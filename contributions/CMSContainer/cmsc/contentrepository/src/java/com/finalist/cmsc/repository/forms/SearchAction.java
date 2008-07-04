@@ -16,14 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.LabelValueBean;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.FieldIterator;
-import org.mmbase.bridge.FieldList;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
@@ -73,7 +66,7 @@ public class SearchAction extends PagerAction {
               massDeleteContent(deleteContentRequest.substring(11));
            }
            else {
-              deleteContent(deleteContentRequest);
+            deleteContent(deleteContentRequest);
            }
             
             // add a flag to let search result page refresh the channels frame,
@@ -254,7 +247,7 @@ public class SearchAction extends PagerAction {
         int resultCount = Queries.count(query);
         NodeList results = cloud.getList(query);
 
-        // Set everyting on the request.
+        // Set everything on the request.
         searchForm.setResultCount(resultCount);
         searchForm.setResults(results);
         request.setAttribute(GETURL, queryStringComposer.getQueryString());
@@ -263,20 +256,19 @@ public class SearchAction extends PagerAction {
     }
 
     private void massDeleteContent(String deleteContent) {
-
-       if(StringUtils.isBlank(deleteContent)){
-          return ;
+       if(StringUtils.isNotBlank(deleteContent)){
+          String[] deleteContents = deleteContent.split(",");
+          for(String content : deleteContents) {
+             deleteContent(content);
+          } 
        }
-       String[] deleteContents = deleteContent.split(",");
-       for(String content : deleteContents) {
-          deleteContent(content);
-       } 
     }
     
     private void deleteContent(String deleteContentRequest) {
         StringTokenizer commandAndNumber = new StringTokenizer(deleteContentRequest, ":");
         String command = commandAndNumber.nextToken();
         String nunmber = commandAndNumber.nextToken();
+
         if ("moveToRecyclebin".equals(command)) {
             moveContentToRecyclebin(nunmber);
         }
