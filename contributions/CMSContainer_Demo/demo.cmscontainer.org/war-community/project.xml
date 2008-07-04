@@ -216,7 +216,7 @@
       </dependency>
 
 <!--begin dependency by JForum portlet. -->
-<!--
+
         <dependency>
             <groupId>freemarker</groupId>
             <artifactId>freemarker</artifactId>
@@ -281,16 +281,16 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
-        <dependency>
+       <dependency>
             <groupId>jforum</groupId>
             <artifactId>jforum</artifactId>
             <version>2.1.8</version>
             <type>jar</type>
-            <properties>
+           <properties>
                 <war.bundle>${war.bundle}</war.bundle>
-            </properties>
+           </properties>
         </dependency>
--->
+
 <!-- jboss -->
 <!--
         <dependency>
