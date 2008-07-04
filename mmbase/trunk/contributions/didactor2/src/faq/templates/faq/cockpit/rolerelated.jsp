@@ -22,7 +22,7 @@
           <mm:notpresent referid="faqnodeshown">
             <div class="menuSeperatorApplicationMenubar"></div>
             <div class="menuItemApplicationMenubar">
-              <mm:treefile page="/faq/frontoffice/index.jsp" objectlist="$includePath" referids="$referids,faq@node" write="false">
+              <mm:treefile page="/faq/frontoffice/index.jspx" objectlist="$includePath" referids="$referids,faq@node" write="false">
                 <a title="<mm:write referid="faqname"/>" href="${_}"  class="menubar"><mm:write referid="faqname"/></a>
               </mm:treefile>
             </div>
