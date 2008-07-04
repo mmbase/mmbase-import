@@ -17,7 +17,7 @@ import org.mmbase.util.*;
  * A StringDataType with the names of all installed components.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentNamesDataType.java,v 1.1 2008-04-12 13:23:27 michiel Exp $
+ * @version $Id: ComponentNamesDataType.java,v 1.2 2008-07-04 16:33:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentNamesDataType extends StringDataType {
@@ -32,8 +32,12 @@ public class ComponentNamesDataType extends StringDataType {
         super(name);
     }
 
+    public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        return "core";
+    }
+
     public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
-        return new Iterator() {
+        return new Iterator<Map.Entry<String, String>>() {
             Iterator<String> iterator = org.mmbase.framework.ComponentRepository.getInstance().toMap().keySet().iterator();
             public boolean hasNext() {
                 return iterator.hasNext();
