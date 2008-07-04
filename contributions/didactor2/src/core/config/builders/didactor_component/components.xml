@@ -6,7 +6,7 @@
     name="components" maintainer="didactor.nl" version="3" extends="object">
   <status>active</status>
   <class>nl.didactor.builders.ComponentBuilder</class>
-  <searchage>31</searchage>
+  <searchage>-1</searchage>
   <names>
     <singular xml:lang="nl">Component</singular>
     <singular xml:lang="en">Component</singular>
