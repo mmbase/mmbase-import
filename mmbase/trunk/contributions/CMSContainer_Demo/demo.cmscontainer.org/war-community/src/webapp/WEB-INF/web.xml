@@ -316,33 +316,13 @@
        <param-value>true</param-value>
      </init-param>
    </servlet> -->
-    <!-- JForum JahiaWebapps bridge-->
-    <servlet>
-        <servlet-name>jForumJahiaWebApp</servlet-name>
-        <servlet-class>org.jahia.jahiawebapps.jforum.JForumJahiaWebAppBridge</servlet-class>
-    </servlet>
-    <!-- AJAX -->
-    <servlet>
-        <servlet-name>dwr-invoker</servlet-name>
-        <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
-        <init-param>
-            <param-name>configJForum</param-name>
-            <param-value>WEB-INF/dwr-jforum.xml</param-value>
-        </init-param>
-        <init-param>
-            <param-name>debug</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
+
     <!-- Mapping -->
     <!--<servlet-mapping>
         <servlet-name>install</servlet-name>
         <url-pattern>/install/install.page</url-pattern>
     </servlet-mapping> -->
-    <servlet-mapping>
-        <servlet-name>dwr-invoker</servlet-name>
-        <url-pattern>/dwr/*</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>jforum</servlet-name>
         <url-pattern>*.page</url-pattern>
