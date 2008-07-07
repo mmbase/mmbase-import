@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.52 2007-05-14 14:46:40 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.53 2008-07-07 11:10:59 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -114,7 +114,9 @@ public class TemporaryNodeManager {
     }
 
     /**
-     * @javadoc
+     * Tries to get the node with number 'key'. If there was already a temporary node with this key,
+     * for the given owner, it will return that node. The node will <em>not</em> be stored in the
+     * temporory nodes map. For that use {@link #getObject}.
      */
     public MMObjectNode getNode(String owner, String key) {
         MMObjectBuilder bul = mmbase.getBuilder("object");
@@ -130,16 +132,18 @@ public class TemporaryNodeManager {
     }
 
     /**
-     * @javadoc
+     * Makes sure that the node identify with 'key' is a temporary node for the given owner. Returns
+     * the key if sucessfull, <code>null</code> otherwise.
+     *
      */
-    public String getObject(String owner, String key, String dbkey) {
+    public String getObject(String owner, String key) {
         MMObjectNode node = MMObjectBuilder.getTmpNode(getTmpKey(owner, key));
         if (node == null) {
             log.debug("getObject not tmp node found " + key);
             MMObjectBuilder bul = mmbase.getBuilder("object");
-            node = bul.getNode(dbkey, false);
+            node = bul.getNode(key, false);
             if (node == null) {
-                log.warn("Node not found in database " + dbkey);
+                log.warn("Node not found in database " + key);
             } else {
                 MMObjectBuilder.putTmpNode(getTmpKey(owner, key), node);
             }
@@ -261,7 +265,8 @@ public class TemporaryNodeManager {
     }
 
     /**
-     * @javadoc
+     * Returns the unique key in given the number and owner of a node.
+     * TemporaryNodeManager distinguishes nodes for different users.
      */
     private String getTmpKey(String owner, String key) {
         return owner + "_" + key;
