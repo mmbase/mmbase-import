@@ -4,15 +4,32 @@
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache"
 %><mm:cloud jspvar="cloud"
-><cache:cache time="<%= 3600*24 %>" scope="application"><%
+><%
 
 String sPageTemplateURL = "";
 String DATA_FORMAT ="E, dd MMM yyyy, H:mm";
 
 %><%@include file="../includes/time.jsp" %><%
 
+
+int iSearchNumberOfDays = 7;
+String pSearchNumberOfDays = request.getParameter("dagen");
+pSearchNumberOfDays = (pSearchNumberOfDays == null ? "" : HtmlCleaner.filterAmps(pSearchNumberOfDays).trim());
+
+// SearchNumberOfDays is default 7 and cannot be more than 365
+if (!"".equals(pSearchNumberOfDays)) {
+   try {
+      iSearchNumberOfDays = Integer.valueOf(pSearchNumberOfDays).intValue();
+   } 
+   catch (NumberFormatException nfe) {
+      System.out.print("xmlactiviteiten.jsp: value of parameter 'dagen' (" + pSearchNumberOfDays + ") is not a number!");
+   }  
+   if (iSearchNumberOfDays > 365) iSearchNumberOfDays = 365;
+}
+
+
 long lDateSearchFrom = nowSec;
-long lDateSearchTill = lDateSearchFrom + 7*24*60*60;
+long lDateSearchTill = lDateSearchFrom + iSearchNumberOfDays*24*60*60;
 
 if(application.getAttribute("events_till")==null){
    EventNotifier.updateAppAttributes(cloud);
@@ -197,9 +214,8 @@ boolean isProvincieMatch = false;
       ></channel>
    </mm:list
 ></rss>
-</mm:locale
-></cache:cache
-></mm:cloud>
+</mm:locale>
+</mm:cloud>
 <%!
 private String priceFormating(String sPrice)
 {
