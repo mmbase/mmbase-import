@@ -13,7 +13,8 @@
         <mm:import externid="context"  />
         <mm:import from="session" externid="${queryid}" id="query" required="true" />
 
-        <mm:form page="/mmbase/searchrelate/create.jspx" commitonclose="false">
+        <mm:form name="create"
+                 page="/mmbase/searchrelate/create.jspx" commitonclose="false">
           <fmt:message key="createsummary" var="summary">
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
           </fmt:message>
@@ -32,6 +33,7 @@
             </tfoot>
             <mm:createnode id="newnode" type="${query.nodeManager.name}">
               <c:if test="${! empty context}">
+                <mm:log>Setting context to ${context}</mm:log>
                 <mm:setcontext>${context}</mm:setcontext>
               </c:if>
               <tbody>
