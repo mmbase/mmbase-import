@@ -366,4 +366,36 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public void createSubscription(int userId, int newsletterId) {
 	   subscriptionCAO.createSubscription(userId, newsletterId);
    }
+   
+   public Set<Integer> getRecordIdByNewsletterAndName(int newsletterId, String termName){
+	   
+	   Set<Node> subscriptions = subscriptionCAO.getRecordByNewsletterAndName(newsletterId, termName);
+	   Set<Integer> authenticationIds = new HashSet<Integer>();
+	   for(Node subscription : subscriptions){
+		   authenticationIds.add(subscription.getIntValue("subscriber"));
+	   }
+	   return authenticationIds;
+   }
+
+   	public String getNewsletterNameList(int authenticationId){
+   		Set<Node> newsletterList = subscriptionCAO.getNewslettersByScriptionRecord(authenticationId);
+   		String tmpTitle = "";
+   		for(Node newsletterNode : newsletterList){
+   			if(StringUtils.isNotBlank(newsletterNode.getStringValue("title"))){
+   				tmpTitle += newsletterNode.getStringValue("title") + ", ";
+   			}
+   		}
+   		return tmpTitle.substring(0, tmpTitle.length()-2);
+   	}
+   	
+   	public String getTermsNameList(int authenticationId){
+   		Set<Node> termList = subscriptionCAO.getTermsByScriptionRecord(authenticationId);
+   		String tmpNames = "";
+   		for(Node termNode : termList){
+   			if(StringUtils.isNotBlank(termNode.getStringValue("name"))){
+   				tmpNames += termNode.getStringValue("name") + ", ";
+   			}
+   		}
+   		return tmpNames.substring(0, tmpNames.length()-2);
+   	}
 }

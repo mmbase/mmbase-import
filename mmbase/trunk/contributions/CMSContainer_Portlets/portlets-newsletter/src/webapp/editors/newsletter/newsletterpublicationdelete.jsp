@@ -23,8 +23,10 @@
 	</p>
 	<form action="?">
 		<html:hidden property="number" value="${number}" />
-	   	<html:submit property="remove"><fmt:message key="newsletterpublicationdelete.yes"/></html:submit>&nbsp;
-	   	<html:submit property="cancel"><fmt:message key="newsletterpublicationdelete.no"/></html:submit>
+			<html:submit property="remove"><fmt:message key="newsletterpublicationdelete.yes"/></html:submit>&nbsp;
+			<html:submit property="cancel"><fmt:message key="newsletterpublicationdelete.no"/></html:submit>
+			<input type="hidden" name="parent" value="${requestScope.parent}"/>
+			<input type="hidden" name="forward" value="${requestScope.forward}"/>
 	</form>
 </cmscedit:sideblock>
 </body>

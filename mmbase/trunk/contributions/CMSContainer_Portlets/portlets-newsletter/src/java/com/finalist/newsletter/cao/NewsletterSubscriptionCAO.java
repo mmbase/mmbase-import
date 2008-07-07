@@ -39,4 +39,11 @@ public interface NewsletterSubscriptionCAO {
    public List<Subscription> getSubscriptionByUserIdAndStatus(int userId, Subscription.STATUS status);
 
    public List<Node> getAllSubscriptions();
+   
+   public Set<Node> getRecordByNewsletterAndName(int newsletterId,String termName);
+   
+   public Set<Node> getNewslettersByScriptionRecord(int authenticationId);
+   
+   public Set<Node> getTermsByScriptionRecord(int authenticationId);
+   
 }

@@ -15,12 +15,14 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
+
 
 public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
@@ -32,6 +34,8 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	   String forwardType = getParameter(request, "forward");
+	   String parent = getParameter(request, "parent");
 
       if (isRemoveAction(request)) {
          int objectnumber = Integer.parseInt(getParameter(request, "number", true));
@@ -44,14 +48,16 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
             return mapping.findForward("newsletterpublicationdeletewarning");
          }
          NewsletterPublicationUtil.deletePublication(objectnumber);
-         return mapping.findForward(SUCCESS);
+         return actionReturn(mapping,request, forwardType, parent);
       }
 
       if (isCancelAction(request)) {
-         return mapping.findForward(SUCCESS);
+         return actionReturn(mapping,request, forwardType, parent);
       }
 
       // neither remove or cancel, show confirmation page
+      request.setAttribute("forward", forwardType);
+      request.setAttribute("parent", parent);
       return mapping.findForward("newsletterpublicationdelete");
    }
 
@@ -61,6 +67,18 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
    private boolean isRemoveAction(HttpServletRequest request) {
       return getParameter(request, ACTION_REMOVE) != null;
+   }
+   
+   protected ActionForward actionReturn(ActionMapping mapping, HttpServletRequest request, String forwardType,  String parent){
+	   ActionForward ret = null;
+       if (StringUtils.isNotEmpty(forwardType)){
+      	 ret =new ActionForward(mapping.findForward("publicationmanage").getPath() + "?newsletterId=" + parent);
+      	 request.setAttribute("newsletterId", parent);
+       }
+       else{
+      	 ret = mapping.findForward(SUCCESS);
+       }
+       return ret;
    }
 
 }

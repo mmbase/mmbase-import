@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
  */
 package com.finalist.newsletter.forms;
 
+import java.net.URL;
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,11 +31,12 @@ public class NewsletterEdit extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = getParameter(request, "action");
+      String forwardType = getParameter(request,"forward");
 
       if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-               + mapping.findForward("returnurl").getPath());
+               + mapping.findForward("returnurl").getPath() + URLEncoder.encode( "?forward") + "=" + forwardType + URLEncoder.encode( "&objectnumber") + "=" + objectnumber);
          ret.setRedirect(true);
          return ret;
       } else {
@@ -43,7 +47,11 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          NewsletterUtil.addScheduleForNewsletter(newsletterNode);
          addToRequest(request, "showpage", ewnodelastedited);
 
-         ActionForward ret = mapping.findForward(SUCCESS);
+         int nodeId =Integer.parseInt(request.getParameter("objectnumber"));
+         ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);
+         if(forwardType.equals("manage")){
+        	 ret = mapping.findForward("newslettermanage");
+         }
          return ret;
       }
    }

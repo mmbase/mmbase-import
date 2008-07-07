@@ -1,11 +1,10 @@
 package com.finalist.newsletter.cao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Term;
 
 public interface NewsletterPublicationCAO {
@@ -24,4 +23,8 @@ public interface NewsletterPublicationCAO {
    public Set<Term> getTermsByPublication(int publicationId);
    
    public void renamePublicationTitle(int publicationId);
+   
+   public Set<Publication> getPublicationsByNewsletterAndPeriod(int id, String title, String subject, Date startDate, Date endDate, int pagesize, int offset);
+
+   public int getPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate);
 }

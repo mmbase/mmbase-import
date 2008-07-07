@@ -1,7 +1,5 @@
 package com.finalist.newsletter.domain;
 
-import com.finalist.cmsc.navigation.NavigationUtil;
-
 import java.util.Date;
 
 public class Publication {
@@ -12,6 +10,9 @@ public class Publication {
    private Newsletter newsletter;
    private int newsletterId;
    private String url;
+   private String subject;
+   private String lastmodifier;
+   private String lastmodifieddate;
 
    private String title;
 
@@ -100,4 +101,29 @@ public class Publication {
    public int hashCode() {
       return this.id;
    }
+
+   public String getSubject() {
+	   return subject;
+   }
+
+   public void setSubject(String subject) {
+	   this.subject = subject;
+   }
+
+	public String getLastmodifier() {
+		return lastmodifier;
+	}
+	
+	public void setLastmodifier(String lastmodifier) {
+		this.lastmodifier = lastmodifier;
+	}
+	
+	public String getLastmodifieddate() {
+		return lastmodifieddate;
+	}
+	
+	public void setLastmodifieddate(String lastmodifieddate) {
+		this.lastmodifieddate = lastmodifieddate;
+	}  
+   
 }

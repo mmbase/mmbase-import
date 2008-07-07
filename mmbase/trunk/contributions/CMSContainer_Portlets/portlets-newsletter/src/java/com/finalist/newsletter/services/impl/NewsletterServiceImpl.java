@@ -9,8 +9,11 @@ import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -102,5 +105,12 @@ public class NewsletterServiceImpl implements NewsletterService {
    private List<Newsletter> getAllNewsletterBySubscriberAndTitle(String subscriber, String title) {
       return null;
    }
+
+	public Set<Term> getNewsletterTermsByName(int newsletterId, String name, int pagesize, int offset) {
+		Set<Term> terms = newsletterCAO.getNewsletterTermsByName(newsletterId, name, pagesize, offset);
+		return terms;
+	}
+   
+   
 
 }
