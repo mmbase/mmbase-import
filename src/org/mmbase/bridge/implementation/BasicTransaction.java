@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.11 2008-07-07 12:28:33 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.12 2008-07-07 13:31:10 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -62,7 +62,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // XXX: the current transaction manager does not allow multiple transactions with the
                 // same name for different users
                 // We solved this here, but this should really be handled in the Transactionmanager.
-                transactionName = account + "_" + transactionName;
+                transactionName = account + "_" + name;
                 BasicCloudContext.transactionManager.createTransaction(transactionName);
             } catch (TransactionManagerException e) {
                 throw new BridgeException(e.getMessage(), e);
