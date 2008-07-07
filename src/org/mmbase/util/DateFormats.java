@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.5 2007-06-20 14:00:10 michiel Exp $
+ * @version $Id: DateFormats.java,v 1.6 2008-07-07 08:50:14 nklasens Exp $
  */
 public class DateFormats {
 
@@ -54,7 +54,7 @@ public class DateFormats {
         } else if (format.equals("e")) {
             df = new DayOfWeekDateFormat();
         } else if (format.equals("RFC822") || format.equals("rfc822")) {
-            df = new SimpleDateFormat("EE, dd MMM yyyy hh:mm:ss Z", Locale.US);
+            df = new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss Z", Locale.US);
             timeZone = "UTC";
         } else {
             df = new SimpleDateFormat(format, locale);
