@@ -16,13 +16,13 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class OdtFileTranster {
+public class OdtFileTransfer {
 
-    private static Log log = LogFactory.getLog(OdtFileTranster.class);
+    private static Log log = LogFactory.getLog(OdtFileTransfer.class);
 
     public static String WORKINGFOLDER;
 
-    public static OdtDocument process(File file, String requestContext) {
+    public static OdtDocument process(File file, String requestContext) throws IOException {
 
         String middelFileLocation = WORKINGFOLDER + File.separator + file.getName() + ".xml";
 

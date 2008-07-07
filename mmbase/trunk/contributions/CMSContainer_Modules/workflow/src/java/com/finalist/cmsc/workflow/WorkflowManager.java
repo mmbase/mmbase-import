@@ -455,7 +455,6 @@ public abstract class WorkflowManager {
    }
 
 
-   @SuppressWarnings("unused")
    protected void checkNode(Node node, List<Node> errors, List<Integer> publishNumbers) {
       // no errors
    }
