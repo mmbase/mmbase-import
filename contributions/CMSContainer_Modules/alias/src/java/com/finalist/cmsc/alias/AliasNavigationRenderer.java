@@ -15,7 +15,6 @@ import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.portalImpl.InternalDispatchNavigationRequest;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public class AliasNavigationRenderer implements NavigationItemRenderer {
@@ -97,7 +96,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
            response.setContentType(contentType);
 
            HttpServletRequest aliasRequest = new InternalDispatchNavigationRequest(request, pageItem);
-           PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response);
+           //PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response);
            manager.render(pageItem, aliasRequest, response, servletConfig);
        }
    }

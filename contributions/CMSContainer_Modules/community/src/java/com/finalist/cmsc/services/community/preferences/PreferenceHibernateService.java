@@ -18,7 +18,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
@@ -256,7 +255,6 @@ public class PreferenceHibernateService extends HibernateService implements Pref
     
     @Transactional(readOnly = true)
     public int getTotalCount(PreferenceVO preference) {
-       List<PreferenceVO> preferences = new ArrayList<PreferenceVO>();
        Criteria criteria = getSession().createCriteria(Preference.class);
        if(preference != null) {
 
