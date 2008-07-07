@@ -16,8 +16,6 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
@@ -33,8 +31,8 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
       int number = Integer.parseInt(getParameter(request, "number", true));
 
       if (isSendAction(request)) {
-         String email = getParameter(request, "email");
-         String mimeType = getParameter(request, "minetype");
+//         String email = getParameter(request, "email");
+//         String mimeType = getParameter(request, "minetype");
 
 //         UserRole role = NavigationUtil.getRole(newsletterPublicationNode.getCloud(), newsletterPublicationNode, false);
 //         boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
@@ -44,7 +42,7 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
 //         }
 //         Thread publisher = new NewsletterPublisher(number);
 //         publisher.start();
-         NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
+//         NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
          return mapping.findForward(SUCCESS);
       }
 

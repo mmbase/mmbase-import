@@ -18,7 +18,6 @@ public class Subscription {
    private String subscriberId;
    private String email;
    private int id;
-   private String url;
    private String newesletterId;
    private Date pausedTill;
    private String resumeDate;

@@ -12,8 +12,6 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.ServerUtil;
@@ -54,8 +52,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, java.io.IOException {
-      PortletPreferences preferences = request.getPreferences();
-      String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
       String currentPath = getUrlPath(request);
       NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
       if (result != null) {
