@@ -13,6 +13,7 @@
   <property file="${source.dir}/build.properties" />
 
   <property name="build.dir"    value="${source.dir}/build" />
+  <property name="target.dir"    value="${source.dir}/target" />
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
 
@@ -69,7 +70,7 @@
       </fileset>
     </copy>
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
+    <copy file="${target.dir}/mmbase-1.9.0-SNAPSHOT.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
     <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci.jar"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-client-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci-client.jar"  preservelastmodified="true" />
@@ -121,11 +122,12 @@
   </target>
 
   <target name="mmbase">
+    <!-- Ant build is broken now
     <ant dir="${source.dir}" target="jar">
       <property name="build.documentation" value="false" />
     </ant>
     <ant dir="${source.dir}" target="lib.compile" />
-    <!--<ant dir="${source.dir}" target="expand.hsqldb" />-->
+    -->
   </target>
 
   <!-- =================================================================== -->
