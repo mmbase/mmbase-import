@@ -1,14 +1,16 @@
 <mm:node element="artikel">
 	<%@include file="newsteaser.jsp" %>
+
+   <mm:field name="titel_zichtbaar"
+      ><mm:compare value="0" inverse="true"
+        ><div class="pageheader" style="margin-top:10px;"><mm:field name="titel"/></div
+      ></mm:compare
+   ></mm:field>
+
 	<table width="100%">
    <tr>
       <td>
 	<%@include file="image_logic.jsp" %>
-	<mm:field name="titel_zichtbaar"
-	   ><mm:compare value="0" inverse="true"
-    	  ><div class="pageheader"><mm:field name="titel"/></div
-		></mm:compare
-	></mm:field>
   <b><mm:field name="intro"/></b><br/>
 	<mm:field name="tekst"/><br/>
 	  </td>
@@ -17,6 +19,13 @@
 	<mm:related path="posrel,paragraaf"
 			  orderby="posrel.pos" directions="UP"
 			  fields="paragraaf.number,paragraaf.titel,paragraaf.omschrijving">
+
+         <mm:field name="paragraaf.titel_zichtbaar"
+               ><mm:compare value="0" inverse="true"
+                 ><div class="pageheader" style="margin-top:10px;"><mm:field name="paragraaf.titel" /></div
+               ></mm:compare
+            ></mm:field
+            >
 		<table cellspacing="0" cellpadding="0" border="0" width="100%">
 		<tr>
 			<td>
@@ -24,12 +33,7 @@
 				<%@include file="image_logic.jsp" %>
 			</mm:node>
 			<mm:field name="paragraaf.number" jspvar="paragraaf_number" vartype="String" write="false">
-	      <mm:field name="paragraaf.titel_zichtbaar"
-					><mm:compare value="0" inverse="true"
-					  ><div class="pageheader"><mm:field name="paragraaf.titel" /></div
-					></mm:compare
-				></mm:field
-				><mm:field name="paragraaf.tekst" 
+            <mm:field name="paragraaf.tekst" 
 				 /><mm:node number="<%= paragraaf_number %>" 
 					  ><%@include file="attachment.jsp" 
 				 %></mm:node
