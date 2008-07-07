@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.6 2008-07-07 15:03:49 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.7 2008-07-07 15:16:37 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -133,12 +133,12 @@ public class TransactionTest extends BridgeTest {
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("bar7");
         Node n = t.getNodeManager("news").createNode();
-        n.setContext("default");
-        assertEquals("default", n.getContext());
+        n.setContext("non_default");
+        assertEquals("non_default", n.getContext());
         t.commit();
 
         Node n2 = cloud.getNode(n.getNumber());
-        assertEquals("default", n2.getContext());
+        assertEquals("non_default", n2.getContext());
     }
 
 
