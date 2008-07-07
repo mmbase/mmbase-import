@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.5 2008-07-07 13:18:37 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.6 2008-07-07 15:03:49 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -89,6 +89,7 @@ public class TransactionTest extends BridgeTest {
 
         Transaction t = cloud.getTransaction("bar4");
         Node node = t.getNode(newNode);
+
         node.setStringValue("title", "zzzzz");
         node.commit(); // committing inside transaction
 
@@ -96,6 +97,15 @@ public class TransactionTest extends BridgeTest {
 
         t.commit();
         assertEquals("zzzzz", cloud.getNode(newNode).getStringValue("title"));
+
+    }
+    public void testReuseTransaction() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar4");
+        Node node = t.getNode(newNode);
+        node.setStringValue("title", "wwwwww");
+        node.commit();
+        t.cancel();
 
     }
 
@@ -118,5 +128,19 @@ public class TransactionTest extends BridgeTest {
         assertFalse(cloud.hasNode(newNode));
 
     }
+
+    public void testSetContext() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar7");
+        Node n = t.getNodeManager("news").createNode();
+        n.setContext("default");
+        assertEquals("default", n.getContext());
+        t.commit();
+
+        Node n2 = cloud.getNode(n.getNumber());
+        assertEquals("default", n2.getContext());
+    }
+
+
 
 }
