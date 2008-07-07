@@ -67,7 +67,7 @@
 </div>
 
 <div class="editor">
-   <div class="ruler_green"><div> <fmt:message key="newsletter.publication.result"/> </div></div>
+   <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
    <div class="body">
       <mm:import externid="results" jspvar="nodeList" vartype="List" />
       <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>

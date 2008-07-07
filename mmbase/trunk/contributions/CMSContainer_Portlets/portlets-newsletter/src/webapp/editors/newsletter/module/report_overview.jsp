@@ -55,12 +55,15 @@
                   <fmt:message key="index.link.newsletteroverview"/>
                </a>
             </p>
+            <p>&nbsp;</p>
          </td>
          <td>
             <p>
             <a href="SubscriptionManagement.do?action=listSubscribers">
                <fmt:message key="index.link.allsubscriber"/>
             </a>
+            </p>
+            <p>&nbsp;</p>
          </td>
          <td>
             <p><a href="NewletterPublicationInitAction.do"><fmt:message key="index.link.allpublication"/></a></p>
