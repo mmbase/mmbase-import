@@ -2,20 +2,25 @@ package com.finalist.newsletter.cao.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -37,6 +42,9 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -150,6 +158,10 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    private Publication convertFromNode(Node node){
       Publication publication = new Publication();
       publication.setId(node.getNumber());
+      publication.setSubject(node.getStringValue("subject"));
+      publication.setTitle(node.getStringValue("title"));
+      publication.setLastmodifieddate(node.getStringValue("lastmodifieddate"));
+      publication.setLastmodifier(node.getStringValue("lastmodifier"));
       return publication;
    }
 
@@ -194,4 +206,81 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       publicationNode.commit();
    
    }
+   
+   public Set<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate, int pagesize, int offset){
+	   NodeManager manager = cloud.getNodeManager("newsletterpublication");
+	   Node newsletterNode = cloud.getNode(newsletterId);
+	   
+	   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
+	   Step step = nodeQuery.getNodeStep();
+	   
+	   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
+	   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
+	   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
+	   
+	   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
+	   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
+	   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
+	   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
+	   
+	   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
+	   if (startDate != null){
+		   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
+		   constraints.addChild(constraintDate);
+	   }
+	   else{
+		   	BasicFieldValueConstraint constraintDate =new BasicFieldValueConstraint(fieldDate, endDate);
+	   		constraintDate.setOperator(FieldCompareConstraint.LESS);
+	   		constraints.addChild(constraintDate);
+	   }
+	   
+	   constraints.addChild(constraintTitle);
+	   constraints.addChild(constraintSubject);
+	   nodeQuery.setOffset(offset);
+	   nodeQuery.setMaxNumber(pagesize);
+	   nodeQuery.setConstraint(constraints);
+	   List<Node> list = nodeQuery.getList();
+	   Set<Publication> publications = convertPublicationsToMap(list);
+	   return publications;
+   }
+   
+	private Set<Publication> convertPublicationsToMap(List<Node> publicationNodes) {
+	   Set<Publication> publications = new HashSet<Publication>();
+	   for (Node publicationNode : publicationNodes) {
+		   publications.add(convertFromNode(publicationNode));
+	   }
+	   return publications;
+	}
+	
+	public int getPublicationCountForEdit(int newsletterId, String title, String subject, Date startDate, Date endDate){
+		NodeManager manager = cloud.getNodeManager("newsletterpublication");
+		   Node newsletterNode = cloud.getNode(newsletterId);
+		   
+		   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
+		   Step step = nodeQuery.getNodeStep();
+		   
+		   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
+		   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
+		   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
+		   
+		   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
+		   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
+		   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
+		   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
+		   
+		   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
+		   if (startDate != null){
+			   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
+			   constraints.addChild(constraintDate);
+		   }
+		   else{
+			   	BasicFieldValueConstraint constraintDate =new BasicFieldValueConstraint(fieldDate, endDate);
+		   		constraintDate.setOperator(FieldCompareConstraint.LESS);
+		   		constraints.addChild(constraintDate);
+		   }
+		   
+		   constraints.addChild(constraintTitle);
+		   constraints.addChild(constraintSubject);
+		   return nodeQuery.getList().size();
+	}
 }

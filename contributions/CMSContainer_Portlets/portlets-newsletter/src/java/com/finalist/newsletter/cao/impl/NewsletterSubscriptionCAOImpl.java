@@ -1,5 +1,6 @@
 package com.finalist.newsletter.cao.impl;
 
+import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.domain.Newsletter;
@@ -12,7 +13,11 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 
 import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.*;
 import com.finalist.newsletter.util.DateUtil;
@@ -257,5 +262,67 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       List<Node> list = query.getList();
 
       return list;
+   }
+   
+   public Set<Node> getRecordByNewsletterAndName(int newsletterId,String termName){
+	   NodeManager manager = cloud.getNodeManager("term");
+	   Node newsletterNode = cloud.getNode(newsletterId);	   
+	   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "term", "posrel");
+	   
+	   if(StringUtils.isNotBlank(termName)){
+		   Step step = nodeQuery.getNodeStep();
+		   StepField fieldName = nodeQuery.addField(step, manager.getField("name"));
+		   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldName, "%" + termName + "%");
+		   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
+		   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
+		   constraints.addChild(constraintTitle);
+		   nodeQuery.setConstraint(constraints);
+	   }
+	   List<Node> list = nodeQuery.getList();	   
+	   Set results = new HashSet<Node>();	   
+	   List<Node> recordList = null;
+	   
+	   for (Node termNode : list){
+		   recordList = termNode.getRelatedNodes("subscriptionrecord", "termed", "source");
+		   for(Node recordNode :recordList){
+			   if(recordNode!=null){
+				   results.add(recordNode);
+				   System.out.println(recordNode.toString());
+			   }
+		   }
+	   }
+	   return results;
+   }
+   
+   public Set<Node> getNewslettersByScriptionRecord(int authenticationId){
+	   NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+	   Query query = recordManager.createQuery();
+	   SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), Integer.toString(authenticationId));
+	   List<Node> subscriptions = query.getList();
+	   Set<Node> newsletters = new HashSet<Node>(); 
+	   for(Node subscription :subscriptions){
+		   List<Node> tmpNewsletters = subscription.getRelatedNodes("newsletter", "newslettered", "source");
+		   for(Node newsletter : tmpNewsletters){
+			   if(newsletter != null)
+				   newsletters.add(newsletter);
+		   }
+	   }
+	   return newsletters;
+   }
+   
+   public Set<Node> getTermsByScriptionRecord(int authenticationId){
+	   NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+	   Query query = recordManager.createQuery();
+	   SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), Integer.toString(authenticationId));
+	   List<Node> subscriptions = query.getList();
+	   Set<Node> terms = new HashSet<Node>();
+	   for(Node subscription : subscriptions){
+		   List<Node> tmpTerms = subscription.getRelatedNodes("term", "termed", "destination");
+		   for(Node term :tmpTerms){
+			   if(term != null)
+				   terms.add(term);
+		   }
+	   }
+	   return terms;
    }
 }

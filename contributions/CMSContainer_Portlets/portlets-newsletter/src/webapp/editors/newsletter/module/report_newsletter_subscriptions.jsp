@@ -71,9 +71,7 @@
                         <pg:item>
                            <tr>
                               <td><input type="checkbox" name="ids" value="${result.id}"/></td>
-                              <td>
-                                    ${result.username}
-                              </td>
+                              <td>${result.username}</td>
                               <td>${result.fullname}</td>
                               <td>${result.email}</td>
                            </tr>
