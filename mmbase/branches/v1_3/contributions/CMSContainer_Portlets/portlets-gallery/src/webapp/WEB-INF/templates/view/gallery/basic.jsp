@@ -14,8 +14,8 @@
         	<h2><mm:field name="title"/> </h2>  
         	<p><mm:field name="intro" escape="none" /></p>               
                           
-            <mm:relatednodescontainer type="images" role="imagerel" >
-            	<mm:sortorder field="imagerel.number" direction="down" />
+            <mm:relatednodescontainer type="images" role="imagerel" searchdirs="destination">
+            	<mm:sortorder field="imagerel.order" direction="up" />
                 <%-- url to fullsize page used by pageindex of fullsize mode 
                      AND link to fullsize image in list mode
                 --%>

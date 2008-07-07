@@ -55,7 +55,7 @@
 
 	<action type="create">
 		<relation role="imagerel">
-			<field name="order">{sum(//relation[@role=&apos;imagerel&apos; and and @lastitem=&apos;true&apos;]/object[@type='images']/../field[@name=&apos;order&apos;])+{$pos}}</field>
+			<field name="order">{sum(//relation[@role=&apos;imagerel&apos; and @lastitem=&apos;true&apos;]/object[@type='images']/../field[@name=&apos;order&apos;])+{$pos}}</field>
 			<object type="images" />
 		</relation>
 	</action>
