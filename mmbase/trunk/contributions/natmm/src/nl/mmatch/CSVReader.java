@@ -755,7 +755,7 @@ public class CSVReader implements Runnable {
       ArrayList addresses = getAddresses(zipCodeMap, zipCode);
       if(addresses == null) {
     	  addresses = new ArrayList();
-    	  addresses.add(street);
+        if (street != null) addresses.add(street);
     	  return addresses;
       }
       ArrayList returner = new ArrayList();
