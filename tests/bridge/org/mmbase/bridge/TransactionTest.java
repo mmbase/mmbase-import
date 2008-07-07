@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.4 2008-06-13 08:17:01 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.5 2008-07-07 13:18:37 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -25,8 +25,8 @@ public class TransactionTest extends BridgeTest {
         super(name);
     }
 
-
     int newNode;
+
 
     public void setUp() {
         // Create some test nodes
@@ -36,7 +36,6 @@ public class TransactionTest extends BridgeTest {
         node.commit();
         newNode = node.getNumber();
     }
-
 
     public void testCancel() {
         Cloud cloud = getCloud();
@@ -82,21 +81,41 @@ public class TransactionTest extends BridgeTest {
         assertEquals("yyyyy", node.getStringValue("title"));
     }
 
-    /**
-     * Test for http://www.mmbase.org/jira/browse/MMB-1621
-     */
+
+    //Test for http://www.mmbase.org/jira/browse/MMB-1621
     public void testGetValue() {
         Cloud cloud = getCloud();
+        String value = cloud.getNode(newNode).getStringValue("title");
+
         Transaction t = cloud.getTransaction("bar4");
         Node node = t.getNode(newNode);
         node.setStringValue("title", "zzzzz");
         node.commit(); // committing inside transaction
 
-        assertEquals("yyyyy", cloud.getNode(newNode).getStringValue("title")); // TODO TODO, I think
-                                                                               // this is failing.
+        assertEquals(value, cloud.getNode(newNode).getStringValue("title"));
 
         t.commit();
         assertEquals("zzzzz", cloud.getNode(newNode).getStringValue("title"));
+
+    }
+
+    public void testCancelDelete() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar5");
+        Node node = t.getNode(newNode);
+        node.delete();
+        t.cancel();
+        assertTrue(cloud.hasNode(newNode));
+
+    }
+
+    public void testCommitDelete() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar6");
+        Node node = t.getNode(newNode);
+        node.delete();
+        t.commit();
+        assertFalse(cloud.hasNode(newNode));
 
     }
 
