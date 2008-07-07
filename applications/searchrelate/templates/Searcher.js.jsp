@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.25 2008-07-07 16:20:42 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.26 2008-07-07 16:46:38 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -108,26 +108,6 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 		return this.searcher.search(document.getElementById(id), 0);
 	    });
 	});
-
-	// Arrage that pressing enter in the search-area works:
-	var repository = this.repository;
-	if (repository != null) {
-	    $(el).find("input.search").keypress(function(ev) {
-		if (ev.which == 13) {
-		    repository.searcher.search(this.value, 0);
-		    return false;
-		}
-	    });
-	}
-	var current = this.repository;
-	if (current != null) {
-	    $(el).find("input.search").keypress(function(ev) {
-		if (ev.which == 13) {
-		    current.searcher.search(this.value, 0);
-		    return false;
-		}
-	    });
-	}
 
 	$(this.repository).find("form.searchform").each(function() {
 	    var form = this;
@@ -614,6 +594,13 @@ MMBaseSearcher.prototype.bindEvents = function() {
     var self = this;
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
 
+    // Arrage that pressing enter in the search-area works:
+    $(this.div).find("input.search").keypress(function(ev) {
+	if (ev.which == 13) {
+	    self.search(this.value, 0);
+	    return false;
+	}
+    });
     $(this.div).find("a.navigate").click(function(ev) {
 	var anchor = ev.target;
 	self.logger.debug("navigating " + anchor);
