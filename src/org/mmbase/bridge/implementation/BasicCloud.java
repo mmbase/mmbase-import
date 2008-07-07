@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.185 2008-07-04 10:11:50 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.186 2008-07-07 11:09:39 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -213,10 +213,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         } catch (RuntimeException e) {
             throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
         }
+
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
         } else {
-            return makeNode(node, nodeNumber);
+            BasicNode n = makeNode(node, nodeNumber);
+            add(n);
+            return n;
         }
     }
 
