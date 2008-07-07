@@ -57,7 +57,6 @@ public class LinkWorkflow extends RepositoryWorkflow {
    }
 
 
-   @SuppressWarnings("unused")
    public void finishWriting(Node content, String remark) {
       throw new UnsupportedOperationException("Linked workflows are always finished after linking");
    }

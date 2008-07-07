@@ -17,14 +17,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 public class ChangeContentXml {
@@ -32,9 +32,9 @@ public class ChangeContentXml {
 	Log log = LogFactory.getLog(ChangeContentXml.class);
     Properties styles = new Properties();
     InputSource inputSource;
-    HashMap hs = new HashMap();
+    HashMap<String, String> hs = new HashMap<String, String>();
 
-    public ChangeContentXml() {
+    public ChangeContentXml() throws IOException {
 
     	InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream("style.properties"));
 
@@ -43,55 +43,60 @@ public class ChangeContentXml {
         } catch (IOException e) {
             log.error("Error when load style properties", e);
         }
+        finally {
+           if (in != null) {
+              in.close();
+           }
+        }
     }
 
-    public HashMap getStyleMap(HashMap contentStyle) {
-        HashMap hs = new HashMap();
+    public HashMap<String, String> getStyleMap(HashMap contentStyle) {
+        HashMap<String, String> hs = new HashMap<String, String>();
         String newKey = null;
-        String vaule = null;
+        String value = null;
         String newValue = null;
         Set contentKey = contentStyle.keySet();
         Iterator it = contentKey.iterator();
         while (it.hasNext()) {
         	newKey = it.next().toString();
-            vaule = contentStyle.get(newKey).toString();
+            value = contentStyle.get(newKey).toString();
             //bold
-            if (vaule.contains("font-weight=\"bold\"")) {
+            if (value.contains("font-weight=\"bold\"")) {
                 newValue = "1";
             } else {
                 newValue = "0";
             }
             //italic
-            if (vaule.contains("font-style=\"italic\"")) {
+            if (value.contains("font-style=\"italic\"")) {
                 newValue = newValue + "1";
             } else {
                 newValue = newValue + "0";
             }
             //underline
-            if (vaule.contains("text-underline-style=\"solid\"")) {
+            if (value.contains("text-underline-style=\"solid\"")) {
                 newValue = newValue + "1";
             } else {
                 newValue = newValue + "0";
             }
             //throughline
-            if (vaule.contains("text-line-through-style=\"solid\"")) {
+            if (value.contains("text-line-through-style=\"solid\"")) {
                 newValue = newValue + "1";
             } else {
                 newValue = newValue + "0";
             }
             //superscript
-            if (vaule.contains("text-position=\"super")) {
+            if (value.contains("text-position=\"super")) {
                 newValue = newValue + "1";
-            } else if (vaule.contains("text-position=\"sub")) {
+            } else if (value.contains("text-position=\"sub")) {
                 newValue = newValue + "2";
             } else {
                 newValue = newValue + "0";
             }
             //list
-            if (vaule.contains("bullet-char")) {
+            if (value.contains("bullet-char")) {
                 newValue = "ul";
             }
-            if (vaule.contains("num-format")) {
+            if (value.contains("num-format")) {
                 newValue = "ol";
             }
             hs.put(newKey, newValue);
@@ -99,14 +104,14 @@ public class ChangeContentXml {
         return hs;
     }
 
-    public HashMap getContentStyle(String ContentUrl) {
+    public HashMap<String, String> getContentStyle(String ContentUrl) {
         InputSource inputSource;
         inputSource = getXml(ContentUrl);
         hs = getStyleAttributes(inputSource);
         return hs;
     }
 
-    public String getPsoperties(String key, String filePath) throws IOException {
+    public String getProperties(String key, String filePath) throws IOException {
         Properties props = new Properties();
         String Property = null;
         InputStream in = new BufferedInputStream(new FileInputStream(filePath));
@@ -117,8 +122,8 @@ public class ChangeContentXml {
         return Property;
     }
 
-    public HashMap getStyleAttributes(InputSource styleSource) {
-        HashMap contentFirstHashMap = new HashMap();
+    public HashMap<String, String> getStyleAttributes(InputSource styleSource) {
+        HashMap<String, String> contentFirstHashMap = new HashMap<String, String>();
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dombuilder = domfac.newDocumentBuilder();

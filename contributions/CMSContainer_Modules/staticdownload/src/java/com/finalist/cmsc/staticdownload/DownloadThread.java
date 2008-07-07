@@ -13,14 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -90,6 +87,9 @@ public class DownloadThread extends Thread {
 			if (is != null) {
 				is.close();
 			}
+			if (br!= null) {
+			   br.close();
+			}
 		}
 		suffix = buffer.toString().split(";");
 	}
@@ -101,7 +101,7 @@ public class DownloadThread extends Thread {
 			File file = new File(downloadSettings.getTempPath());//get the files which wget last download
 			setupSuffix();
 			modifyDownloadPath();
-			findAssociatdFiles(file, new MyFilenameFilter(".css", ".js",
+			findAssociatedFiles(file, new MyFilenameFilter(".css", ".js",
 					".html"));
 			redownload(redownloadfiles);
 			redownloadfiles.clear();//this will avoid to redownload picture in different request
@@ -459,12 +459,12 @@ public class DownloadThread extends Thread {
 	/**Use the filter to find the associated files which last wget downloads,
 	 * then pick up the getTargetStringAndWriteFile() method
 	 * @throws IOException */
-	private void findAssociatdFiles(File file, MyFilenameFilter myfilter)
+	private void findAssociatedFiles(File file, MyFilenameFilter myfilter)
 			throws IOException {
-		String fileName = file.getAbsolutePath();
-		if (!fileName.endsWith(File.separator)) {
-			fileName = fileName + File.separator;
-		}
+		//String fileName = file.getAbsolutePath();
+		//if (!fileName.endsWith(File.separator)) {
+		//	fileName = fileName + File.separator;
+		//}
 		if (!file.exists()) {
 			return;
 		}
@@ -484,7 +484,7 @@ public class DownloadThread extends Thread {
 					}
 				}
 			} else if (files[i].isDirectory()) {
-				findAssociatdFiles(files[i], myfilter);
+				findAssociatedFiles(files[i], myfilter);
 			}
 		}
 	}
