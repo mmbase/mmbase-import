@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.24 2008-07-01 15:40:17 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.25 2008-07-07 16:20:42 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -108,7 +108,28 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 		return this.searcher.search(document.getElementById(id), 0);
 	    });
 	});
-	$(el).find("form.searchform").each(function() {
+
+	// Arrage that pressing enter in the search-area works:
+	var repository = this.repository;
+	if (repository != null) {
+	    $(el).find("input.search").keypress(function(ev) {
+		if (ev.which == 13) {
+		    repository.searcher.search(this.value, 0);
+		    return false;
+		}
+	    });
+	}
+	var current = this.repository;
+	if (current != null) {
+	    $(el).find("input.search").keypress(function(ev) {
+		if (ev.which == 13) {
+		    current.searcher.search(this.value, 0);
+		    return false;
+		}
+	    });
+	}
+
+	$(this.repository).find("form.searchform").each(function() {
 	    var form = this;
 	    form.searcher = searcher;
 	    $(form).submit(function(el) {
@@ -373,7 +394,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.context   = "";
     this.totalsize = -1;
     this.last = -1;
-    this.logger.debug("found " + this.searchUrl);
+    if (this.searchUrl == undefined) {
+	this.searchUrl = "${mm:link('/mmbase/searchrelate/page.jspx')}";
+    }
+    this.logger.debug("found url to use: " + this.searchUrl);
     this.maxNumber = -1;
 
 }
@@ -399,11 +423,11 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
 MMBaseSearcher.prototype.search = function(val, offset) {
-    if (val != null && val.tagName != null && val.tagName.toUpperCase() == "FORM") {
-	val = $(val).find("input").val();
-    } else {
-	$(this.div).find("form.searchform input").val(val);
+    if (val != null) {
+	$(this.div).find("input.search").val(val);
     }
+    val = $(this.div).find("input.search").val();
+
     var newSearch = val;
     if (newSearch != this.value) {
 	this.searchResults = {};
@@ -420,7 +444,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
-
+    this.logger.debug("Searching " + this.searchUrl + " " + params);
 
     $(rep).empty();
     if (result == null) {
