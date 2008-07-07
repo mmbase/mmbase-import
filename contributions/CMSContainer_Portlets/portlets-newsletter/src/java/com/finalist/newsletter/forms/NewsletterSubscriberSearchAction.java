@@ -1,7 +1,6 @@
 package com.finalist.newsletter.forms;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Node;
 import org.springframework.web.struts.DispatchActionSupport;
 
 
@@ -26,7 +24,6 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
-import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
@@ -96,9 +93,9 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport{
 		return mapping.findForward("success");
 	}
 	
-	private void AddToMap(List results, String fullName,String userName, String email, String newsletters, String terms) {
+	private void AddToMap(List<Map<String, String>> results, String fullName,String userName, String email, String newsletters, String terms) {
 		
-		Map result = new HashMap();
+		Map<String, String> result = new HashMap<String, String>();
         result.put("fullname", fullName);
         result.put("username", userName);
         result.put("email", email);
@@ -108,8 +105,8 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport{
 		
 	}
 	
-	private List searchSubscribers(int newsletterId, String term, String fullName, String userName, String email, int pageSize, int offset){
-		List results = new ArrayList<Map<String, String>>();
+	private List<Map<String, String>> searchSubscribers(int newsletterId, String term, String fullName, String userName, String email, int pageSize, int offset){
+		List<Map<String, String>> results = new ArrayList<Map<String, String>>();
 		Set<Integer> authenticationIdList = new HashSet<Integer>();
 		authenticationIdList = subscriptionService.getRecordIdByNewsletterAndName(newsletterId, StringUtils.isNotBlank(term)?term : "");
 		for(int authenticationId : authenticationIdList){
