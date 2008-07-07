@@ -103,11 +103,8 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
 			} %><%-- role=<%= shortyRol %>,iForm=<%=imgFormat %>,iFloat=<%=imgFloat %>,iPar=<%= imgParams %>,rmUrl=<%= (validLink ? readmoreURL : "" ) %> --%>
 			<table style="width:1%;<%= imgFloat %>" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-				<% if(posrel_pos.equals("4")) { %>
-					<td style="padding:10 0 10 0;margin:0px;text-align:right;">
-					<% } else { %>
 					<td style="padding:0 0 0 0;margin:0px;text-align:right;">
-					<% }
+					<%
 						if(validLink){
 							if(readmoreURL.indexOf("javascript:")>-1) { 
 								%>
