@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.7 2008-07-01 15:41:20 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.8 2008-07-07 12:28:33 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
@@ -226,7 +226,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public Node getNode(String nodeNumber) throws NotFoundException {
         MMObjectNode node;
         try {
-            //BasicCloudContext.tmpObjectManager.getObject(getAccount(), nodeNumber, nodeNumber);
             node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
         } catch (RuntimeException e) {
             throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + getAccount(), e);
@@ -234,7 +233,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
         } else {
-            return makeNode(node, nodeNumber);
+            BasicNode n  = makeNode(node, nodeNumber);
+            add(n);
+            return n;
         }
     }
 
@@ -1022,10 +1023,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         return false;
     }
 
+
     /**
      * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
      */
     void add(String currentObjectContext) {
+    }
+    /**
+     * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
+     */
+    int  add(BasicNode node) {
+        return node.getNumber();
     }
 
     /**
