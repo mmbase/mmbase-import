@@ -148,20 +148,18 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             </td>
          </tr>
          <tr>
-            <td style="vertical-align:top;width:50%;">
-              <mm:remove referid="imageused" 
-              /><mm:list nodes="<%= parent_number %>" path="evenement,posrel,images" max="1"
-                  ><table style="margin:0px;padding:0px;"><tr>
+            
+              <mm:list nodes="<%= parent_number %>" path="evenement,posrel,images" max="1"
+                  ><mm:remove referid="imageused" 
+                  /><td style="vertical-align:top;width:50%;">
+                     <table style="margin:0px;padding:0px;"><tr>
                      <td style="margin:0px;padding:0px;"><img src="<mm:node element="images"><mm:image template="s(120)" /></mm:node
                         >" alt="<mm:field name="evenement.naam"
                         />">&nbsp;</td>
                      <td style="margin:0px;padding:0px;vertical-align:top;"><mm:import id="imageused"
-              /></mm:list>&#32;
+              /><mm:present referid="imageused"></td></tr></table></mm:present></td></mm:list>
               
-              <mm:present referid="imageused"></td></tr></table></mm:present>
-            </td>
-            
-            <td style="vertical-align:top;width:50%;padding-right:3px;padding-top:10px;">
+            <td style="vertical-align:top;padding-right:3px;padding-top:10px;">
               <%= ddn.getReadableDate(" | ") %>&nbsp;|&nbsp;<%= ddn.getReadableStartTime() %>
               <br/>
               <mm:list nodes="<%= parent_number %>" path="evenement,related,evenement_type"
