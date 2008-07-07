@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
  */
 package com.finalist.newsletter.forms;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +30,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
+      String forwardType = request.getParameter("forward");
 
       if (StringUtils.isBlank(action)) { // Initialize the new
          int parent = Integer.parseInt(getParameter(request, "parent", true));
@@ -40,14 +43,25 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
          String objectnumber = String.valueOf(publicationNode.getNumber());
          request.getSession().removeAttribute("parent");
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-               + mapping.findForward("returnurl").getPath());
+         ActionForward ret = null;
+         if(StringUtils.isNotEmpty(forwardType)){
+        	 ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+                     + mapping.findForward("publicationmanage").getPath() + URLEncoder.encode("?forward") + "=" + forwardType + URLEncoder.encode("&newsletterId") + "=" + parent);
+         }
+         else{
+        	 ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+                 + mapping.findForward("returnurl").getPath());
+         }
          ret.setRedirect(true);
          return ret;
       }
       String ewnodelastedited = getParameter(request, "ewnodelastedited");
       addToRequest(request, "showpage", ewnodelastedited);
-      ActionForward ret = mapping.findForward("SUCCESS");
+      ActionForward ret;
+      if(StringUtils.isNotEmpty(forwardType)){
+    	  ret = new ActionForward(mapping.findForward("publicationmanage").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
+      }
+      ret = mapping.findForward("SUCCESS");
       return ret;
    }
 }

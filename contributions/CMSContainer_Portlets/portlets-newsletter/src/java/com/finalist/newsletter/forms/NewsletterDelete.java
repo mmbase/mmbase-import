@@ -11,6 +11,8 @@ package com.finalist.newsletter.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.mmapps.commons.util.StringUtil;
+
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
@@ -50,8 +52,13 @@ public class NewsletterDelete extends MMBaseFormlessAction {
 
          int number = newsletterNode.getNumber();
          NewsletterUtil.deleteRelatedElement(number);
+         NewsletterUtil.deleteNewsletterTermsForNewsletter(newsletterNode);
+         NewsletterUtil.deleteSubscriptionByTerm(newsletterNode);
          NavigationUtil.deleteItem(newsletterNode);
-       
+         
+         if(!StringUtil.isEmpty(getParameter(request,"forward"))){
+        	 return mapping.findForward("newslettermanage");
+         }
          return mapping.findForward(SUCCESS);
       }
 

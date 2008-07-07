@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
  */
 package com.finalist.newsletter.forms;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,19 +28,27 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = getParameter(request, "action");
+      String forwardType = getParameter(request ,"forward");
+      String parent = getParameter(request, "parent");
 
       if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-               + mapping.findForward("returnurl").getPath());
+               + mapping.findForward("returnurl").getPath() + URLEncoder.encode("?forward=") + forwardType + URLEncoder.encode("&number=") + objectnumber + URLEncoder.encode("&parent=" + parent));
          ret.setRedirect(true);
          return ret;
       } else {
          SecurityUtil.clearUserRoles(cloud);
          String ewnodelastedited = getParameter(request, "ewnodelastedited");
          addToRequest(request, "showpage", ewnodelastedited);
-         ActionForward ret = mapping.findForward(SUCCESS);
+         ActionForward ret = null;
+         if(StringUtils.isNotEmpty(forwardType)){
+        	 ret = new ActionForward(mapping.findForward("publicationmanage").getPath() + "?newsletterId=" + parent);
+         }
+         else{
+        	 ret = mapping.findForward(SUCCESS);
+         }
          return ret;
       }
    }

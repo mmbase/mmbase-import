@@ -1,7 +1,9 @@
 package com.finalist.newsletter.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.finalist.newsletter.domain.Publication;
 
@@ -26,4 +28,10 @@ public interface NewsletterPublicationService {
    public int countPublicationByNewsletter(int id);
 
    public int countSentPublications(int id);
+   
+   public Set<Publication> getPublicationByNewsletter(int id);
+   
+   public Set<Publication> searchPublication(int id , String title, String subject, Date startDate, Date endDate, int pagesize, int offset);
+   
+   public int searchPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate);
 }

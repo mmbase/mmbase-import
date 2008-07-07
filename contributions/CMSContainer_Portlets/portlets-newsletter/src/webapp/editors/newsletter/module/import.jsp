@@ -37,7 +37,7 @@
          <input type="button" value="Import" onclick="formSubmit()"/>
       </html:form>
       <div style="margin:4px;color:red;">
-         <html:messages id="file" message="false">
+         <html:messages id="file" message="true" bundle="newsletter">
             <bean:write name="file"/><br>
          </html:messages>
       </div>

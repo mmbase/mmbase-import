@@ -41,6 +41,17 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
                                        HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       log.debug("No parameter specified,go to dashboard");
+      List<Newsletter> newsletters;
+
+      String title = request.getParameter("title");
+      String subscriber = request.getParameter("subscriber");
+
+      newsletters = newsletterService.getNewsletters(subscriber, title);
+
+      List<Map> results = convertToMap(newsletters);
+
+      request.setAttribute("results", results);
+      
       request.setAttribute("newslettercount", newsletterService.countAllNewsletters());
       request.setAttribute("termcount", newsletterService.countAllTerms());
       request.setAttribute("subscriptioncount", subscriptionServices.countAllSubscriptions());
