@@ -13,6 +13,9 @@
    <field name="titel_eng">
       <prompt>terugknop-URL na versturen (optioneel)</prompt>
    </field>
+   <field name="omschrijving_eng" ftype="html">
+      <prompt>terugknop-tekst na versturen (optioneel)</prompt>
+   </field>    
    <field name="titel_fra">
       <prompt>feedback-titel na versturen</prompt>
    </field> 
