@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.228 2008-06-13 10:47:22 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.229 2008-07-07 15:24:44 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -567,7 +567,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // remove aliases
             deleteAliases(null);
             // in transaction:
-            if (cloud instanceof BasicTransaction) {
+            if (cloud instanceof BasicTransaction) {   // WTF WTF
                 // let the transaction remove the node (as well as its temporary counterpart).
                 // note that the node still exists until the transaction completes
                 // a getNode() will still retrieve the node and make edits possible
@@ -928,7 +928,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), Integer.valueOf(getNumber()));
             if (aliasName != null) {
                 Constraint c2 = q.createConstraint(q.getStepField(oalias.getField("name")), aliasName);
-                c = q.createConstraint (c,CompositeConstraint.LOGICAL_AND,c2);
+                c = q.createConstraint (c, CompositeConstraint.LOGICAL_AND, c2);
             }
             q.setConstraint(c);
             NodeList aliases = oalias.getList(q);
@@ -951,7 +951,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     @Override
     public void setContext(String context) {
         // set the context on the node (run after insert).
-        getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
+        getNode().setContext(cloud.getUser(), context, isNew());
     }
 
     // javadoc inherited (from Node)
