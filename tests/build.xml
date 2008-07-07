@@ -12,9 +12,8 @@
 
   <property file="${source.dir}/build.properties" />
 
-  <property name="build.dir"    value="${source.dir}/build" />
   <property name="target.dir"    value="${source.dir}/target" />
-  <property name="download.dir" value="${build.dir}/download" />
+  <property name="download.dir" value="${source.dir}/build/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
 
   <!-- use the build.properties.default from mmbase to define where
@@ -63,12 +62,7 @@
   <target name="init" depends="expand.junit">
     <mkdir dir="${tests.work.dir}"/>
 
-    <copy todir="${tests.lib}" preservelastmodified="true" >
-      <fileset dir="${build.dir}/lib">
-        <include name="*.jar"/>
-        <include name="*.zip"/>
-      </fileset>
-    </copy>
+
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${target.dir}/mmbase-1.9.0-SNAPSHOT.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
     <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
@@ -87,16 +81,18 @@
         </fileset>
       </classpath>
       <classpath id="run.classpath">
+        <fileset dir="lib">
+        </fileset>
         <fileset dir="${tests.lib}">
           <include name="junit.jar" />
           <include name="hsqldb.jar" />
           <include name="log4j.jar" />
           <include name="commons-fileupload.jar" />
           <include name="xalan.jar" />
-          <include name="servletapi-2.4.jar" />
+
           <include name="mmbase-test.jar" />
           <include name="mmbase-resources.jar" />
-          <include name="mmbase.jar" />
+          <include name="mmbase-1.9.0-SNAPSHOT.jar" />
         </fileset>
       </classpath>
       <classpath id="run.classpath.rmmci">
@@ -122,6 +118,12 @@
   </target>
 
   <target name="mmbase">
+    <exec
+        dir="${source.dir}"
+        executable="maven">
+      <arg value="jar"/>
+    </exec>
+
     <!-- Ant build is broken now
     <ant dir="${source.dir}" target="jar">
       <property name="build.documentation" value="false" />
