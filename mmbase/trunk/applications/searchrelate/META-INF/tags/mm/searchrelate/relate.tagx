@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.28 2008-07-01 08:22:15 michiel Exp $
+      @version $Id: relate.tagx,v 1.29 2008-07-07 16:19:38 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -55,6 +55,10 @@
                            description="A piece of HTML that will be presented first in the 'repository' div"/>
 
 
+  <jsp:directive.attribute name="forms"               type="java.lang.Boolean"
+                           description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
+
+
 
 
   <mm:import externid="current" from="this" />
@@ -101,10 +105,21 @@
           <mm:listnodescontainer clone="current">
             <mm:size>
               <mm:isgreaterthan value="${empty pagesize ? 10 : pagesize}">
-                <form class="searchform" action="${mm:link('/mmbase/searchrelate/page.jspx')}" method="post">
-                  <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
-                  <input type="text" value="" />
-                </form>
+                <c:choose>
+                  <c:when test="${empty forms or forms}">
+                    <form class="searchform" action="${mm:link('/mmbase/searchrelate/page.jspx')}" method="post">
+                      <fieldset>
+                        <legend><fmt:message key="search" /></legend>
+                        <input class="search" type="text" value="" />
+                        <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
+                      </fieldset>
+                    </form>
+                  </c:when>
+                  <c:otherwise>
+                    <input class="search" type="text" value="" />
+                    <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
+                  </c:otherwise>
+                </c:choose>
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
@@ -121,16 +136,30 @@
       </c:if>
       <div class="mm_relate_repository searchable">
         <jsp:invoke fragment="repositoryTitle" />
-        <form class="searchform"
-              id="mm_related_${seq}_repository"
-              action="${mm:link('/mmbase/searchrelate/page.jspx')}"
-              method="post">
-          <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
-          <input type="text" value="" />
-          <c:if test="${! empty create and create}">
-            <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
-          </c:if>
-        </form>
+        <c:choose>
+          <c:when test="${empty forms or forms}">
+            <form class="searchform"
+                  action="${mm:link('/mmbase/searchrelate/page.jspx')}"
+                  method="post">
+            <fieldset>
+              <legend><fmt:message key="search" /></legend>
+              <input class="search" type="text" value="" />
+              <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
+              <c:if test="${! empty create and create}">
+                <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
+              </c:if>
+            </fieldset>
+            </form>
+          </c:when>
+          <c:otherwise>
+            <input class="search" type="text" value="" />
+            <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
+            <c:if test="${! empty create and create}">
+              <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
+            </c:if>
+          </c:otherwise>
+        </c:choose>
+
         <mm:include page="/mmbase/searchrelate/page.jspx">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
