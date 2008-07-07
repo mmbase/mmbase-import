@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.229 2008-07-07 15:24:44 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.230 2008-07-07 15:28:33 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -951,7 +951,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     @Override
     public void setContext(String context) {
         // set the context on the node (run after insert).
-        getNode().setContext(cloud.getUser(), context, isNew());
+        getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
     }
 
     // javadoc inherited (from Node)
