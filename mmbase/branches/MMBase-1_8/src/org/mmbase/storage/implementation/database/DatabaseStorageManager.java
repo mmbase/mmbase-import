@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.11 2008-04-11 15:18:30 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.12 2008-07-08 11:07:33 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2289,7 +2289,6 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
         switch (jdbcType) {
         case Types.INTEGER :
         case Types.SMALLINT :
-        case Types.TINYINT :
             if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_NODE) {
                 return mmbaseType;
             } else {
@@ -2300,6 +2299,12 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                 return mmbaseType;
             } else {
                 return Field.TYPE_LONG;
+            }
+        case Types.TINYINT :
+            if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_BOOLEAN) {
+                return mmbaseType;
+            } else {
+                return Field.TYPE_INTEGER;
             }
         case Types.FLOAT :
         case Types.REAL :
@@ -2854,7 +2859,10 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                                         int number = numbers.getInt("number");
                                         log.debug("Processing " + tableName + " " + number);
                                         MMObjectNode node = builder.getNode(number);
-                                        //MMObjectNode node = (MMObjectNode)i.next();
+                                        if (node == null) {
+                                           log.warn("Database inconsistency for node with number: " + number);
+                                           continue;
+                                        }
                                         File storeFile = getBinaryFile(node, fieldName);
                                         if (!storeFile.exists()) { // not found!
                                             File legacyFile = getLegacyBinaryFile(node, fieldName);
