@@ -7,7 +7,7 @@
 <html:html xhtml="true">
 <cmscedit:head title="images.upload.title">
   <script src="../repository/search.js" type="text/javascript"></script>
-  <script language="javascript" type="text/javascript">
+  <script type="text/javascript">
     function upload() {
         var f=document.forms[0];
         f.submit();

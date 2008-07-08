@@ -100,7 +100,7 @@
 	  }
    }
 </script>
-<script language="javascript">
+<script type="text/javascript">
 
    var message = ""; 
    var id='${param.id}';
