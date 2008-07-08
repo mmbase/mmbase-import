@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Formats a long with hour:minutes:seconds. Ready for setting and getting, and also casting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Duration.java,v 1.1 2006-10-04 17:34:06 michiel Exp $
+ * @version $Id: Duration.java,v 1.2 2008-07-08 22:11:26 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -64,7 +64,7 @@ public class Duration {
     public static class GetString implements  Processor {
         private static final long serialVersionUID = 1L;
         public static String getString(long time) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             time /= 10; // in centis
             long centis = -1;
             long s     = 0;
