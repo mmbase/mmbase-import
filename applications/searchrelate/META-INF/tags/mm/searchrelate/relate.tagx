@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.29 2008-07-07 16:19:38 michiel Exp $
+      @version $Id: relate.tagx,v 1.30 2008-07-08 11:33:06 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -59,6 +59,7 @@
                            description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
 
 
+  <jsp:directive.attribute name="customizedir"          type="java.lang.String" />
 
 
   <mm:import externid="current" from="this" />
@@ -81,12 +82,14 @@
          $("${submit}").click(function(el) {
             return $("#mm_related_${seq}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${seq}").each(function() {
+      if (this.relater != null) {
     <c:if test="${! empty pagesize}">  this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
     <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
     <c:if test="${! empty current}">
       if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
     </c:if>
+    }
       })
     });
   </script>
@@ -123,7 +126,7 @@
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
-          <mm:include page="/mmbase/searchrelate/page.jspx">
+          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir">
             <c:if test="${! empty pagesize}">
               <mm:param name="pagesize" referid="pagesize" />
             </c:if>
@@ -146,6 +149,7 @@
               <input class="search" type="text" value="" />
               <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
               <c:if test="${! empty create and create}">
+                <jsp:text> </jsp:text>
                 <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
               </c:if>
             </fieldset>
@@ -155,12 +159,13 @@
             <input class="search" type="text" value="" />
             <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
             <c:if test="${! empty create and create}">
+              <jsp:text> </jsp:text>
               <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
             </c:if>
           </c:otherwise>
         </c:choose>
 
-        <mm:include page="/mmbase/searchrelate/page.jspx">
+        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
           </c:if>
