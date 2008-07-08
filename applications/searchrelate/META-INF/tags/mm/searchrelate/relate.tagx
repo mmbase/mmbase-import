@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.30 2008-07-08 11:33:06 michiel Exp $
+      @version $Id: relate.tagx,v 1.31 2008-07-08 11:41:10 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -126,7 +126,7 @@
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
-          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir">
+          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?">
             <c:if test="${! empty pagesize}">
               <mm:param name="pagesize" referid="pagesize" />
             </c:if>
@@ -165,7 +165,7 @@
           </c:otherwise>
         </c:choose>
 
-        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir">
+        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
           </c:if>
