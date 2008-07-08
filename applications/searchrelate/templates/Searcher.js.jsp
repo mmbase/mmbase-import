@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.26 2008-07-07 16:46:38 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.27 2008-07-08 12:33:34 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -226,7 +226,7 @@ MMBaseRelater.prototype.resetTrClasses  = function() {
 }
 
 MMBaseRelater.prototype.getNumber = function(tr) {
-    return  $(tr).find("td.node.number")[0].textContent;
+    return  $(tr).find("td.node.number").text();
 }
 
 
@@ -461,10 +461,10 @@ MMBaseSearcher.prototype.totalSize = function(size) {
     var span = $(this.div).find("caption span.size")[0];
     if (size == null) {
 	if (this.totalsize == -1) {
-	    this.totalsize = span == null ? 0 : parseInt(span.textContent);
+	    this.totalsize = span == null ? 0 : parseInt($(span).text());
 	}
     } else {
-	if (span != null) span.textContent = size;
+	if (span != null) $(span).text(size);
 	this.totalsize = size;
     }
     return this.totalsize;
@@ -475,10 +475,10 @@ MMBaseSearcher.prototype.lastIndex = function(size) {
     if (span == null) return;
     if (size == null) {
 	if (this.last == -1) {
-	    this.last = parseInt(span.textContent);
+	    this.last = parseInt($(span).text());
 	}
     } else {
-	span.textContent = size;
+	$(span).text(size);
 	this.last = size;
     }
     return this.last;
