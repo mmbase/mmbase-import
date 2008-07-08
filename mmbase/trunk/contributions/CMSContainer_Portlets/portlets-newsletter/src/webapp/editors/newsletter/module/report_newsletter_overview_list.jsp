@@ -1,29 +1,24 @@
 <%@include file="globals.jsp" %>
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 
-<form method="POST" name="operationform" action="SubscriptionManagement.do">
+<form method="post" name="operationform" action="SubscriptionManagement.do">
    <input type="hidden" name="action" id="action"/>
    <input type="hidden" name="type" id="action" value="newsletter"/>
       <table>
          <thead>
-            <th></th>
-            <th></th>
+            <th width="70"></th>
             <th><fmt:message key="newsletteroverview.newsletter"/></th>
-            <th><fmt:message key="globalstats.total.publications"/></th>
-            <th><fmt:message key="globalstats.total.sentsubscriptions"/></th>
-            <th><fmt:message key="globalstats.total.subscriptions"/></th>
+            <th width="100"><fmt:message key="globalstats.total.publications"/></th>
+            <th width="150"><fmt:message key="globalstats.total.sentsubscriptions"/></th>
+            <th width="100"><fmt:message key="globalstats.total.subscriptions"/></th>
          </thead>
          <tbody>
             <c:forEach items="${results}" var="result">
                   <tr <mm:even inverse="true">class="swap"</mm:even>>
-                     <td><input type="checkbox" name="ids" value="${result.id}"/></td>
                      <td>
-                        <a href="NewsletterEdit.do?number=${result.id}&forward=manage">
-                           <img src="../gfx/icons/edit_defaults.png" align="top"/>
-                        </a>
-                        <a href="NewsletterDelete.do?number=${result.id}&remove='true'&forward='manage'">
-                           <img src="../gfx/icons/delete.png" align="top" alt=""/>
-                        </a>
+                        <input type="checkbox" name="ids" value="${result.id}"/>
+                        <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top"/></a>
+                        <a href="NewsletterDelete.do?number=${result.id}&amp;remove='true'&amp;forward='manage'"><img src="../gfx/icons/delete.png" align="top" alt=""/></a>
                      </td>
                      <td>
                         <a href="NewsletterPublicationManagement.do?newsletterId=${result.id}">
@@ -37,13 +32,13 @@
             </c:forEach>
          </tbody>
       </table>
-      <br>
+      <br/>
    <input type="button" name="submitButton" class="submit"
           onclick="exportsubscription()"
           value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
 </form>
 
-<script>
+<script type="text/javascript">
       function exportsubscription() {
       var subscriptions = document.getElementsByName('ids');
       var hasSelection = false;

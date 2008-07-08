@@ -8,5 +8,3 @@
 <c:set var="pagesize">
    <%=PropertiesUtil.getProperty("repository.search.results.per.page")%>
 </c:set>
-
-<cmscedit:head title="Newsletter" />
