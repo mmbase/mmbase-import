@@ -7,7 +7,7 @@
 ><%
 
 String sPageTemplateURL = "";
-String DATA_FORMAT ="E, dd MMM yyyy, H:mm";
+String DATA_FORMAT ="E, dd MMM yyyy, HH:mm";
 
 %><%@include file="../includes/time.jsp" %><%
 
@@ -31,12 +31,16 @@ if (!"".equals(pSearchNumberOfDays)) {
 long lDateSearchFrom = nowSec;
 long lDateSearchTill = lDateSearchFrom + iSearchNumberOfDays*24*60*60;
 
-if(application.getAttribute("events_till")==null){
-   EventNotifier.updateAppAttributes(cloud);
-}
-if(application.getAttribute("events_till")!=null) {
-   lDateSearchTill = ((Long) application.getAttribute("events_till")).longValue();
-}
+System.out.println("lDateSearchTill 1: " + lDateSearchTill);
+
+//if(application.getAttribute("events_till")==null){
+//   EventNotifier.updateAppAttributes(cloud);
+//}
+//if(application.getAttribute("events_till")!=null) {
+//   lDateSearchTill = ((Long) application.getAttribute("events_till")).longValue();
+//}
+
+System.out.println("lDateSearchTill 2: " + lDateSearchTill);
 
 String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSearchTill);
 
@@ -95,7 +99,7 @@ boolean isProvincieMatch = false;
                String omschrijving = thisPage.getStringValue("omschrijving");
                if(omschrijving!=null) { %><%= HtmlCleaner.filterAmps(HtmlCleaner.cleanText(omschrijving,"<",">","")).trim() %><% }
             %></description>
-            <mm:listnodes type="evenement" constraints="<%=sChildConstraints%>" jspvar="thisEvent" orderby="begindatum" max="30" directions="UP"
+            <mm:listnodes type="evenement" constraints="<%=sChildConstraints%>" jspvar="thisEvent" orderby="begindatum" directions="UP"
                ><%               
                String parent_number = Evenement.findParentNumber(thisEvent.getStringValue("number"));
                %><mm:node number="<%= parent_number %>"
