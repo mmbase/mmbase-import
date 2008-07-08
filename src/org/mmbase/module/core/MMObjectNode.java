@@ -21,9 +21,7 @@ import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.util.Casting;
-import org.mmbase.util.SizeOf;
-import org.mmbase.util.DynamicDate;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.w3c.dom.Document;
@@ -40,10 +38,10 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.222 2008-07-03 15:53:58 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.223 2008-07-08 07:37:10 michiel Exp $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
 
@@ -464,7 +462,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     protected Object checkSerializable(String fieldName, Object fieldValue) {
         if (fieldValue != null && (! (fieldValue instanceof Serializable))) {
-            log.warn("Value for " + fieldName + " is not serializable: " + fieldValue, new Exception());
+            log.warn("Value for " + fieldName + " is not serializable: " + fieldValue.getClass() + " " + fieldValue, new Exception());
         }
         return fieldValue;
     }
@@ -483,6 +481,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (fieldName.startsWith("_") && fieldValue == null) {
             // This is just a hack to make app1 import/export working, withough exposing the values map.
             values.remove(fieldName);
+        }
+        if (fieldValue != null && (fieldValue instanceof InputStream)) {
+            fieldValue = new SerializableInputStream((InputStream) fieldValue);
         }
         fieldValue = checkSerializable(fieldName, fieldValue);
         if (checkFieldExistance(fieldName)) {
@@ -843,17 +844,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.8
      */
     private byte[] useInputStream(String fieldName, InputStream stream) {        // first, convert to byte-array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            byte[] buf = new byte[1024];
-            int n;
-            while ((n = stream.read(buf)) > -1) {
-                bos.write(buf, 0, n);
-            }
-        } catch (IOException ioe) {
-            log.error(ioe);
-        }
-        byte[] b = bos.toByteArray();
+        byte[] b = SerializableInputStream.toByteArray(stream);
         // check if we can cache it.
         BlobCache blobs = parent.getBlobCache(fieldName);
         String key = blobs.getKey(getNumber(), fieldName);
@@ -1860,5 +1851,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         isNew = in.readBoolean();
         aliases = (Set<String>)in.readObject();
         newContext = (String)in.readObject();
+    }
+
+    public int compareTo(MMObjectNode n) {
+        return getNumber() - n.getNumber();
     }
 }
