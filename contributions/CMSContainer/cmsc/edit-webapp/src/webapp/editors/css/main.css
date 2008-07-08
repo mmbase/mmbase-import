@@ -1383,11 +1383,11 @@ label {
 }
 
 .page_list_navfalse{
-   text-decoration:underline;
+   text-decoration:none;
 }
 
 .page_list_navtrue{
-    text-decoration:none;
+    text-decoration:underline;
 }
 
 span.warning {

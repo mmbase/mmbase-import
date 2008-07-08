@@ -29,7 +29,7 @@ if (maxsize == null || maxsize.length() == 0) {
 <head>
 <title><fmt:message key="upload.title" /></title>
 <link rel="stylesheet" type="text/css" href="../../../../editors/css/main.css" />
-<script language="javascript">
+<script type="text/javascript">
     function upload() {
         var f=document.forms[0];
         f.submit();
