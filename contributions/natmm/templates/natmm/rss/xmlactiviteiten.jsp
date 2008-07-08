@@ -31,16 +31,12 @@ if (!"".equals(pSearchNumberOfDays)) {
 long lDateSearchFrom = nowSec;
 long lDateSearchTill = lDateSearchFrom + iSearchNumberOfDays*24*60*60;
 
-System.out.println("lDateSearchTill 1: " + lDateSearchTill);
-
 //if(application.getAttribute("events_till")==null){
 //   EventNotifier.updateAppAttributes(cloud);
 //}
 //if(application.getAttribute("events_till")!=null) {
 //   lDateSearchTill = ((Long) application.getAttribute("events_till")).longValue();
 //}
-
-System.out.println("lDateSearchTill 2: " + lDateSearchTill);
 
 String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSearchTill);
 
