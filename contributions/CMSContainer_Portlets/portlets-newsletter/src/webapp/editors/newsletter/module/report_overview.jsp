@@ -1,7 +1,10 @@
 <%@include file="globals.jsp" %>
+<mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html:html xhtml="true">
 
-<cmscedit:head title="reactions.title">
-</cmscedit:head>
+<cmscedit:head title="index.title"/>
+<body>
 
 <div class="tabs">
    <div class="tab_active">
@@ -80,9 +83,14 @@
 <div class="editor">
    <div class="body"> 
       <table>
-      <tr><td><fmt:message key="index.link.manageterm"/></td></tr>
-      <tr><td><a href="SubscriptionImportExportAction.do?action=export"><fmt:message key="index.link.exportall"/></a></td></tr>
-      <tr><td><a href="SubscriptionManagement.do?action=showImportPage"><fmt:message key="index.link.import"/></a></td></tr>
-      <tr><td><a href="ShowNewsletters.do?action=show"><fmt:message key="index.link.newsletterstatistic"/></a></td></tr>
+         <tr><td><fmt:message key="index.link.manageterm"/></td></tr>
+         <tr><td><a href="SubscriptionImportExportAction.do?action=export"><fmt:message key="index.link.exportall"/></a></td></tr>
+         <tr><td><a href="SubscriptionManagement.do?action=showImportPage"><fmt:message key="index.link.import"/></a></td></tr>
+         <tr><td><a href="ShowNewsletters.do?action=show"><fmt:message key="index.link.newsletterstatistic"/></a></td></tr>
+      </table>
    </div>
 </div>
+
+</body>
+</html:html>
+</mm:content>
