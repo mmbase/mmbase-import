@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.text.DateFormat;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.47 2008-07-09 13:50:44 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.48 2008-07-09 17:21:44 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -52,11 +53,12 @@ public class DayMarkers extends MMObjectBuilder {
         }
     }
 
+    private ScheduledFuture future;
+
     /**
      * set the current day. This is the number of days from 1970.
      */
     public DayMarkers() {
-        day = currentDay();
     }
 
     /**
@@ -88,7 +90,18 @@ public class DayMarkers extends MMObjectBuilder {
             log.error("SQL Exception " + e + ". Could not find smallestMarker, smallestDay");
             result = false;
         }
+        day = currentDay();
         createMarker();
+        Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
+        future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    day = currentDay();
+                    createMarker();
+                }
+            },
+            100 +  // shortly after
+            3600 * 24 - ((now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)) * 60 + now.get(Calendar.SECOND)),  // some effort to run shortly after midnight
+            3600 * 24, TimeUnit.SECONDS);
         return result;
     }
 
@@ -96,9 +109,13 @@ public class DayMarkers extends MMObjectBuilder {
      * The current time in days since 1-1-1970
      */
     private int currentDay() {
-        return (int)(System.currentTimeMillis()/MILLISECONDS_IN_A_DAY);
+        Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
+        return (int)((now.getTimeInMillis() + now.get(Calendar.ZONE_OFFSET)) / MILLISECONDS_IN_A_DAY);
     }
 
+    public void shutdown() {
+        future.cancel(true);
+    }
 
     /**
      * Creates a mark in the database, if necessary.
@@ -138,18 +155,6 @@ public class DayMarkers extends MMObjectBuilder {
 
     }
 
-    /**
-     * This gets called every hour to see if the day has past.
-     */
-    public void probe() {
-        int newday;
-        newday=currentDay();
-        //debug("Days "+newday+" current "+day);
-        if (newday>day) {
-            day = newday;
-            createMarker();
-        }
-    }
 
 
     /**
