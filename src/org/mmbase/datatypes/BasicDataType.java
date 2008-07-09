@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.86 2008-06-09 10:20:35 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.87 2008-07-09 22:08:34 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -695,6 +695,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
         */
 
+    }
+
+    public Handler getHandler(String mimeType) {
+        throw new UnsupportedOperationException("Not yet ready");
     }
 
     public int compareTo(DataType<C> a) {
