@@ -1,5 +1,9 @@
 package nl.vpro.tagfileparser.model;
 
+/**
+ * @author Ernst Bunders
+ *
+ */
 public class TagDirective {
 	
 	private String displayName = null;

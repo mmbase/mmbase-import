@@ -3,14 +3,12 @@ package nl.vpro.tagfileparser.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.TagAction;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
  * This bean contains all the information we want to know about a tag file.
  * 
- * @author ebunders
+ * @author Ernst Bunders
  *
  */
 public final class TagInfo {

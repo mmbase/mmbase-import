@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.vpro.tagfileparser.model.AttributeDirective;
-import nl.vpro.tagfileparser.parser.DirectiveParser.PropertySetter;
 import nl.vpro.util.StringUtil;
 
+/**
+ * @author Ernst Bunders
+ *
+ */
 public class AttributeDirectiveParser extends DirectiveParser {
 	
 	private Map<String, PropertySetter> setters = new HashMap<String, PropertySetter>();
