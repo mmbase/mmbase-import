@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.11 2008-07-09 17:01:51 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.12 2008-07-09 17:28:44 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -89,6 +89,7 @@ public abstract class ThreadPools {
      * @since MMBase-1.8.4
      */
     public static void shutdown() {
+        scheduler.shutdown();
         filterExecutor.shutdown();
         jobsExecutor.shutdown();
     }
