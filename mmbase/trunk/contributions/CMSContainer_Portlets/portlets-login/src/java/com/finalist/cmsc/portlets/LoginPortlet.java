@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
+import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -42,11 +43,10 @@ public class LoginPortlet extends CmscPortlet {
       if ("login".equals(action)) {
          String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
          String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
-
+         request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
          if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
             Community.login(userName, password);
          }
-
          if (Community.isAuthenticated()) {
             log.info(String.format("Login successful for user %s", userName));
          } else {
@@ -54,6 +54,7 @@ public class LoginPortlet extends CmscPortlet {
             response.setRenderParameter("errormessage", "login.failed");
          }
       } else if ("logout".equals(action)) {
+         request.getPortletSession().removeAttribute("username", PortletSession.APPLICATION_SCOPE);
          Community.logout();
       } else {
          // Unknown
@@ -63,9 +64,8 @@ public class LoginPortlet extends CmscPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-
+      
       String template;
-
       String error = request.getParameter("errormessage");
       if (StringUtils.isNotBlank(error)) {
          request.setAttribute("errormessage", error);
