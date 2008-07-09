@@ -7,7 +7,7 @@
 
     <date>2007-02-09</date>
 
-    <edition>$Id: components.xml,v 1.16 2008-06-27 12:36:33 michiel Exp $</edition>
+    <edition>$Id: components.xml,v 1.17 2008-07-09 21:43:22 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -315,7 +315,37 @@
       <para>In future the class specification should be extended with classes
       for icons and content images, which would give graphical designers also
       global control over what happens with icons and content images in a page
-      (see</para>
+     </para>
+     <para>
+       The following css selectors can be used for general style on produced content.
+       As of 1.9.0, this is only a proposal, mainly copied from classes already used in the 'richtext' application.
+       <ulink
+           url="http://www.mmbase.org/jira/browse/MMB-1388">MMB-1388</ulink>
+     </para>
+
+     <itemizedlist>
+       <listitem><para>img.icon: an image that should be interpreted as some kind of icon.</para></listitem>
+       <listitem><para>img.image-inline: an image that should be rendered inline in the text</para></listitem>
+       <listitem><para>img.image-left: this image can be floated, preferrably to the left</para></listitem>
+       <listitem><para>img.image-right: this image can be floated, preferrable to the right</para></listitem>
+       <listitem><para>img.image-center: this image would like to take up the full width</para></listitem>
+       <listitem><para>div.float.right: a floating div, preferrably to the right</para></listitem>
+       <listitem><para>div.float.left: a floating div, preferrable to the left</para></listitem>
+       <listitem><para>div.note: a div containing a (foot/side)note about the running text.</para></listitem>
+       <listitem><para>div.intermezzo: a div containing a intermezoo on the running text. An elaborated note.</para></listitem>
+       <listitem><para>div.quote: a div containing a quote, illustrating the running text</para></listitem>
+       <listitem><para>div.caption: a div that captures other content, like an image</para></listitem>
+       <listitem><para>table.grid: a table which visible borders</para></listitem>
+       <listitem><para>table.plain: an invisible table</para></listitem>
+       <listitem><para>table.listing: a table that lists a number of similar things</para></listitem>
+       <listitem><para>table.data: a table that contains (numerical) data</para></listitem>
+       <listitem><para>table.wide: a table wanting to take up the full width</para></listitem>
+       <listitem><para>td.align-right:</para></listitem>
+       <listitem><para>td.align-left:</para></listitem>
+       <listitem><para>td.align-center:</para></listitem>
+       <listitem><para>tr.odd:</para></listitem>
+       <listitem><para>tr.even:</para></listitem>
+     </itemizedlist>
 
       <para>On default when no renderer is specified the render 'body' will be
       returned. If there is no body renderer defined in the component the
