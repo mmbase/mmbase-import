@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.ThreadPools;
+import java.util.concurrent.*;
 import java.util.*;
 import java.net.*;
 import java.lang.reflect.*;
@@ -35,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.96 2007-12-06 08:06:43 michiel Exp $
+ * @version $Id: Module.java,v 1.97 2008-07-09 17:05:01 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -94,15 +96,12 @@ public abstract class Module extends DescribedFunctionProvider {
     // startup call.
     private boolean started = false;
 
-
+    private ScheduledFuture future;
     /**
      * @deprecated
      */
     public Module() {
-        addFunction(getVersionFunction);
-        addFunction(getMaintainerFunction);
-        String startedAt = (new Date(System.currentTimeMillis())).toString();
-        setState(STATE_START_TIME, startedAt);
+        this(null);
     }
 
     public Module(String name) {
@@ -111,6 +110,16 @@ public abstract class Module extends DescribedFunctionProvider {
         addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
         setState(STATE_START_TIME, startedAt);
+        // also start the maintaince thread that calls all modules 'maintainance' method every x
+        // seconds
+        Calendar now = Calendar.getInstance();
+        future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    Module.this.maintainance();
+                }
+            },
+            3600 - (now.get(Calendar.MINUTE) * 60 + now.get(Calendar.SECOND)),  // some effort to run exactly at hour
+            3600, TimeUnit.SECONDS);
     }
     /**
      * @since MMBase-1.8
@@ -191,7 +200,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @since MMBase-1.6.2
      */
     protected void shutdown() {
-        // on default, nothing needs to be done.
+        future.cancel(true);
     }
 
     /**
@@ -232,7 +241,8 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     public String getInitParameter(String key) {
         if (properties != null) {
-            String value= properties.get(key);
+            log.debug("Getting init parameter " + key + " for " + this);
+            String value = properties.get(key);
             if (value == null) {
                 key = key.toLowerCase();
                 value = properties.get(key);
@@ -278,7 +288,7 @@ public abstract class Module extends DescribedFunctionProvider {
         try {
             Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
             properties.putAll(contextMap);
-
+            log.info("Put for " + getName() + " " + contextMap);
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
@@ -425,8 +435,7 @@ public abstract class Module extends DescribedFunctionProvider {
             if (startOnLoad) {
                 startModules();
             }
-            // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-            new ModuleProbe().start();
+
 
         }
     }
