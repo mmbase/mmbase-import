@@ -16,7 +16,7 @@
     <table summary="Jobs statistics" border="0" cellspacing="0" cellpadding="3">
       <caption>Jobs statistics</caption>
       <tr>
-        <th>Executor</th><th>#Active</th><th>#Completed</th><th>Queue</th>
+        <th>Executor</th><th>#Active</th><th>#Completed</th><th>Pool size</th><th>Queue</th>
       </tr>
       <tr>
         <th>Scheduler</th>
