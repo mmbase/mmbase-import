@@ -1,8 +1,16 @@
 <td><jsp:expression>executor.getActiveCount()</jsp:expression	></td>
 <td><jsp:expression>executor.getCompletedTaskCount()</jsp:expression	></td>
+<td><jsp:expression>executor.getPoolSize()</jsp:expression>
+<jsp:scriptlet>if (executor.getMaximumPoolSize() != Integer.MAX_VALUE) {</jsp:scriptlet>
+/
+<jsp:expression>executor.getMaximumPoolSize()</jsp:expression>
+<jsp:scriptlet>}</jsp:scriptlet>
+</td>
 <td>
   <jsp:scriptlet>for (Runnable runnable : executor.getQueue()) { ScheduledFuture future = (ScheduledFuture) runnable;</jsp:scriptlet>
-  <p><jsp:expression>future</jsp:expression>: due in
+  <p title="<jsp:expression>future</jsp:expression>">
+  <jsp:expression>future.hashCode()</jsp:expression>
+  : due in
   <jsp:expression>future.getDelay(TimeUnit.HOURS)</jsp:expression>h
   <jsp:expression>future.getDelay(TimeUnit.MINUTES) % 60</jsp:expression>min
   <jsp:expression>future.getDelay(TimeUnit.SECONDS) % 60</jsp:expression>s
