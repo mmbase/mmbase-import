@@ -11,6 +11,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+/**
+ * This base class for the tagfileparser junit tests
+ * helps you to read tag files from the classpath.
+ * @author ebunders
+ *
+ */
 public abstract class TestBase extends TestCase{
 	
 	public TestBase(){

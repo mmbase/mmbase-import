@@ -1,6 +1,5 @@
 package nl.vpro.util;
 
-import java.lang.reflect.Method;
 
 public class IllegalParameterException extends RuntimeException {
 	

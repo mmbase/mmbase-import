@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.vpro.tagfileparser.model.TagDirective;
-import nl.vpro.tagfileparser.model.TagInfo;
 import nl.vpro.util.StringUtil;
 
+/**
+ * @author Ernst Bunders
+ *
+ */
 public class TagDirectiveParser extends DirectiveParser {
 
 	private TagDirective tagDirective = null;

@@ -1,9 +1,7 @@
 package nl.vpro.tagfileparser.parser;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import nl.vpro.tagfileparser.model.TagInfo;
 import nl.vpro.util.StringUtil;
@@ -12,7 +10,7 @@ import nl.vpro.util.StringUtil;
  * Matches the lines of the iterator with a regular expression, and calls
  * template methods according to the result. This class is not thread safe!
  * 
- * @author ebunders
+ * @author Ernst Bunders
  * 
  */
 public abstract class RegexpParser implements ElementParser {

@@ -1,6 +1,10 @@
 package nl.vpro.tagfileparser.parser;
 
-public class IllegalDirectiveException extends RuntimeException {
+/**
+ * @author Ernst Bunders
+ *
+ */
+public class IllegalDirectiveException extends BasicTagParserException {
 
 
 

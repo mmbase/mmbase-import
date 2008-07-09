@@ -6,6 +6,10 @@ import java.util.Map;
 import nl.vpro.tagfileparser.model.VariableDirective;
 import nl.vpro.util.StringUtil;
 
+/**
+ * @author Ernst Bunders
+ *
+ */
 public class VariableDirectiveParser extends DirectiveParser {
 	
 	private VariableDirective variableDirective = null;
