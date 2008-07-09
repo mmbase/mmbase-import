@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.17 2008-04-23 08:21:39 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.18 2008-07-09 17:54:46 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -85,7 +85,7 @@ public class MyNewsUrlConverter implements UrlConverter {
                 Node n = (Node) parameters.get(Framework.N.getName());
                 StringBuilder b = new StringBuilder(directory);
                 if(block.getName().equals("article")) {
-                    //b.append("/");
+                    b.append("/");
                     if (dateDepth > 0) {
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(n.getDateValue("date"));
@@ -139,7 +139,7 @@ public class MyNewsUrlConverter implements UrlConverter {
             if (path.length >= 2) {
                 StringBuilder result = new StringBuilder("/mmbase/mynews/render.jspx");
                 assert path[0].equals("");
-                assert path[1].equals(directory.substring(1));
+                assert path[1].equals(directory.substring(1)) : path[1] + " " + directory;
                 if (path.length == 2) {
                     // magazine mode.
                     return result.toString();
