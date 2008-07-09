@@ -20,7 +20,12 @@
 			<mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 				<mm:node number="${param.objectnumber}">
 					<div style="float:left">
-			           	<img src="<mm:image template="s(430x430)"/>" alt="<mm:field name="description" />" /><br/>
+                     <mm:field name="width" jspvar="width" write="false"/>
+                     <img src="
+                     <c:choose>
+                        <c:when test="${width gt 430}"><mm:image template="s(430)"/></c:when>
+                        <c:otherwise><mm:image/></c:otherwise>
+                     </c:choose>" alt="<mm:field name="description" />" /><br/>
 			        </div>
 			        <div style="float:left; padding:5px;">
 			            <h1><mm:field name="filename"/></h1>
