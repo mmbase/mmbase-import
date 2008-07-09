@@ -1,5 +1,6 @@
-<%@ page import="org.mmbase.bridge.*,java.util.*" 
+<%@ page import="org.mmbase.bridge.*,java.util.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<mm:content>
 <mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
 <mm:import externid="module"   jspvar="module" />
 <mm:import externid="property" jspvar="property" />
@@ -28,7 +29,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
                 if (property.length()==0) {
                     throw new Exception("Property name should be specified");
                 }
-                
+
                 params.put("PROPERTYNAME", property);
                 params.put("VALUE", value);
             }
@@ -58,8 +59,8 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 <mm:present referid="action">
   <mm:compare referid="action" value="alter">
     <h3>Administrate Module ${module}, Property ${property}</h3>
-    
-    <% 
+
+    <%
     //Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
     String val = mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
     %>
@@ -71,8 +72,8 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
       <th class="center">Change</th>
     </tr>
     <tr>
-      <td><%= property %></td>
-      <td><input type="text" name="value" size="62" value="<%= val %>" /></td>
+      <td>><mm:escape><%= property %></mm:escape></td>
+      <td><input type="text" name="value" size="62" value="<mm:escape><%= val %></mm:escape>" /></td>
       <td class="center">
         <input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
         <input type="image" src="<mm:url page="/mmbase/style/images/edit.png" />" alt="Change" />
@@ -81,7 +82,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
     </table>
     </form>
   </mm:compare><%-- /action = alter --%>
-  
+
 </mm:present><%-- /action --%>
 
 <mm:notpresent referid="action">
@@ -113,8 +114,8 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
         Node prop=props.getNode(i);
 %>
 <tr>
-   <td><%= prop.getStringValue("item1") %></td>
-   <td><%= prop.getStringValue("item2") %></td>
+   <td><mm:escape><%= prop.getStringValue("item1") %></mm:escape></td>
+   <td><mm:escape><%= prop.getStringValue("item2") %></mm:escape></td>
    <td class="center">
      <mm:link page="modules-actions" referids="module">
        <mm:param name="property"><%= prop.getStringValue("item1") %></mm:param>
@@ -123,11 +124,11 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
      </mm:link>
    </td>
   </tr>
-  <%  
-  }  
+  <%
+  }
   %>
   </table>
-  
+
   <mm:link page="modules-actions" referids="module"><form action="${_}" method="post"></mm:link>
   <table border="0" cellspacing="0" cellpadding="3">
   <caption>
@@ -158,3 +159,4 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
 </div>
 </mm:cloud>
+</mm:content>
