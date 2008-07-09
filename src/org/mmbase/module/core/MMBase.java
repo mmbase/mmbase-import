@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.244 2008-06-19 21:04:10 michiel Exp $
+ * @version $Id: MMBase.java,v 1.245 2008-07-09 17:22:36 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -758,17 +758,6 @@ public class MMBase extends ProcessorModule {
         return baseName;
     }
 
-    /**
-     * Performs periodic maintenance.
-     */
-    public void maintainance() {
-        DayMarkers dayMarkers = (DayMarkers)getBuilder("daymarks");
-        if (dayMarkers != null) {
-            dayMarkers.probe();
-        } else {
-            log.error("Can't access builder : daymarks");
-        }
-    }
 
     /**
      * Retrieves the machine name.
