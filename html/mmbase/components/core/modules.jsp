@@ -1,9 +1,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
+<mm:content>
 <mm:cloud rank="administrator">
 <div
   class="mm_c c_core b_modules ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
-  
+
   <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
   <table summary="MMBase modules" border="0" cellspacing="0" cellpadding="3">
     <caption>
@@ -16,7 +17,7 @@
       <th scope="col">Maintainer</th>
       <th scope="col" class="center">Manage</th>
     </tr>
-    <mm:nodelistfunction module="mmadmin" name="MODULES">  
+    <mm:nodelistfunction module="mmadmin" name="MODULES">
     <tr>
       <td>
         <mm:link page="modules-actions">
@@ -39,3 +40,4 @@
 
 </div>
 </mm:cloud>
+</mm:content>
