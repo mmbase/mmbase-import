@@ -6,7 +6,7 @@ import net.jforum.sso.SSO;
 import net.jforum.util.preferences.ConfigKeys;
 import net.jforum.util.preferences.SystemGlobals;
 
-public class MyUserSSO implements SSO {
+public class JForumSSO implements SSO {
 
    public String authenticateUser(RequestContext requestContext) {
       // HttpSession session = JForum.getRequest().getSession();
