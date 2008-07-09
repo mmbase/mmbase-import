@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: ThreadPools.java,v 1.11 2008-07-09 17:01:51 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -28,29 +28,41 @@ public abstract class ThreadPools {
     public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
 
 
+    private static Thread newThread(Runnable r, String id) {
+        Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r, id) {
+                /**
+                 * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+                 */
+                public void run() {
+                    try {
+                        super.run();
+                    } catch (Throwable t) {
+                        log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
+                    }
+                }
+            };
+        t.setDaemon(true);
+        return t;
+    }
+
     /**
      * For jobs there are 'scheduled', and typically happen on larger time-scales.
      */
     public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "JOBTHREAD") {
-                        /**
-                         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
-                         */
-                        public void run() {
-                            try {
-                                super.run();
-                            } catch (Throwable t) {
-                                log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
-                            }
-                        }
-                    };
-                t.setDaemon(true);
-                return t;
+                return ThreadPools.newThread(r, "JOBTHREAD");
             }
         });
 
+    /**
+     * @since MMBase-1.9
+     */
+    public static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                return ThreadPools.newThread(r, "SCHEDULERTHREAD");
+            }
+        });
 
 
     private static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
