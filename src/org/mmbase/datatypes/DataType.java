@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.66 2008-04-24 11:49:55 michiel Exp $
+ * @version $Id: DataType.java,v 1.67 2008-07-09 22:08:34 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -369,6 +369,11 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * @param element a 'datatype' element.
      */
     public void toXml(org.w3c.dom.Element element);
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public Handler getHandler(String mimeType);
 
     /**
      * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
