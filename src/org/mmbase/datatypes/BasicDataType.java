@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.87 2008-07-09 22:08:34 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.88 2008-07-09 22:12:51 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -697,7 +697,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     }
 
-    public Handler getHandler(String mimeType) {
+    public org.mmbase.datatypes.handlers.Handler getHandler(String mimeType) {
         throw new UnsupportedOperationException("Not yet ready");
     }
 
