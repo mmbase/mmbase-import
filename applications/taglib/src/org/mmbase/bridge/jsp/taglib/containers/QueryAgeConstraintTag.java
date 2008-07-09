@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.10 2008-07-09 15:33:19 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -66,33 +66,6 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
     }
 
 
-    protected int getDayMark(int age) throws JspTagException {
-        log.debug("finding day mark for " + age + " days ago");
-        Cloud cloud = getCloudVar();
-        NodeManager dayMarks = cloud.getNodeManager("daymarks");
-        NodeQuery query = dayMarks.createQuery();
-        StepField step = query.createStepField("daycount");
-        int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-        Integer day = currentDay  - age;
-        if (log.isDebugEnabled()) {
-            log.debug("today : " + currentDay + " requested " + day);
-        }
-        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
-        query.setConstraint(constraint);
-        query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
-        query.setMaxNumber(1);
-
-        NodeList result = dayMarks.getList(query);
-        if (result.size() == 0) {
-            return -1;
-        } else {
-            return result.getNode(0).getIntValue("mark");
-        }
-
-
-    }
-
-
 
     public int doStartTag() throws JspTagException {
 
@@ -100,6 +73,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
             throw new JspTagException("Either 'minage' or 'maxage' (or both) attributes must be present");
         }
         Query query = getQuery(container);
+
 
         String fieldName;
         if (field == Attribute.NULL && element == Attribute.NULL) {
@@ -115,33 +89,17 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
 
         StepField stepField = query.createStepField(fieldName);
 
-        Constraint newConstraint = null;
 
         int minAgeInt = minAge.getInt(this, -1);
         int maxAgeInt = maxAge.getInt(this, -1);
+
+        Constraint newConstraint = Queries.createAgeConstraint(query, stepField.getStep(), minAgeInt, maxAgeInt);
+
         // if minimal age given:
         // you need the day marker of the day after that (hence -1 in code below inside the getDayMark), node have to have this number or lower
         // if maximal age given:
         // daymarker object of that age must be included, but last object of previous day not, hece the +1 outside the getDayMark
 
-        if (maxAgeInt != -1 && minAgeInt > 0) {
-            int maxMarker = getDayMark(maxAgeInt);
-            if (maxMarker > 0) {
-                // BETWEEN constraint
-                newConstraint = query.createConstraint(stepField, maxMarker + 1, Integer.valueOf(getDayMark(minAgeInt - 1)));
-            } else {
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAgeInt - 1)));
-            }
-        } else if (maxAgeInt != -1) { // only on max
-            int maxMarker = getDayMark(maxAgeInt);
-            if (maxMarker > 0) {
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
-            }
-        } else if (minAgeInt > 0) {
-            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAgeInt - 1)));
-        } else {
-            // both unspecified
-        }
 
         if (newConstraint != null) {
             if (inverse.getBoolean(this, false)) {
