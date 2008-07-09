@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.102 2008-06-19 14:53:57 michiel Exp $
+ * @version $Id: Queries.java,v 1.103 2008-07-09 15:32:44 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1363,6 +1363,77 @@ abstract public class Queries {
             }
         }
         return result;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected static int getDayMark(int age) {
+        log.debug("finding day mark for " + age + " days ago");
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        NodeManager dayMarks = cloud.getNodeManager("daymarks");
+        NodeQuery query = dayMarks.createQuery();
+        StepField step = query.createStepField("daycount");
+        int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
+        Integer day = new Integer(currentDay  - age);
+        if (log.isDebugEnabled()) {
+            log.debug("today : " + currentDay + " requested " + day);
+        }
+        Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
+        query.setConstraint(constraint);
+        query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
+        query.setMaxNumber(1);
+
+        NodeList result = dayMarks.getList(query);
+        if (result.size() == 0) {
+            return -1;
+        } else {
+            return result.getNode(0).getIntValue("mark");
+        }
+
+
+    }
+
+
+    /**
+     * As {@link #createAgeConstraint(Query, Step, int int)}, but NodeQuery's have an exceptional
+     * step, which can be taken as the default.
+     * @since MMBase-1.9
+     */
+    public static Constraint crateAgeConstraint(NodeQuery q, int minAge, int maxAge) {
+        return createAgeConstraint(q, q.getNodeStep(), minAge, maxAge);
+    }
+    /**
+     * Create a constraint for the query which limits to results to nodes of a certain age, based on
+     * its number and the 'daymarkers' table.
+     * @param minAge Minimal age in days (or -1 if it does not matter)
+     * @param minAge Maximila age in days (or -1 if it does not matter)
+     * @return a new Constraint or <code>null</code>
+     * @since MMBase-1.9
+     */
+    public static Constraint createAgeConstraint(Query query, Step step, int minAge, int maxAge) {
+        StepField stepField = query.createStepField(step, "number");
+        if (maxAge != -1 && minAge > 0) {
+            int maxMarker = getDayMark(maxAge);
+            if (maxMarker > 0) {
+                // BETWEEN constraint
+                return query.createConstraint(stepField, maxMarker + 1, Integer.valueOf(getDayMark(minAge - 1)));
+            } else {
+                return query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAge - 1)));
+            }
+        } else if (maxAge != -1) { // only on max
+            int maxMarker = getDayMark(maxAge);
+            if (maxMarker > 0) {
+                return  query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
+            } else {
+                return null;
+            }
+        } else if (minAge > 0) {
+            return  query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAge - 1)));
+        } else {
+            // both unspecified
+            return null;
+        }
     }
 
     public static void main(String[] argv) {
