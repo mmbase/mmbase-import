@@ -1,0 +1,41 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.util.*,java.util.concurrent.*" />
+  <mm:cloud rank="administrator">
+  <div
+      class="mm_c c_core b_events ${requestScope.className}"
+      id="${requestScope.componentId}">
+    <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
+    <table summary="Jobs statistics" border="0" cellspacing="0" cellpadding="3">
+      <caption>Jobs statistics</caption>
+      <tr>
+        <th>Executor</th><th>#Active</th><th>#Completed</th><th>Queue</th>
+      </tr>
+      <tr>
+        <th>Scheduler</th>
+        <jsp:scriptlet>ThreadPoolExecutor executor = (ThreadPoolExecutor) ThreadPools.scheduler;</jsp:scriptlet>
+        <jsp:directive.include file="job.jspf" />
+      </tr>
+      <tr>
+        <th>Filters</th>
+        <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.filterExecutor;</jsp:scriptlet>
+        <jsp:directive.include file="job.jspf" />
+      </tr>
+      <tr>
+        <th>Jobs</th>
+        <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.jobsExecutor;</jsp:scriptlet>
+        <jsp:directive.include file="job.jspf" />
+      </tr>
+    </table>
+
+  </div>
+  </mm:cloud>
+</mm:content>
+

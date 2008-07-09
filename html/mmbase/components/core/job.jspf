@@ -1,0 +1,9 @@
+<td><jsp:expression>executor.getActiveCount()</jsp:expression	></td>
+<td><jsp:expression>executor.getCompletedTaskCount()</jsp:expression	></td>
+<td>
+  <jsp:scriptlet>for (Runnable runnable : executor.getQueue()) { ScheduledFuture future = (ScheduledFuture) runnable;</jsp:scriptlet>
+  <p><jsp:expression>future</jsp:expression>: due in <jsp:expression>future.getDelay(TimeUnit.SECONDS)</jsp:expression>s
+  </p>
+  <jsp:scriptlet>}</jsp:scriptlet>
+</td>
+

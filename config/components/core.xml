@@ -91,6 +91,14 @@
     <body jsp="modules.jsp" />
   </block>
 
+  <block name="jobs"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Jobs</title>
+    <title xml:lang="nl">Jobs</title>
+    <body jsp="jobs.jspx" />
+  </block>
+
   <block name="modules-actions"
          mimetype="text/html">
     <title xml:lang="en">Actions on modules</title>
@@ -124,7 +132,7 @@
     <title xml:lang="nl">Resultaat van een applicatie actie</title>
     <title xml:lang="en">Result of an application backup or install</title>
     <description xml:lang="en">
-      This is the follow-up for the application installation page and shows the 
+      This is the follow-up for the application installation page and shows the
       results of an application backup or install.
     </description>
     <body jsp="applications-actions.jspx">
@@ -223,7 +231,7 @@
     caches. You can also (temporary) turn on/off the cache here. For a persistant
     change you should change caches.xml.</description>
     <description xml:lang="nl">Deze pagina toont de performance van de verschillende MMBase
-    caches. Het is hier mogelijk om caches tijdelijk uit en in te schakelen. Voor 
+    caches. Het is hier mogelijk om caches tijdelijk uit en in te schakelen. Voor
     persitente wijzigingen dient het configuratiebestand 'caches.xml' aangepast te worden</description>
     <head>
       <class name="org.mmbase.framework.StringRenderer">
@@ -257,7 +265,7 @@
     <title xml:lang="nl">Blobs</title>
     <description xml:lang="en">This page provides a tool to convert blobs to
     the filesystem. Per default blobs live in the database.</description>
-    <description xml:lang="nl">Via deze pagina is het mogelijk om blobs naar het 
+    <description xml:lang="nl">Via deze pagina is het mogelijk om blobs naar het
     filesystem te converteren. Per default staan blobs in de database.</description>
     <body jsp="blobs.jspx">
     </body>
@@ -337,7 +345,7 @@
     <title xml:lang="en">Components tree</title>
     <title xml:lang="nl">Componentenboom</title>
     <description xml:lang="en">
-      Hierarchical tree view of the available components. 
+      Hierarchical tree view of the available components.
     </description>
     <description xml:lang="en">
        Hierarchish overzicht van de beschikbare componenten.
