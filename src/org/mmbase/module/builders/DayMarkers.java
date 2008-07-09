@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.48 2008-07-09 17:21:44 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.49 2008-07-09 17:24:37 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -55,11 +55,6 @@ public class DayMarkers extends MMObjectBuilder {
 
     private ScheduledFuture future;
 
-    /**
-     * set the current day. This is the number of days from 1970.
-     */
-    public DayMarkers() {
-    }
 
     /**
      * Calculate smallestMark, and smallestDay.
