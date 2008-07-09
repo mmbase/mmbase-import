@@ -22,13 +22,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
- * @version $Id: ModuleProbe.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: ModuleProbe.java,v 1.13 2008-07-09 16:03:38 michiel Exp $
  */
 public class ModuleProbe extends DaemonThread {
 
     private static final Logger log = Logging.getLoggerInstance(ModuleProbe.class);
 
-    public ModuleProbe() {
+    ModuleProbe() {
         super("ModuleProbe");
     }
 
