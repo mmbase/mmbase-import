@@ -72,7 +72,7 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
       <th class="center">Change</th>
     </tr>
     <tr>
-      <td>><mm:escape><%= property %></mm:escape></td>
+      <td><mm:escape><%= property %></mm:escape></td>
       <td><input type="text" name="value" size="62" value="<mm:escape><%= val %></mm:escape>" /></td>
       <td class="center">
         <input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
