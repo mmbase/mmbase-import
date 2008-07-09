@@ -1039,7 +1039,7 @@
 
     <!-- variables -->
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      '$origin' variable
 -->
 
@@ -1077,13 +1077,13 @@
     &lt;/action&gt;
 
   ...
-    
+
 &lt;/wizard-schema&gt;
 </programlisting></para>
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      '$pos' variable
 -->
 
@@ -1147,7 +1147,7 @@
 
     <!-- tags -->
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'action' tag
 -->
 
@@ -1252,7 +1252,7 @@
       &lt;field name="title"&gt;My Title&lt;/field&gt;
     &lt;/object&gt;
   &lt;/action&gt;
-  
+
   &lt;form-schema id="step1"&gt;
     &lt;field name="title"&gt;
       &lt;prompt&gt;Title&lt;/prompt&gt;
@@ -1263,7 +1263,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'action type="add"' tag
 -->
 
@@ -1368,30 +1368,30 @@
     &lt;title&gt;Wizard-Title&lt;/title&gt;
 
     ...
-    
+
     &lt;form-schema id="step1"&gt;
         &lt;field name="title"&gt;
             &lt;prompt&gt;Title&lt;/prompt&gt;
         &lt;/field&gt;
-    
+
         &lt;list role="author" destinationtype="people" &gt;
-        
+
             ...
 
             &lt;command name="search" ... &gt;
-            
+
             &lt;action type="add" &gt;
                 &lt;relation role="author" destinationtype="people" /&gt;
             &lt;/action&gt;
         &lt;/list&gt;
     &lt;/form-schema&gt;
-    
+
 &lt;/wizard-schema&gt;
 </programlisting></para>
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'action type="create"' tag
 -->
 
@@ -1567,25 +1567,25 @@
     &lt;title&gt;Wizard-Title&lt;/title&gt;
 
     ...
-    
+
     &lt;action type="create" &gt;
       &lt;object type="news" &gt;
           &lt;field name="title"&gt;My Title&lt;/field&gt;
             &lt;relation role="related" destination="my_news_archive" /&gt;
         &lt;/object&gt;
   &lt;/action&gt;
- 
+
     &lt;form-schema id="step1"&gt;
         &lt;field name="title"&gt;
             &lt;prompt&gt;Title&lt;/prompt&gt;
         &lt;/field&gt;
-    
+
         &lt;list role="author" destinationtype="people" &gt;
-        
+
             ...
-            
+
             &lt;command type="insert" /&gt;
-            
+
             &lt;action type="create" &gt;
                 &lt;relation role="author" destinationtype="people" &gt;
                   &lt;object&gt;
@@ -1595,13 +1595,13 @@
             &lt;/action&gt;
         &lt;/list&gt;
     &lt;/form-schema&gt;
-    
+
 &lt;/wizard-schema&gt;
 </programlisting></para>
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'action type="delete"' tag
 -->
 
@@ -1755,7 +1755,7 @@
     &lt;title&gt;Wizard-Title&lt;/title&gt;
 
     ...
-    
+
     &lt;action type="delete" &gt;
       &lt;prompt&gt;Do you really want to delete this item?&lt;/prompt&gt;
         &lt;description&gt;Click to delete this item&lt;/description&gt;
@@ -1765,17 +1765,17 @@
         &lt;field name="title"&gt;
             &lt;prompt&gt;Title&lt;/prompt&gt;
         &lt;/field&gt;
-        
+
         &lt;list role="related" destinationtype="sections" &gt;
-    
+
     ....
-        
+
         &lt;action type="delete"&gt;
           &lt;object /&gt;
         &lt;/action&gt;
-    
+
         &lt;/list
-        
+
     &lt;/form-schema&gt;
 &lt;/wizard-schema&gt;
 </programlisting></para>
@@ -1800,7 +1800,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'action type="load"' tag
 -->
 
@@ -1947,7 +1947,7 @@
     &lt;title&gt;Wizard-Title&lt;/title&gt;
 
     ...
-    
+
     &lt;action type="load" &gt;
       &lt;field name="title" /&gt;
       &lt;field name="subtitle" /&gt;
@@ -1972,7 +1972,7 @@
             &lt;/object
         &lt;/relation&gt;
   &lt;/action&gt;
- 
+
     &lt;form-schema id="step1"&gt;
         &lt;field name="title"&gt;
             &lt;prompt&gt;Title&lt;/prompt&gt;
@@ -1983,7 +1983,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'form-schema' tag
 -->
 
@@ -2103,24 +2103,24 @@
         <para><programlisting format="linespecific">
 &lt;wizard-schema id="my_wizard"&gt;
     &lt;title&gt;Wizard-Title&lt;/title&gt;
-    
+
     &lt;form-schema id="step1"&gt;
       &lt;title&gt;Step 1&lt;/title&gt;
       &lt;subtitle&gt;Enter basic data&lt;/subtitle&gt;
-        
+
         &lt;field name="firstname"&gt;
             &lt;prompt&gt;First Name&lt;/prompt&gt;
         &lt;/field&gt;
         &lt;field name="lastname"&gt;
             &lt;prompt&gt;Last name&lt;/prompt&gt;
         &lt;/field&gt;
-    
+
       &lt;list ...&gt;
          ...
-    &lt;/list&gt;       
-        
+    &lt;/list&gt;
+
     &lt;/form-schema&gt;
-    
+
 &lt;/wizard-schema&gt;
 </programlisting></para>
       </formalpara>
@@ -2201,6 +2201,7 @@
                 which assumes the object to be shown is an image object. It
                 adds a thumbnail of the image to the item and sdiplays any
                 addiitonal field next to it.</para>
+                <para>Values 'none', 'link', 'onefield' and 'other' are supported as well</para>
               </listitem>
             </varlistentry>
           </variablelist></para>
@@ -2747,7 +2748,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'object' tag
 -->
 
@@ -2767,7 +2768,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'step' tag
 -->
 
@@ -2841,7 +2842,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'steps' tag
 -->
 
@@ -2919,22 +2920,22 @@
 &lt;wizard-schema id="my_wizard"&gt;
     &lt;title&gt;Wizard-Title&lt;/title&gt;
 
-    &lt;steps&gt; 
+    &lt;steps&gt;
         &lt;step form-schema="edit_news" /&gt;
         &lt;step form-schema="add_info" /&gt;
         &lt;step form-schema="publish" /&gt;
     &lt;/steps&gt;
-    
+
     &lt;form-schema id="edit_news"&gt;
         &lt;field name="firstname"&gt;
             &lt;prompt&gt;Your Firstname&lt;/prompt&gt;
         &lt;/field&gt;
     &lt;/form-schema&gt;
-    
+
     &lt;form-schema id="add_info"&gt;
       ...
     &lt;/form-schema&gt;
-    
+
     &lt;form-schema id="publish"&gt;
       ...
     &lt;/form-schema&gt;
@@ -2944,7 +2945,7 @@
       </formalpara>
     </section>
 
-    <!-- Include file for the editwizard reference docbook: 
+    <!-- Include file for the editwizard reference docbook:
      'wizard-schema' tag
 -->
 
@@ -3932,7 +3933,7 @@
         <term>Example</term>
 
         <listitem>
-           First define an optionlist... (outside 'form-schema' see 'optionlist') 
+           First define an optionlist... (outside 'form-schema' see 'optionlist')
 
           <programlisting format="linespecific">
 &lt;lists&gt;
@@ -3944,7 +3945,7 @@
 &lt;/lists&gt;
             </programlisting>
 
-           ...and then use it like this. 
+           ...and then use it like this.
 
           <programlisting format="linespecific">
 &lt;field name="type" ftype="enum"&gt;
@@ -3953,7 +3954,7 @@
 &lt;/field&gt;
             </programlisting>
 
-           
+
         </listitem>
       </varlistentry>
     </variablelist>
