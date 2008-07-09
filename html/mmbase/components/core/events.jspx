@@ -20,7 +20,7 @@
       <table summary="Event statistics" border="0" cellspacing="0" cellpadding="3">
         <caption>Events statistics</caption>
         <tr>
-          <th>Numer of propagated events</th><td><jsp:expression>manager.getNumberOfPropagatedEvents()</jsp:expression></td>
+          <th>Number of propagated events</th><td><jsp:expression>manager.getNumberOfPropagatedEvents()</jsp:expression></td>
         </tr>
         <tr>
           <th>Cost</th>
@@ -56,7 +56,7 @@
           }
         </jsp:scriptlet>
       </ul>
-      
+
       <h4>Send an event</h4>
       <mm:import from="request" externid="id" jspvar="id" vartype="string"/>
       <mm:import from="request"  externid="type" jspvar="type" vartype="integer" />
