@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.17 2008-02-14 17:19:33 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.160.2.18 2008-07-09 08:19:46 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1382,6 +1382,13 @@
       <xsl:when test="@displaytype='image'">
         <xsl:call-template name="item-image"/>
       </xsl:when>
+      <xsl:when test="@displaytype='onefield'">
+        <xsl:call-template name="item-onefield"/>
+      </xsl:when>
+      <xsl:when test="@displaytype='other'">
+        <xsl:call-template name="item-other"/>
+      </xsl:when>
+
       <xsl:when test="count(field|fieldset) &lt; 2">
         <xsl:call-template name="item-onefield"/>
       </xsl:when>
