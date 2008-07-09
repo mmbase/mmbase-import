@@ -1,5 +1,9 @@
 package nl.vpro.tagfileparser.model;
 
+/**
+ * @author Ernst Bunders
+ *
+ */
 public class VariableDirective {
 	private String nameGiven = null;
 	private String nameFromAttribute = null;

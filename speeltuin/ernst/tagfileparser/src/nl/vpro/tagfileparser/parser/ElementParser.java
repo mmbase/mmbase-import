@@ -1,16 +1,14 @@
 package nl.vpro.tagfileparser.parser;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import nl.vpro.tagfileparser.model.TagInfo;
 
 /**
  * This Interface represents a parser for some tag file element. this can
  * be an attribute directive or something else.
- * @author ebunders
+ * @author Ernst Bunders
  *
- * @param <T>
  */
 public interface  ElementParser  {
 	/**

@@ -1,6 +1,10 @@
 package nl.vpro.tagfileparser.parser;
 
-public class IllegalAttributeException extends RuntimeException {
+/**
+ * @author Ernst Bunders
+ *
+ */
+public class IllegalAttributeException extends BasicTagParserException {
 	public IllegalAttributeException(String message){
 		super(message);
 	}

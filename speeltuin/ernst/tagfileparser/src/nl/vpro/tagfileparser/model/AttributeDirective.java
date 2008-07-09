@@ -2,7 +2,7 @@ package nl.vpro.tagfileparser.model;
 
 /**
  * This class represents a attribute tag directive. it contains all relevant data
- * @author ebunders
+ * @author Ernst Bunders
  *
  */
 public class AttributeDirective {

@@ -3,13 +3,12 @@ package nl.vpro.tagfileparser.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.events.Namespace;
 
 /**
  * This class represents a namespace. It actually is a directory
  * that dous or dous not contain tagfiles or child 'namespace' directories.
  * 
- * @author ebunders
+ * @author Ernst Bunders
  *
  */
 public final class NameSpace {
@@ -23,8 +22,18 @@ public final class NameSpace {
 		this.name = name;
 	}
 	
-	public void addChildNamespace(NameSpace namespace){
-		chlidren.add(namespace);
+	/**
+	 * use this constructor for the root namespace
+	 * @param string
+	 */
+	public NameSpace(String name) {
+		this.name = name;
+		this.parent = null;
+	}
+
+	public NameSpace addChildNamespace(NameSpace nameSpace){
+		chlidren.add(nameSpace);
+		return nameSpace;
 	}
 	
 	public void addTagInfo(TagInfo tagInfo){
