@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.46 2007-11-09 10:38:29 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.47 2008-07-09 13:50:44 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -88,7 +88,7 @@ public class DayMarkers extends MMObjectBuilder {
             log.error("SQL Exception " + e + ". Could not find smallestMarker, smallestDay");
             result = false;
         }
-
+        createMarker();
         return result;
     }
 
