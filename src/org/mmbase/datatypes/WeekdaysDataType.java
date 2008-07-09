@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.1.2.1 2008-04-24 09:47:43 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.1.2.2 2008-07-09 11:46:14 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
@@ -31,6 +31,8 @@ public class WeekdaysDataType extends IntegerDataType {
      */
     public WeekdaysDataType(String name) {
         super(name, false);
+        setMin(new Integer(1), true);
+        setMax(new Integer(7), true);
     }
 
     public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
