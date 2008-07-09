@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * An enumeration datatype representing all days of a week, so an integer with the value 1 through 7.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.2 2008-04-24 09:50:22 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.3 2008-07-09 11:46:24 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
@@ -31,6 +31,8 @@ public class WeekdaysDataType extends IntegerDataType {
      */
     public WeekdaysDataType(String name) {
         super(name, false);
+        setMin(1, true);
+        setMax(7, true);
     }
 
     public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
