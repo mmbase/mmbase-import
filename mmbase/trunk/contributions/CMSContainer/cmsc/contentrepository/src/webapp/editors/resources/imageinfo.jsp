@@ -21,11 +21,11 @@
 				<mm:node number="${param.objectnumber}">
 					<div style="float:left">
                      <mm:field name="width" jspvar="width" write="false"/>
-                     <img src="
                      <c:choose>
-                        <c:when test="${width gt 430}"><mm:image template="s(430)"/></c:when>
-                        <c:otherwise><mm:image/></c:otherwise>
-                     </c:choose>" alt="<mm:field name="description" />" /><br/>
+                        <c:when test="${width gt 430}"><mm:image template="s(430)" jspvar="imageSource" write="false"/></c:when>
+                        <c:otherwise><mm:image jspvar="imageSource" write="false"/></c:otherwise>
+                     </c:choose>
+                     <img src="${imageSource}" alt="<mm:field name="description" />" /><br/>
 			        </div>
 			        <div style="float:left; padding:5px;">
 			            <h1><mm:field name="filename"/></h1>
