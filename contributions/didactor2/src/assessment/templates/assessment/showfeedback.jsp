@@ -8,7 +8,7 @@
 <mm:import externid="feedback_n">-1</mm:import>
 <mm:import externid="coachmode">false</mm:import>
 <%@include file="includes/geteducation.jsp" %>
-<% 
+<%
    String classrelId = "-1";
    String ownerId = "-1";
    String lessonId = "-1";
@@ -40,9 +40,9 @@
   <div class="rows">
     <div class="navigationbar">
       <div class="titlebar">
-        <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
+        <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />"
             width="25" height="13" border="0" title="<di:translate key="assessment.assessment_matrix" />" alt="<di:translate key="assessment.assessment_matrix" />" /> <di:translate key="assessment.assessment_matrix" />
-      </div>		
+      </div>
     </div>
 
 <div class="folders">
@@ -56,7 +56,7 @@
     <%-- right section --%>
     <div class="mainContent">
       <div class="contentBody">
-      
+
         <mm:node number="$feedback_n" notfound="skip">
           <mm:relatednodes type="classrel">
             <mm:field name="number" jspvar="this_classrel" vartype="String" write="false">
@@ -71,7 +71,7 @@
               </mm:list>
             </mm:field>
           </mm:relatednodes>
-          
+
           <table width="600px" style="font-size : 1.3em">
             <tr>
               <td><b>
@@ -112,7 +112,7 @@
                         <mm:import id="class"><mm:field name="number" /></mm:import>
                       </mm:relatednodes>
                     </mm:compare>
-                    <%@include file="/education/tests/find_copybook.jsp"%>
+                    <mm:import id="copybookNo"><di:copybook /></mm:import>
                   </mm:node>
                   <!-- get madetest -->
                   <mm:relatednodescontainer path="madetests,copybooks" element="madetests">

@@ -39,7 +39,7 @@
   </mm:compare>
   <!-- state questions -->
   <form name="questionform" action="<mm:treefile page="/assessment/index.jsp" objectlist="$includePath"  referids="$referids"/>" method="post">
-    <input type="hidden" name="madetest_n" value="<mm:write referid="madetest"/>">
+    <input type="hidden" name="madetest_n" value="<mm:write referid="madetest"/>" />
     <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
       <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
       <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
@@ -48,8 +48,8 @@
         <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
       </mm:treeinclude>
     </mm:relatednodes>
-    <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />">
-    <input type="hidden" name="step" value="save">
+    <input type="submit" class="formbutton" value="<di:translate key="assessment.save" />" />
+    <input type="hidden" name="step" value="save" />
   </form>
 
 </mm:field>
