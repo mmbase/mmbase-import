@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.53 2008-07-07 11:10:59 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.54 2008-07-10 08:24:43 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -136,16 +136,16 @@ public class TemporaryNodeManager {
      * the key if sucessfull, <code>null</code> otherwise.
      *
      */
-    public String getObject(String owner, String key) {
-        MMObjectNode node = MMObjectBuilder.getTmpNode(getTmpKey(owner, key));
+    public String getObject(final String owner, final String key, final String dbkey) {
+        String tmpKey = getTmpKey(owner, key);
+        MMObjectNode node = MMObjectBuilder.getTmpNode(tmpKey);
         if (node == null) {
-            log.debug("getObject not tmp node found " + key);
             MMObjectBuilder bul = mmbase.getBuilder("object");
-            node = bul.getNode(key, false);
+            node = bul.getNode(dbkey, false);
             if (node == null) {
-                log.warn("Node not found in database " + key);
+                log.warn("Node not found in database " + dbkey);
             } else {
-                MMObjectBuilder.putTmpNode(getTmpKey(owner, key), node);
+                MMObjectBuilder.putTmpNode(tmpKey, node);
             }
         }
         if (node != null) {
@@ -153,6 +153,12 @@ public class TemporaryNodeManager {
         } else {
             return null;
         }
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public String getObject(String owner, String key) {
+        return getObject(owner, key, key);
     }
 
     /**
