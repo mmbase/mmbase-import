@@ -4,5 +4,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:directive.page isErrorPage="true" />
   <jsp:scriptlet>response.setStatus(403)</jsp:scriptlet>
-  <di:include page="/errorpages/403.jsp" />
+  <mm:cloud>
+    <di:include page="/errorpages/403.jsp" />
+  </mm:cloud>
 </jsp:root>
