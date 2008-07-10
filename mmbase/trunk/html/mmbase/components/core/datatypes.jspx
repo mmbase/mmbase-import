@@ -21,8 +21,9 @@
           <tr>
             <th>
               Datatype of Field
-              <form method="post" action=".">
-                <select name="field" onchange="document.getElementById('fielddatatype').href='test.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}';">
+              <form method="post">
+                <select name="field"
+                        onchange="document.getElementById('fielddatatype').href='test.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}';">
                   <mm:fieldlist type="all" jspvar="fieldvar" nodetype="$nodemanager">
                     <c:choose>
                       <c:when test="${field eq fieldvar.name}">
