@@ -99,6 +99,27 @@
     <body jsp="jobs.jspx" />
   </block>
 
+  <block name="datatypes"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Data Types</title>
+    <title xml:lang="nl">Datatypes</title>
+    <body jsp="datatypes.jspx">
+    </body>
+  </block>
+
+
+  <block name="datatype"
+         mimetype="text/html">
+    <title xml:lang="en">Data Type</title>
+    <title xml:lang="nl">Datatype</title>
+    <body jsp="datatype.jspx">
+      <param name="datatype"   type="String" />
+      <param name="nodemanager"      type="String" />
+      <param name="field"   type="String" />
+    </body>
+  </block>
+
   <block name="modules-actions"
          mimetype="text/html">
     <title xml:lang="en">Actions on modules</title>
