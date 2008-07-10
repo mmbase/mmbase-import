@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.9 2008-04-25 14:05:23 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.10 2008-07-10 15:33:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -232,9 +232,15 @@ public class MMBaseUrlConverter implements UrlConverter {
                 String category = path[2];
                 if (! category.equals("_")) {
                     boolean categoryOk = false;
-                    for (Block.Type rootType : ComponentRepository.getInstance().getBlockClassification("mmbase")[0].getSubTypes()) {
-                        categoryOk = rootType.getName().equals(category);
-                        if (categoryOk) break;
+                    Block.Type[] mmbaseBlocks = ComponentRepository.getInstance().getBlockClassification("mmbase");
+                    if (mmbaseBlocks.length > 0) {
+                        for (Block.Type rootType : mmbaseBlocks[0].getSubTypes()) {
+                            categoryOk = rootType.getName().equals(category);
+                            if (categoryOk) break;
+                        }
+                        if (mmbaseBlocks.length > 1) {
+                            log.warn("odd");
+                        }
                     }
                     if (! categoryOk) {
                         log.debug("No such component clasification, ignoring this");
