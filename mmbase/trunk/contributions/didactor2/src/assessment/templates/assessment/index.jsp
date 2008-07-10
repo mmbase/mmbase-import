@@ -5,7 +5,6 @@
   <di:html
       description="bla bla"
       title_key="assessment.assessment_matrix"
-      type="text/html"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
       xmlns:di="http://www.didactor.nl/ditaglib_1.0"
@@ -50,10 +49,10 @@
             </di:hasrole>
           </di:hasrole>
           <mm:compare referid="coachmode" value="false">
-            <di:include page="/assessment/for_student.jsp" />
+            <di:include debug="html" page="/assessment/for_student.jsp" />
           </mm:compare>
         <mm:compare referid="coachmode" value="true">
-          <di:include page="/assessment/for_coach.jsp" />
+          <di:include debug="html" page="/assessment/for_coach.jsp" />
         </mm:compare>
         </div>
       </div>
