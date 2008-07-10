@@ -27,13 +27,13 @@
       </style>
       <script type="text/javascript">
         var validator = new MMBaseValidator();
-        validator.logEnabled = true;
+        validator.logEnabled = false;
         validator.validateHook = function(valid) {
            document.getElementById('submit').disabled = ! valid;
         }
         validator.lang = '${param.lang}';
         validator.prefetchNodeManager("object"); // not actually used on this page, just an example
-        validator.setup(window);
+        validator.setup(document);
       </script>
 
       <mm:import externid="field" />
