@@ -5,6 +5,7 @@
     id="${requestScope.componentId}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
@@ -79,6 +80,7 @@
                 <mm:fieldinfo type="input" datatype="s.dataType" />
             -->
           </mm:stringlist>
+          <c:if test="${fn:length(c.settings) eq 0}"><p>No settings</p></c:if>
           <h3><fmt:message  key="components.blocks" /></h3>
           <p>Default block: ${c.defaultBlock.name}</p>
           <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
