@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.27 2008-07-03 13:51:38 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.28 2008-07-10 08:56:27 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -156,14 +156,9 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             String path = getPath(req);
             if (log.isDebugEnabled()) log.debug("Processing path: " + path);
             if (path != null) {
-                try {
-                    if (excludePattern != null && excludePattern.matcher(path).find()) {
-
-                        chain.doFilter(request, response);  // url is excluded from further actions
-                        return;
-                    }
-                } catch (Exception e) {
-                    log.fatal("Could not process exclude pattern: " + e);
+                if (excludePattern != null && excludePattern.matcher(path).find()) {
+                    chain.doFilter(request, response);  // url is excluded from further actions
+                    return;
                 }
             }
 
