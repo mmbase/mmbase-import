@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.245 2008-07-09 17:22:36 michiel Exp $
+ * @version $Id: MMBase.java,v 1.246 2008-07-10 15:04:51 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1093,6 +1093,8 @@ public class MMBase extends ProcessorModule {
                         }
                     }
                 }
+            } else {
+                log.service("Inactive builder: " + parser.getSystemId());
             }
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
