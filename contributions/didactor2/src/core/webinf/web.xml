@@ -194,22 +194,22 @@
 
   <error-page>
     <error-code>400</error-code>
-    <location>/mmbase/errorpages/400.jsp</location>
+    <location>/errorpages/_400.jsp</location>
   </error-page>
   <error-page>
     <error-code>403</error-code>
-    <location>/mmbase/errorpages/403.jsp</location>
+    <location>/errorpages/_403.jsp</location>
   </error-page>
   <error-page>
     <error-code>404</error-code>
-    <location>/mmbase/errorpages/404.jsp</location>
+    <location>/errorpages/_404.jsp</location>
   </error-page>
   <error-page>
     <exception-type>java.lang.Exception</exception-type>
-    <location>/mmbase/errorpages/500.jsp</location>
+    <location>/errorpages/_500.jsp</location>
   </error-page>
   <error-page>
     <error-code>503</error-code>
-    <location>/mmbase/errorpages/503.jsp</location>
+    <location>/errorpages/_503.jsp</location>
   </error-page>
 </web-app>
