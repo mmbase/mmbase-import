@@ -69,11 +69,8 @@
           </table>
           <h3><fmt:message key="components.settings" /></h3>
           <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
-            <h4>${s.name}</h4>
-            <table summary="component settings" border="0" cellspacing="0" cellpadding="3">
-              <caption>
-                Component settings
-              </caption>
+            <table summary="${s.name}" border="0" cellspacing="0" cellpadding="3">
+              <caption>${s.name}</caption>
               <tr><th>Data type</th><td>${s.dataType}</td></tr>
               <tr><th>Description</th><td>${mm:string(s.description)}</td></tr>
               <tr><th>Current value</th><td><strong><jsp:expression>Framework.getInstance().getSettingValue(s, null)</jsp:expression></strong></td></tr>
@@ -85,9 +82,8 @@
           <h3><fmt:message  key="components.blocks" /></h3>
           <p>Default block: ${c.defaultBlock.name}</p>
           <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
-            <h4>${b.name}</h4>
             <table summary="block" border="0" cellspacing="0" cellpadding="3">
-              <caption>${mm:string(b.description)}</caption>
+              <caption>${b.name}:  ${mm:string(b.description)}</caption>
               <tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
               <tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
               <tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
