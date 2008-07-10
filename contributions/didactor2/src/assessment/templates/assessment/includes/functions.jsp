@@ -1,4 +1,7 @@
-<%! 
+
+<!-- WTF all this stuff has to to with assessments ?! -->
+
+<%!
 public String getProblemsByType(Cloud cloud, String typeId, String user) {
    StringBuffer sbObjects = new StringBuffer();
    NodeList nlProblems = cloud.getList(typeId,

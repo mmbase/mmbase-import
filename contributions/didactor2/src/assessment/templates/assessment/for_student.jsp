@@ -3,6 +3,8 @@
 <%@page import="org.mmbase.bridge.*,java.util.ArrayList" %>
 
 <mm:content postprocessor="reducespace">
+
+  <!-- Als this is pretty musch horrible, horrible, horrible -->
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
@@ -22,19 +24,19 @@
             <a href="<mm:treefile page="/assessment/editgoal.jsp" objectlist="$includePath" referids="$referids">
                        <mm:param name="goal_n"><mm:field name="number"/></mm:param>
                      </mm:treefile>"
-              ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
+              ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath"
                     referids="$referids"/>" border="0" title="<di:translate key="assessment.edit_goal" />"
                     alt="<di:translate key="assessment.edit_goal" />" /></a>
             <a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                        <mm:param name="object_n"><mm:field name="number"/></mm:param>
                      </mm:treefile>"
                      onclick="return doAction('<di:translate key="assessment.prompt_to_delete_goal" />');"
-              ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
+              ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath"
                     referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_goal" />"
                     alt="<di:translate key="assessment.delete_goal" />" /></a>
-            <img align="middle" src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath" 
-                 referids="$referids"/>" border="0" title="<di:translate key="assessment.show_goal" />" 
-                 alt="<di:translate key="assessment.show_goal" />" 
+            <img align="middle" src="<mm:treefile page="/assessment/gfx/plus.gif" objectlist="$includePath"
+                 referids="$referids"/>" border="0" title="<di:translate key="assessment.show_goal" />"
+                 alt="<di:translate key="assessment.show_goal" />"
                  onClick="toggle(<%=goal_number %>);" id="toggle_image<%=goal_number %>"/>
           </td>
           <td style="font-size : 0.8em">
@@ -56,18 +58,18 @@
   </mm:relatednodes>
 </mm:node>
 <a href="<mm:treefile page="/assessment/editgoal.jsp" objectlist="$includePath" referids="$referids"/>"
-  ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
-       referids="$referids"/>" border="0" title="<di:translate key="assessment.add_goal" />" 
+  ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath"
+       referids="$referids"/>" border="0" title="<di:translate key="assessment.add_goal" />"
        alt="<di:translate key="assessment.add_goal" />" /></a>
 <br/>
 <br/>
 <br/>
 <span style="font-size : 1.5em; font-weight:bold;"><di:translate key="assessment.problems" /></span><br/>
 <a href="<mm:treefile page="/assessment/editproblem.jsp" objectlist="$includePath" referids="$referids"/>"
-    ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath" 
+    ><img src="<mm:treefile page="/assessment/gfx/new_learnobject.gif" objectlist="$includePath"
           referids="$referids"/>" border="0" title="<di:translate key="assessment.add_problem" />"
           alt="<di:translate key="assessment.add_problem" />" /></a><br/><br/>
-<% 
+<%
 int lessonsNum = 0;
 ArrayList styles = new ArrayList();
 boolean wasCurrent = false;
@@ -90,7 +92,7 @@ int count = 0;
       <% count++; %>
   </mm:relatednodes>
 </mm:node>
-<% 
+<%
 lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
 %>
 <div>
@@ -120,14 +122,14 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
       </tr>
     </mm:first>
     <tr style="vertical-align:top;">
-      <% String problems = getProblemsByType(cloud, problemtypeId, thisUser); 
+      <% String problems = getProblemsByType(cloud, problemtypeId, thisUser);
          if ("".equals(problems)) {
       %>
            <th class="listHeader" style="width:30px;">&nbsp;</th>
       <% } else { %>
-           <th class="listHeader" style="width:30px; vertical-align:middle;"><img src="<mm:treefile page="/assessment/gfx/plus.gif" 
-                 objectlist="$includePath" referids="$referids"/>" border="0" 
-                 title="<di:translate key="assessment.show_problems" />" alt="<di:translate key="assessment.show_problems" />" 
+           <th class="listHeader" style="width:30px; vertical-align:middle;"><img src="<mm:treefile page="/assessment/gfx/plus.gif"
+                 objectlist="$includePath" referids="$referids"/>" border="0"
+                 title="<di:translate key="assessment.show_problems" />" alt="<di:translate key="assessment.show_problems" />"
                  onClick="toggleAll(<%= problemtypeId %>,'<%= problems %>');"
                  id="toggle_image<%= problemtypeId %>"/></th>
       <% } %>
@@ -147,14 +149,14 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
                      <mm:param name="problem_n"><%= problem_number %></mm:param>
                      <mm:param name="i_lesson"><%= iLesson %></mm:param>
                    </mm:treefile>"
-            ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath" 
+            ><img src="<mm:treefile page="/assessment/gfx/edit_learnobject.gif" objectlist="$includePath"
                   referids="$referids"/>" border="0" title="<di:translate key="assessment.edit_problem" />"
                   alt="<di:translate key="assessment.edit_problem" />"
            /></a><a href="<mm:treefile page="/assessment/deleteobject.jsp" objectlist="$includePath" referids="$referids">
                      <mm:param name="object_n"><%= problem_number %></mm:param>
                    </mm:treefile>"
                    onclick="return doAction('<di:translate key="assessment.prompt_to_delete_problem" />');"
-            ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath" 
+            ><img src="<mm:treefile page="/assessment/gfx/remove.gif" objectlist="$includePath"
                   referids="$referids"/>" border="0" title="<di:translate key="assessment.delete_problem" />"
                   alt="<di:translate key="assessment.delete_problem" />" /></a>
         </nobr></td>
@@ -165,7 +167,7 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
     </mm:field>
   </mm:listnodes>
 
-  <tr> 
+  <tr>
     <% for(int i=0; i<lessonsNum+2; i++) { %>
          <td class="listItem" <%= ( i<2 ? "" : styles.get(i-2) ) %>>&nbsp;</td>
     <% } %>
@@ -202,19 +204,19 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
                           <mm:param name="feedback_n"><%= feedbackId %></mm:param>
                         </mm:treefile>"
                  ><%
-                 if ("-1".equals(feedback)) {   
-                   %><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath" 
+                 if ("-1".equals(feedback)) {
+                   %><img src="<mm:treefile page="/assessment/gfx/developed.gif" objectlist="$includePath"
                           referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
                           alt="<di:translate key="assessment.goto_feedback" />" /><%
                  } else {
-                   %><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath" 
+                   %><img src="<mm:treefile page="/assessment/gfx/todevelop.gif" objectlist="$includePath"
                           referids="$referids"/>" border="0" title="<di:translate key="assessment.goto_feedback" />"
                           alt="<di:translate key="assessment.goto_feedback" />" /><%
                  } %>
                </a>
           <% } %>
         </td>
-        <% count++; %> 
+        <% count++; %>
       </mm:relatednodes>
     </mm:node>
   </tr>
@@ -223,30 +225,30 @@ lessonsNum = count-2; // hack: don't show the last two lessons in the matrix
 
 <br/>
 <mm:import externid="step" jspvar="step">-1</mm:import>
-<% 
+<%
 if(iLesson<lessonsNum || step.equals("lessonclosed")) {
   %>
-  <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
+  <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath"
          referids="$referids">
          </mm:treefile>" method="post">
     <mm:node number="<%= backtolb %>" notfound="skip">
       <input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lesson" />"
           onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                                              <mm:param name="learnobject"><%= backtolb %></mm:param>
-                                           </mm:treefile>'">
+                                           </mm:treefile>'" />
     </mm:node>
     <% boolean hasWeights = false; %>
     <mm:node number="<%= currentLesson %>" notfound="skip">
       <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
         <% hasWeights = true; %>
         <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />"
-          onclick="return doAction('<di:translate key="assessment.prompt_to_closing_lesson" />');">
+          onclick="return doAction('<di:translate key="assessment.prompt_to_closing_lesson" />');" />
       </mm:related>
     </mm:node>
     <% if (!hasWeights) {
          // show disabled button
          %>
-         <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />" disabled>
+         <input type="submit" class="formbutton" value="<di:translate key="assessment.close_and_send_to_coach" />" disabled="disabled" />
     <% } %>
   </form>
   <%
@@ -256,16 +258,16 @@ if(iLesson<lessonsNum || step.equals("lessonclosed")) {
   <mm:node number="$assessment_evaluationtest" notfound="skip">
     <%@include file="includes/evaluationtest.jsp"%>
   </mm:node>
-  <br/><br/>
-  <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath" 
+  <br/><br/><!-- wtf wtf -->
+  <form name="closelessonform" action="<mm:treefile page="/assessment/closelesson.jsp" objectlist="$includePath"
          referids="$referids">
          </mm:treefile>" method="post">
     <mm:node number="<%= backtolb %>" notfound="skip">
       <input type="submit" class="formbutton" value="<di:translate key="assessment.back_to_lesson" />"
           onclick="closelessonform.action='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                                              <mm:param name="learnobject"><%= backtolb %></mm:param>
-                                           </mm:treefile>'">
-    </mm:node>
+                                           </mm:treefile>'" />
+                                         </mm:node>
   </form>
   <%
 } %>
