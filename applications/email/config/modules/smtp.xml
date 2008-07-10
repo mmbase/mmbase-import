@@ -6,9 +6,9 @@
   <properties>
 
     <!-- mandatory properties -->
-    <property name="hostname">${smtpmodule.hostname}</property>
-    <property name="port">${smtpmodule.port}</property>
-    <property name="domains">${smtpmodule.relaydomains}</property>
+    <property name="hostname">localhost</property>
+    <property name="port">1025</property>
+    <property name="domains">localhost</property>
 
 
     <!--
