@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.162 2008-03-19 13:13:56 michiel Exp $
+ * @version $Id: Wizard.java,v 1.163 2008-07-11 14:24:59 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -2466,9 +2466,26 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                     Iterator<Node> i = newSubRelations.iterator();
                     while (i.hasNext()) {
-                        Node newSubRelation = i.next();
+                        Node newSubRelation = (Node) i.next();
+                        Utils.setAttribute(newSubRelation, "already-exists", "true");
+                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
+                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
+                            Node newSubSubRelation = newSubSubRelations.item(k);
+                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
+                        }
+                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
+                        for (int j = 0; j < newSubObjects.getLength(); j++) {
+                            Node newSubObject = newSubObjects.item(j);
+                            Utils.setAttribute(newSubObject, "already-exists", "true");
+                            //loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubObject.cloneNode(true), true));
+                        }
+
                         loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
+
+
+
                     }
+
                 } else {
                     log.debug("Nothing found to load");
                 }

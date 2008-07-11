@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.52 2008-02-19 20:52:31 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.53 2008-07-11 14:24:59 michiel Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -407,11 +407,11 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
     /**
      * This method can create a object (or a tree of objects and relations)
-     * @param data data of current wizard 
+     * @param data data of current wizard
      * @param targetParentNode The place where the results should be appended.
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
-     * @param loadedData 
+     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
@@ -449,7 +449,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param params The params to use when creating the objects and relations.
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
-     * @param loadedData 
+     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
@@ -492,7 +492,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             if (context!=null && !context.equals("")) {
                 Utils.setAttribute(objectNode, "context", context);
             }
-            fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
+            fillObjectFields(data, targetParentNode, objectDef, objectNode, params, createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
         } else {
            throw new WizardException("Can only create with 'action' 'object' or 'relation' nodes");
@@ -511,7 +511,14 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             // determine destination
             // dnumber can be null
             String dnumber = Utils.getAttribute(relation, "destination", null);
-            dnumber = Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
+            if (dnumber != null) {
+                String dnumberTransformed = Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
+                log.debug("dnumber " + dnumber + " -> " + dnumberTransformed);
+                if (! dnumber.equals(dnumberTransformed)) {
+                    dnumber = dnumberTransformed;
+                    Utils.setAttribute(relation, "destination", dnumber);
+                }
+            }
             String dtype = "";
 
             String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
@@ -527,8 +534,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
                 }
                 // but annotate that this one is loaded from mmbase. Not a new one
+                Utils.setAttribute(inside_object, "already-exists", "true");
                 loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
-                
+
                 // grab the type
                 dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
@@ -655,7 +663,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param     originalData            The original data object tree.
      * @param     newData                 The new and manipulated data. According to differences between the original and the new data, the transaction is constructed.
-     * @param     loadedData              The data loaded by actions on the wizard 
+     * @param     loadedData              The data loaded by actions on the wizard
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
      * @throws WizardException   if the data could not be stored
@@ -756,7 +764,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * The differences between the original and the new data define the transaction.
      *
      * @param     originalData    The original data.
-     * @param     loadedData      The data loaded by actions 
+     * @param     loadedData      The data loaded by actions
      * @param     newData         The new data.
      * @return put request for mmbase
      * @throws WizardException   if the data could not be stored
@@ -809,7 +817,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
 
             if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
@@ -863,23 +871,31 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     }
                 }
             } else {
-                // this is a new relation or object.
+                // this is a new relation or object. Remember that
+                // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
+                // we don't have a new object, no no, this is a later-loaded object which is not added to the
+                // original datanode (should be better in later versions, eg. by using a repository).
+                String already_exists = Utils.getAttribute(node, "already-exists", "false");
+                if (!already_exists.equals("true")) {
+                    // go ahead. this seems to be a really new one...
+                    // this is a new relation or object.
                     Utils.setAttribute(node, "status", "new");
 
-                        // check if fields values have been set
-                        // insert values are not sent - this allows use of virtual fields to edit
-                        // other fields
-                        NodeList fields=Utils.selectNodeList(node,"field");
-                        for (int j=0; j<fields.getLength(); j++) {
-                            // if a new field is empty, don't enter it, but use the default value
-                            // as set in the builder's setDefault() method
-                            // note that strictly speaking, this may not be correct
-                            // a better way is perhaps to first retrieve a new node and compare the values
-                            if ("".equals(Utils.getText(fields.item(j)))) {
-                                fields.item(j).getParentNode().removeChild(fields.item(j));
+                    // check if fields values have been set
+                    // insert values are not sent - this allows use of virtual fields to edit
+                    // other fields
+                    NodeList fields=Utils.selectNodeList(node,"field");
+                    for (int j=0; j<fields.getLength(); j++) {
+                        // if a new field is empty, don't enter it, but use the default value
+                        // as set in the builder's setDefault() method
+                        // note that strictly speaking, this may not be correct
+                        // a better way is perhaps to first retrieve a new node and compare the values
+                        if ("".equals(Utils.getText(fields.item(j)))) {
+                            fields.item(j).getParentNode().removeChild(fields.item(j));
                             }
-                        }
+                    }
         	}
+            }
         }
 
         markDeletedNodes(req, reqnew, reqorig);
@@ -962,7 +978,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param     sourcenode              The sourcenode from which should be flattened.
      * @param     targetParentNode        The targetParentNode where the results should be appended.
-     * @param     xpath                   The xpath query to find the nodes 
+     * @param     xpath                   The xpath query to find the nodes
      * @param     allowedChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
      */
     public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
