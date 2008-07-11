@@ -203,12 +203,12 @@
                      </html:select>
                   </td>
                   <td>
-                     <mm:hasrank minvalue="administrator">
+                     <mm:hasrank minvalue="siteadmin">
                         <fmt:message key="searchform.useraccount" />
                      </mm:hasrank>
                   </td>
                   <td>
-                     <mm:hasrank minvalue="administrator">
+                     <mm:hasrank minvalue="siteadmin">
                         <html:select property="useraccount" size="1">
                            <html:option value=""> - </html:option>
                             <mm:listnodes type='user' orderby='username'>
@@ -324,9 +324,9 @@
 
          <form action="LinkToChannelAction.do" name="linkForm">
          <mm:compare referid="action" value="link" inverse="true">
-             <mm:hasrank minvalue="administrator">
+             <mm:hasrank minvalue="siteadmin">
                <c:if test="${fn:length(results) >1}">
-               <div align="left"> <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/></div>
+               <div align="left"> <input type="button" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>')" value="<fmt:message key="content.delete.massdelete" />"/></div>
                </c:if>
               </mm:hasrank> 
          </mm:compare>
@@ -431,7 +431,7 @@
 
 
 				<c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
-					<a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>' )">
+					<a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
 						<img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
 					</a>
 				</c:if>
@@ -517,7 +517,7 @@
          </table>
           <mm:compare referid="action" value="link" inverse="true">
              <c:if test="${fn:length(results) >1}">
-             <input type="submit" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.removeconfirm"/>' )" value="<fmt:message key="content.delete.massdelete" />"/>
+             <input type="submit" class="button" name="massdelete" onclick="javascript:deleteContent('massdelete','<fmt:message key="recyclebin.removeconfirm"/>')" value="<fmt:message key="content.delete.massdelete" />"/>
              </c:if>
          </mm:compare>
             <mm:compare referid="linktochannel" value="" inverse="true">
