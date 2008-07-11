@@ -81,14 +81,20 @@
   <target name="clean">
     <delete dir="${build.dir}" />
   </target>
+  <target name="clean.distro" depends="mmbase.distro.exists" if="mmbase.distro.exists">
+    <delete file="${mmbase.dest}" />
+  </target>
   <target name="mmbase.distro.exists">
     <echo message="Using MMBase ${mmbase.version}" />
     <available file="${mmbase.dest}" property="mmbase.distro.exists"/>
     <available file="${build.dir}/mmbase/WEB-INF/lib" property="mmbase.distro.expanded.exists"/>
   </target>
-  <target name="mmbase.distro.download" depends="mmbase.distro.exists" unless="mmbase.distro.exists">
+  <target name="mmbase.distro.download" unless="mmbase.downloaded">
     <mkdir dir="${download.dir}" />
-    <get src="${mmbase.distro}" dest="${mmbase.dest}" verbose="on" />
+    <copy file="${user.home}/.maven/repository/mmbase/wars/${mmbase.war}" tofile="${mmbase.dest}" preservelastmodified="true" overwrite="false" />
+    <get src="${mmbase.distro}" dest="${mmbase.dest}" verbose="on" usetimestamp="true"  />
+    <property name="mmbase.downloaded" value="true" />
+
   </target>
 
   <target name="mmbase.distro" depends="mmbase.distro.exists,mmbase.distro.download" unless="mmbase.distro.expanded.exists" >
