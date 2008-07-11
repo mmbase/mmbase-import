@@ -19,12 +19,15 @@ import org.w3c.dom.Element;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import java.lang.management.*;
+import javax.management.*;
+
 
 /**
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.27 2008-06-23 12:45:35 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.28 2008-07-11 12:46:44 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -96,6 +99,18 @@ public abstract class CacheManager {
     public static <K,V> Cache<K,V> putCache(Cache<K,V> cache) {
         Cache old = caches.put(cache.getName(), cache);
         configure(configReader, cache.getName());
+        Hashtable<String, String> props = new Hashtable<String, String>();
+        props.put("type", "CacheMBean");
+        props.put("mmb", org.mmbase.module.core.MMBase.getMMBase().getMachineName());
+        props.put("name", cache.getName());
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+            ObjectName name = new ObjectName("org.mmbase.cache", props);
+            mbs.registerMBean(cache, name);
+        } catch (JMException jmo) {
+            log.warn("" + props + " " + jmo.getClass() + " " + jmo.getMessage());
+        }
         return old;
     }
 
