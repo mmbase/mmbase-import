@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.34 2008-07-11 14:50:46 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.35 2008-07-11 21:21:42 michiel Exp $
  */
 public class UtilReader {
 
@@ -226,14 +226,14 @@ public class UtilReader {
                                 }
                             }
                             if (maps.containsKey(name)) {
-                                log.service("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
+                                log.debug("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
                                 maps.put(name, entryList);
                             }
                         } else {
                             String value = reader.getElementValue(p);
                             if (properties.containsKey(name)) {
-                                log.service("Property '" + name + "' ('" + value + "') of " + url + " is shadowed");
+                                log.debug("Property '" + name + "' ('" + value + "') of " + url + " is shadowed");
                             } else {
                                 properties.put(name, value);
                             }
