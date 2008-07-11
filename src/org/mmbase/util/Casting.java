@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.111 2008-06-19 13:03:18 michiel Exp $
+ * @version $Id: Casting.java,v 1.112 2008-07-11 14:47:37 michiel Exp $
  */
 
 import java.util.*;
@@ -976,7 +976,10 @@ public class Casting {
             DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
         } catch (ParserConfigurationException pce) {
             log.error("[sax parser]: " + pce.toString(), pce);
+        } catch (Exception e) {
+            log.error(e);
         }
+        assert DOCUMENTBUILDER != null;
     }
     /**
      * Convert a String value to a Document
@@ -994,6 +997,7 @@ public class Casting {
         try {
             Document doc;
             final XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+            assert DOCUMENTBUILDER != null;
             synchronized(DOCUMENTBUILDER) {
                 // dont log errors, and try to process as much as possible...
                 DOCUMENTBUILDER.setErrorHandler(errorHandler);
