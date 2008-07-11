@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.59 2008-04-21 13:19:59 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.60 2008-07-11 13:37:04 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -35,7 +35,6 @@ public class MMBaseContext {
     static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
-    private static String javaVersion;
 
     private static String htmlRoot;
     private static String htmlRootUrlPath = "/";
@@ -65,8 +64,6 @@ public class MMBaseContext {
                 log.info("Reinitializing, this time with ServletContext");
             }
 
-            // get the java version we are running
-            javaVersion = System.getProperty("java.version");
             // store the current context
             sx = servletContext;
             // Get the user directory using the user.dir property.
@@ -199,7 +196,8 @@ public class MMBaseContext {
         log.info("===========================");
         log.info("MMBase logging initialized.");
         log.info("===========================");
-        log.info("java.version       : " + javaVersion);
+        log.info("java.version       : " +  System.getProperty("java.version"));
+
         log.info("user.dir          : " + userDir);
         String configPath = ResourceLoader.getConfigurationRoot().toString();
         log.info("configuration     : " + configPath);
