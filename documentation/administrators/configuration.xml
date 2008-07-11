@@ -13,12 +13,7 @@
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
-
         <surname>Meeuwissen</surname>
-
-        <affiliation>
-          <orgname>Publieke Omroep</orgname>
-        </affiliation>
       </author>
     </authorgroup>
 
@@ -35,11 +30,60 @@
   <section id="introduction">
     <title>Introduction</title>
 
-    <para>The MMBase configuration can normally be found in WEB-INF/config.
-    Optionally, it is also possible to store this configuration in another
-    directory, which then has to be done by use of the web.xml context
-    parameter 'mmbase.config'. In this document, this configuration directory
-    will be simply referred to as 'config'.</para>
+    <para>
+      MMBase is configured using many configuration files, most of them are XMLs.
+    </para>
+    <para>
+      A specific configuration file is always referenced to, e.g. in this document, relative to the 
+      'MMBase configuration root'.
+    </para>
+    <para>
+      A resource inside this MMBase configuration root actually resolves quite complicated, and it 
+      is not always trivial to know where an actual piece of configuration is coming from. To help
+      you with this, in the mmbase admin pages you can find the 'resource editor'.
+    </para>
+    <para>
+      Resolving of an configuration resource works like this. It tries the following strategies
+      until one succeeds.
+      <itemizedlist>
+        <listitem>
+          <para>
+            If the builder 'resources' is available, it will look up a matching node of that type.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+            It will check the application context resource mmbase-config/&lt;name of the
+            resource&gt;. If that exists, the value of it will be interpreted as a file-name. That
+            file will be opened.
+					</para>
+				</listitem>
+        <listitem>
+          <para>
+            It will check for the resource in the 'mmbase configuration directory' This directory
+            defaults to WEB-INF/config.  This directory can be changed using the 'servlet context'
+            init parameter 'mmbase.config' or using the system property 'mmbase.config'.
+          </para>
+          <para>
+            WEB-INF/config needs not be a real directory, it can also be part of a war.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The resource will be loaded using a java class loader. The used class name is
+            'org.mmbase.config.&lt;name of the resource&gt;
+          </para>
+          <para>
+            This means that the resource can be present anywhere in the present java 'CLASS PATH'. 
+            It could be below WEB-INF/classes, or in any jar in WEB-INF/lib. If  WEB-INF/classes
+            exists, MMBase will prefer to open the resources as files, rather then letting the
+            class-loader do it.
+          </para>
+        </listitem>
+      </itemizedlist>
+      If locations can be specified, normally they will be resolved relatively to the current
+      resource, but also absolute locations (file:///...) would work.
+    </para>
   </section>
 
   <section id="webxml">
@@ -185,14 +229,14 @@
       <para>If you want to use taglibs in your (jsp) pages - which you
       probably want - then you may have to indicate that as well in web.xml.
       Taglibs that you might want to use are the MMBase taglib, the MMBase
-      community taglib, the oscache taglib and the jakarta taglibs. In mosst
+      community taglib, the oscache taglib and the jakarta taglibs. In most
       newer application servers it is enough to have the mmbase-taglib-2.jar
       (or other jars) in your WEB-INF/lib directory to have the MMBase taglib
       (or other taglibs) to your disposal. <!-- TODO links --></para>
     </section>
 
     <section id="resources">
-      <title>Resources</title>
+      <title>Aplication Resources</title>
 
       <para>Since MMBase 1.6 certain things can (optionally) also be
       configured by the use of references to resources provided by the
@@ -200,9 +244,73 @@
       created and configured and can be referred to by a 'resource
       name'.</para>
 
-      <para>These resources must also be described in web.xml. The actual
-      configuration of these resources happens somewhere else and we refer to
-      the documentation of your application server.</para>
+      <para>
+        Since MMBase 1.8, and even more so in MMBase 1.9, many more things can be configured 
+        in the application context.
+        <itemizedlist>
+        <listitem>
+          <para>
+            As mentioned, the location of any configuration file can be as a application context resource.
+					</para>
+				</listitem>
+        <listitem>
+          <para>
+            A database connection pool can be configured. As an alternative to jdbc.xml
+					</para>
+				</listitem>
+        <listitem>
+          <para>
+            Mailing can be configured.
+					</para>
+				</listitem>
+        <listitem>
+          <para>
+            Any mmbase module property can be overridden in the application context.
+					</para>
+        </listitem>
+        </itemizedlist>
+        We give an example of a context xml as may be used in tomcat.
+          <programlisting id="context.xml"><![CDATA[
+<Context
+    docBase="/home/tomcat/apps/michiel"
+    debug="0" reloadable="false" allowLinking="true">
+
+  <!-- demonstrates a bunch of module properties to be overrriden -->
+  <Environment name="mmbase/mmbaseroot/datadir"      value="/home/tomcat/data" type="java.lang.String" />
+
+  <Environment name="mmbase/mmbaseroot/language"           value="nl"             type="java.lang.String" />
+  <Environment name="mmbase/mmbaseroot/database"           value="mysql"          type="java.lang.String" />
+  <Environment name="mmbase/mmbaseroot/basename"           value="fo"             type="java.lang.String" />
+  <Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env"  type="java.lang.String" />
+  <Environment name="mmbase/mmbaseroot/datasource"         value="jdbc/MMBase"    type="java.lang.String" />
+
+  <Environment name="mmbase/sendmail/mailhost" value="smtp.gmail.com" type="java.lang.String" />
+  <Environment name="mmbase/sendmail/user" value="psyvutest" type="java.lang.String" />
+  <Environment name="mmbase/sendmail/password" value="password" type="java.lang.String" />
+  <Environment name="mmbase/sendmail/mailport" value="465" type="java.lang.String" />
+  <Environment name="mmbase/sendmail/mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory" type="java.lang.String" />
+  <Environment name="mmbase/sendmail/mail.smtp.socketFactory.fallBack" value="true" type="java.lang.String" />
+
+  <!-- configures the database -->
+  <Resource name="jdbc/MMBase"
+            auth="Container" type="javax.sql.DataSource"
+            maxActive="10" maxIdle="3" maxWait="10000"
+            username="fobieen_test"
+            password="password"
+            driverClassName="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://localhost:3306/fobieen_test?autoReconnect=true"/>
+
+  <!-- place a  few other configuration files outside the war -->
+  <Environment name="mmbase-config/log/log4j.xml" 
+               value="file://${catalina.base}/conf/log/fobieen_test.xml" type="java.lang.String" />
+
+  <Environment name="mmbase-config/utils/multicast.xml"          
+              value="file://${catalina.base}/conf/multicast/fobieen.xml"    type="java.lang.String" />
+</Context>
+
+]]>
+          </programlisting>
+      </para>
     </section>
 
     <section id="webxmlexample">
@@ -872,5 +980,6 @@
       information in a centralized way. (classnames, log directories).
       Entities can be recognized by the &amp;-sign.</para>
     </section>
+
   </appendix>
 </article>
