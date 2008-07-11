@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.56 2008-07-11 19:19:25 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.57 2008-07-11 19:40:23 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1296,7 +1296,7 @@ public class ResourceLoader extends ClassLoader {
         ApplicationContextFileURLStreamHandler() {
             super(true);
             try {
-                FILES = ApplicationContextReader.getProperties("mmbase-config");
+                FILES = ApplicationContextReader.getProperties("mmbase-config"  + ResourceLoader.this.context.getPath());
             } catch (javax.naming.NamingException ne) {
                 log.error(ne);
                 FILES = new HashMap<String, String>();
@@ -1304,21 +1304,30 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public File getFile(final String in) {
-            String name = FILES.get(in);
+            
+            String name = FILES.get(ResourceLoader.this.context.getPath() + (in == null ? "" : in));
 
-            if (name != null && name.startsWith("file:")) {
-                try {
-                    return new File(new URI(name)); // hff, how cumbersome, to translate an URL to a File
-                } catch (URISyntaxException use) {
+            if (name != null) {
+                if (name.startsWith("file:")) {
+                    try {
+                        return new File(new URI(name)); // hff, how cumbersome, to translate an URL to a File
+                    } catch (URISyntaxException use) {
                     log.warn("" + name + " : " + use.getMessage() , use);
+                    }
+                } else {
+                    return new File(name);
                 }
             }
+
             return null;
         }
         public String getName(URL u) {
             int l =  ResourceLoader.this.context.getPath().length();
             String path = u.getPath();
             return l < path.length() ? path.substring(l) : path;
+        }
+        public String toString() {
+            return "" + FILES;
         }
     }
 
