@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.5 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: GuiFunction.java,v 1.6 2008-07-11 14:49:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class GuiFunction extends NodeFunction<String> {
@@ -41,6 +41,7 @@ public class GuiFunction extends NodeFunction<String> {
         super("gui", PARAMETERS);
     }
 
+    @Override
     protected String getFunctionValue(Node node, Parameters parameters) {
         if (log.isDebugEnabled()) {
             log.debug("GUI of builder with " + parameters);
