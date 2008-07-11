@@ -19,6 +19,7 @@
   <jsp:directive.attribute name="component" />
   <jsp:directive.attribute name="styleClass" />
   <jsp:directive.attribute name="css" />
+  <jsp:directive.attribute name="head" fragment="true" />
   <!--
        using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
        to please IE, which is a nasty, lousy browser
@@ -32,7 +33,8 @@
               unacceptable="CRIPPLE"
               language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
-      <html  xmlns="http://www.w3.org/1999/xhtml">
+      <html  debug="true"
+             xmlns="http://www.w3.org/1999/xhtml">
         <mm:import escape="trimmer" id="validatemessage"><mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
         <c:choose>
           <c:when test="${! empty validatemessage}">
@@ -87,6 +89,7 @@
                   </mm:field>
                 </mm:node>
               </c:if>
+              <jsp:invoke fragment="head" />
             </di:head>
             <body class="${styleClass}">
 
