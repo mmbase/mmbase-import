@@ -21,6 +21,7 @@
             <mm:first>
               <jsp:invoke fragment="beforefirst" />
             </mm:first>
+            <jsp:doBody />
             <mm:include page="/shared/component.jspx">
               <mm:param name="name">${_.component.name}</mm:param>
               <mm:param name="block">${_.name}</mm:param>
