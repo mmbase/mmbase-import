@@ -63,7 +63,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.48 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: FileWatcher.java,v 1.49 2008-07-11 14:47:15 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -409,6 +409,7 @@ public abstract class FileWatcher {
                 }
                 // when we found a change, we exit..
             }
+            watchers.clear();
         }
     }
 
