@@ -18,7 +18,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.4 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: ApplicationReader.java,v 1.5 2008-07-11 14:50:46 michiel Exp $
  */
 public class ApplicationReader extends DocumentReader {
 
@@ -56,7 +56,7 @@ public class ApplicationReader extends DocumentReader {
 
     public ApplicationReader(org.xml.sax.InputSource is) {
         super(is, ApplicationReader.class);
-        root=getElementByPath("application");
+        root = getElementByPath("application");
     }
 
     /**
