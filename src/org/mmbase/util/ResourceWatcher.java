@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.19 2007-06-29 10:29:09 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.20 2008-07-11 14:56:42 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -38,7 +38,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static  Set<ResourceWatcher> resourceWatchers = new HashSet<ResourceWatcher>();
+    static  Set<ResourceWatcher> resourceWatchers = Collections.synchronizedSet(new HashSet<ResourceWatcher>());
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
@@ -100,9 +100,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     protected ResourceWatcher(ResourceLoader rl) {
         resourceLoader = rl;
         if (resourceWatchers != null) {
-            synchronized(resourceWatchers) {
-                resourceWatchers.add(this);
-            }
+            resourceWatchers.add(this);
         }
     }
     /**
