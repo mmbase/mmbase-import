@@ -144,9 +144,12 @@
         <fmt:message key="content.typecolumn"/></a></th>
         <th><a href="javascript:sortBy('title','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.titlecolumn"/></a></th>
-        <th><fmt:message key="content.authorcolumn"/></th>
-        <th><fmt:message key="content.lastmodifiedcolumn"/></th>
-        <th><fmt:message key="content.numbercolumn"/></th>
+        <th><a href="javascript:sortBy('creator','<mm:write referid="parentchannel" />')" class="headerlink">
+        <fmt:message key="content.authorcolumn"/></a></th>
+        <th><a href="javascript:sortBy('lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
+        <fmt:message key="content.lastmodifiedcolumn"/></a></th>
+        <th><a href="javascript:sortBy('number','<mm:write referid="parentchannel" />')" class="headerlink">
+        <fmt:message key="content.numbercolumn"/></a></th>
         <th><fmt:message key="content.creationchannelcolumn"/></th>
         <th></th>
     </tr>
@@ -195,7 +198,7 @@
                 src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />"
                 alt="<fmt:message key="content.icon.versioning.title" />"/></a>
     </mm:haspage>
-    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+    <% if (role != null && SecurityUtil.isEditor(role)) { %>
     <mm:last inverse="true">
         <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
                 src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
