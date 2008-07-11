@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This exception get thrown if parsing of a datatype element (temporary) fails.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.1 2008-01-28 16:27:38 michiel Exp $
+ * @version $Id: DependencyException.java,v 1.2 2008-07-11 19:06:19 michiel Exp $
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {
@@ -65,6 +65,7 @@ public class DependencyException extends Exception {
     }
 
     public BasicDataType fallback() {
+        if (collector == null) throw new IllegalStateException("Cannot fall back if no collector set");
         log.warn(getMessage());
         element.setAttribute("base", "");
         try {
