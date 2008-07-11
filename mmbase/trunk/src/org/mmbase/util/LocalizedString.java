@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.31 2007-05-23 13:19:59 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.32 2008-07-11 14:47:58 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -312,7 +312,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      */
     public static String getXmlLang(Locale locale) {
         if (locale == null) return null;
-        StringBuffer lang = new StringBuffer(locale.getLanguage());
+        StringBuilder lang = new StringBuilder(locale.getLanguage());
         String country = locale.getCountry();
         if (country.length() > 0) {
             lang.append("-").append(country);
@@ -378,11 +378,12 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
                 Locale loc   = entry.getKey();
                 String value = entry.getValue();
                 String xmlLang = getXmlLang(loc);
-                // look if such an element is available
+                // look if such an element is already available
                 Element child = null;
                 for (int j = 0; j < nl.getLength(); j++) {
                     Element cand = (Element) nl.item(j);
-                    if (cand.getAttribute("xml:lang").equals(xmlLang)) {
+                    String l = cand.getAttribute("xml:lang");
+                    if (l.equals(xmlLang) || (l.equals("") && xmlLang == null)) {
                         child = cand;
                         break;
                     }
@@ -393,13 +394,16 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
                     } else {
                         child = element.getOwnerDocument().createElement(tagName);
                     }
-                    DocumentReader.appendChild(element, child, path);
+                    if (loc != null || value.length() > 0) {
+                        DocumentReader.appendChild(element, child, path);
+                    }
                     setXmlLang(child, loc);
                 }
                 DocumentReader.setNodeTextValue(child, value);
             }
         }
     }
+
 
     public Object clone() {
         try {
