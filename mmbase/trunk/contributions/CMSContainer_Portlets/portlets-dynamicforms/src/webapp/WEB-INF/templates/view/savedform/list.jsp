@@ -88,7 +88,16 @@
       				<c:set var="labelValue">
       					<mm:field name="label"/>
       				</c:set>
+
+					<%-- BEGIN: hack for element creation has to be moved to its own module --%>
+      				<c:set var="description"><mm:field name="description"/></c:set>
+      				<c:if test="${description == 'contenttype'}">
+      					<c:set var="contenttypeNumber" value="${fieldNumber}"/>
+      				</c:if>
+					<%-- END: hack for element creation has to be moved to its own module --%>
+
       			</mm:node>				 
+
 					<th nowrap="true"><c:out value="${labelValue}"/></th>  		
       			</c:forEach>
       			<th></th>
@@ -121,6 +130,9 @@
 						</mm:relatednodescontainer>
 					</mm:node>
 					<td>
+						<%-- BEGIN: hack for element creation has to be moved to its own module --%>
+						<c:if test="${headernumber == contenttypeNumber}"><a href="../dynamiccontent/export.jsp?id=${savedformnumber}"><fmt:message key="savedform.export" /></a></c:if> 
+						<%-- END: hack for element creation has to be moved to its own module --%>
 	                  	<c:out value="${fieldvalue}"/>
 	                </td>
 	            </c:forEach>
