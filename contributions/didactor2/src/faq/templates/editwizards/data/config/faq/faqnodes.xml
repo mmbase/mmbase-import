@@ -27,8 +27,8 @@
     <lists>
         <optionlist include="config/option_list/images_position.xml" />
         <optionlist include="config/option_list/boolean.xml" />
-        <optionlist include="config/option_list/layout.xml" />
-        <optionlist include="config/option_list/imagelayout.xml" />
+        <optionlist include="config/option_list/layout_ext.xml" />
+        <optionlist include="config/option_list/images_position.xml" />
     </lists>
     
     <steps>
