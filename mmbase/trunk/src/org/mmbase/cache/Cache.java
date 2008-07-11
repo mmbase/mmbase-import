@@ -20,9 +20,9 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.52 2008-06-30 08:11:08 michiel Exp $
+ * @version $Id: Cache.java,v 1.53 2008-07-11 12:46:44 michiel Exp $
  */
-abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
+abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBean {
 
     private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
@@ -32,7 +32,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @since MMBase-1.8
      */
-    private CacheImplementationInterface<K, V> implementation;
+    CacheImplementationInterface<K, V> implementation;
     protected Object lock;
 
     /**
@@ -215,12 +215,19 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public  int maxSize() {
         return implementation.maxSize();
     }
+    public int getMaxSize() {
+        return maxSize();
+    }
 
     /**
      * @see java.util.Map#size()
      */
     public  int size() {
         return implementation.size();
+    }
+
+    public int getSize() {
+        return size();
     }
     public  boolean contains(Object key) {
         return implementation.containsKey(key);
