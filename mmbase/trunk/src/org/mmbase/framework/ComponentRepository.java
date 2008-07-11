@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.38 2008-06-19 20:47:10 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.39 2008-07-11 15:59:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -33,16 +33,20 @@ public class ComponentRepository {
     public static final String XSD_COMPONENT = "component.xsd";
     public static final String NAMESPACE_COMPONENT = "http://www.mmbase.org/xmlns/component";
 
-    public static final String XSD_FRAMEWORK = "framework.xsd";
-    public static final String NAMESPACE_FRAMEWORK = "http://www.mmbase.org/xmlns/framework";
+    public static final String XSD_BLOCKTYPES = "blocktypes.xsd";
+    public static final String NAMESPACE_BLOCKTYPES = "http://www.mmbase.org/xmlns/blocktypes";
+    private static final Set<String> RECOGNIZED_NAMESPACES = new HashSet<String>();
+
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE_COMPONENT + ".xsd", XSD_COMPONENT, ComponentRepository.class);
-        XMLEntityResolver.registerSystemID(NAMESPACE_FRAMEWORK + ".xsd", XSD_FRAMEWORK, ComponentRepository.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_BLOCKTYPES + ".xsd", XSD_BLOCKTYPES, ComponentRepository.class);
+        RECOGNIZED_NAMESPACES.addAll(Arrays.asList(NAMESPACE_COMPONENT, NAMESPACE_BLOCKTYPES));
     }
 
     private static final Logger log = Logging.getLoggerInstance(ComponentRepository.class);
 
     private static final ComponentRepository repository = new ComponentRepository();
+
 
     public static ComponentRepository getInstance() {
         return repository;
@@ -163,6 +167,8 @@ public class ComponentRepository {
         }
     }
 
+
+
     /**
      * Reads all component xmls
      */
@@ -178,10 +184,9 @@ public class ComponentRepository {
                     if (url.openConnection().getDoInput()) {
                         String namespace = ResourceLoader.getDocument(url, false, null).getDocumentElement().getNamespaceURI();
 
-                        if (!NAMESPACE_COMPONENT.equals(namespace)) {
-                            log.debug("Ignoring " + url  + " because namespace is not " + NAMESPACE_COMPONENT + ", but " + namespace);
+                        if (namespace == null || ! RECOGNIZED_NAMESPACES.contains(namespace)) {
+                            log.debug("Ignoring " + url  + " because namespace is not one of  " + RECOGNIZED_NAMESPACES + ", but " + namespace);
                             continue;
-
                         }
                         Document doc = ResourceLoader.getDocument(url, true, getClass());
                         Element documentElement = doc.getDocumentElement();
@@ -204,7 +209,7 @@ public class ComponentRepository {
                         } else if (documentElement.getTagName().equals("blocktypes")) {
                             log.service("Reading block types from '" + url + "' " + namespace);
                             readBlockTypes(documentElement);
-                        } else if (documentElement.getTagName().equals("head") 
+                        } else if (documentElement.getTagName().equals("head")
                                 || documentElement.getTagName().equals("body")) {
                             log.debug("Resource '" + url + "' " + documentElement.getTagName() + "' used for include");
                         } else {
