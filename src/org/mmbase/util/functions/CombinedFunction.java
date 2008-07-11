@@ -14,10 +14,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A combined function combines other function object. Depending on the provided filled paramters it calls the right function.
+ * A combined function combines other function objects. Depending on the provided filled paramters
+ * it calls the right function. So, it uses the function for which the provided parameters object
+ * matched best.
+ *
+ * The best match is determined by a kind of scoring mechanism. Every missing required parameter
+ * makes the function score very bad. Otherwise the rule is that the more parameters of the function
+ * are provided, the better it is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.7 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: CombinedFunction.java,v 1.8 2008-07-11 14:48:56 michiel Exp $
  * @since MMBase-1.9
  */
 public class CombinedFunction<R> implements Function<R> {
@@ -42,11 +48,11 @@ public class CombinedFunction<R> implements Function<R> {
         } else {
             ReturnType<R> funcType = func.getReturnType();
             if (returnType.getTypeAsClass().isAssignableFrom(funcType.getTypeAsClass())) {
-                // 
+                //
             } else if (funcType.getTypeAsClass().isAssignableFrom(returnType.getTypeAsClass())) {
                 returnType = funcType;
             } else {
-                throw new IllegalStateException("" + func + " is not compatible");
+                throw new IllegalStateException("" + func + " is not compatible. The return type " + funcType + " does not match " + returnType + " (defined by " + functions + ")");
             }
         }
         functions.add(func);
@@ -87,6 +93,9 @@ public class CombinedFunction<R> implements Function<R> {
         return r;
     }
 
+    /**
+     * Combines the parameter definitions of the wrapped function to one new parameter definition
+     */
     protected void determinDefinition() {
         if (functions.size() == 0) throw new IllegalStateException("No functions added");
         for (Function<R> f : functions) {
@@ -148,7 +157,7 @@ public class CombinedFunction<R> implements Function<R> {
 
     public String toString() {
         if (parameterDefinition == null && functions.size() > 0) determinDefinition();
-        return "" + returnType + " " + 
+        return "" + returnType + " " +
             "Combined(" + getName() + ", " + functions.size() + " entries)" +
             (parameterDefinition == null ?  "EMPTY" : "" + Arrays.asList(parameterDefinition));
 
