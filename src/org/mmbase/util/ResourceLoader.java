@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.59 2008-07-11 19:54:43 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.60 2008-07-11 21:15:04 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1079,7 +1079,13 @@ public class ResourceLoader extends ClassLoader {
         }
 
         protected URLConnection openConnection(URL u) throws IOException {
-            return openConnection(getName(u));
+            String name = getName(u);
+            if (name != null) {
+                return openConnection(name);
+            } else {
+                log.warn("" + this + " could not find name for " + u);
+                return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(u.getPath());
+            }
         }
 
         abstract Set<String> getPaths(Set<String> results, Pattern pattern,  boolean recursive,  boolean directories);
@@ -1307,28 +1313,36 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        public File getFile(final String in) {
-            
-            String name = FILES.get(in);
-
-            if (name != null) {
-                if (name.startsWith("file:")) {
-                    try {
-                        return new File(new URI(name)); // hff, how cumbersome, to translate an URL to a File
-                    } catch (URISyntaxException use) {
-                    log.warn("" + name + " : " + use.getMessage() , use);
-                    }
-                } else {
-                    return new File(name);
+        protected File getFileFromString(String s) {
+            if (s == null) return null;
+            if (s.startsWith("file:")) {
+                try {
+                    return new File(new URI(s)); // hff, how cumbersome, to translate an URL to a File
+                } catch (URISyntaxException use) {
+                    log.warn("" + s + " : " + use.getMessage() , use);
+                    return null;
                 }
+            } else {
+                return new File(s);
             }
+        }
 
-            return null;
+        public File getFile(final String in) {
+            return getFileFromString(FILES.get(in));
         }
         public String getName(URL u) {
-            int l =  ResourceLoader.this.context.getPath().length();
-            String path = u.getPath();
-            return l < path.length() ? path.substring(l) : path;
+            for (Map.Entry<String, String> entry : FILES.entrySet()) {
+                try {
+                    File file = getFileFromString(entry.getValue());
+                    if (file != null) {
+                        if (file.toURL().sameFile(u)) {
+                            return entry.getKey();
+                        }
+                    }
+                } catch (MalformedURLException mfue) {
+                }
+            }
+            return null;
         }
         public String toString() {
             return "" + FILES;
