@@ -8,7 +8,7 @@
     <c:forEach items="${blockType.subTypes}" var="bt">
       <mm:write request="blockType" referid="bt" />
       <li>
-        <jsp:text>${bt.name}: ${mm:string(bt.title)} (${bt.weight})</jsp:text>
+        <jsp:text>${bt.name}: ${mm:escape('text/xml', mm:string(bt.title))} (${bt.weight})</jsp:text>
         <mm:include  page="blockType.jspx" />
       </li>
     </c:forEach>
@@ -19,7 +19,7 @@
         <mm:link page="components">
           <mm:param name="component">${block.component.name}</mm:param>
           <a href="${_}">${block.component.name}</a>
-          <jsp:text>: ${block.name}: ${mm:string(block.title)}</jsp:text>
+          <jsp:text>: ${block.name}: ${mm:escape('text/xml', mm:string(block.title))}</jsp:text>
         </mm:link>
       </li>
     </mm:stringlist>
