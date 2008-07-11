@@ -17,7 +17,7 @@ import javax.naming.*;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.5 2008-07-11 17:34:01 michiel Exp $
  */
 public class ApplicationContextReader {
 
@@ -35,9 +35,17 @@ public class ApplicationContextReader {
             while (ne.hasMoreElements()) {
                 NameClassPair element = ne.nextElement();
                 String contextName = element.getName();
+
                 String lookupName = env.composeName(contextName, path);
-                String value = env.lookup(lookupName).toString();
-                properties.put(contextName, value);
+                Object value = env.lookup(lookupName);
+                if (value instanceof Context) {
+                    Map<String, String> subProps = getProperties(path + "/" + contextName);
+                    for (Map.Entry<String, String> entry : subProps.entrySet()) {
+                        properties.put(contextName + "/" + entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    properties.put(contextName, value.toString());
+                }
             }
         }
         return properties;
