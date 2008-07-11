@@ -17,14 +17,14 @@
 
   <block name="page">
     <body jsp="/mmbase/components/richtext/wiki/page.jspx">
-      <param name="o"   type="org.mmbase.bridge.Node" />
+      <param name="n"    />
     </body>
   </block>
 
   <block name="edit">
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <body jsp="/mmbase/components/richtext/wiki/edit.jspx">
-      <param name="o"   type="org.mmbase.bridge.Node" />
+      <param name="n"    />
     </body>
 
   </block>
