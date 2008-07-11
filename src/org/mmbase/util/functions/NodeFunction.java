@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.31 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.32 2008-07-11 14:49:36 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -144,9 +144,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                         // This happens when calling gui() in transaction.
                         // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
                         org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
-                        Iterator<Map.Entry<String, Object>> i = coreNode.getValues().entrySet().iterator();
-                        while (i.hasNext()) {
-                            Map.Entry<String, Object> entry =  i.next();
+                        for (Map.Entry<String, Object> entry : coreNode.getValues().entrySet()) {
                             virtual.storeValue(entry.getKey(), entry.getValue());
                         }
                         node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
@@ -206,7 +204,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      * @return <code>function</code> if that was already a NodeFunction, <code>null</code> if it
      * could not be wrapped (No {@link Parameter#NODE} parameter), or a new NodeFunction object
      * wrapping <code>function</code>
-     * 
+     *
      * @since MMBase-1.8.5
      */
     public static <S> NodeFunction<S> wrap(Function<S> function) {
