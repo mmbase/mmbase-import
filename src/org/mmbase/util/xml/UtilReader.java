@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.33 2007-11-19 15:01:36 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.34 2008-07-11 14:50:46 michiel Exp $
  */
 public class UtilReader {
 
@@ -204,7 +204,7 @@ public class UtilReader {
                 DocumentReader reader = new DocumentReader(is, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
-                    for (Element p : reader.getChildElements(e,"property")) {
+                    for (Element p : reader.getChildElements(e, "property")) {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("map")) {
