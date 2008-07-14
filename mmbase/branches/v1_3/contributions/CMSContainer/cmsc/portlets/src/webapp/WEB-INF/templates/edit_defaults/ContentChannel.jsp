@@ -121,7 +121,7 @@ function openRepositoryWithChannel() {
 			<cmsc:option value="creationdate" message="edit_defaults.orderby.creationdate" />
 			<cmsc:option value="lastmodifieddate" message="edit_defaults.orderby.lastmodifieddate" />
 			<cmsc:option value="publishdate" message="edit_defaults.orderby.publishdate" />
-			<cmsc:option value="expirydate" message="edit_defaults.orderby.expirydate" />
+			<cmsc:option value="expiredate" message="edit_defaults.orderby.expirydate" />
 		</cmsc:select></td>
 	</tr>
 	<tr>
