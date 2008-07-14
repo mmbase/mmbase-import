@@ -2,9 +2,10 @@
 <%@ attribute name="key" rtexprvalue="true" required="true" %>
 <%@ attribute name="active" rtexprvalue="true" required="false" %>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="class" value="${active ? 'tab_active' : 'tab'}"/>
+
 
 <div class="${class}">
    <div class="body">
