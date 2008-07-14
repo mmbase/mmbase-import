@@ -16,19 +16,6 @@
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
 
-  <script type="text/javascript">
-    var validator = new MMBaseValidator();
-    validator.logEnabled = false;
-    validator.traceEnabled = false;
-    validator.sessionName = '${config.session}';
-    validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
-    validator.validateHook = function() {
-       document.getElementById('okbutton').disabled = this.invalidElements != 0;
-       document.getElementById('savebutton').disabled = this.invalidElements != 0;
-    }
-    validator.lang = '${config.lang}';
-    validator.setup(document);
-  </script>
 
 <%
    if (urlStack.size() == 0) {
