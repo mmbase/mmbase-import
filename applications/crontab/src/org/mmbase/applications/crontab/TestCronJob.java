@@ -25,7 +25,8 @@ public class TestCronJob extends AbstractCronJob implements CronJob {
         log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());
         try {
             log.info("sleeping");
-            Thread.sleep(130 * 1000);
+            //Thread.sleep(130 * 1000);
+            Thread.sleep(130);
             log.info("sleeped");
         } catch (Exception e) {}
     }
