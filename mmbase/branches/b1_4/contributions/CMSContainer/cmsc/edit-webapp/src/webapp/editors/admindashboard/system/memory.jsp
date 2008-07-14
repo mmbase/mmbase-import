@@ -12,14 +12,24 @@
 	
 		<h1><fmt:message key="admindashboard.system.memory.header" /></h1>
 		
+		<% 
+		long maxMem = Runtime.getRuntime().maxMemory();
+		long totalMem = Runtime.getRuntime().totalMemory();
+		long freeMem = Runtime.getRuntime().freeMemory();
+		
+		 %>
+		
 		<b><fmt:message key="admindashboard.system.memory.maximum" />:</b> 
-		<%=Runtime.getRuntime().maxMemory()/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
+		<%=maxMem/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
 		<br/>
 		<b><fmt:message key="admindashboard.system.memory.total" />:</b> 
-		<%=Runtime.getRuntime().totalMemory()/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
+		<%=totalMem/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
+		<br/>
+		<b><fmt:message key="admindashboard.system.memory.used" />:</b> 
+		<%=(totalMem - freeMem)/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
 		<br/>
 		<b><fmt:message key="admindashboard.system.memory.free" />:</b> 
-		<%=Runtime.getRuntime().freeMemory()/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
+		<%=freeMem/1024/1024%><fmt:message key="admindashboard.system.memory.mb" />
 		
 	</mm:hasrank>
 </mm:cloud>
