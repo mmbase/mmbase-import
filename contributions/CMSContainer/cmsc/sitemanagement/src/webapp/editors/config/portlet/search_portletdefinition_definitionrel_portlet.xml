@@ -16,15 +16,6 @@
       <list include="config/portletparameter/search_portlet_parameterrel_portletparameter.xml"/>
       <list include="config/view/search_portlet_viewrel_view.xml"/>
 	</item>
-	<command name="search" nodepath="portlet" age="-1" fields="title" pagelength="20">
-		<prompt xml:lang="en">Search Portlet</prompt>
-		<prompt xml:lang="nl">Zoek Portlet</prompt>
-		<search-filter>
-			<name xml:lang="en">Title contains</name>
-			<name xml:lang="nl">Titel bevat</name>
-			<search-fields>[title]</search-fields>
-		</search-filter>
-	</command>
 
    <command name="insert" objectnumber="new">
       <prompt xml:lang="en">New</prompt>
