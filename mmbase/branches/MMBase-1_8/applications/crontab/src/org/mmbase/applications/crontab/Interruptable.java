@@ -23,9 +23,15 @@ public class Interruptable implements Runnable {
     private Date   startTime;
     private final Runnable runnable;
     private final Collection collection;
+    private final Runnable ready;
+
     public Interruptable(Runnable run, Collection col) {
+        this(run, col, null);
+    }
+    public Interruptable(Runnable run, Collection col, Runnable r) {
         runnable = run;
         collection = col;
+        ready = r;
     }
 
     public void run() {
@@ -35,6 +41,7 @@ public class Interruptable implements Runnable {
         startTime = new Date();
         try {
             runnable.run();
+            if (ready != null) ready.run();
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
         }
