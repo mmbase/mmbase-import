@@ -60,6 +60,9 @@
         <th>type</th>
         <th>time</th>
         <th>running</th>
+        <th>last run started on</th>
+        <th>cost of last run (ms)</th>
+        <th># runs</th>
         <th>class</th>
         <th>configuration</th>
       </tr>
@@ -96,6 +99,9 @@
               </mm:write>
             </c:if>
           </td>
+          <td>${cronentry.lastRun}</td>
+          <td>${cronentry.lastCost}</td>
+          <td>${cronentry.count}</td>
           <td>${cronentry.className}</td>
           <td>${cronentry.configuration}</td>
         </tr>
