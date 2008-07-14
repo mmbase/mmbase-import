@@ -12,10 +12,10 @@ package com.finalist.cmsc.services.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.UserRole;
 
@@ -143,6 +143,12 @@ public class DummyWorkflowService extends WorkflowService {
 
    @Override
    public boolean isAllowedToPublish(Node node) {
+      return true;
+   }
+
+
+   @Override
+   public boolean isAccepted(Node node) {
       return true;
    }
 

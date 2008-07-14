@@ -135,4 +135,9 @@ public class Workflow {
    public static boolean isAllowedToPublish(Node node) {
       return cService.isAllowedToPublish(node);
    }
+
+
+   public static boolean isAccepted(Node node) {
+      return cService.isAccepted(node);
+   }
 }
