@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util.images;
 
-import java.util.*;
-import java.util.regex.*;
 import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.mmbase.util.Encode;
 import org.mmbase.util.externalprocess.CommandLauncher;
 import org.mmbase.util.externalprocess.ProcessException;
-import org.mmbase.util.Encode;
-
-import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Converts images using ImageMagick.
@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.8 2007-07-24 16:27:58 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.9 2008-07-14 12:30:07 nklasens Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -54,11 +54,12 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     protected String host = "localhost";
     protected int port = 1679;
 
+    protected List<String> excludeFormats = new ArrayList<String>();
 
     /**
-     * This function initalises this class
-     * @param params a <code>Map</code> of <code>String</code>s containing informationn, this should contain the key's
-     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root, and it can also contain
+     * This function initializes this class
+     * @param params a <code>Map</code> of <code>String</code>s containing information, this should contain the key's
+     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifying the converter root, and it can also contain
      *               ImageConvert.DefaultImageFormat which can also be 'asis'.
      */
     public void init(Map<String, String> params) {
@@ -85,6 +86,15 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             port = Integer.parseInt(tmp);
         }
 
+        tmp = params.get("ImageConvert.ExcludeFormats");
+        if (tmp != null && ! tmp.equals("")) {
+            StringTokenizer tokenizer = new StringTokenizer(tmp, " ,");
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                excludeFormats.add(token);
+            }
+        }
+        
         tmp = params.get("ImageConvert.Method");
         if (tmp != null && ! tmp.equals("")) {
             if (tmp.equals("launcher")) {
@@ -238,19 +248,23 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
+     * @param sourceFormat original image format
      * @param commands a <code>List</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
-     *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifing the converter root....
+     *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifying the converter root....
      * @return an array of <code>byte</code>s containing the new converted image.
-     *
      */
     public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
-        byte[] pict = null;
         if (input == null) {
             log.error("Converting an empty image does not make sense.");
-            return pict;
+            return input;
         }
-
-        if (commands != null) {
+        if (excludeFormats.contains(sourceFormat)) {
+            log.debug("Conversion is excluded for image format: " + sourceFormat);
+            return input;
+        }
+        
+        byte[] pict = null;
+        if (commands != null && !commands.isEmpty()) {
             ParseResult parsedCommands = getConvertCommands(commands);
             if (parsedCommands.format.equals("asis") && sourceFormat != null) {
                 parsedCommands.format = sourceFormat;
@@ -258,6 +272,12 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             if (log.isDebugEnabled()) {
                 log.debug("Converting image (" + input.length + " bytes)  to '" + parsedCommands.format + "' ('" + parsedCommands.args + "') with cwd = " + parsedCommands.cwd);
             }
+            if ("gif".equals(parsedCommands.format)) {
+                if (isAnimated(input)) {
+                    parsedCommands.args.add(0, "-coalesce");
+                }
+            }
+
             ByteArrayInputStream in = new ByteArrayInputStream(input);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             convertImage(in, out, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
@@ -270,11 +290,27 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
             }
         }
+        else {
+            log.error("Converting with empty commands.");
+            log.error(Logging.stackTrace());
+        }
         return pict;
     }
 
+    protected boolean isAnimated(byte[] rawimage) {
+        ImageInfo imageInfo = new ImageInfo();
+        imageInfo.setDetermineImageNumber(true);
+        ByteArrayInputStream inp = new ByteArrayInputStream(rawimage);
+        
+        imageInfo.setInput(inp);
+        imageInfo.check();
+        return (imageInfo.getNumberOfImages() > 1);
+    }
+    
     /**
      * Translates MMBase color format (without #) to an convert color format (with or without);
+     * @param c color to convert
+     * @return converted color
      */
     protected String color(String c) {
         if (c.charAt(0) == 'X') {
@@ -492,6 +528,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     }
 
     /**
+     * Is command prefixed with '-' or '+'
+     * @param s command
+     * @return <code>true</code> when prefixed
      * @since MMBase-1.7
      */
     private boolean isCommandPrefixed(String s) {
@@ -532,11 +571,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     /**
      * Does the actual conversion.
      *
-     * @param pict Byte array with the original picture
+     * @param originalStream Byte stream with the original picture
+     * @param imageStream output stream with converted image bytes
      * @param cmd  List with convert parameters.
      * @param format The picture format to output to (jpg, gif etc.).
-     * @return      The result of the conversion (a picture).
-     *
+     * @param cwd Directory for fonts
      */
     private void convertImage(InputStream originalStream, OutputStream imageStream, List<String> cmd, String format, File cwd) {
 
