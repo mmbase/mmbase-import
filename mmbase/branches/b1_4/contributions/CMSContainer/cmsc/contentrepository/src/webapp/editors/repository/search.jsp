@@ -369,7 +369,7 @@
                    <mm:field name="name" jspvar="channelName" write="false"/>
 
 						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
-						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
+						 <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
 						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
 			      </mm:compare>
 		      </mm:relatednodes>
@@ -453,7 +453,7 @@
 						${title}
             	</td>
                <td style="white-space: nowrap;">
-				  <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
+				  <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" title="${channelIconMessage}" />
 		            <mm:compare referid="action" value="search">
 	                  <a href="${channelUrl}">${channelName}</a>
 	               </mm:compare>
