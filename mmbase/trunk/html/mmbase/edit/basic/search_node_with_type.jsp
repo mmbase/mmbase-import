@@ -50,7 +50,7 @@
         <td width="20%"><%=m.getString("search.maxage")%></td>
         <td width="30%"><input type ="text" class="small" size="80" name="_search_form_maxage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_maxage_$node_type" />" /></td>
       </tr>
-      <tr>          
+      <tr>
         <td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td>
       </tr>
     </table>
@@ -65,7 +65,7 @@
   <mm:context>
     <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
       <mm:fieldinfo type="usesearchinput" /><%-- 'usesearchinput' can add constraints to the surrounding container --%>
-    </mm:fieldlist>             
+    </mm:fieldlist>
   </mm:context>
 </mm:present>
 
@@ -79,8 +79,8 @@
 
  <mm:write id="offset" value="$[+($page - $config.indexoffset)*$config.page_size]" write="false" />
  <mm:offset    value="$offset"  />
- <mm:maxnumber value="$config.page_size" />  
- 
+ <mm:maxnumber value="$config.page_size" />
+
  <mm:url id="baseurl" referid="form.url" referids="search?" write="false">
    <!--pass all search field values -->
    <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
@@ -131,7 +131,7 @@
        <mm:write value="$page" />
      </span>
      <mm:write write="false" id="maxpagenumber" vartype="integer" value="$[+ ($totalsize - 1) / $config.page_size + $config.indexoffset]" />
-   </mm:isgreaterthan>   
+   </mm:isgreaterthan>
    <mm:context>
       <mm:nextbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
          <a href='<mm:url referid="purl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
@@ -167,7 +167,7 @@
 
 
 <a name="searchresult" />
-<table width="100%" class="list"><!-- list table -->      
+<table width="100%" class="list"><!-- list table -->
   <tr align="left"><!-- header -->
   <th>Gui()</th>
     <mm:context>
@@ -214,7 +214,7 @@
           <mm:countrelations />
         </mm:maydelete>
         &nbsp;
-     </td>    
+     </td>
      <td class="navigate">
     <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || mayLink) { %>
        <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
@@ -222,7 +222,7 @@
        </a>
      <% } else { %>&nbsp;<% } %>
      </td>
- </tr>  
+ </tr>
 </mm:listnodes>
 
 </table>
@@ -246,9 +246,9 @@
   <table width="100%">
     <tr>
       <td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />)</td>
-      <td class="navigate">&nbsp;</td>        
+      <td class="navigate">&nbsp;</td>
     </tr>
-  </table> 
+  </table>
 </mm:maycreate>
 
 
