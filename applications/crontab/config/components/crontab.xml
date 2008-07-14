@@ -9,12 +9,12 @@
   <description xml:lang="nl">MMBase crontab</description>
   <description xml:lang="en">MMBase crontab</description>
 
-  <block 
+  <block
       classification="mmbase.admin"
       name="crontab"
       mimetype="text/html" >
-    <description xml:lang="en">Administrates the mmbase crontab</description>      
-    <body jsp="/mmbase/crontab/component.jspx">
+    <description xml:lang="en">Administrates the mmbase crontab</description>
+    <body jsp="index.jspx">
       <param name="kick" />
       <param name="interrupt" />
       <param name="threadno" />
