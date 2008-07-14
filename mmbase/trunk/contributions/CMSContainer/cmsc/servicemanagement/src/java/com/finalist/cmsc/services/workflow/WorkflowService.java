@@ -11,13 +11,13 @@ package com.finalist.cmsc.services.workflow;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.apache.commons.logging.Log;
 
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.services.Service;
 import com.finalist.cmsc.services.Properties;
+import com.finalist.cmsc.services.Service;
 
 public abstract class WorkflowService extends Service {
    protected boolean acceptedStepEnabled;
@@ -86,6 +86,9 @@ public abstract class WorkflowService extends Service {
    public abstract boolean isAllowedToPublish(Node node);
 
 
+   public abstract boolean isAccepted(Node node);
+
+
    @Override
    protected void init(Properties properties) throws Exception {
 
@@ -109,7 +112,7 @@ public abstract class WorkflowService extends Service {
       this.acceptedStepEnabled = acceptedStepEnabled;
    }
 
-
    protected abstract Log getLogger();
+
 
 }
