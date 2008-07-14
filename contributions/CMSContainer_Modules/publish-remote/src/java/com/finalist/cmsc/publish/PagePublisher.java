@@ -17,14 +17,15 @@ import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.PortletUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 
 public class PagePublisher extends Publisher {
-    
+
     public PagePublisher(Cloud cloud) {
         super(cloud);
     }
@@ -38,7 +39,7 @@ public class PagePublisher extends Publisher {
     public void publish(Node node) {
         Map<Node, Date> nodes = new LinkedHashMap<Node, Date>();
         addPageNodes(node, nodes);
-        
+
         publishNodes(nodes);
     }
 
@@ -49,7 +50,7 @@ public class PagePublisher extends Publisher {
         Map<Node, Date> pageNodes = findPageNodes(node, publishDate);
         for (Node pnode : pageNodes.keySet()) {
             if (PortletUtil.isNodeParameter(pnode)) {
-                
+
                 Node valueNode = pnode.getNodeValue(PortletUtil.VALUE_FIELD);
                 if (RepositoryUtil.isContentChannel(valueNode)) {
                     publishContentChannel(nodes, valueNode, date);
@@ -66,6 +67,9 @@ public class PagePublisher extends Publisher {
                 }
                 if (ContentElementUtil.isContentElement(valueNode)) {
                     if (!isPublished(valueNode)) {
+                       if (Workflow.hasWorkflow(valueNode) && !Workflow.mayPublish(valueNode)) {
+                          continue;
+                       }
                         NodeList channels = RepositoryUtil.getContentChannelsForContent(valueNode);
                         for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
                             Node channel = iter.next();
@@ -76,20 +80,24 @@ public class PagePublisher extends Publisher {
                 }
             }
         }
-        
+
         nodes.putAll(pageNodes);
 
         addReferredPageParameters(node, nodes, publishDate);
 	}
 
 	protected void publishContentChannel(Map<Node, Date> nodes, Node valueNode, Long date) {
-        if (!isPublished(valueNode)) {
+      if (!isPublished(valueNode)) {
             addChannels(nodes, valueNode);
-            
+
             NodeList contentNodes = getContentElements(valueNode, date);
             for (Iterator<Node> iter = contentNodes.iterator(); iter.hasNext();) {
                 Node contentElement = iter.next();
-                addContentBlock(nodes, contentElement);
+
+                boolean hasWorkflow = Workflow.hasWorkflow(contentElement);
+                if (!hasWorkflow || (hasWorkflow && Workflow.isAccepted(contentElement))) {
+                   addContentBlock(nodes, contentElement);
+                }
             }
         }
         else {
@@ -97,7 +105,11 @@ public class PagePublisher extends Publisher {
             for (Iterator<Node> iter = contentNodes.iterator(); iter.hasNext();) {
                 Node contentElement = iter.next();
                 if (!isPublished(contentElement)) {
-                    addContentBlock(nodes, contentElement);
+                   boolean hasWorkflow = Workflow.hasWorkflow(contentElement);
+                   if (!hasWorkflow || (hasWorkflow && Workflow.isAccepted(contentElement))) {
+                      addContentBlock(nodes, contentElement);
+                   }
+
                 }
             }
         }
@@ -128,13 +140,10 @@ public class PagePublisher extends Publisher {
     }
 
     protected void addContentBlock(Map<Node, Date> nodes, Node content) {
-        if (Workflow.hasWorkflow(content) && !Workflow.mayPublish(content)) {
-           return;
-        }
         Date contentPublishDate = content.getDateValue(ContentElementUtil.PUBLISHDATE_FIELD);
         List<Node> contentBlockNodes = findContentBlockNodes(content);
         for (Node contentNode : contentBlockNodes) {
-            nodes.put(contentNode, contentPublishDate);    
+            nodes.put(contentNode, contentPublishDate);
         }
     }
 
@@ -153,7 +162,7 @@ public class PagePublisher extends Publisher {
         query.addField(parameterStep, parameterManager.getField(PortletUtil.VALUE_FIELD));
         query.addField(parameterStep, parameterManager.getField("number"));
         SearchUtil.addEqualConstraint(query, parameterManager.getField(PortletUtil.VALUE_FIELD), Integer.valueOf(node.getNumber()));
-        
+
         NodeList referredPages = cloud.getList(query);
         for (Iterator<Node> iter = referredPages.iterator(); iter.hasNext();) {
             Node queryNode = iter.next();
@@ -172,15 +181,15 @@ public class PagePublisher extends Publisher {
         return nodes;
     }
 
-    
+
     protected void findPageNodes(Node node, Map<Node, Date> nodes, Date publishDate) {
         if (nodes.containsKey(node) || TypeUtil.isSystemType(node.getNodeManager().getName())) {
             return;
         }
-        
+
         nodes.put(node, publishDate);
-        
-        RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);        
+
+        RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);
         if (!rml.isEmpty()) {
             NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
             while (childs.hasNext()) {
@@ -229,5 +238,5 @@ public class PagePublisher extends Publisher {
             }
         }
     }
-    
+
 }
