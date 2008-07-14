@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.2 2006-07-06 14:34:22 pierre Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.2.2.1 2008-07-14 15:22:33 michiel Exp $
  */
 public class ApplicationContextReader {
 
@@ -42,7 +42,16 @@ public class ApplicationContextReader {
                 String contextName = element.getName();
                 String lookupName = env.composeName(contextName, path);
                 Object value = env.lookup(lookupName);
-                properties.put(contextName, value);
+                if (value instanceof Context) {
+                    Map  subProps = getProperties(path + "/" + contextName);
+                    Iterator i = subProps.entrySet().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry  entry = (Map.Entry) i.next();
+                        properties.put(contextName + "/" + entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    properties.put(contextName, value.toString());
+                }
             }
         }
         return properties;
