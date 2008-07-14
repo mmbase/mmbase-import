@@ -11,7 +11,7 @@
    <tbody class="hover">
       <c:set var="tag_op_status" value="body" scope="request"/>
       <c:set var="useSwapStyle">true</c:set>
-      <c:forEach var="${var}" items="${items}">
+      <c:forEach var="current" items="${items}">
          <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
             <jsp:doBody/>
          </tr>
