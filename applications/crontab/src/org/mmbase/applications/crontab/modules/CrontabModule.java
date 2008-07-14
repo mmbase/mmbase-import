@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.12 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: CrontabModule.java,v 1.13 2008-07-14 13:51:36 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -149,7 +149,7 @@ public class CrontabModule extends WatchedReloadableModule {
 
         };
     {
-        addFunction(listFunction);
+        Function f = addFunction(listFunction);
     }
 
     protected final static Parameter<String> ENTRY = new Parameter<String>("entry", String.class, true);
