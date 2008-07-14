@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.10 2007-02-23 10:52:10 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.11 2008-07-14 13:51:36 michiel Exp $
  */
 
 public class CronEntry {
@@ -65,10 +65,12 @@ public class CronEntry {
     private final String id;
     private final String name;
     private final String className;
-    private final String cronTime;
+    protected final String cronTime;
     private String configuration = null;
 
-    private int count = 0;
+    protected Date  lastRun = new Date(0);
+    protected int count = 0;
+    protected int lastCost = -1;
 
     private final CronEntryField second      = new CronEntryField(); // 0-59
     private final CronEntryField minute      = new CronEntryField(); // 0-59
@@ -162,12 +164,19 @@ public class CronEntry {
     }
 
     public boolean kick() {
+        final Date start = new Date();
+        Runnable ready = new Runnable() {
+                public void run() {
+                    CronEntry.this.incCount();
+                    CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
+                }
+            };
         switch (type) {
             case SHORT_JOB_TYPE :
                 {
-                    count++;
                     try {
-                        Interruptable thread = new Interruptable(cronJob, threads);
+                        setLastRun(new Date());
+                        Interruptable thread = new Interruptable(cronJob, threads, ready);
                         thread.run();
                     } catch (Throwable t) {
                         log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
@@ -181,8 +190,8 @@ public class CronEntry {
                 // fall through
             case CANBEMORE_JOB_TYPE :
             default :
-                count++;
-                Interruptable thread = new Interruptable(cronJob, threads);
+                setLastRun(start);
+                Interruptable thread = new Interruptable(cronJob, threads, ready);
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(thread);
                 return true;
         }
@@ -227,6 +236,26 @@ public class CronEntry {
     }
     public String getClassName() {
         return className;
+    }
+    public Date getLastRun() {
+        return lastRun;
+    }
+
+    protected void setLastRun(Date d) {
+        lastRun = d;
+        setLastCost(-1);
+    }
+    public int getCount() {
+        return count;
+    }
+    protected void incCount() {
+        count++;
+    }
+    public int getLastCost() {
+        return lastCost;
+    }
+    protected void setLastCost(int s) {
+        lastCost = s;
     }
 
     boolean mustRun(Date date) {
