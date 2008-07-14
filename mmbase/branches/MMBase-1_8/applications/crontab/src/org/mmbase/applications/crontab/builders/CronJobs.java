@@ -111,10 +111,10 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
                 if (changed.contains("classfile") ||
                     changed.contains("name") ||
                     changed.contains("type")) {
-                    log.warn("Changed fields " + changed);
+                    log.debug("Changed fields " + changed);
                     cronDaemon.remove(entry);
                 } else {
-                    log.warn("Ignored " + node);
+                    log.debug("Ignored " + node);
                     return retval;
                 }
             } else {
@@ -123,7 +123,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
             }
         }
         try {
-            log.info("Replacing cronentry " + entry);
+            log.debug("Replacing cronentry " + entry);
             Node n = getCloud().getNode(node.getNumber());
             cronDaemon.add(new NodeCronEntry(n));
         } catch (Exception e) {
