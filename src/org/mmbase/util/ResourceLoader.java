@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.6 2008-06-23 12:42:25 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.7 2008-07-14 15:22:32 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -334,6 +334,8 @@ public class ResourceLoader extends ClassLoader {
                 log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
             }
 
+            configRoot.roots.add(configRoot.new ApplicationContextFileURLStreamHandler());
+
             if (configPath != null) {
                 if (servletContext != null) {
                     // take into account that configpath can start at webrootdir
@@ -344,6 +346,7 @@ public class ResourceLoader extends ClassLoader {
                 log.debug("Adding " + configPath);
                 configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(configPath), true));
             }
+
 
             if (servletContext != null) {
                 String s = servletContext.getRealPath(RESOURCE_ROOT);
@@ -475,6 +478,8 @@ public class ResourceLoader extends ClassLoader {
             Object o = i.next();
             if (o instanceof FileURLStreamHandler) {
                 roots.add(new FileURLStreamHandler((FileURLStreamHandler) o));
+            } else if (o instanceof ApplicationContextFileURLStreamHandler) {
+                roots.add(new ApplicationContextFileURLStreamHandler());
             } else if (o instanceof NodeURLStreamHandler) {
                 roots.add(new NodeURLStreamHandler((NodeURLStreamHandler) o));
             } else if (o instanceof ServletResourceURLStreamHandler) {
@@ -911,8 +916,11 @@ public class ResourceLoader extends ClassLoader {
         Iterator i = roots.iterator();
         while (i.hasNext()) {
             Object o = i.next();
-            if (o instanceof FileURLStreamHandler) {
-                result.add(((FileURLStreamHandler) o).getFile(name));
+            if (o instanceof AbstractFileURLStreamHandler) {
+                File f = ((AbstractFileURLStreamHandler) o).getFile(name);
+                if (f != null) {
+                    result.add(((AbstractFileURLStreamHandler) o).getFile(name));
+                }
             }
         }
         return result;
@@ -1090,18 +1098,73 @@ public class ResourceLoader extends ClassLoader {
         abstract Set getPaths(Set results, Pattern pattern,  boolean recursive,  boolean directories);
     }
 
+    // ================================================================================
+    // Files
 
-    protected  class FileURLStreamHandler extends PathURLStreamHandler {
-        private File fileRoot;
-        private boolean writeable;
-        FileURLStreamHandler(File root, boolean w) {
-            fileRoot = root;
+    protected abstract class  AbstractFileURLStreamHandler extends PathURLStreamHandler {
+        protected final boolean writeable;
+        AbstractFileURLStreamHandler(boolean w) {
             writeable = w;
+        }
+
+        public URLConnection openConnection(String name)  {
+            URL u;
+            try {
+                if (name.startsWith("file:")) {
+                    u = new URL(null, name, this);
+                } else {
+                    File file = getFile(name);
+                    if (file == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
+                    u = new URL(null, "file:" + file, this);
+                }
+            } catch (MalformedURLException mfue) {
+                throw new AssertionError(mfue.getMessage());
+            }
+            return new FileConnection(u, getFile(name), writeable);
+        }
+        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+            return getPaths(results, pattern, recursive ? "" : null, directories);
+        }
+        private  Set getPaths(final Set  results, final Pattern pattern,  final String recursive, final boolean directories) {
+            FilenameFilter filter = new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        File f = new File(dir, name);
+                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
+                    }
+                };
+            File f = getFile(recursive);
+
+            if (f != null && f.isDirectory()) { // should always be true
+                File [] files = f.listFiles(filter);
+                if (files == null) return results;
+                for (int i = 0; i < files.length; i++) {
+                    File element = files[i];
+                    if (element.getName().equals("")) continue;
+                    if (recursive != null && element.isDirectory()) {
+                        getPaths(results, pattern, recursive + element.getName() + "/", directories);
+                    }
+                    if (element.canRead() && (directories == element.isDirectory())) {
+                        results.add((recursive == null ? "" : recursive) + element.getName());
+                    }
+
+                }
+            }
+
+            return results;
+        }
+        abstract public File getFile(String name);
+    }
+
+    protected  class FileURLStreamHandler extends AbstractFileURLStreamHandler {
+        private final File fileRoot;
+        FileURLStreamHandler(File root, boolean w) {
+            super(w);
+            fileRoot = root;
 
         }
         FileURLStreamHandler(FileURLStreamHandler f) {
+            super(f.writeable);
             fileRoot  = f.fileRoot;
-            writeable = f.writeable;
         }
 
         public File getFile(String name) {
@@ -1123,48 +1186,7 @@ public class ResourceLoader extends ClassLoader {
             String path = u.getPath();
             return l < path.length() ? path.substring(l) : path;
         }
-        public URLConnection openConnection(String name)  {
-            URL u;
-            try {
-                if (name.startsWith("file:")) {
-                    u = new URL(null, name, this);
-                } else {
-                    u = new URL(null, "file:" + getFile(name), this);
-                }
-            } catch (MalformedURLException mfue) {
-                throw new AssertionError(mfue.getMessage());
-            }
-            return new FileConnection(u, getFile(name), writeable);
-        }
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-            return getPaths(results, pattern, recursive ? "" : null, directories);
-        }
-        private  Set getPaths(final Set results, final Pattern pattern,  final String recursive, final boolean directories) {
-            FilenameFilter filter = new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        File f = new File(dir, name);
-                        return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
-                    }
-                };
-            File f = getFile(recursive);
 
-            if (f.isDirectory()) { // should always be true
-                File [] files = f.listFiles(filter);
-                if (files == null) return results;
-                for (int j = 0; j < files.length; j++) {
-                    if (files[j].getName().equals("")) continue;
-                    if (recursive != null && files[j].isDirectory()) {
-                        getPaths(results, pattern, recursive + files[j].getName() + "/", directories);
-                    }
-                    if (files[j].canRead() && (directories == files[j].isDirectory())) {
-                        results.add((recursive == null ? "" : recursive) + files[j].getName());
-                    }
-
-                }
-            }
-
-            return results;
-        }
         public String toString() {
             return fileRoot.toString();
         }
@@ -1179,7 +1201,6 @@ public class ResourceLoader extends ClassLoader {
 
 
     }
-
 
     /**
      * A URLConnection for connecting to a File.  Of course SUN ships an implementation as well
@@ -1278,6 +1299,66 @@ public class ResourceLoader extends ClassLoader {
         }
 
     }
+
+
+
+    // ================================================================================
+    // ApplicationContext
+
+    protected class ApplicationContextFileURLStreamHandler extends AbstractFileURLStreamHandler {
+        private Map FILES;
+        ApplicationContextFileURLStreamHandler() {
+            super(true);
+            try {
+                FILES = ApplicationContextReader.getProperties("mmbase-config"  + ResourceLoader.this.context.getPath());
+            } catch (javax.naming.NameNotFoundException nnfe) {
+                // never mind
+                log.debug(nnfe);
+                FILES = new HashMap();
+            } catch (javax.naming.NamingException ne) {
+                log.error(ne);
+                FILES = new HashMap();
+            }
+        }
+
+        protected File getFileFromString(String s) {
+            if (s == null) return null;
+            if (s.startsWith("file:")) {
+                try {
+                    return new File(new URI(s)); // hff, how cumbersome, to translate an URL to a File
+                } catch (URISyntaxException use) {
+                    log.warn("" + s + " : " + use.getMessage() , use);
+                    return null;
+                }
+            } else {
+                return new File(s);
+            }
+        }
+
+        public File getFile(final String in) {
+            return getFileFromString((String) FILES.get(in));
+        }
+        public String getName(URL u) {
+            Iterator i = FILES.entrySet().iterator();
+            while(i.hasNext()) {
+                Map.Entry  entry = (Map.Entry) i.next();
+                try {
+                    File file = getFileFromString((String) entry.getValue());
+                    if (file != null) {
+                        if (file.toURL().sameFile(u)) {
+                            return (String) entry.getKey();
+                        }
+                    }
+                } catch (MalformedURLException mfue) {
+                }
+            }
+            return null;
+        }
+        public String toString() {
+            return "" + FILES;
+        }
+    }
+
 
 
     /**
