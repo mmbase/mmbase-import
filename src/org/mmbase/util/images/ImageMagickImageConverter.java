@@ -9,16 +9,16 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util.images;
 
-import java.util.*;
 import java.io.*;
-import java.util.regex.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.mmbase.util.Encode;
 import org.mmbase.util.externalprocess.CommandLauncher;
 import org.mmbase.util.externalprocess.ProcessException;
-import org.mmbase.util.Encode;
-
-import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Converts images using ImageMagick.
@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4.2.3 2007-07-24 16:26:39 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4.2.4 2008-07-14 12:30:14 nklasens Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -50,11 +50,12 @@ public class ImageMagickImageConverter implements ImageConverter {
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
 
+    protected List excludeFormats = new ArrayList();
 
     /**
-     * This function initalises this class
-     * @param params a <code>Map</code> of <code>String</code>s containing informationn, this should contain the key's
-     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root, and it can also contain
+     * This function initializes this class
+     * @param params a <code>Map</code> of <code>String</code>s containing information, this should contain the key's
+     *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifying the converter root, and it can also contain
      *               ImageConvert.DefaultImageFormat which can also be 'asis'.
      */
     public void init(Map params) {
@@ -70,6 +71,15 @@ public class ImageMagickImageConverter implements ImageConverter {
         tmp = (String) params.get("ImageConvert.ConverterCommand");
         if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
+        }
+
+        tmp = (String) params.get("ImageConvert.ExcludeFormats");
+        if (tmp != null && ! tmp.equals("")) {
+            StringTokenizer tokenizer = new StringTokenizer(tmp, " ,");
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                excludeFormats.add(token);
+            }
         }
 
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
@@ -173,14 +183,23 @@ public class ImageMagickImageConverter implements ImageConverter {
     /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
+     * @param sourceFormat original image format
      * @param commands a <code>List</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
-     *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifing the converter root....
+     *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifying the converter root....
      * @return an array of <code>byte</code>s containing the new converted image.
-     *
      */
     public byte[] convertImage(byte[] input, String sourceFormat, List commands) {
+        if (input == null) {
+            log.error("Converting an empty image does not make sense.");
+            return input;
+        }
+        if (excludeFormats.contains(sourceFormat)) {
+            log.debug("Conversion is excluded for image format: " + sourceFormat);
+            return input;
+        }
+
         byte[] pict = null;
-        if (commands != null && input != null) {
+        if (commands != null && !commands.isEmpty()) {
             ParseResult parsedCommands = getConvertCommands(commands);
             if (parsedCommands.format.equals("asis")) {
                 if (sourceFormat != null) {
@@ -191,9 +210,25 @@ public class ImageMagickImageConverter implements ImageConverter {
                 }
             }
 
+            if ("gif".equals(parsedCommands.format)) {
+                if (isAnimated(input)) {
+                    parsedCommands.args.add(0, "-coalesce");
+                }
+            }
+            
             pict = convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
+    }
+
+    protected boolean isAnimated(byte[] rawimage) {
+        ImageInfo imageInfo = new ImageInfo();
+        imageInfo.setDetermineImageNumber(true);
+        ByteArrayInputStream inp = new ByteArrayInputStream(rawimage);
+        
+        imageInfo.setInput(inp);
+        imageInfo.check();
+        return (imageInfo.getNumberOfImages() > 1);
     }
 
     /**
