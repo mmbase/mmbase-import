@@ -6,7 +6,11 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,14 +59,32 @@ public final class EmailSender {
    }
 
 
-   /*
-    * @param emailFrom The email address of the sender @param nameFrom The name
-    * of the sender @param toAddresses The list of email addresses of the
-    * receivers @param subject The subject of the email @param body The body of
-    * the email @param fileName The name of the attachment
+	/**
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param toAddresses The list of email addresses of the receivers 
+    * @param subject The subject of the email 
+    * @param body The body of the email @param fileName The name of the attachment
+    * @param attachment Binary part to add to the email message
     */
    public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses, String subject, String body,
-         DataSource dataSource) throws UnsupportedEncodingException, MessagingException {
+         DataSource attachment) throws UnsupportedEncodingException, MessagingException {
+      sendEmail(emailFrom, nameFrom, toAddresses, subject, body, attachment, null);
+   }
+
+
+   /**
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param toAddresses The list of email addresses of the receivers 
+    * @param subject The subject of the email 
+    * @param body The body of the email @param fileName The name of the attachment
+    * @param attachment Binary part to add to the message
+    * @param replyTo Address as reply-to header in the message
+    */
+   public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses,
+         String subject, String body, DataSource attachment, String replyTo)
+         throws MessagingException, UnsupportedEncodingException, AddressException {
       if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
       }
@@ -78,7 +100,18 @@ public final class EmailSender {
          addresses[i] = new InternetAddress(toAddresses.get(i));
       }
       message.addRecipients(Message.RecipientType.TO, addresses);
+
+      if (StringUtils.isNotBlank(replyTo)) {
+         message.setReplyTo(InternetAddress.parse(replyTo));
+      }
+
       message.setSubject(subject);
+      Multipart multipart = createMultiPart(body, attachment);
+      message.setContent(multipart);
+      Transport.send(message);
+   }
+
+   private Multipart createMultiPart(String body, DataSource dataSource) throws MessagingException {
       // create the message part
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       messageBodyPart.setText(body);
@@ -93,18 +126,34 @@ public final class EmailSender {
          messageBodyPart.setFileName(dataSource.getName());
          multipart.addBodyPart(messageBodyPart);
       }
-      message.setContent(multipart);
-      Transport.send(message);
+      return multipart;
    }
 
 
-   /*
-    * @param emailFrom The email address of the sender @param nameFrom The name
-    * of the sender @param emailTo The email address of the receiver @param
-    * subject The subject of the email @param body The body of the email
+   /**
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param emailTo The email address of the receiver 
+    * @param subject The subject of the email 
+    * @param body The body of the email
     */
    public void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject, String body)
          throws UnsupportedEncodingException, MessagingException {
+      sendEmail(emailFrom, nameFrom, emailTo, subject, body, null);
+   }
+
+
+   /**
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param emailTo The email address of the receiver 
+    * @param subject The subject of the email 
+    * @param body The body of the email
+    * @param replyTo Address as reply-to header in the message
+    */
+   public void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject,
+         String body, String replyTo) throws MessagingException, UnsupportedEncodingException,
+         AddressException {
       if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
       }
@@ -115,6 +164,9 @@ public final class EmailSender {
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(emailFrom, nameFrom));
       message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
+      if (StringUtils.isNotBlank(replyTo)) {
+         message.setReplyTo(InternetAddress.parse(replyTo));
+      }
       message.setSubject(subject);
       message.setText(body);
       Transport.send(message);
