@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.29 2008-07-11 22:25:29 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.30 2008-07-14 15:16:46 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -33,11 +33,11 @@
       MMBase is configured using many configuration files, most of them are XMLs.
     </para>
     <para>
-      A specific configuration file is always referenced to, e.g. in this document, relative to the 
+      A specific configuration file is always referenced to, e.g. in this document, relative to the
       'MMBase configuration root'.
     </para>
     <para>
-      A resource inside this MMBase configuration root actually resolves quite complicated, and it 
+      A resource inside this MMBase configuration root actually resolves quite complicated, and it
       is not always trivial to know where an actual piece of configuration is coming from. To help
       you with this, in the mmbase admin pages you can find the 'resource editor'.
     </para>
@@ -73,7 +73,7 @@
             'org.mmbase.config.&lt;name of the resource&gt;
           </para>
           <para>
-            This means that the resource can be present anywhere in the present java 'CLASS PATH'. 
+            This means that the resource can be present anywhere in the present java 'CLASS PATH'.
             It could be below WEB-INF/classes, or in any jar in WEB-INF/lib. If  WEB-INF/classes
             exists, MMBase will prefer to open the resources as files, rather then letting the
             class-loader do it.
@@ -244,7 +244,7 @@
       name'.</para>
 
       <para>
-        Since MMBase 1.8, and even more so in MMBase 1.9, many more things can be configured 
+        Since MMBase 1.8, and even more so in MMBase 1.9, many more things can be configured
         in the application context.
         <itemizedlist>
         <listitem>
@@ -267,6 +267,11 @@
             Any mmbase module property can be overridden in the application context.
 					</para>
         </listitem>
+        <listitem>
+          <para>
+            Any mmbase builder property can be overridden in the application context.
+					</para>
+        </listitem>
         </itemizedlist>
         We give an example of a context xml as may be used in tomcat.
           <programlisting id="context.xml"><![CDATA[
@@ -283,12 +288,20 @@
   <Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env"  type="java.lang.String" />
   <Environment name="mmbase/mmbaseroot/datasource"         value="jdbc/MMBase"    type="java.lang.String" />
 
+  <!-- mail by mmbase module properties: -->
   <Environment name="mmbase/sendmail/mailhost" value="smtp.gmail.com" type="java.lang.String" />
   <Environment name="mmbase/sendmail/user" value="psyvutest" type="java.lang.String" />
   <Environment name="mmbase/sendmail/password" value="password" type="java.lang.String" />
   <Environment name="mmbase/sendmail/mailport" value="465" type="java.lang.String" />
   <Environment name="mmbase/sendmail/mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory" type="java.lang.String" />
   <Environment name="mmbase/sendmail/mail.smtp.socketFactory.fallBack" value="true" type="java.lang.String" />
+
+
+  <!-- mail by application resource -->
+  <!--
+  <Resource name="mail/Session" auth="Container" type="javax.mail.Session" mail.smtp.host="smtp.xs4all.nl" />
+  -->
+
 
   <!-- configures the database -->
   <Resource name="jdbc/MMBase"
@@ -299,12 +312,18 @@
             driverClassName="com.mysql.jdbc.Driver"
             url="jdbc:mysql://localhost:3306/fobieen_test?autoReconnect=true"/>
 
+  <!-- Set a certain builder property: -->
+  <Environment name="mmbase-builders/mmbasecontexts/contextproviders" value="maps" type="java.lang.String" />
+
   <!-- place a  few other configuration files outside the war -->
-  <Environment name="mmbase-config/log/log4j.xml" 
+  <Environment name="mmbase-config/log/log4j.xml"
                value="file://${catalina.base}/conf/log/fobieen_test.xml" type="java.lang.String" />
 
-  <Environment name="mmbase-config/utils/multicast.xml"          
+  <Environment name="mmbase-config/utils/multicast.xml"
               value="file://${catalina.base}/conf/multicast/fobieen.xml"    type="java.lang.String" />
+
+
+
 </Context>
 
 ]]>
@@ -836,7 +855,7 @@
             <title>Appenders</title>
 
             <programlisting>
-                    
+
 &lt;appender name="logfile" class="org.apache.log4j.FileAppender" &gt;
     &lt;param name="File"   value="&amp;logdir;mmbase.log" /&gt;
     &lt;param name="Append" value="true" /&gt;
@@ -869,7 +888,7 @@
             <title>Category</title>
 
             <programlisting>
-                            
+
 &lt;logger name="org.mmbase.security" additivity="false" &gt;
         &lt;level class="&amp;mmlevel;" value ="info" /&gt;
         &lt;appender-ref ref="securityfile" /&gt;
