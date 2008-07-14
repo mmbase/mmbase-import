@@ -16,12 +16,12 @@
         document.getElementById('okbutton').disabled = this.invalidElements != 0;
       }
 
-      validator.setup(window, document.getElementById("${requestScope.componentId}"));
+      validator.setup(document.getElementById("${requestScope.componentId}"));
     </script>
     <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.6 2008-06-27 12:41:40 michiel Exp $
+         $Id: create.jspx,v 1.7 2008-07-14 17:52:07 michiel Exp $
     -->
     <mm:import id="referids" from="request">nodemanager,only?</mm:import>
     <mm:cloud rank="basic user">
