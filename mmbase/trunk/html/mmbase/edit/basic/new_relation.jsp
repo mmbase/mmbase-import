@@ -16,7 +16,8 @@
    <body class="basic" onLoad="document.search.elements[0].focus();">
      <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
      <!-- TODO escapeamps=false was not needed in 1.8 -->
-   <mm:import externid="to_page"><mm:url escapeamps="false" referids="role_name,node_type,node,direction">
+   <mm:import externid="to_page"><mm:url escapeamps="false" absolute="context"
+                                         referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>
                                  </mm:url></mm:import>
    <mm:import id="maylink">yes</mm:import>
