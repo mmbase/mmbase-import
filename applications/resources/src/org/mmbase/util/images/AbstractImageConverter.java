@@ -21,22 +21,22 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractImageConverter implements ImageConverter {
+public abstract class AbstractImageConverter implements ImageConverter {
 
+    /**
+     * @see org.mmbase.util.images.ImageConverter#init(java.util.Map)
+     */
     public void init(Map<String, String> params) {
     }
 
-    public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
-        try {
-            InputStream in = new BytesInputStream(input);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            convertImage(in, sourceFormat, out, commands);
-            return out.toByteArray();
-        } catch (IOException ioe) {
-            return null;
-        }
-    }
+    /**
+     * @see org.mmbase.util.images.ImageConverter#convertImage(byte[], java.lang.String, java.util.List)
+     */
+    public abstract byte[] convertImage(byte[] input, String sourceFormat, List<String> commands);
 
+    /**
+     * @see org.mmbase.util.images.ImageConverter#convertImage(java.io.InputStream, java.lang.String, java.io.OutputStream, java.util.List)
+     */
     public int convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
         byte[] bytes;
         if (input instanceof BytesInputStream) {
