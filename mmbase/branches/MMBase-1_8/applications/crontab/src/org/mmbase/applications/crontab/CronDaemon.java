@@ -7,6 +7,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab;
 
+import org.mmbase.util.DynamicDate;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -55,7 +56,7 @@ public class CronDaemon  {
     }
 
     /**
-     * Adds the given CronEntry to this daemon. 
+     * Adds the given CronEntry to this daemon.
      * @throws RuntimeException If an entry with the same id is present already (unless it is running and scheduled for removal already)
      */
 
@@ -110,14 +111,22 @@ public class CronDaemon  {
         log.service("Removed entry " + entry);
     }
 
-    /** 
+    /**
      * Starts the daemon, which you might want to do if you have stopped if for some reason. The
      * daemon is already started on default.
      */
     public void start() {
         log.info("Starting CronDaemon");
         cronTimer = new Timer(true);
-        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, 0, 60 * 1000);
+        Date first;
+        try {
+            first = DynamicDate.eval(DynamicDate.getInstance("tominute next minute"));
+        } catch (Exception parseException) {
+            log.fatal(parseException); // could not happen
+            first = new Date();
+        }
+        log.debug("First run at " + first);
+        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000);
     }
 
     /**
@@ -159,7 +168,7 @@ public class CronDaemon  {
             Date currentMinute = new Date(now / 60000 * 60000);
 
             if (log.isDebugEnabled()) {
-                log.debug("Checking for " + currentMinute);
+                log.debug("Checking for " + new Date() + " " + currentMinute);
             }
 
             // remove jobs which were scheduled for removal
