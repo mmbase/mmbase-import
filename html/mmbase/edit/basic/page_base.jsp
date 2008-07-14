@@ -10,6 +10,7 @@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
     <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
   <script type="text/javascript">
+    if (typeof(MMBaseValidator) != "undefined") {
     var validator = new MMBaseValidator();
     validator.logEnabled = false;
     validator.traceEnabled = false;
@@ -22,5 +23,6 @@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
     }
     validator.lang = '${config.lang}';
     validator.setup(document);
+    }
   </script>
 </mm:import>
