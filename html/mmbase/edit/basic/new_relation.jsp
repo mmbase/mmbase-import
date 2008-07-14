@@ -22,6 +22,8 @@
                                  </mm:url></mm:import>
    <mm:import id="maylink">yes</mm:import>
 
+
+
    <mm:node referid="node">
 
      <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
@@ -78,7 +80,7 @@
     <mm:present referid="annotate">
         <mm:write referid="style" escape="none" />
         </head>
-        <body class="basic" onLoad="document.new.elements[4].focus();">
+        <body class="basic" onLoad="document.new.elements[2].focus();">
           <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
         <input type="hidden" name="create_relation" value="yes" />
@@ -91,7 +93,7 @@
          <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
         </mm:context></mm:fieldlist>
         </mm:node>
-        <tr><td colspan="2" class="data"><input type="submit" name="annotate_relation" value="ok" /></td></tr>
+        <tr><td colspan="2" class="data"><input type="submit" id="okbutton" name="annotate_relation" value="ok" /></td></tr>
         </table>
        </form>
      </mm:present>
