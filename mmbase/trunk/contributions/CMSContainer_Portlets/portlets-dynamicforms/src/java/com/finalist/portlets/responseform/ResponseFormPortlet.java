@@ -11,41 +11,22 @@ package com.finalist.portlets.responseform;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.portlet.*;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.portlet.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
+import org.apache.commons.fileupload.portlet.PortletFileUpload;
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.util.PublishUtil;
@@ -53,18 +34,18 @@ import org.mmbase.remotepublishing.util.PublishUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
-import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class ResponseFormPortlet extends ContentPortlet {
 
    protected static final String PARAMETER_MAP = "parameterMap";
    protected static final String ERRORMESSAGES = "errormessages";
 
-   private static final int DEFAULT_MAXFILESIZE = 2; // default file size in
-                                                      // Meg
+   private static final int DEFAULT_MAXFILESIZE = 2; // default file size in Meg
    private static final long MEGABYTE = 1024 * 1024; // 1 Meg
+
+   private static final String ENCODING_UTF8 = "UTF-8";
+
    private static final String FIELD_PREFIX = "field_";
-   // TODO: use these constants (and clean up this mess)
    private static final int TYPE_TEXTBOX = 1;
    private static final int TYPE_TEXTAREA = 2;
    private static final int TYPE_RADIO = 4;
@@ -78,122 +59,115 @@ public class ResponseFormPortlet extends ContentPortlet {
    private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
 
+   @Override
    @SuppressWarnings("unchecked")
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       Map<String, String> errorMessages = new Hashtable<String, String>();
       Map<String, Object> parameterMap = new HashMap<String, Object>();
       DataSource attachment = processUserRequest(request, errorMessages, parameterMap);
-      String action = request.getParameter(ACTION_PARAM);
-      Map<String, Object> formfields = new HashMap<String, Object>();
-      StringBuffer data = new StringBuffer();
 
-      if (action == null) {
-         response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
-      }
-      else if (action.equals("edit")) {
-         PortletPreferences preferences = request.getPreferences();
-         String contentelement = preferences.getValue(CONTENTELEMENT, null);
+      PortletPreferences preferences = request.getPreferences();
+      String contentelement = preferences.getValue(CONTENTELEMENT, null);
 
-         if (contentelement != null) {
-            if (parameterMap.size() > 0) {
-               CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-               Cloud cloud = cloudProvider.getCloud();
-               Node responseForm = cloud.getNode(contentelement);
-               NodeList formfieldList = SearchUtil.findRelatedOrderedNodeList(responseForm, "formfield", "posrel",
-                     "posrel.pos");
-               NodeIterator formfieldIterator = formfieldList.nodeIterator();
-               String userEmailAddress = null;
+      if (contentelement != null) {
+         if (parameterMap.size() > 0) {
 
-               while (formfieldIterator.hasNext()) {
-                  Node formfield = formfieldIterator.nextNode();
-                  String number = formfield.getStringValue("number");
-                  String label = formfield.getStringValue("label");
-                  int type = formfield.getIntValue("type");
-                  String regex = formfield.getStringValue("regex");
-                  boolean isMandatory = formfield.getBooleanValue("mandatory");
-                  boolean sendEmail = formfield.getBooleanValue("sendemail");
-                  int maxlength = formfield.getIntValue("maxlength");
-                  String fieldIdentifier = FIELD_PREFIX + number;
-                  Object value = parameterMap.get(fieldIdentifier);
-                  String textValue = null;
-                  if (sendEmail) {
-                     userEmailAddress = value.toString().trim();
-                  }
-                  if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
-                     errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
-                  }
-                  if (isMandatory
-                        && (((type == TYPE_RADIO || type == TYPE_CHECKBOX) && (value == null)) || (((type == TYPE_TEXTBOX)
-                              || (type == TYPE_TEXTAREA) || (type == TYPE_ATTACHEMENT)) && value.equals("")))) {
-                     errorMessages.put(fieldIdentifier, "view.formfield.empty");
-                  }
-                  if (!regex.equals("")
-                        && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value.toString()))) {
-                   errorMessages.put(fieldIdentifier, "view.formfield.invalid");
-                  }
-                  
-                  if ((type == TYPE_TEXTBOX) && sendEmail) {   //If data is used as email address, then it should be valid 
-                      if (!isEmailAddress(userEmailAddress))
-                         errorMessages.put(fieldIdentifier, "view.formfield.invalid");
-                  }
-                  
-                  if (type == TYPE_CHECKBOX) {
-                     if(value != null && value instanceof String){
-                        textValue = value.toString();
-                     }
-                     else if (value != null && value instanceof ArrayList){
-                        textValue = transferParameterValues((ArrayList)value);
-                     }
-                     else{
-                        textValue = CHECKBOX_NO;
-                     }
-                  }
-                  else if (type == TYPE_RADIO) {
-                     textValue = (value == null) ? RADIO_EMPTY : value.toString();
-                  }
-                  else {
-                     textValue = (value == null || value.toString().trim().length() == 0) ? TEXTBOX_EMPTY : value.toString();
-                  }
-                  addFormFieldsData(data, label, textValue);
-                  formfields.put(number, textValue);
+            String userEmailAddress = null;
+            StringBuffer data = new StringBuffer();
+            Map<String, Object> formfields = new HashMap<String, Object>();
 
+            CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+            Cloud cloud = cloudProvider.getCloud();
+            Node responseForm = cloud.getNode(contentelement);
+            NodeList formfieldList = SearchUtil.findRelatedOrderedNodeList(responseForm, "formfield", "posrel",
+                  "posrel.pos");
+
+            NodeIterator formfieldIterator = formfieldList.nodeIterator();
+            while (formfieldIterator.hasNext()) {
+               Node formfield = formfieldIterator.nextNode();
+               String number = formfield.getStringValue("number");
+               String label = formfield.getStringValue("label");
+               int type = formfield.getIntValue("type");
+               String regex = formfield.getStringValue("regex");
+               boolean isMandatory = formfield.getBooleanValue("mandatory");
+               boolean sendEmail = formfield.getBooleanValue("sendemail");
+               int maxlength = formfield.getIntValue("maxlength");
+               String fieldIdentifier = FIELD_PREFIX + number;
+               Object value = parameterMap.get(fieldIdentifier);
+               String textValue = null;
+               if (sendEmail) {
+                  userEmailAddress = value.toString().trim();
+               }
+               if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
+                  errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
+               }
+               if (isMandatory
+                     && (((type == TYPE_RADIO || type == TYPE_CHECKBOX) && (value == null)) || (((type == TYPE_TEXTBOX)
+                           || (type == TYPE_TEXTAREA) || (type == TYPE_ATTACHEMENT)) && value.equals("")))) {
+                  errorMessages.put(fieldIdentifier, "view.formfield.empty");
+               }
+               if (!regex.equals("")
+                     && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value.toString()))) {
+                errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                }
 
-               if (errorMessages.size() == 0) {
-                  boolean saveAnswer = responseForm.getBooleanValue("saveanswer");
-                  if (saveAnswer) {
-                     saveResponseForm(cloud, formfields, responseForm);
-                  }
-                  String emailData = data.toString();
-                  boolean sent = sendResponseFormEmail(responseForm, userEmailAddress, emailData, attachment);
-                  if (!sent) {
-                     errorMessages.put("sendemail", "view.error.sendemail");
-                  }
-                  else {
-                      // if the responseform email has been sent, send also the email to the user
-                      sent = sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
-                      if (!sent) {
-                         errorMessages.put("sendemail", "view.error.sendemail");
-                      }
+               if ((type == TYPE_TEXTBOX) && sendEmail) {   //If data is used as email address, then it should be valid
+                   if (!isEmailAddress(userEmailAddress)) {
+                     errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                   }
                }
+
+               if (type == TYPE_CHECKBOX) {
+                  if(value != null && value instanceof String){
+                     textValue = value.toString();
+                  }
+                  else if (value != null && value instanceof ArrayList){
+                     textValue = transferParameterValues((ArrayList)value);
+                  }
+                  else{
+                     textValue = CHECKBOX_NO;
+                  }
+               }
+               else if (type == TYPE_RADIO) {
+                  textValue = (value == null) ? RADIO_EMPTY : value.toString();
+               }
+               else {
+                  textValue = (value == null || value.toString().trim().length() == 0) ? TEXTBOX_EMPTY : value.toString();
+               }
+               addFormFieldsData(data, label, textValue);
+               formfields.put(number, textValue);
+
             }
-            if (errorMessages.size() > 0) {
-               request.getPortletSession().setAttribute(ERRORMESSAGES, errorMessages);
-               request.getPortletSession().setAttribute(PARAMETER_MAP, parameterMap);
+
+            if (errorMessages.size() == 0) {
+               boolean saveAnswer = responseForm.getBooleanValue("saveanswer");
+               if (saveAnswer) {
+                  saveResponseForm(cloud, formfields, responseForm);
+               }
+               String emailData = data.toString();
+               boolean sent = sendResponseFormEmail(responseForm, userEmailAddress, emailData, attachment);
+               if (!sent) {
+                  errorMessages.put("sendemail", "view.error.sendemail");
+               }
+               else {
+                   // if the responseform email has been sent, send also the email to the user
+                   sent = sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
+                   if (!sent) {
+                      errorMessages.put("sendemail", "view.error.sendemail");
+                   }
+               }
             }
-            else {
-               request.getPortletSession().setAttribute("confirm", "confirm");
-            }
+         }
+         if (errorMessages.size() > 0) {
+            request.getPortletSession().setAttribute(ERRORMESSAGES, errorMessages);
+            request.getPortletSession().setAttribute(PARAMETER_MAP, parameterMap);
          }
          else {
-            getLogger().error("No contentelement");
+            request.getPortletSession().setAttribute("confirm", "confirm");
          }
-         // switch to View mode
-         response.setPortletMode(PortletMode.VIEW);
       }
       else {
-         getLogger().error("Unknown action: '" + action + "'");
+         getLogger().error("No contentelement");
       }
    }
 
@@ -204,7 +178,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       data.append(textValue);
       data.append(System.getProperty("line.separator"));
    }
-   
+
    @SuppressWarnings("unchecked")
    private String transferParameterValues(List textValues) {
       StringBuffer temp = new StringBuffer();
@@ -309,14 +283,15 @@ public class ResponseFormPortlet extends ContentPortlet {
       String emailTextBefore = responseform.getStringValue("emailbody");
       String emailTextAfter = responseform.getStringValue("emailbodyafter");
 
-      String senderEmailAddress = userEmailAddress;
-      String senderName = userEmailAddress;
-      if (StringUtils.isBlank(userEmailAddress)) {
-         senderEmailAddress = responseform.getStringValue("useremailsender").trim();
-         senderName = responseform.getStringValue("useremailsendername").trim();
+      String senderEmailAddress = responseform.getStringValue("useremailsender").trim();
+      String senderName = responseform.getStringValue("useremailsendername").trim();
+      if (StringUtils.isNotBlank(userEmailAddress)) {
+         senderName = userEmailAddress + " [CMS]";
       }
-      if (!isEmailAddress(senderEmailAddress)) return false; //Last check email address
-      
+      if (!isEmailAddress(senderEmailAddress)) {
+         return false; //Last check email address
+      }
+
       emailTextBefore = emailTextBefore.trim();
       emailText.append(emailTextBefore);
       emailText.append(System.getProperty("line.separator"));
@@ -327,9 +302,11 @@ public class ResponseFormPortlet extends ContentPortlet {
          emailText.append(emailTextAfter);
       }
 
-      String emailAddressesValue = responseform.getStringValue("emailaddresses").replaceAll(" ","");
+      String emailAddressesValue = responseform.getStringValue("emailaddresses");
       String emailSubject = responseform.getStringValue("emailsubject").trim();
-      List<String> emailList = Arrays.asList(emailAddressesValue.split(";"));
+
+      List<String> emailList = splitEmailAddresses(emailAddressesValue);
+
       if (!isEmailAddress(emailList)) {
          getLogger().error("error sending email. Some of the following emailaddresses are incorrect: " + emailList.toString());
          return false; //Could not sent email because of false email address
@@ -337,7 +314,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
       try {
          EmailSender.getInstance().sendEmail(senderEmailAddress, senderName, emailList, emailSubject, emailText.toString(),
-               attachment);
+               attachment, userEmailAddress);
          sent = true;
       }
       catch (UnsupportedEncodingException e) {
@@ -347,6 +324,17 @@ public class ResponseFormPortlet extends ContentPortlet {
          getLogger().error("error sending email", e);
       }
       return sent;
+   }
+
+
+   private List<String> splitEmailAddresses(String emailAddressesValue) {
+      List<String> emailList = new ArrayList<String>();
+      StringTokenizer addresssTokenizer = new StringTokenizer(emailAddressesValue, " ,;");
+      while(addresssTokenizer.hasMoreTokens()) {
+         String address = addresssTokenizer.nextToken();
+         emailList.add(address);
+      }
+      return emailList;
    }
 
 
@@ -397,6 +385,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
 
+   @Override
    public void processEdit(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       super.processEdit(request, response);
 
@@ -418,12 +407,12 @@ public class ResponseFormPortlet extends ContentPortlet {
          Map<String, Object> parameterMap) {
       List<FileItem> fileItems = null;
       DataSource attachment = null;
-      String encoding = "UTF-8";
+
       List<String> parameterValues = null;
       try {
          DiskFileItemFactory factory = new DiskFileItemFactory();
          PortletFileUpload upload = new PortletFileUpload(factory);
-         upload.setHeaderEncoding(encoding);
+         upload.setHeaderEncoding(ENCODING_UTF8);
          fileItems = upload.parseRequest(request);
       }
       catch (FileUploadException e) {
@@ -444,15 +433,15 @@ public class ResponseFormPortlet extends ContentPortlet {
                      else if (parameterMap.get(fileItem.getFieldName()) instanceof ArrayList){
                         parameterValues = (ArrayList<String>) parameterMap.get(fileItem.getFieldName());
                      }
-                     parameterValues.add(fileItem.getString(encoding));
+                     parameterValues.add(fileItem.getString(ENCODING_UTF8));
                      parameterMap.put(fileItem.getFieldName(), parameterValues);
                   }
                   else{
-                     parameterMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
+                  parameterMap.put(fileItem.getFieldName(), fileItem.getString(ENCODING_UTF8));
                   }
                }
                catch (UnsupportedEncodingException e) {
-                  getLogger().error("UnsupportedEncoding " + encoding);
+                  getLogger().error("UnsupportedEncoding " + ENCODING_UTF8);
                }
             }
             else {
@@ -473,26 +462,38 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
    public boolean isEmailAddress(String emailAddress) {
-      if (emailAddress == null) return false;
-      if (StringUtils.isBlank(emailAddress)) return false;
-      
+      if (emailAddress == null) {
+         return false;
+      }
+      if (StringUtils.isBlank(emailAddress)) {
+         return false;
+      }
+
       String emailRegex = getEmailRegex();
       return emailAddress.trim().matches(emailRegex);
    }
-	   
+
    public boolean isEmailAddress(List<String> emailList) {
-      if (emailList == null) return false;
-      if (emailList.isEmpty()) return false;
-            
+      if (emailList == null) {
+         return false;
+      }
+      if (emailList.isEmpty()) {
+         return false;
+      }
+
       String emailRegex = getEmailRegex();
       for (String email : emailList) {
-      	 if (email == null || StringUtils.isBlank(email)) return false;
-         if (!email.matches(emailRegex)) return false;
+      	if (email == null || StringUtils.isBlank(email)) {
+            return false;
+         }
+         if (!email.matches(emailRegex)) {
+            return false;
+         }
       }
-      
+
       return true;
    }
-   
+
    private long getMaxAttachmentSize() {
       long maxFileSize = DEFAULT_MAXFILESIZE;
       String maxFileSizeValue = PropertiesUtil.getProperty("email.maxattachmentsize");

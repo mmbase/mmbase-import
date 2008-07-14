@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<%@ page import="net.sf.mmapps.modules.cloudprovider.CloudProviderFactory,net.sf.mmapps.modules.cloudprovider.CloudProvider,org.mmbase.bridge.*;"%>
 <div class="kolombestel">
 <mm:cloud method="asis">
 	<mm:import externid="elementId" required="true" from="request" />		
@@ -81,9 +80,7 @@
 		                    						cols="<mm:field name="columns" write="true"/>">${fieldvalue}</textarea>
 						                        <c:if test="${not empty errormessagekey}">
 								                  <font size="1" color="${error_style == ''?'':'red'}">
-							                      <fmt:message key="view.formfield.maxlength">
-										           <fmt:param value="${errormessagekey}"/>
-								                  </fmt:message>
+							                      <fmt:message key="${errormessagekey}" />
 								                  </font>
 							                    </c:if>
 										</c:when>
