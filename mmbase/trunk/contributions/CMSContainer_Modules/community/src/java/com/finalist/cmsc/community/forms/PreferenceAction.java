@@ -18,23 +18,25 @@ import org.apache.struts.actions.DispatchAction;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.community.domain.PreferenceVO;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
+import com.finalist.cmsc.paging.PagingUtils;
+import com.finalist.cmsc.paging.PagingStatusHolder;
 
 public class PreferenceAction extends DispatchAction {
 
    private static Log log = LogFactory.getLog(PreferenceAction.class);
-   
-   private PreferenceService preferenceService;
-   
 
-   public void setPreferenceService(PreferenceService preferenceService){
+   private PreferenceService preferenceService;
+
+
+   public void setPreferenceService(PreferenceService preferenceService) {
       this.preferenceService = preferenceService;
    }
-   
+
    public ActionForward add(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                            HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      PreferenceForm preferenceForm = (PreferenceForm)form;
-      PreferenceVO preference= new PreferenceVO();
+      PreferenceForm preferenceForm = (PreferenceForm) form;
+      PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
       setNull(preferenceForm);
       preferenceService.createPreference(preference);
@@ -49,62 +51,64 @@ public class PreferenceAction extends DispatchAction {
       preferenceForm.setUserId("");
       preferenceForm.setId("");
    }
-   
+
    public ActionForward addInit(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                                HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      List<String> userIds =  preferenceService.getAllUserIds();
+      List<String> userIds = preferenceService.getAllUserIds();
       request.setAttribute("users", userIds);
       return mapping.findForward("init");
    }
-   
+
    public ActionForward init(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                             HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      PreferenceForm preferenceForm = (PreferenceForm)form;
+      PreferenceForm preferenceForm = (PreferenceForm) form;
       setNull(preferenceForm);
       return mapping.findForward("success");
    }
-   
+
    public ActionForward delete(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                               HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       String id = request.getParameter("id");
-      if(id != null) {
+      if (id != null) {
          preferenceService.deletePreference(id);
       }
       return mapping.findForward("list");
    }
-   
+
    public ActionForward modify(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                               HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      PreferenceVO preference= new PreferenceVO();
+      PreferenceVO preference = new PreferenceVO();
       preference.setId(request.getParameter("id"));
       preference.setKey(request.getParameter("key"));
       preference.setValue(request.getParameter("value"));
       preferenceService.updatePreference(preference);
       return null;
    }
-   
+
    public ActionForward list(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
+                             HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      PreferenceForm preferenceForm = (PreferenceForm)form;
-      PreferenceVO preference= new PreferenceVO();
+
+      PreferenceForm preferenceForm = (PreferenceForm) form;
+      PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
-      int pageSize = 12;
-      if(StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
-         pageSize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
-      }
-      List<PreferenceVO> preferences = preferenceService.getPreferences(preference, Integer.parseInt(preferenceForm.getOffset())*pageSize, pageSize,preferenceForm.getOrder(),preferenceForm.getDirection());
-      int totalCount = preferenceService.getTotalCount(preference) ;
-      request.setAttribute("offset", preferenceForm.getOffset());
-      if(preferences == null || preferences.size() ==0) {
-         if(Integer.parseInt(preferenceForm.getOffset()) >= 1) {
-            preferences = preferenceService.getPreferences(preference, (Integer.parseInt(preferenceForm.getOffset())-1)*pageSize, pageSize,preferenceForm.getOrder(),preferenceForm.getDirection());
-            request.setAttribute("offset", (Integer.parseInt(preferenceForm.getOffset())-1));
-            preferenceForm.setOffset(String.valueOf((Integer.parseInt(preferenceForm.getOffset())-1)));
+
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+
+      int offset = pagingHolder.getOffset();
+      int pagesize = pagingHolder.getPageSize();
+      
+      List<PreferenceVO> preferences = preferenceService.getPreferences(preference, offset,
+            pagesize, preferenceForm.getOrder(), preferenceForm.getDirection());
+      int totalCount = preferenceService.getTotalCount(preference);
+      if (preferences == null || preferences.size() == 0) {
+         if (pagingHolder.getPage() >= 1) {
+            preferences = preferenceService.getPreferences(preference, pagingHolder.getOffset(),
+                  pagingHolder.getPageSize(), preferenceForm.getOrder(), preferenceForm.getDirection());
          }
       }
       request.setAttribute("totalCount", totalCount);
