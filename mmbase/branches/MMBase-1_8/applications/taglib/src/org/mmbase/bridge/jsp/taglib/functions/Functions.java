@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.7 2008-06-18 11:25:54 sdeboer Exp $
+ * @version $Id: Functions.java,v 1.15.2.8 2008-07-15 13:12:44 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -89,7 +89,7 @@ public class Functions {
      */
     public static String escape(String escaper, Object string) {
         try {
-            CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
+             CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
             return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
         } catch (Exception e) {
             String mes = "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
@@ -137,6 +137,22 @@ public class Functions {
     public static Object managerProperty(String nodeManager, String name) {
         Cloud cloud = (Cloud) ContextReferrerTag.getThreadPageContext().getAttribute(CloudTag.KEY, CloudTag.SCOPE);
         return cloud.getNodeManager(nodeManager).getProperty(name);
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public static Object moduleProperty(String module, String name) {
+        Cloud cloud = (Cloud) ContextReferrerTag.getThreadPageContext().getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        return cloud.getCloudContext().getModule(module).getProperty(name);
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public static Object property(String name) {
+        Cloud cloud = (Cloud) ContextReferrerTag.getThreadPageContext().getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        return cloud.getProperty(name);
     }
 
     /**
