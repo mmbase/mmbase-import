@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.7 2008-07-07 15:16:37 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.8 2008-07-15 11:44:22 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -26,15 +26,24 @@ public class TransactionTest extends BridgeTest {
     }
 
     int newNode;
+    int newNode2;
 
 
     public void setUp() {
         // Create some test nodes
         Cloud cloud = getCloud();
-        Node node = cloud.getNodeManager("news").createNode();
-        node.setStringValue("title", "foo");
-        node.commit();
-        newNode = node.getNumber();
+        {
+            Node node = cloud.getNodeManager("news").createNode();
+            node.setStringValue("title", "foo");
+            node.commit();
+            newNode = node.getNumber();
+        }
+        {
+            Node node = cloud.getNodeManager("news").createNode();
+            node.setStringValue("title", "foo");
+            node.commit();
+            newNode2 = node.getNumber();
+        }
     }
 
     public void testCancel() {
@@ -140,6 +149,78 @@ public class TransactionTest extends BridgeTest {
         Node n2 = cloud.getNode(n.getNumber());
         assertEquals("non_default", n2.getContext());
     }
+    public void testSetContextSubTransaction() {
+        Cloud cloud = getCloud();
+
+        Transaction ot = cloud.getTransaction("bar8");
+        Transaction t = ot.getTransaction("bar9");
+        Node n = t.getNodeManager("news").createNode();
+        n.setContext("non_default");
+        assertEquals("non_default", n.getContext());
+        t.commit();
+
+        Node n2 = ot.getNode(n.getNumber());
+        assertEquals("non_default", n2.getContext());
+
+        ot.commit();
+        Node n3 = cloud.getNode(n.getNumber());
+        assertEquals("non_default", n3.getContext());
+    }
+
+    public void testEditNodeOutsideTransaction() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar10");
+        Node nodeInTransaction = t.getNode(newNode2);
+        nodeInTransaction.setStringValue("title", "foo2");
+        Node nodeOutTransaction = cloud.getNode(newNode2);
+        nodeOutTransaction.setStringValue("title", "bar2");
+
+        nodeOutTransaction.commit();
+        t.commit();
+
+        // transaction was committed _later_ so its commit of the node must have won
+        assertEquals("foo2", cloud.getNode(newNode2).getStringValue("title"));
+        assertEquals("foo2", nodeInTransaction.getStringValue("title"));
+        //assertEquals("foo2", nodeOutTransaction.getStringValue("title")); // not sure what this should have done, but anyhow, it now fails
+
+    }
+    public void testEditNodeOutsideTransaction2() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar10");
+        Node nodeInTransaction = t.getNode(newNode2);
+        nodeInTransaction.setStringValue("title", "foo2");
+        Node nodeOutTransaction = cloud.getNode(newNode2);
+        nodeOutTransaction.setStringValue("title", "bar2");
+
+        t.commit();
+        nodeOutTransaction.commit();
+
+        // transaction was committed _earlier_ so the commit of the node must have won
+        assertEquals("bar2", cloud.getNode(newNode2).getStringValue("title"));
+        //assertEquals("bar2", nodeInTransaction.getStringValue("title"));// not sure what this should have done, but anyhow, it now fails
+        assertEquals("bar2", nodeOutTransaction.getStringValue("title"));
+
+    }
+
+    public void testDeleteNodeOutsideTransaction() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar11");
+        Node nodeInTransaction = t.getNode(newNode2);
+        nodeInTransaction.setStringValue("title", "foo2");
+        {
+            // now delete the node
+            Node nodeOutTransaction = cloud.getNode(newNode2);
+            nodeOutTransaction.delete();
+            assertFalse(cloud.hasNode(newNode2));
+        }
+
+
+        t.commit();
+
+        assertFalse(cloud.hasNode(newNode2));
+    }
+
+
 
 
 
