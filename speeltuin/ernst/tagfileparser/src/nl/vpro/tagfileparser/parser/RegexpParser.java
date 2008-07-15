@@ -1,7 +1,7 @@
 package nl.vpro.tagfileparser.parser;
 
 import java.util.Iterator;
-import java.util.logging.Logger;
+import org.apache.commons.logging.*;
 
 import nl.vpro.tagfileparser.model.TagInfo;
 import nl.vpro.util.StringUtil;
@@ -15,7 +15,7 @@ import nl.vpro.util.StringUtil;
  */
 public abstract class RegexpParser implements ElementParser {
 	
-	private final Logger log = Logger.getLogger(RegexpParser.class.getName()); 
+	private final Log log = LogFactory.getLog(RegexpParser.class.getName()); 
 
 	private String startPattern;
 	private String endPattern;

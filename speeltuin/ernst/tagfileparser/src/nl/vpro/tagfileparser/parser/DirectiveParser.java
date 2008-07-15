@@ -23,7 +23,7 @@ public abstract class DirectiveParser extends RegexpParser {
 	 *            the name of the directive you want to parse
 	 */
 	public DirectiveParser(String directive) {
-		super("^[\\s]*<%@[\\s]*" + directive, "%>[\\s]*$", false);
+		super("^[\\s]*<%@[\\s]*" + fixDirective(directive), "%>[\\s]*$", false);
 	}
 
 	@Override
@@ -34,58 +34,15 @@ public abstract class DirectiveParser extends RegexpParser {
 
 		// make one string for each attribute-value pair, assuming
 		// that there might be whitespaces surrounding the equals operator
-		Pattern attPattern = Pattern
-				.compile("[a-zA-Z0-9_\\-]+\\s*=\\s*\"[^\"]*\"");
+		Pattern attPattern = Pattern.compile("[a-zA-Z0-9_\\-]+\\s*=\\s*\"[^\"]*\"");
 		Matcher attMatcher = attPattern.matcher(line);
 		int start = 0;
 
 		while (attMatcher.find(start)) {
-			String attString = line.substring(attMatcher.start(), attMatcher
-					.end());
+			String attString = line.substring(attMatcher.start(), attMatcher.end());
 			attributeFound(createAttribute(attString));
 			start = attMatcher.end();
 		}
-	}
-
-	/**
-	 * @param attributeString
-	 * @return
-	 * @throws IllegalAttributeException
-	 *             when the give string could not be parsed to a name value
-	 *             pair.
-	 */
-	private Attribute createAttribute(String attributeString) {
-		StringTokenizer tokenizer = new StringTokenizer(attributeString, "=",
-				false);
-		if (tokenizer.countTokens() == 2) {
-			String aName = tokenizer.nextToken().trim();
-			String aValue = tokenizer.nextToken().trim();
-			// trim the quotes from the attribute value;
-			aValue = aValue.substring(1, aValue.length() - 1);
-			return new Attribute(aName, aValue);
-		}
-		throw new IllegalAttributeException(
-				"illegal string format for attribute and value: ["
-						+ attributeString + "]");
-	}
-
-	/**
-	 * 
-	 * @param line
-	 */
-	String cleanup(String line) {
-		line = line.trim();
-		if (line.startsWith("<%@")) {
-			line = line.substring(3, line.length());
-		} else {
-			throw new RuntimeException(
-					"Line did not start with expected '<%@'. [" + line + "]");
-		}
-		if (line.endsWith("%>")) {
-			line = line.substring(0, line.length() - 2);
-		}
-		line = line.trim();
-		return line;
 	}
 
 	/**
@@ -100,6 +57,51 @@ public abstract class DirectiveParser extends RegexpParser {
 	 * @param value
 	 */
 	protected abstract void attributeFound(Attribute attribute);
+
+	/**
+	 * Remove the <%\@ and %> bits from the line
+	 * 
+	 * @param line
+	 */
+	private final String cleanup(String line) {
+		line = line.trim();
+		if (line.startsWith("<%@")) {
+			line = line.substring(3, line.length());
+		} else {
+			throw new BasicTagParserException("Line did not start with expected '<%@'. [" + line + "]");
+		}
+		if (line.endsWith("%>")) {
+			line = line.substring(0, line.length() - 2);
+		}
+		line = line.trim();
+		return line;
+	}
+
+	/**
+	 * @param attributeString
+	 * @return
+	 * @throws IllegalAttributeException
+	 *             when the give string could not be parsed to a name value
+	 *             pair.
+	 */
+	private final Attribute createAttribute(String attributeString) {
+		StringTokenizer tokenizer = new StringTokenizer(attributeString, "=", false);
+		if (tokenizer.countTokens() == 2) {
+			String aName = tokenizer.nextToken().trim();
+			String aValue = tokenizer.nextToken().trim();
+			// trim the quotes from the attribute value;
+			aValue = aValue.substring(1, aValue.length() - 1);
+			return new Attribute(aName, aValue);
+		}
+		throw new IllegalAttributeException("illegal string format for attribute and value: [" + attributeString + "]");
+	}
+
+	private static final String fixDirective(String directive) {
+		if (!directive.startsWith(" ")) {
+			return directive + " ";
+		}
+		return directive;
+	}
 
 	static class Attribute {
 		private String name;
@@ -121,18 +123,19 @@ public abstract class DirectiveParser extends RegexpParser {
 	}
 
 	/**
-	 * This interface is used to creat simple objects that can
-	 * take the string value of an attribute, and convert it 
-	 * into a valid object value and inject it into the directive model object.
+	 * This interface is used to creat simple objects that can take the string
+	 * value of an attribute, and convert it into a valid object value and
+	 * inject it into the directive model object.
 	 * 
 	 * @author ebunders
-	 *
+	 * 
 	 */
 	public interface PropertySetter {
 		/**
-		 * @param value some attribute string value. 
-		 * @throws IllegalDirectiveException when the value can not be converted
-		 * to a valid object.
+		 * @param value
+		 *            some attribute string value.
+		 * @throws IllegalDirectiveException
+		 *             when the value can not be converted to a valid object.
 		 */
 		public void setProperty(String value);
 	}

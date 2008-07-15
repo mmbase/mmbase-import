@@ -7,7 +7,7 @@ import nl.vpro.tagfileparser.model.TagInfo;
 /**
  * This interface represents a tagfile parser of some kind. different implementations
  * are necessary for different kind of tag files (.tag, .tagx). They will be mapped
- * to a file extension.
+ * to a file extension. To create a new type, extend {@link AbstractTagParser}.
  * @author Ernst Bunders
  *
  */

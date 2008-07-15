@@ -1,12 +1,15 @@
 package nl.vpro.util;
 
-import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class StringUtil {
 	
-	private static final Logger log = Logger.getLogger(StringUtil.class.getName());
+	private static final Log log = LogFactory.getLog(StringUtil.class.getName());
 
 	/**
 	 * This method is like {@link String#startsWith(String)} but it takes a
