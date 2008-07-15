@@ -18,6 +18,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
@@ -74,6 +76,21 @@ public class PreferenceHibernateService extends HibernateService implements Pref
             preferenceMap.put(p.getKey(), p.getValue());
         }
         return modulePreferenceMap;
+	}
+    /** {@inheritDoc} */
+    @Transactional(readOnly = true)
+    public List<Preference> getListPreferencesByUserId(String userId){
+    	Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
+        Criteria criteria = getSession().createCriteria(Preference.class);
+        criteria.add(Restrictions.eq("authenticationId", authenticationId));
+        List List = criteria.list();
+        List<Preference> preferenceList = new ArrayList<Preference>();
+        for (Iterator iter = List.iterator(); iter.hasNext();) {
+        	Preference p =new Preference();
+             p = (Preference) iter.next();
+        	preferenceList.add(p);
+        }
+    	return preferenceList;
 	}
 
 	/** {@inheritDoc} */
@@ -224,6 +241,10 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    public void createPreference(PreferenceVO preference) {      
       createPreference(preference.getModule(),preference.getUserId(),preference.getKey(),preference.getValue());
    }
+    @Transactional
+    public void createPreference(Preference preference,String userId) {      
+       createPreference(preference.getModule(),userId,preference.getKey(),preference.getValue());
+    }
     
     @Transactional
    public void updatePreference(PreferenceVO preferenceVO) {
@@ -240,6 +261,10 @@ public class PreferenceHibernateService extends HibernateService implements Pref
     @Transactional
    public void deletePreference(String number) {
       Preference preference = (Preference)getSession().get(Preference.class, Long.parseLong(number));
+      getSession().delete(preference);
+  }
+    public void deletePreference(long number) {
+        Preference preference = (Preference)getSession().get(Preference.class, number);
       getSession().delete(preference);
   }
     
@@ -299,9 +324,15 @@ public class PreferenceHibernateService extends HibernateService implements Pref
          dest.add(preferenceVO);
       }
    }
-   
+   @Transactional  
    private String getUserIdByAuthenticationId(Long authenticationId){
       Authentication authentication = authenticationService.getAuthenticationById(authenticationId);
       return authentication.getUserId();
    }
+   @Transactional 
+	public void batchCleanByAuthenticationId(long authenticationId) {
+		String hqlDelete = "delete Preference where authenticationid =:authenticationId";
+		getSession().createQuery(hqlDelete).setLong("authenticationId", authenticationId).executeUpdate();
+
+	}
 }

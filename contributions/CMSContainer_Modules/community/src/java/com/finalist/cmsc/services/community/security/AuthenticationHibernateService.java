@@ -125,6 +125,7 @@ public class AuthenticationHibernateService extends HibernateService implements 
       return authentication == null ? null : authentication.getId();
    }
 
+   @Transactional(readOnly = true)
    private Authentication findAuthenticationByUserId(String userId) {
       Criteria criteria = getSession().createCriteria(Authentication.class).add(Restrictions.eq("userId", userId));
       return findAuthenticationByCriteria(criteria);
@@ -179,4 +180,8 @@ public class AuthenticationHibernateService extends HibernateService implements 
    public Authentication getAuthenticationById(Long authenticationId) {
       return (Authentication) getSession().get(Authentication.class, authenticationId);
    }
+   @Transactional
+	public Authentication createAuthentication(Authentication authentication)  {
+		return createAuthentication(authentication.getUserId(), authentication.getPassword());
+	}
 }

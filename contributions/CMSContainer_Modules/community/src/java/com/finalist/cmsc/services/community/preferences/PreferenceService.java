@@ -65,4 +65,8 @@ public interface PreferenceService {
 	 public void deletePreference(String number) ;
 	 public List<String> getAllUserIds();
     public int getTotalCount(PreferenceVO preference);
+	List<Preference> getListPreferencesByUserId(String userId);
+	void createPreference(Preference preferences, String userId);
+	void deletePreference(long number);
+	void batchCleanByAuthenticationId(long authenticationId);
 }

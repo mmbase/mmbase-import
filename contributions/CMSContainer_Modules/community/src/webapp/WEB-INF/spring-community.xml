@@ -55,7 +55,7 @@
       p:sessionFactory-ref="sessionFactory"/>
 
   <!-- Instruct Spring to perform declarative transaction management automatically on annotated classes. -->
-  <tx:annotation-driven />
+  <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
   <!-- Services -->
@@ -70,5 +70,10 @@
       <property name="preferenceService"><ref bean="preferenceService"></ref></property>
   </bean>
   
+  <bean name="/editors/community/ReferenceImportExportAction" class="com.finalist.cmsc.community.forms.ReferenceImportExportAction">
+     
+	  <property name="personService"><ref bean="personService"></ref></property>
+	  
+  </bean>
   <import resource="spring-security.xml" />
 </beans>
