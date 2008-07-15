@@ -2,9 +2,18 @@ package com.finalist.cmsc.paging;
 
 import org.apache.commons.lang.StringUtils;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
+import java.util.Map;
+
 
 public class PagingUtils {
+
+   public static ThreadLocal<PagingStatusHolder> pagingStatusHolderLocal = new ThreadLocal<PagingStatusHolder>();
+   public static final int DEFAULTPAGESIZE = 30;
+   public static final int FIRSTPAGE = 1;
+
    public static String generatePageUrl(PageContext pagecontext) {
 
       Long currentPage = (Long) pagecontext.findAttribute("currentPage");
@@ -44,17 +53,51 @@ public class PagingUtils {
       return href;
    }
 
-   public static String nextPage(PageContext pagecontext){
+   public static String nextPage(PageContext pagecontext) {
       Long currentPage = (Long) pagecontext.findAttribute("currentPage");
       //the offset value is 1 lesser than current page.
       Long nextPage = currentPage;
-      return href(pagecontext,nextPage.toString()).toString();
+      return href(pagecontext, nextPage.toString()).toString();
    }
 
-    public static String previousPage(PageContext pagecontext){
+   public static String previousPage(PageContext pagecontext) {
       Long currentPage = (Long) pagecontext.findAttribute("currentPage");
-       //the offset value is 1 lesser than current page.
+      //the offset value is 1 lesser than current page.
       Long nextPage = currentPage - 2;
-      return href(pagecontext,nextPage.toString()).toString();
+      return href(pagecontext, nextPage.toString()).toString();
+   }
+
+   public static void savePagingStatus(ServletRequest request) {
+      Map paraMap = request.getParameterMap();
+
+//      threadLocal.set(paraMap);
+
+
+   }
+
+   public static int getSystemPageSize() {
+      return 30;
+   }
+
+   public static PagingStatusHolder getStatusHolder(HttpServletRequest request) {
+      PagingStatusHolder holder = pagingStatusHolderLocal.get();
+      if (null == holder) {
+         holder = new PagingStatusHolder();
+      }
+
+      String page = request.getParameter("page");
+      if (StringUtils.isNotBlank(page)) {
+         holder.setPage(Integer.parseInt(page));
+      }
+      else {
+         holder.setPage(0);
+      }
+
+      pagingStatusHolderLocal.set(holder);
+      return holder;
+   }
+
+   public static PagingStatusHolder getStatusHolder() {
+      return pagingStatusHolderLocal.get();
    }
 }
