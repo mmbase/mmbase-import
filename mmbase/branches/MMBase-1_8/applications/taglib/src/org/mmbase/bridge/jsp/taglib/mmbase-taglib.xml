@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.27 2008-06-17 13:18:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.28 2008-07-15 13:11:34 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -173,6 +173,26 @@ version: $Id: mmbase-taglib.xml,v 1.374.2.27 2008-06-17 13:18:32 michiel Exp $
     <name>managerProperty</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.lang.Object managerProperty(java.lang.String, java.lang.String)</function-signature>
+    <since>MMBase-1.8.6</since>
+    <see tag="property" />
+  </function>
+  <function>
+    <description>
+      Property of a module
+    </description>
+    <name>moduleProperty</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Object moduleProperty(java.lang.String, java.lang.String)</function-signature>
+    <since>MMBase-1.8.6</since>
+    <see tag="property" />
+  </function>
+  <function>
+    <description>
+      Property of the cloud
+    </description>
+    <name>property</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Object property(java.lang.String)</function-signature>
     <since>MMBase-1.8.6</since>
     <see tag="property" />
   </function>
@@ -5376,6 +5396,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>listrelations</name>
     <type>mmbase.list</type>
     <extends>nodeprovider</extends>
+    <extends>listprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListRelationsTag</tagclass>
