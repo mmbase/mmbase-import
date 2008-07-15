@@ -43,7 +43,14 @@
 
   <jsp:directive.attribute name="intro" fragment="true"
                            />
+
   <jsp:directive.attribute name="aftercommit" fragment="true"
+                           />
+
+  <jsp:directive.attribute name="aftercancel" fragment="true"
+                           />
+
+  <jsp:directive.attribute name="aftersubmit" fragment="true"
                            />
 
   <mm:import id="e">.${empty extension ? 'jspx' : extension}</mm:import>
@@ -143,6 +150,8 @@
               window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>'
               });
             </script>
+            <jsp:invoke fragment="aftercancel" />
+            <jsp:invoke fragment="aftersubmit" />
           </mm:present>
           <mm:notpresent referid="cancel">
             <mm:compare referid="tabClass" regexp=".*\boutside\b.*" inverse="true">
@@ -176,6 +185,7 @@
                   </script>
                 </c:if>
                 <jsp:invoke fragment="aftercommit" />
+                <jsp:invoke fragment="aftersubmit" />
               </mm:present>
 
               <script type="text/javascript">
