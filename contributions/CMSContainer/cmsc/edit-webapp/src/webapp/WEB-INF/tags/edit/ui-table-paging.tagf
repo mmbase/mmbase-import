@@ -3,9 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 
-<c:set var="page" value="${not empty param.page ? param.page : 0}"/>
-<c:set var="pages" value="${ cmsc:ceil(size/pagesize)}"/>
-
 <fmt:bundle basename="cmsc">
 <fmt:message key="pages.message" var="error"/>
 <fmt:message key="pages.go" var="go"/>
@@ -14,14 +11,6 @@
    <fmt:param>${(size>(page+1)*pagesize) ? (page+1)*pagesize : size }</fmt:param>
    <fmt:param>${size}</fmt:param>
 </fmt:message>
-<c:set var="link" value="${requestURI}?"/>
-
-<c:forEach var="element" items="${param}" varStatus="status">
-   <c:if test="${element.key ne 'page'}">
-      <c:set var="link" value="${link}${element.key}=${element.value}&"/>
-   </c:if>
-</c:forEach>
-
 
 <script type="text/javascript">
 

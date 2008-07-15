@@ -86,12 +86,18 @@ public class PagingUtils {
       }
 
       String page = request.getParameter("page");
+      String sort = request.getParameter("sortby");
+      String dir = request.getParameter("dir");
+
       if (StringUtils.isNotBlank(page)) {
          holder.setPage(Integer.parseInt(page));
       }
       else {
          holder.setPage(0);
       }
+
+      holder.setSort(sort);
+      holder.setDir(dir);
 
       pagingStatusHolderLocal.set(holder);
       return holder;
