@@ -11,50 +11,26 @@ import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.FakeNewsletterPublisher;
 import com.finalist.newsletter.services.impl.NewsletterPublicationServiceImpl;
+import com.finalist.newsletter.DBUnitTemplate;
 import com.sevenirene.archetype.testingplatform.impl.logic.mock.MockController;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.sql.SQLException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.dbunit.operation.DatabaseOperation;
+import org.dbunit.DatabaseUnitException;
 
 public class NewsletterPublicationServiceTest extends TestCase {
 
-   MockController mockController;
 
-   public void setUp() {
-      mockController = new MockController();
-   }
 
-   public void testDeliverTest() {
-      NewsletterPublicationServiceImpl service = new NewsletterPublicationServiceImpl();
-      FakeNewsletterPublisher fakepuFakeNewsletterPublisher = new FakeNewsletterPublisher();
-
-      NewsletterPublicationCAO publicationCAO = (NewsletterPublicationCAO) mockController.getMock(NewsletterPublicationCAOImpl.class);
-      service.setPublicationCAO(publicationCAO);
-
-      mockController.expect(new NewsletterPublicationCAOImpl() {
-         public Publication getPublication(int number) {
-            assertEquals(1, number);
-            Publication publication = new Publication();
-
-            Newsletter letter = new Newsletter();
-            letter.setId(9999);
-
-            publication.setNewsletter(letter);
-
-            return publication;
-         }
-      });
-
-      service.deliver(1, "test@test.test", "html");
-
-      assertEquals("test@test.test", fakepuFakeNewsletterPublisher.subscription.getSubscriber().getEmail());
-      assertEquals("html", fakepuFakeNewsletterPublisher.subscription.getMimeType());
-      assertEquals(9999, fakepuFakeNewsletterPublisher.publication.getNewsletter().getId());
-
-      mockController.verify();
-   }
 
 
 }
