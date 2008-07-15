@@ -175,7 +175,7 @@
 
   <xsd:complexType name="Processor">
     <xsd:sequence>
-      <xsd:element name="class" type="class"  maxOccurs="unbounded" minOccurs="1" />
+      <xsd:element name="class" type="Class"  maxOccurs="unbounded" minOccurs="1" />
     </xsd:sequence>
     <xsd:attribute name="type" type="type_database" />
   </xsd:complexType>
