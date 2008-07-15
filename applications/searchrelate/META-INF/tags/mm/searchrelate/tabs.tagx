@@ -211,6 +211,7 @@
           <script type="text/javascript">
             $(document).ready(function() {
               $("div.body").css("display", "block");
+              $("div.buttons input, div.tabs a").click(function() { $('div.body').css('display', 'none'); });
             });
           </script>
         </mm:notpresent>
