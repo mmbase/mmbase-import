@@ -8,14 +8,16 @@ To version: 1.5
 Execute the following steps below in the given order:
 
 
-Name: Add maxlength column to formfield
+Name: Add maxlength and thank_text column to formfield for Response Form portlet
 Goal: Add maxlength column to formfield
 Type:  sql-script
 --- Start script ---
 ALTER TABLE mm_formfield ADD column maxlength int(11);
+ALTER TABLE mm_responseform ADD COLUMN thank_text TEXT NULL;
 ALTER TABLE mm_urls MODIFY url TEXT NOT NULL;
 
 ALTER TABLE live_formfield ADD column maxlength int(11);
+ALTER TABLE live_responseform ADD COLUMN thank_text TEXT NULL;
 ALTER TABLE live_urls MODIFY url TEXT NOT NULL;
 
 --- End script ---
