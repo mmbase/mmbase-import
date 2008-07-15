@@ -241,74 +241,85 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    public void createPreference(PreferenceVO preference) {      
       createPreference(preference.getModule(),preference.getUserId(),preference.getKey(),preference.getValue());
    }
+    
     @Transactional
     public void createPreference(Preference preference,String userId) {      
        createPreference(preference.getModule(),userId,preference.getKey(),preference.getValue());
     }
     
     @Transactional
-   public void updatePreference(PreferenceVO preferenceVO) {
-      try {
-         Preference preference = (Preference)getSession().load(Preference.class, Long.parseLong(preferenceVO.getId()));
-         preference.setKey(preferenceVO.getKey());
-         preference.setValue(preferenceVO.getValue());
-         getSession().saveOrUpdate(preference);
-      } catch (HibernateException e) {       
-         e.printStackTrace();
-      }
-  }
+	public void updatePreference(PreferenceVO preferenceVO) {
+		try {
+			Preference preference = (Preference) getSession().load(
+					Preference.class, Long.parseLong(preferenceVO.getId()));
+			preference.setKey(preferenceVO.getKey());
+			preference.setValue(preferenceVO.getValue());
+			getSession().saveOrUpdate(preference);
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
+	}
     
     @Transactional
-   public void deletePreference(String number) {
-      Preference preference = (Preference)getSession().get(Preference.class, Long.parseLong(number));
-      getSession().delete(preference);
-  }
-    public void deletePreference(long number) {
-        Preference preference = (Preference)getSession().get(Preference.class, number);
-      getSession().delete(preference);
-  }
+	public void deletePreference(String number) {
+		Preference preference = (Preference) getSession().get(Preference.class,
+				Long.parseLong(number));
+		getSession().delete(preference);
+	}
+
+	public void deletePreference(long number) {
+		Preference preference = (Preference) getSession().get(Preference.class,
+				number);
+		getSession().delete(preference);
+	}
     
     @Transactional(readOnly = true)
-   public List<String> getAllUserIds() {
-      List<Authentication> authentications = authenticationService.findAuthentications();
-      List<String> userIds = new ArrayList<String>();
-      for(Authentication authentication : authentications) {
-         userIds.add(authentication.getUserId());
-      }
-      return userIds;
-   }
+	public List<String> getAllUserIds() {
+		List<Authentication> authentications = authenticationService
+				.findAuthentications();
+		List<String> userIds = new ArrayList<String>();
+		for (Authentication authentication : authentications) {
+			userIds.add(authentication.getUserId());
+		}
+		return userIds;
+	}
     
     @Transactional(readOnly = true)
-    public int getTotalCount(PreferenceVO preference) {
-       Criteria criteria = getSession().createCriteria(Preference.class);
-       if(preference != null) {
+	public int getTotalCount(PreferenceVO preference) {
+		Criteria criteria = getSession().createCriteria(Preference.class);
+		if (preference != null) {
 
-          if(StringUtils.isNotBlank(preference.getUserId())) {
-             Criteria authentication = getSession().createCriteria(Authentication.class);
-             authentication.add(Restrictions.ilike("userId", "%"+preference.getUserId()+"%"));
-             List<Authentication>  authentications = authentication.list();
-             List<Long> authenticationIds = new ArrayList<Long>();
-             for(Authentication authe : authentications) {
-                authenticationIds.add(authe.getId());
-             }
-             if(authenticationIds.size() > 0) {
-                criteria.add(Restrictions.in("authenticationId", authenticationIds));
-             }
-
-          }
-          
-          if(StringUtils.isNotBlank(preference.getModule())) {
-             criteria.add(Restrictions.ilike("module", "%"+preference.getModule()+"%"));
-          }
-          if(StringUtils.isNotBlank(preference.getKey())) {
-             criteria.add(Restrictions.ilike("key", "%"+preference.getKey()+"%"));
-          }
-          if(StringUtils.isNotBlank(preference.getValue())) {
-             criteria.add(Restrictions.ilike("value", "%"+preference.getValue()+"%"));
-          }
-       }
-       return criteria.list().size();
-    }
+			if (StringUtils.isNotBlank(preference.getUserId())) {
+				Criteria authentication = getSession().createCriteria(
+						Authentication.class);
+				authentication.add(Restrictions.ilike("userId", "%"
+						+ preference.getUserId() + "%"));
+				List<Authentication> authentications = authentication.list();
+				List<Long> authenticationIds = new ArrayList<Long>();
+				for (Authentication authe : authentications) {
+					authenticationIds.add(authe.getId());
+				}
+				if (authenticationIds.size() > 0) {
+					criteria.add(Restrictions.in("authenticationId",
+							authenticationIds));
+				}
+			}
+			if (StringUtils.isNotBlank(preference.getModule())) {
+				criteria.add(Restrictions.ilike("module", "%"
+						+ preference.getModule() + "%"));
+			}
+			if (StringUtils.isNotBlank(preference.getKey())) {
+				criteria.add(Restrictions.ilike("key", "%"
+						+ preference.getKey() + "%"));
+			}
+			if (StringUtils.isNotBlank(preference.getValue())) {
+				criteria.add(Restrictions.ilike("value", "%"
+						+ preference.getValue() + "%"));
+			}
+		}
+		return criteria.list().size();
+	}
+    
    private void copyPropertiesToVO(List<PreferenceVO> dest,List<Preference> src) {
       if(src == null || src.size() == 0) {
          return;
@@ -324,11 +335,13 @@ public class PreferenceHibernateService extends HibernateService implements Pref
          dest.add(preferenceVO);
       }
    }
+   
    @Transactional  
    private String getUserIdByAuthenticationId(Long authenticationId){
       Authentication authentication = authenticationService.getAuthenticationById(authenticationId);
       return authentication.getUserId();
    }
+   
    @Transactional 
 	public void batchCleanByAuthenticationId(long authenticationId) {
 		String hqlDelete = "delete Preference where authenticationid =:authenticationId";

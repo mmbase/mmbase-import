@@ -61,11 +61,14 @@ public interface PersonService {
    List<Person> getAllPersons();
 
    boolean deletePersonByAuthenticationId(Long userId);
+   
    public void batchClean();
 
    public void createPerson(Person person);
+   
    public void deleteRelationRecord(Long id);
 
-    public void creatRelationRecord(PersonExportImportVO xperson);
-    public List<PersonExportImportVO> getAllXPerson();
+   public void creatRelationRecord(PersonExportImportVO xperson);
+    
+   public List<PersonExportImportVO> getPersonExportImportVO();
 }

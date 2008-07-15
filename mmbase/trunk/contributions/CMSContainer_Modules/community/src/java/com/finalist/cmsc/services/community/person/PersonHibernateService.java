@@ -93,7 +93,6 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       if (authenticationId == null) {
          throw new IllegalArgumentException("authenticationId is not filled in. ");
       }
-
       //Create a new person and store it 
       Person person = new Person();
       person.setFirstName(firstName);
@@ -102,7 +101,6 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       person.setAuthenticationId(authenticationId); // used to find account
       getSession().save(person);
       return person;
-      
    }
 
    /** {@inheritDoc} */
@@ -111,6 +109,8 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       getSession().saveOrUpdate(person);
       getSession().flush();
    }
+   
+   
     @Transactional
    public List<Person> getAllPersons() {
       return getSession().createCriteria(Person.class).list();
@@ -165,16 +165,12 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	   }
 	   return person;
    }
+   
    @Transactional
    public void createPerson(Person person) {
 	   getSession().save(person);
-		
-	}/*
-   @Transactional
-	public int batchClean(String type, String condition) {
-	   
-       return 0;
-	}*/
+	}
+   
    @Transactional(propagation = Propagation.REQUIRED)
 	public void batchClean(){
 		List<Person> persons = getAllPersons();
@@ -189,10 +185,8 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		             .executeUpdate();
 		getSession().createQuery(hqlDeletePerson)
                       .executeUpdate();
-		              
-		             
-
 	}
+   
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void deleteRelationRecord(Long id) {
 		//long id = dataPerson.getAuthenticationId();
@@ -200,6 +194,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		authenticationService.deleteAuthentication(id);
 		deletePersonByAuthenticationId(id);
 	}
+	
 	@Transactional(propagation = Propagation.REQUIRED)
 	@SuppressWarnings("unchecked")
 	public void creatRelationRecord(PersonExportImportVO xperson) {
@@ -215,15 +210,16 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 			preferenceService.createPreference(preference, userId);
 		}
 	}
+	
 	@Transactional(readOnly = true)
-	public List<PersonExportImportVO> getAllXPerson() {
+	public List<PersonExportImportVO> getPersonExportImportVO() {
 		List<PersonExportImportVO> XPersons = new ArrayList<PersonExportImportVO>();
 		List<Person> persons =getAllPersons();
 		if (null == persons) {
 			return null;
 		}
 		for (Person tempPerson : persons) {
-			PersonExportImportVO o = transformToXPerson(tempPerson);
+			PersonExportImportVO o = transformToPersonExportImportVO(tempPerson);
 			XPersons.add(o);
 		}
 		return XPersons;
@@ -238,8 +234,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		o.setUri(t.getUri());
 	}
 	
-	
-	private PersonExportImportVO transformToXPerson(Person tempPerson) {
+	private PersonExportImportVO transformToPersonExportImportVO(Person tempPerson) {
 		PersonExportImportVO o = new PersonExportImportVO();
 		converPersonPropertis(tempPerson, o);
 		Long authenticationId = tempPerson.getAuthenticationId();
