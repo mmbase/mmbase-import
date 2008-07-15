@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,8 +100,7 @@ public class DownloadThread extends Thread {
 			File file = new File(downloadSettings.getTempPath());//get the files which wget last download
 			setupSuffix();
 			modifyDownloadPath();
-			findAssociatedFiles(file, new MyFilenameFilter(".css", ".js",
-					".html"));
+			findAssociatedFiles(file, new MyFilenameFilter(".css", ".js", ".html"));
 			redownload(redownloadfiles);
 			redownloadfiles.clear();//this will avoid to redownload picture in different request
 			zip();
@@ -188,15 +186,15 @@ public class DownloadThread extends Thread {
 
 		String outputData = fixFlash(inputData);
 
-		if (!outputData.equals(inputData)) {
+		if (inputData == null || !outputData.equals(inputData)) {
 			writeFile(file, outputData);
 		}
 	}
 
 	private void writeFile(File file, String outputData) throws IOException {
-		FileWriter writer = null;
+	   PrintWriter writer = null;
 		try {
-			writer = new FileWriter(file);
+			writer = new PrintWriter(file);
 			writer.write(outputData);
 			writer.flush();
 		} finally {
@@ -208,20 +206,23 @@ public class DownloadThread extends Thread {
 
 	private String readFile(File file) throws IOException {
 		BufferedReader reader = null;
+		StringBuffer buffer = null;
 		try {
 			reader = new BufferedReader(new FileReader(file));
-
-			StringBuffer buffer = new StringBuffer();
+			buffer = new StringBuffer();
 			String line;
 			while ((line = reader.readLine()) != null) {
 				buffer.append(line);
 			}
-			return buffer.toString();
 		} finally {
 			if (reader != null) {
 				reader.close();
 			}
 		}
+      if (buffer != null) {
+         return buffer.toString();
+      } else return null;
+      
 	}
 
 	private boolean includeFile(String name) {
