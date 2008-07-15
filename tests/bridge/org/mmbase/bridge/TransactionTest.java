@@ -11,15 +11,19 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.8 2008-07-15 11:44:22 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.9 2008-07-15 11:59:01 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
+    private static final Logger log = Logging.getLoggerInstance(TransactionTest.class);
 
     public TransactionTest(String name) {
         super(name);
@@ -214,10 +218,15 @@ public class TransactionTest extends BridgeTest {
             assertFalse(cloud.hasNode(newNode2));
         }
 
+        try {
+            t.commit();
+        } catch (Exception e) {
+            // should not give exception. MMB-1680
+            log.error(e.getMessage(), e);
+            fail(e.getMessage());
+        }
 
-        t.commit();
-
-        assertFalse(cloud.hasNode(newNode2));
+        assertTrue(cloud.hasNode(newNode2));
     }
 
 
