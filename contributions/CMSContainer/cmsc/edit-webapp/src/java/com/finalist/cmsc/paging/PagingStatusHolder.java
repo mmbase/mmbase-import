@@ -9,6 +9,7 @@ public class PagingStatusHolder {
    private int pageSize = -1;
    private int listSize;
    private String sort;
+   private String dir;
 
    public int getPage() {
       return page;
@@ -77,5 +78,13 @@ public class PagingStatusHolder {
 
    public int getOffset(){
       return page*getPageSize();      
+   }
+
+   public String getDir() {
+      return dir;
+   }
+
+   public void setDir(String dir) {
+      this.dir = dir;
    }
 }

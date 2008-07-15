@@ -12,11 +12,25 @@
 <%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 
 <%@ variable name-from-attribute="var" alias="current" scope="NESTED" variable-class="java.lang.Object" %>
+<%@ variable name-given="link" scope="NESTED" variable-class="java.lang.String" %>
+
 <jsp:useBean id="now" class="java.util.Date" scope="request"/>
 <jsp:useBean id="pagingstatus" class="com.finalist.cmsc.paging.PagingUtils" scope="request"/>
 
-
 <cmsc:property key="repository.search.results.per.page" var="pagesize"/>
+<c:set var="page" value="${not empty param.page ? param.page : 0}"/>
+<c:set var="page" value="${not empty param.page ? param.page : 0}" scope="request"/>
+<c:set var="pages" value="${ cmsc:ceil(size/pagesize)}"/>
+
+<c:set var="link" value="${requestURI}?"/>
+<c:forEach var="element" items="${param}" varStatus="status">
+   <c:if test="${(element.key ne 'page') and (element.key ne 'sortby') and (element.key ne 'dir')}">
+      <c:set var="link" value="${link}${element.key}=${element.value}&"/>
+   </c:if>
+</c:forEach>
+
+<c:set var="sortlink" value="${link}" scope="request"/>
+
 
 <c:choose>
    <c:when test="${fn:length(items) > 0}">
