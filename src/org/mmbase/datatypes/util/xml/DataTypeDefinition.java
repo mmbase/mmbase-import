@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.63 2008-03-19 17:07:50 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.64 2008-07-15 19:10:41 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -157,7 +157,7 @@ public class DataTypeDefinition {
         getImplementation(dataTypeElement, id);
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
-        configureConditions(dataTypeElement, id);
+        configureConditions(dataTypeElement);
 
         return this;
     }
@@ -167,7 +167,7 @@ public class DataTypeDefinition {
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
      */
-    protected void configureConditions(Element dataTypeElement, String id) {
+    protected void configureConditions(Element dataTypeElement) {
         log.debug("Now going to configure " + dataType);
         // add conditions
         NodeList childNodes = dataTypeElement.getChildNodes();
