@@ -63,8 +63,6 @@ public interface PersonService {
    boolean deletePersonByAuthenticationId(Long userId);
    
    public void batchClean();
-
-   public void createPerson(Person person);
    
    public void deleteRelationRecord(Long id);
 
