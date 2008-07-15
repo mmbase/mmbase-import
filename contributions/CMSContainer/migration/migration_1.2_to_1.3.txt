@@ -1,8 +1,8 @@
 Migration document:
 
 Part: core
-From versie: 1.2
-To versie: 1.3
+From version: 1.2
+To version: 1.3
 
 
 Execute the following steps below in the given order:

@@ -4,8 +4,8 @@
 Migration document:
 
 Part: core
-From versie: 1.0
-To versie: 1.1
+From version: 1.0
+To version: 1.1
 
 
 Execute the following steps below in the given order:
