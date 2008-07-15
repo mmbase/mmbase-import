@@ -78,7 +78,7 @@
         </c:otherwise>
       </c:choose>
       <mm:link page="${page}" referids="q@${f}">
-        <a class="${className}"
+        <a class="nav ${className}"
            href="${_}"
            onclick="document.forms['${f}_form']['${f}_next'].value = '${q}'; document.forms['${f}_form'].submit(); return false;"
            >
@@ -211,7 +211,10 @@
           <script type="text/javascript">
             $(document).ready(function() {
               $("div.body").css("display", "block");
-              $("div.buttons input, div.tabs a").click(function() { $('div.body').css('display', 'none'); });
+              $("div.buttons input, div.tabs a.nav").click(function() {
+                $('div.body').css('display', 'none');
+              });
+
             });
           </script>
         </mm:notpresent>
