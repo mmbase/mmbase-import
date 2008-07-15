@@ -130,6 +130,10 @@ public class Authentication implements Serializable {
 			return false;
 		return true;
 	}
+	
+	public void setAuthorities(Set<Authority> authorities) {
+		this.authorities = authorities;
+	}
     
     
 }

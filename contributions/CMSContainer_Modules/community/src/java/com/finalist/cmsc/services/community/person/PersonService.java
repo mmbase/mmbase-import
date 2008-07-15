@@ -11,6 +11,8 @@ package com.finalist.cmsc.services.community.person;
 
 import java.util.List;
 
+import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
+import com.finalist.cmsc.services.community.preferences.Preference;
 /**
  * This service encapsulates the management of people and groups.
  *
@@ -59,5 +61,11 @@ public interface PersonService {
    List<Person> getAllPersons();
 
    boolean deletePersonByAuthenticationId(Long userId);
+   public void batchClean();
 
+   public void createPerson(Person person);
+   public void deleteRelationRecord(Long id);
+
+    public void creatRelationRecord(PersonExportImportVO xperson);
+    public List<PersonExportImportVO> getAllXPerson();
 }
