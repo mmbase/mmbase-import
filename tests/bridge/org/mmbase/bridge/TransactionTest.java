@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.9 2008-07-15 11:59:01 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.10 2008-07-15 22:08:49 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -92,6 +92,22 @@ public class TransactionTest extends BridgeTest {
         node = cloud.getNode(newNode);
 
         assertEquals("yyyyy", node.getStringValue("title"));
+    }
+
+    public void testMMB1546() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("test0");
+        Node nt = t.getNode(newNode);
+        nt.setValue("title", "bla");
+        //t.cancel(); _DONT_ cancel
+        Node nc = cloud.getNode(newNode);
+        nc.setValue("title", "bloe");
+        nc.commit();
+        assertEquals("bloe", nc.getStringValue("title"));
+        assertEquals("bloe", cloud.getNode(newNode).getStringValue("title"));
+        t.cancel();
+        assertEquals("bloe", cloud.getNode(newNode).getStringValue("title"));
+
     }
 
 
