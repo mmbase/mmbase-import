@@ -12,7 +12,9 @@ package org.mmbase.datatypes;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
+import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.AbstractDescriptor;
@@ -38,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.88 2008-07-09 22:12:51 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.89 2008-07-15 19:41:00 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -66,6 +68,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
     private Processor[]     setProcessors;
+
+    private Map<String, Handler> handlers = new ConcurrentHashMap<String, Handler>();
 
     private Element xml = null;
 
@@ -152,6 +156,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         edit();
         inheritProperties(origin);
         inheritRestrictions(origin);
+        handlers.putAll(origin.handlers);
     }
 
     /**
@@ -348,6 +353,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
+
     public C getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue == null) return null;
         C res =  cast(defaultValue, null, null);
@@ -442,6 +448,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public void finish(Object owner) {
         this.owner = owner;
+        handlers = Collections.unmodifiableMap(handlers);
     }
 
     /**
@@ -697,8 +704,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     }
 
-    public org.mmbase.datatypes.handlers.Handler getHandler(String mimeType) {
-        throw new UnsupportedOperationException("Not yet ready");
+    public Handler getHandler(String mimeType) {
+        return handlers.get(mimeType);
+    }
+
+    public Map<String, Handler> getHandlers() {
+        return handlers;
     }
 
     public int compareTo(DataType<C> a) {

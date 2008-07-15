@@ -28,7 +28,16 @@
   <xsd:complexType name="DataType">
     <xsd:sequence>
       <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0" />
-      <xsd:element ref="class"       maxOccurs="1" minOccurs="0" />
+      <xsd:element name="class"   type="Class"       maxOccurs="1" minOccurs="0" />
+      <xsd:element name="handler" maxOccurs="unbounded" minOccurs="0">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="Class">
+              <xsd:attribute name="mimetype" type="xsd:string" use="required" />
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
 
       <xsd:element name="property"  maxOccurs="unbounded" minOccurs="0">
         <xsd:annotation>
@@ -166,19 +175,17 @@
 
   <xsd:complexType name="Processor">
     <xsd:sequence>
-      <xsd:element ref="class"  maxOccurs="unbounded" minOccurs="1" />
+      <xsd:element name="class" type="class"  maxOccurs="unbounded" minOccurs="1" />
     </xsd:sequence>
     <xsd:attribute name="type" type="type_database" />
   </xsd:complexType>
 
-  <xsd:element name="class">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
-      </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:string" />
-    </xsd:complexType>
-  </xsd:element>
+  <xsd:complexType name="Class">
+    <xsd:sequence>
+      <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" />
+  </xsd:complexType>
 
   <xsd:element name="param">
     <xsd:complexType mixed="true">
