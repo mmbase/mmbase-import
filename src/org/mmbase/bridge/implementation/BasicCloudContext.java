@@ -16,11 +16,13 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * This is the base class for {@link org.mmbase.bridge.LocalContext} (which is probably its only
+ * descendant). Some of the (static) members are package, and hence are easily accessible by other
+ * implementors of the 'local' cloud in the current package org.mmbase.bridge.implementation.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.58 2007-11-16 16:07:42 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.59 2008-07-15 21:33:22 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);

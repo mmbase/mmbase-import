@@ -12,11 +12,17 @@ package org.mmbase.bridge;
 import org.mmbase.bridge.implementation.BasicCloudContext;
 
 /**
- * The collection of clouds, and modules within a Java Virtual Machine.
+ * The collection of clouds, and modules within the current application context.
+ * Actually, there is always only <em>one</em> MMBase cloud (named 'mmbase'). There can however be
+ * more modules (of which 'mmbaseroot' it one).
+ *
+ * This class is based on 'BasicCloudContext' because it itself want to be in the package
+ * org.mmbase.bridge, but it wants to expose some members to other classes in the
+ * org.mmbase.bridge.implementation package.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: LocalContext.java,v 1.6 2006-11-11 19:26:03 michiel Exp $
+ * @version $Id: LocalContext.java,v 1.7 2008-07-15 21:33:22 michiel Exp $
  */
 public final class LocalContext extends BasicCloudContext {
 
