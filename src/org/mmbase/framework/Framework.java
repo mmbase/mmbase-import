@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.53 2008-04-25 14:35:12 andre Exp $
+ * @version $Id: Framework.java,v 1.54 2008-07-15 05:53:29 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -52,7 +52,7 @@ public abstract class Framework {
 
 
     /**
-     * Return the framework, or null if there is no framework defined in mmbaseroot.xml
+     * Returns the framework. Never <code>null</code>.
      * @return the framework
      */
     public static Framework getInstance() {
