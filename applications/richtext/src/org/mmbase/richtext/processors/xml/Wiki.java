@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.13 2008-06-10 11:35:19 michiel Exp $
+ * @version $Id: Wiki.java,v 1.14 2008-07-15 10:00:59 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -153,6 +153,7 @@ class Wiki {
      *
      */
     Document parse(Node editedNode, Field field, Document source) {
+        Cloud cloud = editedNode.getCloud();
 
         String fieldName = field.getName();
         Set<String> usedIds = new HashSet<String>();
@@ -162,10 +163,18 @@ class Wiki {
             log.debug("Resolving " + editedNode + " " + XMLWriter.write(source, true));
         }
 
-        Cloud cloud = editedNode.getCloud();
-        NodeManager objects = cloud.getNodeManager("object");
-        NodeQuery q = Queries.createRelationNodesQuery(editedNode, objects, "idrel", "destination");
-        NodeList links = cloud.getNodeManager("idrel").getList(q);
+
+        // In a transaction, the query will not return our new nodes.
+        // Administrate related idrels ourselves.
+        NodeList createdLinks = (NodeList) cloud.getProperty("createdlinks");
+        if (createdLinks == null) {
+            createdLinks = cloud.createNodeList();
+            NodeManager objects = cloud.getNodeManager("object");
+            NodeQuery q = Queries.createRelationNodesQuery(editedNode, objects, "idrel", "destination");
+            NodeList links = cloud.getNodeManager("idrel").getList(q);
+            createdLinks.addAll(links);
+            cloud.setProperty("createdlinks", createdLinks);
+        }
 
         // search all anchors
         org.w3c.dom.NodeList as = source.getElementsByTagName("*");
@@ -179,7 +188,7 @@ class Wiki {
             a.removeAttribute("class");
             String id = a.getAttribute("id");
             if ("".equals(id)) continue;
-            Node link = findById(a, links, fieldName, usedIds);
+            Node link = findById(a, createdLinks, fieldName, usedIds);
             if (link == null) {
 
                 log.service("No relation found with id '" + id + "'. Implicitely creating one now.");
@@ -191,6 +200,7 @@ class Wiki {
                         newRel.setStringValue("id", decoratedId);
                         newRel.setStringValue("class", className);
                         newRel.commit();
+                        createdLinks.add(newRel);
                         a.setAttribute("id", decoratedId);
                         usedIds.add(decoratedId);
                     } catch (Exception e) {
