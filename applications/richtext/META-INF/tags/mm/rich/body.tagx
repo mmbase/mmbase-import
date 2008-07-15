@@ -39,7 +39,7 @@
 			   />
 
   <!--
-       $Id: body.tagx,v 1.7 2008-06-24 12:54:55 michiel Exp $
+       $Id: body.tagx,v 1.8 2008-07-15 15:16:43 michiel Exp $
   -->
 
   <os:cache
@@ -53,8 +53,13 @@
     <mm:formatter xslt="xslt/2xhtml.xslt" escape="links">
       <mm:param name="popupwidth" value="${empty popupwidth ? -1 : popupwidth}" /><!-- default is 'no popups' -->
       <c:if test="${empty depth || depth gt 0}">
-        <mm:listrelationscontainer  role="idrel" searchdir="destination">
-          <mm:listrelations>
+        <mm:listrelationscontainer  role="idrel" searchdir="destination" >
+          <!--
+              the Wiki-setprocessors stores new idrels temporary in the 'createdlinks' property.
+              This is a bit of a hack, needed because queries don't work properly in a transaction.
+          -->
+          <c:set var="createdlinks" value="${mm:property('createdlinks')}" />
+          <mm:listrelations add="createdlinks?">
             <mm:relatednode>
               <c:if test="${empty depth || depth gt 1}">
                 <mm:listrelations role="idrel" searchdir="destination">
