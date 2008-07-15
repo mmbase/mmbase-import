@@ -104,7 +104,6 @@
     </mm:stringlist>
   </mm:import>
 
-
   <div class="tabs">
     <x:parse var="currentsource">
       <mm:treeinclude cite="true" objectlist="${objectlist}" page="${directory}${currentpage}${e}" />
@@ -122,13 +121,15 @@
       <div class="top links">
         <mm:write referid="tabs" escape="none" />
       </div>
-      <div class="body ${currentpage}${e} ${styleClass}">
+      <div class="body ${currentpage}${e} ${styleClass}" style="display: none;">
         <mm:compare referid="tabClass" regexp=".*\boutside\b.*">
           <jsp:invoke fragment="intro" />
-          <mm:treeinclude debug="html" notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+          <mm:treeinclude debug="html"
+                          notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
         </mm:compare>
         <mm:form page="" id="${f}_form"  jspvar="transaction">
           <mm:import id="cancel" externid="${f}_cancel" />
+          <mm:import id="submit" externid="${f}_submit" />
           <mm:present referid="cancel">
             <mm:cancel />
             <mm:log>Canceling <jsp:expression>transaction</jsp:expression>
@@ -143,7 +144,8 @@
           <mm:notpresent referid="cancel">
             <mm:compare referid="tabClass" regexp=".*\boutside\b.*" inverse="true">
               <jsp:invoke fragment="intro" />
-              <mm:treeinclude debug="html" notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+              <mm:treeinclude debug="html"
+                              notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
             </mm:compare>
 
             <div class="buttons">
@@ -159,14 +161,14 @@
               <mm:import externid="${f}_next" id="next" />
               <mm:log>Valid now going to ${next}</mm:log>
 
-              <mm:import id="submit" externid="${f}_submit" />
               <mm:present referid="submit">
                 <mm:log>committing <jsp:expression>transaction</jsp:expression></mm:log>
                 <mm:commit />
                 <c:if test="${empty next}">
                   <script type="text/javascript">
+                    <mm:import id="redirected" />
                     $(document).ready(function() {
-                    window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>';
+                      window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>';
                     });
                   </script>
                 </c:if>
@@ -178,11 +180,13 @@
                   <c:when test="${! empty submit}">
                     <c:choose>
                       <c:when test="${(empty closelast or closelast) and empty p[current + 1]}">
+                        <mm:import id="redirected" />
                         $(document).ready(function() {
                         window.close();
                         });
                       </c:when>
                       <c:when test="${empty gonext or gonext}">
+                        <mm:import id="redirected" />
                         $(document).ready(function() {
                         window.location = '<mm:url page="${page}"><mm:param name="${f}">${p[current + 1]}</mm:param></mm:url>';
                         });
@@ -190,6 +194,7 @@
                     </c:choose>
                   </c:when>
                   <c:when test="${! empty next}">
+                    <mm:import id="redirected" />
                     $(document).ready(function() {
                        window.location = '<mm:url page="${page}"><mm:param name="${f}">${next}</mm:param></mm:url>';
                      });
@@ -202,6 +207,13 @@
             </mm:valid>
           </mm:notpresent>
         </mm:form>
+        <mm:notpresent referid="redirected">
+          <script type="text/javascript">
+            $(document).ready(function() {
+              $("div.body").css("display", "block");
+            });
+          </script>
+        </mm:notpresent>
       </div>
       <div class="bottom links">
         <mm:write referid="tabs" escape="none" />
