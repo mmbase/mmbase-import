@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * to the current user id when this field is not yet set.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Creator.java,v 1.1 2006-02-14 22:46:41 michiel Exp $
+ * @version $Id: Creator.java,v 1.2 2008-07-15 10:11:43 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -27,7 +27,7 @@ public class Creator implements CommitProcessor {
     private static final long serialVersionUID = 1L;
 
     public void commit(Node node, Field field) {
-        if (node.isNull(field.getName())) {
+        if (node.mayWrite() && node.isNull(field.getName())) {
             node.setValueWithoutProcess(field.getName(), node.getCloud().getUser().getIdentifier());
         }
     }
