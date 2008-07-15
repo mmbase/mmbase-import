@@ -1,8 +1,8 @@
 Migration document:
 
 Part: core
-From versie: 1.4.6
-To versie: 1.4.7
+From version: 1.4.6
+To version: 1.4.7
 
 
 Execute the following steps below in the given order:
@@ -19,3 +19,18 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+Name: Add maxlength and thank_text to dbase for Response Form portlet 
+Goal: Support for response thank text in response form portlet
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_formfield ADD COLUMN maxlength int(11) DEFAULT 0;
+ALTER TABLE mm_responseform ADD COLUMN thank_text TEXT NULL;
+
+ALTER TABLE live_formfield ADD COLUMN maxlength int(11) DEFAULT 0;
+ALTER TABLE live_responseform ADD COLUMN thank_text TEXT NULL;
+--- End script ---
+*
+*
+
