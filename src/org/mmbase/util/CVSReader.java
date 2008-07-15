@@ -25,12 +25,13 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: CVSReader.java,v 1.14 2008-07-15 20:47:20 michiel Exp $
+ * @deprecated Not used, no good interface (see MMB-526), wrobg nae not worth the hassle to fix this, there
+ * must be better CSV readers out there.
  */
 public class CVSReader {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(CVSReader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CVSReader.class);
 
     /**
      * The CVS file to read.
