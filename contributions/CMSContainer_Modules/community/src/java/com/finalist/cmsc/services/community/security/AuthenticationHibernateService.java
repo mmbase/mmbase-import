@@ -180,6 +180,7 @@ public class AuthenticationHibernateService extends HibernateService implements 
    public Authentication getAuthenticationById(Long authenticationId) {
       return (Authentication) getSession().get(Authentication.class, authenticationId);
    }
+   
    @Transactional
 	public Authentication createAuthentication(Authentication authentication)  {
 		return createAuthentication(authentication.getUserId(), authentication.getPassword());
