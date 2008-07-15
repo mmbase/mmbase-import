@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.31 2008-07-08 11:41:10 michiel Exp $
+      @version $Id: relate.tagx,v 1.32 2008-07-15 14:20:04 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -74,6 +74,13 @@
       <mm:param name="locale">${repository.cloud.locale}</mm:param>
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     </mm:link>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      $("body").find("div.mm_related").each(function() {
+      this.relater = new MMBaseRelater(this);
+      });
+      });
+    </script>
   </c:if>
   <script type="text/javascript">
     $(document).ready(function() {

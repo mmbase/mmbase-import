@@ -1,7 +1,7 @@
 // -*- mode: javascript; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<mm:content type="text/javascript" expires="0" language="${param.locale}">
+<mm:content type="text/javascript" language="${param.locale}">
 <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 /**
  * Generic mmbase search & relate tool. Javascript part.
@@ -13,14 +13,9 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.27 2008-07-08 12:33:34 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.28 2008-07-15 14:19:41 michiel Exp $
  */
 
-$(document).ready(function(){
-    $("body").find("div.mm_related").each(function() {
-	this.relater = new MMBaseRelater(this);
-    });
-});
 
 
 /**
