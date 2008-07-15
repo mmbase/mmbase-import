@@ -6,7 +6,7 @@
 <head>
   <title><fmt:message key="download.title" /></title>
   <link href="../../css/main.css" type="text/css" rel="stylesheet" />
-  <script>
+  <script type="text/javascript">
   		function openError(staticDownload) {
   			openWindow("error", staticDownload);
   		}
@@ -75,7 +75,7 @@
 						<mm:field name="completed" jspvar="completed" write="false" vartype="Long"/>
 						<c:set var="running" value="${empty completed}"/>
 						<c:if test="${running}">
-							<script>
+							<script type="text/javascript">
 								setTimeout("document.location.href = 'download.jsp'",5000);
 							</script>
 							<c:set var="completed"><%=System.currentTimeMillis()/1000%></c:set>
