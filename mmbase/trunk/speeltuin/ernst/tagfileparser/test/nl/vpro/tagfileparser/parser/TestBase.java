@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import java.io.*;
+
 import junit.framework.TestCase;
 
 /**
@@ -25,17 +27,19 @@ public abstract class TestBase extends TestCase{
 
 	/**
 	 * Reads a file as resource from the classpath, and creates a BufferedReader for it.
-	 * @param name
+	 * @param resourceName
 	 * @return
 	 */
-	protected BufferedReader loadFile(String name){
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream(name);
+	protected BufferedReader loadFileAsReader(String resourceName){
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream(resourceName);
 		if(is == null){
-			throw new RuntimeException("resource with name '"+name+"' not found");
+			throw new RuntimeException("resource with name '"+resourceName+"' not found");
 		}
 		BufferedReader r = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 		return r;
 	}
+	
+	
 	
 	/**
 	 * Reads the resource of given name, and creates a line iterator for it.
@@ -43,7 +47,7 @@ public abstract class TestBase extends TestCase{
 	 * @return
 	 */
 	protected Iterator<String> createFileIterator(String filename){
-		BufferedReader br = loadFile(filename);
+		BufferedReader br = loadFileAsReader(filename);
 		List<String> result = new ArrayList<String>();
 		String l;
 		try {

@@ -24,6 +24,7 @@ public class BasicTagParser extends AbstractTagParser {
 
 		public BasicTagParser(){
 			setIncludeExtension("tagf");
+			setTagExtension("tag");
 			addElementParser(new TagDirectiveParser());
 			addElementParser(new VariableDirectiveParser());
 			addElementParser(new AttributeDirectiveParser());

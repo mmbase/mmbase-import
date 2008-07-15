@@ -10,12 +10,6 @@ import junit.framework.TestCase;
 
 public class DirectiveParserTest extends TestCase {
 	
-	public void testCleanup(){
-		String line ="<%@   test foo=\"bar\"    %>";
-		DirectiveParser tdp = createParser(null, null);
-		assertEquals("test foo=\"bar\"", tdp.cleanup(line));
-	}
-
 	public void testParser(){
 		String line ="<%@   test foo =    \"bar\"  name= \"disco\" hi=\"ho	\" empty=\"\" %>";
 		final List<Attribute> attributes = new ArrayList<Attribute>();
