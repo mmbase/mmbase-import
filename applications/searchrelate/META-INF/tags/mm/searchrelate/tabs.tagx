@@ -121,6 +121,9 @@
       <div class="top links">
         <mm:write referid="tabs" escape="none" />
       </div>
+      <mm:link page="/mmbase/style/ajax-loader.gif">
+        <img src="${_}" id="ajax-loader" />
+      </mm:link>
       <div class="body ${currentpage}${e} ${styleClass}" style="display: none;">
         <mm:compare referid="tabClass" regexp=".*\boutside\b.*">
           <jsp:invoke fragment="intro" />
@@ -211,8 +214,10 @@
           <script type="text/javascript">
             $(document).ready(function() {
               $("div.body").css("display", "block");
+              $("#ajax-loader").css("display", "none");
               $("div.buttons input, div.tabs a.nav").click(function() {
-                $('div.body').css('display', 'none');
+                $("#ajax-loader").css("display", "");
+                $('div.body div.tab').css('display', 'none');
               });
 
             });
