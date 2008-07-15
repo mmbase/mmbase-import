@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.89 2008-07-15 19:41:00 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.90 2008-07-15 22:08:14 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -459,6 +459,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (this.owner != owner) {
                 throw new IllegalArgumentException("Cannot rewrite this datatype - specified owner is not correct");
             }
+            handlers = new ConcurrentHashMap<String, Handler>(handlers);
             this.owner = null;
         }
         return this;
@@ -592,7 +593,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         try {
             BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
-            clone.owner = null;
+            clone.rewrite(clone.owner);
             // properly inherit from this datatype (this also clones properties and processor arrays)
             clone.inheritProperties(this);
             clone.cloneRestrictions(this);
