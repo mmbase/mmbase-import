@@ -140,13 +140,15 @@
         <war.bundle>${war.bundle}</war.bundle>
       </properties>
     </dependency>
-    <!-- XStream dependencies -->
-      <dependency>
-         <groupId>com.thoughtworks.xstream</groupId>
-         <artifactId>xstream</artifactId>
-         <version>1.2</version>
-         <type>jar</type>
-      </dependency>
+     <dependency>
+        <groupId>finalist</groupId>
+        <artifactId>cmsc-edit-webapp</artifactId>
+        <version>${cmsc.version}</version>
+        <type>jar</type>
+        <properties>
+           <war.bundle>${war.bundle}</war.bundle>
+        </properties>
+     </dependency>
   </dependencies>
 </project>
 
