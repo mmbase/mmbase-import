@@ -8,8 +8,8 @@ Please name the new migration document migration_[version].[subversion]_to_[vers
 and remove this intro from the new migration document.
 
 Part: (core/modules/portlet [name])
-From versie: x.x
-To versie: x.x
+From version: x.x
+To version: x.x
 
 
 Execute the following steps below in the given order:
