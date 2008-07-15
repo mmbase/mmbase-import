@@ -133,4 +133,5 @@ public interface AuthenticationService {
 	 * @return Authentication
 	 */
    Authentication getAuthenticationById(Long authenticationId);
+   public Authentication createAuthentication(Authentication authentication) ;
 }

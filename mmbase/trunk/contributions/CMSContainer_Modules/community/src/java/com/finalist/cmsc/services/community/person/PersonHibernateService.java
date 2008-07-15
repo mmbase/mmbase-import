@@ -9,18 +9,25 @@
  */
 package com.finalist.cmsc.services.community.person;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.finalist.cmsc.services.HibernateService;
+import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
+import com.finalist.cmsc.services.community.preferences.Preference;
+import com.finalist.cmsc.services.community.preferences.PreferenceService;
+import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
 /**
@@ -29,6 +36,11 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
 public class PersonHibernateService extends HibernateService implements PersonService {
 
    private AuthenticationService authenticationService;
+    private PreferenceService preferenceService;
+   @Required
+   public void setPreferenceService(PreferenceService preferenceService) {
+		this.preferenceService = preferenceService;
+	}
 
    /** {@inheritDoc} */
    @Transactional(readOnly = true)
@@ -153,4 +165,92 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	   }
 	   return person;
    }
+   @Transactional
+   public void createPerson(Person person) {
+	   getSession().save(person);
+		
+	}/*
+   @Transactional
+	public int batchClean(String type, String condition) {
+	   
+       return 0;
+	}*/
+   @Transactional(propagation = Propagation.REQUIRED)
+	public void batchClean(){
+		List<Person> persons = getAllPersons();
+		for (Person tempPerson : persons) {
+			long authenticationId = tempPerson.getAuthenticationId();
+			preferenceService.batchCleanByAuthenticationId(authenticationId);
+			
+		}
+		String hqlDeletePerson = "delete Person";
+		String hqlDeleteAuthentication = "delete Authentication";
+		getSession().createQuery(hqlDeleteAuthentication)
+		             .executeUpdate();
+		getSession().createQuery(hqlDeletePerson)
+                      .executeUpdate();
+		              
+		             
+
+	}
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteRelationRecord(Long id) {
+		//long id = dataPerson.getAuthenticationId();
+		preferenceService.batchCleanByAuthenticationId(id);
+		authenticationService.deleteAuthentication(id);
+		deletePersonByAuthenticationId(id);
+	}
+	@Transactional(propagation = Propagation.REQUIRED)
+	@SuppressWarnings("unchecked")
+	public void creatRelationRecord(PersonExportImportVO xperson) {
+		Authentication authentication = xperson.getAuthentication();
+	    authentication = authenticationService.createAuthentication(authentication);
+		Person person = new Person();
+		converPersonPropertis(xperson, person);
+		person.setAuthenticationId(authentication.getId());
+		createPerson(person);
+		String userId = xperson.getAuthentication().getUserId();
+		List<Preference> preferences = xperson.getPreferences();
+		for (Preference preference : preferences) {
+			preferenceService.createPreference(preference, userId);
+		}
+	}
+	@Transactional(readOnly = true)
+	public List<PersonExportImportVO> getAllXPerson() {
+		List<PersonExportImportVO> XPersons = new ArrayList<PersonExportImportVO>();
+		List<Person> persons =getAllPersons();
+		if (null == persons) {
+			return null;
+		}
+		for (Person tempPerson : persons) {
+			PersonExportImportVO o = transformToXPerson(tempPerson);
+			XPersons.add(o);
+		}
+		return XPersons;
+	}
+		
+	private void converPersonPropertis(Person t, Person o) {
+		o.setFirstName(t.getFirstName());
+		o.setInfix(t.getInfix());
+		o.setNickname(t.getNickname());
+		o.setLastName(t.getLastName());
+		o.setEmail(t.getEmail());
+		o.setUri(t.getUri());
+	}
+	
+	
+	private PersonExportImportVO transformToXPerson(Person tempPerson) {
+		PersonExportImportVO o = new PersonExportImportVO();
+		converPersonPropertis(tempPerson, o);
+		Long authenticationId = tempPerson.getAuthenticationId();
+		Authentication authentication;
+		authentication = authenticationService.getAuthenticationById(authenticationId);
+		authentication.setAuthorities(null);
+		String userId = authentication.getUserId();
+		List<Preference> preferences = preferenceService.getListPreferencesByUserId(userId);
+		converPersonPropertis(tempPerson, o);
+		o.setAuthentication(authentication);
+		o.setPreferences(preferences);
+		return o;
+	}
 }
