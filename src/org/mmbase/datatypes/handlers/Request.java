@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * This generalizes  one rendition of a form.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Request.java,v 1.1 2008-07-09 22:08:34 michiel Exp $
+ * @version $Id: Request.java,v 1.2 2008-07-15 19:41:01 michiel Exp $
  * @since MMBase-1.9.0
  */
 
@@ -37,7 +37,7 @@ public interface Request {
     /**
      * Gets the user specified value for a field
      */
-    Object getValue(Field field);
+    Object getValue(Node node, Field field);
 
     /**
      * Handler implementation can put properties on the request to do some adminstration.

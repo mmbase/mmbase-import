@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.64 2008-07-15 19:10:41 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.65 2008-07-15 19:41:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -86,10 +87,7 @@ public class DataTypeDefinition {
                         }
                     } else {
                         try {
-                            Class claz = Class.forName(className);
-                            log.debug("Instantiating " + claz + " for " + dataType);
-                            java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (BasicDataType<?>) constructor.newInstance(new Object[] { id });
+                            dt = (BasicDataType<?>) Instantiator.getInstance(childElement, id);
                             if (baseDataType != null) {
                                 // should check class here, perhaps
                                 dt.inherit(baseDataType);
@@ -158,7 +156,7 @@ public class DataTypeDefinition {
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
         configureConditions(dataTypeElement);
-
+        configureHandlers(dataTypeElement);
         return this;
     }
 
@@ -183,6 +181,27 @@ public class DataTypeDefinition {
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
                     log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument().getDocumentURI() + ")");
+                }
+            }
+        }
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    protected void configureHandlers(Element dataTypeElement) {
+        log.debug("Now going to configure handlers for  " + dataType);
+        NodeList childNodes = dataTypeElement.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                if (childElement.getLocalName().equals("handler")) {
+                    String mimeType = childElement.getAttribute("mimetype");
+                    try {
+                        Handler handler = (Handler) Instantiator.getInstance(childElement);
+                        dataType.getHandlers().put(mimeType, handler);
+                    } catch (Exception e) {
+                        log.error("For mimetype " + mimeType + " " + e.getMessage());
+                    }
                 }
             }
         }

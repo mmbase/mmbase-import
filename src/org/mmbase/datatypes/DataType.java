@@ -15,6 +15,7 @@ import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.util.*;
 
 /**
@@ -32,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.68 2008-07-09 22:12:51 michiel Exp $
+ * @version $Id: DataType.java,v 1.69 2008-07-15 19:41:00 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -373,7 +374,12 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     /**
      * @since MMBase-1.9.1
      */
-    public org.mmbase.datatypes.handlers.Handler getHandler(String mimeType);
+    public Handler getHandler(String mimeType);
+    /**
+     * @since MMBase-1.9.1
+     */
+    public Map<String, Handler> getHandlers();
+
 
     /**
      * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
