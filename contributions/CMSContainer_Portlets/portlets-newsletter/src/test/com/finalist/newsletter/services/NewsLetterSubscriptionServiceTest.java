@@ -1,13 +1,10 @@
 package com.finalist.newsletter.services;
 
-import java.util.List;
-
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
 import com.sevenirene.archetype.testingplatform.impl.logic.mock.MockController;
-
 import junit.framework.TestCase;
 
 public class NewsLetterSubscriptionServiceTest extends TestCase {

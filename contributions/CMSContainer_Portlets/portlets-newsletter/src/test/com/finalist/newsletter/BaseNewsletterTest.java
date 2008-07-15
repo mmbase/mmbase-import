@@ -11,6 +11,8 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Node;
 import org.mmbase.storage.search.Step;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -19,8 +21,13 @@ import java.util.List;
 public abstract class BaseNewsletterTest extends TestCase {
 
    protected Cloud cloud;
+   protected DBUnitTemplate dbtemp;
+   protected ApplicationContext context;
 
    protected void setUp() throws Exception {
+      context = new ClassPathXmlApplicationContext("spring-newsletter.xml");
+      dbtemp = (DBUnitTemplate) context.getBean("dbUnitTemplate");
+
       MMBaseContext.init();
       MMBase mmb = MMBase.getMMBase();
 
@@ -38,6 +45,7 @@ public abstract class BaseNewsletterTest extends TestCase {
       query.setNodeStep(theStep);
       List<Node> list = query.getList();
       for (Node node : list) {
+         node.deleteRelations();
          node.delete();
       }
    }
