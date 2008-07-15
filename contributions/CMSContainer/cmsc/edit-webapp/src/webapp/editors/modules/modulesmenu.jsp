@@ -48,6 +48,12 @@
                            <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community" /></a>
                         </li>
                      </mm:haspage>
+                     <mm:haspage page="/editors/community">
+                        <li class="users">
+                           <c:url var="communityUrl" value="/editors/community/report_overview.jsp"/>
+                           <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community.data" /></a>
+                        </li>
+                     </mm:haspage>
                      <mm:haspage page="/editors/community/preferencesearch.jsp">
                         <li class="community">
                            <c:url var="communityUrl" value="/editors/community/preferencesearch.jsp"/>
