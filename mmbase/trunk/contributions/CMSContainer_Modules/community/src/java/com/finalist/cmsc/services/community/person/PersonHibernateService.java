@@ -110,7 +110,6 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       getSession().flush();
    }
    
-   
     @Transactional
    public List<Person> getAllPersons() {
       return getSession().createCriteria(Person.class).list();
@@ -166,11 +165,6 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	   return person;
    }
    
-   @Transactional
-   public void createPerson(Person person) {
-	   getSession().save(person);
-	}
-   
    @Transactional(propagation = Propagation.REQUIRED)
 	public void batchClean(){
 		List<Person> persons = getAllPersons();
@@ -203,7 +197,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		Person person = new Person();
 		converPersonPropertis(xperson, person);
 		person.setAuthenticationId(authentication.getId());
-		createPerson(person);
+		updatePerson(person);
 		String userId = xperson.getAuthentication().getUserId();
 		List<Preference> preferences = xperson.getPreferences();
 		for (Preference preference : preferences) {
