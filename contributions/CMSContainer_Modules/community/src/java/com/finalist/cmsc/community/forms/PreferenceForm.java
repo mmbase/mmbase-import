@@ -14,8 +14,6 @@ public class PreferenceForm  extends ActionForm {
    
    private String value;
    
-   private String offset;
-   
    private String order;  
    
    private String direction;  
@@ -52,14 +50,6 @@ public class PreferenceForm  extends ActionForm {
 
    public void setValue(String value) {
       this.value = value;
-   }
-
-   public String getOffset() {
-      return offset;
-   }
-
-   public void setOffset(String offset) {
-      this.offset = offset;
    }
 
    public String getOrder() {

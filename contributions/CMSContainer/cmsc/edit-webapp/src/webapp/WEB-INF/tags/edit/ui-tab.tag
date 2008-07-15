@@ -3,6 +3,7 @@
 <%@ attribute name="active" rtexprvalue="true" required="false" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="class" value="${active ? 'tab_active' : 'tab'}"/>
 

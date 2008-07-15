@@ -9,11 +9,14 @@
    <c:when test="${tag_op_status eq 'header'}">
       <th>
          <c:choose>
+            <c:when test="${not empty title}">
+               ${title}
+            </c:when>
             <c:when test="${not empty titlekey}">
                <fmt:message key="${titlekey}"/>
             </c:when>
-            <c:when test="${not empty title}">
-               <fmt:message key="${title}"/>
+            <c:when test="${'' eq title}">
+               &nbsp;
             </c:when>
             <c:otherwise>
                <jsp:doBody/>
