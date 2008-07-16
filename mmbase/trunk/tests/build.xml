@@ -25,10 +25,14 @@
   <property name="tests.work.dir"    value="${tests.source.dir}/work" />
   <property name="tests.database.dir"    value="${tests.work.dir}/data" />
 
+  <property name="lib"             location="lib" />
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
+
+
+  <import file="../install-dependency.xml" />
 
   <target name="clean.database">
     <mkdir dir="${tests.database.dir}"/>
@@ -59,78 +63,103 @@
     </java>
   </target>
 
-  <target name="init" depends="expand.junit">
+
+  <target name="local.download" unless="no,no.local.download">
+    <antcall target="mmbase.jar">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="mmbase-resources" />
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="mmbase-rmmci" />
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="rmmci-client">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="mmbase-clustering" />
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <property name="no.local.download" value="no" />
+  </target>
+  <target name="download" unless="no.download" depends="local.download">
+    <mkdir dir="${lib}" />
+    <antcall target="junit">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="servletapi">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="hsqldb">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="commons-fileupload">
+      <param name="dest" location="${lib}" />
+    </antcall>
+    <antcall target="log4j">
+      <param name="dest" location="${lib}" />
+    </antcall>
+  </target>
+
+  <target name="init" depends="download">
+    <mkdir dir="${tests.lib}" />
     <mkdir dir="${tests.work.dir}"/>
 
-
-    <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${target.dir}/mmbase-1.9.0-SNAPSHOT.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
-    <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci.jar"  preservelastmodified="true" />
-    <copy file="${source.dir}/applications/rmmci/target/mmbase-rmmci-client-1.9.0-SNAPSHOT.jar" tofile="${tests.lib}/mmbase-rmmci-client.jar"  preservelastmodified="true" />
-    <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${hsqldb.jar}" todir="${tests.lib}" preservelastmodified="true" />
-
+    <echo message="mmbase version ${version}" />
 
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
-        <fileset dir="${tests.lib}">
-          <include name="*.jar"/>
-          <include name="*.zip"/>
-          <exclude name="mmbase-rmmci.jar"/>
+        <fileset dir="${lib}">
+          <include name="junit*.jar"/>
+          <include name="mmbase-${version}.jar"/>
+          <include name="hsqldb-*.jar"/>
         </fileset>
       </classpath>
       <classpath id="run.classpath">
-        <fileset dir="lib">
+        <fileset dir="${lib}">
+          <include name="junit*.jar" />
+          <include name="hsqldb*.jar" />
+          <include name="log4j*.jar" />
+          <include name="servletapi*.jar" />
+          <include name="commons-fileupload*.jar" />
+          <include name="mmbase-resources*.jar" />
+          <include name="mmbase-${version}.jar" />
         </fileset>
         <fileset dir="${tests.lib}">
-          <include name="junit.jar" />
-          <include name="hsqldb.jar" />
-          <include name="log4j.jar" />
-          <include name="commons-fileupload.jar" />
-          <include name="xalan.jar" />
-
           <include name="mmbase-test.jar" />
-          <include name="mmbase-resources.jar" />
-          <include name="mmbase-1.9.0-SNAPSHOT.jar" />
         </fileset>
       </classpath>
       <classpath id="run.classpath.rmmci">
         <path refid="run.classpath"/>
-        <fileset dir="${tests.lib}">
-          <include name="mmbase-rmmci.jar" />
+        <fileset dir="${lib}">
+          <include name="mmbase-rmmci-${version}.jar" />
         </fileset>
       </classpath>
       <classpath id="run.classpath.clustering">
         <path refid="run.classpath.rmmci"/>
-        <fileset dir="${tests.lib}">
-          <include name="mmbase-clustering.jar" />
+        <fileset dir="${lib}">
+          <include name="mmbase-clustering-*.jar" />
         </fileset>
       </classpath>
       <classpath id="run.rmmci.client">
-        <pathelement location="${tests.source.dir}/fixme" /> <!-- dir must be empty -->
-        <pathelement location="${tests.lib}/junit.jar" />
-        <pathelement location="${tests.lib}/xercesImpl.jar" /> <!-- should not need this, Document must be somehow serialized as String, and reparsed, probably-->
-        <pathelement location="${mmbasetest.jar}" />
-        <pathelement location="${tests.lib}/mmbase-rmmci-client.jar" />
+        <fileset dir="${lib}">
+          <include name="junit*.jar" />
+          <include name="log4j*.jar" />
+          <include name="servletapi*.jar" />
+          <include name="commons-fileupload*.jar" />
+          <include name="mmbase-rmmci-client-*.jar" />
+        </fileset>
+        <fileset dir="${tests.lib}">
+          <include name="mmbase-test.jar" />
+        </fileset>
       </classpath>
     </available>
+    <echo message="${run.classpath}" />
   </target>
 
-  <target name="mmbase">
-    <exec
-        dir="${source.dir}"
-        executable="maven">
-      <arg value="jar"/>
-    </exec>
-
-    <!-- Ant build is broken now
-    <ant dir="${source.dir}" target="jar">
-      <property name="build.documentation" value="false" />
-    </ant>
-    <ant dir="${source.dir}" target="lib.compile" />
-    -->
-  </target>
 
   <!-- =================================================================== -->
   <!-- Clean the JUnit test environment                                    -->
@@ -140,34 +169,13 @@
     <delete dir="${tests.work.dir}"/>
   </target>
 
-  <target name="init.get">
-    <!-- JUnit -->
-    <property name="junit.version" value="junit3.8.1"/>
-    <property name="junit.url" value="http://www.mmbase.org/download/jars/junit/${junit.version}.zip"/>
-    <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
-    <available property="junit.present"
-      file="${download.dir}/${junit.version}.zip"/>
-    <available property="junit.expanded"
-               file="${expand.dir}/${junit.version}"/>
-
-  </target>
 
 
-  <target name="get.junit" depends="init.get" unless="junit.present">
-    <get src="${junit.url}"
-         dest="${download.dir}/${junit.version}.zip"
-         verbose="on"/>
-  </target>
 
-  <target name="expand.junit" depends="get.junit" unless="junit.expanded">
-    <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
-  </target>
+  <target name="compile" description="Compile the source directory" depends="init">
 
-
-  <target name="compile" description="Compile the source directory" depends="init,expand.junit">
 
     <mkdir dir="${tests.build.dir}/classes"/>
-    <echo message="java version: ${ant.java.version}" />
 
     <echo message="copying" />
 
@@ -316,8 +324,9 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.bridge" depends="mmbase,jar,init" description="Bridge tests">
+  <target name="run.bridge" depends="init,jar" description="Bridge tests">
     <antcall target="clean.database" />
+    <echo message="Starting ${ui.class}: " />
     <java
         classname="${ui.class}"
         fork="true"
@@ -330,10 +339,11 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge.rmmci" depends="mmbase,jar,init" description="Bridge tests (through RMMCI)">
+  <target name="run.bridge.rmmci" depends="init,jar" description="Bridge tests (through RMMCI)">
     <antcall target="clean.database" />
     <parallel>
       <daemons>
+        <echo message="starting mmbase server" />
         <java
             classname="org.mmbase.tests.MMBaseTest"
             fork="true"
@@ -341,12 +351,12 @@ Build-compiler: ${build.compiler}
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Drmmci.port=1221" />
-          <jvmarg value="-Drmmci.bindname=localhost" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
           <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
       </daemons>
-      <echo message="${tests.lib}/mmbase-rmmci.jar" />
+      <echo message="starting client" />
       <java
           classname="${ui.class}"
           fork="true"
