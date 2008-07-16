@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.158 2008-06-13 13:35:12 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.159 2008-07-16 11:02:43 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -111,6 +111,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     public  CloudContext getDefaultCloudContext() throws JspTagException {
         if (cloudContext == null) {
             cloudContext = ContextProvider.getCloudContext(cloudURI.getString(this));
+            if (cloudContext == null) throw new RuntimeException("ContextProvider gave <code>null</code> for " + cloudURI.getString(this));
         }
         return cloudContext;
     }
@@ -213,7 +214,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     protected int getMethod() throws JspTagException {
         String m = method.getString(this);
-        int r =  cloudContext.getAuthentication().getMethod(m);
+        AuthenticationData data = getDefaultCloudContext().getAuthentication();
+        int r =  data == null ? -1 : data.getMethod(m);
         if (log.isDebugEnabled()) {
             log.debug("method '" + m + "' -> " + r);
         }
@@ -401,7 +403,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (response.isCommitted()) {
             throw new JspTagException("Response is commited already, cannot send a deny");
         }
-        
+
         request.setAttribute("org.mmbase.cloudtag.denied_message", message);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -512,7 +514,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
         pageContext.setAttribute(KEY, cloud, SCOPE);
 
-        cloud.setProperty("request", request);
+        if (cloud.getCloudContext() instanceof LocalContext) {
+            cloud.setProperty("request", request);
+        }
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
         if (jspVar != null) {
