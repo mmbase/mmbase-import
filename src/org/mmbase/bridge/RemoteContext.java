@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.10 2008-07-16 10:50:14 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.11 2008-07-16 11:01:51 michiel Exp $
  * @since MMBase-1.5
  */
 public abstract class RemoteContext {
@@ -36,7 +36,7 @@ public abstract class RemoteContext {
         try {
 
             Object remoteCloudContext= Naming.lookup(uri);
-            Class<?> clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
+            Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.RemoteCloudContext_Proxy");
             Constructor<?> constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
             return (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
             //new RemoteCloudContext_Impl(remoteCloudContext);
