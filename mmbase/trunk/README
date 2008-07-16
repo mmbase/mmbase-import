@@ -8,3 +8,7 @@ maven -Dmaven.test.skip=true jar:install
 - ant     -> maven
 
 - ant bindist -> maven all:install, cd example-war; maven war:install
+
+
+If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
+Sadly it is impossible to find out how to configure a timeout setting for that.
