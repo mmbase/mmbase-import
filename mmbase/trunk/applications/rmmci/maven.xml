@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
-<project xmlns:j="jelly:core" 
-	xmlns:ant="jelly:ant" 
-	xmlns:maven="jelly:maven" 
+<project xmlns:j="jelly:core"
+	xmlns:ant="jelly:ant"
+	xmlns:maven="jelly:maven"
 	xmlns:artifact="artifact">
 
   	<preGoal name="java:init">
@@ -29,7 +29,7 @@ See http://www.MMBase.org/license
     <goal name="rmmci-generator:generato.compile">
       <attainGoal name="java:prepare-filesystem" />
       <ant:mkdir dir="${maven.build.dir}/generator/classes"/>
-    
+
       <ant:javac srcdir="${basedir}/generator/src"
                destdir="${maven.build.dir}/generator/classes"
                debug="yes"
@@ -45,7 +45,7 @@ See http://www.MMBase.org/license
     <!-- Generate the source for the remote classes      -->
     <!-- =================================================================== -->
     <goal name="rmmci-generator:generate.remote" prereqs="rmmci-generator:generato.compile">
-    
+
       <ant:mkdir dir="${maven.build.dir}/generated-src/main/java/org/mmbase/bridge/remote"/>
       <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
            using the sun jaxp implementation. By forking we do not use the ant classloader -->
@@ -56,7 +56,7 @@ See http://www.MMBase.org/license
         </ant:classpath>
         <ant:arg value="${maven.build.dir}/generated-src/main/java"/>
       </ant:java>
-        
+
       <ant:path id="maven.mmbase.generator.compile.src.set" location="${maven.build.dir}/generated-src/main/java"/>
       <maven:addPath id="maven.compile.src.set" refid="maven.mmbase.generator.compile.src.set"/>
     </goal>
@@ -65,10 +65,10 @@ See http://www.MMBase.org/license
     <j:set var="client.build.dir" value="${maven.build.dir}/client/classes"/>
 
     <ant:mkdir dir="${client.build.dir}"/>
-    
+
     <j:forEach var="lib" items="${pom.artifacts}">
       <j:set var="dep" value="${lib.dependency}"/>
-      <j:if test="${dep.type =='jar' and dep.groupId == 'mmbase' and dep.artifactId == 'mmbase'}"> 
+      <j:if test="${dep.type =='jar' and dep.groupId == 'mmbase' and dep.artifactId == 'mmbase'}">
         <ant:unjar src="${lib.path}" dest="${client.build.dir}">
           <patternset>
             <include name="org/mmbase/bridge/*"/>                         <!-- of course -->
@@ -81,6 +81,8 @@ See http://www.MMBase.org/license
             <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
             <include name="org/mmbase/security/Rank.class"/>              <!-- security classes are bridge -->
             <include name="org/mmbase/security/SecurityException.class"/> <!-- security classes are bridge -->
+            <include name="org/mmbase/security/Action*.class"/> <!-- security classes are bridge -->
+            <include name="org/mmbase/security/Configurable*.class"/> <!-- security classes are bridge -->
 
             <include name="org/mmbase/util/functions/**"/>               <!-- functions are bridge -->
 
@@ -146,7 +148,7 @@ See http://www.MMBase.org/license
         </ant:unjar>
       </j:if>
     </j:forEach>
-    
+
     <ant:unjar src="${maven.build.dir}/${maven.jar.final.name}" dest="${client.build.dir}">
       <patternset>
         <include name="org/mmbase/bridge/remote/*"/>
@@ -155,9 +157,9 @@ See http://www.MMBase.org/license
         <include name="org/mmbase/bridge/remote/proxy/*"/>
       </patternset>
     </ant:unjar>
-    
+
     <j:set var="client.final.name" value="${pom.artifactId}-client${maven.final.name.substring(pom.artifactId.length())}"/>
-    <ant:jar 
+    <ant:jar
          destfile="${maven.build.dir}/${client.final.name}.jar"
          basedir="${client.build.dir}"
          update="true"
@@ -191,7 +193,7 @@ See http://www.MMBase.org/license
         artifact="${maven.build.dir}/${client.final.name}.jar"
         artifactIdOverride="${pom.artifactId}-client"
         type="jar"
-        project="${pom}"/> 
+        project="${pom}"/>
   </goal>
 
 </project>
