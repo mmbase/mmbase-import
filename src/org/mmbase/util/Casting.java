@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.112 2008-07-11 14:47:37 michiel Exp $
+ * @version $Id: Casting.java,v 1.113 2008-07-16 09:34:10 michiel Exp $
  */
 
 import java.util.*;
@@ -304,6 +304,8 @@ public class Casting {
     public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
         if (o instanceof Writer) {
             return writer;
+        } else if (o instanceof SortedBundle.ValueWrapper) {
+            o = ((SortedBundle.ValueWrapper) o).getKey();
         }
         Object s = wrap(o, null);
         if (s instanceof org.mmbase.storage.search.SearchQuery) {
