@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.90 2008-07-15 22:08:14 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.91 2008-07-16 09:33:43 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -1260,8 +1260,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected <D> D preCast(D v, Cloud cloud) {
             if (getValue() == null) return v;
             try {
-                return (D) value.castKey(v, cloud);
-                //return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
+                if (v == null) return null;
+                Object res = value.castKey(v, cloud);
+                // type may have changed (to some value wrapper). Undo that:
+                return (D) Casting.toType(v.getClass(), cloud, res);
             } catch (NoClassDefFoundError ncdfe) {
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
                 return v;
