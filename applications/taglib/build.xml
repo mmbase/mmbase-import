@@ -20,7 +20,7 @@
 
   <target name="jar"           depends="jar1,jar2" />
   <target name="package"       depends="jar,taglib.doc,buildbase.package" />
-  <target name="install"       depends="install.dependencies,jar,install.documentation,install.taglib2.tld">    
+  <target name="install"       depends="install.dependencies,jar,install.documentation,install.taglib2.tld">
     <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
     <!-- web-app 2.3 compatibility
     <copy file="${project.jar}"          todir="${release.lib.dir}" />
@@ -127,7 +127,7 @@
 
 
   <target name="taglib.doc" description="Make the MMBase taglib taglib documentation"
-          depends="init,compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
+          depends="init,init.compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
     <mkdir dir="${project.build.dir}/documentation/frontenddevelopers/taglib/reference"/>
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
