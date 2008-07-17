@@ -57,12 +57,10 @@ public abstract class ObjectWrapper {
                 }
             } else if (o instanceof SortedSet) {
                 SortedSet<?> in = (SortedSet<?>)o;
-                System.err.println("convert treeset from "+ in);
                 SortedSet<Object> set = new TreeSet<Object>();
                 for (Object object : in) {
                     set.add(rmiObjectToRemoteProxy(object));
                 }
-                System.err.println("convert treeset to"+ in);
                 retval = set;
             } else if (o instanceof List) {
                 List<?> source = (List<?>)o;
