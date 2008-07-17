@@ -35,7 +35,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.107 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.108 2008-07-17 10:58:08 michiel Exp $
  * @see ContextTag
  */
 
@@ -367,6 +367,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      */
     public Attribute getAttribute(String attribute) throws JspTagException {
         return Attribute.getAttribute(attribute);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public Attribute getAttribute(String attribute, boolean interpretEmptyAsAbsent) throws JspTagException {
+        return Attribute.getAttribute(attribute, interpretEmptyAsAbsent);
     }
 
     /**
