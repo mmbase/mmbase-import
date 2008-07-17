@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.10 2008-07-17 13:52:48 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -142,13 +142,24 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         Constraint newConstraint = Queries.createConstraint(query, field.getString(this), Queries.getOperator(operator.getString(this)),
                                                             compareValue, compareValue2, getCaseSensitive(), Queries.getDateTimePart(part.getString(this)));
 
+        if (newConstraint instanceof FieldValueConstraint && ! inverse.getBoolean(this, false)) {
+            // some arrangement for if this happens to be a constraint on a number field
+            FieldValueConstraint fv = (FieldValueConstraint) newConstraint;
+            if (fv.getOperator() == FieldCompareConstraint.EQUAL && fv.getField().getFieldName().equals("number")) {
+                query.addNode(fv.getField().getStep(), query.getCloud().getNode(org.mmbase.util.Casting.toString(fv.getValue())).getNumber());
+                return null;
+            }
+
+        }
+
+
         //buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
 
         // if there is a OR or an AND tag, add
         // the constraint to that tag,
         // otherwise add it direct to the query
         QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
-        if (cons!=null) {
+        if (cons != null) {
             cons.addChildConstraint(newConstraint);
         } else {
             newConstraint = Queries.addConstraint(query, newConstraint);
