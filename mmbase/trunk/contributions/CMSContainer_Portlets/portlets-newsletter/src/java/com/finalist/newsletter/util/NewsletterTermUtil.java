@@ -79,11 +79,9 @@ public abstract class NewsletterTermUtil {
          SearchUtil.addLikeConstraint(query, termNodeManager.getField("name"), name);
       }
       int count = query.getMaxNumber();
-      System.out.println("---------->count="+count);
       if(query.getList() != null) {
          size = query.getList().size();
       }
-      System.out.println("---------->size="+size);
       return size;
    }
    
