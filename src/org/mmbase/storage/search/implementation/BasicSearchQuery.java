@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.45 2008-02-22 12:28:19 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.46 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -155,25 +155,28 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 newRelationStep.setCheckedDirectionality(relationStep.getCheckedDirectionality());
                 newRelationStep.setRole(relationStep.getRole());
                 newRelationStep.setAlias(relationStep.getAlias());
-                Iterator<Integer> j = relationStep.getNodes().iterator();
-                while (j.hasNext()) {
-                    newRelationStep.addNode( j.next().intValue());
+                if (relationStep.getNodes() != null) {
+                    for (Integer j : relationStep.getNodes()) {
+                        newRelationStep.addNode(j);
+                    }
                 }
                 BasicStep next    = (BasicStep) relationStep.getNext();
                 BasicStep newNext = (BasicStep) newRelationStep.getNext();
                 newNext.setAlias(next.getAlias());
-                j = next.getNodes().iterator();
-                while (j.hasNext()) {
-                    newNext.addNode( j.next().intValue());
+                if (next.getNodes() != null) {
+                    for (Integer j : next.getNodes()) {
+                        newNext.addNode(j);
+                    }
                 }
                 i.next(); // dealt with that already
 
             } else {
                 BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
                 newStep.setAlias(step.getAlias());
-                Iterator<Integer> j = step.getNodes().iterator();
-                while (j.hasNext()) {
-                    newStep.addNode( j.next().intValue());
+                if (step.getNodes() != null) {
+                    for (Integer j : step.getNodes()) {
+                        newStep.addNode(j);
+                    }
                 }
             }
         }

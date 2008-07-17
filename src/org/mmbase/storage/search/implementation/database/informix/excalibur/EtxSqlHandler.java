@@ -36,7 +36,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.10 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.11 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
@@ -230,7 +230,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
         Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
             Step step = iSteps.next();
-            if (step instanceof RelationStep || step.getNodes().size() > 0) {
+            if (step instanceof RelationStep || step.getNodes() != null) {
                 // Additional constraints on relations or nodes.
                 return true;
             }
@@ -298,7 +298,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
 
         for (Iterator<Element> eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
             Element sbspace = eSbspaces.next();
-            
+
             for (Iterator<Element> eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
                 Element etxIndex = eEtxIndices.next();
                 String table = configReader.getEtxindexTable(etxIndex);

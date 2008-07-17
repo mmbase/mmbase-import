@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a table name and alias in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Step.java,v 1.5 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id: Step.java,v 1.6 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Step {
@@ -37,7 +37,7 @@ public interface Step {
 
     /**
      * Gets nodenumbers for nodes that must be included in this step.
-     * A null value indicates that no such constraint is applied.
+     * A <code>null</code> value indicates that no such constraint is applied.
      * <p>
      * This corresponds to a "number IN (....)" constraint in SQL SELECT syntax.
      * <p>

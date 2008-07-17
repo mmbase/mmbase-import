@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.74 2007-09-05 08:12:13 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.75 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -467,7 +467,7 @@ public class BasicSqlHandler implements SqlHandler {
 
             // Included nodes.
             SortedSet<Integer> nodes = step.getNodes();
-            if (nodes.size() > 0) {
+            if (nodes != null) {
                 if (sbNodes.length() > 0) {
                     sbNodes.append(" AND ");
                 }
