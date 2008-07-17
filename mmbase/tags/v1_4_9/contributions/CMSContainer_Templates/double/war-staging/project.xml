@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>application-staging</artifactId>
+    <name>Application staging web application</name>
+    <shortDescription>Application staging web application</shortDescription>
+	<dependencies>
+	
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>application-webapp</artifactId>
+         <version>${application.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-tasks</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-versioning</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-pagewizard</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-linkvalidator</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+   	    <dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-workflow</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+	</dependencies>
+</project>

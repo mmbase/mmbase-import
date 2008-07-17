@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="cmsc file dumper" timestamp="20060704141419">
+	<node number="102341" owner="default">
+		<title>event</title>
+		<description>Event</description>
+		<resource>calendar/list.jsp</resource>
+	</node>
+</view>

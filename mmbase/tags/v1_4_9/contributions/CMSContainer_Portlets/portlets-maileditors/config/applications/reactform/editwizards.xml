@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/reactform" timestamp="20040225000000">
+
+	<node number="33004" owner="admin">
+		<name>Reactform</name>
+		<description>Reactform </description>
+		<wizard>config/reactform/reactform</wizard>
+		<nodepath>reactform</nodepath>
+		<fields>title</fields>
+	</node>
+
+</editwizards>

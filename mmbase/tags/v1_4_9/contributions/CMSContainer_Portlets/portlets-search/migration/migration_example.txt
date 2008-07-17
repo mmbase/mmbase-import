@@ -1,0 +1,42 @@
+Migration document:
+
+Intro:
+This is the empty migration document.
+This document should be used as a base for all the upgrade documents between the subversions.
+(e.g. from 1.2 to 1.3 and from 1.5 to 2.0 providing there is no 1.6)
+Please name the new migration document migration_[version].[subversion]_to_[version].[subversion].txt
+and remove this intro from the new migration document.
+
+Part: (core/modules/portlet [name])
+From versie: x.x
+To versie: x.x
+
+
+Execute the following steps below in the given order:
+
+Name:  
+Goal:
+Type:  sql-script
+--- Start script ---
+(paste script here)
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
+Name:  
+Goal:
+Type:  manual action
+Steps:
+*
+*
+*
+*
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+

@@ -1,0 +1,25 @@
+.treeskin {
+   position:absolute;
+   width:175px;
+   background-color:menu;
+   border:2px solid black;
+   font:normal 12px Verdana;
+   line-height:18px;
+   z-index:100;
+   visibility:hidden;
+}
+
+.treeskin a {
+   text-decoration:none;
+   color:black;
+   padding-left:10px;
+   padding-right:10px;
+}
+
+#mouseoverstyle {
+   background-color:highlight;
+}
+
+#mouseoverstyle a {
+   color:white;
+}

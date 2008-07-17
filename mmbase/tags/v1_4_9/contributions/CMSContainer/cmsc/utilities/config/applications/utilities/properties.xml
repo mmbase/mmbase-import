@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/utilities" timestamp="20050101000000">
+
+	<node number="300" owner="admin">
+		<key>mail.system.name</key>
+		<value>CMSContainer mailer</value>
+	</node>
+	<node number="301" owner="admin">
+		<key>mail.system.email</key>
+		<value>nico@finalist.com</value>
+	</node>
+	<node number="302" owner="admin">
+		<key>mail.error.email</key>
+		<value>nico@finalist.com</value>
+	</node>
+
+</properties>

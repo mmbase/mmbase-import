@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+        "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+    <!-- ========== Data Sources Definitions =================================== -->
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+    </form-beans>
+
+    <!-- ========== Global Exceptions Definitions =================================== -->
+    <!-- ========== Global Forward Definitions =================================== -->
+    <!-- ========== Action Mapping Definitions =================================== -->
+    <action-mappings>
+
+        <action path="/editors/upload/OdtUpload" type="com.finalist.cmsc.openoffice.forms.OODocUploadAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/upload/display_unsaved_files.do"/>
+        </action>
+
+        <action path="/editors/upload/display_unsaved_files"
+                type="com.finalist.cmsc.openoffice.forms.UnSavedFilesDisplayAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/repository/uploadodt.jsp"/>
+        </action>
+
+
+        <action path="/editors/upload/DeleteOdt" type="com.finalist.cmsc.openoffice.forms.OODocDeleteAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/upload/display_unsaved_files.do"/>
+        </action>
+
+        <action path="/editors/upload/OdtStore" type="com.finalist.cmsc.openoffice.forms.OODocStoreAction"
+                unknown="false"
+                validate="false">
+            <!--forward name="success" path="/editors/repository/uploadodt.jsp" redirect="false" /-->
+            <forward name="success" path="/editors/repository/Content.do" redirect="true"/>
+            <forward name="edit" path="/editors/WizardInitAction.do" redirect="true"/>
+        </action>
+        <action path="/editors/upload/AddSingle" type="com.finalist.cmsc.openoffice.forms.AddSingleAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/upload/OdtStore.do"/>
+        </action>
+    </action-mappings>
+    <message-resources parameter="cmcs-openoffice" key="OPENOFFICE"/>
+</struts-config>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_banner">
+	<title xml:lang="nl">Banner</title>
+	<title xml:lang="en">Banner</title>
+
+	<field name="title" dtrequired="true">
+		<prompt xml:lang="nl">Titel</prompt>
+        <prompt xml:lang="en">Title</prompt>
+	</field>
+    <field name="timeout" dtpattern="^\d+$">
+        <prompt xml:lang="nl">Timeout</prompt>
+        <prompt xml:lang="en">Timeout</prompt>
+    </field>
+    <field name="use_maxclicks" ftype="enum">
+        <prompt xml:lang="nl">Gebruik maximum klikken</prompt>
+        <prompt xml:lang="en">Use maximum clicks</prompt>
+        <optionlist select="boolean" />
+    </field>
+	<field name="maxclicks" dtpattern="^\d+$">
+		<prompt xml:lang="nl">Maximum klikken</prompt>
+        <prompt xml:lang="en">Maximum clicks</prompt>
+	</field>
+    <field name="width" ftype="enum">
+        <prompt xml:lang="nl">Breedte</prompt>
+        <prompt xml:lang="en">Width</prompt>
+        <optionlist select="width" />
+    </field>
+    <field name="height" dtpattern="^\d+$|-1">
+        <prompt xml:lang="nl">Hoogte (-1 is auto)</prompt>
+        <prompt xml:lang="en">Height (-1 is auto)</prompt>
+    </field>
+    <field name="publishdate">
+        <prompt xml:lang="en">Show from</prompt>
+        <prompt xml:lang="nl">Toon van</prompt>
+    </field>
+    <field name="archivedate">
+        <prompt xml:lang="en">Show until</prompt>
+        <prompt xml:lang="nl">Toon tot</prompt>
+    </field>
+
+    <list include="config/banner/search_banner_posrel_customer.xml" />
+    <list include="config/banner/search_banner_posrel_urls.xml" />
+    <list include="config/banner/search_banner_imagerel_images.xml" />
+    <list include="config/banner/search_banner_posrel_attachments.xml" />
+    <!-- <list include="config/banner/search_banner_posrel_flash_urls.xml" />
+    -->
+</form-schema>
