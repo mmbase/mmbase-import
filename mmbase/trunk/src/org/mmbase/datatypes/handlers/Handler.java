@@ -19,11 +19,11 @@ import org.mmbase.storage.search.Constraint;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.1 2008-07-09 22:08:34 michiel Exp $
+ * @version $Id: Handler.java,v 1.2 2008-07-17 16:27:16 michiel Exp $
  * @since MMBase-1.9.1
  */
 
-public interface Handler<C> {
+public interface Handler<C> extends java.io.Serializable {
 
 
     /**
