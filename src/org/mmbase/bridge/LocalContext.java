@@ -22,7 +22,7 @@ import org.mmbase.bridge.implementation.BasicCloudContext;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: LocalContext.java,v 1.7 2008-07-15 21:33:22 michiel Exp $
+ * @version $Id: LocalContext.java,v 1.8 2008-07-17 17:15:27 michiel Exp $
  */
 public final class LocalContext extends BasicCloudContext {
 
@@ -43,6 +43,10 @@ public final class LocalContext extends BasicCloudContext {
     public static LocalContext getCloudContext() {
         if (thisContext == null)  thisContext = new LocalContext();
         return thisContext;
+    }
+
+    public String getUri() {
+        return ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME;
     }
 
 }
