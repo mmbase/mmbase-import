@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.36 2008-04-25 15:37:58 nklasens Exp $
+ * @version $Id: Attribute.java,v 1.37 2008-07-17 10:58:08 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,12 +45,22 @@ public class Attribute {
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
      * @param at unparsed attribute
+     * @param interpretEmptyAsAbsent whether the empty attribute should be interpreted as no
+     * attribute at all (default to false).
      * @return Attribute
      * @throws JspTagException when parsing of attributes fails
+     * @since MMBase-1.9
      */
-    public static final Attribute getAttribute(final String at) throws JspTagException {
+    public static final Attribute getAttribute(final String at, boolean interpretEmptyAsAbsent) throws JspTagException {
         if (at == null) return NULL;
+        if (interpretEmptyAsAbsent && at.length() == 0) {
+            log.info("Interpreting " + at + " as NULL");
+            return NULL;
+        }
         return cache.getAttribute(at);
+    }
+    public static final Attribute getAttribute(final String at) throws JspTagException {
+        return getAttribute(at, false);
     }
 
     /**
