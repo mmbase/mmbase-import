@@ -8,7 +8,7 @@
 
 
 	<item>
-		<field name="name"  dtrequired="true">
+		<field name="name"  ftype="data">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Name</prompt>
 		</field>
@@ -26,12 +26,6 @@
 		</search-filter>
 	</command>
 	
-	<command name="insert" objectnumber="new">
-		<prompt xml:lang="en">New</prompt>
-		<prompt xml:lang="nl">Nieuw</prompt>
-
-	</command>
-
 	<action type="create">
    	<relation destinationtype="term" role="posrel">
 			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='term']/../field[@name='pos'])-{$pos}}</field>

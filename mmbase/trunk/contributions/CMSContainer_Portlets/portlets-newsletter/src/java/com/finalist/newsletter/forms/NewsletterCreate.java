@@ -53,7 +53,7 @@ public class NewsletterCreate extends MMBaseFormlessAction {
 
             // Create a default term for this newsletter
             
-            NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
+           // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
             
             newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newNewsletter.getStringValue("schedule")));

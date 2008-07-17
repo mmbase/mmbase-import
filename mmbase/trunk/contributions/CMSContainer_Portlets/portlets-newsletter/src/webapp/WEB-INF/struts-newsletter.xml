@@ -13,6 +13,7 @@
       <form-bean name="NewletterPublicationForm" type="com.finalist.newsletter.forms.NewletterPublicationForm" />
       <form-bean name="newsletterPublicationManageForm" type="com.finalist.newsletter.forms.NewsletterPublicationManageForm"/>
       <form-bean name="newsletterSubscriberSearchForm" type="com.finalist.newsletter.forms.NewsletterSubscriberSearchForm"/>
+      <form-bean name="newsletterTermForm" type="com.finalist.newsletter.forms.NewsletterTermForm"/>
    </form-beans>
    <!-- ========== Global Exceptions Definitions =================================== -->
    <!-- ========== Global Forward Definitions =================================== -->
@@ -175,6 +176,12 @@
 			input="/editors/newsletter/ShowNewsletters.do" validate="true"
 			parameter="search">
 			<forward name="result" path="/editors/newsletter/showNewsletters.jsp" redirect="false" />
+		</action>
+      <!-- ==== Newsletter Term ==== -->
+      <action path="/editors/newsletter/module/NewsletterTermAction" name="newsletterTermForm"   scope="request" type="com.finalist.newsletter.forms.NewsletterTermAction" unknown="false" validate="false" parameter="method">
+			<forward name="success" path="/editors/newsletter/module/newslettertermlist.jsp" redirect="false" />
+         <forward name="list" path="/editors/newsletter/module/NewsletterTermAction.do?method=list" redirect="false" />
+         <forward name="add" path="/editors/newsletter/module/newslettertermadd.jsp" redirect="false" />
 		</action>
    </action-mappings>
 

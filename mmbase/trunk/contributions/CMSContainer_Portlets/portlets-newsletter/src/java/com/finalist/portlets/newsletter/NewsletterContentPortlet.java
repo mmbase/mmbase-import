@@ -114,8 +114,8 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
          }
          else {
-            totalItems = NewsletterUtil.countArticlesByNewsletter(termNumbers);
-            elements = NewsletterUtil.getArticlesByNewsletter(termNumbers,offset,elementsPerPage,orderBy,direction);
+            totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber,termNumbers);
+            elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,termNumbers,offset,elementsPerPage,orderBy,direction);
          }
 
          if (startIndex > 0) {
