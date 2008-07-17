@@ -24,11 +24,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.42 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: Authentication.java,v 1.43 2008-07-17 15:58:52 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
+
+    protected final Map<String, Object> attributes = new java.util.concurrent.ConcurrentHashMap<String, Object>();
     static {
         try {
             PARAMETER_USERNAME.getLocalizedDescription().setBundle(STRINGS);
@@ -204,5 +206,9 @@ public abstract class Authentication extends Configurable implements Authenticat
      */
     public long getKey() {
         return key;
+    }
+
+    public Object getAttribute(String key) {
+        return attributes.get(key);
     }
 }
