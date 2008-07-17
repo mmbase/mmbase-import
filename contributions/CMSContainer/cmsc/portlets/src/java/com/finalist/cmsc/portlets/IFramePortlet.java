@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -158,8 +159,18 @@ public class IFramePortlet extends CmscPortlet {
          content.append("<table width='100%'><tr><td>");
       }
       
+      StringBuffer params = new StringBuffer();
+      boolean first = true;
+      for(String param:(Set<String>)(request.getParameterMap().keySet())) {
+    	  params.append((first && !source.contains("?"))?"?":"&");
+    	  first = false;
+    	  params.append(param);
+    	  params.append("=");
+    	  params.append(request.getParameter(param));
+      }
+      
       content.append("<iframe");
-      content.append(" src=\"").append(source).append("\"");
+      content.append(" src=\"").append(source).append(params).append("\"");
       if (alignAttr != null) content.append(" align=\"").append(alignAttr).append("\"");
       if (classAttr != null) content.append(" class=\"").append(classAttr).append("\"");
       if (frameBorderAttr != null)
