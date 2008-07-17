@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.426 2008-07-01 08:20:31 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.427 2008-07-17 13:53:16 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -181,6 +181,26 @@ version: $Id: mmbase-taglib.xml,v 1.426 2008-07-01 08:20:31 michiel Exp $
     <name>managerProperty</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.lang.Object managerProperty(java.lang.String, java.lang.String)</function-signature>
+    <since>MMBase-1.8.6</since>
+    <see tag="property" />
+  </function>
+  <function>
+    <description>
+      Property of a module
+    </description>
+    <name>moduleProperty</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Object moduleProperty(java.lang.String, java.lang.String)</function-signature>
+    <since>MMBase-1.8.6</since>
+    <see tag="property" />
+  </function>
+  <function>
+    <description>
+      Property of the cloud
+    </description>
+    <name>property</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Object property(java.lang.String)</function-signature>
     <since>MMBase-1.8.6</since>
     <see tag="property" />
   </function>
@@ -7479,6 +7499,34 @@ The 0 is just counter, which starts at 0 on every page.
   </mm:listnodes>
 </mm:listnodescontainer>]]>
     </example>
+  </tag>
+
+  <tag>
+    <name>addnode</name>
+    <type>mmbase.list</type>
+    <extends>querycontainerreferrer</extends>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAddNodeTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <see tag="querycontainer" />
+    <since>MMBase-1.9</since>
+    <attribute>
+      <name>element</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The step to which the nodes must be added
+      </info>
+    </attribute>
+    <attribute>
+      <name>number</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The node(s) to be added
+      </info>
+    </attribute>
   </tag>
 
   <tag>
