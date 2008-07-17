@@ -1,8 +1,8 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@page isErrorPage="true"%>
-<%@include file="globals.jsp"%>
-<%@page import="java.io.*,java.text.*"%>
-<%!
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@page isErrorPage="true"
+%><%@include file="globals.jsp"
+%><%@page import="java.io.*,java.text.*"
+%><%!
     Logger log = Logging.getLoggerInstance("ERROR-JSP");
 
    /** the date + time long format */
@@ -25,7 +25,9 @@
 	long ticket = System.currentTimeMillis();
 
 	String msg = net.sf.mmapps.commons.util.HttpUtil.getErrorInfo(request, exception, ticket, version);
-	
+	request.setAttribute("msg", msg);
+
+   
 	String message = "";
 	if (exception != null) {
 		message = exception.getMessage();
@@ -49,7 +51,7 @@
 <form action="<c:url value='/error/senderror.jsp' />" method="post">
 	<input type="hidden" name="messagetype" value="500" />
 	<input type="hidden" name="ticket" value="<%= ticket %>" />
-	<input type="hidden" name="message" value="<%= msg %>" />
+	<input type="hidden" name="message" value="<c:out value="${msg}"/>" />
 </form>
 <p><a href="javascript:document.forms[0].submit();"><fmt:message key="exception.500.send" /></a></p>
 
@@ -64,9 +66,9 @@
          }
       }
 </script>
-<P>
+<p>
    <a href="javascript:showError();"><fmt:message key="exception.500.showerror" /></a>
-</P>
+</p>
 <div id="errordiv" style="display:none">
 <pre><%= getDateTimeString(ticket) %> - <%= message %></pre>
 <br /><br />

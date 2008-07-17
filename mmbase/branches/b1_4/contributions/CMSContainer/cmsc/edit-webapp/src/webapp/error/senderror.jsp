@@ -25,10 +25,8 @@ catch(Throwable exception) {
 	log.error(wr.toString());
 }
 %>
-<html>
-<head>
-</head>
-<body>
-	Error has been submitted.
-</body>
-</html>
+<c:set var="title" scope="request">Error is submitted</c:set>
+<%@include file="header.jsp"%>
+<p>Error has been submitted properly.</p>
+<p>Thank you!</p>
+<%@include file="footer.jsp"%>
