@@ -30,7 +30,6 @@
    	<relation destinationtype="term" role="posrel">
 			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='term']/../field[@name='pos'])-{$pos}}</field>
 			<object type="term">
-         <field name="subject">{object[@type='newsletter']/field[@name='title']}</field>
          </object>
 		</relation>
 	</action>
