@@ -19,7 +19,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.12 2008-06-13 09:22:46 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.13 2008-07-17 17:22:43 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -166,19 +166,22 @@ public class FunctionsTest extends BridgeTest {
      * XXX really not complete yet
      */
     public void testFunctionSets() {
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            Function testfunc1 = FunctionSets.getFunction("utils", "randomLong");
+            assertTrue("function 'randomLong' not found (functionset 'utils')", testfunc1 != null);
+            // long randomLong = testfunc1.getFunctionValue(null);
+            Function testfunc2 = FunctionSets.getFunction("testfunctions", "testBoolean");
+            assertTrue("function 'testBoolean' not found (functionset 'testfunctions')", testfunc2 != null);
 
-        Function testfunc1 = FunctionSets.getFunction("utils", "randomLong");
-        assertTrue("function 'randomLong' not found (functionset 'utils')", testfunc1 != null);
-        // long randomLong = testfunc1.getFunctionValue(null);
-        Function testfunc2 = FunctionSets.getFunction("testfunctions", "testBoolean");
-        assertTrue("function 'testBoolean' not found (functionset 'testfunctions')", testfunc2 != null);
-
-        Parameters params2 = testfunc2.createParameters();
-        params2.set("inBoolean", Boolean.valueOf(true));
+            Parameters params2 = testfunc2.createParameters();
+            params2.set("inBoolean", Boolean.valueOf(true));
 
 
-        Object result = testfunc2.getFunctionValue(params2);
-        assertTrue("Expected return value of type 'Boolean', but got: '" + result + "'", result instanceof java.lang.Boolean);
-        assertTrue("function 'testBoolean' didn't return true as was expected", ((Boolean) result).booleanValue());
+            Object result = testfunc2.getFunctionValue(params2);
+            assertTrue("Expected return value of type 'Boolean', but got: '" + result + "'", result instanceof java.lang.Boolean);
+            assertTrue("function 'testBoolean' didn't return true as was expected", ((Boolean) result).booleanValue());
+        } else {
+            System.out.println("Functionsets can only be used on local cloud");
+        }
     }
 }
