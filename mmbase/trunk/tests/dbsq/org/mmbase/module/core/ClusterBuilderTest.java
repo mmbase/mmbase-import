@@ -25,7 +25,7 @@ import org.mmbase.storage.search.implementation.NodeSearchQuery;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ClusterBuilderTest extends TestCase {
 
@@ -137,7 +137,7 @@ public class ClusterBuilderTest extends TestCase {
         BasicSearchQuery query = new BasicSearchQuery();
         BasicStep newsStep = query.addStep(news).setAlias("news1");
         CoreField newsTitle = news.getField("title");
-        BasicStepField newsNameField = query.addField(newsStep, newsTitle).setAlias("a_title"); 
+        BasicStepField newsNameField = query.addField(newsStep, newsTitle).setAlias("a_title");
         // should not affect result node fieldnames!
         query.addSortOrder(newsNameField) .setDirection(SortOrder.ORDER_ASCENDING);
         CoreField newsBody = news.getField("body");
@@ -686,8 +686,8 @@ public class ClusterBuilderTest extends TestCase {
 
         // Test nodes.
         assertTrue(snodes.size() > 0); // For test to succeed.
-        assertTrue(step0.getNodes().size() == 0);
-        assertTrue(step1.getNodes().size() == 0);
+        assertNull(step0.getNodes());
+        assertNull(step1.getNodes());
         assertTrue(step2.getNodes().size() == snodes.size());
         Iterator<String> iSNodes = snodes.iterator();
         Iterator<Integer> iNodes = step2.getNodes().iterator();

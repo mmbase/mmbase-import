@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.62 2007-10-22 08:42:40 nklasens Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.63 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -268,8 +268,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             alias = step.getTableName();
                         }
                         CoreField field = builder.getField(alias +  '.' + fieldName);
-                        if (field.getType() == Field.TYPE_BINARY) continue;
+                        if (field.getType() == Field.TYPE_BINARY) {
+                            log.debug("Binary field  " + field.getName() + ", skipping storeValue");
+                            continue;
+                        }
                         Object value = storageManager.getValue(rs, j++, field, false);
+                        log.debug("Got " + value);
                         node.storeValue(alias +  '.' + fieldName, value);
                     }
                     node.clearChanged();

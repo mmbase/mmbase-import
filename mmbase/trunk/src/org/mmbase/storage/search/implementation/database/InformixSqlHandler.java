@@ -39,7 +39,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.35 2007-09-18 11:40:42 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.36 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -296,7 +296,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
             // Included nodes.
             SortedSet<Integer> nodes = step.getNodes();
-            if (nodes.size() > 0) {
+            if (nodes != null) {
                 if (sbNodes.length() > 0) {
                     sbNodes.append(" AND ");
                 }
