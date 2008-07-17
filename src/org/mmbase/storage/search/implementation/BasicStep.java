@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: BasicStep.java,v 1.13 2008-07-17 12:55:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -31,7 +31,7 @@ public class BasicStep implements Step {
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
-    protected SortedSet<Integer> nodes = new TreeSet<Integer>();
+    protected SortedSet<Integer> nodes = null;
     /**
      * Constructor.
      *
@@ -73,6 +73,7 @@ public class BasicStep implements Step {
         if (nodeNumber < 0) {
             throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
         }
+        if (nodes == null) nodes =  new TreeSet<Integer>();
         nodes.add(nodeNumber);
         return this;
     }
@@ -98,7 +99,7 @@ public class BasicStep implements Step {
 
     // javadoc is inherited
     public SortedSet<Integer> getNodes() {
-        return Collections.unmodifiableSortedSet(nodes);
+        return nodes == null ? null : Collections.unmodifiableSortedSet(nodes);
     }
 
     // javadoc is inherited
@@ -110,7 +111,7 @@ public class BasicStep implements Step {
             Step step = (Step) obj;
             return getTableName().equals(step.getTableName())
                 && (alias == null ? step.getAlias() == null : alias.equals(step.getAlias()))
-                && nodes.equals(step.getNodes());
+                && (nodes == null ? step.getNodes() == null : nodes.equals(step.getNodes()));
         } else {
             return false;
         }
@@ -119,7 +120,7 @@ public class BasicStep implements Step {
     // javadoc is inherited
     public int hashCode() {
         return 41 * builder.getTableName().hashCode()
-        + (alias == null? 0: 43 * alias.hashCode()) + 47 * nodes.hashCode();
+            + (alias == null? 0: 43 * alias.hashCode()) + 47 * (nodes == null ? 1 : nodes.hashCode());
     }
 
     // javadoc is inherited
