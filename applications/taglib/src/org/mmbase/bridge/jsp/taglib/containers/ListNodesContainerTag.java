@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.25 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.26 2008-07-17 13:52:22 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -44,29 +44,29 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
      * @since MMBase-1.8.0
      */
     public void setCachepolicy(String t) throws JspTagException {
-        cachePolicy = getAttribute(t);
+        cachePolicy = getAttribute(t, true);
     }
 
     public void setType(String t) throws JspTagException {
-        nodeManager = getAttribute(t);
+        nodeManager = getAttribute(t, true);
     }
 
     public void setPath(String t) throws JspTagException {
-        path = getAttribute(t);
+        path = getAttribute(t, true);
     }
     public void setSearchdirs(String s) throws JspTagException {
-        searchDirs = getAttribute(s);
+        searchDirs = getAttribute(s, true);
     }
 
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
+        element = getAttribute(e, true);
     }
 
     /**
      * @since MMBase-1.7.1
      */
     public void setNodes(String n) throws JspTagException {
-        nodes = getAttribute(n);
+        nodes = getAttribute(n, true);
     }
 
 
