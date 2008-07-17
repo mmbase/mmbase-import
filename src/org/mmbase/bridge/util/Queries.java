@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.103 2008-07-09 15:32:44 michiel Exp $
+ * @version $Id: Queries.java,v 1.104 2008-07-17 13:55:02 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1283,40 +1283,64 @@ abstract public class Queries {
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      * @since MMBase-1.8.6
      * @returns Newly created node(s)
+     * @throws NullPointerException if q or n is <code>null</code>
      */
     public static NodeList addToResult(Query q, Node n) {
         List<Step> steps = q.getSteps();
 
         if (steps.size() < 3) throw new UnsupportedOperationException();
 
-        NodeList result = q.getCloud().createNodeList();
-        // First, try if the node can be related to a startNode.
-        int start = 0;
-        Step startStep = steps.get(start);
         Cloud cloud = n.getCloud();
-        SortedSet<Integer> startNodes = startStep.getNodes();
-        NodeManager nextManager = cloud.getNodeManager(steps.get(start + 2).getTableName());
-        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(n.getNodeManager()))) {
-            Node startNode = cloud.getNode(startNodes.iterator().next());
-            RelationStep rel = (RelationStep) steps.get(start + 1);
-            String role = cloud.getNode(rel.getRole().intValue()).getStringValue("sname");
-            switch(rel.getDirectionality()) {
-            case RelationStep.DIRECTIONS_SOURCE: {
-                Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
-                newRel.commit();
-                result.add(newRel);
-                break;
-            }
-            default: {
-                Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
-                newRel.commit();
-                result.add(newRel);
-            }
-            }
-            return result;
-        } else {
-            throw new UnsupportedOperationException();
+        NodeList result = q.getCloud().createNodeList();
+        if (log.isDebugEnabled()) {
+            log.debug(" " + q.toSql());
         }
+        // First, try if the node can be related to a startNode.
+        for(int start = 0; start < steps.size() - 2; start+= 2) {
+            Step step1 = steps.get(start);
+            Step step2 = steps.get(start + 2);
+            SortedSet<Integer> nodes1 = step1.getNodes();
+            SortedSet<Integer> nodes2 = step2.getNodes();
+            NodeManager nm1 = cloud.getNodeManager(step1.getTableName());
+            NodeManager nm2 = cloud.getNodeManager(step2.getTableName());
+            NodeManager nm  = n.getNodeManager();
+            boolean nodeInStep1 = (nodes1 != null && nodes1.contains(n.getNumber())) || (nodes1 == null && (nm1.equals(nm) || nm1.getDescendants().contains(nm)));
+            boolean nodeInStep2 = (nodes2 != null && nodes2.contains(n.getNumber())) || (nodes2 == null && (nm2.equals(nm) || nm2.getDescendants().contains(nm)));
+            if (log.isDebugEnabled()) {
+                log.debug("s1: " + step1 + " s2: " + step2 + " " + nodes1 + " " + nodes2 + " " + nodeInStep1 + " " + nodeInStep2);
+            }
+            if (nodeInStep1 || nodeInStep2) {
+                Node startNode = null;
+                if (nodeInStep1 && nodes2 != null) {
+                    startNode = cloud.getNode(nodes2.iterator().next());
+                }
+                if (nodeInStep2 && startNode == null && nodes1 != null) {
+                    startNode = cloud.getNode(nodes1.iterator().next());
+                }
+                if (startNode == null) throw new UnsupportedOperationException();
+
+
+                RelationStep rel = (RelationStep) steps.get(start + 1);
+                Integer rolei = rel.getRole();
+                String role = rolei == null ? null : cloud.getNode(rolei.intValue()).getStringValue("sname");
+                switch(rel.getDirectionality()) {
+                case RelationStep.DIRECTIONS_SOURCE: {
+                    Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+                    newRel.commit();
+                    result.add(newRel);
+                    break;
+                }
+                default: {
+                    Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+                    newRel.commit();
+                    result.add(newRel);
+                }
+                }
+            }
+        }
+        if (result.size() == 0) throw new UnsupportedOperationException();
+        return result;
+
     }
 
 
