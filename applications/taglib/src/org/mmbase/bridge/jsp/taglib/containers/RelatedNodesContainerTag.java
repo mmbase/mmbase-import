@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.19 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.20 2008-07-17 13:51:37 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -46,7 +46,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role);
+        this.role = getAttribute(role, true);
     }
 
 
@@ -86,8 +86,8 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                                   (String) role.getValue(this), (String) searchDirs.getValue(this));
                 query.setNodeStep(relationStep.getNext());
-                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer");
-                if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
+                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer. Path=" + path + " Nodmanager=" + nodeManager + " role=" + role);
+                if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute. Element=" + element);
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
 
