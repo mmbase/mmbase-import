@@ -12,6 +12,7 @@ package org.mmbase.bridge;
 
 import java.util.Iterator;
 import org.mmbase.tests.*;
+import org.mmbase.security.AuthenticationData;
 
 /**
  * Basic test class to test <code>Node</code> from the bridge package.
@@ -283,9 +284,7 @@ public abstract class NodeTest extends BridgeTest {
         node.commit();
         // look it up again
         boolean found = false;
-        Iterator i = node.getAliases().iterator();
-        while (i.hasNext()) {
-            String alias = (String)i.next();
+        for (String alias : node.getAliases()) {
             if ("node_alias".equals(alias)) found = true;
         }
         assertTrue(found);
@@ -305,7 +304,8 @@ public abstract class NodeTest extends BridgeTest {
 
 
     public void testSetContext() {
-        if (org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization() instanceof org.mmbase.security.implementation.context.ContextAuthorization) {
+
+        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
             String context = node.getContext();
             String otherContext = getOtherContext(node);
 
@@ -324,12 +324,12 @@ public abstract class NodeTest extends BridgeTest {
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
         } else {
-            System.err.println("Warning: could not execute 'set context' test, because security authorization implemention is no instance of ContextAuthorization");
+            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
         }
     }
 
     public void testSetOwner() {
-        if (org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization() instanceof org.mmbase.security.implementation.context.ContextAuthorization) {
+        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
             String context = node.getContext();
             String otherContext = getOtherContext(node);
 
@@ -349,7 +349,7 @@ public abstract class NodeTest extends BridgeTest {
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
         } else {
-            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention is no instance of ContextAuthorization");
+            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
         }
 
 
