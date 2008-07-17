@@ -74,7 +74,9 @@ See http://www.MMBase.org/license
             <include name="org/mmbase/bridge/*"/>                         <!-- of course -->
             <include name="org/mmbase/bridge/util/**"/>            <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
             <include name="org/mmbase/storage/search/*"/>                 <!-- those interfaces are  part of bridge -->
+
             <exclude name="org/mmbase/storage/search/SearchQueryHandler"/><!-- Has a dependency on MMObjectNode -->
+
 
             <include name="org/mmbase/datatypes/**"/>                    <!-- datatype classes are bridge -->
             <include name="org/mmbase/security/UserContext.class"/>       <!-- security classes are bridge -->
@@ -122,6 +124,8 @@ See http://www.MMBase.org/license
 
             <include name="org/mmbase/storage/Storable.class"/>              <!-- DataTypes uses .. -->
             <include name="org/mmbase/storage/StorageException.class"/>      <!--  -->
+            <include name="org/mmbase/storage/StorageNotFoundException.class"/> <!-- may be thrown through bridge. -->
+
 
             <include name="org/mmbase/core/util/Fields.class"/>              <!-- DataTypes uses .. -->
             <include name="org/mmbase/core/*.class"/>                        <!-- DataTypes uses .. -->
