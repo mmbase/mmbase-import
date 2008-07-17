@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.tests.*;
 import junit.framework.*;
 
 
@@ -17,15 +18,16 @@ import junit.framework.*;
  * Test class <code>CloudContext</code> from the bridge package.
  *
  * @author Jaco de Groot
+ * @version $Id: CloudContextTest.java,v 1.3 2008-07-17 13:56:48 michiel Exp $
  */
-public class CloudContextTest extends TestCase {
+public class CloudContextTest extends BridgeTest {
 
     public CloudContextTest(String name) {
         super(name);
     }
 
     public void testListClouds() {
-        CloudContext cloudContext = ContextProvider.getDefaultCloudContext(); 
+        CloudContext cloudContext = getCloudContext();
         boolean defaultCloudFound = false;
         StringList stringList = cloudContext.getCloudNames();
         for (int i = 0; i < stringList.size(); i++) {
