@@ -9,24 +9,15 @@
 			<prompt xml:lang="en">term</prompt>
 			<prompt xml:lang="nl">term</prompt>
 		</field>
-      <field name="subject" ftype="data">
-			<prompt xml:lang="en">newsletter</prompt>
-			<prompt xml:lang="nl">newsletter</prompt>
-		</field>
 	</item>
 
-	<command name="search" nodepath="term" age="-1" fields="name,subject">
+	<command name="search" nodepath="term" age="-1" fields="name">
 		<prompt xml:lang="en">Search term</prompt>
 		<prompt xml:lang="nl">Zoek term</prompt>
 		<search-filter>
 			<name xml:lang="en">Term Name contains</name>
 			<name xml:lang="nl">Term Name bevat</name>
 			<search-fields>[name]</search-fields>
-		</search-filter>
-      <search-filter>
-			<name xml:lang="en">Newsletter Title contains</name>
-			<name xml:lang="nl">Newsletter Title bevat</name>
-			<search-fields>[subject]</search-fields>
 		</search-filter>
 	</command>
 

@@ -4,5 +4,6 @@
 	<title xml:lang="nl">Term</title>
 	<title xml:lang="en">Term</title>
 	<title xml:lang="zh">Term</title>
+   <list include="config/newsletter/search_newsletter.xml" />
 	<list include="config/newsletter/search_term.xml" />
 </form-schema>
