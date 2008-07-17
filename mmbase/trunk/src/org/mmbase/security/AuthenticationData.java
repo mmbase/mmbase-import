@@ -15,7 +15,7 @@ import org.mmbase.bridge.Node;
  * This interface represents information about the authentication implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.10 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: AuthenticationData.java,v 1.11 2008-07-17 15:58:52 michiel Exp $
  * @since MMBase-1.8
  */
 public interface AuthenticationData {
@@ -102,6 +102,8 @@ public interface AuthenticationData {
     static final Parameter PARAMETER_AUTHENTICATE  = new Parameter("authenticate", String.class);
 
 
+    static final String STORES_CONTEXT_IN_OWNER  = "stores context in owner";
+
     /**
      *	The method returns whether the UserContext has become invalid for some reason (change in security config?)
      *	@param userContext The UserContext of which we want to know the rights
@@ -133,7 +135,7 @@ public interface AuthenticationData {
      * {@link #getTypes(int)}.</p>
      *
      * @param m A String like 'http', 'anonymous', 'loginpage', or 'delegatesession'.
-     * @return An integer contant. {@link #METHOD_DELEGATE}, {@link #METHOD_PAGELOGON}, 
+     * @return An integer contant. {@link #METHOD_DELEGATE}, {@link #METHOD_PAGELOGON},
      * {@link #METHOD_HTTP}, {@link #METHOD_ASIS}, {@link #METHOD_LOGOUT}, {@link #METHOD_LOGINPAGE}
      * {@link #METHOD_SESSIONDELEGATE}, {@link #METHOD_SESSIONLOGON}. This method was introduced
      * before java 1.5 (where the return type would more obviously be a AuthenticionMethod
@@ -180,4 +182,10 @@ public interface AuthenticationData {
      * which tells you exactly which parameters you can and must supply to {@link Authentication#login(String, java.util.Map, Object[])}.
      */
     Parameters createParameters(String application);
+
+    /**
+     * Allows the user to retrieve specific attributes on the underlying implementation.
+     * @since MMBase-1.9
+     */
+    Object getAttribute(String name);
 }
