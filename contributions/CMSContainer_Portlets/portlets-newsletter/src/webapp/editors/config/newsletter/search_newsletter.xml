@@ -11,7 +11,7 @@
 		</field>
 	</item>
 
-	<command name="search" nodepath="newsletter" age="-1" fields="name">
+	<command name="search" nodepath="newsletter" age="-1" fields="title">
 		<prompt xml:lang="en">Search newsletter</prompt>
 		<prompt xml:lang="nl">Zoek newsletter</prompt>
 		<search-filter>
