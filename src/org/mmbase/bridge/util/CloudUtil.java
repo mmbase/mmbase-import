@@ -22,20 +22,22 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * An utility to work with clouds on the session or as a ThreadLocal
+ * @since MMBase-1.9
+ * @version $Id: CloudUtil.java,v 1.2 2008-07-17 17:16:36 michiel Exp $
  */
 public class CloudUtil {
 
     public static final String DEFAULT_SESSIONNAME = "cloud_mmbase";
     public static final String DEFAULT_CLOUD_NAME = "mmbase";
     public static final String DEFAULT_AUTHENTICATION = "name/password";
-    
+
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(CloudUtil.class.getName());
-    
+
     private CloudUtil() {
         //Utility
     }
-    
+
     /**
      * Create a new cloud in the session based on the info of the request (username/password)
      * The cloud is stored in the session under the DEFAULT_SESSIONNAME
@@ -60,7 +62,7 @@ public class CloudUtil {
         if (!isEmptyOrWhitespace(username) && !isEmptyOrWhitespace(password)) {
             String authenticate = req.getParameter("authenticate");
             final Map<String,String> loginInfo = getUserCredentials(username, password);
-            
+
             cloud = createCloud(req, sessionname, authenticate, loginInfo);
         }
 
@@ -77,7 +79,7 @@ public class CloudUtil {
     public static Cloud createCloud(HttpServletRequest req, String authenticate, final Map<String,String> loginInfo) {
         return createCloud(req, DEFAULT_SESSIONNAME, authenticate, loginInfo);
     }
-    
+
     /**
      * Create a new cloud in the session based on the info of the request (username/password)
      * @param req HttpServletRequest
@@ -107,7 +109,7 @@ public class CloudUtil {
         }
         return cloud;
     }
-    
+
     /**
      * Get Map with login credentials to pass to MMbase bridge
      * @param username username for login
@@ -129,7 +131,7 @@ public class CloudUtil {
     public static Cloud getCloudFromSession(HttpServletRequest request) {
         return getCloudFromSession(request, DEFAULT_SESSIONNAME);
     }
-    
+
     /**
      * Get cloud from session. The DEFAULT_SESSIONNAME is used as attribute name
      * @param request HttpServletRequest
@@ -175,7 +177,7 @@ public class CloudUtil {
        }
        return false;
     }
-    
+
     /**
      * Add cloud from the http session to the current thread
      * @param request HttpServletRequest with the session
@@ -201,7 +203,7 @@ public class CloudUtil {
     public static void removeCloudFromThread() {
         CloudThreadLocal.unbind();
     }
-    
+
     /**
      * Get cloud from current thread
      * @return Cloud from thread
@@ -209,10 +211,10 @@ public class CloudUtil {
     public static Cloud getCloudFromThread() {
         return CloudThreadLocal.currentCloud();
     }
-    
+
     /**
      * is Empty Or Whitespace.String
-     * 
+     *
      * @param str String to check emptiness
      * @return boolean is it empty
      */

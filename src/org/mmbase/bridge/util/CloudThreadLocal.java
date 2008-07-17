@@ -15,21 +15,22 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * ThreadLocal to store an MMBase Bridge Cloud
+ * @since MMBase-1.9
+ * @version $Id: CloudThreadLocal.java,v 1.2 2008-07-17 17:17:08 michiel Exp $
  */
 public class CloudThreadLocal {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(CloudThreadLocal.class.getName());
-    
+    private static final Logger log = Logging.getLoggerInstance(CloudThreadLocal.class);
+
     /**
      * A ThreadLocal maintaining current cloud for the given execution thread.
      */
     private static final ThreadLocal<Cloud> context = new ThreadLocal<Cloud>();
-    
+
     public static Cloud currentCloud() {
         return context.get();
     }
-    
+
     /**
      * Associates the given cloud with the current thread of execution.
      *
@@ -39,7 +40,7 @@ public class CloudThreadLocal {
         cleanupAnyOrphanedCloud();
         doBind( cloud );
     }
-    
+
     /**
      * Unassociate a previously bound cloud from the current thread of execution.
      *
@@ -48,14 +49,14 @@ public class CloudThreadLocal {
     public static Cloud unbind() {
         return doUnbind();
     }
-    
+
     private static void cleanupAnyOrphanedCloud() {
         Cloud orphan = doUnbind();
         if ( orphan != null ) {
             log.warn( "Already cloud bound on call to bind(); make sure you clean up your cloud!" );
         }
     }
-    
+
     private static void doBind(Cloud cloud) {
         if ( cloud != null ) {
             context.set( cloud );
@@ -69,5 +70,5 @@ public class CloudThreadLocal {
         }
         return cloud;
     }
-    
+
 }

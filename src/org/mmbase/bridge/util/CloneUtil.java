@@ -16,16 +16,17 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Utility to clone mmbase bridge nodes.
+ * @since MMBase-1.9.0
+ * @version $Id: CloneUtil.java,v 1.2 2008-07-17 17:17:08 michiel Exp $
  */
 public class CloneUtil {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(CloneUtil.class.getName());
-    
+    private static final Logger log = Logging.getLoggerInstance(CloneUtil.class);
+
     private CloneUtil() {
         // utility
     }
-    
+
     /**
      * Clone a node with all relations
      *
@@ -84,7 +85,7 @@ public class CloneUtil {
          return newNode;
        }
     }
-    
+
     /**
      * cloneNodeField copies node fields from one node to the other
      * @param sourceNode the source node
@@ -192,7 +193,7 @@ public class CloneUtil {
     }
 
     /**
-     * Clone relations of the source node to the destination node. In other words, 
+     * Clone relations of the source node to the destination node. In other words,
      * create new relations between the destination node and the nodes which the source node has relations to.
      * @param sourceNode source node
      * @param destNode destination node
@@ -215,12 +216,12 @@ public class CloneUtil {
     }
 
     /**
-     * Clone relations of the source node to the destination node. In other words, 
+     * Clone relations of the source node to the destination node. In other words,
      * create new relations between the destination node and the nodes which the source node has relations to.
      * @param sourceNode source node
      * @param destNode destination node
      * @param relationName name of relation
-     * @param managerName manager of the other nodes which the relations are replicated for.  
+     * @param managerName manager of the other nodes which the relations are replicated for.
      */
     public static void cloneRelations(Node sourceNode, Node destNode, String relationName, String managerName) {
         RelationIterator ri = sourceNode.getRelations(relationName, managerName).relationIterator();
@@ -238,7 +239,7 @@ public class CloneUtil {
            }
         }
      }
-    
+
     /**
      * Clone aliases to the destination node.
      * This only works when the node is in a different cloud
@@ -251,7 +252,7 @@ public class CloneUtil {
            destNode.createAlias(list.getString(x));
         }
      }
-    
+
     /**
      * quick test to see if node is a relation by testing fieldnames
      * @param node Possible relation
@@ -276,5 +277,5 @@ public class CloneUtil {
 
        return false;
     }
-    
+
 }
