@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.14 2008-07-17 13:57:51 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -34,7 +34,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
     public void testGetValue() {
         for (String element : fieldTypes) {
             Object value = node.getValue(element + "field");
-            assertTrue("Empty " + element + " field did return null, but the field is marked 'notnull'", value != null);
+            //assertTrue("Field " + element + "field was expected to be marked 'notnull'", org.mmbase.module.core.MMBase.getMMBase().getBuilder(node.getNodeManager().getName()).getField(element + "field").isNotNull()); // don't use core, rmmci test-cases will fail
+
+            assertTrue("Empty " + element + "field did return null, but the field is marked 'notnull'", value != null);
         }
     }
 
@@ -162,7 +164,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             }
         }
     }
-    
+
     private String getBytesString(byte[] bytes){
         StringBuffer sb = new StringBuffer();
         for (byte element : bytes) {
@@ -206,9 +208,9 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
     public void testGetDateTimeValue() {
         for (String element : fieldTypes) {
             Date value = node.getDateValue(element + "field");
-            assertTrue("Empty " + element + " field queried as datetime returned null", value != null);            
+            assertTrue("Empty " + element + " field queried as datetime returned null", value != null);
             Date expected = new Date(-1);
-            assertTrue("Empty " + element + " field queried as datetime did not return " + expected + ", but " + value + " value:" + node.getStringValue(element + "field"),  value.equals(expected)); 
+            assertTrue("Empty " + element + " field queried as datetime did not return " + expected + ", but " + value + " value:" + node.getStringValue(element + "field"),  value.equals(expected));
        }
     }
 
