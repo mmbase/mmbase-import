@@ -19,6 +19,7 @@
 	</neededreldeflist>
 	<allowedrelationlist>
 		<relation from="article" to="term" type="newslettercontent" />
+      <relation from="article" to="newsletter" type="newslettercontent" />
       <relation from="newsletter" to="newsletterpublication" type="related" />
 		<relation from="newsletter" to="term" type="posrel" />
 		<relation from="subscriptionrecord" to="term" type="termed" />

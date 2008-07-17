@@ -52,7 +52,7 @@ public class NewsletterDelete extends MMBaseFormlessAction {
 
          int number = newsletterNode.getNumber();
          NewsletterUtil.deleteRelatedElement(number);
-         NewsletterUtil.deleteNewsletterTermsForNewsletter(newsletterNode);
+        // NewsletterUtil.deleteNewsletterTermsForNewsletter(newsletterNode);
          NewsletterUtil.deleteSubscriptionByTerm(newsletterNode);
          NavigationUtil.deleteItem(newsletterNode);
          

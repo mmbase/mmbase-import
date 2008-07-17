@@ -30,8 +30,8 @@
       <resource-bundle>portlets-newslettercontent</resource-bundle>
       <portlet-info>
          <title>newsletter Portlet</title>
-         <short-title>newsletter</short-title>
-         <keywords>newsletter</keywords>
+         <short-title>newslettercontent</short-title>
+         <keywords>newslettercontent</keywords>
       </portlet-info>
    </portlet>
 
