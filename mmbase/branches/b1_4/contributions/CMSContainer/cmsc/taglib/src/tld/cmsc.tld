@@ -1512,7 +1512,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Tag to generate google analytics .</description>
+        <description>Tag to generate Google Analytics code. Meant to put in the head of a page.</description>
         <name>google-analytics</name>
         <tag-class>com.finalist.cmsc.taglib.stats.GoogleAnalyticsTag</tag-class>
         <body-content>empty</body-content>
@@ -1588,6 +1588,7 @@
         <path>/META-INF/tags/attachment.tag</path>
     </tag-file>
     <tag-file>
+        <description>Generates page header information of all the RSS feeds on the current page level.</description>
         <name>feeds</name>
         <path>/META-INF/tags/feeds.tag</path>
     </tag-file>
