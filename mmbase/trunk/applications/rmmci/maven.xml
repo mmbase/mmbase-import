@@ -118,6 +118,7 @@ See http://www.MMBase.org/license
             <include name="org/mmbase/util/dateparser/**"/>                  <!-- used by Casting -->
             <include name="org/mmbase/util/HashCodeUtil*"/>                  <!-- used by SortedBundle, but is generic tool-->
             <include name="org/mmbase/util/PublicCloneable*"/>                  <!-- used by SortedBundle, but is generic tool-->
+            <include name="org/mmbase/util/StringSplitter*"/>                  <!-- used by Queries-->
 
             <include name="org/mmbase/storage/Storable.class"/>              <!-- DataTypes uses .. -->
             <include name="org/mmbase/storage/StorageException.class"/>      <!--  -->
