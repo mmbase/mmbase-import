@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.18 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: BasicFramework.java,v 1.19 2008-07-18 12:59:58 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -117,6 +117,9 @@ public class BasicFramework extends Framework {
                     uc = (UrlConverter) Instantiator.getInstance(element, (Framework) this);
                 } catch (NoSuchMethodException nsme) {
                     uc = (UrlConverter) Instantiator.getInstance(element);
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn(cnfe);
+                    continue;
                 }
                 urlConverter.add(uc);
             }
