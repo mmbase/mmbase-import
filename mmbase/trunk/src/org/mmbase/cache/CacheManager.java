@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.30 2008-07-18 06:08:37 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.31 2008-07-18 09:53:34 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -96,17 +96,22 @@ public abstract class CacheManager {
      * @param cache A cache.
      * @return The previous cache of the same type (stored under the same name)
      */
-    public static <K,V> Cache<K,V> putCache(Cache<K,V> cache) {
+    public static <K,V> Cache<K,V> putCache(Cache<K,V> cache, boolean mbean) {
         Cache old = caches.put(cache.getName(), cache);
         configure(configReader, cache.getName());
-        ObjectName name = getObjectName(cache);
-        try {
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            mbs.registerMBean(cache, name);
-        } catch (JMException jmo) {
-            log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
+        if (mbean) {
+            ObjectName name = getObjectName(cache);
+            try {
+                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                mbs.registerMBean(cache, name);
+            } catch (JMException jmo) {
+                log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
+            }
         }
         return old;
+    }
+    public static <K,V> Cache<K,V> putCache(Cache<K,V> cache) {
+        return putCache(cache, true);
     }
 
     /**
