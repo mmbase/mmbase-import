@@ -48,7 +48,7 @@
       <arg value="-dbname.0" />
       <arg value="test" />
       <classpath>
-        <pathelement path="${tests.lib}/hsqldb.jar" />
+        <pathelement path="${tests.lib}/hsqldb*.jar" />
       </classpath>
     </java>
   </target>
@@ -64,7 +64,7 @@
   </target>
 
 
-  <target name="local.download" unless="no,no.local.download">
+  <target name="local.download" unless="no">
     <antcall target="mmbase.jar">
       <param name="dest" location="${lib}" />
     </antcall>
@@ -83,9 +83,8 @@
       <param name="name" value="mmbase-clustering" />
       <param name="dest" location="${lib}" />
     </antcall>
-    <property name="no.local.download" value="no" />
   </target>
-  <target name="download" unless="no.download" depends="local.download">
+  <target name="download" unless="no" depends="local.download">
     <mkdir dir="${lib}" />
     <antcall target="junit">
       <param name="dest" location="${lib}" />
@@ -102,6 +101,7 @@
     <antcall target="log4j">
       <param name="dest" location="${lib}" />
     </antcall>
+    <property name="no" value="yes" />
   </target>
 
   <target name="init" depends="download">
@@ -119,6 +119,7 @@
         </fileset>
       </classpath>
       <classpath id="run.classpath">
+        <pathelement location="classes" />
         <fileset dir="${lib}">
           <include name="junit*.jar" />
           <include name="hsqldb*.jar" />
@@ -295,7 +296,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.typerel" depends="mmbase,jar,init" description="Allowed Relations tests">
+  <target name="run.typerel" depends="jar,init" description="Allowed Relations tests">
     <antcall target="clean.database" />
     <java
       classname="${ui.class}"
@@ -309,7 +310,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.releasestrategy" depends="mmbase,jar,init" description="Query Result Release Strategy tests">
+  <target name="run.releasestrategy" depends="jar,init" description="Query Result Release Strategy tests">
     <antcall target="clean.database" />
     <java
       classname="${ui.class}"
@@ -339,8 +340,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge.rmmci" depends="init,jar" description="Bridge tests (through RMMCI)">
-    <antcall target="clean.database" />
+  <target name="run.bridge.rmmci" depends="init,jar,clean.database" description="Bridge tests (through RMMCI)">
     <parallel>
       <daemons>
         <echo message="starting mmbase server" />
@@ -386,7 +386,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.dbsq" depends="jar,init,mmbase" description="SearchQuery tests">
+  <target name="run.dbsq" depends="jar,init" description="SearchQuery tests">
     <antcall target="clean.database" />
     <java
         classname="${ui.class}"
@@ -400,7 +400,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.util" depends="mmbase,jar,init" description="Various tests on utitilies (org.mmbase.util)">
+  <target name="run.util" depends="init,jar" description="Various tests on utitilies (org.mmbase.util)">
     <java
     	classname="${ui.class}"
         fork="true"
@@ -412,8 +412,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.clustering" depends="jar,init,mmbase" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
-    <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
+  <target name="run.clustering" depends="jar,init" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
     <antcall target="clean.database" />
     <parallel>
       <echo message="${tests.source.dir}/config" />
@@ -428,6 +427,8 @@ Build-compiler: ${build.compiler}
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Dmmbaseroot.machinename=mmbase1" />
           <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
+          <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
           <assertions><enable /></assertions>
         </java>
@@ -443,6 +444,8 @@ Build-compiler: ${build.compiler}
             <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
             <jvmarg value="-Dmmbaseroot.machinename=mmbase2" />
             <jvmarg value="-Drmmci.port=1222" />
+            <jvmarg value="-Drmmci.bindname=remotecontext" />
+            <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
             <jvmarg value="-Duser.dir=${tests.work.dir}" />
             <assertions><enable /></assertions>
           </java>
@@ -524,6 +527,8 @@ Build-compiler: ${build.compiler}
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
           <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Drmmci.bindname=remotecontext" />
+          <jvmarg value="-Drmmci.RMIRegistryServer=localhost" />
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
       </daemons>
