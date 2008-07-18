@@ -6,19 +6,10 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="source" required="true" />
-  <mm:import externid="fields" />
-  <mm:import externid="confirm" />
-  <mm:import externid="icondir" />
+  <mm:import externid="item" required="true" />
   <li>
-    <mm:form id="node${_node}">
-      <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
-        <mm:fieldinfo type="input" />
-        <c:if test="${status.first}">
-          <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
-        </c:if>
-        <mm:fieldinfo type="errors" />
-      </mm:fieldlist>
+    <mm:form id="node${_node}" page="${item}">
+      <mm:include page="${item}" />
     </mm:form>
   </li>
 </jsp:root>

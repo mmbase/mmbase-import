@@ -6,38 +6,33 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="item" required="true" />
+  <mm:import externid="seq"  required="true" />
+  <mm:import externid="source"  required="true" />
+  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
 
-  <mm:import id="source" externid="submit" required="true" />
-  <mm:import externid="type">object</mm:import>
-  <mm:import externid="role">posrel</mm:import>
-  <mm:import externid="orderby">${role}.pos</mm:import>
-  <mm:import externid="fields" />
-
-  <mm:form>
-    <mm:node referid="source">
-
-      <mm:relatednodes id="current" type="${type}" searchdir="destination"
-                       role="${role}">
-        <mm:fieldlist type="${empty fields ? 'edit' : ''}" fields="${fields}" id="node${_node}" varStatus="status">
-          <mm:fieldinfo type="useinput" />
-          <mm:log><mm:fieldinfo type="input" /> <mm:fieldinfo type="name" /> =  <mm:fieldinfo type="value" /></mm:log>
-        </mm:fieldlist>
-      </mm:relatednodes>
-
-      <mm:valid>
-        <mm:import externid="submit" />
-        <mm:present referid="submit">
-          <mm:log>Submitting form</mm:log>
-          <mm:commit />
-        </mm:present>
-      </mm:valid>
-      <span class="status">
-        <mm:valid inverse="true">
-          <mm:log>Form not valid</mm:log>
-          Form not valid
-        </mm:valid>
-      </span>
-    </mm:node>
-
-  </mm:form>
+  <div class="saveresult">
+    <mm:listnodescontainer referid="query">
+      <mm:listnodes>
+        <mm:form id="node${_node}">
+          <mm:escape escape="swallow">
+            <mm:include page="${item}" referids="source" />
+          </mm:escape>
+          <mm:valid>
+            <mm:import externid="submit" />
+            <mm:present referid="submit">
+              <mm:log>Submitting form</mm:log>
+              <mm:commit />
+            </mm:present>
+          </mm:valid>
+          <span class="status">
+            <mm:valid inverse="true">
+              <mm:log>Form not valid</mm:log>
+              Form not valid
+            </mm:valid>
+          </span>
+        </mm:form>
+      </mm:listnodes>
+    </mm:listnodescontainer>
+  </div>
 </mm:cloud>
