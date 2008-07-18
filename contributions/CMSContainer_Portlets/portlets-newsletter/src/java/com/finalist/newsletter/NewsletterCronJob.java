@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +24,7 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.publisher.bounce.BounceChecker;
 
 public class NewsletterCronJob implements CronJob {
 
@@ -231,10 +231,14 @@ public class NewsletterCronJob implements CronJob {
 
    public void init(CronEntry arg0) {
       log.info("Initializing Newsletter CronJob");
+      BounceChecker checker = new BounceChecker();
+      if (!checker.isRunning()) {
+         checker.start();
+      }
 
    }
    
-   public void run() { 
+   public void run() {
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
          Node newsletterNode = newslettersToPublish.get(newsletterIterator);

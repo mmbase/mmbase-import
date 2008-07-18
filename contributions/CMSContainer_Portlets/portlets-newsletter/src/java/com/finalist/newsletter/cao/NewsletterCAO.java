@@ -17,6 +17,8 @@ public interface NewsletterCAO {
    public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value);
 
    public int getNewsletterIdBySubscription(int id);
-   
+
+   Node getNewsletterNodeById(int newsletterId);
+
    public Set<Term> getNewsletterTermsByName(int newsltterId, String name ,int pagesize, int offset);
 }

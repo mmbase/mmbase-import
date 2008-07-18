@@ -1,31 +1,16 @@
 package com.finalist.newsletter.publisher;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.newsletter.ApplicationContextFactory;
+import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.publisher.cache.CacheFactory;
+import com.finalist.newsletter.publisher.cache.ICache;
+import com.finalist.newsletter.services.NewsletterService;
+import com.finalist.newsletter.util.NewsletterUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -34,16 +19,20 @@ import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.publisher.cache.CacheFactory;
-import com.finalist.newsletter.publisher.cache.ICache;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.domain.Term;
-import java.util.Set;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.*;
+import java.util.Date;
+import java.util.Properties;
+
 public class NewsletterPublisher {
 
    private static Logger log = Logging
@@ -62,11 +51,15 @@ public class NewsletterPublisher {
 
    public void deliver(Publication publication, Subscription subscription) {
       try {
-         Message message = new MimeMessage(getMailSession());
-         Newsletter newsletter = publication.getNewsletter();
-         setSenderInfomation(message, newsletter.getFromAddress(), newsletter
-               .getFromName(), newsletter.getReplyAddress(), newsletter
-               .getReplyName());
+         NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+         Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
+         
+         String replyAddress = newsletter.getReplyAddress();
+         String toEmail = subscription.getEmail();
+
+         Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
+
+         setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress, newsletter.getReplyName());
 
          setContent(message, publication, subscription);
          setRecipient(message, subscription.getEmail());
@@ -182,30 +175,24 @@ public class NewsletterPublisher {
       return content + "\n";
    }
 
-   private void setSenderInfomation(Message message, String fromAddress,
-                                    String fromName, String replyAddress, String replyName)
+   private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
          throws MessagingException, UnsupportedEncodingException {
 
-      String emailFrom = getHeaderProperties(fromAddress,
-            "newsletter.default.fromaddress");
-      String nameFrom = getHeaderProperties(fromName,
-            "newsletter.default.fromname");
-      String emailReplyTo = getHeaderProperties(replyAddress,
-            "newsletter.default.replytoadress");
-      String nameReplyTo = getHeaderProperties(replyName,
-            "newsletter.default.replyto");
+      String emailFrom = getHeaderProperties(fromAddress, "newsletter.default.fromaddress");
+      String nameFrom = getHeaderProperties(fromName, "newsletter.default.fromname");
+      String emailReplyTo = getHeaderProperties(replyAddress, "newsletter.default.replytoadress");
+      String nameReplyTo = getHeaderProperties(replyName, "newsletter.default.replyto");
 
-      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<"
-            + nameReplyTo + ">" + emailReplyTo);
+      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo);
 
-      InternetAddress senderAddress = new InternetAddress(emailFrom);
-      senderAddress.setPersonal(nameFrom);
-      message.setFrom(senderAddress);
 
       InternetAddress replyToAddress = new InternetAddress(emailReplyTo);
       replyToAddress.setPersonal(nameReplyTo);
       message.setReplyTo(new InternetAddress[]{replyToAddress});
 
+      InternetAddress senderAddress = new InternetAddress(emailFrom);
+      senderAddress.setPersonal(nameFrom);
+      message.setFrom(senderAddress);
    }
 
    private void setMIME(Message message, String mime) throws MessagingException {
@@ -244,22 +231,39 @@ public class NewsletterPublisher {
       return property;
    }
 
-   protected Session getMailSession() {
+   protected Session getMailSession(String toEmail, String senderEmail) {
 
       Session session = null;
+      String datasource = getParameter("datasource");
+      String context = getParameter("context");
 
       try {
-         String datasource = getParameter("datasource");
-         String context = getParameter("context");
 
          Context initCtx = new InitialContext();
          Context envCtx = (Context) initCtx.lookup(context);
          session = (javax.mail.Session) envCtx.lookup(datasource);
+
+         Properties properties = new Properties();
+
+                  String[] sender = StringUtils.split(senderEmail, "@");
+
+         String verpFrom = String.format("%s-%s@%s", sender[0], toEmail.replaceAll("@", "="), sender[1]);
+         properties.put("mail.smtp.from", verpFrom);
+//         properties.put("mail.smtp.from", "dguo-mark.guo=gmail.com@cpier.pku.edu.cn");
+//         properties.put("mail.smtp.from", senderEmail);
+         properties.putAll(session.getProperties());
+
+
+
+         session = Session.getInstance(properties,
+               new javax.mail.Authenticator() {
+                  protected PasswordAuthentication getPasswordAuthentication() {
+                     return new PasswordAuthentication("dguo@cpier.pku.edu.cn", "lgs9000");
+                  }
+               });
       }
       catch (NamingException e) {
-         log.fatal("Configured dataSource '" + getParameter("datasource")
-               + "' of context '" + getParameter("context")
-               + "' is not a Session ");
+         log.fatal("Configured dataSource '" + datasource + "' of context '" + context + "' is not a Session ");
       }
       return session;
    }

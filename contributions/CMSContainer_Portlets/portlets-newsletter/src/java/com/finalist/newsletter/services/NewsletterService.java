@@ -21,6 +21,8 @@ public interface NewsletterService {
    public Newsletter getNewsletterBySubscription(int id);
 
    public List<Newsletter> getNewsletters(String subscriber, String title);
+
+   void processBouncesOfPublication(String publicationId,String userId);
    
    public Set<Term> getNewsletterTermsByName(int newsletterId, String name, int pagesize, int offset);
 }

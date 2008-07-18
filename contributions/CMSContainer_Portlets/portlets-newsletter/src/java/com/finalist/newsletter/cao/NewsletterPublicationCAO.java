@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
+import org.mmbase.bridge.Node;
 
 public interface NewsletterPublicationCAO {
    public List<Integer> getIntimePublicationIds();
@@ -13,6 +14,8 @@ public interface NewsletterPublicationCAO {
    public void setStatus(int publicationId, Publication.STATUS status);
 
    public Publication getPublication(int number);
+
+   public Node getPublicationNode(int number);
 
    public int getNewsletterId(int publicationId);
 

@@ -1,23 +1,20 @@
 package com.finalist.newsletter.services.impl;
 
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
+import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterService;
-import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmbase.bridge.Node;
+
+import java.util.List;
+import java.util.Set;
 
 public class NewsletterServiceImpl implements NewsletterService {
 
@@ -25,7 +22,8 @@ public class NewsletterServiceImpl implements NewsletterService {
 
    NewsletterCAO newsletterCAO;
    NewsletterSubscriptionCAO subscriptionCAO;
-   NewsletterSubscriptionServices subscriptionServices;
+   NewsletterPublicationCAO publicationCAO;
+   NewsLetterStatisticCAO statisticCAO;
 
    public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
       this.newsletterCAO = newsletterCAO;
@@ -35,12 +33,15 @@ public class NewsletterServiceImpl implements NewsletterService {
       this.subscriptionCAO = subscriptionCAO;
    }
 
-   public void setSubscriptionServices(NewsletterSubscriptionServices subscriptionServices) {
-      this.subscriptionServices = subscriptionServices;
+   public void setPublicationCAO(NewsletterPublicationCAO publicationCAO) {
+      this.publicationCAO = publicationCAO;
+   }
+
+   public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
+      this.statisticCAO = statisticCAO;
    }
 
    public List<Newsletter> getAllNewsletter() {
-
       return newsletterCAO.getNewsletterByConstraint(null, null, null);
    }
 
@@ -96,6 +97,27 @@ public class NewsletterServiceImpl implements NewsletterService {
       else {
          return getAllNewsletter();
       }
+   }
+
+   public void processBouncesOfPublication(String publicationId,String userId) {
+      //todo test.
+      int pId = Integer.parseInt(publicationId);
+      int uId = Integer.parseInt(userId);
+
+      int newsletterId = publicationCAO.getNewsletterId(pId);
+
+      Node newsletterNode = newsletterCAO.getNewsletterNodeById(newsletterId);
+      Node subscriptionNode =  subscriptionCAO.getSubscriptionNode(newsletterId,uId);
+
+      int bouncesCount = subscriptionNode.getIntValue("bounces");
+      int maxAllowedBonce = newsletterNode.getIntValue("max_bounces");
+
+      if(bouncesCount > maxAllowedBonce){
+         subscriptionCAO.pause(subscriptionNode.getNumber());
+      }
+
+      statisticCAO.logPubliction(uId,newsletterId, StatisticResult.HANDLE.BOUNCE);
+      subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
    }
 
    private List<Newsletter> getAllNewsletterBySubscriber(String subscriber) {
