@@ -6,7 +6,7 @@
   <property name="download.dir"           location="download" />
   <property name="version"                value="1.9.0-SNAPSHOT" />
   <property name="prefix"                 value="mmbase-" />
-  <property name="mmbase.templates.path"  value="mmbase" />
+  <property name="mmbase.templates.path"  value="mmbase/" />
   <property name="base"                   value="mmbase" />
   <property name="local.repository"       value="${user.home}/.maven/repository" />
   <property name="remote.repository"      value="http://www.mmbase.org/maven" />
@@ -89,13 +89,13 @@
       <patternset>
         <include name="templates/**"/>
       </patternset>
-      <mapper type="glob" from="templates/*" to="${mmbase.templates.path}/*" />
+      <mapper type="glob" from="templates/*" to="${mmbase.templates.path}*" />
     </unzip>
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/WEB-INF/">
       <patternset>
         <include name="config/**"/>
       </patternset>
-      <mapper type="glob" from="config/*" to="*" />
+      <mapper type="glob" from="config/*" to="config/*" />
     </unzip>
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/WEB-INF/lib">
       <patternset>
@@ -115,6 +115,7 @@
     <antcall target="install.module">
       <param name="name" value="" />
       <param name="prefix" value="mmbase" />
+      <param name="mmbase.templates.path" value="" />
     </antcall>
   </target>
 
@@ -127,7 +128,7 @@
   <target name="editwizard" depends="dove,mmbase">
     <antcall target="install.module">
       <param name="name" value="editwizard" />
-      <param name="mmbase.templates.path" value="mmbase/edit/wizard" />
+      <param name="mmbase.templates.path" value="mmbase/edit/wizard/" />
     </antcall>
   </target>
 
