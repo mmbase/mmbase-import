@@ -165,7 +165,10 @@
     <if>
       <available file="src/${component}/build.xml" type="file" />
       <then>
-        <ant dir="src/${component}">
+        <ant
+            inheritAll="true"
+            inheritRefs="true"
+            dir="src/${component}">
           <property name="dest" value="${build.webapp.dir}" />
         </ant>
       </then>
