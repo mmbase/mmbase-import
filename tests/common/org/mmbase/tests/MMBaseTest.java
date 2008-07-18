@@ -89,6 +89,9 @@ public abstract class MMBaseTest extends TestCase {
         }
     }
 
+    static protected void persist() {
+    }
+
     /**
      * If no running MMBase is needed, then you probably want at least to initialize logging.
      */
