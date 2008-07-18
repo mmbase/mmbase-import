@@ -305,7 +305,7 @@
     <property name="oscache.installed" value="yes" />
   </target>
 
-  <target name="minimalistic" depends="mmbase,taglib,oscache" unless="minimalistic.installed">
+  <target name="minimalistic" depends="mmbase,taglib,oscache,log4j" unless="minimalistic.installed">
     <property name="minimalistic.installed" value="yes" />
   </target>
 
