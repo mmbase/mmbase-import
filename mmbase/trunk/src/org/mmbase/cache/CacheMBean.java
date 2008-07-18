@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * See http://java.sun.com/docs/books/tutorial/jmx/mbeans/standard.html
  * @author Michiel Meeuwissen
- * @version $Id: CacheMBean.java,v 1.1 2008-07-11 12:46:44 michiel Exp $
+ * @version $Id: CacheMBean.java,v 1.2 2008-07-18 09:47:52 michiel Exp $
  * @since MMBase-1.9
  */
 public interface CacheMBean {
@@ -64,6 +64,8 @@ public interface CacheMBean {
      */
     double getRatio();
     //Class getImplementation();
+
+    int getByteSize();
 
 
 
