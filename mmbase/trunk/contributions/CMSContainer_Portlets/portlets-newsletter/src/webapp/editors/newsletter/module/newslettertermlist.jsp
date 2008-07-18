@@ -80,25 +80,21 @@
    </div>
 </div>
 <div class="editor" style="height:500px">
-   <div class="body">
       <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
       <html:hidden property="method" value="list"/>
          <html:hidden property="offset"/>
-         <table border="0">
-          <mm:hasrank minvalue="administrator">
-            <tr>
-               <td  style="width: 80px">
-               <ul class="shortcuts">
-                  <li class="new"><a href="${addUrl}" ><fmt:message key="newsletter.term.add" /></a></li>
-               </ul>
-               </td>
-               <td></td>
-            </tr>
+           <mm:hasrank minvalue="administrator">
+               <p>
+                  <a href="${addUrl}"  style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="newsletter.term.add" />
+                  </a>
+               </p>
+
           </mm:hasrank>
+         <table border="0" style="padding-left:10px;">
 
             <tr>
                <td style="width: 80px"><fmt:message key="newsletter.term.name" /></td>
-               <td><html:text style="width: 250px" property="name"/></td>
+               <td><html:text size="20" property="name"/></td>
             </tr>
             <tr>
             <td></td>
@@ -108,7 +104,6 @@
          </tr>
          </table>
       </html:form>
-</div>
 <div class="ruler_green"><div><fmt:message key="newsletter.term.search.result" /></div></div>
 <div class="body">
 <form action="${actionUrl}" name="termForm">
