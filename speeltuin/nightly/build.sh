@@ -12,6 +12,8 @@ export JAVAC=${JAVA_HOME}/bin/javac
 
 export MAVEN="/home/nightly/maven/bin/maven"
 export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
+export ANT_HOME=/usr/ant
+antcommand="/usr/bin/ant"
 
 export FILTER="/home/nightly/bin/filterlog"
 
@@ -24,16 +26,16 @@ export MAILADDRESS=${CCMAILADDRESS}
 
 echo generating version, and some directories
 
-#version=`date -u '+%Y-%m-%d'`
-#cvsversionoption="-D"
-#cvsversion=`date  '+%Y-%m-%d %H:%M'`
-#revision="-A"
+version=`date -u '+%Y-%m-%d'`
+cvsversionoption="-D"
+cvsversion=`date  '+%Y-%m-%d %H:%M'`
+revision="-A"
 
 
-version="MMBase-1.9.0.beta2"
-cvsversion=
-cvsversionoption="-r"
-revision="MMBase-1_9_0_beta2"
+#version="MMBase-1.9.0.beta2"
+#cvsversion=
+#cvsversionoption="-r"
+#revision="MMBase-1_9_0_beta2"
 
 dir=${version}
 
@@ -55,7 +57,7 @@ if [ 1 == 1 ] ; then
     pwd
     echo "CVS" | tee -a ${builddir}/messages.log
     echo ${CVS} update -d -P  ${cvsversionoption} ${cvsversion} ${revision} | tee -a ${builddir}/messages.log
-    ${CVS} update -d -P  ${cvsversionoption} ${cvsversion}  ${revision} | tee -a ${builddir}/messages.log
+    ${CVS} update -d -P  ${cvsversionoption} "${cvsversion}"  ${revision} | tee -a ${builddir}/messages.log
     
     
     echo Starting nightly build
@@ -77,7 +79,14 @@ for i in `/usr/bin/find $HOME/.maven/repository/mmbase -mtime -1` ; do
 done
 
 
-echo Creating sym for latest build
+if [ 1 == 1 ] ; then
+    echo Now executing tests
+    cd ${BUILD_HOME}/nightly-build/cvs/mmbase/tests
+    ${antcommand} run.all > ${buildir}/tests-results.log
+fi
+
+
+echo Creating symlink for latest build
 rm /home/nightly/builds/latest
 cd /home/nightly/builds
 ln -s ${dir} latest
@@ -100,20 +109,20 @@ fi
 
 
 
-if [ 1 == 0 ] ; then 
+if [ 1 == 1 ] ; then 
     echo running tests
 
     if [ -f latest/tests-results.log ] ; then 
 	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then  
 	    echo Failures, sending mail to ${MAILADDRESS}
 	    cat latest/tests-results.log  | grep -E -A 1 '(FAILURES|^run\.)' | \
-		mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
+		mutt -s "Test cases failures on build ${version}" Michiel.Meeuwissen@gmail.com
 	fi
     else
 	echo Build failed, sending mail to ${MAILADDRESS}
 	echo -e "No test-cases available on build ${version}\n\nPerhaps the build failed:\n\n" | \
 	    tail -q -n 20 - latest/messages.log last/errors.log | \
-	    mutt -s "Build failed ${version}" ${MAILADDRESS}
+	    mutt -s "Build failed ${version}"  Michiel.Meeuwissen@gmail.com
     fi
 fi
 
