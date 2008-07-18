@@ -112,8 +112,31 @@
     </unzip>
   </target>
 
-  <target name="mmbase" depends="log4j,commons-fileupload" unless="mmbase.installed">
-    <antcall target="install.module">
+  <target name="install.module.minimalistic" depends="get.module">
+    <echo message="${prefix}${name}-${version}" />
+    <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/mmbase/components/${name}">
+      <patternset>
+        <include name="blocks/**"/>
+      </patternset>
+      <mapper type="glob" from="blocks/*" to="*" />
+    </unzip>
+    <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}">
+      <patternset excludes="${ignorefiles}">
+        <include name="templates/**"/>
+      </patternset>
+      <mapper type="glob" from="templates/*" to="${mmbase.templates.path}*" />
+    </unzip>
+    <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/WEB-INF/lib">
+      <patternset>
+        <include name="lib/**"/>
+      </patternset>
+      <mapper type="glob" from="lib/*" to="*" />
+    </unzip>
+
+  </target>
+
+  <target name="mmbase" unless="mmbase.installed">
+    <antcall target="install.module.minimalistic">
       <param name="name" value="" />
       <param name="prefix" value="mmbase" />
       <param name="mmbase.templates.path" value="" />
