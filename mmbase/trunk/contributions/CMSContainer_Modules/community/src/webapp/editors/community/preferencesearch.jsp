@@ -66,16 +66,15 @@
 
    <edit:ui-singletab key="community.preference.title"/>
 
-   <div class="editor" style="height:500px">
-      <div class="body">
-         <mm:import id="searchinit"><c:url value='/editors/community/PreferenceAction.do'/></mm:import>
-         <html:form action="/editors/community/PreferenceAction" method="post">
-            <html:hidden property="method" value="list"/>
-            <html:hidden property="order"/>
-            <html:hidden property="direction"/>
-            <%@include file="preferenceform.jsp" %>
-         </html:form>
-      </div>
+      <div class="editor" style="height:500px">
+         <div style="padding-left:10px;">
+            <html:form action="/editors/community/PreferenceAction" method="post">
+               <html:hidden property="method" value="list"/>
+               <html:hidden property="order"/>
+               <html:hidden property="direction"/>
+               <%@include file="preferenceform.jsp" %>
+            </html:form>
+         </div>
 
       <div class="ruler_green">
          <div><fmt:message key="community.preference.result"/></div>
