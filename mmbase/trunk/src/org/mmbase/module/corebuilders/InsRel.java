@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.55 2008-07-18 05:05:43 michiel Exp $
+ * @version $Id: InsRel.java,v 1.56 2008-07-18 05:24:02 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -94,6 +94,14 @@ public class InsRel extends MMObjectBuilder {
     public InsRel() {
     }
 
+    public void setTableName(String tableName) {
+        super.setTableName(tableName);
+        relatedCache.putCache();
+        // relationsCache.putCache();
+
+    }
+
+
     /**
      * Initializes the builder. Determines whether the <code>dir</code> field is defined (and thus whether directionality is supported).
      * If the field cannot be found, a <em>"Warning: No dir field. Directionality support turned off."</em> warning message is issued.
@@ -126,8 +134,6 @@ public class InsRel extends MMObjectBuilder {
             log.warn("No dir field. Directionality support turned off.");
             usesdir = false;
         }
-        relatedCache.putCache();
-        // relationsCache.putCache();
         return res;
     }
 
