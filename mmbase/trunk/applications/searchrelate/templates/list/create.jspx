@@ -9,10 +9,12 @@
   <jsp:output omit-xml-declaration="true" />
 
   <mm:import externid="source" required="true" />
-  <mm:import externid="type">object</mm:import>
-  <mm:import externid="role">posrel</mm:import>
+  <mm:import externid="type" required="true" />
+  <mm:import externid="seq" required="true" />
+
+  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
   <mm:import externid="fields" />
-  <mm:import externid="li" />
+  <mm:import externid="item" />
   <mm:import externid="precreate" />
 
   <mm:cloud method="asis">
@@ -23,9 +25,11 @@
       </c:if>
     </mm:createnode>
 
-    <mm:createrelation source="source" destination="d" role="${role}" />
+    <mm:node referid="d" jspvar="d">
+      <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
+    </mm:node>
     <mm:node referid="d">
-      <mm:include page="${empty li ? 'li.jspx' : li}" referids="source,fields" />
+      <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item" />
     </mm:node>
   </mm:cloud>
 </jsp:root>
