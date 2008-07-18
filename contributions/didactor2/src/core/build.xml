@@ -2,7 +2,7 @@
 
 
   <import file="../../install-dependency.xml" />
-  <target name="install" depends="searchrelate,editwizard,oscache,crontab,email,clustering" />
+  <target name="install" depends="searchrelate,editwizard,jumpers,resources,oscache,crontab,email,clustering" />
 
 
 </project>
