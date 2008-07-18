@@ -11,10 +11,12 @@
   <mm:import externid="confirm" />
   <mm:import externid="icondir" />
   <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
-    <mm:fieldinfo type="input" />
-    <c:if test="${status.first}">
-      <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
+    <c:if test="${status.current.state ne 3}"> <!-- don't show system fields on default -->
+      <mm:fieldinfo type="input" />
+      <c:if test="${status.first}">
+        <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
+      </c:if>
+      <mm:fieldinfo type="errors" />
     </c:if>
-    <mm:fieldinfo type="errors" />
   </mm:fieldlist>
 </jsp:root>
