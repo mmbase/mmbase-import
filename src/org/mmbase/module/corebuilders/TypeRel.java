@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.78 2008-02-20 17:12:28 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.79 2008-07-18 04:17:59 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -174,18 +174,14 @@ public class TypeRel extends MMObjectBuilder {
 
             int rnumber = typeRel.getIntValue("rnumber");
 
-            List<MMObjectBuilder> sources = sourceBuilder.getDescendants();
+            List<MMObjectBuilder> sources = new ArrayList<MMObjectBuilder>(sourceBuilder.getDescendants());
             sources.add(sourceBuilder);
 
-            List<MMObjectBuilder> destinations = destinationBuilder.getDescendants();
+            List<MMObjectBuilder> destinations = new ArrayList<MMObjectBuilder>(destinationBuilder.getDescendants());
             destinations.add(destinationBuilder);
 
-            Iterator<MMObjectBuilder> i = sources.iterator();
-            while (i.hasNext()) {
-                MMObjectBuilder s = i.next();
-                Iterator<MMObjectBuilder> j = destinations.iterator();
-                while (j.hasNext()) {
-                    MMObjectBuilder d = j.next();
+            for (MMObjectBuilder s : sources) {
+                for (MMObjectBuilder d : destinations) {
                     MMObjectNode vnode = new VirtualTypeRelNode(s.getNumber(), d.getNumber(), rnumber);
                     added.add(vnode);
                 }
