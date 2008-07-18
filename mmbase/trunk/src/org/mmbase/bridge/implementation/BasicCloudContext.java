@@ -22,9 +22,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.59 2008-07-15 21:33:22 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.60 2008-07-18 04:42:20 michiel Exp $
  */
-public class BasicCloudContext implements CloudContext {
+public abstract class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
 
     /**
