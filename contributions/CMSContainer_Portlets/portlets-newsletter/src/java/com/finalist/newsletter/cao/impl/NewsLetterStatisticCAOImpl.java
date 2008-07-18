@@ -211,37 +211,41 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 		return util.convertFromNodeList((NodeList) list);
 	}
 
-	public void logPubliction(int userId, int newsletterId, HANDLE handle) {
-		if (!mayLog(userId, newsletterId)) {
-			return;
-		}
-		NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
-		//Node newsletter = cloud.getNode(newsletterId);
-		Node logNode = logManager.createNode();
-		logNode.setIntValue("newsletter", newsletterId);
-		logNode.setIntValue("post", 0);
-		logNode.setIntValue("bounches", 0);
-		logNode.setIntValue("subscribe", 0);
-		logNode.setIntValue("unsubscribe", 0);
-		logNode.setIntValue("removed", 0);
-		logNode.setIntValue("userid", userId);
-		logNode.setDateValue("logdate", new Date());
-		if (handle.equals(HANDLE.ACTIVE)) {
-			logNode.setIntValue("subscribe", 1);
-		} else if (handle.equals(HANDLE.INACTIVE)) {
-			logNode.setIntValue("unsubscribe", 1);
-		} else if (handle.equals(HANDLE.REMOVE)) {
-			logNode.setIntValue("removed", 1);
-		} else if (handle.equals(HANDLE.BOUNCE)) {
-			logNode.setIntValue("bounches", 1);
-		} else if (handle.equals(HANDLE.POST)) {
-			logNode.setIntValue("post", 1);
-		}
-		logNode.commit();
-		
-	}
+   public void logPubliction(int userId, int newsletterId, HANDLE handle) {
+      if (!mayLog(userId, newsletterId)) {
+         return;
+      }
+      NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
+      //Node newsletter = cloud.getNode(newsletterId);
+      Node logNode = logManager.createNode();
+      logNode.setIntValue("newsletter", newsletterId);
+      logNode.setIntValue("post", 0);
+      logNode.setIntValue("bounches", 0);
+      logNode.setIntValue("subscribe", 0);
+      logNode.setIntValue("unsubscribe", 0);
+      logNode.setIntValue("removed", 0);
+      logNode.setIntValue("userid", userId);
+      logNode.setDateValue("logdate", new Date());
+      if (handle.equals(HANDLE.ACTIVE)) {
+         logNode.setIntValue("subscribe", 1);
+      }
+      else if (handle.equals(HANDLE.INACTIVE)) {
+         logNode.setIntValue("unsubscribe", 1);
+      }
+      else if (handle.equals(HANDLE.REMOVE)) {
+         logNode.setIntValue("removed", 1);
+      }
+      else if (handle.equals(HANDLE.BOUNCE)) {
+         logNode.setIntValue("bounches", 1);
+      }
+      else if (handle.equals(HANDLE.POST)) {
+         logNode.setIntValue("post", 1);
+      }
+      logNode.commit();
 
-	private boolean mayLog(int userId, int newsletterId) {
+   }
+
+   private boolean mayLog(int userId, int newsletterId) {
 		boolean isLog = false;
 		NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
 		NodeQuery query = cloud.createNodeQuery();

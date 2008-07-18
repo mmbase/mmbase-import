@@ -1,31 +1,18 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.AbstractCAO;
+import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.util.NlUtil;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Term;
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.AggregatedField;
-import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.ResultBuilder;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.StepField;
-import org.mmbase.storage.search.implementation.BasicAggregatedField;
-import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.storage.search.implementation.BasicSearchQuery;
-import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.core.CoreField;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -74,6 +61,10 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
       }else{
          return -1;
       }
+   }
+
+   public Node getNewsletterNodeById(int newsletterId) {
+      return cloud.getNode(newsletterId);
    }
 
    public Newsletter getNewsletterById(int id) {
