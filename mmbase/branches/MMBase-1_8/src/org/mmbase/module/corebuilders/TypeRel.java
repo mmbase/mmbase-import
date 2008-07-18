@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.72.2.2 2006-10-20 07:51:53 nklasens Exp $
+ * @version $Id: TypeRel.java,v 1.72.2.3 2008-07-18 04:10:39 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -174,10 +174,10 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
             int rnumber = typeRel.getIntValue("rnumber");
 
-            List sources = sourceBuilder.getDescendants();
+            List sources = new ArrayList(sourceBuilder.getDescendants());
             sources.add(sourceBuilder);
 
-            List destinations = destinationBuilder.getDescendants();
+            List destinations = new ArrayList(destinationBuilder.getDescendants());
             destinations.add(destinationBuilder);
 
             Iterator i = sources.iterator();
