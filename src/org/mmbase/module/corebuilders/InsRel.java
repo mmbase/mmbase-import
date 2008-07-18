@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.54 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: InsRel.java,v 1.55 2008-07-18 05:05:43 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -75,8 +75,8 @@ public class InsRel extends MMObjectBuilder {
      */
 
     private Cache<Integer, Vector<MMObjectNode>> relatedCache = new Cache<Integer, Vector<MMObjectNode>>(25) {
-        public String getName()        { return "RelatedCache"; }
-        public String getDescription() { return "Cache for Related Nodes"; }
+        public String getName()        { return "RelatedCache_" + InsRel.this.getTableName(); }
+        public String getDescription() { return "Cache for Related Nodes of builder " + InsRel.this.getTableName(); }
         };
 
 
@@ -92,8 +92,6 @@ public class InsRel extends MMObjectBuilder {
      * needed for autoload
      */
     public InsRel() {
-        relatedCache.putCache();
-        // relationsCache.putCache();
     }
 
     /**
@@ -115,19 +113,21 @@ public class InsRel extends MMObjectBuilder {
             // and continues without directionality (backward compatibility).
             //
             if (usesdir && !hasDirField && (!getTableName().equals(INSREL_BUILDER))) {
-                log.fatal("FATAL ERROR: Builder "+getTableName()+" has no dir field but directionality support was turned on.");
-                log.fatal("Table for "+getTableName()+" was NOT created.");
-                log.fatal("MMBase continues, but use of the "+getTableName()+" builder will fail.");
+                log.fatal("FATAL ERROR: Builder " + getTableName() + " has no dir field but directionality support was turned on.");
+                log.fatal("Table for " + getTableName() + " was NOT created.");
+                log.fatal("MMBase continues, but use of the " + getTableName() + " builder will fail.");
                 return false;
             }
         }
-        boolean res=super.init();
+        boolean res = super.init();
         checkAddTmpField("_dnumber");
         checkAddTmpField("_snumber");
         if (res && usesdir && !hasDirField) {
             log.warn("No dir field. Directionality support turned off.");
             usesdir = false;
         }
+        relatedCache.putCache();
+        // relationsCache.putCache();
         return res;
     }
 
