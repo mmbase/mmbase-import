@@ -256,6 +256,11 @@
       <param name="base" value="jstl" />
       <param name="version" value="1.1.2" />
     </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="standard" />
+      <param name="base" value="taglibs" />
+      <param name="version" value="1.1.2" />
+    </antcall>
     <property name="jstl.installed" value="yes" />
   </target>
 
