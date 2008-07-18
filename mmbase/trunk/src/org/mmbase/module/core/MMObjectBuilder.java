@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.426 2008-06-10 12:03:11 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.427 2008-07-18 04:17:35 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -703,7 +703,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * Creates list of descendant-builders.
+     * Returns an (unmodifiable) list of all descendant-builders.
      *
      * @since MMBase-1.6.2
      */
@@ -720,9 +720,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 // I don't quite know why
                 descendants = result;
             }
-            return result;
+            return Collections.unmodifiableList(result);
         }
-        return descendants;
+        return Collections.unmodifiableList(descendants);
     }
 
     /**
