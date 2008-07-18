@@ -86,7 +86,7 @@
       <mapper type="glob" from="blocks/*" to="*" />
     </unzip>
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}">
-      <patternset>
+      <patternset excludes="${ignorefile},templates">
         <include name="templates/**"/>
       </patternset>
       <mapper type="glob" from="templates/*" to="${mmbase.templates.path}*" />
@@ -116,6 +116,7 @@
       <param name="name" value="" />
       <param name="prefix" value="mmbase" />
       <param name="mmbase.templates.path" value="" />
+      <param name="ignorefile" value="templates/index.jsp" />
     </antcall>
   </target>
 
