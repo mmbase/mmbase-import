@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.29 2008-07-18 05:27:19 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.30 2008-07-18 06:08:37 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -116,7 +116,12 @@ public abstract class CacheManager {
         Hashtable<String, String> props = new Hashtable<String, String>();
         try {
             props.put("type", "CacheMBean");
-            props.put("mmb", org.mmbase.module.core.MMBase.getMMBase().getMachineName());
+
+            org.mmbase.module.core.MMBase mmb = org.mmbase.module.Module.getModule(org.mmbase.module.core.MMBase.class, false);
+            if (mmb != null) {
+                props.put("mmb", org.mmbase.module.core.MMBase.getMMBase().getMachineName());
+            } else {
+            }
             props.put("name", cache.getName());
             return new ObjectName("org.mmbase.cache", props);
         } catch (MalformedObjectNameException mfone) {
