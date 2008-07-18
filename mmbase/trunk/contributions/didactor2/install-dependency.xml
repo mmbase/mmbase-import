@@ -161,6 +161,12 @@
     </antcall>
   </target>
 
+  <target name="richtext" depends="mmbase">
+    <antcall target="install.module">
+      <param name="name" value="richtext" />
+    </antcall>
+  </target>
+
 
   <target name="searchrelate" depends="mmbase,jstl">
     <antcall target="install.module">
