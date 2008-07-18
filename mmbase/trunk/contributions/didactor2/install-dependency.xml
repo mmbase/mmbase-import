@@ -135,7 +135,7 @@
 
   </target>
 
-  <target name="mmbase" unless="mmbase.installed">
+  <target name="mmbase" unless="mmbase.installed" depends="commons-fileupload">
     <antcall target="install.module.minimalistic">
       <param name="name" value="" />
       <param name="prefix" value="mmbase" />
