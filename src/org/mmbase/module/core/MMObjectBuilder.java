@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mmbase.bridge.*;
 
@@ -61,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.427 2008-07-18 04:17:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.428 2008-07-18 04:46:44 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -357,14 +358,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Reference to the builders that this builder extends.
      * @since MMBase-1.6.2 (parentBuilder in 1.6.0)
      */
-    private Stack<MMObjectBuilder> ancestors = new Stack<MMObjectBuilder>();
+    private List<MMObjectBuilder> ancestors = new CopyOnWriteArrayList<MMObjectBuilder>();
 
     /**
      * Version information for builder registration
      * Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml
      * builder file
      */
-    private int version=0;
+    private int version = 0;
 
     /**
      * Contains lists of builder fields in specified order
@@ -391,8 +392,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     private void initAncestors() {
-        if (! ancestors.empty()) {
-            ancestors.peek().init();
+        if (ancestors.size() > 0) {
+            ancestors.get(ancestors.size() - 1).init();
         }
     }
 
@@ -689,14 +690,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return the extended (parent) builder, or null if not available
      */
     public MMObjectBuilder getParentBuilder() {
-        if (ancestors.empty()) return null;
-        return ancestors.peek();
+        if (ancestors.size() == 0) return null;
+        return ancestors.get(ancestors.size()  - 1);
     }
     /**
      * Gives the list of parent-builders.
      *
      * @since MMBase-1.6.2
-
      */
     public List<MMObjectBuilder>  getAncestors() {
         return Collections.unmodifiableList(ancestors);
@@ -725,15 +725,20 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return Collections.unmodifiableList(descendants);
     }
 
+
     /**
      * Sets the builder that this builder extends, and registers it in the storage layer.
      * @param parent the extended (parent) builder, or null if not available
      *
      * @since MMBase-1.6
      */
-    public void setParentBuilder(MMObjectBuilder parent) {
+    void setParentBuilder(MMObjectBuilder parent) {
         ancestors.addAll(parent.getAncestors());
-        ancestors.push(parent);
+        ancestors.add(parent);
+        for (MMObjectBuilder a : ancestors) {
+            // if descendants were cached already, this must be undone.
+            a.descendants = null;
+        }
         getDataTypeCollector().addCollector(parent.getDataTypeCollector());
     }
 
