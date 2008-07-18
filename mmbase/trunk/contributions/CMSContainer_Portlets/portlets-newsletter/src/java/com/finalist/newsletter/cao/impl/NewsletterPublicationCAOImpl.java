@@ -1,57 +1,26 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.newsletter.cao.NewsletterPublicationCAO;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.util.POConvertUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.ApplicationContextFactory;
-import com.finalist.newsletter.cao.NewsletterPublicationCAO;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.util.POConvertUtils;
-import com.finalist.newsletter.util.NewsletterUtil;
-
-import com.finalist.portlets.newsletter.NewsletterContentPortlet;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 
 
@@ -112,6 +81,10 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       pub.setNewsletter(newsletter);
 
       return pub;
+   }
+
+   public Node getPublicationNode(int number) {
+      return null;
    }
 
    public String getPublicationURL(int publciationId) {
