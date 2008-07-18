@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -19,8 +17,6 @@ import com.finalist.newsletter.util.NewsletterTermUtil;
 
 
 public class NewsletterTermAction  extends DispatchAction{
-   
-   private static Log log = LogFactory.getLog(NewsletterTermAction.class);
    
    public ActionForward add(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
@@ -118,9 +114,13 @@ public class NewsletterTermAction  extends DispatchAction{
             termForm.setOffset(String.valueOf(offset-1));
          }
       }
+      
       request.setAttribute("resultList", resultList);
       request.setAttribute("resultCount", totalCount);
       request.setAttribute("offset", termForm.getOffset());
+      if(StringUtils.isNotEmpty(request.getParameter("newsletterId"))) {
+         return mapping.findForward("report_term");
+      }
       return mapping.findForward("success");
    }
 }
