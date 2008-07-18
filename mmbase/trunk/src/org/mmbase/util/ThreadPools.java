@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.12 2008-07-09 17:28:44 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.13 2008-07-18 05:49:32 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -65,7 +65,8 @@ public abstract class ThreadPools {
         });
 
 
-    private static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
+
+    public static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
 
     /**
      * @since MMBase-1.9
