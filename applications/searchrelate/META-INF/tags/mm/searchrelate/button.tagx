@@ -1,0 +1,35 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    version="2.0"
+    >
+  <!--
+      @author Michiel Meeuwissen
+      @version $Id: button.tagx,v 1.1 2008-07-18 16:13:26 michiel Exp $
+  -->
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate"
+      description="" />
+
+  <jsp:directive.attribute name="icondir"      type="java.lang.String" />
+  <jsp:directive.attribute name="type"         required="true" />
+  <jsp:directive.attribute name="alt"           />
+
+  <mm:import id="icons">${empty icondir ? '/mmbase/style/images' : icondir}</mm:import>
+
+  <mm:haspage page="${icons}/${type}.jspx">
+    <c:set var="alt"><mm:include page="${icons}/${type}.jspx" /></c:set>
+  </mm:haspage>
+  <mm:log>${alt.class} :${alt} ${mm:escape('tagstripper(NONE),trimmer', alt)}</mm:log>
+  <mm:haspage page="${icons}/${type}.png">
+    <mm:link page="${icons}/${type}.png">
+      <img class="icon"
+           alt="${empty alt ? '+' : mm:escape('tagstripper(NONE)', alt)}"
+           src="${_}" />
+    </mm:link>
+  </mm:haspage>
+  <mm:haspage page="${icons}/${type}.png" inverse="true">
+    <jsp:text>${alt}</jsp:text>
+  </mm:haspage>
+</jsp:root>

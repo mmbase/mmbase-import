@@ -2,11 +2,14 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     version="2.0"
     >
   <!--
+
+
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.16 2008-07-18 14:34:56 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.17 2008-07-18 16:13:26 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -45,10 +48,6 @@
                            />
   <jsp:directive.attribute name="constraints"           fragment="true"
                            description="Will be called inside the relatednodescontainer, so you can add extra constraints. (Only works in mmbase ge 1.9)"
-                           />
-
-  <jsp:directive.attribute name="alt"           type="java.lang.String"
-                           description="Alt text for the create-button. Defaults to '+'."
                            />
 
   <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
@@ -115,15 +114,12 @@
         </mm:relatednodescontainer>
         <mm:write session="mm_list_query_${seq}" referid="q" />
       </ol>
-      <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
 
       <mm:link page="/mmbase/searchrelate/list/create.jspx"
                referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?">
         <mm:param name="item" value="${itemjsp}" />
         <a href="${_}" class="create">
-          <img class="icon"
-               alt="${empty alt ? '+' : alt}"
-               src="${icons}/create.png" />
+          <mm-sr:button alt="+" type="create" icondir="${icondir}" />
         </a>
       </mm:link>
       <span class="status">...</span>
