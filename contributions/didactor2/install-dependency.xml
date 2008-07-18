@@ -161,6 +161,18 @@
     </antcall>
   </target>
 
+  <target name="resources" depends="mmbase">
+    <antcall target="install.module">
+      <param name="name" value="resources" />
+    </antcall>
+  </target>
+
+  <target name="jumpers" depends="mmbase">
+    <antcall target="install.module">
+      <param name="name" value="jumpers" />
+    </antcall>
+  </target>
+
   <target name="richtext" depends="mmbase">
     <antcall target="install.module">
       <param name="name" value="richtext" />
