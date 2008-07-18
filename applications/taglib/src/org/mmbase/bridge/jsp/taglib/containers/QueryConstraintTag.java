@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.10 2008-07-17 13:52:48 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.11 2008-07-18 07:52:06 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -146,8 +146,11 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
             // some arrangement for if this happens to be a constraint on a number field
             FieldValueConstraint fv = (FieldValueConstraint) newConstraint;
             if (fv.getOperator() == FieldCompareConstraint.EQUAL && fv.getField().getFieldName().equals("number")) {
-                query.addNode(fv.getField().getStep(), query.getCloud().getNode(org.mmbase.util.Casting.toString(fv.getValue())).getNumber());
-                return null;
+                String number = org.mmbase.util.Casting.toString(fv.getValue());
+                if (query.getCloud().hasNode(number)) {
+                    query.addNode(fv.getField().getStep(), query.getCloud().getNode(number).getNumber());
+                    return null;
+                }
             }
 
         }
