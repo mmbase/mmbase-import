@@ -35,7 +35,7 @@
   <property name="dest" value="${build.webapp.dir}" />
   <property name="jardest" value="${build.webapp.dir}/WEB-INF/lib" />
 
-  <property name="mmbase.ignorefiles"     value="templates/index.jsp,templates/WEB-INF/web.xml" />
+  <property name="mmbase.ignorefiles"     value="templates/index.jsp,templates/WEB-INF/web.xml,templates/WEB-INF/config/security/security.xml" />
 
   <import file="install-dependency.xml" />
 
@@ -161,12 +161,25 @@
 
   <target name="compile.component" depends="minimalistic">
     <echo message="Compiling component ${component}" />
+
     <if>
       <available file="src/${component}/build.xml" type="file" />
       <then>
         <ant dir="src/${component}">
           <property name="dest" value="${build.webapp.dir}" />
         </ant>
+      </then>
+    </if>
+    <!-- this ought to go, while checking in jars is evil -->
+    <if>
+      <available file="src/${component}/lib" type="dir" />
+      <then>
+        <copy todir="${build.webapp.dir}/WEB-INF/lib"  preservelastmodified="true">
+          <fileset
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/lib">
+          </fileset>
+        </copy>
       </then>
     </if>
     <if>
