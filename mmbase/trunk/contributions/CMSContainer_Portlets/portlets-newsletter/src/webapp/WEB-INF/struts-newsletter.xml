@@ -182,6 +182,7 @@
 			<forward name="success" path="/editors/newsletter/module/newslettertermlist.jsp" redirect="false" />
          <forward name="list" path="/editors/newsletter/module/NewsletterTermAction.do?method=list" redirect="false" />
          <forward name="add" path="/editors/newsletter/module/newslettertermadd.jsp" redirect="false" />
+         <forward name="report_term" path="/editors/newsletter/module/report_term_list.jsp" redirect="false" />
 		</action>
    </action-mappings>
 
