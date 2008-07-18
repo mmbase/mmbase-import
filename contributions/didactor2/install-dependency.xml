@@ -295,7 +295,9 @@
     <property name="oscache.installed" value="yes" />
   </target>
 
-  <target name="minimalistic" depends="mmbase,taglib,oscache" />
+  <target name="minimalistic" depends="mmbase,taglib,oscache" unless="minimalistic.installed">
+    <property name="minimalistic.installed" value="yes" />
+  </target>
 
 
 </project>
