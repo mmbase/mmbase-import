@@ -297,6 +297,11 @@
       <param name="base" value="opensymphony" />
       <param name="version" value="2.4.1" />
     </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="commons-logging" />
+      <param name="base" value="commons-logging" />
+      <param name="version" value="1.1" />
+    </antcall>
     <property name="oscache.installed" value="yes" />
   </target>
 
