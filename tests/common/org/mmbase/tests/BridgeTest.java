@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.tests;
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * Test-case running via the bridge. This base class takes care of
@@ -17,7 +20,7 @@ import org.mmbase.bridge.*;
  * @author Michiel Meeuwissen
  */
 public abstract class BridgeTest extends MMBaseTest {
-
+    private static final Logger log = Logging.getLoggerInstance(BridgeTest.class);
     public BridgeTest() {
         super();
     }
@@ -27,30 +30,37 @@ public abstract class BridgeTest extends MMBaseTest {
 
     int tryCount = 0;
 
-    protected Cloud getCloud() {
-        Cloud c = null;
-        while(c == null) {
-            CloudContext cc = null;
+    protected CloudContext getCloudContext() {
+        CloudContext cc = null;
+        while(cc == null) {
             try {
                 cc = ContextProvider.getDefaultCloudContext();
-                c = cc.getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
                 if (cc instanceof LocalContext) {
                     throw be;
                 }
-                System.out.println(be.getMessage() + ". LOCAL. Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
+                if (tryCount < 19) {
+                    log.info(be.getMessage() + ".  Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")");
+                } else {
+                    log.warn(be.getMessage() + ".  Perhaps mmbase not yet running, retrying in 5 seconds (" + tryCount + ")", be);
+                }
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
                 } catch (Exception ie) {
                     return null;
                 }
-                if (tryCount > 25) {
+                if (tryCount > 20) {
                     throw be;
                 }
             }
         }
+        return cc;
+    }
+
+    protected Cloud getCloud() {
+        Cloud c = getCloudContext().getCloud("mmbase", "class", null);
         ensureDeployed(c, "local cloud");
         return c;
     }
