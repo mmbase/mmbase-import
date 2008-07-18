@@ -12,6 +12,7 @@
   <property name="remote.repository"      value="http://www.mmbase.org/maven" />
   <property name="remote.repository2"     value="http://repo1.maven.org/maven/" />
 
+  <property name="mmbase.ignorefiles"     value="templates/index.jsp" />
 
   <target name="unzipdownloadzip" if="download.zip.present"
           unless="download.dir.present">
@@ -86,7 +87,7 @@
       <mapper type="glob" from="blocks/*" to="*" />
     </unzip>
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}">
-      <patternset excludes="${ignorefile},templates">
+      <patternset excludes="${ignorefiles}">
         <include name="templates/**"/>
       </patternset>
       <mapper type="glob" from="templates/*" to="${mmbase.templates.path}*" />
@@ -116,7 +117,7 @@
       <param name="name" value="" />
       <param name="prefix" value="mmbase" />
       <param name="mmbase.templates.path" value="" />
-      <param name="ignorefile" value="templates/index.jsp" />
+      <param name="ignorefiles" value="${mmbase.ignorefiles}" />
     </antcall>
   </target>
 
