@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.31 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: SortedBundle.java,v 1.32 2008-07-18 05:48:36 michiel Exp $
  */
 public class SortedBundle {
 
@@ -49,7 +49,7 @@ public class SortedBundle {
     public static final HashMap<String,Object> NO_CONSTANTSPROVIDER = null;
 
     // cache of maps.
-    private static Cache<String,SortedMap<Object,Object>> knownResources = new Cache<String,SortedMap<Object,Object>>(100) {
+    private static final Cache<String,SortedMap<Object,Object>> knownResources = new Cache<String,SortedMap<Object,Object>>(100) {
             public String getName() {
                 return "ConstantBundles";
             }
@@ -59,7 +59,7 @@ public class SortedBundle {
         };
 
     static {
-        knownResources.putCache();
+        org.mmbase.cache.CacheManager.putCache(knownResources, false);
     }
 
     /**
@@ -176,12 +176,13 @@ public class SortedBundle {
      * the combination of the arguments. See {@link #getResource}.
      */
     protected static Object castKey(final String bundleKey, final Object value, final Map<String,Object> constantsProvider, final Class<?> wrapper, final Locale locale) {
+
         if (bundleKey == null) return null;
         Object key;
         // if the key is numeric then it will be sorted by number
         //key Double
 
-        Map<String,Object> provider = constantsProvider; // default class (may be null)
+        Map<String, Object> provider = constantsProvider; // default class (may be null)
         int lastDot = bundleKey.lastIndexOf('.');
         if (lastDot > 0) {
             Class<?> providerClass;
@@ -206,7 +207,6 @@ public class SortedBundle {
         if (wrapper != null && ! wrapper.isAssignableFrom(key.getClass())) {
             try {
                 if (ValueWrapper.class.isAssignableFrom(wrapper)) {
-                    log.debug("wrapper is a valueWrapper");
                     if (locale == null) {
                         Constructor<?> c = wrapper.getConstructor(Object.class, Comparable.class );
                         key = c.newInstance(key, value);
