@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.97 2008-07-09 17:05:01 michiel Exp $
+ * @version $Id: Module.java,v 1.98 2008-07-18 06:08:14 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -410,14 +410,19 @@ public abstract class Module extends DescribedFunctionProvider {
      * @return A Module instance or <code>null</code> if no such module.
      * @since MMBase-1.9
      */
-    public static <C extends Module> C getModule(Class<C> clazz) {
-        checkModules(true);
-        for (Module m : modules.values()) {
-            if (clazz.isInstance(m)) {
-                return (C) m;
+    public static <C extends Module> C getModule(Class<C> clazz, boolean check) {
+        if (check) checkModules(true);
+        if (modules != null) {
+            for (Module m : modules.values()) {
+                if (clazz.isInstance(m)) {
+                    return (C) m;
+                }
             }
         }
         return null;
+    }
+    public static <C extends Module> C getModule(Class<C> clazz) {
+        return getModule(clazz, true);
     }
 
     /**
