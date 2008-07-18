@@ -22,21 +22,19 @@
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
 
-  <property name="download.dir"           location="${basedir}" />
-  <property name="war.dir"                value="${build.dir}" />
 
+  <property name="download.dir"           location="${basedir}/download" />
+  <property name="war.dir"                value="${build.dir}" />
   <property name="mmbase.version"         value="1.9.0-SNAPSHOT" />
-  <property name="mmbase.distro.location" value="http://www.mmbase.org/maven/mmbase/wars" />
-  <property name="mmbase.war"             value="example-${mmbase.version}.war" />
-  <property name="mmbase.distro"          value="${mmbase.distro.location}/${mmbase.war}" />
-  <property name="mmbase.dest"             value="${download.dir}/${mmbase.war}" />
 
   <property name="mmbaseroot.language"     value="en" />
   <property name="mmbaseroot.datadir"      value="." /> <!-- defaults to WEB-INF/data -->
 
   <property name="example.war.filter"      value="mynews,myyahoo,mycompany" />
 
-
+  <property name="dest" value="${build.webapp.dir}" />
+  <property name="jardest" value="${build.webapp.dir}/WEB-INF/lib" />
+  <import file="install-dependency.xml" />
 
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
@@ -47,7 +45,10 @@
     <mkdir dir="${build.webapp.dir}/WEB-INF/lib" />
   </target>
 
-  <target name="build" >
+
+  <target name="webapp" depends="minimalistic,create.dirs,build" />
+
+  <target name="build"  depends="minimalistic,editwizard">
     <echo message="Building components: ${components}" />
     <delete file="${build.webapp.dir}/WEB-INF/web.xml" />
 
@@ -81,56 +82,7 @@
   <target name="clean">
     <delete dir="${build.dir}" />
   </target>
-  <target name="clean.distro" depends="mmbase.distro.exists" if="mmbase.distro.exists">
-    <delete file="${mmbase.dest}" />
-  </target>
-  <target name="mmbase.distro.exists">
-    <echo message="Using MMBase ${mmbase.version}" />
-    <available file="${mmbase.dest}" property="mmbase.distro.exists"/>
-    <available file="${build.dir}/mmbase/WEB-INF/lib" property="mmbase.distro.expanded.exists"/>
-  </target>
-  <target name="mmbase.distro.download" unless="mmbase.downloaded">
-    <mkdir dir="${download.dir}" />
-    <copy file="${user.home}/.maven/repository/mmbase/wars/${mmbase.war}" tofile="${mmbase.dest}" preservelastmodified="true" overwrite="false" />
-    <get src="${mmbase.distro}" dest="${mmbase.dest}" verbose="on" usetimestamp="true"  />
-    <property name="mmbase.downloaded" value="true" />
 
-  </target>
-
-  <target name="mmbase.distro" depends="mmbase.distro.exists,mmbase.distro.download" unless="mmbase.distro.expanded.exists" >
-    <unzip src="${mmbase.dest}" dest="${build.dir}/mmbase" />
-  </target>
-
-  <target name="webapp"
-          depends="create.dirs,build,mmbase.distro">
-    <copy todir="${build.webapp.dir}" preservelastmodified="true">
-      <fileset dir="${build.dir}/mmbase">
-        <include name="mmbase/**"/>
-        <exclude name="mmbase/components/mynews/**" />
-        <exclude name="mmbase/components/myyahoo/**" />
-        <exclude name="mmbase/components/mycomponay/**" />
-        <!-- ANT is horrible
-        <foreach target="example.war.filter" param="file">
-          <exclude name="mmbase/components/${file}/**" />
-        </foreach>
-        -->
-      </fileset>
-    </copy>
-    <copy todir="${build.webapp.dir}/WEB-INF/lib" preservelastmodified="true">
-      <fileset dir="${build.dir}/mmbase/WEB-INF/lib">
-        <include name="**"/>
-        <exclude name="mmbase-rmmci-server.jar" />
-        <exclude name="mmbase-mynews-${mmbase.version}.jar" />
-        <exclude name="mmbase-myyahoo-${mmbase.version}.jar" />
-        <exclude name="mmbase-mycompany-${mmbase.version}.jar" />
-        <!-- ANT is a horrible horrible product
-        <foreach target="example.war.filter" param="file">
-          <exclude name="mmbase-${file}-${mmbase.version}.jar" />
-        </foreach>
-        -->
-      </fileset>
-    </copy>
-  </target>
 
   <target name="config">
     <ant antfile="configure.xml" target="config"/>
@@ -204,36 +156,16 @@
     </if>
   </target>
 
-  <target name="compile.component" depends="mmbase.distro">
+  <target name="compile.component" depends="minimalistic">
     <echo message="Compiling component ${component}" />
-    <!-- copy external libs -->
     <if>
-      <available file="src/${component}/lib" type="dir" />
+      <available file="src/${component}/build.xml" type="file" />
       <then>
-        <copy todir="${build.webapp.dir}/WEB-INF/lib"
-              preservelastmodified="true">
-          <fileset
-              defaultexcludes="${defaultexcludes}"
-              dir="src/${component}/lib">
-            <include name="**"/>
-          </fileset>
-        </copy>
+        <ant dir="src/${component}">
+          <property name="dest" value="${build.webapp.dir}" />
+        </ant>
       </then>
     </if>
-    <if>
-      <available file="src/${component}/lib19" type="dir" />
-      <then>
-        <copy todir="${build.webapp.dir}/WEB-INF/lib"
-              preservelastmodified="true">
-          <fileset
-              defaultexcludes="${defaultexcludes}"
-              dir="src/${component}/lib19">
-            <include name="**"/>
-          </fileset>
-        </copy>
-      </then>
-    </if>
-
     <if>
       <available file="src/${component}/config" type="dir"/>
       <then>
@@ -263,13 +195,6 @@
             <include name="*.jar" />
           </fileset>
           <fileset dir="${build.webapp.dir}/WEB-INF/lib">
-            <include name="*.jar" />
-          </fileset>
-          <fileset dir="src/${component}/lib">
-            <include name="*.jar" />
-          </fileset>
-          <fileset
-              dir="${build.dir}/mmbase/WEB-INF/lib">
             <include name="*.jar" />
           </fileset>
         </path>
@@ -340,13 +265,6 @@
         </if>
       </then>
     </if>
-    <if>
-      <available file="src/${component}/build.xml" type="file" />
-      <then>
-        <echo message="running src/${component}/build.xml"/>
-        <ant antfile="src/${component}/build.xml" target="build"/>
-      </then>
-    </if>
   </target>
 
   <target name="build.component" depends="compile.component">
@@ -364,25 +282,6 @@
                   defaultexcludes="${defaultexcludes}"
                   dir="src/${component}/templates">
                 <include name="**"/>
-                <!--
-                <include name="admin/**"/>
-                <include name="cockpit/**"/>
-                <include name="components/**"/>
-                <include name="css/**"/>
-                <include name="editwizards/**"/>
-                <include name="gfx/**"/>
-                <include name="help/**"/>
-                <include name="mmbase/**"/>
-                <include name="mmeditors/**"/>
-                <include name="shared/**"/>
-                <include name="users/**"/>
-                <include name="metadata/**"/>
-                <include name="migrate/**"/>
-                <include name="translation/**"/>
-                <include name="${component}/**"/>
-                <include name="classes/**"/>
-                <exclude name="templates/**"/>
-                -->
               </fileset>
             </copy>
           </then>
@@ -404,18 +303,6 @@
          <echo message="no templates dir in ${component}" />
        </else>
     </if>
-    <if>
-     <available file="src/${component}/templates.zip" type="dir" />
-     <then>
-        <unzip dest="${build.webapp.dir}">
-          <fileset dir="src/${component}/templates.zip">
-            <include name="*.zip" />
-            <include name="*.war" />
-          </fileset>
-        </unzip>
-     </then>
-    </if>
-
 
     <!-- copy component blocks -->
     <if>
@@ -535,24 +422,6 @@
     </if>
   </target>
 
-
-  <target name="javadoc">
-    <mkdir dir="${build.dir}/javadoc" />
-    <javadoc destdir="${build.dir}/javadoc">
-      <classpath>
-        <fileset dir="${build.webapp.dir}/WEB-INF/lib">
-          <include name="*.jar" />
-        </fileset>
-        <fileset dir="lib/">
-          <include name="*.jar" />
-        </fileset>
-      </classpath>
-      <fileset dir="src">
-        <include name="**/*.java" />
-      </fileset>
-      <group title="Components" packages="nl.didactor.component.*" />
-    </javadoc>
-  </target>
 
   <target name="war.name.postfix" unless="war.name.postfix">
     <property name="tag"         value="$Name: not supported by cvs2svn $" />
