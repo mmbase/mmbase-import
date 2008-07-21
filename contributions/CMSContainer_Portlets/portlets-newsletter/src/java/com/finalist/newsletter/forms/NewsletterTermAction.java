@@ -118,6 +118,9 @@ public class NewsletterTermAction  extends DispatchAction{
       request.setAttribute("resultList", resultList);
       request.setAttribute("resultCount", totalCount);
       request.setAttribute("offset", termForm.getOffset());
+      if(StringUtils.isNotEmpty(request.getParameter("newsletterId"))) {
+         request.setAttribute("newsletterId", request.getParameter("newsletterId"));
+      }
       return mapping.findForward("success");
    }
 }
