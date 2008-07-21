@@ -2,13 +2,11 @@ package com.finalist.newsletter.cao;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.domain.Publication;
 
 public interface NewsletterSubscriptionCAO {
 
@@ -47,9 +45,9 @@ public interface NewsletterSubscriptionCAO {
    public void pause(int subscriptionId);
 
    public Set<Node> getRecordByNewsletterAndName(int newsletterId,String termName);
-   
+
    public Set<Node> getNewslettersByScriptionRecord(int authenticationId);
-   
+
    public Set<Node> getTermsByScriptionRecord(int authenticationId);
-   
+
 }
