@@ -1,5 +1,6 @@
 package com.finalist.newsletter;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

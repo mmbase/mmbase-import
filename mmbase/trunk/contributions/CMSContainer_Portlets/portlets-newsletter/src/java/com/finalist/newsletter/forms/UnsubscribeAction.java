@@ -10,8 +10,8 @@ import org.apache.commons.logging.LogFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 public class UnsubscribeAction extends Action {
 

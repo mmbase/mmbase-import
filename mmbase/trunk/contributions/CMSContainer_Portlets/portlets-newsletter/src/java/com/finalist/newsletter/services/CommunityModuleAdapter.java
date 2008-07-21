@@ -7,9 +7,9 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 public class CommunityModuleAdapter {
 

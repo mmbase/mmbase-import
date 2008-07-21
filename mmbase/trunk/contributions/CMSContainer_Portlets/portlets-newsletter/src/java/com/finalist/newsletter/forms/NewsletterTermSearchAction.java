@@ -10,8 +10,8 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterService;
 

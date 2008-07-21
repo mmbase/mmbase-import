@@ -1,9 +1,6 @@
 package com.finalist.preferences.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,23 +11,22 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.domain.PreferenceVO;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.newsletter.ApplicationContextFactory;
-
 import com.finalist.preferences.domain.UserProfile;
 
 public class ProfileUtil {
-   
+
    private static Log log = LogFactory.getLog(ProfileUtil.class);
-   
+
    public static void updateUserProfile(UserProfile profile) {
 
-      String accountName = profile.getAccount();      
+      String accountName = profile.getAccount();
       AuthenticationService as = getAuthenticationService();
       PersonService ps = getPersonService();
       Long authenticationId = as.getAuthenticationIdForUserId(accountName);
@@ -59,14 +55,14 @@ public class ProfileUtil {
          ps.updatePerson(person);
       }
    }
-   
+
    public static List<PreferenceVO> getPreferences() {
       List<PreferenceVO> preferences = new ArrayList<PreferenceVO>();
-      
+
       PreferenceService ps = getPreferenceService();
       Map<String, Map<String, String>> modulePreferenceMap = ps.getPreferencesByUserId(getUserIdByAuthenticationId(getCurrentUserId()));
       if(modulePreferenceMap != null && modulePreferenceMap.size() > 0) {
-         
+
          Iterator<Map.Entry<String,Map<String,String>>> keyValues = modulePreferenceMap.entrySet().iterator();
          while(keyValues.hasNext()) {
             Map.Entry<String,Map<String,String>> entry =  keyValues.next();
@@ -86,7 +82,7 @@ public class ProfileUtil {
       }
       return preferences;
    }
-   
+
    public static UserProfile getUserProfile(Long authId){
       Authentication auth = null;
       UserProfile profile = new UserProfile();
@@ -95,14 +91,14 @@ public class ProfileUtil {
       if (authId != null) {
           auth = as.getAuthenticationById(Long.valueOf(authId));
       }
-      
+
       if (auth != null) {
          profile.setAccount(auth.getUserId());
-         
+
          PersonService ps = getPersonService();
          //Returns null when no Person object was found!
          Person person = ps.getPersonByAuthenticationId(auth.getId());
-        
+
          if (person != null) {
             profile.setFirstName(person.getFirstName());
             profile.setPrefix(person.getInfix());
@@ -114,16 +110,16 @@ public class ProfileUtil {
       }
       return profile;
    }
-   
+
    public static UserProfile getUserProfile(){
       return getUserProfile(getCurrentUserId());
    }
-   
+
    public static Person getCurrentUser() {
 
       PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
       SecurityContext securityContext = SecurityContextHolder.getContext();
-      org.acegisecurity.Authentication authentication = (org.acegisecurity.Authentication) securityContext.getAuthentication();
+      org.acegisecurity.Authentication authentication = securityContext.getAuthentication();
       Person person = null;
 
       if (null != authentication) {
@@ -135,7 +131,7 @@ public class ProfileUtil {
       }
       return person;
    }
-   
+
    public static Long getCurrentUserId(){
       Person person = getCurrentUser();
       if(null==person){
@@ -144,11 +140,11 @@ public class ProfileUtil {
 
      return person.getAuthenticationId();
    }
-   
+
    public static boolean isUserLogin(){
       return null != getCurrentUser();
    }
-   
+
   public static void addPreferences(List<PreferenceVO> preferences){
 
      PreferenceService ps = getPreferenceService();
@@ -162,27 +158,27 @@ public class ProfileUtil {
         }
      }
   }
-  
+
   private static String getUserIdByAuthenticationId(Long authenticationId){
      Authentication authentication = getAuthenticationService().getAuthenticationById(authenticationId);
      return authentication.getUserId();
   }
-  
+
    private static AuthenticationService getAuthenticationService() {
       return (AuthenticationService) ApplicationContextFactory.getBean("authenticationService");
    }
-   
+
    private static PersonService getPersonService() {
       return (PersonService) ApplicationContextFactory.getBean("personService");
    }
-   
+
    private static PreferenceService getPreferenceService() {
       return (PreferenceService) ApplicationContextFactory.getBean("preferenceService");
    }
-   public static boolean   isEmail(String   s){  
-      String   regex="[a-zA-Z][\\w_]+.?[\\w_]+@\\w+(\\.\\w+)+";  
-      Pattern   p=Pattern.compile(regex);  
-      Matcher   m=p.matcher(s);  
-      return   m.matches();  
+   public static boolean   isEmail(String   s){
+      String   regex="[a-zA-Z][\\w_]+.?[\\w_]+@\\w+(\\.\\w+)+";
+      Pattern   p=Pattern.compile(regex);
+      Matcher   m=p.matcher(s);
+      return   m.matches();
       }
 }
