@@ -15,11 +15,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
 

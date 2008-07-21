@@ -1,7 +1,7 @@
 package com.finalist.newsletter.publisher;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.newsletter.ApplicationContextFactory;
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;

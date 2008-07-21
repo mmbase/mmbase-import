@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.newsletter.ApplicationContextFactory;
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;

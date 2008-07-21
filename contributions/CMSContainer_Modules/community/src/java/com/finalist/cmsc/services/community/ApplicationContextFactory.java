@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.cmsc.services.community;
 
 import javax.servlet.ServletContext;
 

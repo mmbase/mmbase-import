@@ -7,13 +7,13 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 
 public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItemRenderer {

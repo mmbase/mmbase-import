@@ -4,7 +4,7 @@
     <artifactId>cmsc-portlets-preferences</artifactId>
     <name>Profile portlet</name>
     <shortDescription>Profile portlet</shortDescription>
-<dependencies>
+    <dependencies>
       <dependency>
          <groupId>finalist</groupId>
          <artifactId>cmsc-contentrepository</artifactId>
@@ -19,31 +19,7 @@
       </dependency>
       <dependency>
          <groupId>finalist</groupId>
-         <artifactId>cmsc-contentrepository</artifactId>
-         <version>${cmsc.version}</version>
-         <type>jar</type>
-      </dependency>
-      <dependency>
-         <groupId>finalist</groupId>
          <artifactId>cmsc-modules-community</artifactId>
-         <version>${cmsc.version}</version>
-         <type>jar</type>
-      </dependency>
-      <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-contentrepository</artifactId>
-         <version>${cmsc.version}</version>
-         <type>jar</type>
-      </dependency>
-      <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-portlets-login</artifactId>
-         <version>${cmsc.version}</version>
-         <type>jar</type>
-      </dependency>
-      <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-portlets-newsletter</artifactId>
          <version>${cmsc.version}</version>
          <type>jar</type>
       </dependency>
