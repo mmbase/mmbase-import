@@ -59,12 +59,19 @@ GOTO processApplications
 
 :removeDir
 	:: Do not remove tomcat webapps
+
+	IF "%CATALINA_HOME%\webapps\ROOT" == "%~1" GOTO :EOF
+	:: Tomcat 5.x
 	IF "%CATALINA_HOME%\webapps\balancer" == "%~1" GOTO :EOF
 	IF "%CATALINA_HOME%\webapps\jsp-examples" == "%~1" GOTO :EOF
-	IF "%CATALINA_HOME%\webapps\ROOT" == "%~1" GOTO :EOF
 	IF "%CATALINA_HOME%\webapps\servlets-examples" == "%~1" GOTO :EOF
 	IF "%CATALINA_HOME%\webapps\tomcat-docs" == "%~1" GOTO :EOF
 	IF "%CATALINA_HOME%\webapps\webdav" == "%~1" GOTO :EOF
+	:: Tomcat 6.x
+	IF "%CATALINA_HOME%\webapps\docs" == "%~1" GOTO :EOF
+	IF "%CATALINA_HOME%\webapps\examples" == "%~1" GOTO :EOF
+	IF "%CATALINA_HOME%\webapps\host-manager" == "%~1" GOTO :EOF
+	IF "%CATALINA_HOME%\webapps\manager" == "%~1" GOTO :EOF
 	
 	echo Removing directory %~1
 	rmdir /S /Q %~1
