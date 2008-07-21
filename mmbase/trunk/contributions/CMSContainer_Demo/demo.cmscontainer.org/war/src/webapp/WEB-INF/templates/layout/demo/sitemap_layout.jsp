@@ -15,7 +15,6 @@
           <cmsc:insert-portlet layoutid="submenu" />
           <div id="main">
           <cmsc:insert-portlet layoutid="breadcrumb" />
-          <div class="heading"><h2>Sitemap</h2></div>
           <div class="content">
              <cmsc:insert-portlet layoutid="sitemap" />
           </div>
