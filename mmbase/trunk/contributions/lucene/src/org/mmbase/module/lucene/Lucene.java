@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.111 2008-04-11 12:24:04 pierre Exp $
+ * @version $Id: Lucene.java,v 1.112 2008-07-21 14:26:34 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -373,7 +373,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 String fields = (String) arguments.get(FIELDS);
                 String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : (String []) StringSplitter.split(fields).toArray(new String[] {});
                 String onFail = (String) arguments.getString(ONFAIL);
-        if (onFail != null) onFail = onFail.toLowerCase();
+                if (onFail != null) onFail = onFail.toLowerCase();
                 Analyzer analyzer = null;
                 String an = (String) arguments.get(ANALYZER);
                 if (an != null && ! "".equals(an)) {
@@ -431,6 +431,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(searchFunction);
     }
+
 
     /**
      * This function returns the size of a query on an index.
