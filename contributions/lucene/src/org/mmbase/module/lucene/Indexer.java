@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.58 2008-03-19 16:25:22 michiel Exp $
+ * @version $Id: Indexer.java,v 1.59 2008-07-21 14:25:54 michiel Exp $
  **/
 public class Indexer {
 
@@ -442,6 +442,8 @@ public class Indexer {
                 Directory.copy(fullIndex, getDirectory(), true);
                 Date lastFullIndex = setLastFullIndex(startTime);
                 log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
+            } else if (Thread.currentThread().isInterrupted()) {
+                addError("Interrupted, will not update the index");
             } else {
                 addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
             }
@@ -497,7 +499,7 @@ public class Indexer {
         }
         if (document != null) {
             if (log.isDebugEnabled()) {
-                log.debug("New document " + document);
+                log.debug("New document " + document.getBoost() + " " + document);
             }
             writer.addDocument(document);
         }
