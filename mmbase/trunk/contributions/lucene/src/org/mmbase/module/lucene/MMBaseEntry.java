@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.32 2008-02-12 15:30:17 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.33 2008-07-21 14:30:54 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -127,6 +127,8 @@ public class MMBaseEntry implements IndexEntry {
                 if (fieldDefinition.escaper != null) {
                    org.mmbase.util.transformers.CharTransformer transformer = null;
                    try {
+                       // This makes no sense, to use taglib funcionality.
+                       // See  http://www.mmbase.org/jira/browse/LUCENE-8
                        transformer = org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper, null);
                    } catch (javax.servlet.jsp.JspTagException jte) {
                        // ignore if an escaper does not exist for now (otherwise log fills up)
@@ -136,20 +138,24 @@ public class MMBaseEntry implements IndexEntry {
                    }
                 }
                 if (fieldDefinition.keyWord) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("add " + fieldName + " text, keyword" + value);
+                    for (String v : value.split(",")) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("added " + fieldDefinition.fieldName + " to " + fieldName + " text, keyword: '" + v + "'");
+                        }
+                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                        field.setBoost(fieldDefinition.boost);
+                        Indexer.addField(document, field, fieldDefinition.multiple);
                     }
-                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED), fieldDefinition.multiple);
                 } else if (fieldDefinition.storeText) {
                     if (log.isTraceEnabled()) {
-                        log.trace("add " + fieldName + " text, store");
+                        log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, store. Boost " + fieldDefinition.boost);
                     }
                     Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED);
                     field.setBoost(fieldDefinition.boost);
                     Indexer.addField(document, field, fieldDefinition.multiple);
                 } else {
                     if (log.isTraceEnabled()) {
-                        log.trace("add " + fieldName + " text, no store");
+                        log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, no store. Boost " + fieldDefinition.boost);
                     }
                     Field field = new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED);
                     field.setBoost(fieldDefinition.boost);
@@ -161,9 +167,9 @@ public class MMBaseEntry implements IndexEntry {
             if (log.isTraceEnabled()) {
                 String t = "Indexed " + data + " --> " + document;
                 if (t.length() > 500) t = t.substring(0, 500) + "...";
-                log.trace("Indexed " + data + " --> " + t);
+                log.trace("Indexed at boost " + document.getBoost() + " " +  data + " --> " + t);
             } else {
-                log.debug("Indexed " + data);
+                log.debug("Indexed at boost " + document.getBoost() + " " + data);
             }
         }
     }
