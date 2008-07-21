@@ -26,6 +26,7 @@ import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.util.AnnotatedNode;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.47 2008-02-25 10:46:35 michiel Exp $
+ * @version $Id: Searcher.java,v 1.48 2008-07-21 14:29:58 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -86,7 +87,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
     protected synchronized IndexSearcher getSearcher(boolean copy) throws IOException {
-        if (copy) return  new IndexSearcher(index.getDirectoryForFullIndex() );
+        if (copy) return  new IndexSearcher(index.getDirectoryForFullIndex());
         if (searcher != null && needsNewSearcher) {
             // for existing searches, leave existing searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
             closingSearchers++;
@@ -157,7 +158,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     public static Sort getSort(String... sortFields) {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
-            if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
+            if (sortFields.length == 0 || (sortFields.length == 1 &&
+                                           (sortFields[0].equals("RELEVANCE") || sortFields[0].equals("")))){
+                log.debug("implicitely sorting on RELEVANCE");
                 sort = Sort.RELEVANCE;
             } else if (sortFields.length == 1 && sortFields[0].equals("INDEXORDER")) {
                 sort = Sort.INDEXORDER;
@@ -190,8 +193,8 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
     }
 
 
-    public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort,
-                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
+    public List<AnnotatedNode> searchAnnotated(final Cloud cloud, String value, Filter filter, Sort sort,
+                                               Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
         // log the value searched
         if (searchLog.isServiceEnabled()) {
             if (extraQuery != null && ! extraQuery.equals("")) {
@@ -205,7 +208,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         if (log.isTraceEnabled()) {
             log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
         }
-        List<Node> list;
+        List<AnnotatedNode> list;
         if (value != null && !value.equals("")) {
             final Hits hits;
             try {
@@ -216,11 +219,11 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
             }
             if (log.isTraceEnabled()) {
-                log.trace("hits " + hits + (hits != null ? "(" + hits.length() + " results)" : ""));
+                log.trace("hits " + hits + (hits != null ? " (" + hits.length() + " results)" : ""));
             }
 
             /// lazy loading of all that stuff!
-            list = new AbstractList<Node>() {
+            list = new AbstractList<AnnotatedNode>() {
                 private int size = -1;
 
                 public int size() {
@@ -232,7 +235,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                     return size;
 
                 }
-                public Node get(int i) {
+                public AnnotatedNode get(int i) {
                     try {
                         Document doc = hits.doc(i + offset);
                         Node node = Searcher.this.index.getNode(cloud, doc);
@@ -242,7 +245,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                             log.trace("Because " + Logging.stackTrace(10));
                         }
                         Searcher.this.producedNodes++;
-                        return node;
+                        AnnotatedNode anode = new AnnotatedNode(node);
+                        anode.putAnnotation("score", hits.score(i + offset));
+                        return anode;
                     } catch (IOException ioe) {
                         log.error(ioe);
                         return null;
@@ -252,8 +257,13 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         } else {
             list = Collections.EMPTY_LIST;
         }
+        return list;
 
-        return new org.mmbase.bridge.util.CollectionNodeList(list, cloud);
+    }
+
+    public NodeList search(final Cloud cloud, String value, Filter filter, Sort sort,
+                           Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
+        return new org.mmbase.bridge.util.CollectionNodeList(searchAnnotated(cloud, value, filter, sort, analyzer, extraQuery, fields, offset, max), cloud);
     }
 
     public int searchSize(Cloud cloud, String value) {
@@ -307,6 +317,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         } else {
             MultiFieldQueryParser qp = new MultiFieldQueryParser(fields, analyzer);
             query = qp.parse(value);
+            log.debug("Parsing with " + fields + " " + analyzer + " " + value + " -> " + query);
         }
         if (extraQuery != null) {
             if (log.isDebugEnabled()) {
@@ -361,7 +372,12 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 while (tokens.hasMoreTokens()) value += tokens.nextToken();
             }
             Filter subFilter = null;
-            if (type.equals("EQ") || type.equals("NE")) {
+            if (type.equals("IN") || type.equals("NIN")) {
+                subFilter = new TermsFilter();
+                for (String v: value.split(",")) {
+                    ((TermsFilter)subFilter).addTerm(new Term(field, v));
+                }
+            } else if (type.equals("EQ") || type.equals("NE")) {
                 subFilter = new TermsFilter();
                 ((TermsFilter)subFilter).addTerm(new Term(field, value));
             } else if (type.equals("GT")|| type.equals("GTE")) {
@@ -378,7 +394,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             }
             if (subFilter !=null) {
                 if (filter == null) {
-                    if (type.equals("NE")) {
+                    if (type.equals("NE") || type.equals("NIN")) {
                         BooleanFilter booleanFilter = new BooleanFilter();
                         booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST_NOT));
                         filter = booleanFilter;
