@@ -108,6 +108,16 @@
         </enumeration>
       </datatype>
     </field>
+    <field name="lastrun">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="count">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="lastcost">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
   </fieldlist>
 </builder>
 
