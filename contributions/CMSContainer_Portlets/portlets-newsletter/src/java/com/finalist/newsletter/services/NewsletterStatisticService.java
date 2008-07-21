@@ -1,7 +1,6 @@
 package com.finalist.newsletter.services;
 
 import java.util.List;
-import java.util.Map;
 
 import com.finalist.newsletter.domain.StatisticResult;
 

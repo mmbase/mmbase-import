@@ -11,19 +11,15 @@ package com.finalist.newsletter.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterCreate extends MMBaseFormlessAction {
@@ -52,10 +48,10 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             request.getSession().removeAttribute("parentnewsletter");
 
             // Create a default term for this newsletter
-            
+
            // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
-            
+
             newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
             addToRequest(request, "showpage", ewnodelastedited);

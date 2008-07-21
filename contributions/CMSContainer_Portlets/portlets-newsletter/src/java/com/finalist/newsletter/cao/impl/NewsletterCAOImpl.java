@@ -1,23 +1,20 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.newsletter.cao.AbstractCAO;
-import com.finalist.newsletter.cao.NewsletterCAO;
-import com.finalist.newsletter.cao.util.NlUtil;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Term;
+import java.util.*;
+
+import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import com.finalist.newsletter.cao.AbstractCAO;
+import com.finalist.newsletter.cao.NewsletterCAO;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Term;
 
 public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    private static Logger log = Logging.getLoggerInstance(NewsletterCAOImpl.class.getName());
@@ -34,7 +31,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
       Step step = query.addStep(cloud.getNodeManager("term"));
       query.setNodeStep(step);
       NodeList list = query.getList();
-      return list;
+      return MMBaseNodeMapper.convertList(list, Term.class);
    }
 
    public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value) {
@@ -48,16 +45,16 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
          }
       }
       NodeList list = query.getList();
-      return NlUtil.convertFromNodeList(list);
+      return MMBaseNodeMapper.convertList(list, Newsletter.class);
    }
 
    public int getNewsletterIdBySubscription(int id) {
       log.debug("Get newsletter by subsription "+id);
       Node subscriptionNode = cloud.getNode(id);
-      List<Node> nodes = subscriptionNode.getRelatedNodes("newsletter");
+      NodeList nodes = subscriptionNode.getRelatedNodes("newsletter");
 
       if(nodes.size()>0){
-         return nodes.get(0).getNumber();
+         return nodes.getNode(0).getNumber();
       }else{
          return -1;
       }
@@ -72,19 +69,11 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 
 
       Newsletter newsletter = convertFromNode(newsletterNode);
-      
-      List<Node> terms = newsletterNode.getRelatedNodes("term");
-      log.debug("get newsletter by id:" + id + ",and get " + terms.size() + " terms with it.");
-      Iterator termsIt = terms.iterator();
 
-      for (int i = 0; i < terms.size(); i++) {
-         Term term = new Term();
-         Node termNode = (Node) termsIt.next();
-         term.setId(termNode.getNumber());
-         term.setName(termNode.getStringValue("name"));
-         term.setSubscription(false);
-         newsletter.getTerms().add(term);
-      }
+      NodeList terms = newsletterNode.getRelatedNodes("term");
+      log.debug("get newsletter by id:" + id + ",and get " + terms.size() + " terms with it.");
+      List<Term> termList = MMBaseNodeMapper.convertList(terms, Term.class);
+      newsletter.getTerms().addAll(termList);
 
       return newsletter;
    }
@@ -105,21 +94,21 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 		NodeManager termNodeManager = cloud.getNodeManager("term");
 		NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
 		NodeQuery query = cloud.createNodeQuery();
-		
+
 		Step termStep = query.addStep(termNodeManager);
 		query.setNodeStep(termStep);
-		
+
 		if(StringUtils.isNotBlank(name)){
-			Constraint nameConstrant =SearchUtil.createLikeConstraint(query, 
+			Constraint nameConstrant =SearchUtil.createLikeConstraint(query,
 					termNodeManager.getField("name"), "%" + name + "%" );
 			SearchUtil.addConstraint(query, nameConstrant);
 		}
-		
+
 		RelationStep rStep = query.addRelationStep(newsletterNodeManager, "posrel", "destination");
 		Constraint idConstraint = SearchUtil.createEqualConstraint(query,
 				newsletterNodeManager.getField("number"), newsletterId);
 		SearchUtil.addConstraint(query, idConstraint);
-		
+
 		System.out.println(query.toSql());
 		NodeList nodeList = query.getList();
 		System.out.println(nodeList.toString());

@@ -1,23 +1,22 @@
 package com.finalist.newsletter.forms;
 
-import com.finalist.newsletter.services.*;
-import com.finalist.cmsc.services.community.person.PersonService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.actions.DispatchAction;
-import org.springframework.web.struts.DispatchActionSupport;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+import org.springframework.web.struts.DispatchActionSupport;
+
+import com.finalist.newsletter.services.CommunityModuleAdapter;
+import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class SubscribeAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscribeAction.class);
 
    NewsletterSubscriptionServices service;
 
+   @Override
    protected void onInit() {
       super.onInit();
       service = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");

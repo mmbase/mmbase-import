@@ -1,10 +1,6 @@
 package com.finalist.newsletter;
 
-import org.mmbase.core.event.Event;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.NodeEventListener;
-
-import com.finalist.newsletter.publisher.NewsletterPublisher;
+import org.mmbase.core.event.*;
 
 public class NewsletterPublicationListener implements NodeEventListener {
 

@@ -1,29 +1,26 @@
 package com.finalist.newsletter.builder;
 
-import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
-import com.finalist.cmsc.navigation.PortletUtil;
-import com.finalist.cmsc.navigation.NavigationItemRenderer;
-import com.finalist.cmsc.portalImpl.PageNavigationItemManager;
+import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+
+import org.mmbase.bridge.*;
+
 import com.finalist.cmsc.beans.om.NavigationItem;
+import com.finalist.cmsc.navigation.*;
+import com.finalist.newsletter.beans.om.Publication;
 import com.finalist.newsletter.tree.NewsletterPublicationTreeItemRenderer;
 import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.beans.om.Newsletter;
-import com.finalist.newsletter.beans.om.Publication;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.RelationList;
-import org.mmbase.bridge.RelationIterator;
-import org.mmbase.bridge.Relation;
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 public class NewsletterPublicationNavigationItemManager extends NewsletterNavigationItemManager {
 
    private NavigationTreeItemRenderer treeRenderer = new NewsletterPublicationTreeItemRenderer();
    private NavigationItemRenderer renderer = new PublicationNavigationRenderer();
 
+      @Override
       public Class<? extends NavigationItem> getItemClass() {
       return Publication.class;
    }
 
+   @Override
    public NavigationItem loadNavigationItem(Integer key, Node node) {
 
       Publication publication = MMBaseNodeMapper.copyNode(node, Publication.class);
@@ -44,6 +41,7 @@ public class NewsletterPublicationNavigationItemManager extends NewsletterNaviga
       return publication;
    }
 
+   @Override
    public NavigationItemRenderer getRenderer() {
       return renderer;
    }

@@ -1,11 +1,10 @@
 package com.finalist.newsletter.services;
 
 import junit.framework.TestCase;
+
 import org.htmlparser.Parser;
-import org.htmlparser.Node;
-import org.htmlparser.visitors.HtmlPage;
 import org.htmlparser.util.ParserException;
-import org.htmlparser.util.NodeList;
+import org.htmlparser.visitors.HtmlPage;
 
 public class HtmlParserTest extends TestCase {
 
