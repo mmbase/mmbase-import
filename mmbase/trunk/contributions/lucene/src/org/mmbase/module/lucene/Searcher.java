@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.48 2008-07-21 14:29:58 michiel Exp $
+ * @version $Id: Searcher.java,v 1.49 2008-07-21 16:42:46 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -333,6 +333,10 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         return s.search(query, filter, sort);
     }
 
+    static final String SYNTAX =
+        "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE]:&lt;value&gt; | " +
+        "&lt;field&gt;:[IN_SET | NIN_SET]:&lt;value&gt;[,&lt;value2&gt;[,..]] | " +
+        "&lt;field&gt;:[IN | INC]:&lt;value1&gt;:&lt;value2&gt;";
 
     static public Filter createFilter(String constraintsText) {
         if (constraintsText == null || "".equals(constraintsText)) return null;
@@ -345,17 +349,16 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         while (constraints.hasMoreTokens()) {
             String constraint = constraints.nextToken();
             StringTokenizer tokens = new StringTokenizer(constraint, ":", true);
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
-
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
             String field = tokens.nextToken();
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
             tokens.nextToken(); // colon
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
             String type = tokens.nextToken().toUpperCase();
             if (type.equals(":")) {
                 type = "EQ";
             } else {
-                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
                 tokens.nextToken(); // colon
             }
             String value = ""; // should use stringbuffer?
@@ -372,7 +375,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 while (tokens.hasMoreTokens()) value += tokens.nextToken();
             }
             Filter subFilter = null;
-            if (type.equals("IN") || type.equals("NIN")) {
+            if (type.equals("IN_SET") || type.equals("NIN_SET")) {
                 subFilter = new TermsFilter();
                 for (String v: value.split(",")) {
                     ((TermsFilter)subFilter).addTerm(new Term(field, v));
@@ -394,7 +397,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             }
             if (subFilter !=null) {
                 if (filter == null) {
-                    if (type.equals("NE") || type.equals("NIN")) {
+                    if (type.equals("NE") || type.equals("NIN_SET")) {
                         BooleanFilter booleanFilter = new BooleanFilter();
                         booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST_NOT));
                         filter = booleanFilter;
