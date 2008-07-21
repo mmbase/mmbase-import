@@ -1,6 +1,5 @@
 package com.finalist.newsletter.schedule;
 
-import java.util.Date;
 
 
 public class SingleSchedule  extends AbstractSchedule {

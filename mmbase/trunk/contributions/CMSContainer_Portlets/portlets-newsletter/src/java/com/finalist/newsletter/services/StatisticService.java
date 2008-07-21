@@ -1,8 +1,7 @@
 package com.finalist.newsletter.services;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 
@@ -21,16 +20,16 @@ public interface StatisticService {
 	public StatisticResult statisticSummery ();
 
 	public StatisticResult statisticSummeryPeriod (String start, String end)
-			throws ServiceException;	
+			throws ServiceException;
 
 	public StatisticResult StatisticSummaryByNewsletter (int newsletterId);
 
 	public List<StatisticResult> StatisticDetailByNewsletterPeriod (
 			int newsletterId, String start, String end) throws ServiceException;
-	
-	public void logPubliction(int newsletterId, HANDLE handle);	
-	
+
+	public void logPubliction(int newsletterId, HANDLE handle);
+
 	public int pushSumedLogs(List<StatisticResult> listRecorder);
 
-	public List<StatisticResult> getLogs();	
+	public List<StatisticResult> getLogs();
 }

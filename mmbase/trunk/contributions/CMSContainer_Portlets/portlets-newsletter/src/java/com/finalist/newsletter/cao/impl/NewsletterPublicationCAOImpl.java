@@ -1,26 +1,22 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.newsletter.cao.NewsletterPublicationCAO;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.util.POConvertUtils;
+import java.util.*;
+
+import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.FieldCompareConstraint;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
-import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import java.util.*;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.newsletter.cao.NewsletterPublicationCAO;
+import com.finalist.newsletter.domain.*;
+import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.util.POConvertUtils;
 
 
 
@@ -84,7 +80,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    }
 
    public Node getPublicationNode(int number) {
-      return null;
+      return cloud.getNode(number);
    }
 
    public String getPublicationURL(int publciationId) {
@@ -97,11 +93,11 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
    public int getNewsletterId(int publicationId) {
       Node newsletterPublicationNode = cloud.getNode(publicationId);
-      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+      NodeList relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
 
       log.debug("Get " + relatedNewsletters.size() + " related newsletter");
 
-      return relatedNewsletters.get(0).getNumber();
+      return relatedNewsletters.getNode(0).getNumber();
    }
 
    public List<Publication> getAllPublications() {
@@ -109,7 +105,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       Step step = query.addStep(cloud.getNodeManager("newsletterpublication"));
       query.setNodeStep(step);
       NodeList list = query.getList();
-      return list;
+      return MMBaseNodeMapper.convertList(list, Publication.class);
    }
 
    public List<Publication> getPublicationsByNewsletter(int id, Publication.STATUS status) {
@@ -125,17 +121,11 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
        }
 
       log.debug(String.format("Get %s publications of newsletter %s in %s status",publications.size(),id,status));
-      return new ArrayList(publications);
+      return new ArrayList<Publication>(publications);
     }
 
    private Publication convertFromNode(Node node){
-      Publication publication = new Publication();
-      publication.setId(node.getNumber());
-      publication.setSubject(node.getStringValue("subject"));
-      publication.setTitle(node.getStringValue("title"));
-      publication.setLastmodifieddate(node.getStringValue("lastmodifieddate"));
-      publication.setLastmodifier(node.getStringValue("lastmodifier"));
-      return publication;
+      return MMBaseNodeMapper.copyNode(node, Publication.class);
    }
 
 
@@ -143,24 +133,22 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
    }
 
-   
+
    public Set<Term> getTermsByPublication(int publicationId) {
       Node newsletterPublicationNode = cloud.getNode(publicationId);
-      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
-      List<Node> terms = relatedNewsletters.get(0).getRelatedNodes("term");
-      Iterator termsIt = terms.iterator();
+      NodeList relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+      NodeList terms = relatedNewsletters.getNode(0).getRelatedNodes("term");
+
+      Iterator<Node> termsIt = terms.iterator();
       Set<Term> termSet = new HashSet<Term>();
       for (int i = 0; i < terms.size(); i++) {
-         Term term = new Term();
-         Node termNode = (Node) termsIt.next();
-         term.setId(termNode.getNumber());
-         term.setName(termNode.getStringValue("name"));
-         term.setSubscription(false);
+         Node termNode = termsIt.next();
+         Term term = MMBaseNodeMapper.copyNode(termNode, Term.class);
          termSet.add(term);
       }
       return termSet;
    }
-   
+
    public void renamePublicationTitle(int publicationId) {
 
       String now = DateFormatUtils.format(new Date(), "dd-MM-yyyy hh:mm");
@@ -174,28 +162,28 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       if(dateTime.indexOf("-") > 0 && dateTime.indexOf(":") > 0){
          newTile = oldTitle.substring(0,oldTitle.length()-18);
       }
-         
+
       publicationNode.setStringValue("title", newTile+"  "+now);
       publicationNode.commit();
-   
+
    }
-   
+
    public Set<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate, int pagesize, int offset){
 	   NodeManager manager = cloud.getNodeManager("newsletterpublication");
 	   Node newsletterNode = cloud.getNode(newsletterId);
-	   
+
 	   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
 	   Step step = nodeQuery.getNodeStep();
-	   
+
 	   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
 	   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
 	   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
-	   
+
 	   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
 	   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
 	   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
 	   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
-	   
+
 	   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
 	   if (startDate != null){
 		   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
@@ -206,7 +194,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 	   		constraintDate.setOperator(FieldCompareConstraint.LESS);
 	   		constraints.addChild(constraintDate);
 	   }
-	   
+
 	   constraints.addChild(constraintTitle);
 	   constraints.addChild(constraintSubject);
 	   nodeQuery.setOffset(offset);
@@ -216,7 +204,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 	   Set<Publication> publications = convertPublicationsToMap(list);
 	   return publications;
    }
-   
+
 	private Set<Publication> convertPublicationsToMap(List<Node> publicationNodes) {
 	   Set<Publication> publications = new HashSet<Publication>();
 	   for (Node publicationNode : publicationNodes) {
@@ -224,23 +212,23 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 	   }
 	   return publications;
 	}
-	
+
 	public int getPublicationCountForEdit(int newsletterId, String title, String subject, Date startDate, Date endDate){
 		NodeManager manager = cloud.getNodeManager("newsletterpublication");
 		   Node newsletterNode = cloud.getNode(newsletterId);
-		   
+
 		   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
 		   Step step = nodeQuery.getNodeStep();
-		   
+
 		   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
 		   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
 		   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
-		   
+
 		   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
 		   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
 		   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
 		   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
-		   
+
 		   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
 		   if (startDate != null){
 			   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
@@ -251,7 +239,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 		   		constraintDate.setOperator(FieldCompareConstraint.LESS);
 		   		constraints.addChild(constraintDate);
 		   }
-		   
+
 		   constraints.addChild(constraintTitle);
 		   constraints.addChild(constraintSubject);
 		   return nodeQuery.getList().size();

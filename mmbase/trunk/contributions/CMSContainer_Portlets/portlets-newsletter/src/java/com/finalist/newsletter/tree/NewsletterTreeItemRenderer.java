@@ -2,14 +2,10 @@ package com.finalist.newsletter.tree;
 
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.NavigationRenderer;
-import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 
@@ -89,7 +85,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       );
       //todo remove the code
       //This  has been implement in the wizard.
-      
+
 //      boolean isPaused = NewsletterUtil.isPaused(Integer.parseInt(id));
 //      if (isPaused) {
 //         element.addOption(

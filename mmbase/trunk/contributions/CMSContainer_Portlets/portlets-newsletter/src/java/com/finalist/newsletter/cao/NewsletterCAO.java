@@ -1,13 +1,12 @@
 package com.finalist.newsletter.cao;
 
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Term;
-
 import java.util.List;
-import java.util.Collection;
 import java.util.Set;
 
 import org.mmbase.bridge.Node;
+
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Term;
 
 public interface NewsletterCAO {
    public Newsletter getNewsletterById(int id);

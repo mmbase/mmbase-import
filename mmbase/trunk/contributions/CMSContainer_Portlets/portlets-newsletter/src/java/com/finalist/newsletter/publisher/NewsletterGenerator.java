@@ -1,18 +1,17 @@
 package com.finalist.newsletter.publisher;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.NodeIterator;
-import org.apache.commons.lang.StringUtils;
-import org.htmlparser.Parser;
-import org.htmlparser.visitors.HtmlPage;
-import org.htmlparser.util.ParserException;
-
-import javax.mail.MessagingException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.mail.MessagingException;
+
+import org.htmlparser.Parser;
+import org.htmlparser.util.ParserException;
+import org.htmlparser.visitors.HtmlPage;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -85,5 +84,5 @@ public class NewsletterGenerator {
       return inputString;
    }
 
-  
+
 }

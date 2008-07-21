@@ -1,25 +1,17 @@
 package com.finalist.newsletter.builder;
 
-import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
-import com.finalist.cmsc.navigation.NavigationItemRenderer;
-import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.cmsc.navigation.PortletUtil;
-import com.finalist.cmsc.portalImpl.PageNavigationItemManager;
-import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.newsletter.tree.NewsletterTreeItemRenderer;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.beans.om.Newsletter;
+import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.apache.commons.beanutils.BeanUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
+import com.finalist.cmsc.beans.om.NavigationItem;
+import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.portalImpl.PageNavigationItemManager;
+import com.finalist.newsletter.beans.om.Newsletter;
+import com.finalist.newsletter.tree.NewsletterTreeItemRenderer;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterNavigationItemManager extends PageNavigationItemManager {
    private static Logger log = Logging.getLoggerInstance(NewsletterNavigationItemManager.class.getName());
@@ -27,10 +19,12 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
    private NavigationItemRenderer renderer = new NewsletterNavigationRenderer();
    private NavigationTreeItemRenderer treeRenderer = new NewsletterTreeItemRenderer();
 
+   @Override
    public Class<? extends NavigationItem> getItemClass() {
       return Newsletter.class;
    }
 
+   @Override
    public NavigationItem loadNavigationItem(Integer key, Node node) {
 
       Newsletter newsletter = MMBaseNodeMapper.copyNode(node, Newsletter.class);
@@ -53,6 +47,7 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
       return newsletter;
    }
 
+   @Override
    public NavigationItemRenderer getRenderer() {
       return renderer;
    }

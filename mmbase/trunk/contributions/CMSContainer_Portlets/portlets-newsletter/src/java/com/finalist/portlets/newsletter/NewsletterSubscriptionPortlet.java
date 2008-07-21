@@ -1,19 +1,21 @@
 package com.finalist.portlets.newsletter;
 
-import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.cmsc.services.community.person.PersonService;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.services.*;
-import com.finalist.newsletter.ApplicationContextFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.portlet.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.portlet.*;
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.portlets.JspPortlet;
+import com.finalist.newsletter.ApplicationContextFactory;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
+import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());

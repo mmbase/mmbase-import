@@ -1,23 +1,21 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.cao.AbstractCAO;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Subscription;
-import static com.finalist.newsletter.domain.Subscription.STATUS;
-import com.finalist.newsletter.domain.Term;
+import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.convertFromNode;
+
+import java.util.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
-import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.*;
+import com.finalist.newsletter.cao.AbstractCAO;
+import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.domain.*;
+import com.finalist.newsletter.domain.Subscription.STATUS;
 import com.finalist.newsletter.util.DateUtil;
-
-import java.util.*;
 
 public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements NewsletterSubscriptionCAO {
 

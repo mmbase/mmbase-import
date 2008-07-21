@@ -1,30 +1,19 @@
 package com.finalist.newsletter.forms;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.springframework.web.struts.DispatchActionSupport;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.Publication;
-
 import com.finalist.newsletter.services.NewsletterPublicationService;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 
 public class NewsletterPublicationManagementAction extends DispatchActionSupport {
 
@@ -33,19 +22,21 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 
 	NewsletterPublicationService publicationService;
 
-	protected void onInit() {
+	@Override
+   protected void onInit() {
 		super.onInit();
 		publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
 	}
 
-	protected ActionForward unspecified(ActionMapping mapping, ActionForm form,
+	@Override
+   protected ActionForward unspecified(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		log.debug("No parameter specified,go to edit page ,show related publications");
-		
+
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 		Set<Publication> publications;
-		
+
 		Date now = new Date();
 		int pagesize = 10;
 		if(StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
@@ -56,8 +47,9 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 			offset = Integer.parseInt(request.getParameter("offset"));
 		}
 		String forwardType = "";
-		if(StringUtils.isNotBlank(request.getParameter("searchForwardType")))
-		forwardType =request.getParameter("searchForwardType");
+		if(StringUtils.isNotBlank(request.getParameter("searchForwardType"))) {
+         forwardType =request.getParameter("searchForwardType");
+      }
 		if(forwardType.equals("statistics")){
 			request.setAttribute("newsletterId", newsletterId);
 			ActionForward ret= new ActionForward(mapping.findForward("statisticmanagement").getPath() + "?newsletterId=" + newsletterId);
@@ -71,12 +63,12 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		request.setAttribute("newsletterId", newsletterId);
 		return mapping.findForward("newsletterpublicationlist");
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public ActionForward searchPublication(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response){
 		log.debug("parameter specified, search newsletterpublication ");
-		
+
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 		int pagesize = 10;
 		if(StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
@@ -91,7 +83,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		Date tmpDate = null;
-		
+
 		switch(Integer.parseInt(tmpPeriod)){
 		case 1:
 			calendar.add(Calendar.DAY_OF_YEAR,-1);
@@ -146,9 +138,9 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		}
 		return mapping.findForward("termlist");
 	}
-	
+
 	private List convertPublicationsToMap(Set<Publication> publications) {
-		
+
 		List<Map> results = new ArrayList<Map>();
 		for (Publication publication1 : publications) {
 			Map result = new HashMap();

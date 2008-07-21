@@ -1,6 +1,5 @@
 package com.finalist.newsletter.forms;
 
-import java.util.Date;
 
 public class NewsLetterShowForm extends org.apache.struts.action.ActionForm {
 

@@ -1,28 +1,18 @@
 package com.finalist.newsletter.forms;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.apache.struts.actions.DispatchAction;
+
 import com.finalist.newsletter.domain.Schedule;
-import com.finalist.newsletter.schedule.AbstractSchedule;
-import com.finalist.newsletter.schedule.DailySchedule;
-import com.finalist.newsletter.schedule.MonthSchedule;
-import com.finalist.newsletter.schedule.ScheduleService;
-import com.finalist.newsletter.schedule.SingleSchedule;
-import com.finalist.newsletter.schedule.WeeklySchedule;
+import com.finalist.newsletter.schedule.*;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class ScheduleAction  extends DispatchAction{
-   
+
 
    public ActionForward transform(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
@@ -48,13 +38,13 @@ public class ScheduleAction  extends DispatchAction{
 
             String strategy = request.getParameter("strategy");
             requestParameters.put("approach", strategy);
-            
+
             if(strategy != null && strategy.equals("2")) {
                String interval = request.getParameter("interval");
                requestParameters.put("interval", interval);
             }
             schedule = new DailySchedule();
-            
+
          }
          else if(type.equals("3")) {
             String interval = request.getParameter("interval");
@@ -66,16 +56,16 @@ public class ScheduleAction  extends DispatchAction{
          else {
             String strategy = request.getParameter("strategy");
             requestParameters.put("strategy", strategy);
-            
+
             if(strategy != null) {
                if(strategy.equals("0")) {
                   String day = request.getParameter("day");
-                  requestParameters.put("day", day); 
+                  requestParameters.put("day", day);
                }
                else if (strategy.equals("1")) {
                   String whichweek = request.getParameter("whichweek");
-                  requestParameters.put("whichweek", whichweek); 
-                  
+                  requestParameters.put("whichweek", whichweek);
+
                   String week = request.getParameter("week");
                   requestParameters.put("week", week);
                }
@@ -84,12 +74,12 @@ public class ScheduleAction  extends DispatchAction{
             requestParameters.put("month", getWeeks(months));
             schedule = new MonthSchedule();
          }
-        
+
          ScheduleService Service = new ScheduleService(schedule);
          Service.setRequestParameters(requestParameters);
          String expression = Service.transform();
          response.setContentType("text/xml");
-         
+
          response.getWriter().print("<expression>"+expression+"</expression>");
       }
       return null;
@@ -109,8 +99,8 @@ public class ScheduleAction  extends DispatchAction{
          sb.append("<expression>"+schedule.getExpression()+"</expression>");
          sb.append("<description>"+schedule.getScheduleDescription()+"</description>");
          sb.append("</schedule>");
-      }       
-      response.getWriter().print("<schedules>"+sb.toString()+"</schedules>");     
+      }
+      response.getWriter().print("<schedules>"+sb.toString()+"</schedules>");
       return null;
    }
 
@@ -138,8 +128,8 @@ public class ScheduleAction  extends DispatchAction{
    private String getWeeks(String[] weeks) {
       StringBuilder sb = new StringBuilder();
       Arrays.sort(weeks);
-      for(int i = 0 ; i < weeks.length ; i++) {
-         sb.append(weeks[i]);
+      for (String week : weeks) {
+         sb.append(week);
       }
       return sb.toString();
    }

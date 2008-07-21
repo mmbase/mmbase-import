@@ -1,32 +1,18 @@
 package com.finalist.newsletter.services.impl;
 
-import com.finalist.cmsc.services.community.person.Person;
-import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
-import com.finalist.newsletter.cao.NewsletterCAO;
-import com.finalist.newsletter.cao.NewsletterPublicationCAO;
-import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Publication.STATUS;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.publisher.NewsletterPublisher;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
-import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.util.DateUtil;
+import java.util.*;
 
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.cao.*;
+import com.finalist.newsletter.domain.*;
+import com.finalist.newsletter.domain.Publication.STATUS;
+import com.finalist.newsletter.publisher.NewsletterPublisher;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
+import com.finalist.newsletter.services.NewsletterPublicationService;
 
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
 
@@ -103,7 +89,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
          try {
             publisher.deliver(publication, subscription);
             sendSuccess.add(subscription.getSubscriberId());
-         } 
+         }
          catch (NewsletterSendFailException e) {
             sendFails.add(subscription.getSubscriberId());
             log.error(e.getMessage());
@@ -111,7 +97,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       }
       sendResults.put(SEND_SUCCESS, sendSuccess);
       sendResults.put(SEND_FAIL, sendFails);
-      
+
       publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
       publicationCAO.renamePublicationTitle(publicationId);
       return sendResults;
@@ -137,7 +123,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       subscription.setMimeType(mimeType);
       publisher.deliver(publication, subscription);
    }
-   
+
    public Set<Publication> getPublicationByNewsletter(int newsletterId){
 	   Set<Publication> result = new HashSet<Publication>();
 
@@ -146,13 +132,13 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 	   }
 	   return result;
    }
-   
+
    public Set<Publication> searchPublication(int id , String title, String subject, Date startDate, Date endDate, int pagesize, int offset){
 	   Set<Publication> result = new HashSet<Publication>();
 	   result = publicationCAO.getPublicationsByNewsletterAndPeriod(id ,title, subject, startDate, endDate, pagesize, offset);
 	   return result;
    }
-   
+
    public int searchPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate){
 	   int tmpResultCount = publicationCAO.getPublicationCountForEdit(id, title, subject, startDate, endDate);
 	   return tmpResultCount;
