@@ -79,8 +79,8 @@
               <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer,filter">
                 <mm:first>
                   <tr>
-                    <th>type</th>
                     <th>RELEVANCE</th>
+                    <th>type</th>
                     <mm:fieldlist type="list">
                       <th><mm:fieldinfo type="name" /></th>
                     </mm:fieldlist>
@@ -96,10 +96,10 @@
                 </mm:first>
                 <tr>
                   <td>
-                    <mm:nodeinfo type="guinodemanager" />
+                    <mm:field name="annotation:score" />
                   </td>
                   <td>
-                    <mm:field name="annotation:score" />
+                    <mm:nodeinfo type="guinodemanager" />
                   </td>
                   <mm:fieldlist type="list">
                     <td>
