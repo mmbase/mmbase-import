@@ -1,10 +1,10 @@
 package com.finalist.newsletter.forms;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.services.*;
 import com.finalist.newsletter.util.DateUtil;
-import com.finalist.newsletter.ApplicationContextFactory;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

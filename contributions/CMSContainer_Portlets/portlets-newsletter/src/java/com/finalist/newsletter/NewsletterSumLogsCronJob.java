@@ -7,6 +7,8 @@ import org.mmbase.applications.crontab.CronEntry;
 import org.mmbase.applications.crontab.CronJob;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.services.StatisticService;
 public class NewsletterSumLogsCronJob implements CronJob {

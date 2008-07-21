@@ -1,9 +1,9 @@
 package com.finalist.newsletter.forms;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
