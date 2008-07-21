@@ -8,10 +8,10 @@
 <cmscedit:head title="newsletter.term.title">
 <c:url var="actionUrl" value="/editors/newsletter/module/NewsletterTermAction.do"/>
 <c:url var="addUrl" value="/editors/newsletter/module/NewsletterTermAction.do?method=addInit"/>
-<c:url var="termUrl" value="/editors/newsletter/NewsletterTermSearch.do"/>
+<c:url var="termUrl" value="/editors/newsletter/NewsletterTermsAddAction.do"/>
 <script src="../../repository/search.js" type="text/javascript"></script>
-<script src="../../repository/content.js" type="text/javascript"></script>
 <script src="../../../js/prototype.js" type="text/javascript"></script>
+<script src="../newsletter.js" type="text/javascript"></script>
 <script type="text/javascript">
 function update(number) {
    var myAjax = new Ajax.Request(
@@ -31,27 +31,6 @@ function deleteInfo(number,offset,resultLength) {
       url += "&id="+number+"&offset="+offset;
       document.location = url;
    }            
-}
-
-function massDelete( confirmmessage) {
-    if (confirmmessage) {
-        if (confirm(confirmmessage)) {
-                 var checkboxs = document.getElementsByTagName("input");
-                 var objectnumbers = '';
-                 for(i = 0; i < checkboxs.length; i++) {
-                    if(checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
-                       objectnumbers += checkboxs[i].value+",";
-                    }
-                 }
-                 if(objectnumbers == ''){
-                    return ;
-                 }
-                 objectnumbers = objectnumbers.substr(0,objectnumbers.length - 1);
-                 document.forms["termForm"].deleteRequest.value = objectnumbers;
-                 document.forms["termForm"].submit();
-        }
-    }
-   
 }
 
 function postUpdate(originalRequest) {
@@ -85,7 +64,9 @@ function postUpdate(originalRequest) {
 <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
 <html:hidden property="method" value="list"/>
    <html:hidden property="offset"/>
+        <input type="hidden" name="newsletterId" value="${newsletterId}"/>
      <mm:notpresent referid="newsletterId">
+
      <mm:hasrank minvalue="administrator">
          <p>
             <a href="${addUrl}"  style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="newsletter.term.add" />
@@ -112,8 +93,8 @@ function postUpdate(originalRequest) {
 <div class="ruler_green"><div><fmt:message key="newsletter.term.search.result" /></div></div>
 </mm:notpresent>
 <div class="body">
-<mm:notpresent referid="newsletterId">
-<form action="${actionUrl}" name="termForm">
+<mm:notpresent referid="newsletterId" >
+<form action="${actionUrl}" name="termForm" method="post">
 <input type="hidden" name="method" value="delete"/>
 <input type="hidden" name="deleteRequest" value=""/>
 </mm:notpresent>
@@ -127,11 +108,11 @@ function postUpdate(originalRequest) {
 <%@include file="../../repository/searchpages.jsp" %>
 <mm:notpresent referid="newsletterId">
 <c:if test="${fn:length(resultList) >1}">
-<input type="button" class="button" value="<fmt:message key="newsletter.term.action.delete" />" onclick="massDelete('<fmt:message key="newsletter.term.delete.confirm" />')"/>
+<input type="button" class="button" value="<fmt:message key="newsletter.term.action.delete" />" onclick="massDelete(this.form,'<fmt:message key="newsletter.term.delete.confirm" />')"/>
 </c:if>
 </mm:notpresent>
 <mm:present referid="newsletterId">
-<input type="submit" class="button" value="<fmt:message key="newsletter.term.action.link" />" onclick="massDelete()"/>
+<input type="submit" class="button" value="<fmt:message key="newsletter.term.action.link" />"/>
 </mm:present>
    <table>
       <tr class="listheader">
