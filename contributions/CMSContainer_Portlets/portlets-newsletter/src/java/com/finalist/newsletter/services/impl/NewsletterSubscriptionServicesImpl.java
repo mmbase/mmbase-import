@@ -2,25 +2,20 @@ package com.finalist.newsletter.services.impl;
 
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
-import com.finalist.newsletter.cao.NewsletterCAO;
-import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.domain.Subscription.STATUS;
+
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.newsletter.cao.*;
+import com.finalist.newsletter.domain.*;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
-import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-import com.finalist.newsletter.services.NewsletterService;
+import com.finalist.newsletter.domain.Subscription.STATUS;
+import com.finalist.newsletter.services.*;
 import com.finalist.newsletter.util.DateUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
-import com.finalist.cmsc.services.community.person.PersonService;
-import com.finalist.cmsc.services.community.person.Person;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices {
 
@@ -93,12 +88,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public List<Subscription> getNewSubscription(String[] allowedLetters) {
       List<Subscription> list = new ArrayList<Subscription>();
       int nodenumber;
-      for (int i = 0; i < allowedLetters.length; i++) {
-         nodenumber = Integer.parseInt(allowedLetters[i]);
+      for (String allowedLetter : allowedLetters) {
+         nodenumber = Integer.parseInt(allowedLetter);
          Newsletter newsletter = newsletterCAO.getNewsletterById(nodenumber);
          Subscription subscription = new Subscription();
          subscription.setNewsletter(newsletter);
-         Newsletter test = subscription.getNewsletter();
          subscription.setTerms(newsletter.getTerms());
          list.add(subscription);
       }
@@ -166,9 +160,9 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       log.debug("Add term " + termId + " to user" + userId + "'s newsletter:" + newsletterId);
       Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       Set<Term> termList = subscription.getTerms();
-      Iterator it = termList.iterator();
+      Iterator<Term> it = termList.iterator();
       for (int i = 0; i < termList.size(); i++) {
-         Term term = (Term) it.next();
+         Term term = it.next();
          if (termId == term.getId()) {
             term.setSubscription(true);
          }
@@ -181,9 +175,9 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       log.debug("Remove term " + termId + " to user " + userId + "'s newsletter:" + newsletterId);
       Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       Set<Term> termList = subscription.getTerms();
-      Iterator it = termList.iterator();
+      Iterator<Term> it = termList.iterator();
       for (int i = 0; i < termList.size(); i++) {
-         Term term = (Term) it.next();
+         Term term = it.next();
          if (termId == term.getId()) {
             term.setSubscription(false);
          }
@@ -323,7 +317,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    private void removeNoneSubscribers(List<Person> persons) {
       for (int i = 0; i < persons.size(); i++) {
          Person person = persons.get(i);
-         List subscrioptions = subscriptionCAO.getSubscriptionByUserIdAndStatus(person.getId().intValue(), null);
+         List<Subscription> subscrioptions = subscriptionCAO.getSubscriptionByUserIdAndStatus(person.getId().intValue(), null);
          if (subscrioptions.size() < 1) {
             persons.remove(i);
          }
@@ -366,9 +360,9 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public void createSubscription(int userId, int newsletterId) {
 	   subscriptionCAO.createSubscription(userId, newsletterId);
    }
-   
+
    public Set<Integer> getRecordIdByNewsletterAndName(int newsletterId, String termName){
-	   
+
 	   Set<Node> subscriptions = subscriptionCAO.getRecordByNewsletterAndName(newsletterId, termName);
 	   Set<Integer> authenticationIds = new HashSet<Integer>();
 	   for(Node subscription : subscriptions){
@@ -387,7 +381,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    		}
    		return tmpTitle.substring(0, tmpTitle.length()-2);
    	}
-   	
+
    	public String getTermsNameList(int authenticationId){
    		Set<Node> termList = subscriptionCAO.getTermsByScriptionRecord(authenticationId);
    		String tmpNames = "";
