@@ -6,7 +6,10 @@
 
 #background
 {
-  background: #f4f4f4 url( '../gfx/bg_art.gif ') repeat-x scroll top left;
+  background-image: url('../gfx/bg_art.gif ');
+  background-repeat: repeat-x;
+  background-attachment: scroll;
+  background-position: top left; 
 }
 
 #main
