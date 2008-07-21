@@ -179,6 +179,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/javax.transaction/jars/jta-1.0.1B.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-struts-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
