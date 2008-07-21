@@ -12,6 +12,13 @@ package com.finalist.newsletter.forms;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
@@ -22,16 +29,8 @@ import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.services.StatisticService;
-import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 

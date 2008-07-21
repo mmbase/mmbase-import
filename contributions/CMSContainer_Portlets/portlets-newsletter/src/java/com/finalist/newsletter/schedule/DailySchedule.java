@@ -1,7 +1,5 @@
 package com.finalist.newsletter.schedule;
 
-import java.util.Date;
-import java.util.Map;
 
 
 public class DailySchedule extends AbstractSchedule  {
@@ -23,7 +21,7 @@ public class DailySchedule extends AbstractSchedule  {
       }
       if(approach != null) {
          expression.append("|"+approach);
-         
+
          if(approach.equals("2")) {
             if(getParameters().containsKey("interval")) {
                expression.append("|"+getParameters().get("interval"));

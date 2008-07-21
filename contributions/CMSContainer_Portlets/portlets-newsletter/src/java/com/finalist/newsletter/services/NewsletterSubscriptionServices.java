@@ -1,13 +1,10 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.cmsc.services.community.person.Person;
-
 import java.util.List;
 import java.util.Set;
 
-import org.mmbase.bridge.Node;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.domain.Subscription;
 
 public interface NewsletterSubscriptionServices {
 
@@ -62,12 +59,12 @@ public interface NewsletterSubscriptionServices {
    public Subscription getSubscription(int sbId, int nId);
 
    void unSubscribeAllInNewsletter(int integer);
-   
+
    public void createSubscription(int userId , int newsletterId);
-   
+
    public Set<Integer> getRecordIdByNewsletterAndName(int newsletter, String term);
-   
+
    public String getNewsletterNameList(int authenticationId);
-   
+
    public String getTermsNameList(int authenticationId);
 }

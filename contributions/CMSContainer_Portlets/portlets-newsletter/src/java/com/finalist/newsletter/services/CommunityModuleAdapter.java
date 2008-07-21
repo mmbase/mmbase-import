@@ -1,16 +1,15 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.cmsc.services.community.person.Person;
-import com.finalist.cmsc.services.community.person.PersonService;
-import com.finalist.newsletter.ApplicationContextFactory;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.context.SecurityContext;
-import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.Authentication;
+import org.acegisecurity.context.SecurityContext;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.userdetails.UserDetails;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.servlet.ServletContext;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 public class CommunityModuleAdapter {
 
@@ -39,7 +38,7 @@ public class CommunityModuleAdapter {
    public static boolean isUserLogin(){
       return null != getCurrentUser();
    }
-   
+
    public static int getCurrentUserId(){
       Person person = getCurrentUser();
       if(null==person){
@@ -50,7 +49,7 @@ public class CommunityModuleAdapter {
    }
 
    public static Person getUserById(String id) {
-      
+
       PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
       Person person = personService.getPersonByAuthenticationId(Long.decode(id));
       log.debug("Get user(Person) " + id + " from community module,get " + person);
