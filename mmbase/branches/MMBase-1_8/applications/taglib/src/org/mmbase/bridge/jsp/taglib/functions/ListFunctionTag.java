@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.12.2.1 2007-09-21 12:55:27 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.12.2.2 2008-07-22 09:33:27 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -40,6 +40,23 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
     private   ContextCollector collector;
     protected Attribute  comparator = Attribute.NULL;
+    protected Attribute  varStatus = Attribute.NULL;
+    protected Attribute  max = Attribute.NULL;
+    protected Attribute  offset = Attribute.NULL;
+
+    public void setComparator(String c) throws JspTagException {
+        comparator = getAttribute(c);
+    }
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
+    }
+
+    public void setMax(String m) throws JspTagException {
+        max = getAttribute(m);
+    }
+    public void setOffset(String o) throws JspTagException {
+        offset = getAttribute(o);
+    }
 
     public int size(){
         return returnCollection.size();
@@ -85,8 +102,13 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         if (!comparator.equals(Attribute.NULL)) {
             ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), this);
         }
+        int o = offset.getInt(this, 0);
         iterator = returnCollection.iterator();
-        if (iterator.hasNext()) {
+        while(currentItemIndex + 1 < o && iterator.hasNext()) {
+            iterator.next();
+            currentItemIndex++;
+        }
+        if (iterator.hasNext() && (currentItemIndex + 1) < (o + max.getInt(this, Integer.MAX_VALUE))) {
             return EVAL_BODY_BUFFERED;
         }
         return SKIP_BODY;
@@ -100,7 +122,11 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         helper.doAfterBody();
         collector.doAfterBody();
 
-        if (iterator.hasNext()){
+        if (! "".equals(varStatus.getString(this))) {
+            getContextProvider().getContextContainer().unRegister(varStatus.getString(this));
+        }
+
+        if (iterator.hasNext() && (currentItemIndex + 1) < max.getInt(this, Integer.MAX_VALUE)) {
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
@@ -132,6 +158,10 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
             helper.setValue(iterator.next());
             if (getId() != null) {
                 getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            }
+            if (! "".equals(varStatus.getString(this))) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                cc.register(varStatus.getString(this), getLoopStatus());
             }
 
         }
