@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.10 2008-07-15 22:08:49 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.11 2008-07-22 05:34:14 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -227,6 +227,30 @@ public class TransactionTest extends BridgeTest {
         Transaction t = cloud.getTransaction("bar11");
         Node nodeInTransaction = t.getNode(newNode2);
         nodeInTransaction.setStringValue("title", "foo2");
+        {
+            // now delete the node
+            Node nodeOutTransaction = cloud.getNode(newNode2);
+            nodeOutTransaction.delete();
+            assertFalse(cloud.hasNode(newNode2));
+        }
+
+        try {
+            t.commit();
+        } catch (Exception e) {
+            // should not give exception. MMB-1680
+            log.error(e.getMessage(), e);
+            fail(e.getMessage());
+        }
+
+        assertTrue(cloud.hasNode(newNode2));
+    }
+
+    // same case as above, only no changes are made to the node.
+    public void testDeleteNodeOutsideTransactionNodeInTransactionButNotChanged() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("bar11");
+        Node nodeInTransaction = t.getNode(newNode2);
+        //nodeInTransaction.setStringValue("title", "foo2");
         {
             // now delete the node
             Node nodeOutTransaction = cloud.getNode(newNode2);
