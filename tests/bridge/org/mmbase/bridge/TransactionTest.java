@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.11 2008-07-22 05:34:14 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.12 2008-07-22 05:51:59 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -259,6 +259,12 @@ public class TransactionTest extends BridgeTest {
         }
 
         try {
+            // make a relation to the (deleted) node, but in the transaction, where the node still
+            // exists.
+            // This demonstrate that there is an actual problem if the node ends up non-existing now.
+            Node url = t.getNodeManager("urls").createNode();
+            RelationManager rm = t.getRelationManager("news", "urls", "posrel");
+            Relation r = nodeInTransaction.createRelation(url, rm);
             t.commit();
         } catch (Exception e) {
             // should not give exception. MMB-1680
@@ -267,6 +273,7 @@ public class TransactionTest extends BridgeTest {
         }
 
         assertTrue(cloud.hasNode(newNode2));
+        assertEquals(1, cloud.getNode(newNode2).countRelations());
     }
 
 
