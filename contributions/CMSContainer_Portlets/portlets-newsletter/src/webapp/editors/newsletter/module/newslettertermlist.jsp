@@ -10,6 +10,7 @@
 <c:url var="addUrl" value="/editors/newsletter/module/NewsletterTermAction.do?method=addInit"/>
 <c:url var="termUrl" value="/editors/newsletter/NewsletterTermsAddAction.do"/>
 <script src="../../repository/search.js" type="text/javascript"></script>
+<script src="../../repository/content.js" type="text/javascript"></script>
 <script src="../../../js/prototype.js" type="text/javascript"></script>
 <script src="../newsletter.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -27,6 +28,9 @@ function deleteInfo(number,offset,resultLength) {
       if(resultLength == "1") {
          offset = eval(offset -1);
       }
+      if(offset < 0) {
+         offset = 0;
+      }
       var url = "${actionUrl}?method=delete";
       url += "&id="+number+"&offset="+offset;
       document.location = url;
@@ -34,7 +38,6 @@ function deleteInfo(number,offset,resultLength) {
 }
 
 function postUpdate(originalRequest) {
-   alert(originalRequest.responseText)
   var responseTxt =  originalRequest.responseText;
   if(responseTxt ==  "term.modify.success") {
     alert('<fmt:message key="newsletter.term.update.success" />');
@@ -64,30 +67,29 @@ function postUpdate(originalRequest) {
 <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
 <html:hidden property="method" value="list"/>
    <html:hidden property="offset"/>
-        <input type="hidden" name="newsletterId" value="${newsletterId}"/>
-     <mm:notpresent referid="newsletterId">
-
-     <mm:hasrank minvalue="administrator">
+   <input type="hidden" name="newsletter" value="${newsletterId}"/>
+   <mm:notpresent referid="newsletterId">
+      <mm:hasrank minvalue="administrator">
          <p>
             <a href="${addUrl}"  style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="newsletter.term.add" />
             </a>
          </p>
-
-    </mm:hasrank>
+     </mm:hasrank>
+   </mm:notpresent>
    <table border="0" style="padding-left:10px;">
-
       <tr>
          <td style="width: 80px"><fmt:message key="newsletter.term.name" /></td>
          <td><html:text size="20" property="name"/></td>
       </tr>
       <tr>
       <td></td>
-      <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
+      <td>
+         <input type="submit" name="submitButton" onclick="setOffset(0);" 
                value="<fmt:message key="newsletter.term.search" />"/>   
      </td>
    </tr>
    </table>
-     </mm:notpresent>
+
 </html:form>
 <mm:notpresent referid="newsletterId">
 <div class="ruler_green"><div><fmt:message key="newsletter.term.search.result" /></div></div>

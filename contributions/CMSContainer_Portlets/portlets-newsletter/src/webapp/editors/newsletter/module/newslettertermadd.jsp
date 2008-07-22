@@ -54,9 +54,9 @@
              <tr>
                <td> </td>
              <td>
-                <input type="submit" name="submitButton" onclick="add();" 
+                <input type="button" name="submitButton" onclick="add();" 
                      value="<fmt:message key="newsletter.term.action.save" />"/><c:forEach var="space" begin="1" end="10" step="1">&nbsp; </c:forEach>
-                     <input type="submit" name="submitButton" onclick="cancel();" 
+                     <input type="button" name="submitButton" onclick="cancel();" 
                   value="<fmt:message key="newsletter.term.action.cancel" />"/>
              </td>
           </tr>
