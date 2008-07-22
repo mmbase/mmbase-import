@@ -68,4 +68,11 @@
     <param name="object" type="Object" />
   </function>
 
+ <function name="keywords">
+    <type>class</type>
+    <class>org.mmbase.datatypes.processors.KeywordsProcessor</class>
+    <method>getKeywords</method>
+    <param name="repository" type="String"  />
+  </function>
+
 </functionset>
