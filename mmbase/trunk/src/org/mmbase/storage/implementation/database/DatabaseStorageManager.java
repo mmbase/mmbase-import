@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.193 2008-05-06 15:27:40 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.194 2008-07-22 05:29:19 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -990,9 +990,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
      * @since MMBase-1.7.1
      */
-    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List<CoreField> fields) throws SQLException {
+    protected int executeUpdateCheckConnection(String query, MMObjectNode node,  List<CoreField> fields) throws SQLException {
         try {
-            executeUpdate(query, node, fields);
+            return executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
                 Statement s = null;
@@ -1020,7 +1020,7 @@ public class DatabaseStorageManager implements StorageManager {
                  }
                 break;
             }
-            executeUpdate(query, node, fields);
+            return executeUpdate(query, node, fields);
         }
     }
 
@@ -1032,10 +1032,12 @@ public class DatabaseStorageManager implements StorageManager {
      * @param node updated node
      * @param fields updated fields
      * @throws SQLException if database connections failures occurs 
+     * @return The result of {@link PreparedStatement#executeUpdate}. That would normally be
+     * <code>1</code>, but <code>0</code> when upating a not that does not exists any more.
      *
      * @since MMBase-1.7.1
      */
-    protected void executeUpdate(String query, MMObjectNode node, List<CoreField> fields) throws SQLException {
+    protected int executeUpdate(String query, MMObjectNode node, List<CoreField> fields) throws SQLException {
         PreparedStatement ps = activeConnection.prepareStatement(query);
         for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
             CoreField field = fields.get(fieldNumber);
@@ -1048,9 +1050,10 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         long startTime = getLogStartTime();
-        ps.executeUpdate();
+        int result = ps.executeUpdate();
         ps.close();
         logQuery(query, startTime);
+        return result;
 
     }
 
@@ -1071,7 +1074,11 @@ public class DatabaseStorageManager implements StorageManager {
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
-        change(node, builder);
+        if (change(node, builder) == 0) {
+            log.debug("Changed node " + node + " does not exists any more, but since we had to change it, we'll have to recrate it.");
+            log.service("Recreating node " + node.getNumber());
+            create(node, builder);
+        }
         commitChange(node, "c");
         unloadShortedFields(node, builder);
         // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
@@ -1089,7 +1096,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during change
      */
-    protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    protected int change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
         Collection<String> fieldNames = node.getChanged();
@@ -1102,10 +1109,10 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         String tablename = (String) factory.getStorageIdentifier(builder);
-        change(node, builder, tablename, changeFields);
+        return change(node, builder, tablename, changeFields);
     }
 
-    protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
+    protected int change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
         // Create a String that represents the fields to be used in the commit
         StringBuilder setFields = null;
         List<CoreField> fields = new ArrayList<CoreField>();
@@ -1137,12 +1144,15 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 String query = scheme.format(this, tableName , setFields.toString(), builder.getField("number"), node);
                 getActiveConnection();
-                executeUpdateCheckConnection(query, node, fields);
+                return executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
                 throw new StorageException(se.getMessage() + " for node " + node, se);
             } finally {
                 releaseActiveConnection();
             }
+        } else {
+            log.debug("Nothing changed, doing nothing");
+            return 1; // should we return 0 if the node does not exist any more?
         }
     }
 
