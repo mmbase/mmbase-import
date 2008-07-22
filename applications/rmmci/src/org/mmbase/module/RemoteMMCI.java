@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.15.2.3 2007-10-22 08:56:57 nklasens Exp $
+ * @version $Id: RemoteMMCI.java,v 1.15.2.4 2008-07-22 15:09:40 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -55,16 +55,21 @@ public class RemoteMMCI extends ProcessorModule {
     public void init() {
         super.init(); // is this required?
         loadInitParameters("mmbase/rmmci");
-        log.debug("Module RemoteMMCI starting");
+        log.info("Module RemoteMMCI starting");
 
         int registryPort = getPort();
-        int stubPort = getStubPort(registryPort);
-        String host = getHost();
-        String bindName = getBindName();
-        createRemoteMMCI(host, registryPort, bindName, stubPort);
-        log.info("RemoteMMCI registry listening on rmi://" + host + ":" + registryPort + "/" + bindName);
-        log.info("RemoteMMCI stubs listening on rmi://" + host + ":" + stubPort);
-        startChecker(this);
+        if (registryPort == -1) {
+            log.service("Not creating RemoteRMMCI, because registry port is -1");
+        } else {
+            int stubPort = getStubPort(registryPort);
+            String host = getHost();
+            String bindName = getBindName();
+            log.error("Will create rmmci on " + host + ":" + registryPort + "/" + bindName);
+            createRemoteMMCI(host, registryPort, bindName, stubPort);
+            log.info("RemoteMMCI registry listening on rmi://" + host + ":" + registryPort + "/" + bindName);
+            log.info("RemoteMMCI stubs listening on rmi://" + host + ":" + stubPort);
+            startChecker(this);
+        }
     }
 
     public String getBindName() {
@@ -143,7 +148,7 @@ public class RemoteMMCI extends ProcessorModule {
         return stubPort;
     }
 
-    
+
     /**
      * This method creates or locates the RMI registry at a specific port and host and binds a new RemoteContext
      * @param registryPort the registry port to start the RMI registry

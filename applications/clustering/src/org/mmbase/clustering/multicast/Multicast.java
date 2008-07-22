@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.10 2006-07-06 11:40:48 michiel Exp $
+ * @version $Id: Multicast.java,v 1.10.2.1 2008-07-22 15:04:08 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -112,22 +112,26 @@ public class Multicast extends ClusterManager {
         }
 
         log.info("multicast host: " + multicastHost +
-                 ", port: " + multicastPort + 
-                 ", TTL: " + multicastTTL + 
+                 ", port: " + multicastPort +
+                 ", TTL: " + multicastTTL +
                  ", datapacketsize: " + dpsize);
 
     }
 
     protected synchronized void startCommunicationThreads() {
-        try {
-            mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend, send);
-        } catch (java.net.UnknownHostException e) {
-            log.error(e);
-        }
-        try {
-            mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
-        } catch (java.net.UnknownHostException e) {
-            log.error(e);
+        if (multicastPort == -1) {
+            log.service("Not starting multicast threads because port number configured to be -1");
+        } else {
+            try {
+                mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend, send);
+            } catch (java.net.UnknownHostException e) {
+                log.error(e);
+            }
+            try {
+                mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
+            } catch (java.net.UnknownHostException e) {
+                log.error(e);
+            }
         }
     }
 
@@ -137,7 +141,7 @@ public class Multicast extends ClusterManager {
             log.service("Stopped communication sender " + mcs);
             mcs = null;
         }
-        if (mcr != null) { 
+        if (mcr != null) {
             mcr.stop();
             log.service("Stopped communication receiver " + mcr);
             mcr = null;

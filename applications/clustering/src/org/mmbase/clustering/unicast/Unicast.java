@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.9 2006-06-21 05:46:20 michiel Exp $
+ * @version $Id: Unicast.java,v 1.9.2.1 2008-07-22 15:04:08 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -95,11 +95,15 @@ public class Unicast extends ClusterManager {
      * @see org.mmbase.clustering.ClusterManager#startCommunicationThreads()
      */
     protected synchronized void startCommunicationThreads() {
-        ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
-        try {
-            ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
-        } catch (java.io.IOException ioe) {
-            log.error(ioe);
+        if (unicastPort == -1) {
+            log.service("Not starting multicast threads because port number configured to be -1");
+        } else {
+            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
+            try {
+                ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
+            } catch (java.io.IOException ioe) {
+                log.error(ioe);
+            }
         }
     }
 
@@ -112,7 +116,7 @@ public class Unicast extends ClusterManager {
             log.service("Stopped communication sender " + ucs);
             ucs = null;
         }
-        if (ucr != null) { 
+        if (ucr != null) {
             ucr.stop();
             log.service("Stopped communication receiver " + ucr);
             ucr = null;
@@ -121,12 +125,16 @@ public class Unicast extends ClusterManager {
 
     // javadoc inherited
     public void changedNode(NodeEvent event) {
-        byte[] message = createMessage(event);
-        nodesToSend.append(message);
-        //Multicast receives his own message. Unicast now too.
-        nodesToSpawn.append(message);
-        if (log.isDebugEnabled()) {
-            log.debug("message: " + event);
+        try {
+            byte[] message = createMessage(event);
+            nodesToSend.append(message);
+            //Multicast receives his own message. Unicast now too.
+            nodesToSpawn.append(message);
+            if (log.isDebugEnabled()) {
+                log.debug("message: " + event);
+            }
+        } catch (java.io.IOException ioe) {
+            log.warn(ioe);
         }
         return;
     }

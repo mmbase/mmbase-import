@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.13 2006-07-06 11:27:27 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.13.2.1 2008-07-22 15:04:08 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -87,7 +87,6 @@ public class ChangesReceiver implements Runnable {
             // nothing
         }
         if (kicker != null) {
-            kicker.setPriority(Thread.MIN_PRIORITY);
             kicker.interrupt();
             kicker = null;
         } else {
