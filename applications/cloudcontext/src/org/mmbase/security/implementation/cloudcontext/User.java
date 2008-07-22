@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.22.2.2 2007-12-20 09:47:34 michiel Exp $
+ * @version $Id: User.java,v 1.22.2.3 2008-07-22 12:03:37 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements WeakNodeEventListener {
@@ -53,10 +53,6 @@ public class User extends BasicUser implements WeakNodeEventListener {
         log.debug("Instantiated " + this);
     }
 
-    public void finalize() throws Throwable {
-        log.debug("Finalizing " + this);
-        super.finalize();
-    }
 
     // javadoc inherited
     public String getIdentifier()  {
