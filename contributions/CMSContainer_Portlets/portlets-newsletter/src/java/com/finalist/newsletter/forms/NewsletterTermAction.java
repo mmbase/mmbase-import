@@ -18,27 +18,40 @@ import com.finalist.newsletter.util.NewsletterTermUtil;
 
 public class NewsletterTermAction  extends DispatchAction{
    
+   private  static final String  MESSAGE_KEY = "term.exist";
+   private  static final String  MESSAGE_TERM_MANDATORY = "newsletter.term.mandatory";
+   private  static final String  MESSAGE_TERM_EXIST = "newsletter.term.exist";
+   
+   private  static final String  ACTION_FORWORD_ADD = "add";
+   private  static final String  ACTION_FORWORD_list = "list";
+   private  static final String  ACTION_FORWORD_SUCCESS = "success";
+   private  static final String  LIST_OFFSET = "offset";
+   private  static final String  LIST_NEWSLETTER = "newsletter";
+   private  static final String  TERM_NUMBER = "id";
+   
    public ActionForward add(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm)form;
       ActionMessages messages = new  ActionMessages();
       if(StringUtils.isBlank(termForm.getName())) {
-         messages.add("term.exist",new ActionMessage("newsletter.term.mandatory"));
+         messages.add(MESSAGE_KEY,new ActionMessage(MESSAGE_TERM_MANDATORY));
          saveMessages(request, messages);
-         return mapping.findForward("add");
+         return mapping.findForward(ACTION_FORWORD_ADD);
       }
       boolean hasTerm = NewsletterTermUtil.hasTerm(termForm.getName());
       if(hasTerm){
-         messages.add("term.exist",new ActionMessage("newsletter.term.exist"));
+         messages.add(MESSAGE_KEY,new ActionMessage(MESSAGE_TERM_EXIST));
          saveMessages(request, messages);
-         return mapping.findForward("add");
+         return mapping.findForward(ACTION_FORWORD_ADD);
       }
       else {
          NewsletterTermUtil.addTerm(termForm.getName());
          termForm.reset();
       }
-      return mapping.findForward("success");
+      termForm.setName(null);
+      ActionForward forward =  mapping.findForward(ACTION_FORWORD_list);
+      return forward;
    }
    
    public ActionForward addInit(ActionMapping mapping, ActionForm form,
@@ -46,13 +59,13 @@ public class NewsletterTermAction  extends DispatchAction{
          throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm)form;
       termForm.reset();
-      return mapping.findForward("add");
+      return mapping.findForward(ACTION_FORWORD_ADD);
    }
    
    public ActionForward delete(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      String id = request.getParameter("id");
+      String id = request.getParameter(TERM_NUMBER);
       String requestIds = request.getParameter("deleteRequest");
       if(StringUtils.isNotEmpty(requestIds)) {
          String[] ids = requestIds.split(",");
@@ -67,14 +80,14 @@ public class NewsletterTermAction  extends DispatchAction{
             NewsletterTermUtil.deleteTerm(Integer.parseInt(id));
          }
       }
-      return mapping.findForward("list");
+      return mapping.findForward(ACTION_FORWORD_list);
    }
    
   
    public ActionForward modify(ActionMapping mapping, ActionForm form,
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      String id = request.getParameter("id");
+      String id = request.getParameter(TERM_NUMBER);
       String nameValue = request.getParameter("name");
       if(StringUtils.isBlank(nameValue)) {
          response.getWriter().print("term.mandatory");
@@ -82,7 +95,7 @@ public class NewsletterTermAction  extends DispatchAction{
       }
       boolean hasTerm = NewsletterTermUtil.hasTerm(nameValue);
       if(hasTerm){
-         response.getWriter().print("term.exist");
+         response.getWriter().print(MESSAGE_KEY);
       }
       else {
          NewsletterTermUtil.updateTerm(Integer.parseInt(id), nameValue);
@@ -110,17 +123,18 @@ public class NewsletterTermAction  extends DispatchAction{
       if(resultList == null || resultList.size() ==0) {
          if(offset >= 1) {
             resultList = NewsletterTermUtil.searchTerms(termForm.getName(), (offset-1)*pageSize, pageSize);
-            request.setAttribute("offset", (offset-1));
+            request.setAttribute(LIST_OFFSET, (offset-1));
             termForm.setOffset(String.valueOf(offset-1));
          }
       }
       
       request.setAttribute("resultList", resultList);
       request.setAttribute("resultCount", totalCount);
-      request.setAttribute("offset", termForm.getOffset());
-      if(StringUtils.isNotEmpty(request.getParameter("newsletterId"))) {
-         request.setAttribute("newsletterId", request.getParameter("newsletterId"));
+      request.setAttribute(LIST_OFFSET, termForm.getOffset());
+      
+      if(StringUtils.isNotEmpty(request.getParameter(LIST_NEWSLETTER))) {
+         request.setAttribute("newsletterId", request.getParameter(LIST_NEWSLETTER));
       }
-      return mapping.findForward("success");
+      return mapping.findForward(ACTION_FORWORD_SUCCESS);
    }
 }
