@@ -21,10 +21,10 @@ import org.mmbase.util.xml.UtilReader;
 /**
  * Unicast implementation for the mmbase cluster. This implemenetation
  * opens a direct network connection to each host mentioned in the mmservers
- * as active. 
+ * as active.
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.12 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: Unicast.java,v 1.13 2008-07-22 15:05:51 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -34,7 +34,7 @@ public class Unicast extends ClusterManager {
 
     /** Host on which the server socket is bound.*/
     private String unicastHost;
-    
+
     /** Port on which the talking between nodes take place.*/
     private int unicastPort = 4243;
 
@@ -85,7 +85,7 @@ public class Unicast extends ClusterManager {
         }
 
         unicastHost = MMBase.getMMBase().getHost();
-        
+
         String tmpHost = configuration.get("unicasthost");
         if (tmpHost != null && !tmpHost.equals("")) {
             unicastHost = tmpHost;
@@ -94,7 +94,7 @@ public class Unicast extends ClusterManager {
         if (tmpHost != null && !tmpHost.equals("")) {
             unicastHost = tmpHost;
         }
-        
+
         String tmpTimeout = configuration.get("unicasttimeout");
         if (tmpTimeout != null && !tmpTimeout.equals("")) {
             try {
@@ -112,11 +112,15 @@ public class Unicast extends ClusterManager {
      * @see org.mmbase.clustering.ClusterManager#startCommunicationThreads()
      */
     protected synchronized void startCommunicationThreads() {
-        ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
-        try {
-            ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn);
-        } catch (java.io.IOException ioe) {
-            log.error(ioe);
+        if (unicastPort == -1) {
+            log.service("Not starting unicast threads because port number configured to be -1");
+        } else {
+            ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
+            try {
+                ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn);
+            } catch (java.io.IOException ioe) {
+                log.error(ioe);
+            }
         }
     }
 
