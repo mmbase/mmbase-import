@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: ChangesReceiver.java,v 1.17 2008-07-22 15:05:51 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -69,7 +69,7 @@ public class ChangesReceiver implements Runnable {
                 ms = new MulticastSocket(mport);
                 ms.joinGroup(ia);
             } catch(Exception e) {
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
             }
             if (ms != null) {
                 kicker = MMBaseContext.startThread(this, "MulticastReceiver");
@@ -88,7 +88,6 @@ public class ChangesReceiver implements Runnable {
             // nothing
         }
         if (kicker != null) {
-            kicker.setPriority(Thread.MIN_PRIORITY);
             kicker.interrupt();
             kicker = null;
         } else {

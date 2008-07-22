@@ -25,7 +25,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.13 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: Multicast.java,v 1.14 2008-07-22 15:05:51 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -118,15 +118,19 @@ public class Multicast extends ClusterManager {
     }
 
     protected synchronized void startCommunicationThreads() {
-        try {
-            mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend, send);
-        } catch (java.net.UnknownHostException e) {
-            log.error(e);
-        }
-        try {
-            mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
-        } catch (java.net.UnknownHostException e) {
-            log.error(e);
+        if (multicastPort == -1) {
+            log.service("Not starting multicast threads because port number configured to be -1");
+        } else {
+            try {
+                mcs = new ChangesSender(multicastHost, multicastPort, multicastTTL, nodesToSend, send);
+            } catch (java.net.UnknownHostException e) {
+                log.error(e);
+            }
+            try {
+                mcr = new ChangesReceiver(multicastHost, multicastPort, dpsize, nodesToSpawn);
+            } catch (java.net.UnknownHostException e) {
+                log.error(e);
+            }
         }
     }
 
