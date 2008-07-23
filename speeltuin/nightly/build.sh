@@ -18,10 +18,10 @@ antcommand="/usr/bin/ant"
 export FILTER="/home/nightly/bin/filterlog"
 
 
-export CCMAILADDRESS="nico@klasens.net"
-#export CCMAILADDRESS="Michiel.Meeuwissen@gmail.com"
-#export MAILADDRESS="-c ${CCMAILADDRESS} developers@lists.mmbase.org"
-export MAILADDRESS=${CCMAILADDRESS}
+#export CCMAILADDRESS="nico@klasens.net"
+export CCMAILADDRESS="Michiel.Meeuwissen@gmail.com"
+export MAILADDRESS="-c ${CCMAILADDRESS} developers@lists.mmbase.org"
+#export MAILADDRESS=${CCMAILADDRESS}
 #export MAILADDRESS="developers@lists.mmbase.org"
 
 echo generating version, and some directories
@@ -57,36 +57,39 @@ if [ 1 == 1 ] ; then
     pwd
     echo "CVS" | tee -a ${builddir}/messages.log
     echo ${CVS} update -d -P  ${cvsversionoption} ${cvsversion} ${revision} | tee -a ${builddir}/messages.log
+    # I realy don't get the deal with the quotes around ${cvsversion}.
+    # undoubtly to do with some bash detail. If $cvsversion contains no space, then it seems essential that these quotes are _not_ there
+    # otherwise it seems essential _that_ they are. It's maddening.
     ${CVS} update -d -P  ${cvsversionoption} "${cvsversion}"  ${revision} | tee -a ${builddir}/messages.log
     
     
-    echo Starting nightly build
+    echo Starting nightly build | tee -a ${builddir}/messages.log
     echo all:install
     ${MAVEN} all:install >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
     
     ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
 
     cd maven-site
-    echo Creating site `pwd`.
+    echo Creating site `pwd`. | tee -a ${builddir}/messages.log
     ${MAVEN} multiproject:site >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 fi
 
-echo Copying todays artifacts
+echo Copying todays artifacts | tee -a ${builddir}/messages.log
 echo $HOME
 for i in `/usr/bin/find $HOME/.maven/repository/mmbase -mtime -1` ; do 
-    echo copy $i to ${builddir}
+    echo copy $i to ${builddir} | tee -a ${builddir}/messages.log
     cp $i ${builddir} 
 done
 
 
 if [ 1 == 1 ] ; then
-    echo Now executing tests
+    echo Now executing tests. Results in ${builder}/test-results. | tee -a ${builddir}/messages.log
     cd ${BUILD_HOME}/nightly-build/cvs/mmbase/tests
-    ${antcommand} run.all > ${buildir}/tests-results.log
+    ${antcommand} run.all > ${builddir}/tests-results.log
 fi
 
 
-echo Creating symlink for latest build
+echo Creating symlink for latest build | tee -a ${builddir}/messages.log
 rm /home/nightly/builds/latest
 cd /home/nightly/builds
 ln -s ${dir} latest
@@ -94,7 +97,7 @@ ln -s ${dir} latest
 if [ 1 == 1 ] ; then
     if [ -f latest/messages.log ] ; then
         if (( `cat latest/messages.log  | grep 'FAILED' | wc -l` > 0 )) ; then
-        echo Build failed, sending mail to ${MAILADDRESS}
+        echo Build failed, sending mail to ${MAILADDRESS} - | tee -a ${builddir}/messages.log
         echo -e "No build on ${version}\n\nPerhaps the build failed:\n\n" | \
             tail -q -n 20 - latest/messages.log last/errors.log | \
             mutt -s "Build failed ${version}" ${MAILADDRESS}
@@ -110,19 +113,19 @@ fi
 
 
 if [ 1 == 1 ] ; then 
-    echo running tests
+    echo running tests | tee -a ${builddir}/messages.log
 
     if [ -f latest/tests-results.log ] ; then 
 	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then  
-	    echo Failures, sending mail to ${MAILADDRESS}
-	    cat latest/tests-results.log  | grep -E -A 1 '(FAILURES|^run\.)' | \
-		mutt -s "Test cases failures on build ${version}" Michiel.Meeuwissen@gmail.com
+	    echo Failures, sending mail to ${MAILADDRESS} - | tee -a ${builddir}/messages.log
+	    cat latest/tests-results.log  | grep -E -A 1 '(FAILURES|^run\.|OK)' | \
+		mutt -s "Test cases failures on build ${version}" ${MAILADDRESS} 
 	fi
-    else
-	echo Build failed, sending mail to ${MAILADDRESS}
-	echo -e "No test-cases available on build ${version}\n\nPerhaps the build failed:\n\n" | \
-	    tail -q -n 20 - latest/messages.log last/errors.log | \
-	    mutt -s "Build failed ${version}"  Michiel.Meeuwissen@gmail.com
+#    else
+#	echo Build failed, sending mail to ${MAILADDRESS}
+#	echo -e "No test-cases available on build ${version}\n\nPerhaps the build failed:\n\n" | \
+#	    tail -q -n 20 - latest/messages.log last/errors.log | \
+#	    mutt -s "Build failed ${version}"  Michiel.Meeuwissen@gmail.com
     fi
 fi
 
