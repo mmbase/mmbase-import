@@ -1,11 +1,10 @@
 package com.finalist.portlets.newsletter;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.portlet.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -45,7 +44,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          doInclude("view", "/newsletter/subscription/introduction.jsp", request, response);
          return;
       }
-
+   
       String action = request.getParameter("action");
       log.debug(String.format("User %s start a subscribe with action %s", userId, action));
 
