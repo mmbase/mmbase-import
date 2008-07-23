@@ -25,7 +25,7 @@
          </p>
 
          <p>
-            <a href="/cmsc-community/editors/community/import.jsp">
+            <a href="${pageContext.request.contextPath }/editors/community/import.jsp">
                <fmt:message key="community.data.import"/>
             </a>
          </p>
