@@ -184,22 +184,17 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
         List<Chunk> chunks = new LinkedList<Chunk>();
         chunks.add(new Chunk(string));
-        System.out.println("STARTING " + onlyFirstPattern);
 
         for (Map.Entry<Pattern, String> entry : getPatterns()) {
             Pattern p = entry.getKey();
 
-            System.out.println("now " + p + " on " + chunks + " " + status.used);
 
             if (onlyFirstMatch && status.used.contains(p)) continue;
 
 
             for (int i = 0; i < chunks.size(); i++) {
                 if (onlyFirstPattern && chunks.get(i).replaced) {
-                    System.out.println("skipping " + p + " on " + chunks.get(i).string);
                     continue;
-                } else {
-                    System.out.println("now " + p + " on " + chunks.get(i).string);
                 }
                 Matcher m = p.matcher(chunks.get(i).string);
                 String replacement = entry.getValue();
@@ -233,7 +228,6 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
                         sb.setLength(0);
                         m.appendTail(sb);
                         chunks.add(i + 1, new Chunk(sb.toString()));
-                        System.out.println("replaced c:" + chunks + " used pattern " + p + " ");
                     } else {
                         m.appendTail(sb);
                         chunks.set(i, new Chunk(sb.toString()));
@@ -247,7 +241,6 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
                 }
             }
         }
-        System.out.println("Ready " + chunks);
         for (Chunk s : chunks) {
             w.write(s.string);
         }
