@@ -76,4 +76,6 @@
 	  
   </bean>
   <import resource="spring-security.xml" />
+   <!-- Services Holder-->
+   <bean id="contextHolder" class="com.finalist.cmsc.services.community.ApplicationContextFactory"/>
 </beans>
