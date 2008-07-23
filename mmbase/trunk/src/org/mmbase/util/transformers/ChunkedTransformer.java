@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public abstract class ChunkedTransformer extends ConfigurableReaderTransformer implements CharTransformer {
+public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(ChunkedTransformer.class);
 
     /**
@@ -47,36 +47,36 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     /**
      * Match line by line.
      */
-    public final static int LINES    = 4;
+    public final static int LINES    =  4;
 
     /**
      * Match the entire stream (so, one String must be created).
      */
-    public final static int ENTIRE    = 5;
+    public final static int ENTIRE    =  5;
 
+    // about 3 bits used now.
 
     /**
      * If this is added to the config-int, then only the first match of any one pattern should be used.
      */
-    public final static int REPLACE_FIRST = 100;
+    public final static int ONLY_USE_FIRST_MATCHING_PATTERN = 1 << 5;
+
     /**
      * If this is added to the config-int, then only the first match of all patterns should be used.
      */
-    public final static int REPLACE_FIRST_ALL = 200;
+    public final static int ONLY_REPLACE_FIRST_MATCH        = 1 << 6;
 
 
-    protected boolean replaceFirst    = false;
-    protected boolean replaceFirstAll = false;
+    protected boolean onlyFirstPattern    = false;
+    protected boolean onlyFirstMatch      = false;
 
     public void configure(int i) {
-        if (i >= REPLACE_FIRST_ALL) {
-            replaceFirstAll = true;
-            i -= REPLACE_FIRST_ALL;
-        }
-        if (i >= REPLACE_FIRST) {
-            replaceFirst = true;
-            i -= REPLACE_FIRST;
-        }
+        onlyFirstMatch = ((i & ONLY_REPLACE_FIRST_MATCH) > 0);
+        onlyFirstPattern = ((i & ONLY_USE_FIRST_MATCHING_PATTERN) > 0);
+        // set corresponding bits to 0, they will not be needed any more.
+        i &= ~ONLY_USE_FIRST_MATCHING_PATTERN;
+        i &= ~ONLY_REPLACE_FIRST_MATCH;
+
         super.configure(i);
     }
 
@@ -90,10 +90,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     protected class Status {
         int replaced = 0;
-        Set<Object> used = null;
-        {
-            if (replaceFirstAll) used = new HashSet<Object>();
-        }
+        final Set<P> used = onlyFirstMatch ? new HashSet<P>() : null;
     }
     protected Status newStatus() {
         return new Status();
@@ -156,7 +153,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
      * Whether still to do replacing, given status.
      */
     protected boolean replace(Status status) {
-        return !replaceFirst || status.replaced == 0;
+        return ! onlyFirstMatch || status.replaced == 0;
     }
 
     public Writer transformXmlTextWords(Reader r, Writer w)  {
@@ -194,8 +191,6 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
             // write last word
             if (replace(status)) {
                 if (translating) replaceWord(word, w, status);
-            } else {
-                w.write(word.toString());
             }
             if (log.isDebugEnabled()) {
                 log.debug("Finished  replacing. Replaced " + status.replaced + " words");
@@ -223,6 +218,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
                     replace(xmltext.toString(), w, status);
+                    xmltext.setLength(0);
                     w.write(c);
                 } else if (c == '>') {
                     translating = true;
@@ -237,8 +233,6 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
             // write last word
             if (replace(status)) {
                 if (translating) replace(xmltext.toString(), w, status);
-            } else {
-                w.write(xmltext.toString());
             }
             log.debug("Finished  replacing. Replaced " + status.replaced + " words");
         } catch (java.io.IOException e) {
@@ -305,14 +299,16 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         StringWriter sw = new StringWriter();
         Status status = newStatus();
         try {
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                sw.write(c);
+            BufferedReader br = new BufferedReader(r);
+            char[] buf = new char[200];
+            int n = br.read(buf, 0, buf.length);
+            while (n > 0) {
+                sw.write(buf, 0, n);
+                n = br.read(buf, 0, buf.length);
             }
             replace(sw.toString(), w, status);
         } catch (java.io.IOException e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
         }
 
         return w;

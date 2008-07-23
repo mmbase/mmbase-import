@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class RegexpReplacer extends ChunkedTransformer {
+public class RegexpReplacer extends ChunkedTransformer<Pattern> {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacer.class);
 
     /**
@@ -40,11 +40,11 @@ public class RegexpReplacer extends ChunkedTransformer {
     /**
      * The regexps for the unextended RegexpReplacer
      */
-    protected static final Collection<Entry<Pattern,String>> regexps = new ArrayList<Entry<Pattern,String>>();
+    protected static final Collection<Entry<Pattern, String>> regexps = new ArrayList<Entry<Pattern, String>>();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
-        protected Collection<Entry<Pattern,String>> patterns;
-        PatternWatcher(Collection<Entry<Pattern,String>> p) {
+        protected Collection<Entry<Pattern, String>> patterns;
+        PatternWatcher(Collection<Entry<Pattern, String>> p) {
             patterns = p;
         }
     }
@@ -164,44 +164,93 @@ public class RegexpReplacer extends ChunkedTransformer {
         }
     }
 
-    protected boolean replace(String string, Writer w, Status status) throws IOException {
-        Iterator<Entry<Pattern,String>> i  = getPatterns().iterator();
-
-        boolean r = false;
-        while (i.hasNext()) {
-            Entry<Pattern,String> entry = i.next();
-            Pattern p = entry.getKey();
-            if (replaceFirstAll && status.used.contains(p)) continue;
-            Matcher m = p.matcher(string);
-            String replacement = entry.getValue();
-            boolean result = false;
-            if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
-                result = m.matches(); // try for a full match, as string is one word.
-            } else {
-                result = m.find();
-            }
-            if (result) {
-                r = true;
-                StringBuffer sb = new StringBuffer();
-                do {
-                    status.replaced++;
-                    m.appendReplacement(sb, replacement);
-                    if (replaceFirst || replaceFirstAll ||
-                        to == ChunkedTransformer.XMLTEXT_WORDS ||
-                        to == ChunkedTransformer.WORDS) break;
-                    result = m.find();
-                } while (result);
-                m.appendTail(sb);
-                if (replaceFirstAll) status.used.add(p);
-                string = sb.toString();
-                if (replaceFirst ||
-                    to == ChunkedTransformer.XMLTEXT_WORDS ||
-                    to == ChunkedTransformer.WORDS) break;
-            }
-
+    private class Chunk {
+        String string;
+        boolean replaced = false;
+        Chunk(String s) {
+            string = s;
         }
+        Chunk(String s, boolean r) {
+            string = s; replaced = r;
+        }
+        public String toString() { return "'" + string + "'" + (replaced ? "." : ""); }
 
-        w.write(string);
+    }
+
+    @Override
+    protected boolean replace(String string, Writer w, Status status) throws IOException {
+
+        boolean r = false; // result value
+
+        List<Chunk> chunks = new LinkedList<Chunk>();
+        chunks.add(new Chunk(string));
+        System.out.println("STARTING " + onlyFirstPattern);
+
+        for (Map.Entry<Pattern, String> entry : getPatterns()) {
+            Pattern p = entry.getKey();
+
+            System.out.println("now " + p + " on " + chunks + " " + status.used);
+
+            if (onlyFirstMatch && status.used.contains(p)) continue;
+
+
+            for (int i = 0; i < chunks.size(); i++) {
+                if (onlyFirstPattern && chunks.get(i).replaced) {
+                    System.out.println("skipping " + p + " on " + chunks.get(i).string);
+                    continue;
+                } else {
+                    System.out.println("now " + p + " on " + chunks.get(i).string);
+                }
+                Matcher m = p.matcher(chunks.get(i).string);
+                String replacement = entry.getValue();
+                boolean result = false;
+                if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
+                    result = m.matches(); // try for a full match, as string is one word.
+                } else {
+                    result = m.find();
+                }
+                if (result) {
+                    r = true;
+                    StringBuffer sb = new StringBuffer();
+                    do {
+                        status.replaced++;
+                        m.appendReplacement(sb, replacement);
+                        if (onlyFirstMatch || onlyFirstPattern ||
+                            to == ChunkedTransformer.XMLTEXT_WORDS ||
+                            to == ChunkedTransformer.WORDS) break;
+                        result = m.find();
+                    } while (result);
+
+                    if (onlyFirstPattern) {
+                        // make a new chunk.
+                        int s = m.start();
+                        if (s > 0) {
+                            chunks.add(i, new Chunk(sb.toString().substring(0, s)));
+                            sb.delete(0, s);
+                            i++;
+                        }
+                        chunks.set(i, new Chunk(sb.toString(), true));
+                        sb.setLength(0);
+                        m.appendTail(sb);
+                        chunks.add(i + 1, new Chunk(sb.toString()));
+                        System.out.println("replaced c:" + chunks + " used pattern " + p + " ");
+                    } else {
+                        m.appendTail(sb);
+                        chunks.set(i, new Chunk(sb.toString()));
+                    }
+                    if (onlyFirstMatch ||
+                        to == ChunkedTransformer.XMLTEXT_WORDS ||
+                        to == ChunkedTransformer.WORDS) {
+                        // next pattern
+                        break;
+                    }
+                }
+            }
+        }
+        System.out.println("Ready " + chunks);
+        for (Chunk s : chunks) {
+            w.write(s.string);
+        }
         return r;
 
     }
@@ -211,6 +260,22 @@ public class RegexpReplacer extends ChunkedTransformer {
 
     public String toString() {
         return getEncoding() + " " + getPatterns();
+    }
+
+    public static void main(String[] arg) {
+        StringBuffer b = new StringBuffer();
+        Pattern p = Pattern.compile(arg[0]);
+        String input = arg[1];
+        Matcher m = p.matcher(input);
+        while (m.find()) {
+            b.append("'");
+            m.appendReplacement(b, m.group().toUpperCase());
+            b.append("'");
+            System.out.println("s: " + m.start() + " e: " + m.end() + "g: " + m.group());
+        }
+        b.append("X");
+        m.appendTail(b);
+        System.out.println("buf : " + b);
     }
 
 
