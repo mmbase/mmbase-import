@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.9.2.4 2008-05-07 06:37:22 bert Exp $
+ * @version $Id: BasicEditor.java,v 1.9.2.5 2008-07-23 16:43:01 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -75,16 +75,20 @@ public class BasicEditor extends Editor {
      * Fills parameters of the parameters to be interpreted as PatternNodeFunctions
      */
     protected String getValue(String param, Cloud cloud, String nodenr, PageContext context) {
-           Function urlFunction = patterns.getFunction(parameters.getString(param));
-           Parameters urlParameters = urlFunction.createParameters();
-           if (cloud != null) {
-               Node node = cloud.getNode(nodenr);
-               urlParameters.set(Parameter.NODE, node);
-           }
-           urlParameters.setAll((Map) parameters.get(param + "params"));
-           urlParameters.setIfDefined(Parameter.REQUEST, context.getRequest());
-           urlParameters.setIfDefined(Parameter.RESPONSE, context.getResponse());
-           return (String) urlFunction.getFunctionValue(urlParameters);
+        Function urlFunction = patterns.getFunction(parameters.getString(param));
+        Parameters urlParameters = urlFunction.createParameters();
+        if (cloud != null) {
+            if (cloud.hasNode(nodenr)) {
+                Node node = cloud.getNode(nodenr);
+                urlParameters.set(Parameter.NODE, node);
+            } else {
+                log.warn("No such node " + nodenr);
+            }
+        }
+        urlParameters.setAll((Map) parameters.get(param + "params"));
+        urlParameters.setIfDefined(Parameter.REQUEST, context.getRequest());
+        urlParameters.setIfDefined(Parameter.RESPONSE, context.getResponse());
+        return (String) urlFunction.getFunctionValue(urlParameters);
     }
     /**
     * Creates a string with the link (and icon) to the editor
@@ -98,7 +102,7 @@ public class BasicEditor extends Editor {
         if ("always".equals(when) || "true".equals(context.getRequest().getParameter("edit"))) {
             Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
 
-            String url = getValue("url", cloud, nodenr, context);
+            String url  = getValue("url", cloud, nodenr, context);
             String icon = getValue("icon", cloud, nodenr, context);
             // 404
             // url = makeRelative(url, context);
