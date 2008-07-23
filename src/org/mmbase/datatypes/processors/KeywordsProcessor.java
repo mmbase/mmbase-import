@@ -47,13 +47,13 @@ import org.mmbase.util.logging.*;
  >]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: KeywordsProcessor.java,v 1.1 2008-07-22 11:53:03 michiel Exp $
+ * @version $Id: KeywordsProcessor.java,v 1.2 2008-07-23 04:59:14 michiel Exp $
  * @since MMBase-1.9
  */
 
 public class KeywordsProcessor implements Processor, NodeEventListener {
 
-    private static final Logger log = Logging.getLoggerInstance(KeywordsCommitProcessor.class);
+    private static final Logger log = Logging.getLoggerInstance(KeywordsProcessor.class);
 
     private static final long serialVersionUID = 1L;
 
