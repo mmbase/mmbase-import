@@ -64,6 +64,4 @@
       <property name="newsletterCAO" ref="newsletterCAO"/>
       <property name="statisticCAO" ref="statisticCAO"/>
    </bean>
-   <!-- Services Holder-->
-   <bean id="contextHolder" class="com.finalist.newsletter.ApplicationContextFactory"/>
 </beans>
