@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.50 2008-07-22 05:00:29 michiel Exp $
+ * @version $Id: Searcher.java,v 1.51 2008-07-23 13:58:48 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -333,10 +333,13 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         return s.search(query, filter, sort);
     }
 
-    static final String SYNTAX =
+    static final String QUERY_SYNTAX =
         "&lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE]:&lt;value&gt; | " +
-        "&lt;field&gt;:[IN_SET | NIN_SET]:&lt;value&gt;[,&lt;value2&gt;[,..]] | " +
         "&lt;field&gt;:[IN | INC]:&lt;value1&gt;:&lt;value2&gt;";
+
+    static final String FILTER_SYNTAX =
+        QUERY_SYNTAX + " |  &lt;field&gt;:[IN_SET | NIN_SET]:&lt;value&gt;[,&lt;value2&gt;[,..]]";
+
 
     static public Filter createFilter(String constraintsText) {
         if (constraintsText == null || "".equals(constraintsText)) return null;
@@ -349,16 +352,16 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         while (constraints.hasMoreTokens()) {
             String constraint = constraints.nextToken();
             StringTokenizer tokens = new StringTokenizer(constraint, ":", true);
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + FILTER_SYNTAX);
             String field = tokens.nextToken();
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + FILTER_SYNTAX);
             tokens.nextToken(); // colon
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + FILTER_SYNTAX);
             String type = tokens.nextToken().toUpperCase();
             if (type.equals(":")) {
                 type = "EQ";
             } else {
-                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + SYNTAX);
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + FILTER_SYNTAX);
                 tokens.nextToken(); // colon
             }
             String value = ""; // should use stringbuffer?
@@ -407,7 +410,10 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 } else {
                     BooleanFilter booleanFilter = new BooleanFilter();
                     booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST));
-                    BooleanClause.Occur occur = type.equals("NE") ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
+                    BooleanClause.Occur occur =
+                        (type.equals("NE") ||
+                         type.equals("NIN_SET"))
+                        ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
                     // no support for 'SHOULD'.
                     booleanFilter.add(new FilterClause(subFilter, occur));
                     filter = booleanFilter;
@@ -433,17 +439,17 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         while (constraints.hasMoreTokens()) {
             String constraint = constraints.nextToken();
             StringTokenizer tokens = new StringTokenizer(constraint, ":", true);
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + QUERY_SYNTAX);
 
             String field = tokens.nextToken();
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + QUERY_SYNTAX);
             tokens.nextToken(); // colon
-            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + QUERY_SYNTAX);
             String type = tokens.nextToken().toUpperCase();
             if (type.equals(":")) {
                 type = "EQ";
             } else {
-                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form " + QUERY_SYNTAX);
                 tokens.nextToken(); // colon
             }
             String value = ""; // should use stringbuffer?
@@ -483,7 +489,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 } else {
                     BooleanQuery booleanQuery = new BooleanQuery();
                     booleanQuery.add(query, BooleanClause.Occur.MUST);
-                    BooleanClause.Occur occur = type.equals("NE") ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
+                    BooleanClause.Occur occur =
+                        type.equals("NE")
+                         ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
                     // no support for 'SHOULD'.
                     booleanQuery.add(subQuery, occur);
                     query = booleanQuery;
