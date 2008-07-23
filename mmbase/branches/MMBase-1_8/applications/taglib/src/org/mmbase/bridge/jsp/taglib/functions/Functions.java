@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.8 2008-07-15 13:12:44 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.9 2008-07-23 17:09:32 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -90,7 +90,7 @@ public class Functions {
     public static String escape(String escaper, Object string) {
         try {
              CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
-            return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
+             return ct == null ? Casting.toString(Casting.unWrap(string)) : ct.transform(Casting.toString(Casting.unWrap(string)));
         } catch (Exception e) {
             String mes = "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
             log.debug(mes, e);
