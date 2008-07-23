@@ -29,6 +29,7 @@ public class UtilTests {
     public static Test suite() throws Exception {
         // Create the test suite
         TestSuite suite = new TestSuite("Util Tests");
+        suite.addTestSuite(CastingTest.class);
         suite.addTestSuite(ResourceLoaderTest.class);
         suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
