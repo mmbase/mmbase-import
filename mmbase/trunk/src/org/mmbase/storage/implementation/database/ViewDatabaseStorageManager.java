@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.11 2007-03-02 21:03:05 nklasens Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.12 2008-07-23 05:12:09 michiel Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -130,30 +130,32 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    public int change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
+            int res = 0;
             if (factory.hasOption("database-supports-update-triggers")) {
-               super.change(node, builder);
+                res = super.change(node, builder);
             } else {
                 do {
-                    changeObject(node,builder);
+                    res = changeObject(node,builder);
                     builder = builder.getParentBuilder();
                 } while (builder!=null);
             }
             if (localTransaction) {
                 commit();
             }
+            return res;
         } catch (StorageException se) {
             if (localTransaction && inTransaction) rollback();
             throw se;
         }
     }
 
-    private void changeObject(MMObjectNode node, MMObjectBuilder builder) {
+    private int changeObject(MMObjectNode node, MMObjectBuilder builder) {
         List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
         Collection<String> fieldNames = node.getChanged();
@@ -163,7 +165,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 changeFields.add(field);
             }
         }
-        change(node, builder, getTableName(builder), changeFields);
+        return change(node, builder, getTableName(builder), changeFields);
     }
 
     /**
