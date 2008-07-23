@@ -23,6 +23,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id: RegexpReplacerFactory.java,v 1.16 2008-07-23 22:21:04 michiel Exp $
  */
 
 public class RegexpReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {
@@ -31,9 +32,10 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
     protected static final Parameter<Collection> PATTERNS =
         new Parameter<Collection>("patterns", Collection.class, Collections.emptyList());
     protected static final Parameter<String> MODE = new Parameter<String>("mode", String.class, "WORDS");
-    protected static final Parameter<String> REPLACE_FIRST = new Parameter<String>("replacefirst", String.class);
+    protected static final Parameter<String> FIRST_MATCH = new Parameter<String>("onlyFirstMatch", String.class);
+    protected static final Parameter<String> FIRST_PATTERN = new Parameter<String>("onlyFirstPattern", String.class);
 
-    protected static final Parameter[] PARAMS = new Parameter[] { PATTERNS, MODE, REPLACE_FIRST };
+    protected static final Parameter[] PARAMS = new Parameter[] { PATTERNS, MODE, FIRST_MATCH, FIRST_PATTERN };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -60,13 +62,13 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
         Config c = trans.transformers().get("REGEXPS_" + mode.toUpperCase());
         if (c == null) c = trans.transformers().get(mode);
         if (c == null) throw new IllegalArgumentException("" + mode + " cannot be found in " + trans.transformers());
-        String firstParam = parameters.get(REPLACE_FIRST);
-        boolean replaceFirst = "true".equals(firstParam);
-        boolean replaceFirstAll = "all".equals(firstParam);
-        trans.configure(c.config +
-                        (replaceFirst ? ChunkedTransformer.REPLACE_FIRST : 0) +
-                        (replaceFirstAll ? ChunkedTransformer.REPLACE_FIRST_ALL : 0)
-                        );
+        boolean firstMatch = "true".equals(parameters.get(FIRST_MATCH));
+        boolean firstPattern = "true".equals(parameters.get(FIRST_PATTERN));
+        int i =  c.config +
+            (firstMatch ? ChunkedTransformer.ONLY_REPLACE_FIRST_MATCH : 0) +
+            (firstPattern ? ChunkedTransformer.ONLY_USE_FIRST_MATCHING_PATTERN : 0);
+        trans.configure(i);
+
         return trans;
     }
 
