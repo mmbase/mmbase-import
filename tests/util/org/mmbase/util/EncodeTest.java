@@ -89,7 +89,7 @@ public class EncodeTest extends TestCase {
         }
     }
 
-    public Set getSymmetricEncodings() {
+    private Set getSymmetricEncodings() {
         SortedSet symmetricEncodings = new TreeSet();
         symmetricEncodings.add("BASE64");
         symmetricEncodings.add("ESCAPE_HTML");
@@ -112,7 +112,7 @@ public class EncodeTest extends TestCase {
      * @return a new set containing the names of the encoders that are
      *         documented in the Encode
      */
-    public Set getDocumentedEncodings() {
+    private Set getDocumentedEncodings() {
         SortedSet documentedEncodings = new TreeSet();
         documentedEncodings.add("BASE64");
         documentedEncodings.add("ESCAPE_HTML");
@@ -151,38 +151,166 @@ public class EncodeTest extends TestCase {
         return documentedEncodings;
     }
 
-    public void testRegexpReplacer() {
+    private CharTransformer getRegexpReplacer(Map.Entry<String, Object>... settings) {
         RegexpReplacerFactory fact = new RegexpReplacerFactory();
         Parameters pars = fact.createParameters();
         pars.set("mode", "ENTIRE");
         List<Map.Entry<String, String>> patterns = new ArrayList<Map.Entry<String, String>>();
-        patterns.add(new Entry<String, String>("\\s+", " "));
+        patterns.add(new Entry<String, String>("\\s{2,}", " "));
         patterns.add(new Entry<String, String>("aa", "bb"));
         patterns.add(new Entry<String, String>("bb", "AAA"));
+        patterns.add(new Entry<String, String>("^start", "BEGIN"));
         pars.set("patterns", patterns);
+        for (Map.Entry<String, Object> setting : settings) {
+            pars.set(setting.getKey(), setting.getValue());
+        }
+        return fact.createTransformer(pars);
+    }
 
-        CharTransformer reg = fact.createTransformer(pars);
+    public void testRegexpReplacer() {
+        CharTransformer reg = getRegexpReplacer();
         assertEquals("a a", reg.transform("a a"));
         assertEquals("a a", reg.transform("a  a"));
         assertEquals("a a", reg.transform("a \n a"));
         assertEquals("a a", reg.transform("a \n\t a"));
         assertEquals("a a a", reg.transform("a  a  a"));
+        assertEquals("AAA AAA AAA", reg.transform("aa  aa  aa"));
+    }
 
-        pars.set("replacefirst", "true");  reg = fact.createTransformer(pars);
-        assertEquals("a a  a", reg.transform("a  a  a"));
-        assertEquals("a aa  a", reg.transform("a  aa  a"));
+    public void testRegexpReplacerFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("onlyFirstPattern", "true"));
+        assertEquals("a a a", reg.transform("a  a  a"));
+        assertEquals("a bb a", reg.transform("a  aa  a"));
+    }
 
-        pars.set("replacefirst", "all");  reg = fact.createTransformer(pars);
+    public void testRegexpReplacerFirstMatch() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("onlyFirstMatch", "true"));
+        assertEquals("x xx  x", reg.transform("x  xx  x"));
+        assertEquals("a AAA  x", reg.transform("a  bb  x"));
+        assertEquals("a AAA  x", reg.transform("a  aa  x"));
+    }
+    public void testRegexpReplacerFirstMatchFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("onlyFirstMatch", "true"),
+                                                new Entry<String, Object>("onlyFirstPattern", "true")
+                                                );
         assertEquals("a bb  a", reg.transform("a  aa  a"));
         assertEquals("a bb  aa", reg.transform("a  aa  aa"));
+        assertEquals("a astart bb", reg.transform("a astart aa"));
+        assertEquals("a start bb", reg.transform("a start aa"));
 
-        pars.set("mode", "WORDS");
-        pars.set("replacefirst", "all");  reg = (CharTransformer)fact.createTransformer(pars);
+        // This may be a bit unexpected, but what to do...
+        // The adcie should perhaps be that regexp replaced matching on the begin, should be the
+        // first in the chain.
+        assertEquals("a BEGIN bb", reg.transform("a  start aa"));
+    }
+
+    // WORDS mode
+    // white space is effectively ignored. you can match on the begin of words with ^
+    // content will be read word-for-word, so only a small buffer is used.
+
+    public void testRegexpReplaceModeWords() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "WORDS"));
+        assertEquals("a  AAA  a", reg.transform("a  aa  a"));
+        assertEquals("a  AAA  AAA", reg.transform("a  aa  aa"));
+    }
+    public void testRegexpReplaceModeWordsFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "WORDS"),
+                                                new Entry<String, Object>("onlyFirstPattern", "true")
+                                                );
+        assertEquals("a  bb  a", reg.transform("a  aa  a"));
+        assertEquals("a  bb  bb", reg.transform("a  aa  aa"));
+    }
+
+    public void testRegexpReplaceModeWordsFirstMatch() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "WORDS"),
+                                                new Entry<String, Object>("onlyFirstMatch", "true")
+                                                );
+        assertEquals("a  AAA  a", reg.transform("a  aa  a"));
+        assertEquals("a  AAA  aa", reg.transform("a  aa  aa"));
+    }
+    public void testRegexpReplaceModeWordsFirstMatchFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "WORDS"),
+                                                new Entry<String, Object>("onlyFirstPattern", "true"),
+                                                new Entry<String, Object>("onlyFirstMatch", "true")
+                                                );
         assertEquals("a  bb  a", reg.transform("a  aa  a"));
         assertEquals("a  bb  aa", reg.transform("a  aa  aa"));
+        assertEquals("a  astart  bb", reg.transform("a  astart  aa"));
+        assertEquals("a  BEGIN  aa", reg.transform("a  start  aa"));
+    }
+    // LINES mode
+    // a lot like WORDS mode. Not all white space is ignored, only new lines.
+    // content will be read line-for-line, so only a small buffer is used.
+    public void testRegexpReplaceModeLines() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "LINES"));
+        assertEquals("a AAA a", reg.transform("a  aa  a"));
+        assertEquals("a AAA AAA", reg.transform("a  aa  aa"));
+        assertEquals("a AAA AAA\n\nbla", reg.transform("a  aa  aa\n\nbla"));
+    }
 
+    // XMLTEXT mode
+    // Ignores all XML markup, and only works on CDATA sections
+    public void testRegexpReplaceModeXml() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "XMLTEXT"));
+        assertEquals("<aa>a AAA a</aa>", reg.transform("<aa>a  aa  a</aa>"));
+        assertEquals("<aa>a AAA AAA</aa>", reg.transform("<aa>a  aa  aa</aa>"));
+
+        assertEquals("<bb aa='aa'>a AAA a</bb>", reg.transform("<bb aa='aa'>a  aa  a</bb>"));
+
+        assertEquals("<bb aa='aa'><!-- aa -->a AAA a</bb>", reg.transform("<bb aa='aa'><!-- aa -->a  aa  a</bb>"));
+
+        assertEquals("<aa><bb aa='aa'><!-- aa -->a AAA a</bb><bb>AAA</bb></aa>", reg.transform("<aa><bb aa='aa'><!-- aa -->a  aa  a</bb><bb>aa</bb></aa>"));
+    }
+    public void testRegexpReplaceModeXmlFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "XMLTEXT"),
+                                                new Entry<String, Object>("onlyFirstPattern", "true")
+                                                );
+        assertEquals("<aa>a bb a</aa>", reg.transform("<aa>a  aa  a</aa>"));
+        assertEquals("<aa>a bb bb</aa>", reg.transform("<aa>a  aa  aa</aa>"));
+
+        assertEquals("<bb aa='aa'>a bb a</bb>", reg.transform("<bb aa='aa'>a  aa  a</bb>"));
+
+        assertEquals("<bb aa='aa'><!-- aa -->a bb a</bb>", reg.transform("<bb aa='aa'><!-- aa -->a  aa  a</bb>"));
+    }
+
+    public void testRegexpReplaceModeXmlFirstMatch() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "XMLTEXT"),
+                                                new Entry<String, Object>("onlyFirstMatch", "true")
+                                                );
+        assertEquals("<aa>a AAA  a</aa>", reg.transform("<aa>a  aa  a</aa>"));
+        assertEquals("<aa>a AAA  aa</aa>", reg.transform("<aa>a  aa  aa</aa>"));
+
+        assertEquals("<bb aa='aa'>a AAA  a</bb>", reg.transform("<bb aa='aa'>a  aa  a</bb>"));
+
+        assertEquals("<bb aa='aa'><!-- aa -->a AAA  a</bb>", reg.transform("<bb aa='aa'><!-- aa -->a  aa  a</bb>"));
+    }
+
+    public void testRegexpReplaceModeXmlFirstMatchFirstPattern() {
+        CharTransformer reg = getRegexpReplacer(new Entry<String, Object>("mode", "XMLTEXT"),
+                                                new Entry<String, Object>("onlyFirstMatch", "true"),
+                                                new Entry<String, Object>("onlyFirstPattern", "true")
+                                                );
+        assertEquals("<aa>a bb  a</aa>", reg.transform("<aa>a  aa  a</aa>"));
+        assertEquals("<aa>a bb  aa</aa>", reg.transform("<aa>a  aa  aa</aa>"));
+
+        assertEquals("<bb aa='aa'>a bb  a</bb>", reg.transform("<bb aa='aa'>a  aa  a</bb>"));
+
+        assertEquals("<bb aa='aa'><!-- aa -->a bb  a</bb>", reg.transform("<bb aa='aa'><!-- aa -->a  aa  a</bb>"));
     }
 
 
+    // XMLTEXT_WORDS mode
+    // Ignores all XML markup, and only works on CDATA sections, further like WORDS
+    public void testRegexpReplaceModeXmlWords() {
+        // TODO
+    }
+
+
+    public void testLinkFinder() {
+        // See also http://www.mmbase.org/jira/browse/MMB-1568
+        LinkFinder lf = new LinkFinder();
+        assertEquals("bla bla <a href=\"http://www.mmbase.org\">http://www.mmbase.org</a> bloe bloe",
+                     lf.transform("bla bla http://www.mmbase.org bloe bloe"));
+    }
 
 }
