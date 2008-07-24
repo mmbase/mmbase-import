@@ -41,6 +41,43 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system. See http://www.mmbase
 --------------------
 General New Features:
 --------------------
+
+[1.8.6]
+    * [MMB-1478] - varStatus attribute on list-tags. Like in JSTL.
+    * [MMB-1491] - MMObjectBuilder has start method, but no stop method, or shutdown method or something like that.
+    * [MMB-1563] - Support for java enums.
+    * [MMB-1576] - treepage, treeinclude, we also need the 'haspage' version of it.
+    * [MMB-1587] - Way to get properties from cloud, nodemanager, module.
+    * [MMB-1593] - Tree referrers to use tree-provider from including page.
+    * [MMB-1610] - Cloning listnodescontainers.
+    * [MMB-1611] - Treelist mm:tree. No way to obtain 'loop' information about the current 'branch' of nodes.
+    * [MMB-1612] - PosrelCommitProcessor, FunctionValueIfEmptyCommitProcessor, FunctionValueIfEmptyGetter.
+    * [MMB-1616] - To correctly determin the next pos in a list it should be known what the 'search type' is of the objects in a list.
+    * [MMB-1620] - Support for multiplie fieldlist entries in builder xmls.
+    * [MMB-1623] - IP address field
+    * [MMB-1625] - my_editors remembers the sort direction of nodetypes on the index page
+    * [MMB-1626] - You can switch the small and wide columns in my_editors
+    * [MMB-1627] - A way to ignore validation constraint errors
+    * [MMB-1643] - Dateparses misses 'toweek'.
+    * [MMB-1648] - The way to search for nodes in EditWizards list.jsp is broadened with startnodes
+    * [MMB-1655] - Class authentication items in classauthentication.xml need a 'weight' setting.
+    * [MMB-1677] - Node cronentry could use their Node to make setConfiguration, setConEntry persisten. Also, 'lastrun' could be a field.
+    * [MMB-1692] - compareset attribute on mm:option
+
+    * [MMB-1577] - mm:field name="number" does not work in mm:createnode or when depending on _node  on request.
+    * [MMB-1586] - Interdependencies of datatypes in jars are not resolving correctly always.
+    * [MMB-1597] - Node#getRelations could be implemented smarter.
+    * [MMB-1598] - Override caches.xml properties in context xml.
+    * [MMB-1633] - mm:edit does not recognize mm:fields which are used in includes/tagflie.
+
+    * [MMB-1408] - remove not used applications from applications
+    * [MMB-1595] - Use replace image text when image already exists
+    * [MMB-1622] - Simply ignore XML files which are not (complete) builder definition, even though they are in the builder directory.
+    * [MMB-1642] - DataType#getDefaultValue does not accept parameters.
+    * [MMB-1652] - Cannot start a line with *strong*.
+    * [MMB-1658] - Support for nested lists in richtext/wiki syntax.
+    * [MMB-1674] - @displaytype='onefield'
+
 [1.8.5]
 
     * [MMB-405] - Searching in list with startnode. Cannot make new links to startnode.
@@ -257,6 +294,71 @@ Obsolete Features:
 ------------------
 Bug Fixes:
 ------------------
+
+
+[1.8.6]
+
+* [MMB-94] - Attachment builder: MagicFile troubles.
+    * [MMB-195] - Multilevel cache is implemented in the bridge.
+    * [MMB-1294] - Maintainer of the Resources application has partially been changed
+    * [MMB-1343] - Cannot sort in other direction
+    * [MMB-1355] - prompt_file_upload not used. Default prompt talks about images.
+    * [MMB-1359] - integer fields representing boolean values cannot be gracefully updated to boolean datatyped field.
+    * [MMB-1367] - Memory leak in QueryResultCache
+    * [MMB-1397] - Name of generic authentication parameters (name/password) sometimes remain empty.
+    * [MMB-1401] - Serialization can corrupt MMBase database
+    * [MMB-1407] - <mm:cloud logon="xxxx" pwd="yyyy" jspvar="myCloud"> pops up a login-window.
+    * [MMB-1437] - broken images in 'finalist' look example
+    * [MMB-1481] - scan is horribly broken.
+    * [MMB-1505] - keyword "case" in mysql should be replace when query database.
+    * [MMB-1546] - If you don't cancel transaction, then commit on next node does not work.
+    * [MMB-1552] - MMBase parses my custom datatypes.xml twice, resulting in double execution of commit() or proces() functions.
+    * [MMB-1553] - Message too long errors in the log.
+    * [MMB-1562] - HtmlBase in Scan application does use incorrect Jumper class
+    * [MMB-1564] - Datatype javascript not supporting 'session name' property of mm:cloud.
+    * [MMB-1566] - Cannot add multiple startnodes by alias with dots.
+    * [MMB-1568] - linkfinder a bit broken.
+    * [MMB-1572] - If using node field from node which was from transaction which was just committed, an exception occurs.
+    * [MMB-1574] - Writing application does not work if application xml not a file.
+    * [MMB-1578] - mm:function does not use implicit node if that is from an including page.
+    * [MMB-1579] - mm:tree does not use implicit node if that is from an including page.
+    * [MMB-1588] - Cannot override state and readonly attributes of fields.
+    * [MMB-1590] - Builders with too long descriptions won't deploy in some databases.
+    * [MMB-1591] - NPE from BasicReleaseStrategy
+    * [MMB-1594] - Data loaded by included lists (add list item) are not saved when changed
+    * [MMB-1596] - mm:include notfound="skip" not working in tomcat 6.0.16
+    * [MMB-1599] - if 'some page' in <mm:url page="<some page>" contains allready parameters with &, then those &'s are not escaped, even if escapeamps="true"
+    * [MMB-1600] - <mm:url page="http://..." absolute="true" /> does not work as expected.
+    * [MMB-1602] - org.mmbase.util.GenericationResponseWrapper#getHttpServletResponse not unwrapping properly.
+    * [MMB-1607] - Implicit setValue in mm:form does not use the right processor.
+    * [MMB-1608] - XML fields not quite working correctly in mm:form.
+    * [MMB-1609] - mm:listrelationsconstainer id="" not working.
+    * [MMB-1619] - xinclude to be enabled during parsing of mmbase configuration files.
+    * [MMB-1624] - notfound attribute on mm:treeinclude not property working.
+    * [MMB-1628] - Even if using Node#getInputStream the complete blob is readed into memory first.
+    * [MMB-1629] - Dove is missing method to check and commit changed relations
+    * [MMB-1634] - keys, values, in dropdowns of field-info not correctly escaped.
+    * [MMB-1635] - MMservers creates a new record when searchquery fails
+    * [MMB-1640] - taglib/test/cloud.jsp failing.
+    * [MMB-1646] - weekdays datatype does not consider locale specific 'first day of week'.
+    * [MMB-1647] - Sometimes a day with -1 was generated when day was not a dropdown but input box
+    * [MMB-1651] - MMBase taglib memory leak
+    * [MMB-1654] - If list is first thing in section, it ends up in the header.
+    * [MMB-1666] - If you use cache-framework before servlet context is initialized, you may end up with the incorrect resource being used.
+    * [MMB-1667] - ConcurrentModificationException for certain Cache Implemetnations.
+    * [MMB-1669] -  ConcurrentModificationException from org.mmbase.security.implementation.cloudcontext.builders.Users.nodeChanged(Users.java:563)
+    * [MMB-1670] - ConcurrentModificationException from  at org.mmbase.core.event.NodeEventHelper.createNodeEventInstance(NodeEventHelper.java:55)
+    * [MMB-1671] - Something wrong with BasicTransaction.
+    * [MMB-1673] - DateFormat for rfc822 is in 24 hour range
+    * [MMB-1675] - No daymark created on the day that mmbase was started.
+    * [MMB-1678] - Animated gifs are corrupted easily when scaled with ImageMagick
+    * [MMB-1679] - CronEntry not started excactly at minutes.
+    * [MMB-1681] - listprovider attributes (add, delete, retain,comparator) missing on mm:listrelations
+    * [MMB-1684] - ConcurrentModificationException from TypeRel
+    * [MMB-1689] - Some setters missing on mm:listfunction
+    * [MMB-1691] - Possiblity to disable some modules using their properties.
+
+
 
 [1.8.5]
     * [MMB-535] - basic bridge implementation: cannot delete node if lacking write rights
@@ -551,68 +653,5 @@ MMBase needs an servlet engine which supports the servlet api 2.3 and
 jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
 
 The 'bin' distro does include a hsqldb database and driver.
-
-
-=========
-Tested on:
-=========
-
-The applications listed here are known to be tested with MMBase, but
-the list is probably a lot bigger :-)
-
-See also /version?server
-
--------------
-Java versions
--------------
-- J2SE 1.4.2_02
-
-- J2SE Blackdown-1.4.2
-
-- J2SE 1.5.0_01
-
-- J2SE 1.5.0_04 (Linux)
-
-- J2SE 1.5.0_06 (osx powerpc)
-
-- J2SE 1.5.0_06 (osx intel)
-
-
--------------
-Java compilers
--------------
-
-- sun jdk 1.4.2_06 (javac) The distro is build with this version.
-
-- sun jdk 1.5.0-beta (jikes does not work then)
-  1.5.0_04, ...
-
-- jikes version 1.18
-
-  using 1.15 jsp-editwizards don't work (when using jikes for jsp-compilation)
-  using 1.16 mmbase does compile, but give VerifyExceptions on running. See:
-  http://www-124.ibm.com/developerworks/bugs/?func=detailbug&bug_id=206&group_id=10
-
-------------------
-Servlet engines /
-Application servers
-------------------
-
-These are the applications servers on which MMBase was tested.
-
-- Tomcat 5.5.9, 5.5.16, 6.0.2
-- Orion 2.0.3 (?)
-- ..
-
----------
-Databases
----------
-
-- Mysql 4.1.8
-- Mysql-standard-5.0.19-osx10.4-i686
-- Hsqldb 1.8.0 (shipped with distro)
-- Postgresql
-- PostgreSQL 8.1.3
-- Informix
 
 
