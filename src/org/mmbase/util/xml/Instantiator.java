@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.3 2008-03-19 17:05:28 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.4 2008-07-24 11:34:08 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -30,8 +30,7 @@ public abstract class Instantiator {
 
     /**
      * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
-     * used on set-methods on the newly created object. This is a pretty generic method, it should
-     * perhaps be moved to org.mmbase.util.
+     * used on set-methods on the newly created object. 
      */
     public static Object getInstance(Element classElement, Object... args)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
