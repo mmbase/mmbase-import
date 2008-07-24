@@ -97,15 +97,15 @@ ln -s ${dir} latest
 if [ 1 == 1 ] ; then
     if [ -f latest/messages.log ] ; then
         if (( `cat latest/messages.log  | grep 'FAILED' | wc -l` > 0 )) ; then
-        echo Build failed, sending mail to ${MAILADDRESS} - | tee -a ${builddir}/messages.log
-        echo -e "No build on ${version}\n\nPerhaps the build failed:\n\n" | \
-            tail -q -n 20 - latest/messages.log last/errors.log | \
-            mutt -s "Build failed ${version}" ${MAILADDRESS}
+	    echo Build failed, sending mail to ${MAILADDRESS} - | tee -a ${builddir}/messages.log
+	    echo -e "Build on ${version} failed:\n\n" | \
+		cat latest/messages.log latest/errors.log | grep -B 10 "FAILED" | \
+		mutt -s "Build failed ${version}" ${MAILADDRESS}
         fi
     else
         echo Build failed, sending mail to ${MAILADDRESS}
         echo -e "No build created on ${version}\n\n" | \
-            tail -q -n 20 - last/errors.log | \
+            tail -q -n 20 - latest/errors.log | \
             mutt -s "Build failed ${version}" ${MAILADDRESS}
     fi
 fi
