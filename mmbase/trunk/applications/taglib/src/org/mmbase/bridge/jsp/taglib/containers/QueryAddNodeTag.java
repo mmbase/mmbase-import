@@ -13,7 +13,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
 //import org.mmbase.util.logging.*;
@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
- * @version $Id: QueryAddNodeTag.java,v 1.1 2008-07-17 13:53:16 michiel Exp $
+ * @version $Id: QueryAddNodeTag.java,v 1.2 2008-07-24 08:54:02 michiel Exp $
  */
 public class QueryAddNodeTag extends ContextReferrerTag implements QueryContainerReferrer {
 
@@ -33,11 +33,11 @@ public class QueryAddNodeTag extends ContextReferrerTag implements QueryContaine
     protected Attribute node         = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c);
+        container = getAttribute(c, true);
     }
 
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
+        element = getAttribute(e, true);
     }
     public void setNumber(String n) throws JspTagException {
         node = getAttribute(n);
@@ -45,7 +45,16 @@ public class QueryAddNodeTag extends ContextReferrerTag implements QueryContaine
 
     public int doStartTag() throws JspTagException {
         Query query = getQuery(container);
-        Step step = query.getStep(element.getString(this));
+        Step step;
+        if (element == Attribute.NULL) {
+            if (query instanceof NodeQuery) {
+                step = ((NodeQuery) query).getNodeStep();
+            } else {
+                throw new TaglibException("No element specified, and the query is no node-query");
+            }
+        } else {
+            step = query.getStep(element.getString(this));
+        }
 
         for (String n : node.getList(this)) {
             query.addNode(step, Integer.parseInt(n));
