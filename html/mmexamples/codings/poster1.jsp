@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page contentType="text/html;charset=ISO-8859-1" pageEncoding="ISO-8859-1"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html><!-- a lie, this page is actually cp1252 -->
 <head>
-  <title>Codings examples</title>	 
+  <title>Codings examples</title>
   <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
   </p>
     <mm:import id="default1">€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ, Café tweeëntwintig</mm:import>
     <mm:import id="default2" escape="trimmer">
-cp1252: €‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ
+cp1252:
 latin-1: Café tweeëntwintig
     </mm:import>
     <mm:import externid="from">this</mm:import>
@@ -67,7 +67,7 @@ latin-1: Café tweeëntwintig
     </p>
   <hr />
 </mm:content>
-<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">mihxil'</a></address>
+<address><a href="mailto:Michiel.Meeuwissen@gmail.com">mihxil'</a></address>
 </body>
 </html>
 

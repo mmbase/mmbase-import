@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page contentType="text/html;charset=utf-8" pageEncoding="UTF-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html>
 <head>
-  <title>Codings examples</title>	 
+  <title>Codings examples</title>
   <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 <body>
@@ -70,7 +70,7 @@ latin-3: Eĥoŝanĝo ĉiuĵaŭde
     <a href="<mm:url page="." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
   </div>
 </mm:content>
-<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miĥil'</a></address>
+<address><a href="mailto:Michiel.Meeuwissen@gmail.com">miĥil'</a></address>
 </body>
 </html>
 
