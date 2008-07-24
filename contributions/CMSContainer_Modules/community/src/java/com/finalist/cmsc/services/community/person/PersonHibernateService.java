@@ -165,28 +165,22 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	   return person;
    }
    
-   @Transactional(propagation = Propagation.REQUIRED)
+  @Transactional
 	public void batchClean(){
 		List<Person> persons = getAllPersons();
 		for (Person tempPerson : persons) {
-			long authenticationId = tempPerson.getAuthenticationId();
-			preferenceService.batchCleanByAuthenticationId(authenticationId);
-			
+			if(null!=tempPerson){
+				long authId = tempPerson.getAuthenticationId();
+				deleteRelationRecord(authId);
+			}
 		}
-		String hqlDeletePerson = "delete Person";
-		String hqlDeleteAuthentication = "delete Authentication";
-		getSession().createQuery(hqlDeleteAuthentication)
-		             .executeUpdate();
-		getSession().createQuery(hqlDeletePerson)
-                      .executeUpdate();
 	}
    
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void deleteRelationRecord(Long id) {
-		//long id = dataPerson.getAuthenticationId();
 		preferenceService.batchCleanByAuthenticationId(id);
-		authenticationService.deleteAuthentication(id);
 		deletePersonByAuthenticationId(id);
+		authenticationService.deleteAuthentication(id);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
