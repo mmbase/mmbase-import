@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.44 2007-06-21 16:17:21 michiel Exp $
+ * @version $Id: Logging.java,v 1.45 2008-07-24 11:28:43 michiel Exp $
  */
 
 
@@ -145,7 +145,7 @@ public class Logging {
         // machine for the dtd's without giving an error! This line might give a hint
         // where to search for these kinds of problems..
 
-        log.info("Configuring logging with " + configFile);
+        log.info("Configuring logging with " + configFile + " (" + resourceLoader.getResource(configFile) + ")");
         ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
         configWatcher.add(configFile);
@@ -435,5 +435,43 @@ public class Logging {
         }
         return buf.toString();
     }
+    /**
+     * Utility method for dynamicly determin the level of logging.
+     * @since MMBase-1.9
+     */
+    public static void log(Level l, Logger log, String mes) {
+        switch(l.toInt()) {
+        case Level.TRACE_INT:   log.trace(mes); break;
+        case Level.DEBUG_INT:   log.debug(mes); break;
+        case Level.SERVICE_INT: log.service(mes); break;
+        case Level.INFO_INT:    log.info(mes); break;
+        case Level.WARN_INT:    log.warn(mes); break;
+        case Level.ERROR_INT:   log.error(mes); break;
+        case Level.FATAL_INT:   log.fatal(mes); break;
+        case Level.OFF_INT:     break;
+        default: break;
+        }
+
+    }
+
+    /**
+     * Utility method for dynamicly checking the 'enabled'ness of a logger on a given level.
+     * @since MMBase-1.9
+     */
+    public static boolean isEnabled(Level l, Logger log) {
+        switch(l.toInt()) {
+        case Level.TRACE_INT:   return log.isTraceEnabled();
+        case Level.DEBUG_INT:   return log.isDebugEnabled();
+        case Level.SERVICE_INT: return log.isServiceEnabled();
+        case Level.OFF_INT:     return false;
+        case Level.INFO_INT:
+        case Level.WARN_INT:
+        case Level.ERROR_INT:
+        case Level.FATAL_INT:
+        default:
+            return true;
+        }
+    }
+
 
 }
