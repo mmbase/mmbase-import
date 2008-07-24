@@ -391,6 +391,27 @@
       </field>
       <field>
          <descriptions>
+            <description xml:lang="nl">Max Bounces</description>
+            <description xml:lang="en">Max Bounces</description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Max Bounces</guiname>
+            <guiname xml:lang="en">Max Bounces</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>9</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <db>
+            <name>max_bounces</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
             <description xml:lang="nl">Server name or ip address</description>
             <description xml:lang="en">Server name or ip address</description>
          </descriptions>
