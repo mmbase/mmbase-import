@@ -236,27 +236,26 @@
                deprecation="off"
                debug="yes"
                classpathref="classpath" />
-
-
-        <if>
-          <available file="src/${component}/metainf" />
-          <then>
-            <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
-                 includes="**"
-                 basedir="${build.dir}/classes/${component}">
-              <metainf dir="src/${component}/metainf">
-                <include name="**" />
-              </metainf>
-            </jar>
-          </then>
-          <else>
-            <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
-                 includes="**"
-                 basedir="${build.dir}/classes/${component}"
-                 />
-          </else>
-        </if>
       </then>
+    </if>
+
+    <if>
+      <available file="src/${component}/metainf" />
+      <then>
+        <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
+             includes="**"
+             basedir="${build.dir}/classes/${component}">
+          <metainf dir="src/${component}/metainf">
+            <include name="**" />
+          </metainf>
+        </jar>
+      </then>
+      <else>
+        <jar jarfile="${build.webapp.dir}/WEB-INF/lib/didactor-${component}.jar"
+             includes="**"
+             basedir="${build.dir}/classes/${component}"
+             />
+          </else>
     </if>
   </target>
 
