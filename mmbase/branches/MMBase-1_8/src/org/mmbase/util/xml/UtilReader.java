@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.25.2.2 2007-11-19 15:00:54 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25.2.3 2008-07-24 16:16:32 michiel Exp $
  */
 public class UtilReader {
 
@@ -101,6 +101,7 @@ public class UtilReader {
     }
 
     private final Map properties = new HashMap();
+    private final Map maps = new HashMap();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -163,6 +164,13 @@ public class UtilReader {
     }
 
     /**
+     * Get the properties of this utility.
+     */
+    public PropertiesMap getMaps() {
+        return new PropertiesMap(maps);
+    }
+
+    /**
      * Reports whether the configured resource (in the constructor) is actually backed. If not,
      * getProperties will certainly return an empty Map.
      * @since MMBase-1.8.1
@@ -177,6 +185,7 @@ public class UtilReader {
 
     protected void readProperties(String s) {
         properties.clear();
+        maps.clear();
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
         List configList = configLoader.getResourceList(s);
@@ -220,10 +229,10 @@ public class UtilReader {
                                     entryList.add(new Entry(key, value));
                                 }
                             }
-                            if (properties.containsKey(name)) {
-                                log.service("Property '" + name + "'(" + entryList + "') of " + url + " is shadowed");
+                            if (maps.containsKey(name)) {
+                                log.debug("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
-                                properties.put(name, entryList);
+                                maps.put(name, entryList);
                             }
                         } else {
                             String value = reader.getElementValue(p);
