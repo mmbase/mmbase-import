@@ -1,5 +1,6 @@
-<input type="hidden" name="method" value="searchPublication"/>
 <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>
+<input type="hidden" name="order" value="${requestScope.order}"/>
+<input type="hidden" name="direction" value="${requestScope.direction}"/>
 <input type="hidden" name="offset" value="0"/>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
    <tr>

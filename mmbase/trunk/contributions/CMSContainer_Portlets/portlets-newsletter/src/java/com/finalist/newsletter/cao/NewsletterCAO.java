@@ -17,7 +17,9 @@ public interface NewsletterCAO {
 
    public int getNewsletterIdBySubscription(int id);
 
-   Node getNewsletterNodeById(int newsletterId);
+   public List<Term> getNewsletterTermsByName(int newsletterId, String name, int pagesize, int offset, String order, String direction);
 
-   public Set<Term> getNewsletterTermsByName(int newsltterId, String name ,int pagesize, int offset);
+   public int getNewsletterTermsCountByName(int newsletterId, String name);
+
+   Node getNewsletterNodeById(int newsletterId);
 }

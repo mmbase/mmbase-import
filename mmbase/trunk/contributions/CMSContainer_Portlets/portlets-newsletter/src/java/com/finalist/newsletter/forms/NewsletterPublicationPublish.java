@@ -31,70 +31,82 @@ import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
-   private static final String ACTION_REMOVE = "remove";
+	/** name of submit button in jsp to confirm removal */
+	private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
-   private static final String ACTION_CANCEL = "cancel";
+	/** name of submit button in jsp to cancel removal */
+	private static final String ACTION_CANCEL = "cancel";
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-      int number = Integer.parseInt(getParameter(request, "number", true));
+		NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+		int number = Integer.parseInt(getParameter(request, "number", true));
 
-      if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
-         request.setAttribute("isPaused", true);
-         return mapping.findForward(SUCCESS);
-      }
-      Map<String,List<String>> sendResults = null;
-      Node publicationNode = cloud.getNode(number);
+		if (NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
+			request.setAttribute("isPaused", true);
+			return mapping.findForward(SUCCESS);
+		}
+		Map<String, List<String>> sendResults = null;
+		Node publicationNode = cloud.getNode(number);
 
-      if (isSendAction(request)) {
+		if (isSendAction(request)) {
 
-         UserRole role = NavigationUtil.getRole(publicationNode.getCloud(), publicationNode, false);
-         boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
+			UserRole role = NavigationUtil.getRole(publicationNode.getCloud(), publicationNode, false);
+			boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
 
-         if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
-            return mapping.findForward("confirmationpage");
-         }
+			if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
+				return mapping.findForward("confirmationpage");
+			}
 
-         if (ServerUtil.isSingle()) {
-            sendResults = publicationService.deliver(number);
-            publicationService.setStatus(number, Publication.STATUS.DELIVERED);
-            NewsletterUtil.logPubliction(number, HANDLE.POST);
-            request.setAttribute("isSingle", true);
-            request.setAttribute("sendResults", sendResults);
-            request.setAttribute("sendSuccess", sendResults.get(NewsletterPublicationService.SEND_SUCCESS).size());
-            request.setAttribute("sendFail", sendResults.get(NewsletterPublicationService.SEND_FAIL).size());
-         }
-         else {
-            publicationService.setStatus(number, Publication.STATUS.READY);
-            request.setAttribute("isPublish", true);
-            Publish.publish(publicationNode);
-         }
+			if (ServerUtil.isSingle()) {
+				sendResults = publicationService.deliver(number);
+				publicationService.setStatus(number, Publication.STATUS.DELIVERED);
+				NewsletterUtil.logPubliction(number, HANDLE.POST);
+				request.setAttribute("isSingle", true);
+				request.setAttribute("sendResults", sendResults);
+				request.setAttribute("sendSuccess", sendResults.get(NewsletterPublicationService.SEND_SUCCESS).size());
+				request.setAttribute("sendFail", sendResults.get(NewsletterPublicationService.SEND_FAIL).size());
+			} else {
+				publicationService.setStatus(number, Publication.STATUS.READY);
+				request.setAttribute("isPublish", true);
+				Publish.publish(publicationNode);
+			}
 
-         return mapping.findForward(SUCCESS);
-      }
+			return mapping.findForward(SUCCESS);
+		}
 
-      if (isCancelAction(request)) {
-         String forwardPath = mapping.findForward("cancel").getPath();
-         forwardPath = forwardPath.concat("?showpage=" + number);
-         return new ActionForward(forwardPath);
-      }
+		if (isCancelAction(request)) {
+			String forwardPath = mapping.findForward("cancel").getPath();
+			forwardPath = forwardPath.concat("?showpage=" + number);
+			if (StringUtils.isNotBlank(request.getParameter("forward"))) {
+				ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
+						+ request.getParameter("newsletterId"));
+				ret.setRedirect(true);
+				return ret;
+			}
+			return new ActionForward(forwardPath);
+		}
 
-      return mapping.findForward("confirm_send");
-   }
+		return mapping.findForward("confirm_send");
+	}
 
-   private boolean isCancelAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_CANCEL) != null;
-   }
+	private boolean isCancelAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_CANCEL) != null;
+	}
 
-   private boolean isSendAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_REMOVE) != null;
-   }
+	private boolean isSendAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_REMOVE) != null;
+	}
 
 }

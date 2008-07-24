@@ -124,43 +124,61 @@
 			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationEdit.do" redirect="false" />
 			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
-         <forward name="publicationmanage" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
+			<forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationEdit" type="com.finalist.newsletter.forms.NewsletterPublicationEdit" unknown="false" validate="false">
 			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
 			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationEdit.do" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
-         <forward name="publicationmanage" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
+			<forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
+			<forward name="newsletterstatistics" path="/editors/newsletter/NewsletterPublicationStatisticSearch.do" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationDelete" type="com.finalist.newsletter.forms.NewsletterPublicationDelete" unknown="false" validate="false">
 			<forward name="newsletterpublicationdelete" path="/editors/newsletter/newsletterpublicationdelete.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
-         <forward name="publicationmanage" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
+			<forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
+			<forward name="newsletterstatistics" path="/editors/newsletter/NewsletterPublicationStatisticSearch.do" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationPublish" type="com.finalist.newsletter.forms.NewsletterPublicationPublish" unknown="false" validate="false">
 			<forward name="confirm_send" path="/editors/newsletter/confirm_send.jsp" redirect="false" />
 			<forward name="confirm_resend" path="/editors/newsletter/confirm_resend.jsp" redirect="false" />
 			<forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false" />
 			<forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+			<forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationTest" type="com.finalist.newsletter.forms.NewsletterPublicationSendEmail" unknown="false" validate="false">
 			<forward name="inputpage" path="/editors/newsletter/testinputform.jsp" redirect="false" />
 			<forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false" />
 			<forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+			<forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
 		</action>
 
 		<action path="/editors/newsletter/NewsletterPublicationManagement" name="newsletterPublicationManageForm"
 		type="com.finalist.newsletter.forms.NewsletterPublicationManagementAction" parameter="method">
-			<forward name="newsletterpublicationlist" path="/editors/newsletter/module/report_publication_overview.jsp" redirect="false"/>
-			<forward name="statisticmanagement" path="/editors/newsletter/module/report_publication_statistic.jsp" redirect="false"/>
-			<forward name="termlist" path="/editors/newsletter/module/report_publication_terms.jsp" redirect="false"/>
+			<forward name="newsletterpublicationlist" path="/editors/newsletter/module/report_publication_edit.jsp" redirect="false"/>
+		</action>
+		<action path="/editors/newsletter/NewsletterPublicationStatisticSearch" name="newsletterPublicationManageForm"
+		type="com.finalist.newsletter.forms.NewsletterStatisticSearchAction" parameter="method">
+			<forward name="success" path="/editors/newsletter/module/report_publication_statistic.jsp" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationSubscriberSearch" name="newsletterSubscriberSearchForm"
-		type="com.finalist.newsletter.forms.NewsletterSubscriberSearchAction" parameter="action">
+		type="com.finalist.newsletter.forms.NewsletterSubscriberSearchAction" parameter="method">
 			<forward name="success" path="/editors/newsletter/module/report_publication_subscribers.jsp" redirect="false"/>
 		</action>
 		<action path="/editors/newsletter/NewsletterTermSearch" type="com.finalist.newsletter.forms.NewsletterTermSearchAction">
 			<forward name="success" path="/editors/newsletter/module/report_publication_terms.jsp"/>
+		</action>
+		<action path="/editors/newsletter/NewsletterTermDelete" type="com.finalist.newsletter.forms.NewsletterTermDeleteAction">
+			<forward name="success" path="/editors/newsletter/NewsletterTermSearch.do"/>
+		</action>
+		<action path="/editors/newsletter/NewsletterNewsletterSubscriberDelete" type="com.finalist.newsletter.forms.NewsletterNewsletterSubscriberDeleteAction">
+			<forward name="success" path="/editors/newsletter/NewsletterPublicationSubscriberSearch.do"/>
+		</action>
+		<action path="/editors/newsletter/NewsletterSubscriptionAddRelAction" type="com.finalist.newsletter.forms.NewsletterSubscriptionAddRelAction" parameter="method">
+			<forward name="success" path="/editors/newsletter/NewsletterPublicationSubscriberSearch.do"/>
+		</action>
+		<action path="/editors/newsletter/NewsletterTermsAddAction" type="com.finalist.newsletter.forms.NewsletterTermsAddAction">
+			<forward name="success" path="/editors/newsletter/NewsletterTermSearch.do"/>
 		</action>
       <!-- ==== Newsletter Statistic ==== -->
       <action path="/editors/newsletter/ShowNewsletters"

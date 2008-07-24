@@ -1,6 +1,12 @@
 package com.finalist.newsletter.forms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,69 +14,54 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 
-public class NewsletterPublicationManagementAction extends DispatchActionSupport {
-
+public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 	private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
 
 	NewsletterPublicationService publicationService;
 
-	@Override
 	protected void onInit() {
 		super.onInit();
 		publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
 	}
 
-	@Override
 	protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		log.debug("No parameter specified,go to edit page ,show related publications");
-
-		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-		List<Publication> publications;
-		Date now = new Date();
+		log.debug("No parameter specified,go to edit page ,show related publications");		
+		
+		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));		
 		int pagesize = 10;
 		if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
 			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
 		}
 		int offset = 0;
-		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
+		if (StringUtils.isNotBlank(request.getParameter("offset")))
 			offset = Integer.parseInt(request.getParameter("offset"));
-		}
-		// <<<<<<< NewsletterPublicationManagementAction.java
-		// =======
-		// String forwardType = "";
-		// if(StringUtils.isNotBlank(request.getParameter("searchForwardType")))
-		// {
-		// forwardType =request.getParameter("searchForwardType");
-		// }
-		// if(forwardType.equals("statistics")){
-		// request.setAttribute("newsletterId", newsletterId);
-		// ActionForward ret= new
-		// ActionForward(mapping.findForward("statisticmanagement").getPath() +
-		// "?newsletterId=" + newsletterId);
-		// return ret;
-		// }
-		// >>>>>>> 1.2
-		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, "", "", null, now);
-		publications = publicationService.searchPublication(newsletterId, "", "", null, now, pagesize, offset * pagesize, "number", "UP");
+		
+		Date endDate = new Date();		
+		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, "", "", null, endDate);		
+		List<Publication> publications;
+		publications = publicationService.searchPublication(newsletterId, "", "", null, endDate, pagesize, offset * pagesize, "number", "UP");
 		List<Map<String, String>> results = convertPublicationsToMap(publications);
+		
+		request.setAttribute("newsletterId", newsletterId);
 		request.setAttribute("results", results);
 		request.setAttribute("resultCount", resultCount);
-		request.setAttribute("newsletterId", newsletterId);
 		request.setAttribute("order", "number");
 		request.setAttribute("direction", "1");
-		return mapping.findForward("newsletterpublicationlist");
+		
+		return mapping.findForward("success");
 	}
 
-	@SuppressWarnings("deprecation")
-	public ActionForward searchPublication(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward searchPublicationStatistic(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.debug("parameter specified, search newsletterpublication ");
 
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
@@ -79,9 +70,9 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
 		}
 		int offset = 0;
-		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
+		if (StringUtils.isNotBlank(request.getParameter("offset")))
 			offset = Integer.parseInt(request.getParameter("offset"));
-		}
+
 		String order = "number";
 		if (StringUtils.isNotBlank(request.getParameter("order"))) {
 			order = request.getParameter("order");
@@ -91,7 +82,6 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		if (StringUtils.isNotBlank(paramDir)) {
 			direction = "1".equals(paramDir) ? "UP" : "DOWN";
 		}
-
 		NewsletterPublicationManageForm myForm = (NewsletterPublicationManageForm) form;
 		String tmpTitle = myForm.getTitle();
 		String tmpSubject = myForm.getSubject();
@@ -100,9 +90,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		Calendar calendar = Calendar.getInstance();
 		Date endTime = calendar.getTime();
 		Date startTime = null;
-
 		switch (Integer.parseInt(tmpPeriod)) {
-
 		case 1:
 			calendar.add(Calendar.DAY_OF_YEAR, -1);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -143,45 +131,32 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		}
 		List<Publication> publications;
 		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, tmpTitle, tmpSubject, startTime, endTime);
-		publications = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, pagesize, offset * pagesize,
-				order, direction);
+		publications = publicationService.searchPublicationStatistics(newsletterId, tmpTitle, tmpSubject, startTime, endTime, pagesize, offset
+				* pagesize, order, direction);
+		List<Map<String, String>> results = convertPublicationsToMap(publications);
+		request.setAttribute("results", results);
 		request.setAttribute("newsletterId", newsletterId);
-		request.setAttribute("results", publications);
 		request.setAttribute("resultCount", resultCount);
-		request.setAttribute("offset", offset);
 
 		request.setAttribute("order", order);
 		request.setAttribute("direction", paramDir);
-		return mapping.findForward("newsletterpublicationlist");
+		return mapping.findForward("success");
 	}
 
 	private List convertPublicationsToMap(List<Publication> publications) {
 
-		// =======
-		// public ActionForward termList(ActionMapping mapping, ActionForm form,
-		// HttpServletRequest request, HttpServletResponse response){
-		// if(StringUtils.isNotBlank(request.getParameter("newsletterId"))){
-		// request.setAttribute("newsletterId",
-		// request.getParameter("newsletterId"));
-		// }
-		// return mapping.findForward("termlist");
-		// }
-		//
-		// private List convertPublicationsToMap(Set<Publication> publications)
-		// {
-		//
-		// >>>>>>> 1.2
 		List<Map> results = new ArrayList<Map>();
-		for (Publication publication : publications) {
+		for (Publication publication1 : publications) {
 			Map result = new HashMap();
+			Publication publication = publication1;
 			result.put("id", publication.getId());
 			result.put("title", publication.getTitle());
-			result.put("subject", publication.getSubject());
-			result.put("lastmodifier", publication.getLastmodifier());
-			result.put("lastmodifieddate", publication.getLastmodifieddate());
+			result.put("sendtime", publication.getPublishdate());
+			result.put("subscriptions", publication.getSubscriptions());
+			result.put("sendsuccessful", publication.getSubscriptions() - publication.getBounced());
+			result.put("bounced", publication.getBounced());
 			results.add(result);
 		}
 		return results;
 	}
-
 }

@@ -11,6 +11,7 @@ package com.finalist.newsletter.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
@@ -51,6 +52,12 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
       if (isCancelAction(request)) {
          String forwardPath = mapping.findForward("cancel").getPath();
          forwardPath = forwardPath.concat("?showpage=" + number);
+         if (StringUtils.isNotBlank(request.getParameter("forward"))) {
+				ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
+						+ request.getParameter("newsletterId"));
+				ret.setRedirect(true);
+				return ret;
+			}
          return new ActionForward(forwardPath);
       }
 

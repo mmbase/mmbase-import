@@ -31,7 +31,9 @@ public interface NewsletterPublicationService {
    
    public Set<Publication> getPublicationByNewsletter(int id);
    
-   public Set<Publication> searchPublication(int id , String title, String subject, Date startDate, Date endDate, int pagesize, int offset);
+   public List<Publication> searchPublication(int id , String title, String subject, Date startDate, Date endDate, int pagesize, int offset, String order, String direction);
    
    public int searchPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate);
+   
+   public List<Publication> searchPublicationStatistics(int newsletterId, String title,String subject, Date startTime, Date endTime, int pagesize, int offset, String order, String direction);
 }

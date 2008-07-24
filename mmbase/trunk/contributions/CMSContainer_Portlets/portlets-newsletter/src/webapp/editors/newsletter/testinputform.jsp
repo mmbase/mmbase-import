@@ -39,6 +39,10 @@
 	<form action="${actionUrl}" method="post">
       <input type="hidden" name="number" id="number" value="${number}"/>
       <input type="hidden" name="action" id="action" value="send"/>
+      <mm:import externid="forward" />
+      <mm:import externid="newsletterId"/>
+      <input type="hidden" name="forward" value="${forward}"/>
+      <input type="hidden" name="newsletterId" value="${newsletterId}"/>
       <table>
          <tr>
             <td><fmt:message key="testinput.email"/></td>

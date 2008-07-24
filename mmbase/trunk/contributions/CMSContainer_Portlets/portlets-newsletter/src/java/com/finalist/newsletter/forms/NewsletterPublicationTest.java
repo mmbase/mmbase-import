@@ -19,49 +19,54 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
-   private static final String ACTION_REMOVE = "remove";
+	/** name of submit button in jsp to confirm removal */
+	private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
-   private static final String ACTION_CANCEL = "cancel";
+	/** name of submit button in jsp to cancel removal */
+	private static final String ACTION_CANCEL = "cancel";
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      int number = Integer.parseInt(getParameter(request, "number", true));
+		int number = Integer.parseInt(getParameter(request, "number", true));
 
-      if (isSendAction(request)) {
-//         String email = getParameter(request, "email");
-//         String mimeType = getParameter(request, "minetype");
+		if (isSendAction(request)) {
+			// String email = getParameter(request, "email");
+			// String mimeType = getParameter(request, "minetype");
 
-//         UserRole role = NavigationUtil.getRole(newsletterPublicationNode.getCloud(), newsletterPublicationNode, false);
-//         boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
-//
-//         if (NavigationUtil.getChildCount(newsletterPublicationNode) > 0 && !isWebMaster) {
-//            return mapping.findForward("confirmationpage");
-//         }
-//         Thread publisher = new NewsletterPublisher(number);
-//         publisher.start();
-//         NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-         return mapping.findForward(SUCCESS);
-      }
+			// UserRole role =
+			// NavigationUtil.getRole(newsletterPublicationNode.getCloud(),
+			// newsletterPublicationNode, false);
+			// boolean isWebMaster = (role != null &&
+			// SecurityUtil.isWebmaster(role));
+			//
+			// if (NavigationUtil.getChildCount(newsletterPublicationNode) > 0
+			// && !isWebMaster) {
+			// return mapping.findForward("confirmationpage");
+			// }
+			// Thread publisher = new NewsletterPublisher(number);
+			// publisher.start();
+			// NewsletterPublicationService publicationService =
+			// (NewsletterPublicationService)
+			// ApplicationContextFactory.getBean("publicationService");
+			return mapping.findForward(SUCCESS);
+		}
 
-      if (isCancelAction(request)) {
-         String forwardPath = mapping.findForward("cancel").getPath();
-         forwardPath = forwardPath.concat("?showpage=" + number);
-         return new ActionForward(forwardPath);
-      }
+		if (isCancelAction(request)) {
+			String forwardPath = mapping.findForward("cancel").getPath();
+			forwardPath = forwardPath.concat("?showpage=" + number);		
+			return new ActionForward(forwardPath);
+		}
+		// neither remove or cancel, show confirmation page
+		return mapping.findForward("inputpage");
+	}
 
-      // neither remove or cancel, show confirmation page
-      return mapping.findForward("inputpage");
-   }
+	private boolean isCancelAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_CANCEL) != null;
+	}
 
-   private boolean isCancelAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_CANCEL) != null;
-   }
-
-   private boolean isSendAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_REMOVE) != null;
-   }
+	private boolean isSendAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_REMOVE) != null;
+	}
 
 }

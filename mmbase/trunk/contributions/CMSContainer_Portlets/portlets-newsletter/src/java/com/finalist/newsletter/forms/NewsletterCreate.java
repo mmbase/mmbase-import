@@ -24,44 +24,43 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterCreate extends MMBaseFormlessAction {
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      String parentnewsletter = getParameter(request, "parentnewsletter", true);
-      String action = getParameter(request, "action");
+		String parentnewsletter = getParameter(request, "parentnewsletter", true);
+		String action = getParameter(request, "action");
 
-      if (StringUtils.isBlank(action)) {
-         request.getSession().setAttribute("parentnewsletter", parentnewsletter);
+		if (StringUtils.isBlank(action)) {
+			request.getSession().setAttribute("parentnewsletter", parentnewsletter);
+			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create" + "&contenttype=newsletter"
+					+ "&returnurl=" + mapping.findForward("returnurl").getPath());
+			ret.setRedirect(true);
+			return ret;
+		} else {
+			if ("save".equals(action)) {
+				String ewnodelastedited = getParameter(request, "ewnodelastedited");
+				NavigationUtil.appendChild(cloud, parentnewsletter, ewnodelastedited);
 
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create" + "&contenttype=newsletter"
-               + "&returnurl=" + mapping.findForward("returnurl").getPath());
-         ret.setRedirect(true);
-         return ret;
-      } else {
-         if ("save".equals(action)) {
-            String ewnodelastedited = getParameter(request, "ewnodelastedited");
-            NavigationUtil.appendChild(cloud, parentnewsletter, ewnodelastedited);
+				Node newNewsletter = cloud.getNode(ewnodelastedited);
+				Node layoutNode = PagesUtil.getLayout(newNewsletter);
+				PagesUtil.linkPortlets(newNewsletter, layoutNode);
+				request.getSession().removeAttribute("parentnewsletter");
 
-            Node newNewsletter = cloud.getNode(ewnodelastedited);
-            Node layoutNode = PagesUtil.getLayout(newNewsletter);
-            PagesUtil.linkPortlets(newNewsletter, layoutNode);
-            request.getSession().removeAttribute("parentnewsletter");
+				// Create a default term for this newsletter
 
-            // Create a default term for this newsletter
+				// NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
+				NewsletterUtil.addScheduleForNewsletter(newNewsletter);
 
-           // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
-            NewsletterUtil.addScheduleForNewsletter(newNewsletter);
-
-            newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newNewsletter.getStringValue("schedule")));
-            newNewsletter.commit();
-            addToRequest(request, "showpage", ewnodelastedited);
-            ActionForward ret = mapping.findForward(SUCCESS);
-            return ret;
-         }
-         request.getSession().removeAttribute("parentnewsletter");
-         ActionForward ret = mapping.findForward(CANCEL);
-         return ret;
-      }
-   }
-
+				newNewsletter.setStringValue("scheduledescription", NewsletterUtil.getScheduleMessageByExpression(newNewsletter
+						.getStringValue("schedule")));
+				newNewsletter.commit();
+				addToRequest(request, "showpage", ewnodelastedited);
+				ActionForward ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited + "&fresh=fresh");
+				return ret;
+			}
+			request.getSession().removeAttribute("parentnewsletter");
+			ActionForward ret = mapping.findForward(CANCEL);
+			return ret;
+		}
+	}
 }
