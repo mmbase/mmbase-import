@@ -13,7 +13,7 @@ See http://www.MMBase.org/license
  *
  * @author Michiel Meeuwisssen
  * @since MMBase-1.8.6
- * @version $Id: ListParser.jj,v 1.2.2.1 2008-06-17 10:18:58 michiel Exp $
+ * @version $Id: ListParser.jj,v 1.2.2.2 2008-07-24 16:17:48 michiel Exp $
  */
 
 options {
@@ -51,8 +51,8 @@ public class ListParser {
     int getDepth(Token t) {
         return t.image.length() - (begin ? 1 : 2);
     }
-    char getType(Token t) {
-        return t.image.charAt(begin ? 0 : 1) == '*' ? 'o' : 'u';
+    char getType(Token t, int depth) {
+        return t.image.charAt(depth - 1 +  (begin ? 0 : 1)) == '*' ? 'o' : 'u';
     }
     void open(StringBuffer buf, char type) {
         curDepth++;
@@ -68,7 +68,7 @@ public class ListParser {
     }
     void handleList(StringBuffer buf, Token t) {
         int depth = getDepth(t);
-        char type = getType(t);
+        char type = getType(t, depth);
         if (depth == curDepth + 1) {
             open(buf, type);
         } else if (depth == curDepth - 1) {
@@ -93,12 +93,14 @@ public class ListParser {
 
 PARSER_END(ListParser)
 
-TOKEN : { <BOL: "*" ("*")* (" ")> }
-TOKEN : { <BUL: "-" ("-")* (" ")> }
-TOKEN : { <OL: "\n*" ("*")* (" ")> }
-TOKEN : { <UL: "\n-" ("-")* (" ")> }
+
+TOKEN : { <BOL: "*" (["*","-"])* (" ")> }
+TOKEN : { <BUL: "-" (["*", "-"])* (" ")> }
+TOKEN : { <OL: "\n*" (["*", "-"])* (" ")> }
+TOKEN : { <UL: "\n-" (["*", "-"])* (" ")> }
 TOKEN : { <END: ("\n")> }
 TOKEN : { <OTHER : ~[] > }
+
 
 void start(StringBuffer buf) :
 {
