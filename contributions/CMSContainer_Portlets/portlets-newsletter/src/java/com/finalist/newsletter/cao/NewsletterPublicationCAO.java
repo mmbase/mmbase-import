@@ -27,7 +27,8 @@ public interface NewsletterPublicationCAO {
    
    public void renamePublicationTitle(int publicationId);
    
-   public Set<Publication> getPublicationsByNewsletterAndPeriod(int id, String title, String subject, Date startDate, Date endDate, int pagesize, int offset);
+   public List<Publication> getPublicationsByNewsletterAndPeriod(int id, String title, String subject, Date startDate, Date endDate, int pagesize, int offset, String order, String direction);
 
    public int getPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate);
+
 }

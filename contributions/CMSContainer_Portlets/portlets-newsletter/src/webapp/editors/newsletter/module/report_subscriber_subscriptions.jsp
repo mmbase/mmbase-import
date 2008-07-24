@@ -1,10 +1,8 @@
-<%@include file="globals.jsp" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
-
+<%@include file="globals.jsp" 
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
+%><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <cmscedit:head title="ewsletter.subscription.manage.newsletteroverview">
 </cmscedit:head>
 
@@ -21,7 +19,7 @@
    <c:if test="${fn:length(results) gt pagesize || not empty param.title }">
    <div class="body">
       <form method="POST" name="form" action="SubscriptionManagement.do">
-         <input type="hidden" name="action" value="newsletterOverview"/>
+         <input type="hidden" name="method" value="newsletterOverview"/>
          <table border="0">
             <tr>
                <td style="width: 150px">Title</td>
@@ -46,7 +44,7 @@
                <form method="POST" name="operationform" action="SubscriptionManagement.do">
                   <input type="hidden" name="action" id="action"/>
                   <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
-                     <pg:param name="action" value="newsletterOverview"/>
+                     <pg:param name="method" value="newsletterOverview"/>
                      <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
                      <table>
                         <thead>

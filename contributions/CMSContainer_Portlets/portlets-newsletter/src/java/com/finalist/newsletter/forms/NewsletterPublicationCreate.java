@@ -26,42 +26,43 @@ import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      String action = request.getParameter("action");
-      String forwardType = request.getParameter("forward");
+		String action = request.getParameter("action");
+		String forwardType = request.getParameter("forward");
 
-      if (StringUtils.isBlank(action)) { // Initialize the new
-         int parent = Integer.parseInt(getParameter(request, "parent", true));
-         boolean copyContent = Boolean.valueOf(getParameter(request, "copycontent", true));
-         Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
-         Node parentNode = cloud.getNode(parent);
-         Node pubNode = cloud.getNode(publicationNode.getNumber());
-         RelationManager relManager = cloud.getRelationManager("newsletter", "newsletterpublication", "related");
-         relManager.createRelation(parentNode,pubNode).commit();
+		if (StringUtils.isBlank(action)) { // Initialize the new
+			int parent = Integer.parseInt(getParameter(request, "parent", true));
+			boolean copyContent = Boolean.valueOf(getParameter(request, "copycontent", true));
+			Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
+			Node parentNode = cloud.getNode(parent);
+			Node pubNode = cloud.getNode(publicationNode.getNumber());
+			RelationManager relManager = cloud.getRelationManager("newsletter", "newsletterpublication", "related");
+			relManager.createRelation(parentNode, pubNode).commit();
 
-         String objectnumber = String.valueOf(publicationNode.getNumber());
-         request.getSession().removeAttribute("parent");
-         ActionForward ret = null;
-         if(StringUtils.isNotEmpty(forwardType)){
-        	 ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-                     + mapping.findForward("publicationmanage").getPath() + URLEncoder.encode("?forward") + "=" + forwardType + URLEncoder.encode("&newsletterId") + "=" + parent);
-         }
-         else{
-        	 ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-                 + mapping.findForward("returnurl").getPath());
-         }
-         ret.setRedirect(true);
-         return ret;
-      }
-      String ewnodelastedited = getParameter(request, "ewnodelastedited");
-      addToRequest(request, "showpage", ewnodelastedited);
-      ActionForward ret;
-      if(StringUtils.isNotEmpty(forwardType)){
-    	  ret = new ActionForward(mapping.findForward("publicationmanage").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
-      }
-      ret = mapping.findForward("SUCCESS");
-      return ret;
-   }
+			String objectnumber = String.valueOf(publicationNode.getNumber());
+			request.getSession().removeAttribute("parent");
+			ActionForward ret = null;
+			if (StringUtils.isNotEmpty(forwardType)) {
+				ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+						+ mapping.findForward("publicationedit").getPath() + URLEncoder.encode("?forward") + "=" + forwardType
+						+ URLEncoder.encode("&newsletterId") + "=" + parent);
+			} else {
+				ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+						+ mapping.findForward("returnurl").getPath());
+			}
+			ret.setRedirect(true);
+			return ret;
+		}
+		String ewnodelastedited = getParameter(request, "ewnodelastedited");
+		addToRequest(request, "showpage", ewnodelastedited);
+		ActionForward ret;
+		if (StringUtils.isNotEmpty(forwardType)) {
+			ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
+		} else {
+			ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited + "&fresh=fresh");
+		}
+		return ret;
+	}
 }

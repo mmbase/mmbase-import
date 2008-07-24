@@ -37,6 +37,7 @@ public interface NewsletterSubscriptionCAO {
    public List<Subscription> getSubscriptionByUserIdAndStatus(int userId, Subscription.STATUS status);
 
    public List<Node> getAllSubscriptions();
+   public List<Node>getSubscriptionsByTerms(int newsletterId, String terms);
 
    void updateLastBounce(int subscriptionId);
 

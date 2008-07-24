@@ -6,6 +6,7 @@ import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -168,45 +169,48 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
    }
 
-   public Set<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate, int pagesize, int offset){
-	   NodeManager manager = cloud.getNodeManager("newsletterpublication");
-	   Node newsletterNode = cloud.getNode(newsletterId);
-
-	   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
-	   Step step = nodeQuery.getNodeStep();
-
-	   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
-	   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
-	   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
-
-	   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
-	   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
-	   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
-	   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
-
-	   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
-	   if (startDate != null){
-		   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
-		   constraints.addChild(constraintDate);
-	   }
-	   else{
-		   	BasicFieldValueConstraint constraintDate =new BasicFieldValueConstraint(fieldDate, endDate);
-	   		constraintDate.setOperator(FieldCompareConstraint.LESS);
-	   		constraints.addChild(constraintDate);
-	   }
-
-	   constraints.addChild(constraintTitle);
-	   constraints.addChild(constraintSubject);
-	   nodeQuery.setOffset(offset);
-	   nodeQuery.setMaxNumber(pagesize);
-	   nodeQuery.setConstraint(constraints);
-	   List<Node> list = nodeQuery.getList();
-	   Set<Publication> publications = convertPublicationsToMap(list);
-	   return publications;
-   }
-
-	private Set<Publication> convertPublicationsToMap(List<Node> publicationNodes) {
-	   Set<Publication> publications = new HashSet<Publication>();
+//   public Set<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate, int pagesize, int offset){
+//	   NodeManager manager = cloud.getNodeManager("newsletterpublication");
+//	   Node newsletterNode = cloud.getNode(newsletterId);
+//
+//	   NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
+//	   Step step = nodeQuery.getNodeStep();
+//
+//	   StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
+//	   StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
+//	   StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
+//
+//	   BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
+//	   constraintTitle.setOperator(FieldCompareConstraint.LIKE);
+//	   BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
+//	   constraintSubject.setOperator(FieldCompareConstraint.LIKE);
+//
+//	   BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
+//	   if (startDate != null){
+//		   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
+//		   constraints.addChild(constraintDate);
+//	   }
+//	   else{
+//		   	BasicFieldValueConstraint constraintDate =new BasicFieldValueConstraint(fieldDate, endDate);
+//	   		constraintDate.setOperator(FieldCompareConstraint.LESS);
+//	   		constraints.addChild(constraintDate);
+//	   }
+//
+//	   constraints.addChild(constraintTitle);
+//	   constraints.addChild(constraintSubject);
+//	   nodeQuery.setOffset(offset);
+//	   nodeQuery.setMaxNumber(pagesize);
+//	   nodeQuery.setConstraint(constraints);
+//	   List<Node> list = nodeQuery.getList();
+//	   Set<Publication> publications = convertPublicationsToMap(list);
+//	   return publications;
+//   }
+   private List<Publication> convertPublicationsToMap(List<Node> publicationNodes) {
+	   List<Publication> publications = new ArrayList<Publication>();
+		// private Set<Publication> convertPublicationsToMap(List<Node>
+		// publicationNodes) {
+		// Set<Publication> publications = new HashSet<Publication>();
+		// >>>>>>> 1.15
 	   for (Node publicationNode : publicationNodes) {
 		   publications.add(convertFromNode(publicationNode));
 	   }
@@ -233,8 +237,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 		   if (startDate != null){
 			   BasicFieldValueBetweenConstraint constraintDate= new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
 			   constraints.addChild(constraintDate);
-		   }
-		   else{
+		} else {
 			   	BasicFieldValueConstraint constraintDate =new BasicFieldValueConstraint(fieldDate, endDate);
 		   		constraintDate.setOperator(FieldCompareConstraint.LESS);
 		   		constraints.addChild(constraintDate);
@@ -242,6 +245,50 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
 		   constraints.addChild(constraintTitle);
 		   constraints.addChild(constraintSubject);
+		   nodeQuery.setConstraint(constraints);
 		   return nodeQuery.getList().size();
 	}
+
+	public List<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate,
+			int pagesize, int offset, String order, String direction) {
+		NodeManager manager = cloud.getNodeManager("newsletterpublication");
+		Node newsletterNode = cloud.getNode(newsletterId);
+
+		NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
+		Step step = nodeQuery.getNodeStep();
+
+		StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
+		StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
+		StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
+
+		BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
+		constraintTitle.setOperator(FieldCompareConstraint.LIKE);
+		BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
+		constraintSubject.setOperator(FieldCompareConstraint.LIKE);
+
+		BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
+		if (startDate != null) {
+			BasicFieldValueBetweenConstraint constraintDate = new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
+			constraints.addChild(constraintDate);
+		} else {
+			BasicFieldValueConstraint constraintDate = new BasicFieldValueConstraint(fieldDate, endDate);
+			constraintDate.setOperator(FieldCompareConstraint.LESS);
+			constraints.addChild(constraintDate);
+		}
+
+		constraints.addChild(constraintTitle);
+		constraints.addChild(constraintSubject);
+		nodeQuery.setOffset(offset);
+		nodeQuery.setMaxNumber(pagesize);
+		nodeQuery.setConstraint(constraints);
+		String orderBy = "number";
+		if (!"number".equals(order.trim()))
+			orderBy = order.trim();
+		Queries.addSortOrders(nodeQuery, orderBy, direction);
+		List<Node> list = nodeQuery.getList();
+		List<Publication> publications = convertPublicationsToMap(list);
+		return publications;
+	}
+
+	
 }
