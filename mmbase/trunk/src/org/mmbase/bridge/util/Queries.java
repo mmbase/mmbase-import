@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.104 2008-07-17 13:55:02 michiel Exp $
+ * @version $Id: Queries.java,v 1.105 2008-07-24 16:04:38 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1338,7 +1338,7 @@ abstract public class Queries {
                 }
             }
         }
-        if (result.size() == 0) throw new UnsupportedOperationException();
+        if (result.size() == 0) throw new UnsupportedOperationException("Cannot relate " + n + " in "  + q.toSql());
         return result;
 
     }
@@ -1424,7 +1424,7 @@ abstract public class Queries {
      * step, which can be taken as the default.
      * @since MMBase-1.9
      */
-    public static Constraint crateAgeConstraint(NodeQuery q, int minAge, int maxAge) {
+    public static Constraint createAgeConstraint(NodeQuery q, int minAge, int maxAge) {
         return createAgeConstraint(q, q.getNodeStep(), minAge, maxAge);
     }
     /**
