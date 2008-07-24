@@ -24,6 +24,7 @@
 	<field name="txtempty" />
 	<field name="schedule" />
    <field name="bounce_checking"/>
+   <field name="max_bounces"/>
    <field name="server"/>
    <field name="user_name"/>
    <field name="password"/>

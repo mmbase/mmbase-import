@@ -84,12 +84,16 @@
 		<prompt xml:lang="nl">Schedule</prompt>
 		<prompt xml:lang="zh">定时发送</prompt>
 	</field>
-
    <field name="bounce_checking" ftype="enum">
 		<prompt xml:lang="en">Bounce Checking</prompt>
 		<prompt xml:lang="nl">Bounce Checking</prompt>
 		<prompt xml:lang="zh">跟踪退信</prompt>
       <optionlist select="bouncechecking_options" />
+   </field>
+   <field name="max_bounces">
+		<prompt xml:lang="en">Max Bounces</prompt>
+		<prompt xml:lang="nl">Max Bounces</prompt>
+		<prompt xml:lang="zh">最大退信数</prompt>
    </field>
    <field name="server">
 		<prompt xml:lang="en">Server</prompt>
