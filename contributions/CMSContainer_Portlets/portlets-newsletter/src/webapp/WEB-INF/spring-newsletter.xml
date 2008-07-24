@@ -18,7 +18,7 @@
    <bean name="cloudProviderBean" class="com.finalist.newsletter.cao.CloudProviderBean"/>
    <bean id="cloud" factory-bean="cloudProviderBean" factory-method="getCloud" lazy-init="true"/>
 
-   <!-- Cloud Access Ojbect -->
+   <!-- Cloud Access Object -->
    <bean name="subscriptionCAO" class="com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl" lazy-init="true">
       <property name="cloud" ref="cloud"/>
    </bean>
