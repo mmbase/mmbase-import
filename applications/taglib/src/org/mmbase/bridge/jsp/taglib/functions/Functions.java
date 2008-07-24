@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.28 2008-07-23 17:12:20 michiel Exp $
+ * @version $Id: Functions.java,v 1.29 2008-07-24 08:12:26 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -82,7 +82,7 @@ public class Functions {
     /**
      * Provides the 'escape' functionality of taglib. Can be used in EL (using mm:escape('p', value)) and XSLT (using taglib:escape('p', mytag))
      */
-    public static String escape(String escaper, String string) {
+    public static String escape(String escaper, Object string) {
         try {
             javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
             ContextTag tag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
