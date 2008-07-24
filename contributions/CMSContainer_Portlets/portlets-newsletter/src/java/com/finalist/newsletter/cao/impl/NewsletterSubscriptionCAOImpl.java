@@ -337,10 +337,15 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
 	public void updateLastBounce(int subscriptionId) {
 		// todo test.
-		Node subscription = getSubscriptionNodeById(subscriptionId);
-		subscription.setIntValue("count_bounces", subscription.getIntValue("count_bounces"));
-		subscription.setDateValue("last_bounce", new Date(System.currentTimeMillis()));
-		subscription.commit();
+      Node subscription = getSubscriptionNodeById(subscriptionId);
+      if(subscription.getIntValue("count_bounces") >0) {
+         subscription.setIntValue("count_bounces",subscription.getIntValue("count_bounces")+1);
+      }
+      else {
+         subscription.setIntValue("count_bounces",1);
+      }
+      subscription.setDateValue("last_bounce",new Date(System.currentTimeMillis()));
+      subscription.commit();
 	}
 
 	private Node getSubscriptionNodeById(int subscriptionId) {

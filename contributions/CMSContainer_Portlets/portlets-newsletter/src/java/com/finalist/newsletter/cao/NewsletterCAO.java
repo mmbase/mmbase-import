@@ -22,4 +22,10 @@ public interface NewsletterCAO {
    public int getNewsletterTermsCountByName(int newsletterId, String name);
 
    Node getNewsletterNodeById(int newsletterId);
+
+   public Set<Term> getNewsletterTermsByName(int newsltterId, String name ,int pagesize, int offset);
+   
+   public void processBouncesOfPublication(String publicationId, String userId,
+         String bounceContent);
+
 }

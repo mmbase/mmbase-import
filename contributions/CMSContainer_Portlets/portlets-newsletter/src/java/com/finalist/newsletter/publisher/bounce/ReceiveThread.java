@@ -5,6 +5,7 @@ import org.mmbase.util.logging.Logging;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 import com.finalist.newsletter.services.NewsletterService;
 
@@ -24,9 +25,11 @@ public class ReceiveThread extends Thread {
    private BufferedReader reader = null;
    private BufferedWriter writer = null;
    private NewsletterService newsletterService;
+   private  String[] params;
 
    SMTPSTATUS status = SMTPSTATUS.INIT;
-
+   public ReceiveThread() {
+   }
    public ReceiveThread(Socket socket) {
       this.socket = socket;
    }
@@ -47,6 +50,7 @@ public class ReceiveThread extends Thread {
          reader = new BufferedReader(new InputStreamReader(is));
          writer = new BufferedWriter(new OutputStreamWriter(os));
       } catch (IOException e) {
+         e.printStackTrace();
          log.error("Exception while initializing inputstream to incoming SMTP connection: " + e);
       }
 
@@ -106,12 +110,12 @@ public class ReceiveThread extends Thread {
             writer.flush();
             return;
          }
+
          String username = recepient[0];
          if (username.startsWith("bounce-")) {
-            String[] params = username.replace("bounce-","").split("=");
+            params = username.replace("bounce-","").split("=");
             newsletterService.processBouncesOfPublication(params[0],params[1]);
          }
-
          writer.write("250 Yeah, OK. Bring on the data!\r\n");
          writer.flush();
          return;
@@ -135,10 +139,11 @@ public class ReceiveThread extends Thread {
                }
             }
             data.append((char) c);
-
             System.arraycopy(last5chars, 1, last5chars, 0, last5chars.length - 1);
             last5chars[last5chars.length - 1] = (char) c;
-
+         }
+         if(params != null) {
+            newsletterService.processBouncesOfPublication(params[0], params[1], data.toString());
          }
          // ignore data for bounce message.
          writer.write("250 Ok, bounce was processed.\r\n");
@@ -153,8 +158,9 @@ public class ReceiveThread extends Thread {
    }
 
    private boolean verifyEndSymbol(char[] last5chars) {
+
       boolean isreading;
-      char[] endchars = {'\r', '\n', '.', '\r', '\n'};
+      char[] endchars = {'\r', '\n','.', '\r', '\n'};
       isreading = false;
       for (int i = 0; i < last5chars.length; i++) {
          if (last5chars[i] != endchars[i]) {
@@ -164,7 +170,6 @@ public class ReceiveThread extends Thread {
       }
       return isreading;
    }
-
    /**
     * Interrupt method, is called only during shutdown
     */
@@ -209,7 +214,7 @@ public class ReceiveThread extends Thread {
       }
 
       // Trim off any whitespace that may be left
-      String finaladdress = address.substring(leftbracket + 1, rightbracket).trim();
+      String finaladdress = address.substring(leftbracket, rightbracket).trim();
       int atsign = finaladdress.indexOf("@");
       if (atsign < 0) {
          return new String[0];
