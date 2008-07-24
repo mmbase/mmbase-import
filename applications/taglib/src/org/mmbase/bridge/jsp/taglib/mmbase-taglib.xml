@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.429 2008-07-24 08:54:02 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.430 2008-07-24 11:29:20 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6620,6 +6620,15 @@ Of course, the default behavior of getSmartPath can still be overridden.
         `Logger'. This can be handy if your page contains a lot of
         Java code.
       </info>
+    </attribute>
+    <attribute>
+      <name>level</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        Only relevant without the jspvar attribute.
+      </info>
+      <since>MMBase-1.9</since>
     </attribute>
     <example>
 &lt;mm:log&gt;Log this to the log file&lt;/mm:log&gt;
