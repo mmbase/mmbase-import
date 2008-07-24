@@ -7,9 +7,11 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+
 
 public class CommunityModuleAdapter {
 
@@ -57,5 +59,18 @@ public class CommunityModuleAdapter {
 
    }
 
+   public static String getCurrentUserName() {
 
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      Authentication authentication = securityContext.getAuthentication();
+      String userName = null;
+      if (null != authentication) {
+         Object obj = authentication.getPrincipal();
+         if (obj instanceof UserDetails) {
+            userName = ((UserDetails) obj).getUsername();
+         }
+      }
+
+      return userName;
+   }
 }

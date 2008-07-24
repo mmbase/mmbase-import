@@ -69,6 +69,7 @@ public abstract class NewsletterUtil {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
       NodeList publicationsList = newsletterNode.getRelatedNodes("newsletterpublication");
+
       if (publicationsList != null) {
          return (publicationsList.size());
       }
