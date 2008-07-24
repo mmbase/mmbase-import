@@ -44,8 +44,9 @@ public interface AuthenticationService {
 	void updateAuthenticationPassword(String userId, String newPassword);
 
 	/**
-	 * Delete an authentication entry TODO if a authentication is deleted, what
-	 * should happen with the user's content (in other systems)?
+	 * Delete an authentication entry 
+	 * TODO if a authentication is deleted, what should happen with the user's 
+	 * content (in other systems)?
 	 * 
 	 * @param id
 	 */
@@ -55,7 +56,7 @@ public interface AuthenticationService {
 	 * Check if the given authentication exists
 	 * 
 	 * @param userId
-	 * @return boolean returns true if a user exists, otherwise it returns false
+	 * @return boolean returns true if a user exists, otherwise returns false
 	 */
 	boolean authenticationExists(String userId);
 
@@ -71,8 +72,7 @@ public interface AuthenticationService {
 	 * Is an authentication enabled or disabled?
 	 * 
 	 * @param userId
-	 * @return boolean returns true if a user is enabled, otherwise it returns
-	 *         false
+	 * @return boolean returns true if a user is enabled, otherwise returns false
 	 */
 	boolean isAuthenticationEnabled(String userId);
 
