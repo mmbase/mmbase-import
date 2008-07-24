@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.31 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.32 2008-07-24 08:08:07 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -54,19 +54,19 @@ public class ListNodesTag extends AbstractNodeListTag {
      * @since MMBase-1.7.1
      */
     public void setPath(String p) throws JspTagException {
-        path = getAttribute(p);
+        path = getAttribute(p, true);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
+        element = getAttribute(e, true);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setSearchdirs(String s) throws JspTagException {
-        searchDirs = getAttribute(s);
+        searchDirs = getAttribute(s, true);
     }
     /**
      * @since MMBase-1.7.1
