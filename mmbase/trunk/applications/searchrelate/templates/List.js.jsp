@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.16 2008-07-18 08:20:50 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.17 2008-07-24 14:22:25 michiel Exp $
  */
 
 
@@ -22,6 +22,9 @@ $(document).ready(function() {
 	if (this.list == null) {
 	    this.list = new List(this);
 	}
+    });
+    $(document).find("div.list:last").each(function() {
+	List.seq = $(this).find("input[name = 'seq']")[0].value;
     });
 });
 
@@ -36,8 +39,8 @@ function List(d) {
 
     this.type = this.find(this.div, "form.list").find("input[name = 'type']")[0].value;
     this.item = this.find(this.div, "form.list").find("input[name = 'item']")[0].value;
-    this.seq = this.find(this.div, "form.list").find("input[name = 'seq']")[0].value;
     this.source = this.find(this.div, "form.list").find("input[name = 'source']")[0].value;
+
 
     this.lastChange = null;
     this.lastCommit = null;
@@ -93,7 +96,6 @@ function List(d) {
 
 
 
-
 /**
  * Finds all elements with given node name and class, but ignores everything in a child div.list.
  */
@@ -141,12 +143,14 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
+	params.item   = this.item;
+	params.mm_list_sequence  = List.seq++;
+	params.source = this.source;
 	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    try {
 			if ( status == "success" || status == "notmodified" ) {
 			    var r = $(res.responseText)[0];
-
 			    // remove default value on focus
 			    $(r).find("input").one("focus", function() {
 				this.value = "";
@@ -164,6 +168,9 @@ List.prototype.bindCreate = function(a) {
 			    }
 			    });
 			    a.list.executeCallBack("create", r);
+			} else {
+			    alert(status);
+
 			}
 		    } catch (ex) {
 			alert(ex);
@@ -242,13 +249,15 @@ List.prototype.commit = function(stale, async) {
 	    if (now.getTime() - this.lastChange.getTime() > stale) {
 		this.lastCommit = now;
 		var params = {};
+		params.item   = this.item;
+		params.seq    = this.seq;
+		params.source = this.source;
 		this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
 		});
-		params.item = this.item;
-		params.seq = this.seq;
-		params.source = this.source;
+
+
 		var self = this;
 		this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
 		$.ajax({ type: "POST",
