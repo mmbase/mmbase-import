@@ -46,7 +46,7 @@
     <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
   </div>
 </mm:content>
-<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miĥil'</a></address>
+<address><a href="mailto:Michiel.Meeuwissen@gmail.com">miĥil'</a></address>
 </body>
 </html>
 
