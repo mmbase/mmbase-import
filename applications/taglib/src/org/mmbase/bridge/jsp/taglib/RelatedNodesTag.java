@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.40 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.41 2008-07-24 08:08:30 michiel Exp $
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 
@@ -45,13 +45,13 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type);
+        this.type = getAttribute(type, true);
     }
     /**
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role);
+        this.role = getAttribute(role, true);
     }
 
     /**
@@ -68,19 +68,19 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      * @since MMBase-1.7.1
      */
     public void setPath(String p) throws JspTagException {
-        path = getAttribute(p);
+        path = getAttribute(p, true);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
+        element = getAttribute(e, true);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setSearchdirs(String s) throws JspTagException {
-        searchDirs = getAttribute(s);
+        searchDirs = getAttribute(s, true);
     }
 
     /**
