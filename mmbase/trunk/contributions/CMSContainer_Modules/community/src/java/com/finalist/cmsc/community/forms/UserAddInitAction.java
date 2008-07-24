@@ -12,6 +12,7 @@ package com.finalist.cmsc.community.forms;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -28,45 +29,53 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
  * @author Wouter Heijke
  */
 public class UserAddInitAction extends AbstractCommunityAction {
-   private static Log log = LogFactory.getLog(UserAddInitAction.class);
+	private static Log log = LogFactory.getLog(UserAddInitAction.class);
 
-   protected static final String AUTHENTICATION_ID = "authid";
+	protected static final String AUTHENTICATION_ID = "authid";
 
-   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
-         HttpServletResponse httpServletResponse) throws Exception {
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+			HttpServletResponse httpServletResponse) throws Exception {
 
-      String authId = request.getParameter(AUTHENTICATION_ID);
-      UserForm userForm = (UserForm) actionForm;
-      userForm.clear();
+		String authId = request.getParameter(AUTHENTICATION_ID);
+		UserForm userForm = (UserForm) actionForm;
+		userForm.clear();
 
-      Authentication auth = null;
-      
-      AuthenticationService as = getAuthenticationService();
-      if (authId != null) {
-          auth = as.getAuthenticationById(Long.valueOf(authId));
-      }
-      
-      if (auth != null) {
-         userForm.setAction(UserForm.ACTION_EDIT);
-         userForm.setAccount(auth.getUserId());
-         
-         PersonService ps = getPersonService();
-         //Returns null when no Person object was found!
-         Person person = ps.getPersonByAuthenticationId(auth.getId());
-        
-         if (person != null) {
-            userForm.setFirstName(person.getFirstName());
-            userForm.setPrefix(person.getInfix());
-            userForm.setLastName(person.getLastName());
-            userForm.setEmail(person.getEmail());
-         } else {
-            log.debug("person failed");
-         }
-      } else {
-         // new
-         userForm.setAction(UserForm.ACTION_ADD);
-      }
+		Authentication auth = null;
 
-      return actionMapping.findForward(SUCCESS);
-   }
+		AuthenticationService as = getAuthenticationService();
+		if (authId != null) {
+			auth = as.getAuthenticationById(Long.valueOf(authId));
+		}
+
+		if (auth != null) {
+			userForm.setAction(UserForm.ACTION_EDIT);
+			userForm.setAccount(auth.getUserId());
+
+			PersonService ps = getPersonService();
+			// Returns null when no Person object was found!
+			Person person = ps.getPersonByAuthenticationId(auth.getId());
+
+			if (person != null) {
+				userForm.setFirstName(person.getFirstName());
+				userForm.setPrefix(person.getInfix());
+				userForm.setLastName(person.getLastName());
+				userForm.setEmail(person.getEmail());
+			} else {
+				log.debug("person failed");
+			}
+		} else {
+			// new
+			userForm.setAction(UserForm.ACTION_ADD);
+		}
+		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
+			// ActionForward ret= new
+			// ActionForward(actionMapping.findForward(SUCCESS).getPath());
+			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
+			request.getSession().setAttribute("forward", request.getParameter("forward"));
+			// return ret;
+		}
+		// else{
+		return actionMapping.findForward(SUCCESS);
+		// }
+	}
 }
