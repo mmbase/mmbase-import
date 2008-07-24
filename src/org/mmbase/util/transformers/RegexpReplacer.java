@@ -182,8 +182,15 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
         boolean r = false; // result value
 
-        List<Chunk> chunks = new LinkedList<Chunk>();
-        chunks.add(new Chunk(string));
+        List<Chunk> chunks;
+        if (onlyFirstMatch) {
+            // linked list while we're going to do a lot of changing:
+            chunks = new LinkedList<Chunk>();
+            chunks.add(new Chunk(string));
+        } else {
+            // will not make any changes
+            chunks = new Collections.singletonList(new Chunk(string));
+        }
 
         for (Map.Entry<Pattern, String> entry : getPatterns()) {
             Pattern p = entry.getKey();
@@ -191,12 +198,13 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
             if (onlyFirstMatch && status.used.contains(p)) continue;
 
-
-            for (int i = 0; i < chunks.size(); i++) {
-                if (onlyFirstPattern && chunks.get(i).replaced) {
+            ListIterator<Chunk> i = chunks.listIterator();
+            while (i.hasNext()) {
+                Chunk chunk = i.next();
+                if (onlyFirstPattern && chunk.replaced) {
                     continue;
                 }
-                Matcher m = p.matcher(chunks.get(i).string);
+                Matcher m = p.matcher(chunk.string);
                 String replacement = entry.getValue();
                 boolean result = false;
                 if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
@@ -218,19 +226,20 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
                     if (onlyFirstPattern) {
                         // make a new chunk.
+                        i.remove();
                         int s = m.start();
                         if (s > 0) {
-                            chunks.add(i, new Chunk(sb.toString().substring(0, s)));
+                            i.add(new Chunk(sb.toString().substring(0, s)));
                             sb.delete(0, s);
-                            i++;
                         }
-                        chunks.set(i, new Chunk(sb.toString(), true));
+                        i.add(new Chunk(sb.toString(), true));
                         sb.setLength(0);
                         m.appendTail(sb);
-                        chunks.add(i + 1, new Chunk(sb.toString()));
+                        i.add(new Chunk(sb.toString()));
+                        i.previous();
                     } else {
                         m.appendTail(sb);
-                        chunks.set(i, new Chunk(sb.toString()));
+                        i.set(new Chunk(sb.toString()));
                     }
                     if (onlyFirstMatch ||
                         to == ChunkedTransformer.XMLTEXT_WORDS ||
