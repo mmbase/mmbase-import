@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.246 2008-07-10 15:04:51 michiel Exp $
+ * @version $Id: MMBase.java,v 1.247 2008-07-24 11:54:49 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1319,7 +1319,7 @@ public class MMBase extends ProcessorModule {
 
         if (! dataDir.isAbsolute()) {
             if (sc != null && sc.getRealPath("/" + dataDirString) != null) {
-                log.info(" "  + sc.getRealPath("/" + dataDirString));
+                log.debug(" "  + sc.getRealPath("/" + dataDirString));
                 dataDir = new File(sc.getRealPath("/" + dataDirString));
             } else {
                 dataDir = new File(System.getProperty("user.dir"), dataDirString);
