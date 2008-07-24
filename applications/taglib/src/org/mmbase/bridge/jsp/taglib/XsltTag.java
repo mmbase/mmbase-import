@@ -24,7 +24,7 @@ import java.util.Properties;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *X
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.24 2008-06-24 06:55:33 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.25 2008-07-24 08:07:35 michiel Exp $
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -38,7 +38,7 @@ public class XsltTag extends ContextReferrerTag  {
 
 
     /**
-     If you use the extends attribute in stead of inline xsl:import 
+     If you use the extends attribute in stead of inline xsl:import
      * then the caches can be invalidated (without parsing of xslt beforehand)
      *
      * @todo This has to be implemented still
@@ -64,7 +64,7 @@ public class XsltTag extends ContextReferrerTag  {
     }
 
     /**
-     * 
+     *
      */
     public int doEndTag() throws JspTagException {
         String xsltString;
@@ -80,21 +80,21 @@ public class XsltTag extends ContextReferrerTag  {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), xsltString);
         }
-        if (formatter != null) { 
+        if (formatter != null) {
             String totalString;
             if (xsltString.startsWith("<xsl:stylesheet")) {
                 totalString = xsltString;
             } else {
                 totalString =
-                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " + 
-                    " xmlns:taglib=\"" +  Functions.class.getName() + "\"" + 
-                    " xmlns:mm=\"" +  Functions.class.getName() + "\"" + 
+                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " +
+                    " xmlns:taglib=\"" +  Functions.class.getName() + "\"" +
+                    " xmlns:mm=\"" +  Functions.class.getName() + "\"" +
                     " xmlns:node=\"" + org.mmbase.bridge.util.xml.NodeFunction.class.getName() + "\""+
-                    " xmlns:o=\"" + org.mmbase.bridge.util.xml.Generator.NAMESPACE + "\"" + 
+                    " xmlns:o=\"" + org.mmbase.bridge.util.xml.Generator.NAMESPACE + "\"" +
                     " xmlns:mmxf=\"http://www.mmbase.org/xmlns/mmxf\"" +
                     " extension-element-prefixes=\"mm taglib node\"" +
                     " exclude-result-prefixes=\"node mmxf o mm taglib node\"" +
-                    " version=\"1.0\"" + 
+                    " version=\"1.0\"" +
                     " >" +
                     xsltString +
                     "</xsl:stylesheet>";
