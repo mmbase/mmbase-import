@@ -94,6 +94,7 @@ rm /home/nightly/builds/latest
 cd /home/nightly/builds
 ln -s ${dir} latest
 
+showtests=1
 if [ 1 == 1 ] ; then
     if [ -f latest/messages.log ] ; then
         if (( `cat latest/messages.log  | grep 'FAILED' | wc -l` > 0 )) ; then
@@ -101,18 +102,20 @@ if [ 1 == 1 ] ; then
 	    echo -e "Build on ${version} failed:\n\n" | \
 		cat latest/messages.log latest/errors.log | grep -B 10 "FAILED" | \
 		mutt -s "Build failed ${version}" ${MAILADDRESS}
+	    showtests=0;
         fi
     else
         echo Build failed, sending mail to ${MAILADDRESS}
         echo -e "No build created on ${version}\n\n" | \
             tail -q -n 20 - latest/errors.log | \
             mutt -s "Build failed ${version}" ${MAILADDRESS}
+	showtests=0;
     fi
 fi
 
 
 
-if [ 1 == 1 ] ; then 
+if [ 1 == $showtests ] ; then 
     echo running tests | tee -a ${builddir}/messages.log
 
     if [ -f latest/tests-results.log ] ; then 
