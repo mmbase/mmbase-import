@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.87 2008-06-20 16:05:48 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.88 2008-07-24 14:11:46 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -49,6 +49,8 @@ public class IncludeTag extends UrlTag {
     public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
 
     protected static int MAX_INCLUDE_LEVEL = -1;
+    private static final Xml xml = new Xml(Xml.ESCAPE);
+
 
 
     protected Attribute debugType       = Attribute.NULL;
@@ -266,7 +268,6 @@ public class IncludeTag extends UrlTag {
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
                 if ("".equals(result)) {
-                    Xml xml = new Xml(Xml.ESCAPE);
                     result = "The requested resource '" + xml.transform(url) + "' is not available";
                 }
                 output = result;
@@ -318,7 +319,6 @@ public class IncludeTag extends UrlTag {
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
 
             if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
-                Xml xml = new Xml(Xml.ESCAPE);
                 handleResponse(404, "No such resource " + xml.transform(relativeUrl), relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
@@ -506,7 +506,10 @@ public class IncludeTag extends UrlTag {
                         internal(bodyContent, includedServlet, request, response);
                     }
                 } else {
-                    log.error("TOO DEEP mm:include recursion (" + includedServlet + ")");
+                    log.warn("TOO DEEP mm:include recursion (" + includedServlet + "), " + includeLevel + ">=" + MAX_INCLUDE_LEVEL);
+                    handleResponse(200,
+                                   "TOO DEEP mm:include recursion (" + xml.transform(includedServlet) + "), " + includeLevel + ">=" + MAX_INCLUDE_LEVEL, includedServlet);
+
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
