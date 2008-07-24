@@ -21,13 +21,13 @@
           <mm:valid>
             <mm:import externid="submit" />
             <mm:present referid="submit">
-              <mm:log>Submitting form</mm:log>
+              <mm:log level="debug">Submitting form</mm:log>
               <mm:commit />
             </mm:present>
           </mm:valid>
           <span class="status">
             <mm:valid inverse="true">
-              <mm:log>Form not valid</mm:log>
+              <mm:log level="debug">Form not valid</mm:log>
               Form not valid
             </mm:valid>
           </span>
