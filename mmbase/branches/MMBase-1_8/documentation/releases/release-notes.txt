@@ -19,8 +19,10 @@ at:
 
 Note: The 1.8.5 version of MMBase was the first distro of MMBase which is partly compiled with
       java 1.5. These are the following shipped applications:
-      lucene, email, crontab, mmbob
+      michiel@mitulo:~/mmbase/release$  for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/thememanager'  'applications/richtext'         'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'contributions/poll' 'contributions/calendar'     ; do     cvs -q update -d -P -A $i ;     done
       which are taken from CVS HEAD, and are no more maintained in the 1.8 branch of MMBase itself
+
+
 
       We don't build documentation any more, we refer to http://www.mmbase.org/mmdocs for up-to-date
       version of the documentation, or the build of HEAD for a downloadable version.
