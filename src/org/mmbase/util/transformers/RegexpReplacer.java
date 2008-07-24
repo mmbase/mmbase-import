@@ -27,6 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id: RegexpReplacer.java,v 1.25 2008-07-24 21:19:17 michiel Exp $
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {
@@ -102,7 +103,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
         patterns.clear();
 
-        Collection<?> regs = utilReader.getMaps().get("regexps");
+        Collection<Map.Entry<String, String>> regs = utilReader.getMaps().get("regexps");
         if (regs != null) {
             addPatterns(regs, patterns);
         } else {
@@ -118,48 +119,12 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      *        expression. The value is still a String. New entries will be added to this collection
      *        by this function.
      */
-    protected static void addPatterns(Collection<?> list, Collection<Entry<Pattern,String>> patterns) {
+    protected static void addPatterns(Collection<Map.Entry<String, String>> list, 
+                                      Collection<Entry<Pattern, String>> patterns) {
         if (list != null) {
-            Iterator<?> i = list.iterator();
-            while (i.hasNext()) {
-                Object next = i.next();
-                Pattern p;
-                String result;
-                if (next == null) {
-                    log.warn("Found null in " + list);
-                    continue;
-                } else if (next instanceof Map.Entry) {
-                    Map.Entry<?,?> entry  = (Map.Entry<?,?>) next;
-                    p        = Pattern.compile(Casting.toString(entry.getKey()));
-                    Object value = entry.getValue();
-                    if (value instanceof Collection) {
-                        result = null;
-                        Iterator<?> j = ((Collection<?>) value).iterator();
-                        while (j.hasNext()) {
-                            Object n = j.next();
-                            if (! (n instanceof Map.Entry)) {
-                                log.warn("Could not understand " + n.getClass() + " '" + n + "' (in collection " + value + "). It should be a Map.Entry.");
-                                continue;
-                            }
-                            Map.Entry<?,?> subEntry = (Map.Entry<?,?>) n;
-                            Object key = subEntry.getKey();
-                            if ("key".equals(key)) {
-                                p        = Pattern.compile(Casting.toString(subEntry.getValue()));
-                                continue;
-                            }
-                            if ("value".equals(key)) {
-                                result   = Casting.toString(subEntry.getValue());
-                            }
-                        }
-                        if (result == null) result = "";
-                    } else {
-                        result   = Casting.toString(value);
-                    }
-                } else {
-                    log.warn("Could not understand " + next.getClass() + " '" + next + "'. It should be a Map.Entry.");
-                    continue;
-                }
-                patterns.add(new Entry<Pattern,String>(p, result));
+            for (Map.Entry<String, String> entry : list) {
+                Pattern p = Pattern.compile(entry.getKey());
+                patterns.add(new Entry<Pattern, String>(p, entry.getValue()));
             }
         }
     }
@@ -189,7 +154,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
             chunks.add(new Chunk(string));
         } else {
             // will not make any changes
-            chunks = new Collections.singletonList(new Chunk(string));
+            chunks = Collections.singletonList(new Chunk(string));
         }
 
         for (Map.Entry<Pattern, String> entry : getPatterns()) {
