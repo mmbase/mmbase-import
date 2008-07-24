@@ -1,10 +1,8 @@
-<%@include file="globals.jsp" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
-
+<%@include file="globals.jsp" 
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
+%><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <cmscedit:head title="reactions.title">
 </cmscedit:head>
 

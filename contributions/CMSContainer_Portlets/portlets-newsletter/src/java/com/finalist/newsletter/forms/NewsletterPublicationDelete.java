@@ -72,7 +72,7 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
    protected ActionForward actionReturn(ActionMapping mapping, HttpServletRequest request, String forwardType,  String parent){
 	   ActionForward ret = null;
        if (StringUtils.isNotEmpty(forwardType)){
-      	 ret =new ActionForward(mapping.findForward("publicationmanage").getPath() + "?newsletterId=" + parent);
+      	 ret =new ActionForward(mapping.findForward(forwardType).getPath() + "?newsletterId=" + parent);
       	 request.setAttribute("newsletterId", parent);
        }
        else{

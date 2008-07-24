@@ -13,8 +13,10 @@
 	<names>
 		<singular xml:lang="nl">Nieuwsbrief publicatie</singular>
 		<singular xml:lang="en">Newsletter publication</singular>
+		<singular xml:lang="zh">邮件发布</singular>
 		<plural xml:lang="nl">Nieuwsbrief publicaties</plural>
 		<plural xml:lang="en">Newsletter publications</plural>
+		<plural xml:lang="zh">邮件发布</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>
@@ -30,6 +32,7 @@
 			<gui>
 				<guiname xml:lang="nl">Onderwerp</guiname>
 				<guiname xml:lang="en">Subject</guiname>
+				<guiname xml:lang="zh">主题</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -53,7 +56,7 @@
 			<gui>
 				<guiname xml:lang="nl">Introductie</guiname>
 				<guiname xml:lang="en">Intro</guiname>
-				<guiname xml:lang="zh">??</guiname>
+				<guiname xml:lang="zh">简介</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -77,7 +80,7 @@
          <gui>
             <guiname xml:lang="nl">Status</guiname>
             <guiname xml:lang="en">Status</guiname>
-            <guiname xml:lang="zh">Status</guiname>
+            <guiname xml:lang="zh">状态</guiname>
          </gui>
          <editor>
             <positions>
@@ -90,6 +93,54 @@
          <db>
             <name>status</name>
             <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Subscriptions</guiname>
+            <guiname xml:lang="en">Subscriptions</guiname>
+            <guiname xml:lang="zh">订阅</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+         <db>
+            <name>subscriptions</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Bounced</guiname>
+            <guiname xml:lang="en">Bounced</guiname>
+            <guiname xml:lang="zh">退信</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>7</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+         <db>
+            <name>bounced</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
    </fieldlist>

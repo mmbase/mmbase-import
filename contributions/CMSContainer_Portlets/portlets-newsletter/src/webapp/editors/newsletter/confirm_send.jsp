@@ -12,6 +12,8 @@
 	</style>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
+<mm:import externid="forward" />
+<mm:import externid="newsletterId"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="confirm_send.title" titleClass="side_block_green">
@@ -22,9 +24,11 @@
 		<fmt:message key="confirm_send.confirm" />
 	</p>
 	<form action="?">
+		<input type="hidden" name="forward" value="${forward}"/>      
+		<input type="hidden" name="newsletterId" value="${newsletterId}"/>
 		<html:hidden property="number" value="${number}" />
-	   	<html:submit property="remove"><fmt:message key="confirm_send.yes"/></html:submit>&nbsp;
-	   	<html:submit property="cancel"><fmt:message key="confirm_send.no"/></html:submit>
+		<html:submit property="remove"><fmt:message key="confirm_send.yes"/></html:submit>&nbsp;
+		<html:submit property="cancel"><fmt:message key="confirm_send.no"/></html:submit>
 	</form>
 </cmscedit:sideblock>
 </body>

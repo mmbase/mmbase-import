@@ -94,7 +94,12 @@
                               <td onMouseDown="objClick(this);"><mm:field name="description" /></td>
                               <td onMouseDown="objClick(this);"><mm:field name="subject" /></td>
                               <td onMouseDown="objClick(this);"><mm:field name="lastmodifier" /></td>
-                              <td onMouseDown="objClick(this);"><mm:field name="lastmodifieddate" /></td>
+                              <td onMouseDown="objClick(this);">
+                                 <mm:field name="lastmodifieddate" id="lastmodifieddate" write="false"/>
+                                    <mm:write referid="lastmodifieddate">
+                                       <mm:time format="dd-MM-yyyy hh:mm"/>
+                                    </mm:write>
+                              </td>
                            </tr>
                            <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                         </mm:listnodes>

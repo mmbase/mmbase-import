@@ -1,6 +1,5 @@
-<%@include file="globals.jsp" %>
-<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
-
+<%@include file="globals.jsp" 
+%><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <form method="post" name="operationform" action="SubscriptionManagement.do">
    <input type="hidden" name="action" id="action"/>
    <input type="hidden" name="type" id="action" value="newsletter"/>
@@ -17,8 +16,8 @@
                   <tr <mm:even inverse="true">class="swap"</mm:even>>
                      <td>
                         <input type="checkbox" name="ids" value="${result.id}"/>
-                        <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top"/></a>
-                        <a href="NewsletterDelete.do?number=${result.id}&amp;remove='true'&amp;forward='manage'"><img src="../gfx/icons/delete.png" align="top" alt=""/></a>
+                        <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top" title="<fmt:message key='site.newsletter.edit'/>"/></a>
+                        <a href="NewsletterDelete.do?number=${result.id}&amp;remove='true'&amp;forward='manage'"><img src="../gfx/icons/delete.png" align="top" title="<fmt:message key='site.newsletter.remove'/>"/></a>
                      </td>
                      <td>
                         <a href="NewsletterPublicationManagement.do?newsletterId=${result.id}">
