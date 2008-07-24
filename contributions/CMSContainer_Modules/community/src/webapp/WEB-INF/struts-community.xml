@@ -43,6 +43,8 @@
          name="communityUserForm" scope="session" unknown="false" validate="true" input="/editors/community/user.jsp">
          <set-property property="cancellable" value="true"/>
          <forward name="success" path="/editors/community/index.jsp" redirect="true" />
+         <forward name="newslettersubscribers" path="/editors/newsletter/NewsletterPublicationSubscriberSearch.do"/>
+         <forward name="newslettersubscription" path="/editors/newsletter/NewsletterSubscriptionAddRelAction.do"/>
       </action>
       <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
          unknown="false" validate="false">
