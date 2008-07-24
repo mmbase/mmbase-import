@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.28 2008-06-23 08:45:10 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.29 2008-07-24 10:45:48 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -131,6 +131,23 @@
       For url objects the url is the url field.
   -->
   <xsl:template match="o:object[@type = 'urls']" mode="url">
+    <xsl:choose>
+      <!--
+           this is a bit of a hack.
+           Following functionality should perhaps be peformed by the URL builder itself.
+      -->
+      <xsl:when test="starts-with(./o:field[@name='url'], '/') or
+                      starts-with(./o:field[@name='url'], 'http:') or
+                      starts-with(./o:field[@name='url'], 'https:') or
+                      starts-with(./o:field[@name='url'], 'mailto:') or
+                      starts-with(./o:field[@name='url'], 'ftp:')">
+        <!-- absolute -->
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- relative. But of course that can never be, so this is interpreted as relative to request context -->
+        <xsl:value-of select="$formatter_requestcontext" /><xsl:text>/</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="./o:field[@name='url']" />
   </xsl:template>
 
