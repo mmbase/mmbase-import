@@ -16,6 +16,7 @@
   <mm:import externid="fields" />
   <mm:import externid="item" />
   <mm:import externid="precreate" />
+  <mm:import externid="mm_list_sequence" required="true" />
 
   <mm:cloud method="asis">
     <mm:node id="source" referid="source" />

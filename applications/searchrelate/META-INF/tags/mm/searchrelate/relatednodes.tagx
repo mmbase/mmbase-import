@@ -9,7 +9,7 @@
 
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.17 2008-07-18 16:13:26 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.18 2008-07-24 14:22:25 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -75,7 +75,7 @@
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
-  <mm:import from="request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
+  <mm:import from="parameters,request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_list_sequence" value="${seq + 1}" />
   <c:if test="${(seq eq 0 and empty load) or load}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
@@ -96,19 +96,17 @@
         <input type="hidden" name="fields" value="${fields}" />
         <input type="hidden" name="item"   value="${itemjsp}" />
         <input type="hidden" name="seq"   value="${seq}" />
-        <input type="hidden" name="source"   value="${source}" />
+        <input type="hidden" name="source"   value="${_node}" />
       </form>
       <ol>
         <mm:node id="source" />
-
         <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q">
           <mm:sortorder field="${order}" />
           <jsp:invoke fragment="constraints" />
           <mm:relatednodes>
-            <mm:include page="/mmbase/searchrelate/list/li.jspx"
-                        referids="source,f@fields,icondir?,confirm?">
-              <mm:param name="item" value="${itemjsp}" />
-            </mm:include>
+            <mm:include
+                page="/mmbase/searchrelate/list/li.jspx"
+                referids="source,f@fields,icondir?,confirm?,itemjsp@item" />
           </mm:relatednodes>
 
         </mm:relatednodescontainer>
@@ -116,8 +114,7 @@
       </ol>
 
       <mm:link page="/mmbase/searchrelate/list/create.jspx"
-               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?">
-        <mm:param name="item" value="${itemjsp}" />
+               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
         <a href="${_}" class="create">
           <mm-sr:button alt="+" type="create" icondir="${icondir}" />
         </a>
