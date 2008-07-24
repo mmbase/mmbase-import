@@ -1,7 +1,9 @@
 package com.finalist.newsletter.cao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
@@ -194,4 +196,27 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 		// return new HashSet<Term>();
 		// >>>>>>> 1.16
 	}
+
+   public void processBouncesOfPublication(String publicationId, String userId,
+         String bounceContent) {
+      NodeManager bounceManager = cloud.getNodeManager("newsletterbounce"); 
+         Node node = bounceManager.createNode();
+         if(StringUtils.isNotEmpty(publicationId)){
+            node.setIntValue("newsletter", Integer.parseInt(publicationId));
+         }
+         if(StringUtils.isNotEmpty(userId)){
+            node.setIntValue("userid", Integer.parseInt(userId));
+         }
+         node.setStringValue("content",bounceContent);
+         node.setDateValue("bouncedate",new Date());
+         node.commit();
+      
+   }
+
+   public Set<Term> getNewsletterTermsByName(int newsltterId, String name,
+         int pagesize, int offset) {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
 }

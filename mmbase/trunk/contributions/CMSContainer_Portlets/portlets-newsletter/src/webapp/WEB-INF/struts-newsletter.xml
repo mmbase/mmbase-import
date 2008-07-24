@@ -202,6 +202,12 @@
          <forward name="add" path="/editors/newsletter/module/newslettertermadd.jsp" redirect="false" />
          <forward name="report_term" path="/editors/newsletter/module/report_term_list.jsp" redirect="false" />
 		</action>
+      <!--  Newsletter bounce   -->
+      <action path="/editors/newsletter/module/NewsletterBounceAction" 
+      scope="request" type="com.finalist.newsletter.forms.NewsletterBounceAction" parameter="method">
+			<forward name="success" path="/editors/newsletter/module/newsletterbouncelist.jsp"/>
+         <forward name="info" path="/editors/newsletter/module/newsletterbouncedetail.jsp"/>
+		</action>
    </action-mappings>
 
    <message-resources parameter="newsletter" key="newsletter"/>

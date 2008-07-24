@@ -96,26 +96,22 @@ public class NewsletterServiceImpl implements NewsletterService {
 		}
 	}
 
-	public void processBouncesOfPublication(String publicationId, String userId) {
-		// todo test.
-		int pId = Integer.parseInt(publicationId);
-		int uId = Integer.parseInt(userId);
-
-		int newsletterId = publicationCAO.getNewsletterId(pId);
-
-		Node newsletterNode = newsletterCAO.getNewsletterNodeById(newsletterId);
-		Node subscriptionNode = subscriptionCAO.getSubscriptionNode(newsletterId, uId);
-
-		int bouncesCount = subscriptionNode.getIntValue("bounces");
-		int maxAllowedBonce = newsletterNode.getIntValue("max_bounces");
-
-		if (bouncesCount > maxAllowedBonce) {
-			subscriptionCAO.pause(subscriptionNode.getNumber());
-		}
-
-		statisticCAO.logPubliction(uId, newsletterId, StatisticResult.HANDLE.BOUNCE);
-		subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
-	}
+   public void processBouncesOfPublication(String publicationId,String userId) {
+      //todo test.
+      int pId = Integer.parseInt(publicationId);
+      int uId = Integer.parseInt(userId);
+      int newsletterId = publicationCAO.getNewsletterId(pId);
+      Node newsletterNode = newsletterCAO.getNewsletterNodeById(newsletterId);
+      Node subscriptionNode =  subscriptionCAO.getSubscriptionNode(newsletterId,uId);
+      int bouncesCount = subscriptionNode.getIntValue("count_bounces");
+      int maxAllowedBonce = newsletterNode.getIntValue("max_bounces");
+      
+      if(bouncesCount > maxAllowedBonce){
+         subscriptionCAO.pause(subscriptionNode.getNumber());
+      }
+      statisticCAO.logPubliction(uId,newsletterId, StatisticResult.HANDLE.BOUNCE);
+      subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
+   }
 
 	private List<Newsletter> getAllNewsletterBySubscriber(String subscriber) {
 		return null;
@@ -134,5 +130,16 @@ public class NewsletterServiceImpl implements NewsletterService {
 		int resultCount = newsletterCAO.getNewsletterTermsCountByName(newsletterId, tmpName);
 		return resultCount;
 	}
+
+   public Set<Term> getNewsletterTermsByName(int newsletterId, String name,
+         int pagesize, int offset) {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public void processBouncesOfPublication(String publicationId, String userId,
+         String bounceContent) {
+      newsletterCAO.processBouncesOfPublication(publicationId, userId, bounceContent);
+   }
 
 }

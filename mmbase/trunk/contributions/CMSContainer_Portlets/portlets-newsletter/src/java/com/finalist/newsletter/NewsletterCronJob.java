@@ -21,10 +21,12 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.publisher.bounce.BounceChecker;
+import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.publisher.bounce.BounceChecker;
 
 public class NewsletterCronJob implements CronJob {
 
@@ -230,12 +232,11 @@ public class NewsletterCronJob implements CronJob {
    }
 
    public void init(CronEntry arg0) {
-      log.info("Initializing Newsletter CronJob");
-      BounceChecker checker = new BounceChecker();
+      NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+      BounceChecker checker = new BounceChecker(newsletterService);
       if (!checker.isRunning()) {
          checker.start();
       }
-
    }
    
    public void run() {
