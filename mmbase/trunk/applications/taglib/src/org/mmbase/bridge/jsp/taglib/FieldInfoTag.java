@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.108 2008-07-25 09:36:38 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.109 2008-07-25 10:19:06 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -279,7 +279,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         } else {
             field = fieldProvider.getFieldVar();
             if (field == null) throw new JspTagException("No field found in " + fieldProvider);
-            if (dataType != null) field = new DataTypeField(field, dataType);
+            if (dataType != null) {
+                field = new DataTypeField(field, dataType);
+            } else {
+                dataType = field.getDataType();
+            }
         }
 
         String fieldName = field.getName();
