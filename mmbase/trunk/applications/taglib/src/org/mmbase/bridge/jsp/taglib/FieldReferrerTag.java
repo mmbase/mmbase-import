@@ -23,12 +23,12 @@ import org.mmbase.bridge.Field;
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- * @version $Id: FieldReferrerTag.java,v 1.10 2006-09-27 20:48:26 michiel Exp $
+ * @version $Id: FieldReferrerTag.java,v 1.11 2008-07-25 11:39:42 michiel Exp $
  */
 
 public abstract class FieldReferrerTag extends NodeReferrerTag {
 
-    private Attribute parentFieldId = Attribute.NULL;
+    protected Attribute parentFieldId = Attribute.NULL;
 
     public void setField(String field) throws JspTagException {
         parentFieldId = getAttribute(field);
@@ -39,12 +39,16 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
     * @return the FieldProvider if found else an exception.
     *
     */
-    public FieldProvider findFieldProvider() throws JspTagException {
-        FieldProvider fp =  findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
+    public FieldProvider findFieldProvider(boolean ex) throws JspTagException {
+        FieldProvider fp =  findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this), ex);
         if (fp instanceof Writer) {
             ((Writer) fp).haveBody();
         }
         return fp;
+    }
+
+    public FieldProvider findFieldProvider() throws JspTagException {
+        return findFieldProvider(true);
     }
 
 
