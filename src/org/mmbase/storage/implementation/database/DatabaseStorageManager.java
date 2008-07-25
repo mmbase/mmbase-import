@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.194 2008-07-22 05:29:19 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.195 2008-07-25 11:16:34 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -382,6 +382,23 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
+     * Sometimes (legacy) string were stored in binary fields. They must be dealt with seperately.
+     *
+     * @since MMBase-1.9
+     */
+    protected boolean isBinaryColumnType(int st) {
+        switch(st) {
+        case Types.CLOB:
+        case Types.BLOB:
+        case Types.LONGVARBINARY:
+        case Types.VARBINARY:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /**
      * Retrieve a text for a specified object field.
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
@@ -395,7 +412,8 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected Object getStringValue(ResultSet result, int index, CoreField field, boolean mayShorten) throws StorageException, SQLException {
         String untrimmedResult = null;
-        if (field != null && (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT))) {
+        // would be equals to field.getStorageType()
+        if (isBinaryColumnType(result.getMetaData().getColumnType(index)) || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             InputStream inStream = result.getBinaryStream(index);
             if (result.wasNull()) {
                 return null;
@@ -536,7 +554,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected boolean shorten(CoreField field) {
-        return field.getType() == Field.TYPE_BINARY;
+        return field != null && field.getType() == Field.TYPE_BINARY;
     }
 
     /**
@@ -598,7 +616,7 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException(sqe);
         }
     }
-    
+
 
     /**
      * @see org.mmbase.storage.StorageManager#getInputStreamValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
@@ -863,9 +881,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
-     * @param mayShorten shorten the value when it might be large 
+     * @param mayShorten shorten the value when it might be large
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
-     * @throws StorageException if an error occurred during reading 
+     * @throws StorageException if an error occurred during reading
      */
     protected Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         String fieldName = field.getName();
@@ -1031,7 +1049,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param query update query
      * @param node updated node
      * @param fields updated fields
-     * @throws SQLException if database connections failures occurs 
+     * @throws SQLException if database connections failures occurs
      * @return The result of {@link PreparedStatement#executeUpdate}. That would normally be
      * <code>1</code>, but <code>0</code> when upating a not that does not exists any more.
      *
@@ -1540,8 +1558,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @param index index in statement to set the value in
      * @param objectValue value to set
      * @param field update of this node field
-     * @param node updated node 
-     * @throws StorageException error occured in storage layer 
+     * @param node updated node
+     * @throws StorageException error occured in storage layer
      * @throws SQLException if database connections failures occurs
      * @since MMBase-1.7.1
      */
@@ -1692,7 +1710,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
-     * @throws StorageException error occured in storage layer 
+     * @throws StorageException error occured in storage layer
      */
     protected void refresh(MMObjectNode node) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1895,7 +1913,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Determines whether the storage should make a field definition in a builder table for a
      * specified field.
-     * @param field 
+     * @param field
      * @return storage should make a field definition
      */
     protected boolean isPartOfBuilderDefinition(CoreField field) {
@@ -3131,7 +3149,7 @@ public class DatabaseStorageManager implements StorageManager {
                 result.getBlob(index);
             }
             else {
-                result.getBinaryStream(index);                
+                result.getBinaryStream(index);
             }
             break;
         case Field.TYPE_DATETIME :
