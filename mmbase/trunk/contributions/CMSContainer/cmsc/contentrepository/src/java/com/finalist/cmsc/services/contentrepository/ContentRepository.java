@@ -11,8 +11,7 @@ package com.finalist.cmsc.services.contentrepository;
 
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.NodetypeBean;
-
+import com.finalist.cmsc.beans.NodetypeBean;
 import com.finalist.cmsc.beans.om.ContentChannel;
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.services.ServiceManager;

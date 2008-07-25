@@ -10,33 +10,19 @@ See http://www.MMBase.org/license
 package com.finalist.portlets.ecard;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.mmbase.EmailUtil;
-import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.*;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.ContentChannelPortlet;
@@ -68,6 +54,7 @@ public class EcardPortlet extends ContentChannelPortlet {
    protected static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
 
+   @Override
    public void processView(ActionRequest request, ActionResponse response) {
       Map<String, String> errorMessages = new HashMap<String, String>();
       Map<String, String> parameterMap = new HashMap<String, String>();
@@ -260,6 +247,7 @@ public class EcardPortlet extends ContentChannelPortlet {
    }
 
 
+   @Override
    public void processEdit(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       super.processEdit(request, response);
 

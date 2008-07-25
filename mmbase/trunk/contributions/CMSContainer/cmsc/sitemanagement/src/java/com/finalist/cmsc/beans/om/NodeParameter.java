@@ -12,9 +12,9 @@ package com.finalist.cmsc.beans.om;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.NodeBean;
-
 import org.mmbase.bridge.Node;
+
+import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Wouter Heijke

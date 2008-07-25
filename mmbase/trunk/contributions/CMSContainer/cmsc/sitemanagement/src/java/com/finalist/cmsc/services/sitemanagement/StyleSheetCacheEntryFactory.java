@@ -11,10 +11,9 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.io.Serializable;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.Stylesheet;
 import com.finalist.cmsc.navigation.PagesUtil;
 

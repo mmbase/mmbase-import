@@ -9,10 +9,10 @@
  */
 package com.finalist.tree.ajax;
 
+import com.finalist.cmsc.util.XmlUtil;
 import com.finalist.tree.Tree;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.TreeModel;
-import net.sf.mmapps.commons.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

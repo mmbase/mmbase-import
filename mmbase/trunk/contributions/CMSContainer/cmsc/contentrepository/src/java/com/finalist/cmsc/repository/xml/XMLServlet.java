@@ -10,7 +10,6 @@ import javax.servlet.http.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import net.sf.mmapps.commons.util.HttpUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +24,7 @@ import org.xml.sax.SAXException;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.util.HttpUtil;
 import com.finalist.cmsc.util.XsltUtil;
 
 /**

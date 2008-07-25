@@ -26,13 +26,13 @@ import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.UploadUtil;
-import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
+
+import com.finalist.cmsc.util.UploadUtil;
+import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
 public class BulkUploadUtil {
 

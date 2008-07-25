@@ -1,20 +1,15 @@
 package com.finalist.cmsc.repository.forms;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.KeywordUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -31,6 +26,7 @@ import com.finalist.cmsc.resources.forms.QueryStringComposer;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.PagerAction;
+import com.finalist.cmsc.util.KeywordUtil;
 
 public class SearchAction extends PagerAction {
 
@@ -68,7 +64,7 @@ public class SearchAction extends PagerAction {
            else {
             deleteContent(deleteContentRequest);
            }
-            
+
             // add a flag to let search result page refresh the channels frame,
             // so that the number of item in recyclebin can update
             request.setAttribute("refreshChannels", "refreshChannels");
@@ -164,7 +160,7 @@ public class SearchAction extends PagerAction {
                 String paramValue = request.getParameter(paramName);
                 if (StringUtils.isNotEmpty(paramValue)) {
                     SearchUtil.addLikeConstraint(query, field, paramValue.trim());
-                } 
+                }
                 queryStringComposer.addParameter(paramName, paramValue);
             }
         }
@@ -260,10 +256,10 @@ public class SearchAction extends PagerAction {
           String[] deleteContents = deleteContent.split(",");
           for(String content : deleteContents) {
              deleteContent(content);
-          } 
+          }
        }
     }
-    
+
     private void deleteContent(String deleteContentRequest) {
         StringTokenizer commandAndNumber = new StringTokenizer(deleteContentRequest, ":");
         String command = commandAndNumber.nextToken();

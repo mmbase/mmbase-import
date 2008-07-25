@@ -12,11 +12,8 @@ package com.finalist.cmsc.taglib.stats;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.*;
 
-import net.sf.mmapps.commons.util.EncodingUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,10 +24,11 @@ import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
+import com.finalist.cmsc.util.EncodingUtil;
 
 /**
  * Tag that parses a netstat string with the current location.
- * 
+ *
  * @author Bas Piepers, Remco Bos
  */
 public class NedstatTag extends CmscTag {
@@ -79,6 +77,7 @@ public class NedstatTag extends CmscTag {
                                                          // bannerRedirect.jsp
 
 
+   @Override
    public void doTag() throws JspException, IOException {
       /*
        * Only construct nedstat tag if this is the live production environment.

@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import net.sf.mmapps.commons.util.XmlUtil;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.finalist.cmsc.util.XmlUtil;
 
 public class Generator {
 

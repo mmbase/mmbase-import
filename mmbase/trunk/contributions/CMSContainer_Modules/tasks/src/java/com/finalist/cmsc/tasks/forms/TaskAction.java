@@ -14,12 +14,11 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.cmsc.tasks.TasksUtil;
 

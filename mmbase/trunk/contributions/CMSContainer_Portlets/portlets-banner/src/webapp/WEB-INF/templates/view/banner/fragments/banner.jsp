@@ -39,7 +39,7 @@ banner positions are generated.
             <mm:first>
                 <%-- the url to the flashmovie with the click url appended and encoded, we cannot use the attachment and url tags together --%>
                 <c:set var="flashUrl">
-                	<% String fullUrl = net.sf.mmapps.commons.util.HttpUtil.getServerDocRoot(request);
+                	<% String fullUrl = com.finalist.cmsc.util.HttpUtil.getServerDocRoot(request);
                 		fullUrl += (String) pageContext.getAttribute("renderUrl"); %>
                     <mm:attachment />?clickTAG=<%=URLEncoder.encode(fullUrl)%>
                 </c:set>

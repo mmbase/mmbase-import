@@ -11,14 +11,13 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.io.Serializable;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.PortletUtil;
 

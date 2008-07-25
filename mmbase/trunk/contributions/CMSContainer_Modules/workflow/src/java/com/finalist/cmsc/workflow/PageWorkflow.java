@@ -12,8 +12,6 @@ package com.finalist.cmsc.workflow;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
-
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.RelationStep;
@@ -21,8 +19,10 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.security.*;
+import com.finalist.cmsc.security.Role;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.services.workflow.WorkflowException;
@@ -49,6 +49,7 @@ public class PageWorkflow extends WorkflowManager {
    }
 
 
+   @Override
    public Node createFor(Node page, String remark) {
       synchronized (page) {
          if (hasWorkflow(page)) {
@@ -136,6 +137,7 @@ public class PageWorkflow extends WorkflowManager {
    }
 
 
+   @Override
    public void complete(Node contentNode) {
       complete(contentNode, TYPE_PAGE);
    }

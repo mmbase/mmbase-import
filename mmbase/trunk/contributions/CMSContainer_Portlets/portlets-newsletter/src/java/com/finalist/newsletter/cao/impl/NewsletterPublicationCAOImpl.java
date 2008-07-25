@@ -2,8 +2,6 @@ package com.finalist.newsletter.cao.impl;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -13,6 +11,7 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.domain.*;

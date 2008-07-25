@@ -17,7 +17,6 @@ import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.portlet.*;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -32,6 +31,7 @@ import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.util.PublishUtil;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 

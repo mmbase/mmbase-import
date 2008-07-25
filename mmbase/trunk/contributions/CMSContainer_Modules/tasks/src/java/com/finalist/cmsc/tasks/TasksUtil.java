@@ -4,13 +4,12 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
-
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.AggregatedField;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 

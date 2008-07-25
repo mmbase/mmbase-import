@@ -9,20 +9,21 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.workflow;
 
-import java.util.*;
-
-import net.sf.mmapps.commons.bridge.RelationUtil;
+import java.util.Iterator;
+import java.util.List;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.security.*;
+import com.finalist.cmsc.security.Role;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.cmsc.services.workflow.WorkflowException;
 import com.finalist.cmsc.services.workflow.Workflow;
+import com.finalist.cmsc.services.workflow.WorkflowException;
 
 public class LinkWorkflow extends RepositoryWorkflow {
 
@@ -57,6 +58,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    }
 
 
+   @Override
    public void finishWriting(Node content, String remark) {
       throw new UnsupportedOperationException("Linked workflows are always finished after linking");
    }
@@ -66,6 +68,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
     * Status change to 'APPROVED'. The workflow appears on all chiefeditor
     * workflow screens
     */
+   @Override
    public void accept(Node node, String remark) {
       Node wfItem;
       Node channel;
@@ -88,6 +91,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    }
 
 
+   @Override
    public void reject(Node node, String remark) {
       Node wfItem;
       if (RepositoryUtil.isContentChannel(node)) {
@@ -108,11 +112,13 @@ public class LinkWorkflow extends RepositoryWorkflow {
    /**
     * Put content elements in publishqueue
     */
+   @Override
    public void publish(Node node) throws WorkflowException {
       publish(node, null);
    }
 
 
+   @Override
    public void publish(Node node, List<Integer> publishNumbers) throws WorkflowException {
       Node channel;
       if (RepositoryUtil.isContentChannel(node)) {
@@ -125,6 +131,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    }
 
 
+   @Override
    protected void publishInternal(Node wf, Node node) {
       NodeList nodes = getAllWorkflowNodes(wf);
       if (nodes.size() == 1) {
@@ -144,6 +151,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    }
 
 
+   @Override
    public void complete(Node contentNode) {
       complete(contentNode, TYPE_LINK);
    }
