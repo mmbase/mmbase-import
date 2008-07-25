@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacer.java,v 1.26 2008-07-25 11:36:47 michiel Exp $
+ * @version $Id: RegexpReplacer.java,v 1.27 2008-07-25 11:44:02 michiel Exp $
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {
@@ -151,11 +151,12 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         if (onlyFirstPattern) {
             // linked list while we're going to do a lot of changing:
             chunks = new LinkedList<Chunk>();
-            chunks.add(new Chunk(string));
         } else {
-            // will not make any changes
-            chunks = Collections.singletonList(new Chunk(string));
+            // will not make additions
+            chunks = new ArrayList<Chunk>(1);
         }
+        chunks.add(new Chunk(string));
+
 
         for (Map.Entry<Pattern, String> entry : getPatterns()) {
             Pattern p = entry.getKey();
