@@ -423,6 +423,10 @@
     <name>blocks</name>
     <path>/META-INF/tags/di/core/blocks.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>img</name>
+    <path>/META-INF/tags/di/core/img.tagx</path>
+  </tag-file>
 
   <function>
     <description>
