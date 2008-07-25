@@ -31,7 +31,7 @@
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
-
+  <property name="output" location="results.log" />
 
   <import file="../install-dependency.xml" />
 
@@ -57,9 +57,9 @@
   <target name="stop.database" depends="init">
     <echo message="Stopping database" />
     <java
-      classname="org.mmbase.tests.ShutdownHsql"
-      fork="true"
-      classpathref="run.classpath"
+        classname="org.mmbase.tests.ShutdownHsql"
+        fork="true"
+        classpathref="run.classpath"
       >
     </java>
   </target>
@@ -91,12 +91,12 @@
   </target>
 
   <target name="init" unless="inited">
-    <antcall target="download" />
+    <antcall target="download" inheritRefs="true"/>
 
     <mkdir dir="${tests.lib}" />
     <mkdir dir="${tests.work.dir}"/>
 
-    <echo message="mmbase version ${version}" />
+    <echo message="Initing. Testing mbase version ${version}" />
 
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
@@ -162,7 +162,7 @@
 
 
 
-  <target name="compile" description="Compile the source directory" depends="init">
+  <target name="compile" description="Compile the source directory" depends="init" unless="compiled">
 
 
     <mkdir dir="${tests.build.dir}/classes"/>
@@ -247,6 +247,7 @@
       <src path="${tests.source.dir}/releasestrategy"/>
       <include name="**/*.java"/>
     </javac>
+    <property name="compiled" value="yes" />
   </target>
 
 
@@ -254,11 +255,11 @@
     <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
       <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**,lib/**,build.xml" />
     </uptodate>
-    <echo message="up to date: ${jar.uptodate}" />
+    <echo level="debug" message="up to date: ${jar.uptodate}" />
   </target>
 
   <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
-    <echo message="${mmbasetest.jar} is up-to-date" />
+    <echo level="debug" message="${mmbasetest.jar} is up-to-date" />
   </target>
 
 
@@ -288,26 +289,33 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.typerel" depends="jar,init" description="Allowed Relations tests">
-    <antcall target="clean.database" />
+    <antcall target="clean.database" inheritRefs="true" />
     <java
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"
-      >
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
       <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <assertions><enable /></assertions>
+      <redirector
+          output="${output}"
+          append="true"
+          alwayslog="true"
+          />
     </java>
   </target>
 
   <target name="run.releasestrategy" depends="jar,init" description="Query Result Release Strategy tests">
     <antcall target="clean.database" />
     <java
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"
-      >
+        output="${output}"
+        append="true"
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
       <arg value="org.mmbase.cache.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
@@ -320,6 +328,8 @@ Build-compiler: ${build.compiler}
     <antcall target="clean.database" />
     <echo message="Starting ${ui.class}: " />
     <java
+        output="${output}"
+        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -349,6 +359,8 @@ Build-compiler: ${build.compiler}
       </daemons>
       <echo message="starting client" />
       <java
+          output="${output}"
+          append="true"
           classname="${ui.class}"
           fork="true"
           classpathref="run.rmmci.client"
@@ -359,16 +371,18 @@ Build-compiler: ${build.compiler}
         <assertions><enable /></assertions>
       </java>
     </parallel>
-    <antcall target="stop.database" />
+    <antcall target="stop.database" inheritRefs="true" />
   </target>
 
 
   <target name="run.convertimage" depends="jar,init" description="Image conversion tests">
     <java
-      classname="${ui.class}"
-      fork="true"
-      classpathref="run.classpath"
-      >
+        output="${output}"
+        append="true"
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
       <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -378,8 +392,10 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.dbsq" depends="jar,init" description="SearchQuery tests">
-    <antcall target="clean.database" />
+    <antcall target="clean.database" inheritRefs="true"/>
     <java
+        output="${output}"
+        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -393,7 +409,9 @@ Build-compiler: ${build.compiler}
 
   <target name="run.util" depends="init,jar" description="Various tests on utitilies (org.mmbase.util)">
     <java
-    	classname="${ui.class}"
+        output="${output}"
+        append="true"
+        classname="${ui.class}"
         fork="true"
         classpathref="run.classpath">
       <arg value="org.mmbase.util.UtilTests" />
@@ -404,11 +422,11 @@ Build-compiler: ${build.compiler}
   </target>
 
   <target name="run.clustering" depends="jar,init" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
-    <antcall target="clean.database" />
+    <antcall target="clean.database" inheritRefs="true"/>
     <parallel>
       <echo message="${tests.source.dir}/config" />
       <daemons>
-        <antcall target="start.database" />
+        <antcall target="start.database" inheritRefs="true"/>
         <java
             classname="org.mmbase.tests.MMBaseTest"
             fork="true"
@@ -445,12 +463,14 @@ Build-compiler: ${build.compiler}
       <sequential>
         <sleep seconds="40" />
         <java
+            output="${output}"
+            append="true"
             classname="${ui.class}"
             fork="true"
             classpathref="run.rmmci.client">
           <arg value="org.mmbase.tests.Clustering" />
         </java>
-        <antcall target="stop.database" />
+        <antcall target="stop.database" inheritRefs="true"/>
       </sequential>
     </parallel>
   </target>
@@ -460,10 +480,10 @@ Build-compiler: ${build.compiler}
 
   <target name="standalone" depends="jar,init" description="Start a stand-alone MMBase instantion">
     <java
-      classname="org.mmbase.tests.MMBaseTest"
-      fork="true"
-      classpathref="run.classpath"
-      >
+        classname="org.mmbase.tests.MMBaseTest"
+        fork="true"
+        classpathref="run.classpath"
+        >
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Dmmbase.machinename=remotecontext" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
@@ -475,36 +495,36 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="run.all" description="Run all tests">
     <echo message="========================================DBSQ========================================" />
-    <antcall target="run.dbsq" />
+    <antcall target="run.dbsq" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================TYPEREL========================================" />
-    <antcall target="run.typerel" />
+    <antcall target="run.typerel" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================BRIDGE========================================" />
-    <antcall target="run.bridge" />
+    <antcall target="run.bridge" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================RMMCI========================================" />
-    <antcall target="run.bridge.rmmci" />
+    <antcall target="run.bridge.rmmci" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================UTIL========================================" />
-    <antcall target="run.util" />
+    <antcall target="run.util" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================CLUSTERING========================================" />
-    <antcall target="run.clustering" />
+    <antcall target="run.clustering" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================RELEASESTRATEGY========================================" />
-    <antcall target="run.releasestrategy" />
+    <antcall target="run.releasestrategy" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================CONVERTIMAGE========================================" />
-    <antcall target="run.convertimage" />
+    <antcall target="run.convertimage" inheritRefs="true"/>
   </target>
 
   <target name="run.test">
     <echo message="========================================RMMCI========================================" />
-    <antcall target="run.bridge.rmmci" />
+    <antcall target="run.bridge.rmmci" inheritRefs="true"/>
     <echo message="========================================CLUSTERING========================================" />
     <sleep seconds="10" />
-    <antcall target="run.clustering" />
+    <antcall target="run.clustering" inheritRefs="true"/>
   </target>
 
   <target name="run.database">
@@ -525,7 +545,7 @@ Build-compiler: ${build.compiler}
       </daemons>
     </parallel>
     <sleep seconds="10" />
-    <antcall target="stop.database" />
+    <antcall target="stop.database" inheritRefs="true"/>
     <sleep seconds="10" />
   </target>
 
