@@ -1,11 +1,11 @@
 package com.finalist.cmsc.rssfeed;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +38,14 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
    private Log log = LogFactory.getLog(RssFeedNavigationRenderer.class);
 
-   private final static DateFormat formatRFC822Date = new SimpleDateFormat("EE d MMM yyyy HH:mm:ss zzzzz");
+   /**
+    * The date format defined in RFC 822 and used in RSS feeds.
+    * See e.g. http://www.faqs.org/rfcs/rfc822.html
+    */
+   private final static SimpleDateFormat formatRFC822Date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
    public String getContentType() {
-        return "application/xml+rss";
+        return "application/rss+xml";
     }
    
 
