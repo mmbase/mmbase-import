@@ -16,6 +16,7 @@
 		<prompt xml:lang="en">Definition</prompt>
 		<prompt xml:lang="nl">Definitie</prompt>
 	</field>
+	<field name="expirationcache" />
    <list include="config/portlet/search_portletdefinition_definitionrel_portlet.xml" />
 	<list include="config/typedef/search_portletdefinition_allowrel_typedef.xml" />
 	<list include="config/view/search_portletdefinition_allowrel_view.xml" />
