@@ -52,11 +52,12 @@ public class RichText {
    public static final String WIDTH_ATTR = "width";
    public static final String HEIGHT_ATTR = "height";
 
-   // mmbase stuff
+   // MMBase stuff
    public final static String RICHTEXT_TYPE = "cmscrichtext";
    public final static String INLINEREL_NM = "inlinerel";
    public final static String IMAGEINLINEREL_NM = "imageinlinerel";
    public static final String REFERID_FIELD = "referid";
+   public static final String TITLE_FIELD = "title";
 
 
    public final static boolean hasRichtextItems(String in) {

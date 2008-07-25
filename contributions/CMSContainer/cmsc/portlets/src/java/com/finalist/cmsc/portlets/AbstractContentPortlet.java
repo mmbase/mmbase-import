@@ -12,23 +12,9 @@ package com.finalist.cmsc.portlets;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.portlet.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
@@ -240,27 +226,21 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
    protected void setMetaData(RenderRequest req, String elementId) {
       try {
          ContentElement element = ContentRepository.getContentElement(elementId);
-
-         PortletFragment portletFragment = getPortletFragment(req);
-         portletFragment
-               .addHeaderResource(new MetaHeaderResource(true, "title", element.getTitle()));
-         portletFragment.addHeaderResource(new MetaHeaderResource(true, "subject", element
-               .getKeywords()));
-         portletFragment.addHeaderResource(new MetaHeaderResource(true, "date", formatDate(element
-               .getCreationdate())));
-         portletFragment.addHeaderResource(new MetaHeaderResource(true, "identifier", elementId));
-         portletFragment.addHeaderResource(new MetaHeaderResource(true, "coverage",
-               formatDate(element.getPublishdate()) + " - " + formatDate(element.getExpirydate())));
+         if (element != null) { //When element not found, skip it. 
+            PortletFragment portletFragment = getPortletFragment(req);
+            portletFragment.addHeaderResource(new MetaHeaderResource(true, "title", element.getTitle()));
+            portletFragment.addHeaderResource(new MetaHeaderResource(true, "subject", element.getKeywords()));
+            portletFragment.addHeaderResource(new MetaHeaderResource(true, "date", formatDate(element.getCreationdate())));
+            portletFragment.addHeaderResource(new MetaHeaderResource(true, "identifier", elementId));
+            portletFragment.addHeaderResource(new MetaHeaderResource(true, "coverage",
+                  formatDate(element.getPublishdate()) + " - " + formatDate(element.getExpirydate())));
+         }
       }
       catch (RuntimeException re) {
-         if (re.getMessage().startsWith("Node not found")) {
-            getLogger().debug("Node not found", re);
-         }
-         else {
-            getLogger().error(re);
-         }
+         getLogger().error(re);
       }
    }
+
 
    private String formatDate(Date date) {
       if (date == null) {
