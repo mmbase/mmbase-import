@@ -91,9 +91,7 @@ function postUpdate(originalRequest) {
    </table>
 
 </html:form>
-<mm:notpresent referid="newsletterId">
 <div class="ruler_green"><div><fmt:message key="newsletter.term.search.result" /></div></div>
-</mm:notpresent>
 <div class="body">
 <mm:notpresent referid="newsletterId" >
 <form action="${actionUrl}" name="termForm" method="post">
