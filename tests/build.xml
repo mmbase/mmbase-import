@@ -26,6 +26,7 @@
   <property name="tests.database.dir"    value="${tests.work.dir}/data" />
 
   <property name="lib"             location="lib" />
+  <property name="jardest"         value="${lib}" />
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
@@ -65,46 +66,37 @@
 
 
   <target name="local.download" unless="no">
-    <antcall target="mmbase.jar">
-      <param name="dest" location="${lib}" />
-    </antcall>
+    <!--
+    <antcall target="mmbase.jar" />
     <antcall target="install.jar">
       <param name="name" value="mmbase-resources" />
-      <param name="dest" location="${lib}" />
     </antcall>
     <antcall target="install.jar">
       <param name="name" value="mmbase-rmmci" />
-      <param name="dest" location="${lib}" />
     </antcall>
-    <antcall target="rmmci-client">
-      <param name="dest" location="${lib}" />
-    </antcall>
+    <antcall target="rmmci-client" />
     <antcall target="install.jar">
       <param name="name" value="mmbase-clustering" />
-      <param name="dest" location="${lib}" />
     </antcall>
+    -->
   </target>
+
   <target name="download" unless="no" depends="local.download">
+    <echo message="downloading" />
     <mkdir dir="${lib}" />
-    <antcall target="junit">
-      <param name="dest" location="${lib}" />
-    </antcall>
-    <antcall target="servletapi">
-      <param name="dest" location="${lib}" />
-    </antcall>
-    <antcall target="hsqldb">
-      <param name="dest" location="${lib}" />
-    </antcall>
-    <antcall target="commons-fileupload">
-      <param name="dest" location="${lib}" />
-    </antcall>
-    <antcall target="log4j">
-      <param name="dest" location="${lib}" />
-    </antcall>
+    <!--
+    <antcall target="junit" />
+    <antcall target="servletapi" />
+    <antcall target="hsqldb" />
+    <antcall target="commons-fileupload" />
+    <antcall target="log4j" />
+    -->
     <property name="no" value="yes" />
   </target>
 
-  <target name="init" depends="download">
+  <target name="init" unless="inited">
+    <antcall target="download" />
+
     <mkdir dir="${tests.lib}" />
     <mkdir dir="${tests.work.dir}"/>
 
@@ -158,7 +150,8 @@
         </fileset>
       </classpath>
     </available>
-    <echo message="${run.classpath}" />
+    <echo level="debug" message="${run.classpath}" />
+    <property name="inited" value="true" />
   </target>
 
 
@@ -178,7 +171,7 @@
 
     <mkdir dir="${tests.build.dir}/classes"/>
 
-    <echo message="copying" />
+    <echo level="debug" message="copying" />
 
     <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
       <fileset dir="${tests.source.dir}/dbsq" >
@@ -240,7 +233,7 @@
       </fileset>
     </copy>
 
-    <echo message="compiling" />
+    <echo level="debug" message="compiling" />
 
     <javac destdir="${tests.build.dir}/classes"
            debug="true"
@@ -263,8 +256,9 @@
 
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
-      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**" />
+      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**,lib/**,build.xml" />
     </uptodate>
+    <echo message="up to date: ${jar.uptodate}" />
   </target>
 
   <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
@@ -274,7 +268,8 @@
 
   <target name="jar" description="Create the MMBase testjar file"
           depends="jar.check" unless="jar.uptodate">
-    <antcall target="compile" />
+    <echo message="compiling" />
+    <antcall target="compile" inheritAll="true" inheritRefs="true" />
 
     <echo file="${tests.build.dir}/manifest.mf">
 Name: org/mmbase
