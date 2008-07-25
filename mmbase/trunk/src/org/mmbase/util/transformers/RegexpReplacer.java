@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacer.java,v 1.25 2008-07-24 21:19:17 michiel Exp $
+ * @version $Id: RegexpReplacer.java,v 1.26 2008-07-25 11:36:47 michiel Exp $
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {
@@ -119,7 +119,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      *        expression. The value is still a String. New entries will be added to this collection
      *        by this function.
      */
-    protected static void addPatterns(Collection<Map.Entry<String, String>> list, 
+    protected static void addPatterns(Collection<Map.Entry<String, String>> list,
                                       Collection<Entry<Pattern, String>> patterns) {
         if (list != null) {
             for (Map.Entry<String, String> entry : list) {
@@ -148,7 +148,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         boolean r = false; // result value
 
         List<Chunk> chunks;
-        if (onlyFirstMatch) {
+        if (onlyFirstPattern) {
             // linked list while we're going to do a lot of changing:
             chunks = new LinkedList<Chunk>();
             chunks.add(new Chunk(string));
