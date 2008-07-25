@@ -182,15 +182,15 @@ public class RegexpReplacer extends ChunkedTransformer {
         boolean r = false; // result value
 
         List chunks;
-        if (onlyFirstMatch) {
+        if (onlyFirstPattern) {
             // linked list while we're going to do a lot of changing:
             chunks = new LinkedList();
-            chunks.add(new Chunk(string));
         } else {
             // will not make any changes
-            chunks = new ArrayList();
-            chunks.add(new Chunk(string));
+            chunks = new ArrayList(1);
         }
+        chunks.add(new Chunk(string));
+
 
         Iterator j = getPatterns().iterator();
         while (j.hasNext()) {
