@@ -12,6 +12,7 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
+	<field name="expirationcache" />
 	<list include="config/nodeparameter/search_portlet_parameterrel_nodeparameter.xml" />
 	<list include="config/portletdefinition/search_portlet_definitionrel_portletdefinition.xml" />
 	<list include="config/portletparameter/search_portlet_parameterrel_portletparameter.xml" />

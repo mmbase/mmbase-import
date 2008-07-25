@@ -3,16 +3,15 @@ package com.finalist.pluto.portalImpl.aggregation;
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.beans.om.Layout;
+import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 
 /**
@@ -47,12 +46,31 @@ public class ScreenFragment extends AbstractFragment {
    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       setupRequest(request);
 
+      int expirationCache = -1;
+
       Iterator<PortletFragment> portlets = this.getChildFragments().iterator();
       while (portlets.hasNext()) {
           PortletFragment portlet = portlets.next();
          // let the Portlet do it's thing
          portlet.service(request, response);
+
+         int portletExpiration = portlet.getExpirationCache();
+         if (portletExpiration > -1) {
+            if (expirationCache == -1) {
+               expirationCache = portletExpiration;
+            }
+            else {
+               expirationCache = Math.min(expirationCache, portletExpiration);
+            }
+         }
       }
+
+
+      long expires = System.currentTimeMillis();
+      if (expirationCache > -1) {
+         expires += expirationCache * 1000; // seconds to milliseconds
+      }
+      response.setDateHeader("Expires", expires);
 
       if (page != null) {
          if (layout != null) {
@@ -70,6 +88,7 @@ public class ScreenFragment extends AbstractFragment {
       else {
          log.error("No page for ScreenFragment");
       }
+
       cleanRequest(request);
    }
 

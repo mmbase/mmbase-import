@@ -11,7 +11,7 @@ package com.finalist.cmsc.beans.om;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 @SuppressWarnings("serial")
 public class PortletDefinition extends NodeBean implements Comparable<PortletDefinition> {
@@ -23,7 +23,7 @@ public class PortletDefinition extends NodeBean implements Comparable<PortletDef
    private List<String> contenttypes = new ArrayList<String>();
    private List<Integer> allowedViews = new ArrayList<Integer>();
    private int rank;
-
+   private int expirationcache = -1; // when field is not present or virtual then this is the default value
 
    public String getTitle() {
       return title;
@@ -108,5 +108,18 @@ public class PortletDefinition extends NodeBean implements Comparable<PortletDef
    public void setRank(int rank) {
       this.rank = rank;
    }
+
+
+
+   public int getExpirationcache() {
+      return expirationcache;
+   }
+
+
+
+   public void setExpirationcache(int expirationcache) {
+      this.expirationcache = expirationcache;
+   }
+
 
 }

@@ -18,8 +18,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.HttpUtil;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
@@ -35,6 +34,7 @@ import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
+import com.finalist.cmsc.util.HttpUtil;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 import com.finalist.pluto.portalImpl.om.entity.impl.PortletEntityImpl;
@@ -64,6 +64,7 @@ public class PortletFragment extends AbstractFragment {
    private com.finalist.cmsc.beans.om.Portlet portlet;
    private PortletWindow portletWindow;
    private StringWriter storedWriter;
+   private int expirationCache = -1;
 
    private List<HeaderResource> headerResources;
 
@@ -72,6 +73,14 @@ public class PortletFragment extends AbstractFragment {
          com.finalist.cmsc.beans.om.Portlet portlet, com.finalist.cmsc.beans.om.PortletDefinition definition, View view)
          throws Exception {
       super(layoutId, config, parent);
+
+      if (portlet == null) {
+         throw new IllegalArgumentException("Portlet is null for layoutid " + layoutId);
+      }
+      if (definition == null) {
+         throw new IllegalArgumentException("Portlet is null for layoutid " + layoutId);
+      }
+
       this.portlet = portlet;
 
       PortletEntityImpl portletEntity = new PortletEntityImpl();
@@ -80,42 +89,68 @@ public class PortletFragment extends AbstractFragment {
 
       // for now set CMSC portlet params in the preferences of the portlet
       // entiy
-      if (portlet != null) {
-         log.debug("Create - portlet: " + portlet.getId());
+      log.debug("Create - portlet: " + portlet.getId());
 
-         PreferenceSetImpl ps = (PreferenceSetImpl) portletEntity.getPreferenceSet();
-         setDefaultPreferences(ps);
+      PreferenceSetImpl ps = (PreferenceSetImpl) portletEntity.getPreferenceSet();
+      setDefaultPreferences(ps);
 
-         List<Object> p = portlet.getPortletparameters();
-         if (!p.isEmpty()) {
-            Iterator<Object> pparams = p.iterator();
-            while (pparams.hasNext()) {
-               Object objectParam = pparams.next();
-               if (objectParam instanceof PortletParameter) {
-                  PortletParameter param = (PortletParameter) objectParam;
-                  String key = param.getKey();
-                  List<String> values = param.getValues();
-                  if (values != null) {
-                     log.debug("key: " + key + " value: " + values);
-                     ps.add(key, values);
-                  }
+      List<Object> p = portlet.getPortletparameters();
+      if (!p.isEmpty()) {
+         Iterator<Object> pparams = p.iterator();
+         while (pparams.hasNext()) {
+            Object objectParam = pparams.next();
+            if (objectParam instanceof PortletParameter) {
+               PortletParameter param = (PortletParameter) objectParam;
+               String key = param.getKey();
+               List<String> values = param.getValues();
+               if (values != null) {
+                  log.debug("key: " + key + " value: " + values);
+                  ps.add(key, values);
                }
-               if (objectParam instanceof NodeParameter) {
-                  NodeParameter param = (NodeParameter) objectParam;
-                  String key = param.getKey();
-                  List<String> values = param.getValues();
-                  if (values != null) {
-                     log.debug("key: " + key + " value: " + values);
-                     ps.add(key, values);
-                  }
+            }
+            if (objectParam instanceof NodeParameter) {
+               NodeParameter param = (NodeParameter) objectParam;
+               String key = param.getKey();
+               List<String> values = param.getValues();
+               if (values != null) {
+                  log.debug("key: " + key + " value: " + values);
+                  ps.add(key, values);
                }
             }
          }
+      }
 
-         // also add the view
-         if (view != null) {
-            ps.add(PortalConstants.CMSC_OM_VIEW_ID, view.getId());
-            ps.add(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, view.getResource());
+      // also add the view
+      if (view != null) {
+         ps.add(PortalConstants.CMSC_OM_VIEW_ID, view.getId());
+         ps.add(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, view.getResource());
+      }
+
+
+      String expiractionFromDefinition = portletEntity.getPortletDefinition().getExpirationCache();
+      /* Portlet spec 1.0 PLT.18.1 Expiration Cache
+       * For a portlet that has not defined expiration cache in the deployment descriptor,
+       * if the expiration cache property is set it must be ignored by the portlet-container.
+       *
+       * Here we are doing something similar for the expiration settings or our Definitions, views and Portlets
+       * which are configured through the database
+       */
+      if (StringUtils.isNotBlank(expiractionFromDefinition)) {
+         try {
+            expirationCache = Integer.valueOf(expiractionFromDefinition);
+         }
+         catch(NumberFormatException nfe) {
+            log.error("Cache expiration in xml is not a number for " + portletEntity.getPortletDefinition().getName());
+         }
+
+         if (definition.getExpirationcache() > -1) {
+            expirationCache = definition.getExpirationcache();
+         }
+         if (view != null && view.getExpirationcache() > -1) {
+            expirationCache = Math.min(expirationCache, view.getExpirationcache());
+         }
+         if (portlet.getExpirationcache() > -1) {
+            expirationCache = portlet.getExpirationcache();
          }
       }
 
@@ -373,6 +408,12 @@ public class PortletFragment extends AbstractFragment {
          headerResources = new ArrayList<HeaderResource>();
       }
       headerResources.add(resource);
+   }
+
+
+
+   public int getExpirationCache() {
+      return expirationCache;
    }
 
 }

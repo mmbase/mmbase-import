@@ -4,6 +4,7 @@
 	<field name="title" />
 	<field name="description" />
    <field name="definition" />
+   <field name="expirationcache" />
 	<relation destination="typedef" role="allowrel" />
 	<relation destination="view" role="allowrel" />
 	<relation destination="mmbaseranks" role="requiresrel" />

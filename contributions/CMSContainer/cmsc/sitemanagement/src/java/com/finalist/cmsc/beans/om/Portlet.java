@@ -3,7 +3,7 @@ package com.finalist.cmsc.beans.om;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Wouter Heijke
@@ -12,11 +12,10 @@ import net.sf.mmapps.commons.beans.NodeBean;
 public class Portlet extends NodeBean implements Comparable<Portlet> {
 
    private String title;
-
    private int definition;
+   private int expirationcache = -1; // when field is not present or virtual then this is the default value
 
    private List<Object> portletparameters = new ArrayList<Object>();
-
    private List<Integer> views = new ArrayList<Integer>();
 
 
@@ -89,5 +88,17 @@ public class Portlet extends NodeBean implements Comparable<Portlet> {
 
    public int compareTo(Portlet o) {
       return title.compareTo(o.title);
+   }
+
+
+
+   public int getExpirationcache() {
+      return expirationcache;
+   }
+
+
+
+   public void setExpirationcache(int expirationcache) {
+      this.expirationcache = expirationcache;
    }
 }
