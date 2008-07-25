@@ -110,12 +110,13 @@
           <xsl:if test="dt:pattern">
             <para>
               Patterns are assigned. 
-              Example pattern (for english): 
               <xsl:choose>
                 <xsl:when test="dt:pattern[@xml:lang = 'en-US']">
+                  Example pattern (for english): 
                   <xsl:value-of select="dt:pattern[@xml:lang = 'en-US']/@value" />
                 </xsl:when>
                 <xsl:when test="dt:pattern[@xml:lang = 'en']">
+                  Example pattern (for english): 
                   <xsl:value-of select="dt:pattern[@xml:lang = 'en']/@value" />
                 </xsl:when>
                 <xsl:otherwise>
