@@ -21,5 +21,6 @@
 		<prompt xml:lang="nl">Detailweergave</prompt>
 		<optionlist select="boolean" />
 	</field>
+	<field name="expirationcache" />
 	<list include="config/typedef/search_view_allowrel_typedef.xml" />
 </form-schema>
