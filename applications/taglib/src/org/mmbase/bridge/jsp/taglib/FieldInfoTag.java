@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.107 2008-04-03 16:29:27 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.108 2008-07-25 09:36:38 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -163,19 +163,19 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @since MMBase-1.8
      */
     public void setDatatype(String d) throws JspTagException {
-        dataType = getAttribute(d);
+        dataType = getAttribute(d, true);
     }
     /**
      * @since MMBase-1.8
      */
     public DataType getDataType() throws JspTagException {
-        String dataTypeName = dataType.getString(this);
-        if (dataTypeName.length() == 0) {
+        if (dataType != Attribute.NULL) {
+            DataType dt =  DataTypes.getDataType(dataType.getString(this));
+            if (dt == null) throw new JspTagException("No datatype '" + dataType + "'");
+            return dt;
+        } else {
             return null;
         }
-        DataType dt =  DataTypes.getDataType(dataTypeName);
-        if (dt == null) throw new JspTagException("No datatype '" + dataTypeName + "'");
-        return dt;
     }
 
     /**
@@ -183,7 +183,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * The type handler is responsible for showing the html
      */
     protected TypeHandler getTypeHandler(Field field) {
-        DataType<Object> dataType = field.getDataType();
+        DataType<?> dataType = field.getDataType();
         Class<? extends DataType> dataTypeClass = dataType.getClass();
         Class<? extends TypeHandler> handler = handlers.get(dataTypeClass);
         log.debug("Looking for typehandler for " + dataTypeClass);
@@ -195,7 +195,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
 
         if (handler == null) {
-            log.warn("Could not find typehandler for type " + field.getDataType() + " of " + field.getNodeManager().getName() + "." + field.getName() + " using default for type.");
+            log.warn("Could not find typehandler for type " + dataType + " of " + field.getNodeManager().getName() + "." + field.getName() + " using default for type.");
             String t = Fields.getTypeDescription(field.getType());
             if (t != null) {
                 DataType dt = DataTypes.getDataType(t);
@@ -259,14 +259,15 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     private FieldProvider fieldProvider;
 
-    public int doStartTag() throws JspTagException{
+    public int doStartTag() throws JspTagException {
         findWriter(false); // just to call haveBody;
 
         Node          node = null;
-        final DataType dt = getDataType();
-        if (dt == null) {
-            fieldProvider = findFieldProvider();
-        } else {
+        Field field;
+        DataType dataType = getDataType();
+        fieldProvider = "".equals(parentFieldId.getValue(this)) ? null : findFieldProvider(dataType != null);
+        if (fieldProvider == null) {
+            final DataType dt = dataType;
             fieldProvider = new FieldProvider() {
                     private final Field f = new DataTypeField(getCloudVar(), dt);
                     public Field getFieldVar() { return f; }
@@ -274,9 +275,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     public Node getNodeVar() { return null; }
 
                 };
+            field = fieldProvider.getFieldVar();
+        } else {
+            field = fieldProvider.getFieldVar();
+            if (field == null) throw new JspTagException("No field found in " + fieldProvider);
+            if (dataType != null) field = new DataTypeField(field, dataType);
         }
-        Field field      = fieldProvider.getFieldVar();
-        if (field == null) throw new JspTagException("No field found in " + fieldProvider);
+
         String fieldName = field.getName();
 
         {
@@ -431,10 +436,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getDescription(locale);
             break;
         case TYPE_DATATYPE:
-            show = field.getDataType().getName();
+            show = dataType.getName();
             break;
         case TYPE_DATATYPEDESCRIPTION:
-            show = field.getDataType().getLocalizedDescription().get(locale);
+            show = dataType.getLocalizedDescription().get(locale);
             break;
         default:
             log.debug("Unknown info type " + infoType);
@@ -478,7 +483,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Applies a form entry.
      */
 
-    private boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    private boolean useHtmlInput(Node node,  Field field) throws JspTagException {
         return getTypeHandler(field).useHtmlInput(node, field);
     }
 
