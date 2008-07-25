@@ -2,6 +2,7 @@
 <%@ attribute name="titlekey" rtexprvalue="true" required="false" %>
 <%@ attribute name="title" rtexprvalue="true" required="false" %>
 <%@ attribute name="sort" rtexprvalue="true" required="false" %>
+<%@ attribute name="width" rtexprvalue="true" required="false" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -23,7 +24,7 @@
             </c:when>
          </c:choose>
       </c:set>
-      <th>
+      <th ${not empty width ? width : ''}>
          <c:choose>
             <c:when test="${not empty sort}">
                <a href="<%=request.getContextPath()%>${requestScope.sortlink}page=${page}&sortby=${sort}&dir=${dir}">

@@ -87,4 +87,13 @@ public class PagingStatusHolder {
    public void setDir(String dir) {
       this.dir = dir;
    }
+
+   public void setDefaultSort(String column, String direction) {
+      if(StringUtils.isBlank(this.sort)&& StringUtils.isNotBlank(column)){
+         this.setSort(column);
+
+         String dir = StringUtils.isNotBlank(direction)?direction : "asc";
+         this.setDir(dir);
+      }
+   }
 }

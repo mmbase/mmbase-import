@@ -106,4 +106,15 @@ public class PagingUtils {
    public static PagingStatusHolder getStatusHolder() {
       return pagingStatusHolderLocal.get();
    }
+
+   public static PagingStatusHolder getStatusHolderInSorting(String column, String direction) {
+      PagingStatusHolder holder = getStatusHolder();
+
+      if (null != holder) {
+         holder.setDefaultSort(column, direction);
+      }
+
+      return holder;
+   }
+
 }
