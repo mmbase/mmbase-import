@@ -3,23 +3,22 @@ package com.finalist.portlets.emailalert;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
+
 import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.HttpUtil;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
 
-import com.finalist.cmsc.mmbase.EmailUtil;
-import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.*;
 import com.finalist.cmsc.portlets.ContentPortlet;
+import com.finalist.cmsc.util.HttpUtil;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class EmailAlertPortlet extends ContentPortlet {
@@ -33,6 +32,7 @@ public class EmailAlertPortlet extends ContentPortlet {
    private static final String VALID = "valid";
 
 
+   @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException {
       String action = request.getParameter(ACTION_PARAM);
       Map<String, String> errorMessages = new Hashtable<String, String>();
@@ -166,6 +166,7 @@ public class EmailAlertPortlet extends ContentPortlet {
    }
 
 
+   @Override
    public void processEdit(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       super.processEdit(request, response);
 

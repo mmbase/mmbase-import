@@ -13,13 +13,14 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import net.sf.mmapps.commons.bridge.CloneUtil;
-import net.sf.mmapps.commons.bridge.RelationUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.mmbase.RelationUtil;
 
 public final class PortletUtil {
 

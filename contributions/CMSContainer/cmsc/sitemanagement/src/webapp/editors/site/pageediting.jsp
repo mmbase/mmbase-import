@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@ include file="globals.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="net.sf.mmapps.modules.cloudprovider.*,org.mmbase.bridge.Cloud,org.mmbase.bridge.Node,java.util.*,net.sf.mmapps.commons.util.StringUtil;" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 
    <html:html xhtml="true">

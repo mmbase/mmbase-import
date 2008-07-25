@@ -11,12 +11,12 @@ package com.finalist.cmsc.repository;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.util.KeywordUtil;
 import org.apache.commons.lang.StringUtils;
-
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.StringDataType;
 import org.mmbase.datatypes.processors.CommitProcessor;
+
+import com.finalist.cmsc.util.KeywordUtil;
 
 @SuppressWarnings("serial")
 public class KeywordProcessor implements CommitProcessor {

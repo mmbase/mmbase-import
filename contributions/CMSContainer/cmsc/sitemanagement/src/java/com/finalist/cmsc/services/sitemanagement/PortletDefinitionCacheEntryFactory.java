@@ -12,10 +12,9 @@ package com.finalist.cmsc.services.sitemanagement;
 import java.io.Serializable;
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.PortletDefinition;
 import com.finalist.cmsc.navigation.PortletUtil;
 

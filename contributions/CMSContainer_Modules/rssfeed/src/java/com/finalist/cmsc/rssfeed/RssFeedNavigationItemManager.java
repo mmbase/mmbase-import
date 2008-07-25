@@ -2,13 +2,12 @@ package com.finalist.cmsc.rssfeed;
 
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.rssfeed.beans.om.RssFeed;
@@ -19,7 +18,7 @@ import com.finalist.cmsc.rssfeed.util.RssFeedUtil;
 public class RssFeedNavigationItemManager implements NavigationItemManager {
 
     private static final Logger log = Logging.getLoggerInstance(RssFeedNavigationItemManager.class.getName());
-	
+
 	private NavigationItemRenderer renderer = new RssFeedNavigationRenderer();
 	private NavigationTreeItemRenderer treeRenderer = new RssFeedTreeItemRenderer();
 
@@ -40,7 +39,7 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
             log.debug("RSS Feed not found: " + key);
             return null;
         }
-        
+
         RssFeed rssFeed = MMBaseNodeMapper.copyNode(node, RssFeed.class);
 
         List<String> types = RssFeedUtil.getAllowedTypes(node);
@@ -52,7 +51,7 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
         if (contentChannel != null) {
             rssFeed.setContentChannel(contentChannel.getNumber());
         }
-        
+
         return rssFeed;
 	}
 

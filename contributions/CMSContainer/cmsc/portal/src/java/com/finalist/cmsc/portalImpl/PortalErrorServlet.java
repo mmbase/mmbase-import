@@ -16,9 +16,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
-
-import net.sf.mmapps.commons.util.HttpUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.HttpUtil;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 

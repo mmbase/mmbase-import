@@ -1,6 +1,6 @@
 package com.finalist.cmsc.portalImpl.headerresource;
 
-import net.sf.mmapps.commons.util.XmlUtil;
+import com.finalist.cmsc.util.XmlUtil;
 
 public class MetaHeaderResource extends HeaderResource {
 
@@ -28,6 +28,7 @@ public class MetaHeaderResource extends HeaderResource {
    }
 
 
+   @Override
    public void render(StringBuffer buffer) {
       if (content != null && content.length() > 0) {
          buffer.append("<meta name=\"");
@@ -56,6 +57,7 @@ public class MetaHeaderResource extends HeaderResource {
    }
 
 
+   @Override
    public String toString() {
       return "meta_" + (isDublin() ? "DC." : ".") + name;
    }

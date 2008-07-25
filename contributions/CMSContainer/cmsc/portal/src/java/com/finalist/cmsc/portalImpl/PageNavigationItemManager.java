@@ -3,18 +3,11 @@ package com.finalist.cmsc.portalImpl;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Relation;
-import org.mmbase.bridge.RelationIterator;
-import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.navigation.*;
@@ -23,11 +16,11 @@ import com.finalist.cmsc.navigation.tree.PageTreeItemRenderer;
 public class PageNavigationItemManager implements NavigationItemManager {
 
     private static final Logger log = Logging.getLoggerInstance(PageNavigationItemManager.class.getName());
-	
+
 	private NavigationItemRenderer renderer = new PageNavigationRenderer();
 
 	private NavigationTreeItemRenderer treeRenderer = new PageTreeItemRenderer();
-	
+
 	public NavigationItemRenderer getRenderer() {
 		return renderer;
 	}
@@ -45,12 +38,12 @@ public class PageNavigationItemManager implements NavigationItemManager {
             log.debug("Page not found: " + key);
             return null;
         }
-        
+
         Class<? extends Page> clazz = getPageClass();
-        
+
         Page page = MMBaseNodeMapper.copyNode(node, clazz);
 
-        RelationList rellist = PortletUtil.getPortletRelations(node); 
+        RelationList rellist = PortletUtil.getPortletRelations(node);
         RelationIterator r = rellist.relationIterator();
         while (r.hasNext()) {
             Relation relation = r.nextRelation();

@@ -11,13 +11,12 @@ package com.finalist.cmsc.taglib;
 
 import java.util.List;
 
-import net.sf.mmapps.commons.beans.NodetypeBean;
-
+import com.finalist.cmsc.beans.NodetypeBean;
 import com.finalist.cmsc.services.contentrepository.ContentRepository;
 
 /**
  * List the available content channels
- * 
+ *
  * @author Wouter Heijke
  */
 public class ListContentTypesTag extends AbstractListTag<NodetypeBean> {

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.beans.om;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Nico Klasens

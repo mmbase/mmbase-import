@@ -1,10 +1,10 @@
 package com.finalist.cmsc.beans.om;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 @SuppressWarnings("serial")
 public class User extends NodeBean {

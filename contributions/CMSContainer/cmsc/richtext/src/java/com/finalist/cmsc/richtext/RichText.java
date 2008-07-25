@@ -15,12 +15,12 @@
  */
 package com.finalist.cmsc.richtext;
 
-import net.sf.mmapps.commons.util.XmlUtil;
-
 import org.mmbase.applications.wordfilter.WordHtmlCleaner;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
+
+import com.finalist.cmsc.util.XmlUtil;
 
 /**
  * Class for storing constants for richtext handling classes.

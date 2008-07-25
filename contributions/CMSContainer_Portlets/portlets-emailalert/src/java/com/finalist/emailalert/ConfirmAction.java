@@ -1,27 +1,25 @@
 package com.finalist.emailalert;
 
-import net.sf.mmapps.commons.util.HttpUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionForm;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.apache.struts.action.*;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.finalist.cmsc.util.HttpUtil;
 
 public class ConfirmAction extends Action {
 
    private static final Logger log = Logging.getLoggerInstance(ConfirmAction.class.getName());
 
 
+   @Override
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 

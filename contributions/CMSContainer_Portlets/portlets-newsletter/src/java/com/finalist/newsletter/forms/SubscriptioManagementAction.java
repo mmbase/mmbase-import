@@ -1,24 +1,21 @@
 package com.finalist.newsletter.forms;
 
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+import org.springframework.web.struts.DispatchActionSupport;
+
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.services.*;
-
-import net.sf.mmapps.commons.util.StringUtil;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.springframework.web.struts.DispatchActionSupport;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public class SubscriptioManagementAction extends DispatchActionSupport {
 
@@ -29,6 +26,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    NewsletterPublicationService publicationService;
    PersonService personServices;
 
+   @Override
    protected void onInit() {
       super.onInit();
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
@@ -37,6 +35,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
    }
 
+   @Override
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form,
                                        HttpServletRequest request, HttpServletResponse response)
          throws Exception {
@@ -51,7 +50,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       List<Map> results = convertToMap(newsletters);
 
       request.setAttribute("results", results);
-      
+
       request.setAttribute("newslettercount", newsletterService.countAllNewsletters());
       request.setAttribute("termcount", newsletterService.countAllTerms());
       request.setAttribute("subscriptioncount", subscriptionServices.countAllSubscriptions());
@@ -134,10 +133,12 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
          result.put("status",subscription.getStatus().toString());
          result.put("newsletter",newsletterService.getNewsletterBySubscription(subscription.getId()).getTitle());
          Person tmpPerson =personServices.getPersonByEmail(subscription.getSubscriber().getEmail());
-         if(tmpPerson.getFirstName() != null)
-        	 result.put("username", tmpPerson.getFirstName());
-         if(tmpPerson.getLastName() != null)
-        	 result.put("fullname", tmpPerson.getFirstName() + " " + tmpPerson.getLastName());
+         if(tmpPerson.getFirstName() != null) {
+            result.put("username", tmpPerson.getFirstName());
+         }
+         if(tmpPerson.getLastName() != null) {
+            result.put("fullname", tmpPerson.getFirstName() + " " + tmpPerson.getLastName());
+         }
          result.put("email", subscription.getSubscriber().getEmail());
          results.add(result);
       }
@@ -191,9 +192,9 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    public ActionForward showImportPage(ActionMapping mapping, ActionForm form,
                                        HttpServletRequest request, HttpServletResponse response) {
       log.debug("Show import page");
-      String importType = (String)request.getParameter("importType");
-      if(!StringUtil.isEmpty(importType)){
-    	  int newsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
+      String importType = request.getParameter("importType");
+      if(StringUtils.isNotEmpty(importType)){
+    	  int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
     	  request.setAttribute("importType",importType);
     	  request.setAttribute("newsletterId", newsletterId);
       }

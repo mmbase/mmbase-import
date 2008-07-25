@@ -1,9 +1,8 @@
 package com.finalist.newsletter.builder;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.newsletter.beans.om.Publication;
