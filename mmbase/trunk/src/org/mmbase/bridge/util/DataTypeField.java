@@ -21,13 +21,14 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.4 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: DataTypeField.java,v 1.5 2008-07-25 09:35:25 michiel Exp $
  * @since   MMBase-1.8.2
  */
 
 public  class DataTypeField extends org.mmbase.core.AbstractField {
     protected final NodeManager nodeManager;
-    public DataTypeField(final Cloud cloud, final DataType dataType)  {
+    protected final Field field;
+    public DataTypeField(final Cloud cloud, final DataType<Object> dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
                 private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
@@ -39,6 +40,16 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
                     return Collections.unmodifiableMap(fieldTypes);
                 }
             };
+        field = null;
+    }
+    /**
+     * This constructor only wraps the given field to have another datatype.
+     * @since MMBase-1.9
+     */
+    public DataTypeField(final Field field, final DataType<Object> dataType)  {
+        super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
+        nodeManager = field.getNodeManager();
+        this.field = field;
     }
     @Override
     public NodeManager getNodeManager() {
@@ -47,27 +58,28 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
 
     @Override
     public int getSearchPosition() {
-        return -1; // irrelevant, you cannot search
+        return field == null ? -1 : field.getSearchPosition();
     }
 
     @Override
     public int getListPosition() {
-        return -1; // irrelevant, you cannot do listings
+        return field == null ? -1 : field.getListPosition();
     }
 
     @Override
     public int getEditPosition() {
-        return 1;
+        return field == null ? 1 : field.getEditPosition();
     }
 
     @Override
     public int getStoragePosition() {
-        return -1; // irrelevant, not stored
+        return field == null ? -1 : field.getStoragePosition();
     }
 
     @Override
     public int getMaxLength() {
-        return Integer.MAX_VALUE; // not stored, so no such restriction
+        return field == null ? Integer.MAX_VALUE : // not stored, so no such restriction
+            field.getMaxLength();
     }
 
     @Override
