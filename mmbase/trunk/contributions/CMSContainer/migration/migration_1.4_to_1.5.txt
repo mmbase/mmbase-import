@@ -48,3 +48,21 @@ CREATE INDEX mm_publishqueue_report_idx ON mm_publishqueue (m_status,m_timestamp
 --- End script ---
 *
 *
+*
+
+Name: Add expirationcache fields for http expire header
+Goal: Add expirationcache fields for http expire header
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_view ADD column expirationcache int(11);
+ALTER TABLE mm_portletdefinition ADD column expirationcache int(11);
+ALTER TABLE mm_portlet ADD column expirationcache int(11);
+
+ALTER TABLE live_view ADD column expirationcache int(11);
+ALTER TABLE live_portletdefinition ADD column expirationcache int(11);
+ALTER TABLE live_portlet ADD column expirationcache int(11);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
