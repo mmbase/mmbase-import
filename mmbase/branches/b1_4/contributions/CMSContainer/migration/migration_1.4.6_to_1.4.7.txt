@@ -34,3 +34,13 @@ ALTER TABLE live_responseform ADD COLUMN thank_text TEXT NULL;
 *
 *
 
+
+Name: Add database index to the remote publishing
+Goal: Make the Admin publish queue overview faster
+Type:  sql-script
+--- Start script ---
+CREATE INDEX mm_publishqueue_report_idx ON mm_publishqueue (m_status,m_timestamp);
+
+--- End script ---
+*
+*

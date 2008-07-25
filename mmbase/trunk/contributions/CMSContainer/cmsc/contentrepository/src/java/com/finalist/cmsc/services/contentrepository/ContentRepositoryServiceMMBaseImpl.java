@@ -26,6 +26,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NotFoundException;
 
 import com.finalist.cmsc.beans.om.ContentChannel;
 import com.finalist.cmsc.beans.om.ContentElement;
@@ -197,10 +198,15 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
     @Override
     public ContentElement getContentElement(String elementId) {
         Cloud cloud = getUserCloud();
-        Node node = cloud.getNode(elementId);
-        if (node != null) {
-            return MMBaseNodeMapper.copyNode(node, ContentElement.class);
+        try {
+           Node node = cloud.getNode(elementId);
+           if (node != null) {
+              return MMBaseNodeMapper.copyNode(node, ContentElement.class);
+           }
+        } catch(NotFoundException e){
+           log.debug("Node not found using element:" + elementId);
         }
+        
         return null;
     }
 

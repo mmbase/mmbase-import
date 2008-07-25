@@ -117,8 +117,8 @@ public class ThreadUtil {
          return ("java.lang.Object".equals(className) && "wait".equals(methodName))
                || ("java.lang.Thread".equals(className) && "sleep".equals(methodName))
                || ("java.net.PlainSocketImpl".equals(className) && "socketAccept".equals(methodName))
-               || ("sun.misc.Unsafe".equals(className) && "park".equals(methodName));
-
+               || ("sun.misc.Unsafe".equals(className) && "park".equals(methodName))
+               || ("java.net.SocketInputStream".equals(className) && "socketRead0".equals(methodName));
       }
       return true;
    }

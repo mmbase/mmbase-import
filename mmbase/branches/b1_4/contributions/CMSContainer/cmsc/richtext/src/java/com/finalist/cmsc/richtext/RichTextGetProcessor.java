@@ -153,7 +153,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
             if (dynamicDescriptions) {
                String description = imageNode.getStringValue("description");
                if (StringUtil.isEmptyOrWhitespace(description)) {
-                  description = imageNode.getStringValue(RichText.TITLE_ATTR);
+                  description = imageNode.getStringValue(RichText.TITLE_FIELD);
                }
                image.setAttribute(RichText.ALT_ATTR, description);
                image.setAttribute(RichText.TITLE_ATTR, description);
@@ -242,7 +242,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
             if ("attachments".equals(builderName)) {
                name = destinationNode.getStringValue(RichText.DESCRIPTION_ATTR);
                if (StringUtil.isEmptyOrWhitespace(name)) {
-                  name = destinationNode.getStringValue(RichText.TITLE_ATTR);
+                  name = destinationNode.getStringValue(RichText.TITLE_FIELD);
                }
                url = ResourcesUtil.getServletPath(destinationNode, destinationNode.getStringValue("number"));
             }
@@ -252,8 +252,8 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                   url = destinationNode.getStringValue("url");
                }
                else {
-                  if (destinationNode.getNodeManager().hasField(RichText.TITLE_ATTR)) {
-                     name = destinationNode.getStringValue(RichText.TITLE_ATTR);
+                  if (destinationNode.getNodeManager().hasField(RichText.TITLE_FIELD)) {
+                     name = destinationNode.getStringValue(RichText.TITLE_FIELD);
                   }
                   else {
                      if (destinationNode.getNodeManager().hasField("name")) {
@@ -288,7 +288,13 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
 
    private String getContentUrl(Node node) {
-      String title = node.getStringValue("title");
+      String title = null;
+      
+      //Check for the existence of title field of the node
+      if (node.getNodeManager().hasField(RichText.TITLE_FIELD)) {
+         title = node.getStringValue(RichText.TITLE_FIELD);
+      }
+      
       String id = node.getStringValue("number");
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
    }
