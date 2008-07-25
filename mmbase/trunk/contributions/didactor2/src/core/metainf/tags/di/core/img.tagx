@@ -5,12 +5,17 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.tag description="" />
-  <jsp:directive.attribute name="src"    />
+  <jsp:directive.attribute name="src"    required="true"/>
   <jsp:directive.attribute name="title"    />
+  <jsp:directive.attribute name="onclick"    />
+  <jsp:directive.attribute name="id"    />
 
   <img src="${mm:treelink(src, includePath)}"
        border="0"
-       title="${di:translate(title}"
-       alt="${di:translate(title)" />
+       title="${di:translate(title)}"
+       alt="${di:translate(title)}"
+       onclick="${onclick}"
+       id="${id}"
+       />
 
 </jsp:root>
