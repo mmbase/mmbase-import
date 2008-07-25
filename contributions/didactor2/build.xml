@@ -17,7 +17,6 @@
   <property file="configure.properties"/>
   <property file="build.properties"/>
 
-
   <property name="defaultexcludes" value="no" />
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
@@ -26,11 +25,6 @@
   <property name="download.dir"           location="${basedir}/download" />
   <property name="war.dir"                value="${build.dir}" />
   <property name="mmbase.version"         value="1.9.0-SNAPSHOT" />
-
-  <property name="mmbaseroot.language"     value="en" />
-  <property name="mmbaseroot.datadir"      value="." /> <!-- defaults to WEB-INF/data -->
-
-  <property name="example.war.filter"      value="mynews,myyahoo,mycompany" />
 
   <property name="dest" value="${build.webapp.dir}" />
   <property name="jardest" value="${build.webapp.dir}/WEB-INF/lib" />
@@ -204,6 +198,7 @@
         </copy>
       </then>
     </if>
+    <mkdir dir="${build.dir}/classes/${component}" />
 
     <!-- build java sources and create a jar file -->
     <if>
@@ -217,7 +212,6 @@
             <include name="*.jar" />
           </fileset>
         </path>
-        <mkdir dir="${build.dir}/classes/${component}" />
 
         <copy todir="${build.dir}/classes/${component}">
           <fileset
@@ -342,6 +336,7 @@
 
 
     <!-- copy configuration files -->
+    <!--
     <if>
       <available file="src/${component}/config" type="dir" />
       <then>
@@ -355,7 +350,7 @@
         </copy>
       </then>
     </if>
-
+    -->
 
     <!-- merge editwizard definitions -->
     <if>
@@ -374,7 +369,7 @@
   </target>
 
   <target name="mergewizards">
-    <echo>MergeWizards: ${file}</echo>
+    <echo level="debug" message="MergeWizards: ${file}" />
     <pathconvert property="cleaned_filename" dirsep="${file.separator}" pathsep="${path.separator}">
       <path path="${file}" />
       <mapper>
@@ -384,11 +379,11 @@
     <pathconvert property="destfile" dirsep="${file.separator}" pathsep="${path.separator}">
       <path path="${build.webapp.dir}/editwizards/data/config/${cleaned_filename}" />
     </pathconvert>
-    <echo>Destfile: ${destfile}</echo>
+    <echo level="debug" message="Destfile: ${destfile}" />
     <if>
       <available file="${destfile}" />
       <then>
-        <echo>Merging in extra wizards defs for ${component}: ${cleaned_filename}</echo>
+        <echo level="debug" message="Merging in extra wizards defs for ${component}: ${cleaned_filename}" />
         <concat destfile="${destfile}" append="true">
           <path path="${file}" />
         </concat>
