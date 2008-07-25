@@ -9,10 +9,9 @@ See http://www.MMBase.org/license
  */
 package com.finalist.tree.ajax;
 
-import net.sf.mmapps.commons.util.XmlUtil;
-
 import org.w3c.dom.Element;
 
+import com.finalist.cmsc.util.XmlUtil;
 import com.finalist.tree.TreeOption;
 
 public class AjaxTreeOption extends TreeOption {

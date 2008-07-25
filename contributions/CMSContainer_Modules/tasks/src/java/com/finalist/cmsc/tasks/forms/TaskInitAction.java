@@ -14,12 +14,11 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.apache.struts.action.*;
 import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.cmsc.tasks.TasksUtil;

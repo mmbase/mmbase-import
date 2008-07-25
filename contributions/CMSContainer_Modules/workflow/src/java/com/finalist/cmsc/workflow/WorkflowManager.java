@@ -1,18 +1,14 @@
 package com.finalist.cmsc.workflow;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-
 import java.util.*;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import org.apache.commons.lang.StringUtils;
-
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
@@ -69,7 +65,7 @@ public abstract class WorkflowManager {
 
    /**
     * Retrieve the workflowitem related to a contentelement.
-    * 
+    *
     * @param node
     *           node in workflow
     * @return workflow item
@@ -91,7 +87,7 @@ public abstract class WorkflowManager {
 
    /**
     * Check if a contentnode has a workflow
-    * 
+    *
     * @param node
     *           node in workflow
     * @return true if the node has a related workflowitem
@@ -114,7 +110,7 @@ public abstract class WorkflowManager {
 
    /**
     * Is the user allowed to approve the node
-    * 
+    *
     * @param node
     *           Node to check for
     * @return <code>true</code> when allowed
@@ -126,7 +122,7 @@ public abstract class WorkflowManager {
 
    /**
     * Is the user allowed to publish the node
-    * 
+    *
     * @param node
     *           Node to check for
     * @return <code>true</code> when allowed
@@ -162,7 +158,7 @@ public abstract class WorkflowManager {
 
    /**
     * Retrieve the workflowitem related to a contentelement.
-    * 
+    *
     * @param node
     *           node in workflow
     * @return workflow item
@@ -235,7 +231,7 @@ public abstract class WorkflowManager {
 
    /**
     * Get status of the workflow of a node
-    * 
+    *
     * @param node
     *           node in workflow
     * @return status of workflow. When there is no workflow then the draft
@@ -359,7 +355,7 @@ public abstract class WorkflowManager {
 
    /**
     * Do rename the remark
-    * 
+    *
     * @param wfItem
     * @param remark
     */

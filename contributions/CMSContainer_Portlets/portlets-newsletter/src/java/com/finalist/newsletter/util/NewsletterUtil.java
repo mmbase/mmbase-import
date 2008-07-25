@@ -1,35 +1,21 @@
 package com.finalist.newsletter.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.FieldValueConstraint;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.*;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
 import com.finalist.newsletter.domain.Schedule;
@@ -234,10 +220,10 @@ public abstract class NewsletterUtil {
       return (articles);
 
    }
-   
+
    public static List<ContentElement> getArticles(int newsletterNumber,int offset, int elementsPerPage, String orderBy, String direction, SortedSet<Integer> sort) {
       List<ContentElement> articles = new ArrayList<ContentElement>();
-      
+
       List<Node> relatedArticles = getArticles(newsletterNumber,sort,orderBy,direction);
       if(relatedArticles == null) {
          return null;
@@ -260,15 +246,15 @@ public abstract class NewsletterUtil {
 
    }
    public static int countArticles(int newsletterNumber,SortedSet<Integer> sort) {
-      
+
       List<Node> articles = getArticles(newsletterNumber,sort,null,null);
       return articles == null?0:articles.size();
    }
-   
+
    public static List<Node> getArticles(int newsletterNumber,SortedSet<Integer> sort,String orderBy, String direction){
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager articleNodeManager = cloud.getNodeManager("article");
-      
+
       NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
       NodeQuery articleQuery = cloud.createNodeQuery();
       Step articleStep = articleQuery.addStep(articleNodeManager);
@@ -289,9 +275,9 @@ public abstract class NewsletterUtil {
       query.addRelationStep(termNodeManager, "newslettercontent", SearchUtil.DESTINATION);
       SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
       NodeList termRelatedArticles  = query.getList();
-      
-      List<Node> articles = new ArrayList<Node>(); 
-      
+
+      List<Node> articles = new ArrayList<Node>();
+
       if(articleNodes != null ){
          for(int i = 0 ; i < articleNodes.size() ; i++) {
             Node article = articleNodes.getNode(i);
@@ -304,19 +290,19 @@ public abstract class NewsletterUtil {
                  articles.add(article);
                  break;
               }
-            } 
+            }
          }
       }
       return articles;
-      
+
    }
-   
+
    public static int countArticles(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager articleNodeManager = cloud.getNodeManager("article");
       Node newsletterNode = cloud.getNode(number);
       int count = newsletterNode.countRelatedNodes(articleNodeManager,"newslettercontent", "source");
-    
+
       return count;
    }
    public static int countArticlesByNewsletter(int itemNumber,String termNumbers) {

@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -20,6 +18,7 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.Newsletter;

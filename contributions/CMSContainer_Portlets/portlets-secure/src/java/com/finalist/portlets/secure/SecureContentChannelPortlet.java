@@ -1,18 +1,14 @@
 package com.finalist.portlets.secure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.portlet.RenderRequest;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.portlets.ContentChannelPortlet;
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -21,7 +17,7 @@ import com.finalist.cmsc.services.community.Community;
 public class SecureContentChannelPortlet extends ContentChannelPortlet {
 
 	private static final HashMap<String,Object> NOT_SECURE_PARAMETER_MAP = new HashMap<String,Object>();
-	
+
 	static {
 		NOT_SECURE_PARAMETER_MAP.put("secure", false);
 	}
@@ -50,7 +46,7 @@ public class SecureContentChannelPortlet extends ContentChannelPortlet {
 	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String,Object> extraParameters) {
 		List<ContentElement> result = new ArrayList<ContentElement>();
 		if (channel != null) {
-			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, extraParameters); 
+			NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, extraParameters);
 			for (int i = 0; i < l.size(); i++) {
 				Node currentNode = l.getNode(i);
 				ContentElement e = MMBaseNodeMapper.copyNode(currentNode, ContentElement.class);

@@ -11,7 +11,8 @@ package com.finalist.cmsc.excel2menu;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,8 +20,8 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import net.sf.mmapps.commons.util.UploadUtil;
-import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
+import com.finalist.cmsc.util.UploadUtil;
+import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
 public class MenuImportRequest {
 

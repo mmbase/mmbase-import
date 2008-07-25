@@ -11,7 +11,7 @@ package com.finalist.cmsc.beans.om;
 
 import java.util.Date;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Wouter Heijke

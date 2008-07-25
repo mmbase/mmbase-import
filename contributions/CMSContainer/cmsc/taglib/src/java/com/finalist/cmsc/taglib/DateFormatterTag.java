@@ -2,12 +2,13 @@ package com.finalist.cmsc.taglib;
 
 import java.util.Date;
 import java.util.Locale;
-import javax.servlet.jsp.*;
 
-import net.sf.mmapps.commons.util.DateUtil;
+import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.Writer;
+
+import com.finalist.cmsc.util.DateUtil;
 
 /**
  * Tag class for displaying dates in a specific format

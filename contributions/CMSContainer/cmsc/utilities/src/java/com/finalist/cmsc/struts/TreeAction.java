@@ -15,7 +15,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.HttpUtil;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
@@ -23,6 +22,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
+import com.finalist.cmsc.util.HttpUtil;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.ajax.AjaxTree;
 

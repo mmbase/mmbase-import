@@ -1,6 +1,6 @@
 package com.finalist.cmsc.beans.om;
 
-import net.sf.mmapps.commons.beans.NodeBean;
+import com.finalist.cmsc.beans.NodeBean;
 
 public class WorkflowItem extends NodeBean {
 

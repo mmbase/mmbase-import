@@ -2,27 +2,19 @@ package com.finalist.cmsc.egemmail.forms;
 
 import java.util.HashSet;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.KeywordUtil;
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.apache.struts.action.*;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.SearchQuery;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.util.KeywordUtil;
 
 public class EgemSearchAction extends MMBaseAction {
 
@@ -102,6 +94,7 @@ public class EgemSearchAction extends MMBaseAction {
     *      javax.servlet.http.HttpServletRequest,
     *      javax.servlet.http.HttpServletResponse, org.mmbase.bridge.Cloud)
     */
+   @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 

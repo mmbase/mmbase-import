@@ -24,7 +24,7 @@
    // prepare error ticket
    long ticket = System.currentTimeMillis();
 
-   String msg = net.sf.mmapps.commons.util.HttpUtil.getErrorInfo(request, exception, ticket, version);
+   String msg = com.finalist.cmsc.util.HttpUtil.getErrorInfo(request, exception, ticket, version);
    request.setAttribute("msg", msg);
 
    

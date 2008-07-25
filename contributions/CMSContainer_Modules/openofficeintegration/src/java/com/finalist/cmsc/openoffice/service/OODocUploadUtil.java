@@ -1,24 +1,11 @@
 package com.finalist.cmsc.openoffice.service;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.UploadUtil;
-import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
@@ -26,10 +13,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.openoffice.model.OdtDocument;
+import com.finalist.cmsc.util.UploadUtil;
+import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
 /**
  * openoffice one odt document or more ,persist
- * 
+ *
  * @author
  */
 public class OODocUploadUtil {
@@ -77,7 +66,7 @@ public class OODocUploadUtil {
 
 	/**
 	 * openoffice odt doc and put it in cache
-	 * 
+	 *
 	 * @param request
 	 */
 	public boolean upload(HttpServletRequest request, String dir)
@@ -88,19 +77,23 @@ public class OODocUploadUtil {
 			log.error("openoffice file error :" + e.getMessage());
 		}
 		String realPath = "";
-		if (request.getAttribute("dir") != null)
-			realPath = (String) request.getAttribute("dir");
-		if (StringUtils.isBlank(realPath))
-			realPath = dir;
+		if (request.getAttribute("dir") != null) {
+         realPath = (String) request.getAttribute("dir");
+      }
+		if (StringUtils.isBlank(realPath)) {
+         realPath = dir;
+      }
 
 		realPath += File.separator + channel;
-		if (realPath.endsWith("null"))
-			realPath = realPath.substring(0, realPath.length() - 5);
+		if (realPath.endsWith("null")) {
+         realPath = realPath.substring(0, realPath.length() - 5);
+      }
 
 		if (request.getAttribute("root") != null) {
-			if (!realPath.endsWith(TEMP_PATH))
-				realPath = realPath.substring(0, realPath.indexOf(TEMP_PATH)
+			if (!realPath.endsWith(TEMP_PATH)) {
+            realPath = realPath.substring(0, realPath.indexOf(TEMP_PATH)
 						+ TEMP_PATH.length());
+         }
 			realPath += File.separator + SINGLE_FILE_PATH;
 		}
 
@@ -110,8 +103,9 @@ public class OODocUploadUtil {
 				log.debug("contentType: " + binary.getContentType());
 			}
 
-			if (!isOdtFile(binary))
-				return false;
+			if (!isOdtFile(binary)) {
+            return false;
+         }
 			persistOdtDoc(binary, realPath);
 		}
 		return true;
@@ -148,8 +142,9 @@ public class OODocUploadUtil {
 		byte[] writeBuffer = new byte[bufferSize];
 		BufferedOutputStream bos = new BufferedOutputStream(outs, bufferSize);
 		int bufferRead;
-		while ((bufferRead = ins.read(writeBuffer)) != -1)
-			bos.write(writeBuffer, 0, bufferRead);
+		while ((bufferRead = ins.read(writeBuffer)) != -1) {
+         bos.write(writeBuffer, 0, bufferRead);
+      }
 		bos.flush();
 		bos.close();
 		outs.flush();
@@ -179,7 +174,7 @@ public class OODocUploadUtil {
 
 	/**
 	 * get a List object of OdtDocument
-	 * 
+	 *
 	 * @param dir
 	 *            a directory ,file's real path
 	 * @return
@@ -207,8 +202,9 @@ public class OODocUploadUtil {
 			}
 		}
 		if (binary.getOriginalFilePath() != null
-				&& binary.getOriginalFilePath().toLowerCase().endsWith("odt"))
-			return true;
+				&& binary.getOriginalFilePath().toLowerCase().endsWith("odt")) {
+         return true;
+      }
 		return false;
 	}
 
@@ -239,14 +235,15 @@ public class OODocUploadUtil {
 					binary.setData(item.get());
 					binary.setOriginalFilePath(fullFileName);
 					binary.setContentType(item.getContentType());
-					if (log.isDebugEnabled())
-						log.debug((new StringBuilder()).append(
+					if (log.isDebugEnabled()) {
+                  log.debug((new StringBuilder()).append(
 								"Setting binary ").append(binary.getLength())
 								.append(" bytes in type ").append(
 										binary.getContentType()).append(
 										" with ").append(
 										binary.getOriginalFilePath()).append(
 										" name").toString());
+               }
 
 				}
 			}

@@ -10,22 +10,17 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.repository.forms;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.apache.struts.util.MessageResources;
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseAction;
 
@@ -60,15 +55,15 @@ public class MoveContentToChannelAction extends MMBaseAction {
       Node channelNode = cloud.getNode(channel);
       Node newChannelNode = cloud.getNode(newChannel);
 
-      for(int j = 0 ; j < numbers.length ; j++) {
-         int number = Integer.parseInt(numbers[j]);
+      for (String number2 : numbers) {
+         int number = Integer.parseInt(number2);
          Node elementNode = cloud.getNode(number);
-      
+
       RelationManager contentRelationManager = cloud.getRelationManager("contentrel");
       NodeList newContentList = contentRelationManager.getList("(snumber = " + newChannel + " and dnumber = " + number
             + ") or (snumber = " + number + " and dnumber = " + newChannel + ")", null, null);
 
-      
+
       // only if we are not already in the other channel
       if (newContentList.size() == 0) {
 
@@ -107,7 +102,7 @@ public class MoveContentToChannelAction extends MMBaseAction {
          message = resources.getMessage(locale, "content.movetochannel.failed", newChannelNode.getStringValue("name"));
       }
       String path = mapping.findForward(SUCCESS).getPath() + "?" + PARAMETER_CHANNEL + "=" + channel;
-            
+
       if(StringUtils.isNotEmpty(offset)) {
          path += "&offset="+offset;
       }

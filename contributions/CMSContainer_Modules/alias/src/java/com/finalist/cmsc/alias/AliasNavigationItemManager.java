@@ -1,9 +1,8 @@
 package com.finalist.cmsc.alias;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -11,6 +10,7 @@ import com.finalist.cmsc.alias.beans.om.Alias;
 import com.finalist.cmsc.alias.publish.AliasPublisher;
 import com.finalist.cmsc.alias.tree.AliasTreeItemRenderer;
 import com.finalist.cmsc.alias.util.AliasUtil;
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.*;
 
@@ -40,7 +40,7 @@ public class AliasNavigationItemManager implements NavigationItemManager {
         }
 
         Alias alias = MMBaseNodeMapper.copyNode(node, Alias.class);
-        
+
         Node page = AliasUtil.getPage(node);
         if (page != null) {
             alias.setPage(page.getNumber());
