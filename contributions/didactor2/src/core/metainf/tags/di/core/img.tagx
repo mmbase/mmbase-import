@@ -1,0 +1,16 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag description="" />
+  <jsp:directive.attribute name="src"    />
+  <jsp:directive.attribute name="title"    />
+
+  <img src="${mm:treelink(src, includePath)}"
+       border="0"
+       title="${di:translate(title}"
+       alt="${di:translate(title)" />
+
+</jsp:root>
