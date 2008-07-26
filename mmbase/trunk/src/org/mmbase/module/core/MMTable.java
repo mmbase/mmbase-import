@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.27 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: MMTable.java,v 1.28 2008-07-26 19:37:37 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -79,7 +79,7 @@ public abstract class MMTable extends FunctionProvider {
      * @param tableName the name of the table
      */
     public void setTableName(String tableName) {
-        this.tableName=tableName;
+        this.tableName = tableName;
     }
 
     /**
