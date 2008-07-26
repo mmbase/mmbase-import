@@ -32,7 +32,7 @@ public class PortletSelectPortlet extends CmscPortlet {
 
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
     *      javax.portlet.ActionResponse)
     */
    @Override
@@ -74,7 +74,7 @@ public class PortletSelectPortlet extends CmscPortlet {
 
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#doEditDefaults(javax.portlet.RenderRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#doEditDefaults(javax.portlet.RenderRequest,
     *      javax.portlet.RenderResponse)
     */
    @Override
