@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.195 2008-07-25 11:16:34 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.196 2008-07-26 19:32:27 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1170,7 +1170,12 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             log.debug("Nothing changed, doing nothing");
-            return 1; // should we return 0 if the node does not exist any more?
+            try {
+                refresh(node);
+                return 1;
+            } catch (StorageNotFoundException snfe) {
+                return 0;
+            }
         }
     }
 
