@@ -29,7 +29,7 @@ public class JspPortlet extends CmscPortlet {
    private static final String VIEW = "view";
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
     *      javax.portlet.ActionResponse)
     */
    @Override
