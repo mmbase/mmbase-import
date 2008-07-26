@@ -19,7 +19,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Fulltext search portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class SearchPortlet extends CmscPortlet {
 
@@ -53,7 +53,7 @@ public class SearchPortlet extends CmscPortlet {
 
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
     *      javax.portlet.ActionResponse)
     */
    @Override
