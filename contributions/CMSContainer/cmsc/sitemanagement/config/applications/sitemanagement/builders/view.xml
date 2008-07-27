@@ -142,7 +142,7 @@
 			</datatype>
          <db>
             <name>expirationcache</name>
-            <type key="false" notnull="false" size="40" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
 
