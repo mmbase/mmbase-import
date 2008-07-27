@@ -12,7 +12,7 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
-public class NewsletterNewsletterSubscriberDeleteAction extends MMBaseFormlessAction {
+public class NewsletterSubscriberDeleteAction extends MMBaseFormlessAction {
 
 	@Override
 	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
@@ -26,7 +26,6 @@ public class NewsletterNewsletterSubscriberDeleteAction extends MMBaseFormlessAc
 				if (subscriberId.equals(authId)) {
 					subscription.deleteRelations();
 					subscription.delete();
-					subscription.commit();
 				}
 			}
 		}
