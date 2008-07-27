@@ -10,16 +10,21 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.community.security;
 
 
-import org.springframework.transaction.annotation.Transactional;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.services.HibernateService;
 
 
@@ -39,10 +44,20 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 
     /** {@inheritDoc} */
     @Transactional
-    public void deleteAuthority(String name) {
-        Authority authority = findAuthorityByName(name);
-        getSession().delete(authority);
-    }
+	public void deleteAuthority(String name) {
+		Authority authority = findAuthorityByName(name);
+		Set<Authentication> set=new HashSet<Authentication>();
+		set.addAll(authority.getAuthentications());
+		for (Authentication authentication : authority.getAuthentications()) {
+			authentication.getAuthorities().remove(authority);
+			//authentication.removeAuthority(authority);
+//			getSession().saveOrUpdate(authentication);
+		}
+       authority.getAuthentications().clear();
+//		getSession().saveOrUpdate(authority);
+		getSession().delete(authority);
+
+	}
 
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
@@ -52,7 +67,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     }
 
     /** {@inheritDoc} */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Authority findAuthorityByName(String name) {
         Criteria criteria = getSession()
                 .createCriteria(Authority.class)
@@ -60,11 +75,38 @@ public class AuthorityHibernateService extends HibernateService implements Autho
         return findAuthorityByCriteria(criteria);
     }
 
+	@SuppressWarnings("unchecked")
+	private List<Authority> addConditionToCriteria(PagingStatusHolder holder,Criteria criteria){
+    	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    	if("group".equalsIgnoreCase(holder.getSort())&&"asc".equalsIgnoreCase(holder.getDir())){
+     	   criteria.addOrder(Order.asc("name"));
+        }else if("group".equalsIgnoreCase(holder.getSort())&&"desc".equalsIgnoreCase(holder.getDir())){
+     	   criteria.addOrder(Order.desc("name"));
+        }
+         List list =  criteria.list();
+         List newlist = new ArrayList();
+         for(int i = holder.getOffset() ; i < holder.getOffset()+holder.getPageSize()&&i<list.size();i++){
+         	newlist.add(list.get(i));
+         }
+         return newlist;
+    }
+    @Transactional(readOnly = true)
+    public List<Authority> findAssociatedAuthorityByName(String name,PagingStatusHolder holder){
+    	 Criteria criteria = getSession()
+         .createCriteria(Authority.class).add(Restrictions.like("name", "%"+name+"%"));
+    	return addConditionToCriteria(holder,criteria); 
+    }
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
     public Set<String> getAuthorityNames() {
         Criteria criteria = getSession().createCriteria(Authority.class);
         return findAuthorityNamesByCriteria(criteria);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Authority> getAllAuthorities(PagingStatusHolder holder) {
+        Criteria criteria = getSession().createCriteria(Authority.class);//在criteria里面加去重的条件
+        return addConditionToCriteria(holder,criteria); 
     }
 
     /** {@inheritDoc} */
@@ -80,7 +122,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     @SuppressWarnings("unchecked")
 	private Authority findAuthorityByCriteria(Criteria criteria) {
         List authorities = criteria.list();
-        return authorities.size() == 1 ? (Authority) authorities.get(0) : null;
+      return authorities.size() > 0 ? (Authority) authorities.get(0) : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -93,5 +135,78 @@ public class AuthorityHibernateService extends HibernateService implements Autho
         }
         return result;
     }
+    @SuppressWarnings("unchecked")
+    private Set<Authority> findAuthoritesByCriteria(Criteria criteria) {
+        List authorityList = criteria.list();
+        Set<Authority> result = new HashSet<Authority>();
+        for (Iterator iter = authorityList.iterator(); iter.hasNext();) {
+            Authority authority = (Authority) iter.next();
+            result.add(authority);
+        }
+        return result;
+    }
+    @Transactional(readOnly = true)
+	public int countAllAuthorities() {
+    	Criteria criteria = getSession().createCriteria(Authority.class);
+		return findAuthoritesByCriteria(criteria).size();
+	}
+    @Transactional(readOnly = true)
+	public int countAssociatedAuthorities(String name) {
+    	Criteria criteria = getSession()
+        .createCriteria(Authority.class).add(Restrictions.like("name", "%"+name+"%"));
+		return findAuthoritesByCriteria(criteria).size();
+	}
+    
+    @Transactional(readOnly = true)
+    public List<Authority> getAssociatedAuthorities(Map conditions, PagingStatusHolder holder) {
+     StringBuffer strb = new StringBuffer();
+     basicGetAssociatedAuthorities(conditions, strb);
+     if ("groupName".equals(holder.getSort())) {
+      strb.append(String.format(" order by %s %s","Authority.name", holder.getDir()));
+     }
+     Query q = getSession().createQuery(strb.toString());
+     q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
 
+     return q.list();
+    }
+
+    private void basicGetAssociatedAuthorities(Map conditions, StringBuffer strb){
+       strb.append("select distinct authority from Person person , Authentication authentication "
+						+ "left join authentication.authorities authority "
+						+ "where person.authenticationId = authentication.id");
+     if (null!=conditions&&conditions.containsKey("group")) {
+      String group =  (String) conditions.get("group");
+      strb.append(" and upper(authority.name) like'%" + group.toUpperCase() + "%'");
+     }
+     
+     if (null!=conditions&&conditions.containsKey("username")) {
+			String[] members = (String[]) conditions.get("username");
+			if(members.length < 1) return;
+			int i=0;
+			for(String m:members){
+				String[] names = m.split(" ");
+				if(names.length>2) continue;
+				if(i==0)strb.append(" and (");
+				if(i>0)strb.append("or(");
+				if (names.length == 2)
+					strb.append(" person.firstName like'%" + names[0]
+							+ "%'and person.lastName like'%" + names[1] + "%')"
+							+ "or ( person.firstName like'%" + names[0] + " " + names[1]
+							+ "%'" + "or person.lastName like'%" + names[0] + " "
+							+ names[1] + "%'");
+				else if (names.length == 1)
+					strb.append("person.firstName like'%" + names[0]+ "%' or person.lastName like'%" + names[0] + "%'");
+				strb.append(")");
+				i++;
+			}
+		}
+   }
+
+    @Transactional(readOnly = true)
+    public int getAssociatedAuthoritiesNum(Map conditions, PagingStatusHolder holder) {
+     StringBuffer strb = new StringBuffer();
+     basicGetAssociatedAuthorities(conditions, strb);
+     Query q = getSession().createQuery(strb.toString());
+     return q.list().size();
+    }
 }
