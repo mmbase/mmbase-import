@@ -29,7 +29,7 @@
 			type="com.finalist.cmsc.workflow.forms.WorkflowAdminAction" unknown="false" validate="false">
 			<forward name="success" path="/editors/workflow/admin/index.jsp" redirect="false" />
 		</action>
-		<action path="/editors/workflow/PageWorkflowPublishAction" type="com.finalist.cmsc.workflow.forms.PageWorkflowPublishAction" unknow="false" validate="false">
+		<action path="/editors/workflow/PageWorkflowPublishAction" type="com.finalist.cmsc.workflow.forms.PageWorkflowPublishAction" unknown="false" validate="false">
 			<forward name="success" path="/editors/site/pageediting.jsp" redirect="false"/>
 		</action>
 	</action-mappings>
