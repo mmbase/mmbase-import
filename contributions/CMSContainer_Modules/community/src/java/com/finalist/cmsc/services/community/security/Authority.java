@@ -13,8 +13,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -38,7 +40,7 @@ public class Authority implements Serializable {
     @Column(unique = true)
     private String name;
     
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authorities")
     private Set<Authentication> authentications = new HashSet<Authentication>();
     
     @ManyToMany(mappedBy = "authorities")

@@ -191,5 +191,12 @@ public class AuthenticationHibernateService extends HibernateService implements 
 	public Authentication createAuthentication(Authentication authentication) {
 		return createAuthentication(authentication.getUserId(), authentication.getPassword());
 	}
-
+   @Transactional
+	public void removeAuthenticationFromAuthority(String authId, String groupName) {
+		Long id=Long.decode(authId);
+		Authentication authentication = getAuthenticationById(id);
+	    Authority authority = authorityService.findAuthorityByName(groupName);
+	    authentication.removeAuthority(authority);
+	    getSession().flush();
+	}
 }
