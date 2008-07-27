@@ -43,21 +43,6 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
 			offset = Integer.parseInt(request.getParameter("offset"));
 		}
-		// <<<<<<< NewsletterPublicationManagementAction.java
-		// =======
-		// String forwardType = "";
-		// if(StringUtils.isNotBlank(request.getParameter("searchForwardType")))
-		// {
-		// forwardType =request.getParameter("searchForwardType");
-		// }
-		// if(forwardType.equals("statistics")){
-		// request.setAttribute("newsletterId", newsletterId);
-		// ActionForward ret= new
-		// ActionForward(mapping.findForward("statisticmanagement").getPath() +
-		// "?newsletterId=" + newsletterId);
-		// return ret;
-		// }
-		// >>>>>>> 1.2
 		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, "", "", null, now);
 		publications = publicationService.searchPublication(newsletterId, "", "", null, now, pagesize, offset * pagesize, "number", "UP");
 		List<Map<String, String>> results = convertPublicationsToMap(publications);
@@ -156,21 +141,6 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 	}
 
 	private List convertPublicationsToMap(List<Publication> publications) {
-
-		// =======
-		// public ActionForward termList(ActionMapping mapping, ActionForm form,
-		// HttpServletRequest request, HttpServletResponse response){
-		// if(StringUtils.isNotBlank(request.getParameter("newsletterId"))){
-		// request.setAttribute("newsletterId",
-		// request.getParameter("newsletterId"));
-		// }
-		// return mapping.findForward("termlist");
-		// }
-		//
-		// private List convertPublicationsToMap(Set<Publication> publications)
-		// {
-		//
-		// >>>>>>> 1.2
 		List<Map> results = new ArrayList<Map>();
 		for (Publication publication : publications) {
 			Map result = new HashMap();

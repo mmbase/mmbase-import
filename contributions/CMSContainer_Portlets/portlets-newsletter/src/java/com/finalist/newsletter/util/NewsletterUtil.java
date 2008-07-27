@@ -66,7 +66,7 @@ public abstract class NewsletterUtil {
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(number);
-     // deleteNewsletterTermsForNewsletter(newsletterNode);
+      deleteNewsletterTermsForNewsletter(newsletterNode);
       deleteNewsletterLogForNewsletter(number);
    }
 

@@ -1,49 +1,26 @@
 <%@include file="globals.jsp" 
-%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html>
    <cmscedit:head title="index.title">
       <script src="../repository/search.js" type="text/javascript"></script>
    </cmscedit:head>
    <body>
-   <div class="tabs">
-      <div class="tab">
-         <div class="body">
-            <div>
-               <a href="NewsletterPublicationManagement.do?newsletterId=${requestScope.newsletterId}">
-                  <fmt:message key="newsletter.publication.tabs.edit"/>
-               </a>
-            </div>
-         </div>
-      </div>
-      <div class="tab_active">
-         <div class="body">
-            <div>
-               <a href="#">
-                  <fmt:message key="newsletter.publication.tabs.statistics"/>
-               </a>
-            </div>
-         </div>
-      </div>
-      <div class="tab">
-         <div class="body">
-            <div>
-               <a href="NewsletterPublicationSubscriberSearch.do?newsletterId=${requestScope.newsletterId}">
-                  <fmt:message key="newsletter.publication.tabs.subscribers"/>
-               </a>
-            </div>
-         </div>
-      </div>
-      <div class="tab">
-         <div class="body">
-            <div>
-               <a href="NewsletterTermSearch.do?newsletterId=${requestScope.newsletterId}">
-                  <fmt:message key="newsletter.publication.tabs.terms"/>
-               </a>
-            </div>
-         </div>
-      </div>
-   </div>
+   <edit:ui-tabs>
+      <edit:ui-tab key="newsletter.publication.tabs.edit" >
+         NewsletterPublicationManagement.do?newsletterId=${requestScope.newsletterId}
+      </edit:ui-tab>
+       <edit:ui-tab key="newsletter.publication.tabs.statistics" active="true">
+         #
+      </edit:ui-tab>
+      <edit:ui-tab key="newsletter.publication.tabs.subscribers">
+         NewsletterPublicationSubscriberSearch.do?newsletterId=${requestScope.newsletterId}
+      </edit:ui-tab>
+      <edit:ui-tab key="newsletter.publication.tabs.terms">
+         NewsletterTermSearch.do?newsletterId=${requestScope.newsletterId}
+      </edit:ui-tab>
+   </edit:ui-tabs>
 
    <div class="editor">
       <br/>
