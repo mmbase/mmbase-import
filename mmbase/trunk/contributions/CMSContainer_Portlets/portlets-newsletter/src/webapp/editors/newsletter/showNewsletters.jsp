@@ -1,14 +1,20 @@
-<%@ page language="java" pageEncoding="utf-8"%>
-
-<%@page import="org.apache.struts.Globals"%>
-<%@include file="globals.jsp"%>
-
-<%@taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"%>
-
-<fmt:setBundle basename="newsletter" scope="request" />
+<%@ page language="java" pageEncoding="utf-8"
+%>
+<%@page import="org.apache.struts.Globals"
+%>
+<%@include file="globals.jsp"
+%>
+<%@taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"
+%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
+%>
+<%@taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"
+%>
+<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" 
+%>
+<fmt:setBundle basename="newsletter" scope="request"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -166,8 +172,7 @@
                <fmt:message key="newsletterlog.showMessages" />
             </div>
          </div>
-
-         <c:if test="${empty requestScope.records}">
+         <c:if test="${empty requestScope.records && not empty requestScope.result}">
             <div class="body">
                <table>
                   <thead>
@@ -209,65 +214,33 @@
             </div>
          </c:if>
 
-         <c:if test="${!empty requestScope.records}">
+         <c:if test="${not empty requestScope.records}">
             <div class="body">
-               <pg:pager maxPageItems="${pagesize}" url="NewsletterStatistic.do">
-               <pg:param name="action" value="search" />
-               <table>
-                  <thead>
-                     <tr>&nbsp;</tr>
-                     <tr>
-                        <th>&nbsp;</th>
-                        <th> <fmt:message key="newsletterlog.detail.newsletter" /> </th>
-                        <th> <fmt:message key="newsletterlog.detail.logdate" /> </th> 
-                        <th> <fmt:message key="newsletterlog.detail.removed" /> </th> 
-                        <th> <fmt:message key="newsletterlog.detail.subscribe" /> </th> 
-                        <th> <fmt:message key="newsletterlog.detail.unsubcribe" /> </th> 
-                        <th> <fmt:message key="newsletterlog.detail.bounces" /> </th>
-                        <th>&nbsp;</th>
-                     </tr>
-                  </thead>
-                  <tbody class="hover">
-                     <c:set var="num" scope="page" value="0" />
-                     <c:forEach var="newsletterlog" items="${requestScope.records}">
-                        <c:if test="${num%pagesize%2==0}">
-                           <pg:item>
-                              <tr class="swap">
-                                 <td>&nbsp;</td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.name}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.showingdate}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.removed}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.subscribe}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.unsubscribe}" /> </td>
-                                 <td onMouseDown="objClick(this);" style="white-space: nowrap;">
-                                    <c:out value="${newsletterlog.bounches}" />
-                                 </td>
-                                 <td>&nbsp;</td>
-                               </tr>
-                            </pg:item>
-                         </c:if>
-                         <c:if test="${num%pagesize%2==1}">
-                            <pg:item>
-                              <tr>
-                                 <td>&nbsp;</td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.name}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.showingdate}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.removed}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.subscribe}" /> </td>
-                                 <td onMouseDown="objClick(this);"> <c:out value="${newsletterlog.unsubscribe}" /> </td>
-                                 <td onMouseDown="objClick(this);" style="white-space: nowrap;">
-                                    <c:out value="${newsletterlog.bounches}" />
-                                 </td>
-                                 <td>&nbsp;</td>
-                              </tr>
-                            </pg:item>
-                         </c:if>
-                         <c:set var="num" scope="page" value="${num+1}" />
-                     </c:forEach>
-                  </tbody>
-               </table>
-               <%@ include file="module/pager_index.jsp"%>
-               </pg:pager>
+               <edit:ui-table items="${requestScope.records}" var="newsletterlog" size="${totalCount}" requestURI="/editors/newsletter/NewsletterStatistic.do">
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.newsletter">
+                     ${newsletterlog.name}
+                  </edit:ui-tcolumn>
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.logdate">
+                     ${newsletterlog.showingdate}
+                  </edit:ui-tcolumn>
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.removed">
+                     ${newsletterlog.removed}
+                  </edit:ui-tcolumn>
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.subscribe">
+                     ${newsletterlog.subscribe}
+                  </edit:ui-tcolumn>
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.unsubcribe">
+                     ${newsletterlog.unsubscribe}
+                  </edit:ui-tcolumn>
+                  <edit:ui-tcolumn titlekey="newsletterlog.detail.bounces">
+                     ${newsletterlog.bounches}
+                  </edit:ui-tcolumn>
+               </edit:ui-table>
+            </div>
+         </c:if>
+         <c:if test="${empty requestScope.records && empty requestScope.result}">
+            <div class="body">
+               <fmt:message key="newsletterlog.noResults" />
             </div>
          </c:if>
       </div>

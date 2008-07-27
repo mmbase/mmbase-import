@@ -1,11 +1,15 @@
 package com.finalist.newsletter.forms;
 
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.services.*;
 import com.finalist.newsletter.util.DateUtil;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +32,10 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 		addBlankNewsletter(newsletters);
 
 		request.setAttribute("newsletters", newsletters);
-	
+		StatisticService service = (StatisticService) ApplicationContextFactory.getBean("statisticService");
+		StatisticResult result = new StatisticResult();
+		result = service.statisticSummery();
+		request.setAttribute("result", result);
 		return mapping.findForward("result");
 	}
 
@@ -57,16 +64,16 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			List<StatisticResult> records = service.statisticAllByPeriod(
 					startDate, endDate);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", records);
+			request.setAttribute("records", addPagingCondition(request,records));
 		} else if (isAll && !hasDate && isDetail) {
 			List<StatisticResult> records = service.statisticAll();
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", records);
+			request.setAttribute("records", addPagingCondition(request,records));
 		} else if (!isAll && !hasDate && isDetail) {
 			List<StatisticResult> records = service
 					.statisticByNewsletter(newsletterId);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", records);
+			request.setAttribute("records", addPagingCondition(request,records));
 		} else if (!isAll && hasDate && !isDetail) {
 			result = service.statisticByNewsletterPeriod(newsletterId,
 					startDate, endDate);
@@ -85,7 +92,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 					.StatisticDetailByNewsletterPeriod(newsletterId, startDate,
 							endDate);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", records);
+			request.setAttribute("records", addPagingCondition(request,records));
 		}
 		return mapping.findForward("result");
 	}
@@ -106,5 +113,16 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			s.setName(newsletterService.getNewsletterName(Integer.toString(s.getNewsletterId())));
 		}
 
+	}
+	private List<StatisticResult> addPagingCondition(HttpServletRequest request,List<StatisticResult> records){
+		PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+		List<StatisticResult> recordsForShow = new ArrayList<StatisticResult>();
+		recordsForShow.clear();
+		int totalCount = records.size();
+		request.setAttribute("totalCount", totalCount);
+		for(int i=holder.getOffset();i<holder.getPageSize()+holder.getOffset()&&i<totalCount;i++){
+			recordsForShow.add(records.get(i));
+		}
+		return recordsForShow;
 	}
 }
