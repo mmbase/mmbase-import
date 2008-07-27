@@ -17,6 +17,12 @@
          <version>${cmsc.version}</version>
          <type>jar</type>
       </dependency>
+	  <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-edit-webapp</artifactId>
+         <version>${cmsc.version}</version>
+         <type>jar</type>
+      </dependency>
       <dependency>
          <groupId>finalist</groupId>
          <artifactId>cmsc-contentrepository</artifactId>
