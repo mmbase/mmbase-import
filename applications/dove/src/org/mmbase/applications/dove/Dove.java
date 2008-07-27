@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.95 2008-05-09 13:01:39 nklasens Exp $
+ * @version $Id: Dove.java,v 1.96 2008-07-27 14:54:49 andre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1001,7 +1001,7 @@ public class Dove extends AbstractDove {
                 String changes = properties.getProperties().get(PROP_CHANGES);
                 if ((! CHANGES_IGNORE.equals(changes)) &&
                     (originalValues != null) &&
-                    (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
+                    (!(value instanceof byte[])) && (!"binary".equals(dt.getBaseTypeIdentifier())) ) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String) originalValues.get(key);
                     String  mmbaseValue;
                     if (dt instanceof DateTimeDataType ||
