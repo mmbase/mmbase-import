@@ -12,11 +12,16 @@ package com.finalist.cmsc.services.community.person;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Required;
@@ -29,6 +34,7 @@ import com.finalist.cmsc.services.community.preferences.Preference;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.paging.*;
 
 /**
  * @author Remco Bos
@@ -109,12 +115,32 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       getSession().saveOrUpdate(person);
       getSession().flush();
    }
-   
+   @Transactional
+   public List<Person> getAllPeople(PagingStatusHolder holder) {
+	   return getAssociatedPersons(null,holder);
+   }
     @Transactional
    public List<Person> getAllPersons() {
-      return getSession().createCriteria(Person.class).list();
+       	Criteria criteria = getSession().createCriteria(Person.class);
+     	return criteria.list();
    }
-
+    @Transactional(readOnly = true)
+    public int countAllPersons(){
+    	Criteria criteria = getSession().createCriteria(Person.class);
+    	return criteria.list().size();
+    }
+    private void addOrder(PagingStatusHolder holder, String propertyName,
+			Criteria criteria) {
+		/*if (propertyName.equals(holder.getSort())) {*/
+			String dir = holder.getDir();
+			if ("asc".equals(dir)) {
+				criteria.addOrder(Property.forName(propertyName).asc());
+			}
+			if ("desc".equals(dir)) {
+				criteria.addOrder(Property.forName(propertyName).desc());
+			}
+		
+	}
    /** {@inheritDoc} */
    @Transactional
    public boolean deletePersonByAuthenticationId(Long authenticationId) {
@@ -136,7 +162,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @SuppressWarnings("unchecked")
    private Person findPersonByCriteria(Criteria criteria) {
       List<Person> personList = criteria.list();
-      return personList.size() == 1 ? personList.get(0) : null;
+      return personList.size() > 0 ? personList.get(0) : null;
    }
 
    @Required
@@ -235,5 +261,79 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		o.setAuthentication(authentication);
 		o.setPreferences(preferences);
 		return o;
+	}
+	   @Transactional(readOnly = true)
+	   public List<Person> getAssociatedPersons(Map conditions,PagingStatusHolder holder) {
+		   // 2008.7.10∆¥–¥sql”Ôæ‰HQL sentences
+		   StringBuffer strb=new StringBuffer();
+		
+		   basicGetAssociatedPersons(conditions,strb);
+		
+		if("fullname".equals(holder.getSort())){
+			strb.append(String.format(" order by %s %s","person.firstName "+holder.getDir(),",person.lastName "+holder.getDir()));
+		}else if("username".equals(holder.getSort())){
+			strb.append(String.format(" order by %s %s", "authentication.userId",holder.getDir()));
+		}else if("email".equals(holder.getSort())){
+			strb.append(String.format(" order by %s %s","person.email",holder.getDir()));
+		}
+
+		Query q = getSession().createQuery(strb.toString());
+
+		q.setMaxResults(holder.getPageSize())
+		 .setFirstResult(holder.getOffset());
+
+		return q.list();
+	}
+   private void basicGetAssociatedPersons(Map conditions, StringBuffer strb){
+	   strb.append("select distinct person from Person person , Authentication authentication "
+						+ "left join authentication.authorities authority "
+						+ "where person.authenticationId = authentication.id");
+		if (conditions!=null&&conditions.containsKey("fullname")) {
+			String[] names = conditions.get("fullname").toString().split(" ");
+			if (names.length == 2)
+				strb.append(" and (person.firstName='" + names[0]
+						+ "'and person.lastName='" + names[1] + "')"
+						+ "or person.firstName='" + names[0] + " " + names[1]
+						+ "'" + "or person.lastName='" + names[0] + " "
+						+ names[1] + "'");
+			else if (names.length == 1)
+				strb.append(" and person.firstName='" + names[0]
+						+ "' or person.lastName='" + names[0] + "'");
+		}
+		if (conditions!=null&&conditions.containsKey("username")) {
+			String username = conditions.get("username").toString();
+			strb.append(" and upper(authentication.userId) like '%"
+					+ username.toUpperCase() + "%'");
+		}
+		if (conditions!=null&&conditions.containsKey("email")) {
+			String email = conditions.get("email").toString();
+			strb.append(" and upper(person.email) like '%"
+					+ email.toUpperCase() + "%'");
+		}
+		if (conditions!=null&&conditions.containsKey("group")) {
+			if (!conditions.containsKey("strict")) {
+				String[] groups = conditions.get("group").toString().split(" ");
+				if (groups.length < 1)
+					return;
+				strb.append(" and (");
+				strb.append("upper(authority.name)like '%"
+						+ groups[0].toUpperCase() + "%'");
+				for (int i = 1; i < groups.length; i++) {
+					strb.append(" or upper(authority.name)like '%"
+							+ groups[i].toUpperCase() + "%'");
+				}
+				strb.append(")");
+			}else{
+				String groups = conditions.get("group").toString();
+				strb.append(" and authority.name='"+groups+"'");
+			}			
+		}
+   }
+	   @Transactional(readOnly = true)
+	   public int getAssociatedPersonsNum(Map conditions,PagingStatusHolder holder) {
+	  	StringBuffer strb = new StringBuffer();
+	  	 basicGetAssociatedPersons(conditions,strb);
+	  	Query q = getSession().createQuery(strb.toString());
+	  	return q.list().size();
 	}
 }

@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.community.person;
 
 import java.util.List;
+import java.util.Map;
 
+import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
 import com.finalist.cmsc.services.community.preferences.Preference;
 /**
@@ -59,6 +61,9 @@ public interface PersonService {
    void updatePerson(Person person);
 
    List<Person> getAllPersons();
+   public List<Person> getAllPeople(PagingStatusHolder holder);
+   
+   public int countAllPersons();
 
    boolean deletePersonByAuthenticationId(Long userId);
    
@@ -69,4 +74,7 @@ public interface PersonService {
    public void creatRelationRecord(PersonExportImportVO xperson);
     
    public List<PersonExportImportVO> getPersonExportImportVO();
+   public List<Person> getAssociatedPersons(Map conditions,PagingStatusHolder holder);
+
+   public int getAssociatedPersonsNum(Map map,PagingStatusHolder holder);
 }
