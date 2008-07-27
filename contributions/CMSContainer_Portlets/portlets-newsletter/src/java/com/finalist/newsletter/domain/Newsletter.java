@@ -7,8 +7,6 @@ import java.util.Set;
 public class Newsletter {
 
 	private int id;
-	
-	
 
 	private String format;
 
@@ -27,9 +25,9 @@ public class Newsletter {
 	private String fromName;
 
 	private String fromAddress;
-	
+
 	private boolean sendempty;
-	
+
 	private String txtempty;
 
 	public int getId() {
@@ -104,48 +102,48 @@ public class Newsletter {
 		this.fromAddress = fromAddress;
 	}
 
-   public Set<Term> getTerms() {
-      return terms;
-   }
+	public Set<Term> getTerms() {
+		return terms;
+	}
 
-   public void setTerms(Set<Term> terms) {
-      this.terms = terms;
-   }
+	public void setTerms(Set<Term> terms) {
+		this.terms = terms;
+	}
 
-   public boolean getSendempty() {
-      return sendempty;
-   }
+	public boolean getSendempty() {
+		return sendempty;
+	}
 
-   public void setSendempty(boolean sendempty) {
-      this.sendempty = sendempty;
-   }
+	public void setSendempty(boolean sendempty) {
+		this.sendempty = sendempty;
+	}
 
-   public String getTxtempty() {
-      return txtempty;
-   }
+	public String getTxtempty() {
+		return txtempty;
+	}
 
-   public void setTxtempty(String txtempty) {
-      this.txtempty = txtempty;
-   }
+	public void setTxtempty(String txtempty) {
+		this.txtempty = txtempty;
+	}
 
-   public boolean equals(Object o) {
-      if (this == o) {
-         return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-         return false;
-      }
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-      Newsletter that = (Newsletter) o;
+		Newsletter that = (Newsletter) o;
 
-      if (id != that.id) {
-         return false;
-      }
+		if (id != that.id) {
+			return false;
+		}
 
-      return true;
-   }
+		return true;
+	}
 
-   public int hashCode() {
-     return id;
-   }
+	public int hashCode() {
+		return id;
+	}
 }

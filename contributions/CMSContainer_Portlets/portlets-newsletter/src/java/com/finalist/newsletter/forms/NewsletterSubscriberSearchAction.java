@@ -1,8 +1,8 @@
 package com.finalist.newsletter.forms;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,10 +19,10 @@ import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
@@ -52,67 +52,52 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
 	protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+
 		log.debug("No parameter specified,go to subscriber page ,show related subscribers");
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-		int pagesize = 10;
-		if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
-			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
-		}
-		int resultCount = CountsearchSubscribers(newsletterId, "", "", "", "");
-		List results = searchSubscribers(newsletterId, "", "", "", "", pagesize, 0, "number", "ASC");
-		if (results != null) {
+
+		int resultCount = countsearchSubscribers(newsletterId, "", "", "", "");
+		if (resultCount > 0) {
+			List results = searchSubscribers(newsletterId, "", "", "", "");
 			request.setAttribute("results", results);
-			request.setAttribute("resultCount", resultCount);
+			pagingHolder.setPageCount(resultCount);
 		}
+
+		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
-		request.setAttribute("offset", 0);
-		request.setAttribute("order", "number");
-		request.setAttribute("direction", 1);
+
 		return mapping.findForward("success");
 	}
 
 	public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		PagingUtils.getStatusHolder(request);
+
 		log.debug("parameter action specified, go to the subscribers page, show related subscriber list");
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-		int pagesize = 10;
-		if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
-			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
-		}
-		int offset = 0;
-		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
-			offset = Integer.parseInt(request.getParameter("offset"));
-		}
-		String order = "number";
-		if (StringUtils.isNotBlank(request.getParameter("order"))) {
-			order = request.getParameter("order");
-		}
-		String direction = "ASC";
-		String tmpDir = request.getParameter("direction");
-		if (StringUtils.isNotBlank(tmpDir)) {
-			direction = "1".equals(tmpDir) ? "ASC" : "DESC";
-		}
+
 		NewsletterSubscriberSearchForm myForm = (NewsletterSubscriberSearchForm) form;
 		String tmpTerm = myForm.getTerm();
 		String tmpFullName = myForm.getFullname();
 		String tmpUserName = myForm.getUsername();
 		String tmpEmail = myForm.getEmail();
-		int resultCount = CountsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
-		List results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail, pagesize, offset * pagesize, order, direction);
 
-		if (results != null) {
+		int resultCount = countsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
+
+		if (resultCount > 0) {
+			List results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
 			request.setAttribute("results", results);
-			request.setAttribute("resultCount", resultCount);
 		}
+
+		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
-		request.setAttribute("offset", offset);
-		request.setAttribute("order", order);
-		request.setAttribute("direction", tmpDir);
+
 		return mapping.findForward("success");
 	}
 
 	private void AddToMap(List<Map> results, String fullName, String userName, String email, String newsletters, String terms, int authenticationId) {
 
-		Map result = new HashMap();
+		Map result = new LinkedHashMap();
 		result.put("fullname", fullName);
 		result.put("username", userName);
 		result.put("email", email);
@@ -123,14 +108,14 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
 	}
 
-	private List<Map> searchSubscribers(int newsletterId, String terms, String fullName, String userName, String email, int pageSize, int offset,
-			String order, String direction) {
+	private List<Map> searchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
 		List<Map> results = new ArrayList<Map>();
+
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolderInSorting("number", "asc");
 
 		Set<Long> authenticationIds = new HashSet<Long>();
 		authenticationIds = subscriptionService.getAuthenticationByTerms(newsletterId, terms);
-		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, pageSize, offset,
-				order, direction);
+		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, true);
 		for (Object[] result : qResults) {
 			String tmpFullName = result[0].toString() + " " + result[1].toString();
 			String tmpEmail = result[2].toString();
@@ -143,10 +128,13 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 		return results;
 	}
 
-	private int CountsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
+	private int countsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
+		int resultCount = 0;
 		Set<Long> authenticationIds = new HashSet<Long>();
 		authenticationIds = subscriptionService.getAuthenticationByTerms(newsletterId, terms);
-		int resultCount = subscriptionHService.getSubscribersCount(authenticationIds, fullName, userName, email);
+		if (authenticationIds.size() > 0) {
+			resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, false).size();
+		}
 		return resultCount;
 	}
 }

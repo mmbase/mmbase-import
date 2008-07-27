@@ -1,5 +1,7 @@
 package com.finalist.newsletter.forms;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +31,27 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 			subscriptionServices.addNewRecord(authId, newsletterId);
 		}
 
+		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
+		return mapping.findForward("success");
+	}
+
+	public ActionForward subscribeNewsletters(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		log.debug("With parameter subscribeNewsletters,go to search page");
+		// TODO: merge Eva's code
+		if (StringUtils.isNotBlank(request.getParameter("newsletterId"))) {
+			int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
+			Enumeration<String> parameterNames = request.getParameterNames();
+			while (parameterNames.hasMoreElements()) {
+				String paraName = parameterNames.nextElement().trim();
+				if (paraName.startsWith("chk_")) {
+					int chkNumber = Integer.parseInt(request.getParameter(paraName));
+					if (subscriptionServices.noSubscriptionRecord(chkNumber, newsletterId)) {
+						subscriptionServices.addNewRecord(chkNumber, newsletterId);
+					}
+				}
+			}
+		}
 		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
 		return mapping.findForward("success");
 	}

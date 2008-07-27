@@ -35,7 +35,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 		Step step = query.addStep(cloud.getNodeManager("term"));
 		query.setNodeStep(step);
 		NodeList list = query.getList();
-		return list;
+      return MMBaseNodeMapper.convertList(list, Term.class);
 	}
 
 	public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value) {
@@ -49,7 +49,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 			}
 		}
 		NodeList list = query.getList();
-		return MMBaseNodeMapper.convertList(list, Newsletter.class);
+      return MMBaseNodeMapper.convertList(list, Newsletter.class);
 	}
 
 	public int getNewsletterIdBySubscription(int id) {
@@ -70,31 +70,12 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 
 	public Newsletter getNewsletterById(int id) {
 		Node newsletterNode = cloud.getNode(id);
-
-		// <<<<<<< NewsletterCAOImpl.java
-		// Newsletter newsletter = convertFromNode(newsletterNode);
-		//      
-		// List<Node> terms = newsletterNode.getRelatedNodes("term");
-		// log.debug("get newsletter by id:" + id + ",and get " + terms.size() +
-		// " terms with it.");
-		// Iterator termsIt = terms.iterator();
-		//
-		// for (int i = 0; i < terms.size(); i++) {
-		// Term term = new Term();
-		// Node termNode = (Node) termsIt.next();
-		// term.setId(termNode.getNumber());
-		// term.setName(termNode.getStringValue("name"));
-		// term.setSubscription(false);
-		// newsletter.getTerms().add(term);
-		// }
-		// =======
 		Newsletter newsletter = convertFromNode(newsletterNode);
 
 		NodeList terms = newsletterNode.getRelatedNodes("term");
 		log.debug("get newsletter by id:" + id + ",and get " + terms.size() + " terms with it.");
-		List<Term> termList = MMBaseNodeMapper.convertList(terms, Term.class);
-		newsletter.getTerms().addAll(termList);
-		// >>>>>>> 1.16
+      List<Term> termList = MMBaseNodeMapper.convertList(terms, Term.class);
+      newsletter.getTerms().addAll(termList);
 
 		return newsletter;
 	}
@@ -116,8 +97,6 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 		NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
 
 		NodeQuery query = cloud.createNodeQuery();
-		// <<<<<<< NewsletterCAOImpl.java
-
 		Step newsletterStep = query.addStep(newsletterNodeManager);
 		query.setNodeStep(newsletterStep);
 		Constraint idConstraint = SearchUtil.createEqualConstraint(query, newsletterNodeManager.getField("number"), newsletterId);
@@ -125,12 +104,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 
 		RelationStep relationStep = query.addRelationStep(termNodeManager, "posrel", "destination");
 		Step termStep = relationStep.getNext();
-		// =======
-		//
-		// Step termStep = query.addStep(termNodeManager);
-		// >>>>>>> 1.16
 		query.setNodeStep(termStep);
-		// <<<<<<< NewsletterCAOImpl.java
 		if (StringUtils.isNotBlank(name)) {
 			SearchUtil.addLikeConstraint(query, termNodeManager.getField("name"), name);
 		}
@@ -149,15 +123,8 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 			term.setId(tmpNum);
 			term.setName(tmpName);
 			terms.add(term);
-			// =======
-			//
-			// if(StringUtils.isNotBlank(name)){
-			// Constraint nameConstrant =SearchUtil.createLikeConstraint(query,
-			// termNodeManager.getField("name"), "%" + name + "%" );
-			// SearchUtil.addConstraint(query, nameConstrant);
-			// >>>>>>> 1.16
+
 		}
-		// <<<<<<< NewsletterCAOImpl.java
 		return terms;
 	}
 
@@ -170,15 +137,8 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 		Step newsletterStep = query.addStep(newsletterNodeManager);
 		query.setNodeStep(newsletterStep);
 		Constraint idConstraint = SearchUtil.createEqualConstraint(query, newsletterNodeManager.getField("number"), newsletterId);
-		// =======
-		//
-		// RelationStep rStep = query.addRelationStep(newsletterNodeManager,
-		// "posrel", "destination");
-		// Constraint idConstraint = SearchUtil.createEqualConstraint(query,
-		// newsletterNodeManager.getField("number"), newsletterId);
-		// >>>>>>> 1.16
+
 		SearchUtil.addConstraint(query, idConstraint);
-		// <<<<<<< NewsletterCAOImpl.java
 
 		RelationStep relationStep = query.addRelationStep(termNodeManager, "posrel", "destination");
 		Step termStep = relationStep.getNext();
@@ -187,13 +147,6 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 			SearchUtil.addLikeConstraint(query, termNodeManager.getField("name"), name);
 		}
 		return query.getList().size();
-		// =======
-		//
-		// System.out.println(query.toSql());
-		// NodeList nodeList = query.getList();
-		// System.out.println(nodeList.toString());
-		// return new HashSet<Term>();
-		// >>>>>>> 1.16
 	}
 
    public void processBouncesOfPublication(String publicationId, String userId,
