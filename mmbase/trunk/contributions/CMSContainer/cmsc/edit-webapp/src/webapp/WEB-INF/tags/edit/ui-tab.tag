@@ -7,11 +7,11 @@
 
 <c:set var="class" value="${active ? 'tab_active' : 'tab'}"/>
 
-
+<jsp:doBody var="action"/>
 <div class="${class}">
    <div class="body">
       <div>
-         <a href="#"><fmt:message key="${key}"/></a>
+         <a href="${action}"><fmt:message key="${key}"/></a>
       </div>
    </div>
 </div>
