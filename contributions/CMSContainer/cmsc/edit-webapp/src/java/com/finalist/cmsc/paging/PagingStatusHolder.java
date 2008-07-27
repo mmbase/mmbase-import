@@ -9,7 +9,7 @@ public class PagingStatusHolder {
    private int pageSize = -1;
    private int listSize;
    private String sort;
-   private String dir;
+   private String dir = "asc";
 
    public int getPage() {
       return page;

@@ -95,9 +95,14 @@ public class PagingUtils {
       else {
          holder.setPage(0);
       }
-
-      holder.setSort(sort);
-      holder.setDir(dir);
+      
+      if (StringUtils.isNotBlank(sort)) {
+			holder.setSort(sort);
+	  }
+	  
+      if (StringUtils.isNotBlank(dir)) {
+		    holder.setDir(dir);
+	  }
 
       pagingStatusHolderLocal.set(holder);
       return holder;
