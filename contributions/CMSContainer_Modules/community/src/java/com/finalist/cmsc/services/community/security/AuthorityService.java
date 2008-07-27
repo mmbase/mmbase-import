@@ -10,8 +10,12 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.community.security;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.finalist.cmsc.paging.PagingStatusHolder;
 
 /**
  * @author Remco Bos
@@ -22,6 +26,7 @@ public interface AuthorityService {
      * @return set with authorities names
      */
     Set<String> getAuthorityNames();
+    List<Authority> getAllAuthorities(PagingStatusHolder holder);
 
     /**
      * @param userName
@@ -58,8 +63,14 @@ public interface AuthorityService {
      */
     Authority findAuthorityByName(String authorityName);
 
-//    boolean isAdminAuthority(String authorityName);
-//    void addAuthority(String parentName, String childName);
-//    void removeAuthority(String parentName, String childName);
+    List<Authority> findAssociatedAuthorityByName(String name,PagingStatusHolder holder);
+    
+	int countAllAuthorities();
+	
+	int countAssociatedAuthorities(String name);
+
+	List<Authority> getAssociatedAuthorities(Map map, PagingStatusHolder holder);
+
+	int getAssociatedAuthoritiesNum(Map map, PagingStatusHolder holder);
     
 }
