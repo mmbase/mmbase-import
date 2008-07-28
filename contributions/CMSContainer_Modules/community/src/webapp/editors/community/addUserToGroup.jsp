@@ -76,7 +76,7 @@
             <edit:ui-tcolumn title="">
                <input type="checkbox" name="chk_group" value="${group.groupName}"/>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.groupname" sort="groupName">
+            <edit:ui-tcolumn titlekey="community.search.groupname" sort="group">
                <a href="#">${group.groupName}</a>
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="community.search.users">
