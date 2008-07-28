@@ -55,7 +55,7 @@ public class NewsletterCreate extends MMBaseFormlessAction {
 						.getStringValue("schedule")));
 				newNewsletter.commit();
 				addToRequest(request, "showpage", ewnodelastedited);
-				ActionForward ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited + "&fresh=fresh");
+				ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited + "&fresh=fresh");
 				return ret;
 			}
 			request.getSession().removeAttribute("parentnewsletter");

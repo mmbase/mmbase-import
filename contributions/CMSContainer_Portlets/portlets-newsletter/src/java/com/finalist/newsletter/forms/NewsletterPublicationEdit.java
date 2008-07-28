@@ -14,7 +14,6 @@ import java.net.URLEncoder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
@@ -44,11 +43,12 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
 			String ewnodelastedited = getParameter(request, "ewnodelastedited");
 			addToRequest(request, "showpage", ewnodelastedited);
 			ActionForward ret = null;
-			if (StringUtils.isNotEmpty(forwardType)) {
+			if (StringUtils.isNotBlank(forwardType) && !"null".equals(forwardType)) {
 				ret = new ActionForward(mapping.findForward(forwardType).getPath() + "?newsletterId=" + parent);
 			} else {
-				ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited + "&fresh=fresh");
+				ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited + "&fresh=fresh");
 			}
+			ret.setRedirect(true);
 			return ret;
 		}
 	}

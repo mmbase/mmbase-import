@@ -41,9 +41,6 @@
                   <td>
                      <input type="submit" value="Search"/>
                      <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>
-                     <input type="hidden" name="order" value="${requestScope.order}"/>
-                     <input type="hidden" name="direction" value="${requestScope.direction}"/>
-                     <input type="hidden" name="offset" value="0"/>
                   </td>
                </tr>
             </table>
@@ -52,33 +49,19 @@
       </div>
    </div>
 
-   <div class="editor" style="height:455px">
-      <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
+   <div class="editor">
+      <div class="ruler_green">
+         <div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div>
+      </div>
       <div class="body">
-         <mm:import externid="results" jspvar="nodeList" vartype="List" />
-         <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
-         <mm:import externid="offset" jspvar="offset" vartype="Integer"/>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-               <thead>
-                  <th width="5%">&nbsp;</th>
-                  <th scope="95%"><a href="javascript:orderBy('name');"><fmt:message key="newsletter.publication.search.link.name"/></a></th>
-               </thead>
-               <c:forEach items="${results}" var="result">
-               <tr>
-                  <td><a href="../../editors/newsletter/NewsletterTermDelete.do?newsletterId=${requestScope.newsletterId}&termId=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.term.unlink'/>"></a></td>
-                  <td>${result.name}</td>
-               </tr>
-               </c:forEach>
-            </table>
-         </c:if>
-         <c:if test="${resultCount == 0}">
-            <fmt:message key="newsletter.publication.noresult"/>
-         </c:if>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-         </c:if>
+         <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/NewsletterTermSearch.do">
+            <edit:ui-tcolumn title="" width="5%">
+               <a href="../../editors/newsletter/NewsletterTermDelete.do?newsletterId=${requestScope.newsletterId}&termId=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.term.unlink'/>"></a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.search.link.name" sort="name" width="95%">
+               ${result.name}
+            </edit:ui-tcolumn>
+         </edit:ui-table>
       </div>
    </div>
    </body>

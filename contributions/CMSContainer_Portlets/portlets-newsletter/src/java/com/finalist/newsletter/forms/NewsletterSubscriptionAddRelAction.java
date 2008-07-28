@@ -30,7 +30,6 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 			int authId = Integer.parseInt(request.getParameter("authid"));
 			subscriptionServices.addNewRecord(authId, newsletterId);
 		}
-
 		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
 		return mapping.findForward("success");
 	}
@@ -38,7 +37,6 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 	public ActionForward subscribeNewsletters(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		log.debug("With parameter subscribeNewsletters,go to search page");
-		// TODO: merge Eva's code
 		if (StringUtils.isNotBlank(request.getParameter("newsletterId"))) {
 			int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 			Enumeration<String> parameterNames = request.getParameterNames();
@@ -52,7 +50,9 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 				}
 			}
 		}
-		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
-		return mapping.findForward("success");
+
+		ActionForward ret = new ActionForward(mapping.findForward("success").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
+		ret.setRedirect(true);
+		return ret;
 	}
 }

@@ -16,8 +16,6 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
 
 	@Transactional
 	public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
-		// TODO merge with the following function
-
 		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
 
 		StringBuffer strb = new StringBuffer(

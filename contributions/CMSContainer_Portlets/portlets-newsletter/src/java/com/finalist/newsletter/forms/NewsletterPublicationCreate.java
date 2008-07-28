@@ -61,7 +61,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 		if (StringUtils.isNotEmpty(forwardType)) {
 			ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
 		} else {
-			ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited + "&fresh=fresh");
+			ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited + "&fresh=fresh");
 		}
 		return ret;
 	}

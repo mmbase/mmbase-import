@@ -1,17 +1,24 @@
 package com.finalist.newsletter.forms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 
@@ -32,25 +39,20 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 			throws Exception {
 		log.debug("No parameter specified,go to edit page ,show related publications");
 
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-		List<Publication> publications;
+
 		Date now = new Date();
-		int pagesize = 10;
-		if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
-			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
-		}
-		int offset = 0;
-		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
-			offset = Integer.parseInt(request.getParameter("offset"));
-		}
-		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, "", "", null, now);
-		publications = publicationService.searchPublication(newsletterId, "", "", null, now, pagesize, offset * pagesize, "number", "UP");
+		int resultCount = publicationService.searchPublication(newsletterId, "", "", null, now, false).size();
+
+		List<Publication> publications;
+		publications = publicationService.searchPublication(newsletterId, "", "", null, now, true);
 		List<Map<String, String>> results = convertPublicationsToMap(publications);
-		request.setAttribute("results", results);
-		request.setAttribute("resultCount", resultCount);
+		if (results.size() > 0) {
+			request.setAttribute("results", results);
+		}
+		request.setAttribute("resultCount",resultCount);
 		request.setAttribute("newsletterId", newsletterId);
-		request.setAttribute("order", "number");
-		request.setAttribute("direction", "1");
 		return mapping.findForward("newsletterpublicationlist");
 	}
 
@@ -58,25 +60,8 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 	public ActionForward searchPublication(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.debug("parameter specified, search newsletterpublication ");
 
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-		int pagesize = 10;
-		if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
-			pagesize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
-		}
-		int offset = 0;
-		if (StringUtils.isNotBlank(request.getParameter("offset"))) {
-			offset = Integer.parseInt(request.getParameter("offset"));
-		}
-		String order = "number";
-		if (StringUtils.isNotBlank(request.getParameter("order"))) {
-			order = request.getParameter("order");
-		}
-		String direction = "UP";
-		String paramDir = request.getParameter("direction");
-		if (StringUtils.isNotBlank(paramDir)) {
-			direction = "1".equals(paramDir) ? "UP" : "DOWN";
-		}
-
 		NewsletterPublicationManageForm myForm = (NewsletterPublicationManageForm) form;
 		String tmpTitle = myForm.getTitle();
 		String tmpSubject = myForm.getSubject();
@@ -126,17 +111,16 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 		default:
 			break;
 		}
-		List<Publication> publications;
-		int resultCount = publicationService.searchPublicationCountForEdit(newsletterId, tmpTitle, tmpSubject, startTime, endTime);
-		publications = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, pagesize, offset * pagesize,
-				order, direction);
-		request.setAttribute("newsletterId", newsletterId);
-		request.setAttribute("results", publications);
-		request.setAttribute("resultCount", resultCount);
-		request.setAttribute("offset", offset);
 
-		request.setAttribute("order", order);
-		request.setAttribute("direction", paramDir);
+		int resultCount = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, false).size();
+		List<Publication> publications;
+		publications = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, true);
+		if (publications.size() > 0) {
+			request.setAttribute("results", publications);
+		}
+		request.setAttribute("resultCount",resultCount);
+		request.setAttribute("newsletterId", newsletterId);
+
 		return mapping.findForward("newsletterpublicationlist");
 	}
 
