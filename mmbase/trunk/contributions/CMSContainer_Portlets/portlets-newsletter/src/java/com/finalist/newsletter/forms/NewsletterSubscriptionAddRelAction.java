@@ -39,18 +39,13 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 		log.debug("With parameter subscribeNewsletters,go to search page");
 		if (StringUtils.isNotBlank(request.getParameter("newsletterId"))) {
 			int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
-			Enumeration<String> parameterNames = request.getParameterNames();
-			while (parameterNames.hasMoreElements()) {
-				String paraName = parameterNames.nextElement().trim();
-				if (paraName.startsWith("chk_")) {
-					int chkNumber = Integer.parseInt(request.getParameter(paraName));
-					if (subscriptionServices.noSubscriptionRecord(chkNumber, newsletterId)) {
-						subscriptionServices.addNewRecord(chkNumber, newsletterId);
-					}
+			String[] authIds = request.getParameterValues("chk_");
+			for (String authId : authIds) {
+				if (subscriptionServices.noSubscriptionRecord(Integer.parseInt(authId), newsletterId)) {
+					subscriptionServices.addNewRecord(Integer.parseInt(authId), newsletterId);
 				}
 			}
 		}
-
 		ActionForward ret = new ActionForward(mapping.findForward("success").getPath() + "?newsletterId=" + request.getParameter("newsletterId"));
 		ret.setRedirect(true);
 		return ret;
