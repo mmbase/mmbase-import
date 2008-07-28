@@ -47,7 +47,7 @@
             &nbsp;
          </c:if>
          <c:choose>
-            <c:when test="${pages>0&&pages<14}">
+            <c:when test="${pages>=0&&pages<14}">
                <c:forEach var="count" begin="1" end="${pages}">
                   <%@include file="ui-table-paging-link.tagf" %>
                   <c:if test="${count ne pages}"> | </c:if>

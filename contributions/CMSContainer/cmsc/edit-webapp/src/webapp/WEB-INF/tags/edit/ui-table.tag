@@ -2,7 +2,7 @@
 
 <%@ attribute name="items" rtexprvalue="true" required="true" type="java.util.Collection" %>
 <%@ attribute name="var" rtexprvalue="false" required="true" type="java.lang.String" %>
-<%@ attribute name="size" rtexprvalue="true" required="false" type="java.lang.Integer" %>
+<%@ attribute name="size" rtexprvalue="true" required="true" type="java.lang.Integer" %>
 <%@ attribute name="requestURI" rtexprvalue="true" required="false" type="java.lang.String" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
