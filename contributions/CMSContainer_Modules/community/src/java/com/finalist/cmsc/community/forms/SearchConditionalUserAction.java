@@ -68,6 +68,7 @@ public class SearchConditionalUserAction extends AbstractCommunityAction{
     	   request.setAttribute("groupName", groupName);
            return actionMapping.findForward("group");
         }
+      removeFromSession(request,searchform);
       return actionMapping.findForward("success");
    }
 
