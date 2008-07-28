@@ -36,10 +36,8 @@
 <div class="editor">
    <div style="padding-left:10px;">
       <p><a href="userAddInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="view.new.user"/></a><p>
-      <p><a href="../community/index.jsp">TEST</a></p>
       <html:form action="/editors/community/SearchConditionalUser.do" method="post">
-    
-      <table border="0">
+       <table border="0">
          <tbody >
             <tr> 
                <td style="width:150px"><fmt:message key="community.search.fullname"/></td>
@@ -70,7 +68,7 @@
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="community.search.result"/>&nbsp;</div></div>
    <div class="body">
-      <form action="../community/AddUserToGroupInit.do" method="post">
+      <form action="${pageContext.request.contextPath }/editors/community/AddUserToGroupInit.do" method="post">
          <p><input type="submit" value="add To Group" name="submitButton" onclick="return addToGroup()"/></p>
          <edit:ui-table items="${personForShow}" var="person" size="${totalCount}" requestURI="/editors/community/SearchConditionalUser.do">
             <edit:ui-tcolumn title="">
