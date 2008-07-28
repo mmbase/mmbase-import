@@ -36,6 +36,12 @@
          <forward name="success" path="/editors/community/listGroups.jsp" redirect="false" />
       </action>
       <!-- ==== User management ==== -->
+      <action path="/editors/community/editUserToGroupAction" type="com.finalist.cmsc.community.forms.EditUserToGroupAction"
+         validate="false" unknown="true"  name="searchForm">
+         <forward name="add" path="/editors/community/AddUserToGroupInit.do" redirect="false" />	
+         <forward name="remove" path="/editors/community/SearchConditionalUser.do" redirect="false" />
+      </action>
+      
       <action path="/editors/community/IndexAction" type="com.finalist.cmsc.community.forms.IndexAction"
          validate="false" unknown="true">
          <forward name="success" path="/editors/community/index.jsp" redirect="false" />
