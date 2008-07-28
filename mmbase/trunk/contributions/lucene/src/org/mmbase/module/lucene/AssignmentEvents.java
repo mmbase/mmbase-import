@@ -17,26 +17,34 @@ import java.util.Collections;
  *
  * @since  MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: AssignmentEvents.java,v 1.1 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id: AssignmentEvents.java,v 1.2 2008-07-28 14:20:57 michiel Exp $
  */
 
 public class AssignmentEvents {
 
-    public static final int TYPE_FULL = 100;
-    public static final int TYPE_UPDATE = 101;
+    public static final int FULL = 100;
+    public static final int UPDATE = 101;
+    public static final int DELETE = 102;
+    public static final int CLEAR = 103;
 
     public static class Event extends org.mmbase.core.event.Event {
 
         protected final String index;
         protected final List<String> machines;
 
+        protected final Class klas;
+        protected final String identifier;
+        protected boolean copy = false;
+
         /**
          * The event itself
          */
-        public Event(String i, List<String> m) {
-            super(null, TYPE_FULL);
+        public Event(String i, List<String> m, int type, String id, Class k) {
+            super(null, type);
             index = i;
             machines = m == null ? Collections.singletonList(getMachine()) : m;
+            klas = k;
+            identifier = id;
 
         };
         public String getIndex() {
@@ -44,6 +52,18 @@ public class AssignmentEvents {
         }
         public List<String> getMachines() {
             return machines;
+        }
+        public Class getClassFilter() {
+            return klas;
+        }
+        public String getIdentifier() {
+            return identifier;
+        }
+        public boolean getCopy() {
+            return copy;
+        }
+        public void setCopy(boolean b) {
+            copy = b;
         }
         public String toString() {
             return super.toString() + " " + index;

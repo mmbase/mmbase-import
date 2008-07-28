@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.116 2008-07-28 13:56:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.117 2008-07-28 14:20:57 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -195,7 +195,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         public Object getFunctionValue(Parameters arguments) {
             String index = (String) arguments.get(INDEX);
             List<String> machines = (List<String>) arguments.get(MACHINES);
-            EventManager.getInstance().propagateEvent(new AssignmentEvents.Event(index, machines));
+            EventManager.getInstance().propagateEvent(new AssignmentEvents.Event(index, machines, AssignmentEvents.FULL, null,  null));
             return null;
         }
     };
@@ -206,12 +206,55 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     public void notify(AssignmentEvents.Event event) {
         log.info("Received " + event);
         if (event.getMachines().contains(MMBase.getMMBase().getMachineName())) {
-            String index = event.getIndex();
-            if (scheduler == null) throw new RuntimeException("Read only");
-            if (index == null || "".equals(index)) {
-                scheduler.fullIndex();
-            } else {
-                scheduler.fullIndex(index);
+            switch(event.getType()) {
+            case AssignmentEvents.FULL: {
+                    String index = event.getIndex();
+                    if (scheduler == null) throw new RuntimeException("Read only");
+                    if (index == null || "".equals(index)) {
+                        scheduler.fullIndex();
+                    } else {
+                        scheduler.fullIndex(index);
+                    }
+                } break;
+            case AssignmentEvents.UPDATE:
+                throw new UnsupportedOperationException();
+            case AssignmentEvents.DELETE: {
+                    if (scheduler == null) throw new RuntimeException("Read only");
+                    if(!readOnly){
+                        String index      = event.getIndex();
+                        String identifier = event.getIdentifier();
+                        Class  klass      = event.getClassFilter();
+                        if(index == null || "".equals(index)){
+                            scheduler.deleteIndex(identifier, klass);
+                        } else {
+                            scheduler.deleteIndex(identifier, index);
+                        }
+                    }
+                } break;
+            case AssignmentEvents.CLEAR: {
+                    if (readOnly) {
+                        throw new IllegalStateException("This lucene is readonly");
+                    }
+                    String index = event.getIndex();
+                    Indexer indexer = indexerMap.get(index);
+                    boolean copy = event.getCopy();
+                    try {
+                        Directory dir = copy ? indexer.getDirectoryForFullIndex(): indexer.getDirectory();
+                        for (String file : dir.list()) {
+                            if (file != null) {
+                                try {
+                                    log.service("Deleting " + file);
+                                    dir.deleteFile(file);
+                                } catch (Exception e) {
+                                    log.warn(e);
+                                }
+                            }
+                        }
+                        if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
+                    } catch (java.io.IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                } break;
             }
         } else {
             log.info("Event " + event + " ignored");
@@ -226,17 +269,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     //protected Function<Void> deleteIndexFunction = new AbstractFunction<Void>("deleteIndex", INDEX, IDENTIFIER, CLASS) {
     protected Function/*<Void>*/ deleteIndexFunction = new AbstractFunction/*<Void>*/("deleteIndex", new Parameter[] {INDEX, MACHINES, IDENTIFIER, CLASS}, ReturnType.VOID) {
             public Object getFunctionValue(Parameters arguments) {
-                if (scheduler == null) throw new RuntimeException("Read only");
-                if(!readOnly){
-                    String index      = (String) arguments.get(INDEX);
-                    String identifier = (String) arguments.get(IDENTIFIER);
-                    Class  klass      = (Class)  arguments.get(CLASS);
-                    if(index == null || "".equals(index)){
-                        scheduler.deleteIndex(identifier, klass);
-                    } else {
-                        scheduler.deleteIndex(identifier, identifier);
-                    }
-                }
+                String index = (String) arguments.get(INDEX);
+                String identifier = (String) arguments.get(IDENTIFIER);
+
+                Class klass = (Class)  arguments.get(CLASS);
+                List<String> machines = (List<String>) arguments.get(MACHINES);
+                EventManager.getInstance().propagateEvent(new AssignmentEvents.Event(index, machines, AssignmentEvents.DELETE, identifier, klass));
                 return null;
             }
         };
@@ -497,28 +535,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected Function/*<Void>*/ clearDirectory = new AbstractFunction/*<Void>*/("clearDirectory", new Parameter[] {INDEX, MACHINES, COPY}, ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            if (readOnly) {
-                throw new IllegalStateException("This lucene is readonly");
-            }
-            String index = (String) arguments.getString(INDEX);
-            Indexer indexer = indexerMap.get(index);
-            boolean copy = Boolean.TRUE.equals(arguments.get(COPY));
-            try {
-                Directory dir = copy ? indexer.getDirectoryForFullIndex(): indexer.getDirectory();
-                for (String file : dir.list()) {
-                    if (file != null) {
-                        try {
-                            log.service("Deleting " + file);
-                            dir.deleteFile(file);
-                        } catch (Exception e) {
-                            log.warn(e);
-                        }
-                    }
-                }
-                if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
-            } catch (java.io.IOException ioe) {
-                throw new RuntimeException(ioe);
-            }
+            String index = (String) arguments.get(INDEX);
+            List<String> machines = (List<String>) arguments.get(MACHINES);
+            AssignmentEvents.Event event = new AssignmentEvents.Event(index, machines, AssignmentEvents.CLEAR, null, null);
+            event.setCopy((Boolean) arguments.get(COPY));
+            EventManager.getInstance().propagateEvent(event);
             return null;
         }
         };
