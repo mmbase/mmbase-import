@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.223 2008-07-08 07:37:10 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.224 2008-07-28 16:11:32 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
@@ -1126,10 +1126,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
-     * @return A Set containing Strings. The set is modifiable, and synchronized. Don't modify it though.
+     * @return An unmodifiable Set containing Strings.
      */
     public Set<String> getChanged() {
-        return changed;
+        return Collections.unmodifiableSet(changed);
     }
 
     /**
