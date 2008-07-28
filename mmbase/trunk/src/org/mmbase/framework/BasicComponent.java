@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.46 2008-07-03 13:51:19 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.47 2008-07-28 15:52:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -167,7 +167,7 @@ public class BasicComponent implements Component {
             }
         }
         if (defaultBlock == null) {
-            log.warn("No blocks found.");
+            log.service("No blocks found for " + this + " " + uri);
         } else {
             log.debug("Default block: " + defaultBlock);
         }
