@@ -17,12 +17,17 @@ import java.net.MalformedURLException;
 // import org.mmbase.bridge.remote.RemoteCloudContext;
 
 /**
- * @javadoc
+ * This, despiite its name, is not actually a CloudContext, it only provides the static method to obtain one.
+ *
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.12 2008-07-17 17:16:12 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.13 2008-07-28 16:27:56 michiel Exp $
  * @since MMBase-1.5
  */
-public abstract class RemoteContext {
+public final class RemoteContext {
+
+    private RemoteContext() {
+        throw new IllegalArgumentException("This class has no instances");
+    }
     /**
      * Connect to a remote cloudcontext. The name of the context
      * depends on configurations found in mmbaseroot.xml (host) and
@@ -37,7 +42,7 @@ public abstract class RemoteContext {
 
             Object remoteCloudContext= Naming.lookup(uri);
             Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy");
-            Constructor<?> constr =  clazz.getConstructor(Class.forName("org.mmbase.bridge.remote.RemoteCloudContext"), String.class);
+            Constructor<?> constr =  clazz.getConstructor(clazz, String.class);
             return (CloudContext) constr.newInstance(remoteCloudContext, uri);
             //new RemoteCloudContext_Impl(remoteCloudContext);
         } catch (MalformedURLException mue) {
