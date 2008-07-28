@@ -33,7 +33,7 @@
       </action>
       <action path="/editors/community/searchConditionalGroupAction" type="com.finalist.cmsc.community.forms.SearchConditionalGroupAction"
          unknown="false" validate="false" name="searchGroupForm" scope="request">
-         <forward name="success" path="/editors/community/community_groups1.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/listGroups.jsp" redirect="false" />
       </action>
       <!-- ==== User management ==== -->
       <action path="/editors/community/IndexAction" type="com.finalist.cmsc.community.forms.IndexAction"
@@ -57,12 +57,12 @@
       </action>
       <action path="/editors/community/SearchConditionalUser" type="com.finalist.cmsc.community.forms.SearchConditionalUserAction"
          unknown="false" validate="false" name="searchForm" scope="request">
-         <forward name="group" path="/editors/community/community_groups2.jsp" redirect="false" />
-         <forward name="success" path="/editors/community/community_users2.jsp" redirect="false" />
+         <forward name="group" path="/editors/community/moveUserBetweenGroup.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/listUsers.jsp" redirect="false" />
       </action>
      <action path="/editors/community/AddUserToGroupInit" type="com.finalist.cmsc.community.forms.AddUserToGroupInitAction"
          unknown="false" validate="false" name="searchForm" scope="session">
-         <forward name="success" path="/editors/community/community_users3.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/addUserToGroup.jsp" redirect="false" />
       </action>
       
      <action path="/editors/community/AddUserToGroup" type="com.finalist.cmsc.community.forms.AddUserToGroupAction"
