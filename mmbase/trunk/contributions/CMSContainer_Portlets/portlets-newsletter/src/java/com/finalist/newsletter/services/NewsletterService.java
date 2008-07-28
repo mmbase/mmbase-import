@@ -19,11 +19,9 @@ public interface NewsletterService {
 
 	public Newsletter getNewsletterBySubscription(int id);
 
-	public int getNewsletterTermsCountByName(int newsletterId, String terms);
+	public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
 
-   public void processBouncesOfPublication(String publicationId,String userId,String bounceContent);
-   
-	public List<Term> getNewsletterTermsByName(int newsletterId, String name, int pagesize, int offset, String order, String direction);
+	public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging);
 
 	public List<Newsletter> getNewsletters(String subscriber, String title);
 

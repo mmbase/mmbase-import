@@ -1,14 +1,24 @@
 package com.finalist.newsletter.services.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.cao.*;
-import com.finalist.newsletter.domain.*;
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.NewsletterPublicationCAO;
+import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.domain.Publication.STATUS;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
@@ -133,24 +143,9 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 		return result;
 	}
 
-	public List<Publication> searchPublication(int id, String title, String subject, Date startDate, Date endDate, int pagesize, int offset,
-			String order, String direction) {
+	public List<Publication> searchPublication(int newsletterId, String title, String subject, Date startTime, Date endTime, boolean paging) {
 		List<Publication> result = new ArrayList<Publication>();
-		result = publicationCAO.getPublicationsByNewsletterAndPeriod(id, title, subject, startDate, endDate, pagesize, offset, order, direction);
-
-		return result;
-	}
-
-	public int searchPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate) {
-		int tmpResultCount = publicationCAO.getPublicationCountForEdit(id, title, subject, startDate, endDate);
-		return tmpResultCount;
-	}
-
-	public List<Publication> searchPublicationStatistics(int newsletterId, String title, String subject, Date startTime, Date endTime, int pagesize,
-			int offset, String order, String direction) {
-		List<Publication> result = new ArrayList<Publication>();
-		result = publicationCAO.getPublicationsByNewsletterAndPeriod(newsletterId, title, subject, startTime, endTime, pagesize, offset, order,
-				direction);
+		result = publicationCAO.getPublicationsByNewsletterAndPeriod(newsletterId, title, subject, startTime, endTime, paging);
 		return result;
 	}
 

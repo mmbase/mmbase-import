@@ -7,33 +7,28 @@ import java.util.Set;
 
 import com.finalist.newsletter.domain.Publication;
 
-
 public interface NewsletterPublicationService {
-   
-   public static final String SEND_SUCCESS = "sendSucess";
-   public static final String SEND_FAIL = "sendFail";
-   
-   public void deliverAllPublication();
 
-   public void deliver(int publicationId, String email, String mimeType);
+	public static final String SEND_SUCCESS = "sendSucess";
+	public static final String SEND_FAIL = "sendFail";
 
-   public Publication.STATUS getStatus(int publicationId);
+	public void deliverAllPublication();
 
-   public void setStatus(int publciationId, Publication.STATUS status);
+	public void deliver(int publicationId, String email, String mimeType);
 
-   public Map<String,List<String>> deliver(int publidcation);
+	public Publication.STATUS getStatus(int publicationId);
 
-   public int countAllPublications();
+	public void setStatus(int publciationId, Publication.STATUS status);
 
-   public int countPublicationByNewsletter(int id);
+	public Map<String, List<String>> deliver(int publidcation);
 
-   public int countSentPublications(int id);
-   
-   public Set<Publication> getPublicationByNewsletter(int id);
-   
-   public List<Publication> searchPublication(int id , String title, String subject, Date startDate, Date endDate, int pagesize, int offset, String order, String direction);
-   
-   public int searchPublicationCountForEdit(int id, String title, String subject, Date startDate, Date endDate);
-   
-   public List<Publication> searchPublicationStatistics(int newsletterId, String title,String subject, Date startTime, Date endTime, int pagesize, int offset, String order, String direction);
+	public int countAllPublications();
+
+	public int countPublicationByNewsletter(int id);
+
+	public int countSentPublications(int id);
+
+	public Set<Publication> getPublicationByNewsletter(int id);
+
+	public List<Publication> searchPublication(int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging);
 }

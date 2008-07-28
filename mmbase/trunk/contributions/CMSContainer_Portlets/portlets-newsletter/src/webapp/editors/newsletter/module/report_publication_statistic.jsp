@@ -35,64 +35,28 @@
    <div class="editor">
       <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
       <div class="body">
-         <mm:import externid="results" jspvar="nodeList" vartype="List" />
-         <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer"/>
-         <mm:import externid="offset" jspvar="offset" vartype="Integer"/>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-               <thead>
-                  <th width="5%">&nbsp;</th>
-                  <th width="15%">
-                     <a href="javascript:orderBy('title');" >
-                        <fmt:message key="newsletter.publication.result.publication"/>
-                     </a>
-                  </th>
-                  <th width="15%">
-                     <a href="javascript:orderBy('publishdate');" >
-                     <fmt:message key="newsletter.publication.result.sentat"/>
-                     </a>
-                  </th>
-                  <th width="15%">
-                     <a href="javascript:orderBy('subscriptions');" >
-                        <fmt:message key="newsletter.publication.result.subscriptions"/>
-                     </a>
-                  </th>
-                  <th width="15%">
-                     <fmt:message key="newsletter.publication.result.sentsuccess"/>
-                  </th>
-                  <th width="35%">
-                     <a href="javascript:orderBy('bounced');" >
-                        <fmt:message key="newsletter.publication.result.bounced"/>
-                     </a>
-                  </th>
-               </thead>
-               <c:forEach items="${results}" var="result">
-                  <tr>
-                     <td width="5%">
-                        <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics">
-                           <img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"/>
-                        </a>
-                     </td>
-                     <td width="15%" >
-                        <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletterpublication.edit'/>">
-                           ${result.title}
-                        </a>
-                     </td>
-                     <td width="15%" >${result.sendtime}</td>
-                     <td width="15%" >${result.subscriptions}</td>
-                     <td width="15%" >${result.sendsuccessful}</td>
-                     <td width="35%">${result.bounced}</td>
-                  </tr>
-               </c:forEach>
-            </table>
-         </c:if>
-         <c:if test="${resultCount == 0}">
-            <fmt:message key="newsletter.publication.noresult"/>
-         </c:if>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-         </c:if>
+         <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/NewsletterPublicationStatisticSearch.do">
+            <edit:ui-tcolumn title="" width="5%">
+               <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"/></a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.publication" sort="title" width="15%">
+               <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletterpublication.edit'/>">
+                  ${result.title}
+               </a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.sentat" sort="publishdate" width="15%">
+               ${result.sendtime}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.subscriptions" sort="subscriptions" width="15%">
+               ${result.subscriptions}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.sentsuccess" width="15%">
+               ${result.sendsuccessful}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.bounced" sort="bounced" width="35%">
+               ${result.bounced}
+            </edit:ui-tcolumn>
+         </edit:ui-table>
       </div>
    </div>
    </body>
