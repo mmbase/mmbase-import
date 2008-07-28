@@ -35,9 +35,11 @@
          alert("<fmt:message key="community.search.promptuser"/>");
          return false;
       }
-      confirm("<fmt:message key="community.search.option"><fmt:param>j</fmt:param></fmt:message>");
+     if(confirm("<fmt:message key="community.search.option"><fmt:param>j</fmt:param></fmt:message>")){
       document.getElementById("option").value ="remove";
       return true;
+	 }
+	 return false;
    }
 
 </script>
