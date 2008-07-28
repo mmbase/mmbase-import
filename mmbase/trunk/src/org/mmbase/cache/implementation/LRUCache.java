@@ -17,7 +17,7 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.5 2008-07-28 14:59:53 michiel Exp $
+ * @version $Id: LRUCache.java,v 1.6 2008-07-28 15:09:52 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */
@@ -50,7 +50,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
      * @param size the new desired size
      */
     public void setMaxSize(int size) {
-        if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value");
+        if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value " + size);
         maxSize = size;
         while (size() > maxSize()) {
             try {

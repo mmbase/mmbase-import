@@ -25,7 +25,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.6.2.2 2008-03-19 15:38:04 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.6.2.3 2008-07-28 15:06:54 michiel Exp $
  */
 public class CacheManager {
 
@@ -72,7 +72,11 @@ public class CacheManager {
      */
     protected static Cache putCache(Cache cache) {
         Cache old = (Cache) caches.put(cache.getName(), cache);
-        configure(configReader, cache.getName());
+        try {
+            configure(configReader, cache.getName());
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+        }
         return old;
     }
 
@@ -135,6 +139,8 @@ public class CacheManager {
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
                     log.error("Could not configure cache " + cacheName + " because the size was wrong: " + nfe.toString());
+                } catch (Throwable t) {
+                    log.error(" " + cacheName + " maxsize " + t.getMessage());
                 }
                 String maxSize = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
                 if (!"".equals(maxSize)) {
@@ -143,6 +149,8 @@ public class CacheManager {
                         log.service("Setting maximum entry size on " + cacheName + ": " + cache.maxEntrySize + " bytes ");
                     } catch (NumberFormatException nfe2) {
                         log.error("Could not set max entry size cache  of " + cacheName + " because " + nfe2.toString());
+                    } catch (Throwable t) {
+                        log.error(" " + cacheName + " maxentrysize " + t.getMessage());
                     }
                 } else {
                     if (cache.getDefaultMaxEntrySize() > 0) {
