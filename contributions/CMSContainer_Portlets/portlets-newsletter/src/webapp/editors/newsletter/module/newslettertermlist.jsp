@@ -17,7 +17,7 @@
 function update(number) {
    var myAjax = new Ajax.Request(
     '${actionUrl}',
-    {   parameters:"method=modify&id="+number+"&name="+document.getElementById("name_"+number).value,
+    {   parameters:"method=modify&id="+number+"&name="+$("name_"+number).value,
     onComplete: postUpdate
     }
   );
@@ -31,9 +31,10 @@ function deleteInfo(number,offset,resultLength) {
       if(offset < 0) {
          offset = 0;
       }
-      var url = "${actionUrl}?method=delete";
-      url += "&id="+number+"&offset="+offset;
-      document.location = url;
+      document.forms[0].offset.value = offset;
+      document.forms[0].method.value = "delete";
+      $("id").value = number;
+      document.forms[0].submit();
    }            
 }
 
@@ -65,7 +66,9 @@ function postUpdate(originalRequest) {
 </div>
 <div class="editor" style="height:500px">
 <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
-<html:hidden property="method" value="list"/>
+   <html:hidden property="method" value="list"/>
+   <input type="hidden" name="id" id="id" value=""/>
+   <input type="hidden" name="deleteRequest" value=""/>
    <html:hidden property="offset"/>
    <input type="hidden" name="newsletter" value="${newsletterId}"/>
    <mm:notpresent referid="newsletterId">
@@ -108,7 +111,7 @@ function postUpdate(originalRequest) {
 <%@include file="../../repository/searchpages.jsp" %>
 <mm:notpresent referid="newsletterId">
 <c:if test="${fn:length(resultList) >1}">
-<input type="button" class="button" value="<fmt:message key="newsletter.term.action.delete" />" onclick="massDelete(this.form,'<fmt:message key="newsletter.term.delete.confirm" />')"/>
+<input type="button" class="button" value="<fmt:message key="newsletter.term.action.delete" />" onclick="massDelete('<fmt:message key="newsletter.term.delete.confirm" />')"/>
 </c:if>
 </mm:notpresent>
 <mm:present referid="newsletterId">
