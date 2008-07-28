@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.98 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.99 2008-07-28 15:38:13 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -530,9 +530,9 @@ public class BuilderReader extends DocumentReader {
                     results.put(key, function);
                     log.debug("functions are now: " + results);
                 } catch (ClassNotFoundException cnfe) {
-                    log.warn(cnfe.getMessage());
+                    log.warn(cnfe.getClass() + " " + getSystemId() + " " + cnfe.getMessage());
                 } catch (Throwable e) {
-                    log.error(e.getMessage(), e);
+                    log.error(e.getClass() + " " + getSystemId() + " " + e.getMessage(), e);
                 }
             }
         }
