@@ -32,11 +32,11 @@
                <tbody>
                   <tr>&nbsp;</tr>
                   <tr>
-                     <td style="width:150px">Group name</td>
+                     <td style="width:150px"><fmt:message key="community.search.groupname"/></td>
                      <td><html:text style="width: 250px" property="groupname"/></td>
                   </tr>
                    <tr>
-            <td width="150px">Member(s)</td>
+            <td width="150px"><fmt:message key="community.search.member"/></td>
             <td><input type="text" style="width:250px" value="" name="member"></td>
              <tr>
                   <tr>&nbsp;</tr>
@@ -61,11 +61,11 @@
                <a href="./SearchConditionalUser.do?groupName=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16"></a>
                <a href="./deleteGroupAction.do?groupid=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16"></a>
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="Group" sort="groupName">
+         <edit:ui-tcolumn titlekey="community.search.groupname" sort="groupName">
                <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do"/>
                <a href="${userActionUrl}?groupName=${result.groupName}">${result.groupName}</a>
           </edit:ui-tcolumn>
-          <edit:ui-tcolumn titlekey="Users" >
+          <edit:ui-tcolumn titlekey="community.search.users" >
                ${result.users }
           </edit:ui-tcolumn>
           </edit:ui-table></form>      
