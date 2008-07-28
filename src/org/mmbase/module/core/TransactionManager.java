@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.43 2008-07-28 16:11:57 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.44 2008-07-28 17:42:17 michiel Exp $
  */
 public class TransactionManager {
 
@@ -231,6 +231,44 @@ public class TransactionManager {
     private final static int NODE = 3;
     private final static int RELATION = 4;
 
+    /**
+     * @since MMBase-1.9
+     */
+    private void commitNode(Object user, MMObjectNode node, int i, int[] nodestate, int[] nodeexist) {
+
+        if (nodeexist[i] == I_EXISTS_YES ) {
+            if (! node.isChanged()) return;
+            // use safe commit, which locks the node cache
+            boolean commitOK;
+            if (user instanceof UserContext) {
+                commitOK = node.commit((UserContext)user);
+            } else {
+                commitOK = node.parent.safeCommit(node);
+            }
+            if (commitOK) {
+                nodestate[i] = COMMITED;
+            } else {
+                nodestate[i] = FAILED;
+            }
+        } else if (nodeexist[i] == I_EXISTS_NO ) {
+            int insertOK;
+            if (user instanceof UserContext) {
+                insertOK = node.insert((UserContext)user);
+            } else {
+                String username = findUserName(user);
+                insertOK = node.parent.safeInsert(node, username);
+            }
+            if (insertOK > 0) {
+                nodestate[i] = COMMITED;
+            } else {
+                nodestate[i] = FAILED;
+                String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
+                throw new RuntimeException(message);
+            }
+        }
+    }
+
+
     boolean performCommits(Object user, Collection<MMObjectNode> nodes) {
         if (nodes == null || nodes.size() == 0) {
             log.debug("Empty list of nodes");
@@ -239,7 +277,6 @@ public class TransactionManager {
 
         int[] nodestate = new int[nodes.size()];
         int[] nodeexist = new int[nodes.size()];
-        String username = findUserName(user);
 
         log.debug("Checking types and existance");
 
@@ -269,35 +306,7 @@ public class TransactionManager {
         for (MMObjectNode node : nodes) {
             i++;
             if (!(node.getBuilder() instanceof InsRel)) {
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    if (! node.isChanged()) continue;
-                    // use safe commit, which locks the node cache
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
-                        throw new RuntimeException(message);
-                    }
-                }
+                commitNode(user, node, i, nodestate, nodeexist);
             }
         }
 
@@ -308,35 +317,7 @@ public class TransactionManager {
         for (MMObjectNode node : nodes) {
             i++;
             if (node.getBuilder() instanceof InsRel) {
-                // excactly the same code as 10 lines ago. Should be dispatched to some method..
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    if (! node.isChanged()) continue;
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "relation failed(transaction 2.0: [rollback?])";
-                        log.error(message);
-                    }
-                }
+                commitNode(user, node, i, nodestate, nodeexist);
             }
         }
 
