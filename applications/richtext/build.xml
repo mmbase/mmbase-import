@@ -42,6 +42,8 @@
     <exec executable="make" dir="mmbase/kupu">
       <arg line="clean" />
     </exec>
+    <!-- I HATE ANT , I just don't want errors if the directory happens to be non existings -->
+    <mkdir dir="mmbase/kupu/mmbase" />
     <exec executable="make" dir="mmbase/kupu/mmbase">
       <arg line="clean" />
     </exec>
