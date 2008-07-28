@@ -20,7 +20,7 @@
         <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
       </author>
-      
+
       <author>
         <firstname>Andre</firstname>
         <surname>van Toly</surname>
@@ -329,15 +329,29 @@
       <para>Returns the number of items found.</para>
     </section>
 
-    <section id="history">
-      <title>History</title>
-
-      <para>There are currently two publicly available Lucene modules. The
-      site http://mmapps.sourceforge.net provides an alternate version,
-      careted by Finalist, which works on MMBase 1.7.</para>
-
-      <para>The version you are looking at now was developed on the 1.8
-      version of MMBase.</para>
+  </section>
+  <section id="clustering">
+    <title>Clustering</title>
+    <para>
+      When using the lucene module on a clustered MMBase,  then you have the following options.
+    </para>
+    <section>
+      <title>Shared file system</title>
+      <para>
+        Using the property 'readonly" you can configure only one of the lucenes' to be not 'readonly'
+        This property is either 'true' which makes it explicelty readonly or 'host:&lt;machinename&gt;|&lt;ip-address&gt;|&lt;${catalina.base}@ip-address&gt;, wich makes it read only
+        if the current host doesn't match one of the given strings.
+      </para>
     </section>
+  </section>
+  <section id="history">
+    <title>History</title>
+
+    <para>There are currently two publicly available Lucene modules. The
+    site http://mmapps.sourceforge.net provides an alternate version,
+    careted by Finalist, which works on MMBase 1.7.</para>
+
+    <para>The version you are looking at now was developed on the 1.8
+    version of MMBase. It is however maintained in HEAD.</para>
   </section>
 </article>
