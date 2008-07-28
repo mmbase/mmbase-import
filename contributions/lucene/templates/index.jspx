@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page buffer="2000kb" />
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
@@ -11,7 +12,11 @@
               unacceptable="CRIPPLE"
               language="en" expires="0">
     <body class="basic">
-      <h1>Lucene admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
+      <mm:import externid="org.mmbase.lucene.admin.machines"
+                 id="machines"
+                 vartype="list" from="parameters,cookie"><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></mm:import>
+      <mm:write cookie="org.mmbase.lucene.admin.machines" value="${machines}" />
+      <h1>Lucene admin page for ${machines}</h1>
       <mm:import externid="logout" />
       <mm:present referid="logout">
         <mm:cloud method="logout" />
@@ -22,6 +27,7 @@
           Configuration was read at <mm:function module="lucene" name="config"><mm:time format="yyyy-MM-dd HH:mm:ss"/></mm:function>.
           <mm:booleanfunction name="readOnly" module="lucene">
             The lucene module is configured to be <em>read only</em>.
+            Responsible for the index is '<mm:function name="master" module="lucene" />'.
           </mm:booleanfunction>
           The following indices are currently defined.
         </p>
@@ -184,8 +190,8 @@
         <hr />
         <mm:import externid="fullindex" />
         <mm:present referid="fullindex">
-          <jsp:text>Triggering full index for ${fullindex}.</jsp:text>
-          <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index" />
+          <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
+          <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
         </mm:present>
         <mm:import externid="delete" />
         <mm:present referid="delete">
@@ -211,6 +217,26 @@
               </mm:link>
             </td>
           </tr>
+          <c:if test="${fn:length(machines) gt 1}">
+            <tr>
+              <th>Full index commands work on</th>
+              <td>
+                <form>
+                  <select multiple="multiple" name="org.mmbase.lucene.admin.machines">
+                    <mm:listnodescontainer type="mmservers">
+                      <mm:constraint field="state" value="active" />
+                      <mm:listnodes>
+                        <mm:option value="${_node.name}" compareset="${machines}">
+                          <mm:field name="name" />
+                        </mm:option>
+                      </mm:listnodes>
+                    </mm:listnodescontainer>
+                  </select>
+                  <input type="submit" name="submit_machines" value="Change" />
+                </form>
+              </td>
+            </tr>
+          </c:if>
           <tr>
             <th>Queue</th>
             <td>
