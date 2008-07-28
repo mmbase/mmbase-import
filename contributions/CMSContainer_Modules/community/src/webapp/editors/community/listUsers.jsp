@@ -21,6 +21,7 @@
 	      return true;
 	   }
 	</script>
+
 </cmscedit:head>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
 <mm:import externid="newsletterId"/>
@@ -86,7 +87,7 @@
          </mm:present>
          <edit:ui-table items="${personForShow}" var="person" size="${totalCount}" requestURI="/editors/community/SearchConditionalUser.do">
             <edit:ui-tcolumn title="">
-               <input type="checkbox" name="chk_${person.authId}" value="${person.authId}"/>&nbsp;
+               <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
                <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="edit"></a>
                <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="delete"></a>
             </edit:ui-tcolumn>
