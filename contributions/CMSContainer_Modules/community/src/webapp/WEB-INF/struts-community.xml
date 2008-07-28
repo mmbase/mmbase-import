@@ -6,10 +6,11 @@
    <!-- Data Sources Definitions -->
    <!-- Form Bean Definitions -->
    <form-beans>
-   	  <form-bean name="referdatafilebean" type="com.finalist.cmsc.community.forms.ReferenceImportUploadForm"/>
       <form-bean name="communityUserForm" type="com.finalist.cmsc.community.forms.UserForm" />
       <form-bean name="communityGroupForm" type="com.finalist.cmsc.community.forms.GroupForm" />
       <form-bean name="preferenceForm" type="com.finalist.cmsc.community.forms.PreferenceForm" />
+      <form-bean name="searchForm" type="com.finalist.cmsc.community.forms.SearchForm"/>
+      <form-bean name="searchGroupForm" type="com.finalist.cmsc.community.forms.SearchGroupForm" />
    </form-beans>
    <!-- Global Exceptions Definitions -->
    <!-- Global Forward Definitions -->
@@ -30,6 +31,10 @@
          name="communityGroupForm" scope="session" unknown="false" validate="false">
          <forward name="success" path="/editors/community/group.jsp" redirect="false" />
       </action>
+      <action path="/editors/community/searchConditionalGroupAction" type="com.finalist.cmsc.community.forms.SearchConditionalGroupAction"
+         unknown="false" validate="false" name="searchGroupForm" scope="request">
+         <forward name="success" path="/editors/community/community_groups1.jsp" redirect="false" />
+      </action>
       <!-- ==== User management ==== -->
       <action path="/editors/community/IndexAction" type="com.finalist.cmsc.community.forms.IndexAction"
          validate="false" unknown="true">
@@ -42,27 +47,35 @@
       <action path="/editors/community/userAddAction" type="com.finalist.cmsc.community.forms.UserAddAction"
          name="communityUserForm" scope="session" unknown="false" validate="true" input="/editors/community/user.jsp">
          <set-property property="cancellable" value="true"/>
-         <forward name="success" path="/editors/community/index.jsp" redirect="true" />
+         <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="true" />
          <forward name="newslettersubscribers" path="/editors/newsletter/NewsletterPublicationSubscriberSearch.do"/>
          <forward name="newslettersubscription" path="/editors/newsletter/NewsletterSubscriptionAddRelAction.do"/>
       </action>
       <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
          unknown="false" validate="false">
-         <forward name="success" path="/editors/community/index.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="false" />
       </action>
+      <action path="/editors/community/SearchConditionalUser" type="com.finalist.cmsc.community.forms.SearchConditionalUserAction"
+         unknown="false" validate="false" name="searchForm" scope="request">
+         <forward name="group" path="/editors/community/community_groups2.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/community_users2.jsp" redirect="false" />
+      </action>
+     <action path="/editors/community/AddUserToGroupInit" type="com.finalist.cmsc.community.forms.AddUserToGroupInitAction"
+         unknown="false" validate="false" name="searchForm" scope="session">
+         <forward name="success" path="/editors/community/community_users3.jsp" redirect="false" />
+      </action>
+      
+     <action path="/editors/community/AddUserToGroup" type="com.finalist.cmsc.community.forms.AddUserToGroupAction"
+         unknown="false" validate="false" name="searchForm" scope="request">
+         <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="true" />
+      </action>
+      
      <!-- ==== Reference management ==== -->
       <action path="/editors/community/PreferenceAction" name="preferenceForm" type="org.springframework.web.struts.DelegatingActionProxy"
          validate="false" unknown="true" parameter="method">
          <forward name="success" path="/editors/community/preferencesearch.jsp" redirect="false" />
          <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="false" />
          <forward name="init" path="/editors/community/preferenceadd.jsp" redirect="false" />
-      </action>
-	  <!-- ======export====== -->
-	  <action path="/editors/community/ReferenceImportExportAction" name="referdatafilebean"
-              type="org.springframework.web.struts.DelegatingActionProxy" parameter="action"
-              validate="true">
-         <forward name="failed" path="/editors/community/import.jsp"/>
-         <forward name="success" path="/editors/community/import_success.jsp"/>
       </action>
    </action-mappings>
    <message-resources parameter="cmsc-community" key="COMMUNITY" />
