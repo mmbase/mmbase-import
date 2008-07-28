@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.113 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id: Lucene.java,v 1.114 2008-07-28 13:28:21 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -126,6 +126,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE, DTD_LUCENE, Lucene.class);
     }
 
+    // initial wait time after startup, default 2 minutes. This can be needed to give e.g. CCS time
+    // to deploy
+
+    private static final long INITIAL_WAIT_TIME = 2 * 60 * 1000;
     private static final long WAIT_TIME = 5 * 1000;
 
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
@@ -147,6 +151,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     private boolean readOnly = false;
     private String master; // If readonly, the machine name of the mmbase which is responsible for the index
 
+    private long initialWaitTime = INITIAL_WAIT_TIME;
     private long waitTime  = WAIT_TIME;
 
 
@@ -644,6 +649,29 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 public void run() {
                     // Force init of MMBase
                     MMBase mmbase = MMBase.getMMBase();
+
+
+                    if (initialWait) {
+                       // initial wait time?
+                       String time = getInitParameter("initialwaittime");
+                       if (time != null) {
+                           try {
+                               initialWaitTime = Long.parseLong(time);
+                               log.debug("Set initial wait time to " + time + " milliseconds");
+                           } catch (NumberFormatException nfe) {
+                               log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+                           }
+                       }
+                       try {
+                           if (initialWaitTime > 0) {
+                               log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                               Thread.sleep(initialWaitTime);
+                           }
+                       } catch (InterruptedException ie) {
+                           //return;
+                       }
+                   }
+
 
                     factory = ContentExtractor.getInstance();
 
