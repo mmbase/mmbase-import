@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.57 2008-07-28 15:27:40 michiel Exp $
+ * @version $Id: InsRel.java,v 1.58 2008-07-28 16:06:21 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -460,8 +460,8 @@ public class InsRel extends MMObjectBuilder {
             query2.setConstraint(constraint);
         }
         org.mmbase.util.ChainedList<MMObjectNode> nodes =  new org.mmbase.util.ChainedList<MMObjectNode>();
-        nodes.addList(getNodes(query1));
-        nodes.addList(getNodes(query2));
+        nodes.addList(builder.getNodes(query1));
+        nodes.addList(builder.getNodes(query2));
         return nodes;
     }
 
