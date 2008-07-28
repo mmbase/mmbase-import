@@ -66,7 +66,7 @@
       <div class="body">
          <div>
             <a href="${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do">
-               Memeber List of Group ${groupName} 
+              <fmt:message key="community.search.prompt"/>${groupName} 
             </a>
          </div>
       </div>
