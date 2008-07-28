@@ -1,4 +1,4 @@
-function massDelete(form, confirmmessage) {
+function massDelete(confirmmessage) {
     if (confirmmessage) {
         if (confirm(confirmmessage)) {
                  var checkboxs = document.getElementsByTagName("input");
@@ -12,8 +12,10 @@ function massDelete(form, confirmmessage) {
                     return ;
                  }
                  objectnumbers = objectnumbers.substr(0,objectnumbers.length - 1);
-                 form.deleteRequest.value = objectnumbers;
-                 form.submit();
+                 document.forms[0].deleteRequest.value = objectnumbers;
+                 document.forms[0].method.value = "delete";
+                 document.forms[0].offset.value = "0";
+                 document.forms[0].submit();
         }
     }   
 }
