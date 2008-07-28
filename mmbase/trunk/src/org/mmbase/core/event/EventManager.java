@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.25 2007-09-18 12:04:05 michiel Exp $
+ * @version $Id: EventManager.java,v 1.26 2008-07-28 13:06:21 michiel Exp $
  */
 public class EventManager {
 
@@ -62,22 +62,6 @@ public class EventManager {
         return eventManager;
     }
 
-    private static EventBroker findInstance(String className) {
-        if (className == null || "".equals(className)) return null;
-        try {
-            Class<?> aClass = Class.forName(className);
-            return (EventBroker)  aClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            log.error("could not find class with name '" + className + "'", e);
-        } catch (InstantiationException e) {
-            log.error("could not instantiate class with name '" + className + "'", e);
-        } catch (IllegalAccessException e) {
-            log.error("the constructor of '" + className + "' is not accessible", e);
-        } catch (ClassCastException e) {
-            log.error("'" + className + "' is not a AbstractEventBroker", e);
-        }
-        return null;
-    }
 
     protected ResourceWatcher watcher = new ResourceWatcher() {
             public void onChange(String w) {
@@ -104,13 +88,16 @@ public class EventManager {
 
                     // find the event brokers
                     for (Element element: configReader.getChildElements("eventmanager.brokers", "broker")) {
-                        String className = element.getAttribute("class");
-                        EventBroker broker = findInstance(className);
-                        if (broker != null) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("adding event broker: " + broker);
+                        try {
+                            EventBroker broker = Instantiator.getInstance(element);
+                            if (broker != null) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("adding event broker: " + broker);
+                                }
+                                addEventBroker(broker);
                             }
-                            addEventBroker(broker);
+                        } catch (Throwable ee) {
+                            log.warn(ee.getMessage(), ee);
                         }
                     }
                 }
