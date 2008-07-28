@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.22 2007-11-16 16:25:29 michiel Exp $
+ * @version $Id: Xml.java,v 1.23 2008-07-28 20:26:19 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -137,17 +137,13 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
             c = element;
             if (c =='&'){
                 sb.append("&amp;");
-            }
-            else if (c =='<'){
+            } else if (c =='<'){
                 sb.append("&lt;");
-            }
-            else if (c =='>'){
+            } else if (c =='>'){
                 sb.append("&gt;");
-            }
-            else if (c =='"'){
+            } else if (c =='"'){
                 sb.append("&quot;");
-            }
-            else {
+            } else {
                 sb.append(c);
             }
         }
