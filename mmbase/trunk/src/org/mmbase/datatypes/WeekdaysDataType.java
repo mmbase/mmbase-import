@@ -15,10 +15,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * An enumeration datatype representing all days of a week, so an integer with the value 1 through 7.
+ * An enumeration datatype representing all days of a week, so an integer with the value 1 through
+ * 7. It considers the locale to determin which day is to be the first of the week, and hence the
+ * first in the enumeration.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.3 2008-07-09 11:46:24 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.4 2008-07-28 16:12:35 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
