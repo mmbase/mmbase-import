@@ -98,9 +98,12 @@ public class PreferenceAction extends DispatchAction {
       BeanUtils.copyProperties(preference, preferenceForm);
 
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+      
 
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
+      /*pagingHolder.getSort();
+      pagingHolder.getDir();*/
       
       List<PreferenceVO> preferences = preferenceService.getPreferences(preference, offset,
             pagesize, preferenceForm.getOrder(), preferenceForm.getDirection());
