@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -18,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.person.PersonService;
@@ -61,9 +59,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 		if (resultCount > 0) {
 			List results = searchSubscribers(newsletterId, "", "", "", "");
 			request.setAttribute("results", results);
-			pagingHolder.setPageCount(resultCount);
 		}
-
 		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
 
@@ -83,7 +79,6 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 		String tmpEmail = myForm.getEmail();
 
 		int resultCount = countsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
-
 		if (resultCount > 0) {
 			List results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
 			request.setAttribute("results", results);

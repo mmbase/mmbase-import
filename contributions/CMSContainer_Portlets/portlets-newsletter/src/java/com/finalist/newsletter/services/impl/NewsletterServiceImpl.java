@@ -1,5 +1,12 @@
 package com.finalist.newsletter.services.impl;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mmbase.bridge.Node;
+
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
@@ -8,13 +15,6 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterService;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Node;
-
-import java.util.List;
-import java.util.Set;
 
 public class NewsletterServiceImpl implements NewsletterService {
 
@@ -96,22 +96,22 @@ public class NewsletterServiceImpl implements NewsletterService {
 		}
 	}
 
-   public void processBouncesOfPublication(String publicationId,String userId) {
-      //todo test.
-      int pId = Integer.parseInt(publicationId);
-      int uId = Integer.parseInt(userId);
-      int newsletterId = publicationCAO.getNewsletterId(pId);
-      Node newsletterNode = newsletterCAO.getNewsletterNodeById(newsletterId);
-      Node subscriptionNode =  subscriptionCAO.getSubscriptionNode(newsletterId,uId);
-      int bouncesCount = subscriptionNode.getIntValue("count_bounces");
-      int maxAllowedBonce = newsletterNode.getIntValue("max_bounces");
-      
-      if(bouncesCount > maxAllowedBonce){
-         subscriptionCAO.pause(subscriptionNode.getNumber());
-      }
-      statisticCAO.logPubliction(uId,newsletterId, StatisticResult.HANDLE.BOUNCE);
-      subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
-   }
+	public void processBouncesOfPublication(String publicationId, String userId) {
+		// todo test.
+		int pId = Integer.parseInt(publicationId);
+		int uId = Integer.parseInt(userId);
+		int newsletterId = publicationCAO.getNewsletterId(pId);
+		Node newsletterNode = newsletterCAO.getNewsletterNodeById(newsletterId);
+		Node subscriptionNode = subscriptionCAO.getSubscriptionNode(newsletterId, uId);
+		int bouncesCount = subscriptionNode.getIntValue("count_bounces");
+		int maxAllowedBonce = newsletterNode.getIntValue("max_bounces");
+
+		if (bouncesCount > maxAllowedBonce) {
+			subscriptionCAO.pause(subscriptionNode.getNumber());
+		}
+		statisticCAO.logPubliction(uId, newsletterId, StatisticResult.HANDLE.BOUNCE);
+		subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
+	}
 
 	private List<Newsletter> getAllNewsletterBySubscriber(String subscriber) {
 		return null;
@@ -121,25 +121,13 @@ public class NewsletterServiceImpl implements NewsletterService {
 		return null;
 	}
 
-	public List<Term> getNewsletterTermsByName(int newsletterId, String name, int pagesize, int offset, String order, String direction) {
-		List<Term> terms = newsletterCAO.getNewsletterTermsByName(newsletterId, name, pagesize, offset, order, direction);
+	public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging) {
+		List<Term> terms = newsletterCAO.getNewsletterTermsByName(newsletterId, name, paging);
 		return terms;
 	}
 
-	public int getNewsletterTermsCountByName(int newsletterId, String tmpName) {
-		int resultCount = newsletterCAO.getNewsletterTermsCountByName(newsletterId, tmpName);
-		return resultCount;
+	public void processBouncesOfPublication(String publicationId, String userId, String bounceContent) {
+		newsletterCAO.processBouncesOfPublication(publicationId, userId, bounceContent);
 	}
-
-   public Set<Term> getNewsletterTermsByName(int newsletterId, String name,
-         int pagesize, int offset) {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   public void processBouncesOfPublication(String publicationId, String userId,
-         String bounceContent) {
-      newsletterCAO.processBouncesOfPublication(publicationId, userId, bounceContent);
-   }
 
 }

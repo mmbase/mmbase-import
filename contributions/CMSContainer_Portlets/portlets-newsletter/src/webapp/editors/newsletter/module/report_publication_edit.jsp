@@ -47,60 +47,28 @@
    <div class="editor">
       <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
       <div class="body">
-         <mm:import externid="results" jspvar="nodeList" vartype="List" />
-         <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer"/>
-         <mm:import externid="offset" jspvar="offset" vartype="Integer"/>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-               <thead>
-                  <th width="15%">&nbsp;</th>
-                  <th width="20%">
-                     <a href="javascript:orderBy('title');">
-                        <fmt:message key="newsletter.publication.result.title"/>
-                     </a>
-                  </th>
-                  <th width="20%">
-                     <a href="javascript:orderBy('subject');">
-                        <fmt:message key="newsletter.publication.result.subject"/>
-                     </a>
-                  </th>
-                  <th width="15%">
-                     <a href="javascript:orderBy('lastmodifier');">
-                        <fmt:message key="newsletter.publication.result.lastmodifier"/>
-                     </a>
-                  </th>
-                  <th width="30%">
-                     <a href="javascript:orderBy('lastmodifieddate');">
-                        <fmt:message key="newsletter.publication.result.modificationdate"/>
-                     </a>
-                  </th>
-               </thead>
-               <c:forEach items="${results}" var="result">
-                  <tr>
-                     <td width="15%">
-                        <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.gif'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.editproperty'/>"></a>
-                        <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit_defaults.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.edit'/>"></a>
-                        <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"></a>
-                        <a href="../newsletter/NewsletterPublicationTest.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_go.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendemail'/>"></a>
-                        <a href="../newsletter/NewsletterPublicationPublish.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_error.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendpublication'/>"></a>
-                        <a href="../usermanagement/pagerights.jsp?number=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/rights.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.userright'/>"></a>
-                     </td>
-                     <td width="20%" >${result.title}</td>
-                     <td width="20%" >${result.subject}</td>
-                     <td width="15%" >${result.lastmodifier}</td>
-                     <td width="30%" >${result.lastmodifieddate}</td>
-                  </tr>
-               </c:forEach>
-            </table>
-         </c:if>
-
-         <c:if test="${resultCount == 0}">
-            <fmt:message key="newsletter.publication.noresult"/>
-         </c:if>
-         <c:if test="${resultCount > 0}">
-            <%@include file="../../repository/searchpages.jsp" %>
-         </c:if>
+         <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/NewsletterPublicationManagement.do">
+            <edit:ui-tcolumn title="" width="15%">
+               <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.gif'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.editproperty'/>"></a>
+               <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit_defaults.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.edit'/>"></a>
+               <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"></a>
+               <a href="../newsletter/NewsletterPublicationTest.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_go.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendemail'/>"></a>
+               <a href="../newsletter/NewsletterPublicationPublish.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_error.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendpublication'/>"></a>
+               <a href="../usermanagement/pagerights.jsp?number=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/rights.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.userright'/>"></a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="25%">
+               ${result.title}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.subject" sort="subject" width="20%">
+               ${result.subject}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.lastmodifier" sort="lastmodifier" width="20%">
+               ${result.lastmodifier}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.modificationdate" sort="lastmodifieddate" width="20%">
+               ${result.lastmodifieddate}
+            </edit:ui-tcolumn>
+         </edit:ui-table>
       </div>
    </div>
    </body>
