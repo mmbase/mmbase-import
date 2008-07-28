@@ -18,7 +18,7 @@
          }
       }
       if(objectnumbers == ''){
-         alert('Please choose the groups!');
+         alert("<fmt:message key="community.search.promptgroup"/>");
          return false;
       }
       return true;
