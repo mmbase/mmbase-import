@@ -217,26 +217,29 @@
               </mm:link>
             </td>
           </tr>
-          <c:if test="${fn:length(machines) gt 1}">
-            <tr>
-              <th>Full index commands work on</th>
-              <td>
-                <form>
-                  <select multiple="multiple" name="org.mmbase.lucene.admin.machines">
-                    <mm:listnodescontainer type="mmservers">
-                      <mm:constraint field="state" value="active" />
-                      <mm:listnodes>
-                        <mm:option value="${_node.name}" compareset="${machines}">
-                          <mm:field name="name" />
-                        </mm:option>
-                      </mm:listnodes>
-                    </mm:listnodescontainer>
-                  </select>
-                  <input type="submit" name="submit_machines" value="Change" />
-                </form>
-              </td>
-            </tr>
-          </c:if>
+          <mm:listnodescontainer type="mmservers">
+            <mm:constraint field="state" value="active" />
+            <mm:size>
+              <mm:isgreaterthan value="1">
+                <tr>
+                  <th>Full index commands work on</th>
+                  <td>
+                    <form>
+                      <select multiple="multiple" name="org.mmbase.lucene.admin.machines">
+
+                        <mm:listnodes>
+                          <mm:option value="${_node.name}" compareset="${machines}">
+                            <mm:field name="name" />
+                          </mm:option>
+                        </mm:listnodes>
+                      </select>
+                      <input type="submit" name="submit_machines" value="Change" />
+                    </form>
+                  </td>
+                </tr>
+              </mm:isgreaterthan>
+            </mm:size>
+          </mm:listnodescontainer>
           <tr>
             <th>Queue</th>
             <td>
