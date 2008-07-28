@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.79 2008-07-18 04:17:59 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.80 2008-07-28 16:10:52 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -157,10 +157,10 @@ public class TypeRel extends MMObjectBuilder {
 
             if (sourceBuilder == null) {
                 if (destinationBuilder == null) {
-                    log.warn("Both source and destination of " + typeRel
+                    log.info("Both source and destination of " + typeRel
                              + " are not active builders. Cannot follow descendants.");
                 } else {
-                    log.warn("The source of relation type " + typeRel
+                    log.info("The source of relation type " + typeRel
                              + " is not an active builder. Cannot follow descendants.");
                 }
                 break inheritance;
@@ -685,17 +685,21 @@ public class TypeRel extends MMObjectBuilder {
             super(new Comparator<MMObjectNode>() {
                 // sorted by source, destination, role
                 public int compare(MMObjectNode n1, MMObjectNode n2) {
-                    int i1 = n1.getIntValue("snumber");
-                    int i2 = n2.getIntValue("snumber");
-                    if (i1 != i2) return i1 - i2;
-
-                    i1 = n1.getIntValue("dnumber");
-                    i2 = n2.getIntValue("dnumber");
-                    if (i1 != i2) return i1 - i2;
-
-                    i1 = n1.getIntValue("rnumber");
-                    i2 = n2.getIntValue("rnumber");
-                    if (i1 > 0 && i2 > 0 && i1 != i2) return i1 - i2;
+                    {
+                        int i1 = n1.getIntValue("snumber");
+                        int i2 = n2.getIntValue("snumber");
+                        if (i1 != i2) return i1 - i2;
+                    }
+                    {
+                        int i1 = n1.getIntValue("dnumber");
+                        int i2 = n2.getIntValue("dnumber");
+                        if (i1 != i2) return i1 - i2;
+                    }
+                    {
+                        int i1 = n1.getIntValue("rnumber");
+                        int i2 = n2.getIntValue("rnumber");
+                        if (i1 > 0 && i2 > 0) return i1 - i2;
+                    }
 
                     return 0;
                 }
@@ -732,12 +736,15 @@ public class TypeRel extends MMObjectBuilder {
 
             // determine maximum value
             int roleMax = role <= 0  ? 0 : role + 1; // i.e. source, destination, role
-            int destinationMax = role <= 0 ? destination + 1 : destination; // i.e. source, destination, 0
-            int sourceMax = (destination <= 0 && role <= 0) ? (source <= 0  ? 0 : source + 1) : source; // i.e. source, 0, 0
+            int destinationMax = role <= 0 ? destinationMin + 1 : destinationMin; // i.e. source, destination, 0
+            int sourceMax = (destination <= 0 && role <= 0) ? (sourceMin <= 0  ? 0 : sourceMin + 1) : sourceMin; // i.e. source, 0, 0
 
             VirtualTypeRelNode fromTypeRelNode = new VirtualTypeRelNode(sourceMin, destinationMin, roleMin);
             VirtualTypeRelNode toTypeRelNode = new VirtualTypeRelNode(sourceMax, destinationMax, roleMax);
 
+            if (log.isDebugEnabled()) {
+                log.debug(" " + fromTypeRelNode + " " + toTypeRelNode);
+            }
             SortedSet<MMObjectNode> allowed = subSet(fromTypeRelNode, toTypeRelNode);
             return Collections.unmodifiableSortedSet(allowed);
         }
@@ -839,6 +846,10 @@ public class TypeRel extends MMObjectBuilder {
             setValue("dnumber", dnumber);
             setValue("rnumber", rnumber);
             values = Collections.unmodifiableMap(values); // make sure it is not changed any more!
+        }
+
+        public String toString() {
+            return "V:" + getValue("snumber") + "->" + getValue("rnumber") + "(" + getValue("rnumber") + ")";
         }
     }
 
