@@ -2,8 +2,7 @@
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 
-<cmscedit:head title="reactions.title">
-</cmscedit:head>
+<cmscedit:head title="reactions.title"></cmscedit:head>
 
 <div class="tabs">
    <div class="tab">
