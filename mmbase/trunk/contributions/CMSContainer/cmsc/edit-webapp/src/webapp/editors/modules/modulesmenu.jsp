@@ -44,8 +44,8 @@
                      </mm:haspage>
                      <mm:haspage page="/editors/community">
                         <li class="users">
-                           <c:url var="communityUrl" value="/editors/community/index.jsp"/>
-                           <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community" /></a>
+                          <c:url var="communityManagement" value="/editors/community/SearchConditionalUser.do"/>
+                           <a href="${communityManagement}" target="rightpane"><fmt:message key="modules.community" /></a>
                         </li>
                      </mm:haspage>
                      <mm:haspage page="/editors/community">
