@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.44 2008-07-28 17:42:17 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.45 2008-07-28 17:49:01 michiel Exp $
  */
 public class TransactionManager {
 
@@ -237,7 +237,13 @@ public class TransactionManager {
     private void commitNode(Object user, MMObjectNode node, int i, int[] nodestate, int[] nodeexist) {
 
         if (nodeexist[i] == I_EXISTS_YES ) {
-            if (! node.isChanged()) return;
+            //if (! node.isChanged()) return;
+            // Commit also if not changed, because the node may have been deleted or changed by
+            // someone else. It is like this in the transaction it should be saved like this.
+            // See also MMB-1680
+            // TODO: what is the performance penalty here?
+
+
             // use safe commit, which locks the node cache
             boolean commitOK;
             if (user instanceof UserContext) {
