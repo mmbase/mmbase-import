@@ -68,14 +68,9 @@ public class UserAddInitAction extends AbstractCommunityAction {
 			userForm.setAction(UserForm.ACTION_ADD);
 		}
 		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
-			// ActionForward ret= new
-			// ActionForward(actionMapping.findForward(SUCCESS).getPath());
 			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
 			request.getSession().setAttribute("forward", request.getParameter("forward"));
-			// return ret;
 		}
-		// else{
 		return actionMapping.findForward(SUCCESS);
-		// }
 	}
 }
