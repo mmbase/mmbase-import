@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: EventBroker.java,v 1.4 2008-02-03 17:33:58 nklasens Exp $
+ * @version $Id: EventBroker.java,v 1.5 2008-07-28 13:04:24 michiel Exp $
  */
 public abstract class EventBroker {
 
@@ -91,9 +91,7 @@ public abstract class EventBroker {
         }
     }
 
-    public String toString(){
-        return "Event Broker";
-    }
+    public abstract String toString();
 
     public boolean equals(Object o) {
         //  we can only have one instance so this will do to prevent adding more instances of an envent broker
