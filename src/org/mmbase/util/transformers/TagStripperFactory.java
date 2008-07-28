@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.12 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: TagStripperFactory.java,v 1.13 2008-07-28 16:22:16 michiel Exp $
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory<CharTransformer>  {
@@ -215,7 +215,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             return attributes;
         }
         public  boolean allowsAttribute(String k, String v) {
-            //System.out.println("Checking " + k + "=" + v + " for " + this);
+            ////System.out.println("Checking " + k + "=" + v + " for " + this);
             for (Attr attr : attributes) {
                 switch (attr.allows(k, v)) {
                 case YES: return true;
@@ -240,6 +240,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
 
         public TagStripper(Writer out, List<Tag> t) {
+            //System.out.println("KOLERE");
             this.out = out;
             tags = t;
         }
@@ -248,7 +249,9 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             return "" + tags + (addBrs ? "(replacing newlines)" : "");
         }
         protected Tag allowed(String tagName) {
+            //System.out.print("Checking wheter 'tagName' allowed");
             for (Tag tag : tags) {
+                //System.out.println("using " + tag);
                 Allows a = tag.allows(tagName);
                 switch (a) {
                 case YES: return tag;
@@ -308,6 +311,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
 
         protected Tag getTag(HTML.Tag tag, MutableAttributeSet attributes) {
+            //System.out.println("handling tag " + tag);
             boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
             Tag t;
             if (! addImplied && implied) {
@@ -320,6 +324,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
         }
         protected void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
+            //System.out.println("handling attributes");
             Enumeration<?> en = attributes.getAttributeNames();
             while (en.hasMoreElements()) {
                 Object attName =  en.nextElement();
@@ -349,6 +354,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
 
         public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
+            //System.out.println("Start tag " + tag);
             try {
                 stack.add(0, tag);
                 Tag t = getTag(tag, attributes);
@@ -367,6 +373,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
 
         public void handleEndTag(HTML.Tag tag, int position) {
+            //System.out.println("End tag " + tag);
             stack.remove(0);
             try {
                 String tagName = tag.toString();
@@ -390,7 +397,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
         public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
             //stack.remove(0);
-            //System.out.println("SIMPLE TAG " + tag);
+            ////System.out.println("SIMPLE TAG " + tag);
             try {
                 String tagName = tag.toString();
                 Tag t = getTag(tag, attributes);
@@ -475,7 +482,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     public static void main(String[] args) throws IOException {
         TagStripperFactory factory = new TagStripperFactory();
         Parameters params = factory.createParameters();
-        params.set(TAGS, "XSS");
+        params.set(TAGS, "NONE");
         params.set(ADD_BRS, false);
         params.set(ESCAPE_AMPS, true);
         CharTransformer transformer = factory.createTransformer(params);
@@ -484,11 +491,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 //        String source = "<p style=nanana/>";
 //        String source = "<p style=\"nanana\">text</p>";
 //        String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
-        //System.out.println("Source      = "+source);
+        ////System.out.println("Source      = "+source);
         Writer w = new OutputStreamWriter(System.out);
         transformer.transform(new InputStreamReader(System.in), w);
         w.flush();
-        //System.out.println("Destination = "+dest);
+        ////System.out.println("Destination = "+dest);
 
         org.mmbase.util.ThreadPools.filterExecutor.shutdown();
 
