@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.26 2008-07-28 13:06:21 michiel Exp $
+ * @version $Id: EventManager.java,v 1.27 2008-07-28 15:09:31 michiel Exp $
  */
 public class EventManager {
 
@@ -89,7 +89,7 @@ public class EventManager {
                     // find the event brokers
                     for (Element element: configReader.getChildElements("eventmanager.brokers", "broker")) {
                         try {
-                            EventBroker broker = Instantiator.getInstance(element);
+                            EventBroker broker = (EventBroker) org.mmbase.util.xml.Instantiator.getInstance(element);
                             if (broker != null) {
                                 if (log.isDebugEnabled()) {
                                     log.debug("adding event broker: " + broker);
