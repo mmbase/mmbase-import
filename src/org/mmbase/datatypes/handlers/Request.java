@@ -17,8 +17,8 @@ import org.mmbase.bridge.*;
  * This generalizes  one rendition of a form.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Request.java,v 1.2 2008-07-15 19:41:01 michiel Exp $
- * @since MMBase-1.9.0
+ * @version $Id: Request.java,v 1.3 2008-07-28 16:47:31 michiel Exp $
+ * @since MMBase-1.9.1
  */
 
 public interface Request {
@@ -26,21 +26,28 @@ public interface Request {
      * Encounter something that would make the current form invalid.
      */
     void invalidate();
+
+    boolean isValid();
+
     /**
      * Obtains the Cloud that can be used if no Node available yet.
      */
     Cloud getCloud();
+
+    java.util.Locale getLocale();
     /**
      *
      */
-    //String getName(Field field);
+    String getName(Field field);
+
     /**
      * Gets the user specified value for a field
      */
-    Object getValue(Node node, Field field);
+    Object getValue(Field field);
+    Object getValue(Field field, String part);
 
     /**
-     * Handler implementation can put properties on the request to do some adminstration.
+     * Handler implementations can put properties on the request to do some adminstration.
      */
     <C> C setProperty(Parameter<C> name, C value);
     <C> C getProperty(Parameter<C> name);
