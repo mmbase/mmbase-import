@@ -50,11 +50,8 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 		set.addAll(authority.getAuthentications());
 		for (Authentication authentication : authority.getAuthentications()) {
 			authentication.getAuthorities().remove(authority);
-			//authentication.removeAuthority(authority);
-//			getSession().saveOrUpdate(authentication);
 		}
        authority.getAuthentications().clear();
-//		getSession().saveOrUpdate(authority);
 		getSession().delete(authority);
 
 	}
@@ -162,7 +159,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
      StringBuffer strb = new StringBuffer();
      basicGetAssociatedAuthorities(conditions, strb);
      if ("groupName".equals(holder.getSort())) {
-      strb.append(String.format(" order by %s %s","Authority.name", holder.getDir()));
+      strb.append(String.format(" order by %s %s","authority.name", holder.getDir()));
      }
      Query q = getSession().createQuery(strb.toString());
      q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
