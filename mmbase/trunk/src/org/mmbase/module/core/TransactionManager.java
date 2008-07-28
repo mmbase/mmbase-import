@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.42 2008-01-09 12:26:51 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.43 2008-07-28 16:11:57 michiel Exp $
  */
 public class TransactionManager {
 
@@ -51,8 +51,8 @@ public class TransactionManager {
         return instance;
     }
 
-
     private TransactionManager() {
+        // singleton
     }
 
     public TemporaryNodeManager getTemporaryNodeManager() {
@@ -194,7 +194,7 @@ public class TransactionManager {
                 getTransactionResolver().resolve(transaction);
                 transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
             } catch (TransactionManagerException te) {
-                throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes", te);
+                throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes)", te);
             }
         } else {
             log.service("Resolved already");
