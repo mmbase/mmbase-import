@@ -55,6 +55,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
       if(authorities!=null)
          request.setAttribute("groupForShow", convertAuthrityTOVO(authorities));
          request.setAttribute("totalCount", totalCount);
+         removeFromSession(request,searchform);
          return actionMapping.findForward("success");
       
    }
