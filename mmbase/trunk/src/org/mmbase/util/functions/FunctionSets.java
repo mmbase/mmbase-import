@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.32 2008-06-26 16:40:26 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.33 2008-07-28 16:22:33 michiel Exp $
  */
 public class FunctionSets {
 
@@ -141,7 +141,7 @@ public class FunctionSets {
                         try {
                             String setName     = n.getAttribute("name");
                             if (functionSets.containsKey(setName)) {
-                                log.warn("The function-set '" + setName + "' did exist already");
+                                log.debug("The function-set '" + setName + "' did exist already, while reading " + u);
                             }
                             String setResource = n.getAttribute("resource");
                             if (setResource.equals("")) setResource = n.getAttribute("file"); // deprecated, it's not necessarily a file
@@ -193,7 +193,7 @@ public class FunctionSets {
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
                 ReturnType returnType = null;
-        if (a != null) {
+                if (a != null) {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
@@ -238,7 +238,10 @@ public class FunctionSets {
                     }
                     SetFunction fun = new SetFunction(functionName, parameters, returnType, functionClass, methodName, SetFunction.Type.valueOf(type.toUpperCase()));
                     fun.setDescription(description);
-                    functionSet.addFunction(fun);
+                    Function prev = functionSet.addFunction(fun);
+                    if (prev != null && ! (prev.equals(fun))) {
+                        log.warn("Replaced " + prev + " with " + fun + " in function set " + functionSet);
+                    }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
