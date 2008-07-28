@@ -19,7 +19,7 @@ import org.mmbase.storage.search.Constraint;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.2 2008-07-17 16:27:16 michiel Exp $
+ * @version $Id: Handler.java,v 1.3 2008-07-28 16:47:31 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -32,6 +32,21 @@ public interface Handler<C> extends java.io.Serializable {
      */
     C input(Request request, Node node, Field field, boolean search);
 
+    /** 
+     * Checks the user input, and invalidates the request, if this user input was invalid.
+     * @param errors If <code>true</code> then report the errors, otherwise the return value can
+     * remain empty.
+     */
+    C check(Request request, Node node, Field field, boolean errors);
 
+    /**
+     * Sets the user's input into the field of the node
+     */
+    boolean set(Request request, Node node, Field field);
+    
+    /**
+     * Uses the user's input to create a constraint for the given query
+     */
+    Constraint search(Request request, Field field, Query query);
 
 }
