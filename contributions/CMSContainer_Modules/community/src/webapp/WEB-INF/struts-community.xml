@@ -19,7 +19,7 @@
       <!-- ==== Group management ==== -->
       <action path="/editors/community/deleteGroupAction" type="com.finalist.cmsc.community.forms.DeleteGroupAction"
          unknown="false" validate="false">
-         <forward name="success" path="/editors/community/index.jsp" redirect="false" />
+         <forward name="success" path="/editors/community/searchConditionalGroupAction.do" redirect="false" />
       </action>
       <action path="/editors/community/groupAction" type="com.finalist.cmsc.community.forms.GroupAction"
          name="communityGroupForm" scope="session" input="/editors/community/group.jsp" unknown="false"
