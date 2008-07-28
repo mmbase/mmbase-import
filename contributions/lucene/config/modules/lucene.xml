@@ -25,6 +25,13 @@
         If it starts with "system:" then the remaining part will be used as a System property, and its value is used, to start evaluation again.
     -->
     <property name="readonly">system:mmbase.lucene.readonly</property>
+
+    <!--
+     You may configure wich machine is responsible for keeping the index up to date
+    <property name="master" />
+    -->
+
+    <property name="indexpath">$BINARYFILEBASEPATH/$DATABASE/lucene</property>
   </properties>
 
 </module>
