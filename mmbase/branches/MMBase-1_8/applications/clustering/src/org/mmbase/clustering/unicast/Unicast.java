@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.9.2.1 2008-07-22 15:04:08 michiel Exp $
+ * @version $Id: Unicast.java,v 1.9.2.2 2008-07-28 11:19:45 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -125,16 +125,12 @@ public class Unicast extends ClusterManager {
 
     // javadoc inherited
     public void changedNode(NodeEvent event) {
-        try {
-            byte[] message = createMessage(event);
-            nodesToSend.append(message);
-            //Multicast receives his own message. Unicast now too.
-            nodesToSpawn.append(message);
-            if (log.isDebugEnabled()) {
-                log.debug("message: " + event);
-            }
-        } catch (java.io.IOException ioe) {
-            log.warn(ioe);
+        byte[] message = createMessage(event);
+        nodesToSend.append(message);
+        //Multicast receives his own message. Unicast now too.
+        nodesToSpawn.append(message);
+        if (log.isDebugEnabled()) {
+            log.debug("message: " + event);
         }
         return;
     }
