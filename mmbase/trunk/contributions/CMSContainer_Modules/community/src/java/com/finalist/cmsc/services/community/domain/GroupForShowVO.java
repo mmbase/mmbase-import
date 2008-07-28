@@ -1,4 +1,4 @@
-package com.finalist.cmsc.community.forms;
+package com.finalist.cmsc.services.community.domain;
 
 public class GroupForShowVO {
 	private String groupName;

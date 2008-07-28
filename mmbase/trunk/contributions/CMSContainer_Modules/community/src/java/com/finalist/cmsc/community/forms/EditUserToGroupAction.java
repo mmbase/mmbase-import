@@ -26,46 +26,64 @@ public class EditUserToGroupAction extends AbstractCommunityAction{
 	
 	public ActionForward execute(ActionMapping actionMapping,ActionForm actionForm, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		SearchForm searchform = (SearchForm) actionForm;
-		if (null != searchform.getOption()&&null!=searchform.getGroupName()) {
-			String groupName = searchform.getGroupName();
-			String[] authIds = searchform.getChk_();
-			//String forword=request.getParameter("group");
-			String forword=searchform.getOption();
-			if ("remove".equals(forword)) {
-				removeAuthorityFromUser(groupName, authIds);
-				request.setAttribute("searchform", searchform);
-			}
-			if ("add".equals(forword)) {
-				PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
-				int totalCount = 0;
-				List<Authority> authorities = new ArrayList();
-				if(!StringUtil.isEmptyOrWhitespace(searchform.getGroup())){
-					authorities.clear();
-					HashMap map = new HashMap();
-					map.put("group", searchform.getGroup());
-					if (map.size() > 0) {
-						authorities = getAuthorityService().getAssociatedAuthorities(map,
-								holder);
-						totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,
-								holder);
-					}
-				}else{
-					StringBuffer userAllId = new StringBuffer();
-					for(String userId:searchform.getChk_()){
-						userAllId.append(userId+";");
-					}
-					request.getSession().setAttribute("users",userAllId.substring(0, userAllId.length()-1)); //把从上一个页面上传过来的数组链接成字符串，添加到attribute中
-					authorities = getAuthorityService().getAllAuthorities(holder);
-					totalCount = getAuthorityService().countAllAuthorities();
-				}
-				if(authorities!=null)
-				request.setAttribute("groupName", groupName);
-				request.setAttribute("groupForShow", convertAuthrityTOVO(authorities));
-				request.setAttribute("totalCount", totalCount);
-			}			
-			return actionMapping.findForward(forword);
+		
+		if (null == searchform.getOption() || null == searchform.getGroupName()) {
+			return actionMapping.findForward(CANCEL);
 		}
-		return actionMapping.findForward(CANCEL);
+		
+		String groupName = searchform.getGroupName();
+		String[] authIds = searchform.getChk_();
+		String forword = searchform.getOption();
+		
+		if ("remove".equals(forword)) {
+			removeAuthorityFromUser(groupName, authIds);
+			request.setAttribute("searchform", searchform);
+		}
+		if ("add".equals(forword)) {
+			
+			PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+			int totalCount = 0;
+			List<Authority> authorities = new ArrayList<Authority>();
+
+			if (!StringUtil.isEmptyOrWhitespace(searchform.getGroup())) {
+				// have conditons searching
+			
+				HashMap map = new HashMap();
+				map.put("group", searchform.getGroup());
+
+				authorities = getAuthorityService().getAssociatedAuthorities(
+						map, holder);
+				totalCount = getAuthorityService().getAssociatedAuthoritiesNum(
+						map, holder);
+				
+			} else {
+				// no conditions search
+				// need authId from the last jsp
+				StringBuffer userAllId = new StringBuffer();
+				for (String authId : searchform.getChk_()) {
+					String userId = getAuthenticationService()
+							.getAuthenticationById(Long.parseLong(authId))
+							.getUserId();
+					userAllId.append(userId + ";");
+				}
+				request.getSession().setAttribute("users",
+						userAllId.substring(0, userAllId.length() - 1)); // contact
+																			// string[]
+
+				authorities = getAuthorityService().getAllAuthorities(holder);
+				totalCount = getAuthorityService().countAllAuthorities();
+			}
+			if (authorities != null) {
+				request.setAttribute("groupForShow",
+						convertAuthrityTOVO(authorities));
+			}
+			request.setAttribute("totalCount", totalCount);
+			return actionMapping.findForward("add");
+
+		}
+		return actionMapping.findForward(forword);
+		
+		
 	}
 	private void removeAuthorityFromUser(String groupName, String[] authIds) {
 		for (String authId : authIds) {
@@ -99,26 +117,4 @@ public class EditUserToGroupAction extends AbstractCommunityAction{
 	}
 	
 }
-	/*private void addAuthorityToUser(String[] groupNames,String[] userIds){
-		for(String groupName:groupNames){
-			for(String userId:userIds){
-				getAuthenticationService().addAuthorityToUser(userId, groupName);
-			}
-		}
-	}*/
-	/*if(request.getAttribute("users")!=null){
-	String[] userIds = (String[])request.getAttribute("users");
-	SearchForm searchform = (SearchForm)actionForm;
-	//String operation=(String) request.getSession().getAttribute("operation");
-	if (null!=(searchform.getChk_group())){
-		String[] groupNames = searchform.getChk_group();
-		addAuthorityToUser( groupNames, userIds);
-		return actionMapping.findForward("user");
-	}else if(null!=request.getSession().getAttribute("groupName")){
-		String groupName=(String) request.getSession().getAttribute("groupName");
-		removeAuthorityFromUser(groupName,userIds);
-		return actionMapping.findForward("group");
-	}
-}*/
-	
 

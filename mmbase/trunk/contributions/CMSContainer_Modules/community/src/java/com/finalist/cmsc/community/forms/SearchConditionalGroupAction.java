@@ -42,6 +42,10 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 		List<GroupForShowVO> relationsVO = new ArrayList<GroupForShowVO>();
 		List<Authority> authorities = new ArrayList<Authority>();
 		PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+		
+		holder.getSort();
+		holder.getDir();
+		
 		int totalCount = 0;
 		HashMap map = new HashMap();
 
