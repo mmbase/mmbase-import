@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.32 2008-07-24 11:56:05 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.33 2008-07-28 15:09:52 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -98,7 +98,11 @@ public abstract class CacheManager {
      */
     public static <K,V> Cache<K,V> putCache(Cache<K,V> cache, boolean mbean) {
         Cache old = caches.put(cache.getName(), cache);
-        configure(configReader, cache.getName());
+        try {
+            configure(configReader, cache.getName());
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+        }
         if (mbean) {
             ObjectName name = getObjectName(cache);
             try {
@@ -194,6 +198,8 @@ public abstract class CacheManager {
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
                     log.error("Could not configure cache " + cacheName + " because the size was wrong: " + nfe.toString());
+                } catch (Throwable t) {
+                    log.error(" " + cacheName + " maxsize " + t.getMessage());
                 }
                 String maxSize = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
                 if (!"".equals(maxSize)) {
@@ -202,6 +208,8 @@ public abstract class CacheManager {
                         log.service("Setting maximum entry size on " + cacheName + ": " + cache.maxEntrySize + " bytes ");
                     } catch (NumberFormatException nfe2) {
                         log.error("Could not set max entry size cache  of " + cacheName + " because " + nfe2.toString());
+                    } catch (Throwable t) {
+                        log.error(" " + cacheName + " maxentrysize " + t.getMessage());
                     }
                 } else {
                     if (cache.getDefaultMaxEntrySize() > 0) {
