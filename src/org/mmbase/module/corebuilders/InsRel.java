@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.49.2.2 2006-10-12 11:33:42 pierre Exp $
+ * @version $Id: InsRel.java,v 1.49.2.3 2008-07-28 16:07:07 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -426,27 +426,37 @@ public class InsRel extends MMObjectBuilder {
         if (role != -1) {
             builder = mmb.getRelDef().getBuilder(role);
         }
-        NodeSearchQuery query = new NodeSearchQuery(builder);
-        BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-        constraint.addChild(getNumberConstraint(query,FIELD_SOURCE, source));
-        Constraint destinationConstraint = getNumberConstraint(query,FIELD_DESTINATION, source);
-        if (useDirectionality) {
-            BasicFieldValueConstraint dirConstraint = getNumberConstraint(query,FIELD_DIRECTIONALITY, 1);
-            dirConstraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
-            BasicCompositeConstraint compositeConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            compositeConstraint.addChild(destinationConstraint);
-            compositeConstraint.addChild(dirConstraint);
-            destinationConstraint = compositeConstraint;
+        NodeSearchQuery query1 = new NodeSearchQuery(builder);
+        {
+            Constraint constraint = (getNumberConstraint(query1, FIELD_SOURCE, source));
+            if (role != -1) {
+                BasicCompositeConstraint roleConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+                roleConstraint.addChild(constraint);
+                roleConstraint.addChild(getNumberConstraint(query1, FIELD_ROLE, role));
+                constraint = roleConstraint;
+            }
+            query1.setConstraint(constraint);
         }
-        constraint.addChild(destinationConstraint);
-        if (role != -1) {
-            BasicCompositeConstraint roleConstraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            roleConstraint.addChild(constraint);
-            roleConstraint.addChild(getNumberConstraint(query,FIELD_ROLE, role));
-            constraint = roleConstraint;
+        NodeSearchQuery query2 = new NodeSearchQuery(builder);
+        {
+            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+            constraint.addChild(getNumberConstraint(query2, FIELD_DESTINATION, source));
+            BasicFieldValueConstraint sourceConstraint = getNumberConstraint(query2, FIELD_SOURCE, source);
+            sourceConstraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+            constraint.addChild(sourceConstraint);
+            if (useDirectionality) {
+                BasicFieldValueConstraint dirConstraint = getNumberConstraint(query2, FIELD_DIRECTIONALITY, 1);
+                dirConstraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+                constraint.addChild(dirConstraint);
+            }
+            if (role != -1) {
+                constraint.addChild(getNumberConstraint(query2, FIELD_ROLE, role));
+            }
+            query2.setConstraint(constraint);
         }
-        query.setConstraint(constraint);
-        List nodes = builder.getNodes(query);
+        org.mmbase.util.ChainedList nodes =  new org.mmbase.util.ChainedList();
+        nodes.addList(builder.getNodes(query1));
+        nodes.addList(builder.getNodes(query2));
         return nodes;
     }
 
