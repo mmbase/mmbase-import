@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.36 2008-02-07 16:44:56 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.37 2008-07-28 13:05:42 michiel Exp $
  */
 public class NodeEvent extends Event {
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
@@ -251,7 +251,7 @@ public class NodeEvent extends Event {
                         if (otype == cachedType.intValue()) {
                             log.debug("Type already cached");
                         } else {
-                            log.warn("Type in event not the same as in cache " + otype + " != " + cachedType);
+                            log.warn("Type in event not the same as in cache " + otype + " != " + cachedType + " Event: " + this);
                         }
                     }
                 } else {
