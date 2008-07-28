@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.34 2008-07-28 16:23:37 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.35 2008-07-28 17:16:31 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -120,6 +120,7 @@ public abstract class CacheManager {
         return putCache(cache, true);
     }
 
+    private static String machineName = null;
     /**
      * @since MMBase-1.9
      */
@@ -128,12 +129,19 @@ public abstract class CacheManager {
         try {
             props.put("type", "CacheMBean");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-            org.mmbase.module.core.MMBase mmb = org.mmbase.module.Module.getModule(org.mmbase.module.core.MMBase.class, false);
-            if (mmb != null) {
-                props.put("mmb", org.mmbase.module.core.MMBase.getMMBase().getMachineName());
+            if (machineName == null) {
+                org.mmbase.module.core.MMBase mmb = org.mmbase.module.Module.getModule(org.mmbase.module.core.MMBase.class, false);
+                machineName = org.mmbase.module.core.MMBase.getMMBase().getMachineName();
+            }
+            if (machineName != null) {
+                props.put("mmb", machineName);
             } else {
             }
-            props.put("name", identifier.transform(cache.getName()));
+            if (cache != null) {
+                props.put("name", identifier.transform(cache.getName()));
+            } else {
+                props.put("name", "*");
+            }
             return new ObjectName("org.mmbase.cache", props);
         } catch (MalformedObjectNameException mfone) {
             log.warn("" + props + " " + mfone);
@@ -284,17 +292,24 @@ public abstract class CacheManager {
      * @since MMBase-1.8.1
      */
     public static void shutdown() {
-        log.info("Clearing and unregistering all caches");
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        log.info("Clearing and unregistering all caches");
+        log.debug(mbs.queryNames(getObjectName(null), null));
         for(Cache<?,?> cache : caches.values()) {
             cache.clear();
             ObjectName name = getObjectName(cache);
-            try {
-                mbs.unregisterMBean(name);
-            } catch (JMException jmo) {
-                log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
+            if (mbs.isRegistered(name)) {
+                try {
+                    mbs.unregisterMBean(name);
+                } catch (JMException jmo) {
+                    log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage() + " " + mbs.queryNames(null, null));
+                }
             }
         }
+        if(mbs.queryNames(getObjectName(null), null).size() > 0) {
+            log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null), null));
+        }
+        machineName = null;
         caches.clear();
     }
 
