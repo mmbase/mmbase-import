@@ -62,13 +62,10 @@ public class SearchConditionalUserAction extends AbstractCommunityAction{
          persons = getPersonService().getAllPeople(holder);
          totalCount = getPersonService().countAllPersons();
       }
-      
-      
-      
       request.setAttribute("personForShow", convertToVO(persons));
       request.setAttribute("totalCount", totalCount);
       if(!StringUtil.isEmptyOrWhitespace(groupName)){
-           request.getSession().setAttribute("groupName", groupName);
+    	   request.setAttribute("groupName", groupName);
            return actionMapping.findForward("group");
         }
       return actionMapping.findForward("success");
