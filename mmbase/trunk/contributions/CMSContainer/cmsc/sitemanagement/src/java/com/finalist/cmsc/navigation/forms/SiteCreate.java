@@ -25,47 +25,43 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class SiteCreate extends MMBaseFormlessAction {
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      String action = getParameter(request, "action");
+		String action = getParameter(request, "action");
 
-      if (StringUtils.isBlank(action)) {
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
-               + "&contenttype=" + SiteUtil.SITE + "&returnurl=" + mapping.findForward("returnurl").getPath());
-         ret.setRedirect(true);
-         return ret;
-      }
-      else {
-         if ("save".equals(action)) {
-            String ewnodelastedited = getParameter(request, "ewnodelastedited");
-            Node administrators = SecurityUtil.getAdministratorsGroup(cloud);
-            if (administrators != null) {
-               NavigationUtil.addRole(cloud, ewnodelastedited, administrators, Role.WEBMASTER);
-            }
+		if (StringUtils.isBlank(action)) {
+			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create" + "&contenttype=" + SiteUtil.SITE
+					+ "&returnurl=" + mapping.findForward("returnurl").getPath());
+			ret.setRedirect(true);
+			return ret;
+		} else {
+			if ("save".equals(action)) {
+				String ewnodelastedited = getParameter(request, "ewnodelastedited");
+				Node administrators = SecurityUtil.getAdministratorsGroup(cloud);
+				if (administrators != null) {
+					NavigationUtil.addRole(cloud, ewnodelastedited, administrators, Role.WEBMASTER);
+				}
 
-            Node newSite = cloud.getNode(ewnodelastedited);
-            Node layoutNode = PagesUtil.getLayout(newSite);
-            PagesUtil.linkPortlets(newSite, layoutNode);
+				Node newSite = cloud.getNode(ewnodelastedited);
+				Node layoutNode = PagesUtil.getLayout(newSite);
+				PagesUtil.linkPortlets(newSite, layoutNode);
 
-            NavigationUtil.getNavigationInfo(cloud).expand(Integer.valueOf(ewnodelastedited));
+				NavigationUtil.getNavigationInfo(cloud).expand(Integer.valueOf(ewnodelastedited));
 
-            addToRequest(request, "showpage", ewnodelastedited);
+				addToRequest(request, "showpage", ewnodelastedited);
 
-//            ActionForward ret = mapping.findForward(SUCCESS);
-            ActionForward ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited
-                    + "&fresh=fresh");
-            return ret;
-         }
-         ActionForward ret = mapping.findForward(CANCEL);
-         return ret;
-      }
-   }
+				ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited + "&fresh=fresh");
+				return ret;
+			}
+			ActionForward ret = mapping.findForward(CANCEL);
+			return ret;
+		}
+	}
 
-
-   @Override
-   public String getRequiredRankStr() {
-      return ADMINISTRATOR;
-   }
+	@Override
+	public String getRequiredRankStr() {
+		return ADMINISTRATOR;
+	}
 
 }

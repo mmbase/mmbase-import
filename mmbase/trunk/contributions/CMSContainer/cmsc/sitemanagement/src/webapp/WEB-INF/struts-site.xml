@@ -25,13 +25,13 @@
             <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false"/>
             <forward name="returnurl" path="/editors/site/SiteCreate.do" redirect="false"/>
             <forward name="cancel" path="/editors/empty.html" redirect="true"/>
-            <forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false"/>
+            <forward name="success" path="/editors/site/NavigatorPanel.do" redirect="false"/>
         </action>
         <action path="/editors/site/SiteEdit" type="com.finalist.cmsc.navigation.forms.SiteEdit" unknown="false"
                 validate="false">
             <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false"/>
             <forward name="returnurl" path="/editors/site/SiteEdit.do" redirect="false"/>
-            <forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false"/>
+            <forward name="success" path="/editors/site/NavigatorPanel.do" redirect="false"/>
         </action>
         <action path="/editors/site/SiteDelete" type="com.finalist.cmsc.navigation.forms.SiteDelete"
                 unknown="false" validate="false">
@@ -44,13 +44,13 @@
             <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false"/>
             <forward name="returnurl" path="/editors/site/PageCreate.do" redirect="false"/>
             <forward name="cancel" path="/editors/empty.html" redirect="true"/>
-            <forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false"/>
+            <forward name="success" path="/editors/site/NavigatorPanel.do" redirect="false"/>
         </action>
         <action path="/editors/site/PageEdit" type="com.finalist.cmsc.navigation.forms.PageEdit" unknown="false"
                 validate="false">
             <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false"/>
             <forward name="returnurl" path="/editors/site/PageEdit.do" redirect="false"/>
-            <forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false"/>
+            <forward name="success" path="/editors/site/NavigatorPanel.do" redirect="false"/>
         </action>
         <action path="/editors/site/PageDelete" type="com.finalist.cmsc.navigation.forms.PageDelete"
                 unknown="false" validate="false">

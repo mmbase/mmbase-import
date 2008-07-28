@@ -39,10 +39,6 @@ public class PagingStatusHolder {
       }
    }
 
-   public void setPageCount(int pageCount) {
-      this.pageCount = pageCount;
-   }
-
    public int getPageSize() {
       String defalutPagesize = PropertiesUtil.getProperty("repository.search.results.per.page");
       if (pageSize < 0 && StringUtils.isBlank(defalutPagesize)) {
@@ -96,4 +92,20 @@ public class PagingStatusHolder {
          this.setDir(dir);
       }
    }
+   
+   public String getMMBaseDirection() {
+
+		return "asc".equals(this.dir) ? "up" : "down";
+
+   }
+   
+   public String getSortToken() {
+		String token = "";
+		
+		if (StringUtils.isNotBlank(sort)) {
+			token = String.format("order by %s %s", sort, dir);
+		}
+		
+		return token;
+	}
 }
