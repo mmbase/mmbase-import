@@ -5,28 +5,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.domain.PreferenceVO;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
-import com.finalist.cmsc.paging.PagingUtils;
-import com.finalist.cmsc.paging.PagingStatusHolder;
 
 public class PreferenceAction extends DispatchAction {
 
-   private static Log log = LogFactory.getLog(PreferenceAction.class);
-
    private PreferenceService preferenceService;
-
 
    public void setPreferenceService(PreferenceService preferenceService) {
       this.preferenceService = preferenceService;
@@ -38,18 +30,10 @@ public class PreferenceAction extends DispatchAction {
       PreferenceForm preferenceForm = (PreferenceForm) form;
       PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
-      setNull(preferenceForm);
+      preferenceForm.clear();
       preferenceService.createPreference(preference);
       request.setAttribute("isAddSuccess", "true");
       return mapping.findForward("success");
-   }
-
-   private void setNull(PreferenceForm preferenceForm) {
-      preferenceForm.setKey("");
-      preferenceForm.setModule("");
-      preferenceForm.setValue("");
-      preferenceForm.setUserId("");
-      preferenceForm.setId("");
    }
 
    public ActionForward addInit(ActionMapping mapping, ActionForm form,
@@ -64,7 +48,7 @@ public class PreferenceAction extends DispatchAction {
                              HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       PreferenceForm preferenceForm = (PreferenceForm) form;
-      setNull(preferenceForm);
+      preferenceForm.clear();
       return mapping.findForward("success");
    }
 

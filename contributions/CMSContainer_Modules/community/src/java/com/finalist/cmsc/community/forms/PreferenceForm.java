@@ -4,6 +4,11 @@ import org.apache.struts.action.ActionForm;
 
 public class PreferenceForm  extends ActionForm {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
    private String id;
    
    private String userId;
@@ -83,5 +88,14 @@ public class PreferenceForm  extends ActionForm {
    public void setId(String id) {
       this.id = id;
    }
-  
+   public void clear() {
+      this.key = null;
+      this.module = null;
+      this.value = null;
+      this.userId = null;
+      this.id = null;
+      this.order = null;
+      this.direction = null;
+      this.method = null;
+   }
 }

@@ -1,36 +1,22 @@
-<%@page language="java" contentType="text/html;charset=utf-8" %>
-<%@include file="globals.jsp" %>
-<%@page import="java.util.Iterator,
-                com.finalist.cmsc.mmbase.PropertiesUtil" %>
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-
+<%@page language="java" contentType="text/html;charset=utf-8" 
+%><%@include file="globals.jsp" 
+%><%@page import="java.util.Iterator,com.finalist.cmsc.mmbase.PropertiesUtil" 
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="community.preference.title">
    <c:url var="actionUrl" value="/editors/community/PreferenceAction.do"/>
    <c:url var="userActionUrl" value="/editors/community/userAddInitAction.do"/>
-   <script src="../repository/search.js" type="text/javascript"></script>
-   <script src="../repository/content.js" type="text/javascript"></script>
    <script src="../../js/prototype.js" type="text/javascript"></script>
    <script type="text/javascript">
-      function selectElement(element, title, src) {
-         if (window.top.opener != undefined) {
-            window.top.opener.selectElement(element, title, src);
-            window.top.close();
-         }
-      }
-
-      function showInfo(objectnumber) {
-         openPopupWindow('reactioninfo', '500', '500', 'reactioninfo.jsp?objectnumber=' + objectnumber);
-      }
       function update(number) {
          var myAjax = new Ajax.Request(
-               '${actionUrl}',
-         {   parameters:"method=modify&id=" + number + "&key=" + document.getElementById("key_" + number).value + "&value=" + document.getElementById("value_" + number).value,
-            onComplete: postUpdate
-         }
-               );
+            '${actionUrl}',
+            {   parameters:"method=modify&id=" + number + "&key=" + $("key_" + number).value + "&value=" + $("value_" + number).value,
+              onComplete: postUpdate
+            }
+         );
       }
 
       function deleteInfo(number, offset, resultLength) {
@@ -42,14 +28,10 @@
             url += "&id=" + number + "&offset=" + offset;
             document.location = url;
          }
-
       }
 
       function create() {
-         // var url = "${actionUrl}?method=addInit";
-         //  document.location = url;
          document.forms[0].method.value = "addInit";
-         document.forms[0].offset.value = 0;
          document.forms[0].submit();
       }
       function postUpdate() {
