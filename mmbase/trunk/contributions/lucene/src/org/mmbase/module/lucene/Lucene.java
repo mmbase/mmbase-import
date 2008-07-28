@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.114 2008-07-28 13:28:21 michiel Exp $
+ * @version $Id: Lucene.java,v 1.115 2008-07-28 13:43:44 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -650,10 +650,44 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     // Force init of MMBase
                     MMBase mmbase = MMBase.getMMBase();
 
+                    String databaseName = "";
+                    String binaryFileBasePath = "";
+                    //try to get the index path from the strorage configuration
+                   try {
+                        DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
+                        String binaries = dsmf.getBinaryFileBasePath().toString();
+                        if (binaries != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
+                            if (! binaries.endsWith(File.separator)) {
+                                binaries += File.separator;
+                            }
+                            binaryFileBasePath = binaries;
+                            databaseName = dsmf.getDatabaseName();
+                        }
+                    } catch(Exception e){}
+
+                    String path = getInitParameter("indexpath");
+                    if (path != null) {
+                        indexPath = path;
+                        indexPath.replace("$BINARYFILEBASEPATH", binaryFileBasePath);
+                        indexPath.replace("$DATABASE", databaseName);
+                        indexPath.replace("/", File.separator);
+                        log.service("found module parameter for lucene index path : " + indexPath);
+                    } else {
+                        indexPath = binaryFileBasePath + databaseName + File.separator + "lucene";
+                    }
+
+                    if(indexPath != null) {
+                        log.service("found storage configuration for lucene index path : " + indexPath);
+                    } else {
+                        // expand the default path (which is relative to the web-application)
+                        indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
+                        log.service("fall back to default for lucene index path : " + indexPath);
+                    }
+
 
                     if (initialWait) {
-                       // initial wait time?
-                       String time = getInitParameter("initialwaittime");
+                        // initial wait time?
+                        String time = getInitParameter("initialwaittime");
                        if (time != null) {
                            try {
                                initialWaitTime = Long.parseLong(time);
@@ -670,37 +704,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                        } catch (InterruptedException ie) {
                            //return;
                        }
-                   }
+                    }
 
 
                     factory = ContentExtractor.getInstance();
 
-
-                    String path = getInitParameter("indexpath");
-                    if (path != null) {
-                        indexPath = path;
-                        log.service("found module parameter for lucene index path : " + indexPath);
-                    } else {
-                        //try to get the index path from the strorage configuration
-                        try {
-                            DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
-                            indexPath = dsmf.getBinaryFileBasePath().toString();
-                            if (indexPath != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
-                                if (! indexPath.endsWith(File.separator)) {
-                                    indexPath += File.separator;
-                                }
-                                indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
-                            }
-                        } catch(Exception e){}
-                    }
-
-                    if(indexPath != null) {
-                        log.service("found storage configuration for lucene index path : " + indexPath);
-                    } else {
-                        // expand the default path (which is relative to the web-application)
-                        indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-                        log.service("fall back to default for lucene index path : " + indexPath);
-                    }
 
 
                     String readOnlySetting = getInitParameter("readonly");
