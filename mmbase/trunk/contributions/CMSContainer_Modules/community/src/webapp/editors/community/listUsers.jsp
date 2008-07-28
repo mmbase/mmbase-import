@@ -18,7 +18,7 @@
 	         }
 	      }
 	      if(objectnumbers == ''){
-	         alert('Please choose the users!');
+	         alert("<fmt:message key="community.search.promptuser"/>");
 	         return false;
 	      }
 	      return true;

@@ -15,7 +15,7 @@
          }
       }
       if(objectnumbers == ''){
-         alert('Please choose the users!');
+         alert("<fmt:message key="community.search.promptuser"/>");
          return false;
       }
       document.getElementById("option").value ="add";
@@ -32,7 +32,7 @@
          }
       }
       if(objectnumbers == ''){
-         alert('Please choose the users!');
+         alert("<fmt:message key="community.search.promptuser"/>");
          return false;
       }
       alert("<fmt:message key="community.search.option"><fmt:param>j</fmt:param></fmt:message>");
