@@ -219,6 +219,7 @@ public class PreferenceHibernateService extends HibernateService implements Pref
        }
        criteria.setFirstResult(offset);
        criteria.setMaxResults(pageSize);
+
        if(StringUtils.isNotEmpty(orderBy)) {
           if(StringUtils.isEmpty(direction) || direction.equalsIgnoreCase("down")) {
              criteria.addOrder(Order.desc(orderBy));
@@ -227,7 +228,9 @@ public class PreferenceHibernateService extends HibernateService implements Pref
              criteria.addOrder(Order.asc(orderBy)); 
           }
        }
-      
+       else {
+          criteria.addOrder(Order.desc("number"));
+       }
        copyPropertiesToVO(preferences,criteria.list());
        return preferences;
     }
