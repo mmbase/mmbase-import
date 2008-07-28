@@ -61,7 +61,7 @@
                <a href="./SearchConditionalUser.do?groupName=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16"></a>
                <a href="./deleteGroupAction.do?groupid=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16"></a>
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.search.groupname" sort="groupName">
+         <edit:ui-tcolumn titlekey="community.search.groupname" sort="group">
                <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do"/>
                <a href="${userActionUrl}?groupName=${result.groupName}">${result.groupName}</a>
           </edit:ui-tcolumn>
