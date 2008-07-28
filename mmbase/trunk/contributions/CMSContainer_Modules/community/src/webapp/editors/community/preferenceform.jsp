@@ -20,7 +20,7 @@
    </tr>
    <tr>
    <td></td>
-   <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
+   <td><input type="submit" name="submitButton"  
             value="<fmt:message key="community.preference.submit" />"/>   
   </td>
 </tr>
