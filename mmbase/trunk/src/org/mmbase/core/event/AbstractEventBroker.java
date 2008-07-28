@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: AbstractEventBroker.java,v 1.20 2008-02-03 17:33:58 nklasens Exp $
+ * @version $Id: AbstractEventBroker.java,v 1.21 2008-07-28 13:04:38 michiel Exp $
  */
 public abstract class AbstractEventBroker extends EventBroker {
 
@@ -50,10 +50,6 @@ public abstract class AbstractEventBroker extends EventBroker {
             log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
         }
 
-    }
-
-    public String toString(){
-        return "Abstract Event Broker";
     }
 
 }
