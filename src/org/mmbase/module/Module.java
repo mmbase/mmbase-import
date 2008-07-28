@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.98 2008-07-18 06:08:14 michiel Exp $
+ * @version $Id: Module.java,v 1.99 2008-07-28 16:25:10 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -510,7 +510,7 @@ public abstract class Module extends DescribedFunctionProvider {
                 InputSource is = moduleLoader.getInputSource(file);
                 if (is != null) parser = new ModuleReader(is);
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage(), e);
             }
             if (parser != null && parser.getStatus().equals("active")) {
                 // obtain module name. Use the filename of the xml if the name property is not set
