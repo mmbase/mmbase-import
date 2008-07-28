@@ -35,7 +35,7 @@
 
 <div class="editor">
    <div style="padding-left:10px;">
-      <p><a href="userAddInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="view.newgroup"/></a><p>
+      <p><a href="userAddInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="view.new.user"/></a><p>
       <p><a href="../community/index.jsp">TEST</a></p>
       <html:form action="/editors/community/SearchConditionalUser.do" method="post">
     
