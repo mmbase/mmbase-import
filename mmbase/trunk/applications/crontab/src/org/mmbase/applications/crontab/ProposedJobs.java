@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: ProposedJobs.java,v 1.3 2008-07-29 15:42:24 michiel Exp $
+ * @version $Id: ProposedJobs.java,v 1.4 2008-07-29 17:58:34 michiel Exp $
  */
 
 public class ProposedJobs {
@@ -31,12 +31,11 @@ public class ProposedJobs {
 
         protected final CronEntry entry;
         protected final Date cronStart;
-        //protected final long maxDuration;
+        protected boolean ready = false;
 
-        public Event(CronEntry entry, Date s) { //, long duration) {
+        public Event(CronEntry entry, Date s) {
             this.entry = entry;
             this.cronStart = s;
-            //this.maxDuration = duration;
         };
         public CronEntry getCronEntry() {
             return entry;
@@ -44,11 +43,10 @@ public class ProposedJobs {
         public Date getCronStart() {
             return cronStart;
         }
-        /*
-        public long getMaxDuration() {
-            return maxDuration;
+
+        public void setReady() {
+            ready = true;
         }
-        */
 
         public boolean equals(Object o) {
             if (o instanceof Event) {

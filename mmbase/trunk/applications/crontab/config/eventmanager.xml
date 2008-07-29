@@ -3,5 +3,6 @@
 <eventmanager>
 	<brokers>
 		<broker class="org.mmbase.applications.crontab.ProposedJobs$Broker"/>
+		<broker class="org.mmbase.applications.crontab.Events$Broker"/>
 	</brokers>
 </eventmanager>

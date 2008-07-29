@@ -19,29 +19,50 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: Events.java,v 1.1 2008-07-29 15:42:24 michiel Exp $
+ * @version $Id: Events.java,v 1.2 2008-07-29 17:58:34 michiel Exp $
  */
 
 public class Events {
 
 
-    public static int STARTED = 100;
-    public static int DONE    = 101;
+    public static final int STARTED = 100;
+    public static final int DONE    = 101;
+    public static final int INTERRUPTED    = 102;
 
-    public static class Event extends org.mmbase.core.event.Event {
+    public static class Event extends org.mmbase.core.event.Event implements Delayed {
 
         protected final CronEntry entry;
+        protected final Date started;
+        protected final int thread;
 
-        public Event(CronEntry entry, int type) {
+        public Event(CronEntry entry, Date started, int type, int thread) {
             super(null, type);
             this.entry = entry;
+            this.started = started;
+            this.thread = thread;
         };
         public CronEntry getCronEntry() {
             return entry;
         }
 
+        public Date getStart() {
+            return started;
+        }
+        public int getId() {
+            return thread;
+        }
+
         public String toString() {
-            return getMachine() + ":" + entry;
+            return getMachine() + ":" + thread + ":" + entry;
+        }
+        public long getDelay(TimeUnit unit) {
+            long delay = started.getTime() + entry.getMaxDuration() - System.currentTimeMillis();
+            if (delay < 0) delay = 0;
+            return unit.convert(delay, TimeUnit.MILLISECONDS);
+        }
+        public int compareTo(Delayed d) {
+            return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
+
         }
 
     }
