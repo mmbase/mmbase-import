@@ -1,31 +1,5 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.FieldCompareConstraint;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
-import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.paging.PagingStatusHolder;
@@ -36,6 +10,16 @@ import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.util.POConvertUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import java.util.*;
 
 public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
@@ -191,45 +175,27 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 		return publications;
 	}
 
-	public List<Publication> getPublicationsByNewsletterAndPeriod(int newsletterId, String title, String subject, Date startDate, Date endDate,
-			boolean paging) {
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+   public List<Publication> getPublicationsByNewsletterAndPeriod(
+         int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging) {
 
-		NodeManager manager = cloud.getNodeManager("newsletterpublication");
-		Node newsletterNode = cloud.getNode(newsletterId);
-		NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
-		Step step = nodeQuery.getNodeStep();
+      NodeManager manager = cloud.getNodeManager("newsletterpublication");
+      Node newsletterNode = cloud.getNode(newsletterId);
 
-		StepField fieldSubject = nodeQuery.addField(step, manager.getField("subject"));
-		StepField fieldTitle = nodeQuery.addField(step, manager.getField("title"));
-		StepField fieldDate = nodeQuery.addField(step, manager.getField("creationdate"));
+      NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
 
-		BasicFieldValueConstraint constraintTitle = new BasicFieldValueConstraint(fieldTitle, "%" + title + "%");
-		constraintTitle.setOperator(FieldCompareConstraint.LIKE);
-		BasicFieldValueConstraint constraintSubject = new BasicFieldValueConstraint(fieldSubject, "%" + subject + "%");
-		constraintSubject.setOperator(FieldCompareConstraint.LIKE);
+      SearchUtil.addLikeConstraint(nodeQuery, manager.getField("subject"), "%" + subject + "%");
+      SearchUtil.addLikeConstraint(nodeQuery, manager.getField("title"), "%" + title + "%");
 
-		BasicCompositeConstraint constraints = new BasicCompositeConstraint(2);
-		if (startDate != null) {
-			BasicFieldValueBetweenConstraint constraintDate = new BasicFieldValueBetweenConstraint(fieldDate, startDate, endDate);
-			constraints.addChild(constraintDate);
-		} else {
-			BasicFieldValueConstraint constraintDate = new BasicFieldValueConstraint(fieldDate, endDate);
-			constraintDate.setOperator(FieldCompareConstraint.LESS);
-			constraints.addChild(constraintDate);
-		}
-		constraints.addChild(constraintTitle);
-		constraints.addChild(constraintSubject);
+      if (startDate != null) {
+         SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), startDate.getTime(), endDate.getTime());
+      }
+      else {
+         SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), Long.decode("1"), endDate.getTime());
+      }
 
-		nodeQuery.setConstraint(constraints);
-		if (paging) {
-			nodeQuery.setOffset(pagingHolder.getOffset());
-			nodeQuery.setMaxNumber(pagingHolder.getPageSize());
-		}
-		Queries.addSortOrders(nodeQuery, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
-		List<Node> list = nodeQuery.getList();
-		List<Publication> publications = convertPublicationsToMap(list);
-		return publications;
-	}
+      PagingUtils.setPagingAndSortingInformation(nodeQuery);
+
+      return convertPublicationsToMap(nodeQuery.getList());
+   }
 
 }
