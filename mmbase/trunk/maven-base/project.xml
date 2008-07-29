@@ -216,6 +216,13 @@ See http://www.MMBase.org/license
       <organization>Vpro</organization>
       <timezone>1</timezone>
     </developer>
+    <developer>
+      <name>Sander de Boer</name>
+      <id>sdboer</id>
+      <email></email>
+      <organization>EO</organization>
+      <timezone>1</timezone>
+    </developer>
   </developers>
   <dependencies>
     <dependency>
