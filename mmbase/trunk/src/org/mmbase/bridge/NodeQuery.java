@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * query 'cluster nodes' and even more generally 'result nodes' too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: NodeQuery.java,v 1.9 2008-07-29 09:22:34 michiel Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
@@ -49,5 +49,10 @@ public interface NodeQuery extends Query {
      */
     StepField getStepField(Field field);
 
+
+    /**
+     *@since MMBase-1.9
+     */
+    java.util.List<StepField> getExtraFields();
 
 }
