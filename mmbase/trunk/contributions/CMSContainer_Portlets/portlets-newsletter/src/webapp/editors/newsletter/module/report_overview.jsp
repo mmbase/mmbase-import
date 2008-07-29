@@ -70,7 +70,7 @@
          </td>
          <td>
             <p><a href="NewletterPublicationInitAction.do"><fmt:message key="index.link.allpublication"/></a></p>
-            <p><a href="#"><fmt:message key="index.link.bouncedemail"/></a></p>
+            <p><a href="module/NewsletterBounceAction.do?method=list"><fmt:message key="index.link.bouncedemail"/></a></p>
          </td>
       </tr>
 </table>
