@@ -31,8 +31,6 @@
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
-  <property name="output" location="results.log" />
-
   <import file="../install-dependency.xml" />
 
   <target name="clean.database">
@@ -299,19 +297,12 @@ Build-compiler: ${build.compiler}
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <assertions><enable /></assertions>
-      <redirector
-          output="${output}"
-          append="true"
-          alwayslog="true"
-          />
     </java>
   </target>
 
   <target name="run.releasestrategy" depends="jar,init" description="Query Result Release Strategy tests">
     <antcall target="clean.database" />
     <java
-        output="${output}"
-        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -328,8 +319,6 @@ Build-compiler: ${build.compiler}
     <antcall target="clean.database" />
     <echo message="Starting ${ui.class}: " />
     <java
-        output="${output}"
-        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -359,8 +348,6 @@ Build-compiler: ${build.compiler}
       </daemons>
       <echo message="starting client" />
       <java
-          output="${output}"
-          append="true"
           classname="${ui.class}"
           fork="true"
           classpathref="run.rmmci.client"
@@ -377,8 +364,6 @@ Build-compiler: ${build.compiler}
 
   <target name="run.convertimage" depends="jar,init" description="Image conversion tests">
     <java
-        output="${output}"
-        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -394,8 +379,6 @@ Build-compiler: ${build.compiler}
   <target name="run.dbsq" depends="jar,init" description="SearchQuery tests">
     <antcall target="clean.database" inheritRefs="true"/>
     <java
-        output="${output}"
-        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath"
@@ -409,8 +392,6 @@ Build-compiler: ${build.compiler}
 
   <target name="run.util" depends="init,jar" description="Various tests on utitilies (org.mmbase.util)">
     <java
-        output="${output}"
-        append="true"
         classname="${ui.class}"
         fork="true"
         classpathref="run.classpath">
@@ -463,8 +444,6 @@ Build-compiler: ${build.compiler}
       <sequential>
         <sleep seconds="40" />
         <java
-            output="${output}"
-            append="true"
             classname="${ui.class}"
             fork="true"
             classpathref="run.rmmci.client">
@@ -500,11 +479,7 @@ Build-compiler: ${build.compiler}
     <echo message="========================================TYPEREL========================================" />
     <antcall target="run.typerel" inheritRefs="true"/>
     <sleep seconds="10" />
-    <echo message="========================================BRIDGE========================================" />
-    <antcall target="run.bridge" inheritRefs="true"/>
-    <sleep seconds="10" />
-    <echo message="========================================RMMCI========================================" />
-    <antcall target="run.bridge.rmmci" inheritRefs="true"/>
+    <antcall target="run.all.bridge" />
     <sleep seconds="10" />
     <echo message="========================================UTIL========================================" />
     <antcall target="run.util" inheritRefs="true"/>
@@ -519,7 +494,15 @@ Build-compiler: ${build.compiler}
     <antcall target="run.convertimage" inheritRefs="true"/>
   </target>
 
-  <target name="run.test">
+  <target name="run.all.bridge">
+    <echo message="========================================BRIDGE========================================" />
+    <antcall target="run.bridge" inheritRefs="true" />
+    <sleep seconds="10" />
+    <echo message="========================================RMMCI========================================" />
+    <antcall target="run.bridge.rmmci" inheritRefs="true" />
+  </target>
+
+  <target name="run.all.rmmci">
     <echo message="========================================RMMCI========================================" />
     <antcall target="run.bridge.rmmci" inheritRefs="true"/>
     <echo message="========================================CLUSTERING========================================" />
