@@ -186,7 +186,10 @@ public class LanguageImpl implements Language, java.io.Serializable {
     *      according collection implementations
     */
    public boolean equals(Object o) {
-      return o == null ? false : ((LanguageImpl) o).getLocale().equals(this.locale);
+      if (o == null) return false;
+      if (o instanceof LanguageImpl) {
+         return ((LanguageImpl) o).getLocale().equals(this.locale);
+      } else return false;
    }
 
 

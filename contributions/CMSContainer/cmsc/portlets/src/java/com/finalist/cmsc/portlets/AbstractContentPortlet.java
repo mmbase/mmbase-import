@@ -183,7 +183,6 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
       return cloud;
    }
 
-   @SuppressWarnings("unused")
    protected void setEditResponse(ActionRequest request, ActionResponse response,
          Map<String, Node> nodesMap) throws PortletModeException {
       response.setPortletMode(PortletMode.VIEW);

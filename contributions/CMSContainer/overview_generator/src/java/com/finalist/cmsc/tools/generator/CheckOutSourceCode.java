@@ -27,7 +27,7 @@ import com.ice.cvsc.CVSScramble;
 
 public class CheckOutSourceCode extends BatchOperation {
 
-    private static final Log log = LogFactory.getLog(CheckOutSourceCode.class);
+    private static final Log log = LogFactory.getLog(CheckOutSourceCode.class.getName());
 
     public void checkout() {
         List<VCSConfig> configs = getConfigs();
@@ -67,8 +67,8 @@ public class CheckOutSourceCode extends BatchOperation {
             manager.getUpdateClient().doCheckout(url, path, revision, revision,
                     true);
         } catch (SVNException e) {
-            log.equals("Check out from svn error");
-            System.out.println("-->timeout ,connect the server failure   server = ["+vcsConfig.getUrl()+"] user= ["+vcsConfig.getUsername()+"] pwd=["+vcsConfig.getPassword()+"]");
+            log.warn("Check out from svn error");
+            System.out.println("-->timeout ,connect the server failure server = [" + vcsConfig.getUrl() + "] user= [" + vcsConfig.getUsername() + "] pwd=["+vcsConfig.getPassword()+"]");
         }
     }
 
