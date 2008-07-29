@@ -103,7 +103,7 @@
         <required value="true" />
         <enumeration>
           <entry
-              javaconstants="org.mmbase.applications.crontab.CronEntry"
+              javaconstants="org.mmbase.applications.crontab.CronEntry.Type"
               basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
         </enumeration>
       </datatype>

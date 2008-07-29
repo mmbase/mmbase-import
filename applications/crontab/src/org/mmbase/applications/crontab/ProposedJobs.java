@@ -14,13 +14,17 @@ import org.mmbase.util.HashCodeUtil;
 import java.util.Date;
 import java.util.concurrent.*;
 
+import org.mmbase.util.logging.*;
+
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: ProposedJobs.java,v 1.1 2008-07-29 13:36:34 michiel Exp $
+ * @version $Id: ProposedJobs.java,v 1.2 2008-07-29 15:21:45 michiel Exp $
  */
 
 public class ProposedJobs {
+    private static final Logger log = Logging.getLoggerInstance(ProposedJobs.class);
+
 
     public static int TYPE_PROPOSE = 100;
     public static int TYPE_DONE    = 101;
@@ -31,12 +35,12 @@ public class ProposedJobs {
 
         protected final CronEntry entry;
         protected final Date cronStart;
-        protected final long maxDuration;
+        //protected final long maxDuration;
 
-        public Event(CronEntry entry, Date s, long duration) {
+        public Event(CronEntry entry, Date s) { //, long duration) {
             this.entry = entry;
             this.cronStart = s;
-            this.maxDuration = duration;
+            //this.maxDuration = duration;
         };
         public CronEntry getCronEntry() {
             return entry;
@@ -44,17 +48,20 @@ public class ProposedJobs {
         public Date getCronStart() {
             return cronStart;
         }
+        /*
         public long getMaxDuration() {
             return maxDuration;
         }
+        */
 
         public boolean equals(Object o) {
             if (o instanceof Event) {
                 Event other = (Event) o;
                 return
                     other.getCronEntry().equals(entry) &&
-                    other.getCronStart() == cronStart;
+                    other.getCronStart().equals(cronStart);
             } else {
+                log.debug("no");
                 return false;
             }
         }
@@ -71,6 +78,10 @@ public class ProposedJobs {
         public int compareTo(Delayed d) {
             return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
 
+        }
+
+        public String toString() {
+            return getMachine() + ":" + cronStart + ":" + entry;
         }
 
     }

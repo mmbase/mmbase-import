@@ -35,6 +35,6 @@
     <!--
     <property name="memory">0 */2 * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl</property>
     -->
-    <property name="testjob">*/1 5-23 * * *|org.mmbase.applications.crontab.TestCronJob|||balance_mustbeone</property>
+    <property name="testjob">*/1 20-23 * * *|org.mmbase.applications.crontab.TestCronJob|||balance</property>
   </properties>
 </util>
