@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.160 2008-03-21 14:36:27 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.161 2008-07-29 09:18:19 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -717,9 +717,7 @@ public class MMAdmin extends ProcessorModule {
         }
 
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        Iterator<String> i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
-        while (i.hasNext()) {
-            String appResource = i.next();
+        for (String appResource : applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
             log.debug("application " + appResource);
             ApplicationReader reader;
             try {
@@ -1530,9 +1528,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector<String> getNodeCacheEntries() {
         Vector<String> results = new Vector<String>();
-        Iterator<MMObjectNode> iter = NodeCache.getCache().values().iterator();
-        while (iter.hasNext()) {
-            MMObjectNode node = iter.next();
+        for (MMObjectNode node :  NodeCache.getCache().values()) {
             results.add("" + NodeCache.getCache().getCount(node.getIntegerValue("number")));
             results.add("" + node.getIntValue("number"));
             results.add(node.getStringValue("owner"));
