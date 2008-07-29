@@ -34,7 +34,7 @@ public class AllTests {
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");
-        //suite.addTestSuite(CloudContextTest.class);
+        suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
         suite.addTestSuite(EmptiedNodeTest.class);
