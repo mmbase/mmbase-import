@@ -10,6 +10,7 @@ package org.mmbase.applications.crontab.modules;
 import java.util.*;
 import java.util.regex.*;
 import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.DynamicDate;
 import org.mmbase.util.functions.*;
 import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.14 2008-07-29 10:01:21 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.15 2008-07-29 15:21:45 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -160,7 +161,7 @@ public class CrontabModule extends WatchedReloadableModule {
     protected Function<Boolean> kickFunction = new AbstractFunction<Boolean>("kick", ENTRY) {
             public Boolean getFunctionValue(Parameters arguments) {
                 String id = arguments.get(ENTRY);
-                return cronDaemon.getCronEntry(id).kick();
+                return cronDaemon.getCronEntry(id).kick(DynamicDate.eval("tominute"));
             }
 
         };
@@ -238,6 +239,14 @@ public class CrontabModule extends WatchedReloadableModule {
         };
     {
         addFunction(reloadFunction);
+
+
+        addFunction(new AbstractFunction<List<ProposedJobs.Event>>("queue") {
+                public List<ProposedJobs.Event> getFunctionValue(Parameters arguments) {
+                    return cronDaemon.getQueue();
+                }
+
+            });
     }
 
 

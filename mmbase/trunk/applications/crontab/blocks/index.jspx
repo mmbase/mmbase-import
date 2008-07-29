@@ -72,7 +72,7 @@
           <td>${cronentry.type}</td>
           <td>${cronentry.cronTime}</td>
           <td>
-            <c:if test="${not cronentry.alive}">
+            <c:if test="${not cronentry.mustBeOne or not cronentry.alive}">
               No
               <mm:link>
                 <mm:param name="kick" value="${cronentry.id}" />
@@ -127,6 +127,14 @@
               </mm:link>
             </mm:compare>
           </mm:function>
+        </td>
+      </tr>
+      <tr>
+        <th>Queue</th>
+        <td>
+          <mm:listfunction module="crontab" name="queue">
+            ${_}<br />
+          </mm:listfunction>
         </td>
       </tr>
       <tr>

@@ -20,7 +20,7 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.16 2008-07-29 13:36:34 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.17 2008-07-29 15:21:45 michiel Exp $
  */
 public class CronDaemon  implements ProposedJobs.Listener {
 
@@ -47,29 +47,49 @@ public class CronDaemon  implements ProposedJobs.Listener {
 
 
     public void notify(ProposedJobs.Event event) {
-        synchronized(proposedJobs) {
-            Iterator<ProposedJobs.Event> i = proposedJobs.iterator();
-            while (i.hasNext()) {
-                ProposedJobs.Event proposed = i.next();
-                if (event.equals(proposed)) {
-                    if (proposed.getMachine().compareTo(event.getMachine()) > 0) {
-                        event = proposed;
+        log.debug("Received " + event);
+        if (proposedJobs != null) {
+            synchronized(proposedJobs) {
+                log.debug("" + proposedJobs.size());
+                Iterator<ProposedJobs.Event> i = proposedJobs.iterator();
+                while (i.hasNext()) {
+                    ProposedJobs.Event proposed = i.next();
+                    if (event.equals(proposed)) {
+                        log.debug("Found job " + event + " already ");
+                        if (proposed.getMachine().compareTo(event.getMachine()) > 0) {
+                            log.debug("Will prefer " + proposed.getMachine());
+                            event = proposed;
+                        } else {
+                            log.debug("Will prefer " + event.getMachine());
+                        }
+                        // remove any way, to readd later after the loop.
+                        i.remove();
+                        break; //can be only one
+                    } else {
+                        log.debug("" + event + " != " + proposed);
                     }
-                    // remove any way, to readd later after the loop.
-                    i.remove();
                 }
+                log.debug("Scheduling " + event);
+                proposedJobs.add(event);
+                log.debug("" + proposedJobs.size());
             }
-            proposedJobs.add(event);
+        } else {
+            log.service("Ignored " + event + " because we don't have jobs of type " + CronEntry.Type.BALANCE);
         }
     }
 
     protected void consumeJobs() {
         synchronized(proposedJobs) {
-            ProposedJobs.Event event = proposedJobs.poll();
-            while (event != null) {
+
+            for (ProposedJobs.Event event = proposedJobs.poll(); event != null; event = proposedJobs.poll()) {
+                log.service("Consuming " + event);
                 if (event.isLocal()) {
                     CronEntry proposed = event.getCronEntry();
                     CronEntry local = getById(cronEntries, event.getCronEntry().getId());
+                    if (local == null) {
+                        log.service("Ignored " + event + " because we don't have it.");
+                        continue;
+                    }
                     if (local.equals(proposed)) {
                         //local.setLastRun(event.getCronStart());
                         org.mmbase.util.ThreadPools.jobsExecutor.execute(local.getExecutable());
@@ -79,6 +99,13 @@ public class CronDaemon  implements ProposedJobs.Listener {
                     /// could administrate this, and perhaps watch if it sucessfully succeeds
                 }
             }
+        }
+    }
+    public List<ProposedJobs.Event> getQueue() {
+        if (proposedJobs != null) {
+            return new ArrayList<ProposedJobs.Event>(proposedJobs);
+        } else {
+            return Collections.emptyList();
         }
     }
 
@@ -113,18 +140,18 @@ public class CronDaemon  implements ProposedJobs.Listener {
         } else {
             addEntry(entry);
         }
-        if (entry.getType() == CronEntry.Type.BALANCE && proposedJobs == null) {
-            proposedJobs = new DelayQueue<ProposedJobs.Event>();
-            cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
-        }
-
     }
+
 
     /**
      * Actually adds, no checks for 'removedEntries' and so on.
      */
     protected void addEntry(CronEntry entry) {
         entry.init();
+        if (entry.getType() == CronEntry.Type.BALANCE && proposedJobs == null) {
+            proposedJobs = new DelayQueue<ProposedJobs.Event>();
+            cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
+        }
         cronEntries.add(entry);
         log.service("Added entry " + entry);
     }
@@ -238,7 +265,7 @@ public class CronDaemon  implements ProposedJobs.Listener {
             for (CronEntry entry : cronEntries) {
                 if (Thread.currentThread().isInterrupted()) return;
                 if (entry.mustRun(currentMinute)) {
-                    if (entry.kick()) {
+                    if (entry.kick(currentMinute)) {
                         if (log.isDebugEnabled()) {
                             log.debug("Started " + entry);
                         }
