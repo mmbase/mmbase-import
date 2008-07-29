@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.13 2008-07-29 13:36:34 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.14 2008-07-29 15:21:45 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -39,31 +39,32 @@ public class CronEntry implements java.io.Serializable {
          * Since we use a thread-pool for other types of jobs now any way, it is doubtfull if it is
          * ever usefull to opt for this type.
          */
-        SHORT,
+        SHORT, //0
         /**
          * The default job type is the 'must be one' job. Such jobs are not started if the same job is
          * still running. They are wrapped in a seperate thread, so other jobs can be started during the
          * execution of this one.
          */
-        MUSTBEONE,
+         MUSTBEONE, //1
         /**
          * The 'can be more' type job is like a 'must be one' job, but the run() method of such jobs is even
          * called (when scheduled) if it itself is still running.
          */
-        CANBEMORE,
+         CANBEMORE, //2
 
         /**
          * A job of this type runs exactly once in the load balanced mmbase cluster. Before the job
          * is started, communication between mmbase's in the server will be done, to negotiate who
          * is going to do it.
          */
-         BALANCE,
+         BALANCE; //3
+
 
 
          /**
          * NOT IMPLEMENTED. As BALANCED, but no job is started as the previous was not yet finished.
          */
-        BALANCE_MUSTBEONE;
+            //BALANCE_MUSTBEONE;
 
 
 
@@ -182,6 +183,9 @@ public class CronEntry implements java.io.Serializable {
     public boolean isAlive() {
         return isAlive(0);
     }
+    public boolean isMustBeOne() {
+        return type == Type.MUSTBEONE;
+    }
 
     Interruptable getExecutable() {
         final Date start = new Date();
@@ -196,7 +200,7 @@ public class CronEntry implements java.io.Serializable {
         return thread;
     }
 
-    public boolean kick() {
+    public boolean kick(Date currentTime) {
         switch (type) {
         case SHORT:
             {
@@ -207,7 +211,8 @@ public class CronEntry implements java.io.Serializable {
                 }
                 return true;
             }
-        case BALANCE_MUSTBEONE: {
+        case BALANCE: {
+            org.mmbase.core.event.EventManager.getInstance().propagateEvent(new ProposedJobs.Event(this, currentTime));
             return true;
         }
         case MUSTBEONE:
@@ -342,8 +347,9 @@ public class CronEntry implements java.io.Serializable {
             return false;
         }
         CronEntry other = (CronEntry)o;
+        //
         return id.equals(other.id) && name.equals(other.name) &&
-            className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers)
+            className.equals(other.className) && cronTime.equals(other.cronTime) && servers.pattern().equals(other.servers.pattern())
             && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
 
