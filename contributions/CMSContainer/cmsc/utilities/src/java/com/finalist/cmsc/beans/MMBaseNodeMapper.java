@@ -2,6 +2,7 @@ package com.finalist.cmsc.beans;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.beans.PropertyDescriptor;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
@@ -58,12 +59,19 @@ public class MMBaseNodeMapper {
 					   
 					   if (v != null) {
    					   try {
-   							PropertyUtils.setProperty(nodeClass, pojoname, v);
+                        PropertyDescriptor descriptoer = PropertyUtils.getPropertyDescriptor(nodeClass, pojoname);
+
+                        if (descriptoer.getPropertyType().isEnum()) {
+                           Enum a = (Enum) PropertyUtils.getProperty(nodeClass, pojoname);
+                           v = Enum.valueOf(a.getClass(), (String) v);
+                        }
+
+                        PropertyUtils.setProperty(nodeClass, pojoname, v);
                      } catch (IllegalArgumentException e) {
-                         log.error("IllegalArgumentException for Node '" + node.getNumber()
-                                 + "' on Class '" + nodeClass.getClass().getName()
-                                 + "' on fieldname '" + mmname + "'"); 
-                         throw e;
+                        log.error("IllegalArgumentException for Node '" + node.getNumber()
+                              + "' on Class '" + nodeClass.getClass().getName()
+                              + "' on fieldname '" + mmname + "'");
+                        throw e;
    						} catch (IllegalAccessException e) {
    							log.error("IllegalAccessException for Node '" + node.getNumber()
                                        + "' on Class '" + nodeClass.getClass().getName()
