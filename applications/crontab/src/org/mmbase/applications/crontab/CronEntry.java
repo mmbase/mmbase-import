@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.16 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.17 2008-07-29 20:47:20 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -181,7 +181,7 @@ public class CronEntry implements java.io.Serializable {
         Interruptable t = getThread(thread);
         boolean r = t != null && t.interrupt();
         if (r) {
-            EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, t.getStartTime(), Events.INTERRUPTED, t.getId()));
+            EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, t.getStartTime(), Events.INTERRUPTED, t.getId(), null));
         }
         return r;
     }
@@ -200,6 +200,10 @@ public class CronEntry implements java.io.Serializable {
     public boolean isMustBeOne() {
         return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
+    public Pattern getServers() {
+        return servers;
+    }
+
 
     Interruptable getExecutable() {
         final Date start = new Date();
@@ -207,12 +211,12 @@ public class CronEntry implements java.io.Serializable {
                 public void run(Interruptable i) {
                     CronEntry.this.incCount();
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.DONE, i.getId()));
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.DONE, i.getId(), null));
                 }
             };
         Interruptable.CallBack begin = new Interruptable.CallBack() {
                 public void run(Interruptable i) {
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.STARTED, i.getId()));
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.STARTED, i.getId(), null));
                 }
             };
 

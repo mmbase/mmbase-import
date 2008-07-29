@@ -20,7 +20,7 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.18 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.19 2008-07-29 20:47:20 michiel Exp $
  */
 public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 
@@ -57,7 +57,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
                     ProposedJobs.Event proposed = i.next();
                     if (event.equals(proposed)) {
                         log.debug("Found job " + event + " already ");
-                        if (proposed.getMachine().compareTo(event.getMachine()) > 0) {
+                        if (proposed.getMachine().compareTo(event.getMachine()) < 0) {
                             log.debug("Will prefer " + proposed.getMachine());
                             event = proposed;
                         } else {
@@ -84,9 +84,20 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
             case Events.STARTED: runningJobs.add(event); break;
             case Events.INTERRUPTED:
             case Events.DONE   : runningJobs.remove(event); break;
+            case Events.INTERRUPT: {
+                if (event.getDestination().equals(org.mmbase.module.core.MMBase.getMMBase().getMachineName())) {
+                    Interruptable i = getCronEntry(event.getCronEntry().getId()).getThread(event.getId());
+                    if (i != null)  i.interrupt();
+                }
+                break;
+            }
             default: log.warn("" + event);
             }
         }
+    }
+    public boolean interrupt(String machine, String entry, int id) {
+        EventManager.getInstance().propagateEvent(new Events.Event(getCronEntry(entry), null, Events.INTERRUPT, id, machine));
+        return true;
     }
 
 

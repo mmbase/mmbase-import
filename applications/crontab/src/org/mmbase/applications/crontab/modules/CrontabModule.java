@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.16 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.17 2008-07-29 20:47:20 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -154,7 +154,8 @@ public class CrontabModule extends WatchedReloadableModule {
     }
 
     protected final static Parameter<String> ENTRY = new Parameter<String>("entry", String.class, true);
-    protected final static Parameter<Integer> THREAD = new Parameter<Integer>("thread", Integer.class, new Integer(0));
+    protected final static Parameter<Integer> THREAD = new Parameter<Integer>("thread", Integer.class, Integer.valueOf(0));
+    protected final static Parameter<String> MACHINE = new Parameter<String>("machine", String.class);
     /**
      * @since MMBase-1.8
      */
@@ -172,11 +173,12 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-    protected Function<Boolean> interruptFunction = new AbstractFunction<Boolean>("interrupt", ENTRY, THREAD) {
+    protected Function<Boolean> interruptFunction = new AbstractFunction<Boolean>("interrupt", ENTRY, THREAD, MACHINE) {
             public Boolean getFunctionValue(Parameters arguments) {
                 String id = arguments.get(ENTRY);
                 Integer thread = arguments.get(THREAD);
-                return cronDaemon.getCronEntry(id).interrupt(thread);
+                String machine = arguments.get(MACHINE);
+                return cronDaemon.interrupt(machine, id, thread);
             }
 
         };
