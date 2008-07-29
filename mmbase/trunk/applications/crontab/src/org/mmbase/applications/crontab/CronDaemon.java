@@ -20,7 +20,7 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.19 2008-07-29 20:47:20 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.20 2008-07-29 20:56:13 michiel Exp $
  */
 public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 
@@ -326,6 +326,10 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
      */
     public Set<CronEntry> getEntries() {
         return Collections.unmodifiableSet(cronEntries);
+    }
+
+    public String toString() {
+        return "MMBase Cron Daemon";
     }
 
     /**
