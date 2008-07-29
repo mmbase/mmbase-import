@@ -28,13 +28,13 @@
     <!--
     <property name="cacheclearer">59 3 * * *|org.mmbase.applications.crontab.MMBaseCacheClearerJob|Clear all mmbase caches</property>
     -->
-    <!-- 
+    <!--
          Memory warnings.
          This examples sends me mail every 2 hours if the memory use (after a full gc) comes over 80%.
-    --> 
+    -->
     <!--
     <property name="memory">0 */2 * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl</property>
     -->
-
+    <property name="testjob">*/1 5-23 * * *|org.mmbase.applications.crontab.TestCronJob|||balance_mustbeone</property>
   </properties>
 </util>

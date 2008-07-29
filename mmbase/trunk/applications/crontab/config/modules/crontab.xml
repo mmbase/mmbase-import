@@ -4,8 +4,8 @@
   <status>active</status>
 
   <class>org.mmbase.applications.crontab.modules.CrontabModule</class>
-  <properties>  
-    <!-- 
+  <properties>
+    <!--
     Properties of cronjobs.
     Every property defines one cronjob, and should have a unique name.
     The value of the property has 2 -4 fields (separated by a tab, | or newline),
@@ -22,5 +22,5 @@
     -->
 
   </properties>
- 
+
 </module>

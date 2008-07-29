@@ -10,6 +10,7 @@ package org.mmbase.applications.crontab;
 import java.util.*;
 import java.util.regex.*;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.util.HashCodeUtil;
 
 import org.mmbase.util.logging.*;
 
@@ -18,10 +19,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.12 2008-07-29 10:01:21 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.13 2008-07-29 13:36:34 michiel Exp $
  */
 
-public class CronEntry {
+public class CronEntry implements java.io.Serializable {
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
 
@@ -49,7 +50,22 @@ public class CronEntry {
          * The 'can be more' type job is like a 'must be one' job, but the run() method of such jobs is even
          * called (when scheduled) if it itself is still running.
          */
-        CANBEMORE;
+        CANBEMORE,
+
+        /**
+         * A job of this type runs exactly once in the load balanced mmbase cluster. Before the job
+         * is started, communication between mmbase's in the server will be done, to negotiate who
+         * is going to do it.
+         */
+         BALANCE,
+
+
+         /**
+         * NOT IMPLEMENTED. As BALANCED, but no job is started as the previous was not yet finished.
+         */
+        BALANCE_MUSTBEONE;
+
+
 
         public static Type DEFAULT = MUSTBEONE;
         public static Type valueOf(int i) {
@@ -62,9 +78,9 @@ public class CronEntry {
      }
 
 
-    private CronJob cronJob;
+    private transient CronJob cronJob;
 
-    private List<Interruptable> threads = Collections.synchronizedList(new ArrayList<Interruptable>());
+    private transient List<Interruptable> threads = Collections.synchronizedList(new ArrayList<Interruptable>());
 
     private final String id;
     private final String name;
@@ -167,7 +183,7 @@ public class CronEntry {
         return isAlive(0);
     }
 
-    public boolean kick() {
+    Interruptable getExecutable() {
         final Date start = new Date();
         Runnable ready = new Runnable() {
                 public void run() {
@@ -175,18 +191,25 @@ public class CronEntry {
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
                 }
             };
+        setLastRun(start);
+        Interruptable thread = new Interruptable(cronJob, threads, ready);
+        return thread;
+    }
+
+    public boolean kick() {
         switch (type) {
         case SHORT:
             {
                 try {
-                    setLastRun(new Date());
-                    Interruptable thread = new Interruptable(cronJob, threads, ready);
-                    thread.run();
+                    getExecutable().run();
                 } catch (Throwable t) {
                     log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
                 }
                 return true;
             }
+        case BALANCE_MUSTBEONE: {
+            return true;
+        }
         case MUSTBEONE:
             if (isAlive()) {
                 return false;
@@ -194,9 +217,7 @@ public class CronEntry {
             // fall through
         case CANBEMORE:
         default :
-            setLastRun(start);
-            Interruptable thread = new Interruptable(cronJob, threads, ready);
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(thread);
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(getExecutable());
             return true;
         }
 
@@ -235,8 +256,8 @@ public class CronEntry {
     public String getConfiguration() {
         return configuration;
     }
-    public String getType() {
-        return type.toString().toLowerCase();
+    public Type getType() {
+        return type;
     }
     public String getClassName() {
         return className;
@@ -308,7 +329,12 @@ public class CronEntry {
     }
 
     public int hashCode() {
-        return id.hashCode() + name.hashCode() + className.hashCode() + cronTime.hashCode();
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, id);
+        result = HashCodeUtil.hashCode(result, name);
+        result = HashCodeUtil.hashCode(result, className);
+        result = HashCodeUtil.hashCode(result, cronTime);
+        return result;
     }
 
     public boolean equals(Object o) {
@@ -316,7 +342,9 @@ public class CronEntry {
             return false;
         }
         CronEntry other = (CronEntry)o;
-        return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers)  && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
+        return id.equals(other.id) && name.equals(other.name) &&
+            className.equals(other.className) && cronTime.equals(other.cronTime) && servers.equals(other.servers)
+            && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
 
 
