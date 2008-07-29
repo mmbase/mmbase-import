@@ -88,7 +88,7 @@
     <property name="no" value="yes" />
   </target>
 
-  <target name="init" unless="inited">
+  <target name="init">
     <antcall target="download" inheritRefs="true"/>
 
     <mkdir dir="${tests.lib}" />
