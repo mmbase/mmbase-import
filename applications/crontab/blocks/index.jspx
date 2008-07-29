@@ -22,8 +22,9 @@
     <mm:import externid="interrupt" />
     <mm:present referid="interrupt">
       <mm:import externid="threadno" />
-      <mm:booleanfunction module="crontab" name="interrupt" referids="interrupt@entry,threadno@thread">
-        Interrupted cron job ${interrupt}.${thread}
+      <mm:import externid="machine" />
+      <mm:booleanfunction module="crontab" name="interrupt" referids="interrupt@entry,threadno@thread,machine">
+        Interrupted cron job ${interrupt}.${thread} at ${machine}
       </mm:booleanfunction>
     </mm:present>
 
@@ -59,7 +60,7 @@
         <th>id</th>
         <th>type</th>
         <th>time</th>
-        <th>running</th>
+        <th>run</th>
         <th>last run started on</th>
         <th>cost of last run (ms)</th>
         <th># runs</th>
@@ -72,8 +73,8 @@
           <td>${cronentry.type}</td>
           <td>${cronentry.cronTime}</td>
           <td>
+            <jsp:text>${cronentry.servers}</jsp:text>
             <c:if test="${not cronentry.mustBeOne or not cronentry.alive}">
-              No
               <mm:link>
                 <mm:param name="kick" value="${cronentry.id}" />
                 <a href="${_}">Kick</a>
@@ -132,15 +133,17 @@
         <th>Running</th>
         <td>
           <mm:listfunction module="crontab" name="running" id="job">
-            Since <mm:time referid="job.start" format="$format" />
+            ${job} since
+            <mm:time referid="job.start" format="$format" />
             <mm:link>
               <mm:param name="interrupt" value="${job.cronEntry.id}" />
               <mm:param name="threadno">${job.id}</mm:param>
               <mm:param name="machine">${job.machine}</mm:param>
+              <jsp:text> </jsp:text>
               <a href="${_}">Interrupt</a>
             </mm:link>
+            <br />
           </mm:listfunction>
-          <br />
         </td>
       </tr>
       <tr>

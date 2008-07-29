@@ -21,6 +21,7 @@
       <param name="stop" />
       <param name="start" />
       <param name="reload" />
+      <param name="machine" />
     </body>
   </block>
 
