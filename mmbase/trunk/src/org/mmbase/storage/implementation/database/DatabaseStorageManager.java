@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.196 2008-07-26 19:32:27 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.197 2008-07-29 08:39:35 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2380,7 +2380,6 @@ public class DatabaseStorageManager implements StorageManager {
         switch (jdbcType) {
         case Types.INTEGER :
         case Types.SMALLINT :
-        case Types.TINYINT :
             if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_NODE) {
                 return mmbaseType;
             } else {
@@ -2391,6 +2390,12 @@ public class DatabaseStorageManager implements StorageManager {
                 return mmbaseType;
             } else {
                 return Field.TYPE_LONG;
+            }
+        case Types.TINYINT :
+            if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_BOOLEAN) {
+                return mmbaseType;
+            } else {
+                return Field.TYPE_INTEGER;
             }
         case Types.FLOAT :
         case Types.REAL :
