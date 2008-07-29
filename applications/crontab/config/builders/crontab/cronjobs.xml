@@ -99,11 +99,11 @@
         <guiname xml:lang="en">Job type</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="MUSTBEONE_JOB_TYPE" />
+        <default value="MUSTBEONE" />
         <required value="true" />
         <enumeration>
           <entry
-              javaconstants="org.mmbase.applications.crontab.CronEntry.Type"
+              javaconstants="org.mmbase.applications.crontab.CronEntry$Type"
               basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
         </enumeration>
       </datatype>

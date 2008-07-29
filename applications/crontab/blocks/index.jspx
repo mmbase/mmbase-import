@@ -80,15 +80,6 @@
               </mm:link>
             </c:if>
             <c:if test="${cronentry.alive}">
-              <c:forEach var="thread" items="${cronentry.threads}">
-                Since <mm:time referid="thread.startTime" format="$format" />
-                <mm:link>
-                  <mm:param name="interrupt" value="${cronentry.id}" />
-                  <mm:param name="threadno"><mm:index /></mm:param>
-                  <a href="${_}">Interrupt</a>
-                </mm:link>
-                <mm:last inverse="true">, </mm:last>
-              </c:forEach>
               <mm:write value="${cronentry.type}">
                 <mm:compare value="canbemore">
                   <mm:link>
@@ -135,6 +126,21 @@
           <mm:listfunction module="crontab" name="queue">
             ${_}<br />
           </mm:listfunction>
+        </td>
+      </tr>
+      <tr>
+        <th>Running</th>
+        <td>
+          <mm:listfunction module="crontab" name="running" id="job">
+            Since <mm:time referid="job.start" format="$format" />
+            <mm:link>
+              <mm:param name="interrupt" value="${job.cronEntry.id}" />
+              <mm:param name="threadno">${job.id}</mm:param>
+              <mm:param name="machine">${job.machine}</mm:param>
+              <a href="${_}">Interrupt</a>
+            </mm:link>
+          </mm:listfunction>
+          <br />
         </td>
       </tr>
       <tr>
