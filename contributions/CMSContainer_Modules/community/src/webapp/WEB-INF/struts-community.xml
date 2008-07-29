@@ -22,7 +22,7 @@
          <forward name="success" path="/editors/community/searchConditionalGroupAction.do" redirect="false" />
       </action>
       <action path="/editors/community/groupAction" type="com.finalist.cmsc.community.forms.GroupAction"
-         name="communityGroupForm" scope="session" input="/editors/community/group.jsp" unknown="false"
+         name="communityGroupForm" scope="session" input="/editors/community/searchConditionalGroupAction.do" unknown="false"
          validate="true">
          <set-property property="cancellable" value="true" />
          <forward name="success" path="/editors/community/index.jsp" redirect="false" />
