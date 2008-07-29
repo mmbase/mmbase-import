@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.13 2008-07-14 13:51:36 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.14 2008-07-29 10:01:21 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -106,7 +106,7 @@ public class CrontabModule extends WatchedReloadableModule {
         } catch (ClassNotFoundException cnfe) {
             log.info("Ignoring " + entry.getKey() + "|" + times + "|" + description + "|" + className + " because " + cnfe.getClass().getName() + ": " + cnfe.getMessage());;
         } catch (Exception e) {
-            log.error("Could not add to CronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
+            log.error("Could not add to CronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
