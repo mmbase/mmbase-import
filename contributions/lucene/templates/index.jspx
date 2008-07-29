@@ -286,6 +286,12 @@
             </td>
           </tr>
           <tr>
+            <th>Directory</th>
+            <td>
+              <mm:function name="path" module="lucene" />
+            </td>
+          </tr>
+          <tr>
             <th>Reload module</th>
             <td>
               <mm:link>
