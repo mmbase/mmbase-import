@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.117 2008-07-28 14:20:57 michiel Exp $
+ * @version $Id: Lucene.java,v 1.118 2008-07-29 08:54:59 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -694,7 +694,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         indexPath = indexPath.replaceAll("/+", File.separator);
                         log.service("found module parameter for lucene index path : " + indexPath);
                     } else {
-                        indexPath = binaryFileBasePath + databaseName + File.separator + "lucene";
+                        indexPath = binaryFileBasePath + lucene + File.separator + databaseName;
                     }
 
                     if(indexPath != null) {

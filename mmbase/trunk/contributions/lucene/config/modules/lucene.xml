@@ -31,7 +31,7 @@
     <property name="master" />
     -->
 
-    <property name="indexpath">$BINARYFILEBASEPATH/$DATABASE/lucene</property>
+    <property name="indexpath">$BINARYFILEBASEPATH/lucene/$DATABASE</property>
   </properties>
 
 </module>
