@@ -327,7 +327,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
 
-   private List<String> splitEmailAddresses(String emailAddressesValue) {
+   public List<String> splitEmailAddresses(String emailAddressesValue) {
       List<String> emailList = new ArrayList<String>();
       StringTokenizer addresssTokenizer = new StringTokenizer(emailAddressesValue, " ,;");
       while(addresssTokenizer.hasMoreTokens()) {
@@ -515,9 +515,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       if (StringUtils.isNotBlank(emailRegex)) {
          return emailRegex;
       }
-      else {
-         return DEFAULT_EMAILREGEX;
-      }
+      return DEFAULT_EMAILREGEX;
    }
 
 }

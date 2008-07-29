@@ -1,7 +1,5 @@
 package com.finalist.cmsc.community.forms;
 
-import java.util.StringTokenizer;
-
 import org.apache.struts.action.ActionForm;
 
 public class SearchGroupForm extends ActionForm {

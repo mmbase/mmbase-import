@@ -74,7 +74,7 @@ public class BannerPortlet extends ContentChannelPortlet {
    }
 
    protected void handleBannerCounters(RenderRequest request) {
-      // remove all banners from the content elemens that have reached max clicks (
+      // remove all banners from the content elements that have reached max clicks (
       String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
       String position = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);

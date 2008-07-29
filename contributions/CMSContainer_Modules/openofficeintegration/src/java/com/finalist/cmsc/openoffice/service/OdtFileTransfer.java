@@ -40,7 +40,7 @@ public class OdtFileTransfer {
             }
 
             ofh.getFirstHtml();
-            Map rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file), requestContext);
+            Map<String, String> rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file), requestContext);
             ch.change(middelFileLocation, styleMap, rowAndSavedImageMap);
             FileInputStream fileInputStream = new FileInputStream(middelFileLocation + ".html");
             InputStreamReader inputStramReader = new InputStreamReader(fileInputStream, "utf-8");
@@ -70,9 +70,9 @@ public class OdtFileTransfer {
         return doc;
     }
 
-    public static Map saveAllImageToCMSC(InputStream fis, String requestContext) throws IOException {
+    public static Map<String, String> saveAllImageToCMSC(InputStream fis, String requestContext) throws IOException {
 
-        Map<String, String> rawImgeToSavedImgeMaping = new HashMap();
+        Map<String, String> rawImgeToSavedImgeMaping = new HashMap<String, String>();
 
         ZipInputStream zis = new ZipInputStream(fis);
         ZipEntry ze;

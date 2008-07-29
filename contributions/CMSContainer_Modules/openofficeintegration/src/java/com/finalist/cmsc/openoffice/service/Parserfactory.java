@@ -20,7 +20,7 @@ public class Parserfactory {
         Set<String> tag = hs.keySet();
         Iterator<String> it = tag.iterator();
         while (it.hasNext()) {
-            style = it.next().toString();
+            style = it.next();
             Element theNewNode = doc.createElement(style);
             NewNode = theNewNode.cloneNode(true);
             NewNode.appendChild(node.cloneNode(true));
