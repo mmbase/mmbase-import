@@ -22,176 +22,77 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
 /**
- * An attachment builder where, aside form storing the binary data in the database, you can point out a 
- * binary resource on another server using an url. 
+ * An attachment builder where, aside from storing the binary data in the database, you can point out a
+ * binary resource on another server using an url.
+ * Basic support for sucha  field is in AbstractServletBuidler.
+ * This builder defines a default url field ('url'), has a better GUI function, and determines file size,
+ * filename, and mimetype from a referred to file when the url changes.
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.3 2008-04-11 11:30:18 nklasens Exp $
+ * @version $Id: ReferredAttachments.java,v 1.4 2008-07-29 08:38:53 pierre Exp $
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {
 
-    public static final String FIELD_URL = "url";
+    public static final String DEFAULT_EXTERNAL_URL_FIELD = "url";
+
     private static final Logger log = Logging.getLoggerInstance(ReferredAttachments.class);
 
-    public NodeFunction<String> servletPathFunction =
-	new NodeFunction<String>("servletpath", new Parameter[] {
-                                             new Parameter<String>("session",  String.class), // For read-protection
-                                             new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-                                             new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-                                             new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
-                                             Parameter.REQUEST,
-                                             Parameter.CLOUD
-                                         },
-                                         ReturnType.STRING) {
-                {
-                    setDescription("Returns the path associated with this builder or node.");
-                }
-
-                protected StringBuilder getServletPath(Parameters a) {
-                    StringBuilder servlet = new StringBuilder();
-                    // third argument, the servlet context, can use a relative path here, as an argument
-                    String context             = (String) a.get("context");
-
-                    if (context == null) {
-                        // no path to context-root specified explicitly, try to determine:
-                        HttpServletRequest request = a.get(Parameter.REQUEST);
-                        if (request == null) {
-                            // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
-                            servlet.append(ReferredAttachments.this.getServletPath()); // use 'absolute' path (starting with /)
-                        } else {
-                            servlet.append(ReferredAttachments.this.getServletPath(request.getContextPath()));
-                        }
-                    } else {
-                        // explicitly specified the path!
-                        servlet.append(ReferredAttachments.this.getServletPath(context));
-                    }
-                    return servlet;
-                }
-
-                public String getFunctionValue(Node node, Parameters a) {
-                  String url = node.getStringValue("url");
-                  if (url != null && !url.equals("")) {
-                    return url;
-                  } else {
-
-                  
-                    StringBuilder servlet = getServletPath(a);
-
-                    String session = getSession(a, node.getNumber());
-                    String argument = (String) a.get("argument");
-                    // argument representint the node-number
-
-                    if (argument == null) {
-                        String fieldName   = (String) a.get("field");
-                        if (fieldName == null || "".equals(fieldName)) {
-                            argument = node.getStringValue("number");
-                        } else {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Getting 'field' '" + fieldName + "'");
-                            }
-                            argument = node.getStringValue(fieldName);
-                        }
-                    }
-                    MMObjectNode mmnode = node.getNumber() > 0 ?
-                        ReferredAttachments.this.getNode(node.getNumber()) :
-                        new MMObjectNode(ReferredAttachments.this, new org.mmbase.bridge.util.NodeMap(node));
-                    boolean addFileName = addFileName(mmnode, servlet.toString());
-
-                    log.debug("Using session " + session);
-
-                    if (usesBridgeServlet &&  session != null) {
-                        servlet.append("session=" + session + "+");
-                    }
-
-                    if (! addFileName) {
-                        return servlet.append(argument).toString();
-                    } else {
-                        servlet.append(argument).append('/');
-                        getFileName(mmnode, servlet);
-                        return servlet.toString();
-                    }
-                  }
-                }
-
-                public String getFunctionValue(Parameters a) {
-                    return getServletPath(a).toString();
-                }
-            };
-
+    /**
+     * Sets a default for the 'externalUrlField' property
+     */
     public boolean init() {
-      super.init();
-      addFunction(servletPathFunction);
-      return true;
+        externalUrlField = DEFAULT_EXTERNAL_URL_FIELD;
+        return super.init();
     }
-    
-    
+
     protected void checkHandle(MMObjectNode node) {
-      String url = node.getStringValue(FIELD_URL);
-      if (url != null && !url.equals("")) {
-        try {
-            URL reference = new URL(url);
-            URLConnection connection  = reference.openConnection();
-            
-            if (getField(FIELD_SIZE) != null) {
-                if (node.getIntValue(FIELD_SIZE) == -1) {
-                  node.setValue(FIELD_SIZE, connection.getContentLength());
+        String url = node.getStringValue(externalUrlField);
+        if (url != null && !url.equals("")) {
+            try {
+                URL reference = new URL(url);
+                URLConnection connection  = reference.openConnection();
+                if (getField(FIELD_SIZE) != null) {
+                    if (node.getIntValue(FIELD_SIZE) == -1) {
+                        node.setValue(FIELD_SIZE, connection.getContentLength());
+                    }
                 }
-            }
-            if (getField(FIELD_MIMETYPE) != null) {
-              node.setValue(FIELD_MIMETYPE, connection.getContentType());
-            }
-            if (getField(FIELD_FILENAME) != null) {
-              String filename = url;
-              int pos = filename.lastIndexOf('/');
-              if (pos > 0 && pos < filename.length()-1) {
-                filename = filename.substring(pos+1);
-              }
-              node.setValue(FIELD_FILENAME, filename);
-            }
-        } catch (MalformedURLException mue) {
-          log.warn("wrong url format:" + url);
-        } catch (IOException ie) {
-          log.warn("cannot connect to:" + url);
-        }
-      } else {
-        super.checkHandle(node);
-      }
-    }
-    
-    public boolean commit(MMObjectNode node) {
-        Collection<String> changed = node.getChanged();
-        if (changed.contains(FIELD_URL)) {
-            // set those fields to null, which are not changed too:
-            Collection<String> cp = new ArrayList<String>();
-            cp.addAll(getHandleFields());
-            cp.removeAll(changed);
-            Iterator<String> i = cp.iterator();
-            while (i.hasNext()) {
-                String f = i.next();
-                if (node.getBuilder().hasField(f)) {
-                    node.setValue(f, null);
+                if (getField(FIELD_MIMETYPE) != null) {
+                    node.setValue(FIELD_MIMETYPE, connection.getContentType());
                 }
+                if (getField(FIELD_FILENAME) != null) {
+                    String filename = url;
+                    int pos = filename.lastIndexOf('/');
+                    if (pos > 0 && pos < filename.length()-1) {
+                        filename = filename.substring(pos+1);
+                    }
+                    node.setValue(FIELD_FILENAME, filename);
+                }
+            } catch (MalformedURLException mue) {
+                log.warn("wrong url format:" + url);
+            } catch (IOException ie) {
+                log.warn("cannot connect to:" + url);
             }
+        } else {
+            super.checkHandle(node);
         }
-        return super.commit(node);
     }
-    
+
     protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
-          String url = node.getStringValue(FIELD_URL);
-          if (url != null && !url.equals("")) {
-            String fileName = getFileName(node, new StringBuilder()).toString();
-            String title;
-            if (fileName == null || fileName.equals("")) {
+            String url = node.getStringValue(externalUrlField);
+            if (url != null && !url.equals("")) {
+                String fileName = getFileName(node, new StringBuilder()).toString();
+                String title;
+                if (fileName == null || fileName.equals("")) {
                 title = "[*]";
-            } else {
-                title = "[" + fileName + "]";
-            }            
-	    HttpServletResponse res = (HttpServletResponse) a.get("response");
-            return "<a href=\"" + res.encodeURL(url) + "\" target=\"extern\">" + title + "</a>";
-          }
+                } else {
+                    title = "[" + fileName + "]";
+                }
+                HttpServletResponse res = (HttpServletResponse) a.get("response");
+                return "<a href=\"" + res.encodeURL(url) + "\" onclick=\"window.open(this.href);return false;\" >" + title + "</a>";
+            }
         }
         return super.getSGUIIndicator(node, a);
     }
