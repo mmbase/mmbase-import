@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.15 2008-07-29 15:21:45 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.16 2008-07-29 17:58:34 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -176,8 +176,7 @@ public class CrontabModule extends WatchedReloadableModule {
             public Boolean getFunctionValue(Parameters arguments) {
                 String id = arguments.get(ENTRY);
                 Integer thread = arguments.get(THREAD);
-                Interruptable t = cronDaemon.getCronEntry(id).getThread(thread.intValue());
-                return t != null && t.interrupt();
+                return cronDaemon.getCronEntry(id).interrupt(thread);
             }
 
         };
@@ -244,6 +243,12 @@ public class CrontabModule extends WatchedReloadableModule {
         addFunction(new AbstractFunction<List<ProposedJobs.Event>>("queue") {
                 public List<ProposedJobs.Event> getFunctionValue(Parameters arguments) {
                     return cronDaemon.getQueue();
+                }
+
+            });
+        addFunction(new AbstractFunction<List<Events.Event>>("running") {
+                public List<Events.Event> getFunctionValue(Parameters arguments) {
+                    return cronDaemon.getRunning();
                 }
 
             });

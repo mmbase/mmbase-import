@@ -9,18 +9,18 @@ package org.mmbase.applications.crontab;
 
 /**
  * A straight-forward abstract implementation of CronJob. If you exend it, you only need to
- * implement run(), and the 'cronEntry' protected member var is available. 
- * 
+ * implement run(), and the 'cronEntry' protected member var is available.
+ *
  * @author Michiel Meeuwissen
  */
 
 public abstract class AbstractCronJob implements CronJob {
 
-    protected CronEntry cronEntry;
+    protected  CronEntry cronEntry;
     /**
      * {@inheritDoc}
      *
-     * Stores the CronEntry in protected member cronEntry. So extensions should override 
+     * Stores the CronEntry in protected member cronEntry. So extensions should override
      * {@link #init()} instead (in which they can use the cronEntry member).
      */
     public final void init(CronEntry cronEntry) {
@@ -39,6 +39,9 @@ public abstract class AbstractCronJob implements CronJob {
      */
     public void stop() {}
 
+    public CronEntry getEntry() {
+        return cronEntry;
+    }
 
     /**
      * Implement this.

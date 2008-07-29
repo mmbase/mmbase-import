@@ -20,9 +20,9 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.17 2008-07-29 15:21:45 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.18 2008-07-29 17:58:34 michiel Exp $
  */
-public class CronDaemon  implements ProposedJobs.Listener {
+public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
@@ -33,6 +33,7 @@ public class CronDaemon  implements ProposedJobs.Listener {
     private Set<CronEntry> addedCronEntries;
 
     private DelayQueue<ProposedJobs.Event> proposedJobs = null;
+    private final DelayQueue<Events.Event> runningJobs = new DelayQueue<Events.Event>();
 
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
@@ -77,6 +78,17 @@ public class CronDaemon  implements ProposedJobs.Listener {
             log.service("Ignored " + event + " because we don't have jobs of type " + CronEntry.Type.BALANCE);
         }
     }
+    public void notify(Events.Event event) {
+        synchronized(runningJobs) {
+            switch (event.getType()) {
+            case Events.STARTED: runningJobs.add(event); break;
+            case Events.INTERRUPTED:
+            case Events.DONE   : runningJobs.remove(event); break;
+            default: log.warn("" + event);
+            }
+        }
+    }
+
 
     protected void consumeJobs() {
         synchronized(proposedJobs) {
@@ -101,13 +113,29 @@ public class CronDaemon  implements ProposedJobs.Listener {
             }
         }
     }
+
     public List<ProposedJobs.Event> getQueue() {
         if (proposedJobs != null) {
-            return new ArrayList<ProposedJobs.Event>(proposedJobs);
+            synchronized(proposedJobs) {
+                return new ArrayList<ProposedJobs.Event>(proposedJobs);
+            }
         } else {
             return Collections.emptyList();
         }
     }
+    public List<Events.Event> getRunning() {
+       synchronized(runningJobs) {
+           return new ArrayList<Events.Event>(runningJobs);
+       }
+    }
+
+    protected void detectFailedJobs() {
+        synchronized(runningJobs) {
+            for (Events.Event event = runningJobs.poll(); event != null; event = runningJobs.poll()) {
+            }
+        }
+    }
+
 
     /**
      * Finds in given set the CronEntry with the given id.
@@ -148,10 +176,13 @@ public class CronDaemon  implements ProposedJobs.Listener {
      */
     protected void addEntry(CronEntry entry) {
         entry.init();
-        if (entry.getType() == CronEntry.Type.BALANCE && proposedJobs == null) {
+        if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
+             && proposedJobs == null) {
             proposedJobs = new DelayQueue<ProposedJobs.Event>();
             cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
         }
+
+        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.detectFailedJobs();} }, getFirst(), 60 * 1000);
         cronEntries.add(entry);
         log.service("Added entry " + entry);
     }

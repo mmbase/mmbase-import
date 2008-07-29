@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.15 2008-07-29 15:42:24 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.16 2008-07-29 17:58:34 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -58,14 +58,12 @@ public class CronEntry implements java.io.Serializable {
          * is started, communication between mmbase's in the server will be done, to negotiate who
          * is going to do it.
          */
-         BALANCE; //3
-
-
+         BALANCE,
 
          /**
-         * NOT IMPLEMENTED. As BALANCED, but no job is started as the previous was not yet finished.
-         */
-            //BALANCE_MUSTBEONE;
+          * As BALANCED, but no job is started as the previous was not yet finished.
+          */
+         BALANCE_MUSTBEONE;
 
 
 
@@ -93,6 +91,9 @@ public class CronEntry implements java.io.Serializable {
     protected Date  lastRun = new Date(0);
     protected int count = 0;
     protected int lastCost = -1;
+
+    protected long maxDuration = Long.MAX_VALUE;
+
 
     private final CronEntryField second      = new CronEntryField(); // 0-59
     private final CronEntryField minute      = new CronEntryField(); // 0-59
@@ -166,13 +167,25 @@ public class CronEntry implements java.io.Serializable {
      */
     public Interruptable getThread(int i) {
         synchronized(threads) {
-            if (threads.size() <= i) return null;
-            return threads.get(i);
+            for (Interruptable in : threads) {
+                if (in.getId() == i) return in;
+            }
+            return null;
         }
     }
     public List<Interruptable> getThreads() {
         return new ArrayList<Interruptable>(threads);
     }
+
+    public boolean interrupt(int thread) {
+        Interruptable t = getThread(thread);
+        boolean r = t != null && t.interrupt();
+        if (r) {
+            EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, t.getStartTime(), Events.INTERRUPTED, t.getId()));
+        }
+        return r;
+    }
+
     /**
      * @since MMBase-1.8
      */
@@ -185,21 +198,21 @@ public class CronEntry implements java.io.Serializable {
         return isAlive(0);
     }
     public boolean isMustBeOne() {
-        return type == Type.MUSTBEONE;
+        return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
 
     Interruptable getExecutable() {
         final Date start = new Date();
-        Runnable ready = new Runnable() {
-                public void run() {
+        Interruptable.CallBack ready = new Interruptable.CallBack() {
+                public void run(Interruptable i) {
                     CronEntry.this.incCount();
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, Events.DONE));
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.DONE, i.getId()));
                 }
             };
-        Runnable begin = new Runnable() {
-                public void run() {
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, Events.STARTED));
+        Interruptable.CallBack begin = new Interruptable.CallBack() {
+                public void run(Interruptable i) {
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.STARTED, i.getId()));
                 }
             };
 
@@ -219,6 +232,7 @@ public class CronEntry implements java.io.Serializable {
                 }
                 return true;
             }
+        case BALANCE_MUSTBEONE:
         case BALANCE: {
             EventManager.getInstance().propagateEvent(new ProposedJobs.Event(this, currentTime));
             return true;
@@ -294,6 +308,10 @@ public class CronEntry implements java.io.Serializable {
     }
     protected void setLastCost(int s) {
         lastCost = s;
+    }
+
+    public long getMaxDuration() {
+        return maxDuration;
     }
 
     boolean mustRun(Date date) {
