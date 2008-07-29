@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.186 2008-07-07 11:09:39 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.187 2008-07-29 09:20:52 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -392,6 +392,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {
+        if (roleName == null) throw new IllegalArgumentException();
         int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r == -1) {
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
@@ -416,6 +417,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public RelationManager getRelationManager(NodeManager source, NodeManager destination, String roleName) throws NotFoundException {
+        if (roleName == null) throw new IllegalArgumentException();
         int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r == -1) {
             throw new NotFoundException("Role '" + roleName + "' does not exist.");
@@ -575,7 +577,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     /**
-     * Retrieves the current user accountname (unique)
+     * The owner to use for the temporary node manager.
      * @return the account name
      */
     String getAccount() {
