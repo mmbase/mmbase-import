@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: ProposedJobs.java,v 1.4 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id: ProposedJobs.java,v 1.5 2008-07-29 20:56:13 michiel Exp $
  */
 
 public class ProposedJobs {
@@ -106,7 +106,7 @@ public class ProposedJobs {
             nel.notify(ne);
         }
         public String toString() {
-            return "Lucene Full Index Broker";
+            return "Crontab Proposed Jobs Broker";
         }
     }
 
