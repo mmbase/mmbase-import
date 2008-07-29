@@ -30,12 +30,14 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.53 2008-02-25 12:35:05 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.54 2008-07-29 08:38:53 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class);
+
+    public static final String PROPERTY_EXTERNAL_URL_FIELD = "externalUrlField";
 
     public static final String FIELD_MIMETYPE   = "mimetype";
     public static final String FIELD_FILENAME   = "filename";
@@ -49,12 +51,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS) // example, does not make too much sense :-)
     };
 
-
     public final static Parameter[] FORMAT_PARAMETERS   = {};
     public final static Parameter[] MIMETYPE_PARAMETERS = {};
-
-
-
 
     /**
      * In this string the path to the servlet is stored.
@@ -110,10 +108,27 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     abstract protected String getDefaultPath();
 
     /**
+     * If set, this points out a field in the builder that optionally contains
+     * a url to an external (binary) source, which is then used as the stored
+     * attachment (instead of accessing the database).
+     */
+    protected String externalUrlField = null;
+
+    /**
+     * Read 'externalUrlField' property
+     */
+    public boolean init() {
+        String property = getInitParameter(PROPERTY_EXTERNAL_URL_FIELD);
+        if (property != null) {
+            externalUrlField = property;
+        }
+        return super.init();
+    }
+
+    /**
      * @param association e.g. 'images' or 'attachments'
      * @param root        Path to root of appliciation (perhaps relative).
      */
-
     private String getServletPathWithAssociation(String association, String root) {
         if (MMBaseContext.isInitialized()) {
             javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
@@ -248,13 +263,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         }
         return result;
     }
+
     public boolean commit(MMObjectNode node) {
         Collection<String> changed = node.getChanged();
         if (log.isDebugEnabled()) {
             log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
         }
 
-        if (changed.contains(FIELD_HANDLE)) {
+        if (changed.contains(FIELD_HANDLE) ||
+            (externalUrlField != null && changed.contains(externalUrlField))
+           ) {
             // set those fields to null, which are not changed too:
             Collection<String> cp = new ArrayList<String>();
             cp.addAll(getHandleFields());
@@ -460,6 +478,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
 
                 public String getFunctionValue(Node node, Parameters a) {
+                    // verify if the object is stored externally (in which case
+                    // its url has been filled in)
+                    // if so, return the url of the external source
+                    if (AbstractServletBuilder.this.externalUrlField != null ) {
+                        String url = node.getStringValue(externalUrlField);
+                        if (url != null && !url.equals("")) {
+                           return url;
+                        }
+                    }
                     StringBuilder servlet = getServletPath(a);
 
                     String session = getSession(a, node.getNumber());
