@@ -42,13 +42,14 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
       }else{
          //no conditions search         
          //need authId from the last jsp
-         StringBuffer userAllId = new StringBuffer();
-         for(String authId:searchform.getChk_()){
-            String userId = getAuthenticationService().getAuthenticationById(Long.parseLong(authId)).getUserId();
-            userAllId.append(userId+";");
-         }
-         request.getSession().setAttribute("users",userAllId.substring(0, userAllId.length()-1)); //contact string[]
-         
+    	 if(request.getSession().getAttribute("users")==null){
+	         StringBuffer userAllId = new StringBuffer();
+	         for(String authId:searchform.getChk_()){
+	            String userId = getAuthenticationService().getAuthenticationById(Long.parseLong(authId)).getUserId();
+	            userAllId.append(userId+";");
+	         }
+	         request.getSession().setAttribute("users",userAllId.substring(0, userAllId.length()-1)); //contact string[]
+	      }
          authorities = getAuthorityService().getAllAuthorities(holder);
          totalCount = getAuthorityService().countAllAuthorities();
       }
