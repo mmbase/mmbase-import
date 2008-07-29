@@ -17,10 +17,10 @@ import java.net.MalformedURLException;
 // import org.mmbase.bridge.remote.RemoteCloudContext;
 
 /**
- * This, despiite its name, is not actually a CloudContext, it only provides the static method to obtain one.
+ * This, despite its name, is not actually a CloudContext, it only provides the static method to obtain one.
  *
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.13 2008-07-28 16:27:56 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.14 2008-07-29 06:52:25 michiel Exp $
  * @since MMBase-1.5
  */
 public final class RemoteContext {
@@ -42,7 +42,7 @@ public final class RemoteContext {
 
             Object remoteCloudContext= Naming.lookup(uri);
             Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy");
-            Constructor<?> constr =  clazz.getConstructor(clazz, String.class);
+            Constructor<?> constr =  clazz.getConstructor(Class.forName("org.mmbase.bridge.remote.RemoteCloudContext"), String.class);
             return (CloudContext) constr.newInstance(remoteCloudContext, uri);
             //new RemoteCloudContext_Impl(remoteCloudContext);
         } catch (MalformedURLException mue) {
