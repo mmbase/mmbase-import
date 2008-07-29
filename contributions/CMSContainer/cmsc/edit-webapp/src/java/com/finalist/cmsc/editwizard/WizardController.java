@@ -153,7 +153,6 @@ public class WizardController {
    }
 
 
-   @SuppressWarnings("unused")
    public void openWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig config, Cloud cloud,
          Map<String, String> params, UserRole userrole, String contenttype) {
       // nothing to do
@@ -263,7 +262,6 @@ public class WizardController {
    }
 
 
-   @SuppressWarnings("unused")
    public void closeWizard(HttpServletRequest request, Config ewconfig, WizardConfig wizardConfig, Cloud cloud,
          Node editNode, String contenttype) {
       // nothing to do

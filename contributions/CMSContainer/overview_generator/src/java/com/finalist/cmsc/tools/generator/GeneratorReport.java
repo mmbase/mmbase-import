@@ -121,10 +121,9 @@ public class GeneratorReport extends BatchOperation {
     private String getProjectXmlFile(String pathOfProjectFile,
                                      String pathOfPropertiesFile) {
         StringBuffer sb = new StringBuffer();
-
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(
-                    pathOfProjectFile));
+            br = new BufferedReader(new FileReader(pathOfProjectFile));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -132,9 +131,10 @@ public class GeneratorReport extends BatchOperation {
                     continue;
                 sb.append(changeProperties(pathOfPropertiesFile, line));
             }
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
-            return "No project.xml,or read project.xml read error";
+            return "No project.xml, or project.xml read error";
         }
         return sb.toString();
     }
@@ -184,6 +184,7 @@ public class GeneratorReport extends BatchOperation {
                 while ((line = br.readLine()) != null) {
                     sb.append(line);
                 }
+                br.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -209,6 +210,7 @@ public class GeneratorReport extends BatchOperation {
         props.load(in);
         if (props.getProperty(key) != null)
             Property = props.getProperty(key);
+        in.close();
         return Property;
     }
 
@@ -223,6 +225,7 @@ public class GeneratorReport extends BatchOperation {
             InputStream subIn = new BufferedInputStream(new FileInputStream(
                     subFilePath));
             subProps.load(subIn);
+            subIn.close();
         }
         props.load(in);
         if (subProps != null && subProps.getProperty(key) != null) {
@@ -230,6 +233,7 @@ public class GeneratorReport extends BatchOperation {
         } else if (props.getProperty(key) != null) {
             Property = props.getProperty(key);
         }
+        in.close();
         return Property;
     }
 

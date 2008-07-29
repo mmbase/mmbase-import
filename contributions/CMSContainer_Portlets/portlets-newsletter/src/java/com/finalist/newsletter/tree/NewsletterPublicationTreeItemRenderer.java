@@ -22,7 +22,6 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
-   @SuppressWarnings("unused")
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
       // nothing
    }

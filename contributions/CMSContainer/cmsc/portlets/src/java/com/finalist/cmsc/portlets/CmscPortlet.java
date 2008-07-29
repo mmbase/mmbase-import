@@ -51,7 +51,6 @@ import com.finalist.pluto.portalImpl.core.PortalURL;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
 
-@SuppressWarnings("unused")
 public class CmscPortlet extends GenericPortlet {
 
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
