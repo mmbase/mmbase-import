@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.161 2008-07-29 09:18:19 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.162 2008-07-29 16:50:44 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -787,6 +787,14 @@ public class MMAdmin extends ProcessorModule {
         ModuleReader mod = getModuleReader(modulename);
         if (mod != null) {
             Map<String,String> props = mod.getProperties();
+
+            try {
+                Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase/" + modulename);
+                props.putAll(contextMap);
+            } catch (Exception e) {
+                log.error(e);
+            }
+
             for (String key : props.keySet()) {
                 String value = props.get(key);
                 results.add(key);
