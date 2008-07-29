@@ -5,7 +5,6 @@ import org.mmbase.bridge.Node;
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
  */
-@SuppressWarnings("unused")
 public class DummyVersioningService extends VersioningService {
 
    @Override
