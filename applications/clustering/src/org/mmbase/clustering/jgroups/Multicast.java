@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.11 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: Multicast.java,v 1.12 2008-07-29 20:56:18 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -168,7 +168,7 @@ public class Multicast extends ClusterManager {
             log.service("Stopped communication sender " + mcs);
             mcs = null;
         }
-        if (mcr != null) { 
+        if (mcr != null) {
             mcr.stop();
             log.service("Stopped communication receiver " + mcr);
             mcr = null;
@@ -178,5 +178,9 @@ public class Multicast extends ClusterManager {
             channel.disconnect();
             channel = null;
         }
+    }
+
+    public String toString() {
+        return "JGroups ClusterManager";
     }
 }

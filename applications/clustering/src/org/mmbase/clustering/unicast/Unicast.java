@@ -24,7 +24,7 @@ import org.mmbase.util.xml.UtilReader;
  * as active.
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.13 2008-07-22 15:05:51 michiel Exp $
+ * @version $Id: Unicast.java,v 1.14 2008-07-29 20:56:18 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -138,6 +138,11 @@ public class Unicast extends ClusterManager {
             log.service("Stopped communication receiver " + ucr);
             ucr = null;
         }
+    }
+
+
+    public String toString() {
+        return "UniCast ClusterManager";
     }
 
 }

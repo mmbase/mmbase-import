@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: Events.java,v 1.3 2008-07-29 20:47:20 michiel Exp $
+ * @version $Id: Events.java,v 1.4 2008-07-29 20:56:13 michiel Exp $
  */
 
 public class Events {
@@ -99,7 +99,7 @@ public class Events {
             nel.notify(ne);
         }
         public String toString() {
-            return "Lucene Full Index Broker";
+            return "Crontab Events Broker";
         }
     }
 

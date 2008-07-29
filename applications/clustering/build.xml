@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="clustering" default="jar" basedir=".">
-  
-  <property name="project.name"      value="clustering" />
+
   <property name="project.package"   value="org/mmbase/clustering" />
   <property name="project.comment"   value="MMBase Clustering sollutions" />
   <property name="project.target.templates.dir"   value="clustering" />
@@ -14,14 +13,14 @@
   <import file="../buildbase-include.xml" />
 
   <property file="build.properties.default" />
-  
+
   <target name="jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,buildbase.jar">
   </target>
 
   <target name="jgroups.jar" description="Get JGroups jar">
-    
+
     <echo message="jgroups" />
-	
+
     <antcall target="downloadzip">
       <param name="sourcefile" value="${jgroups.loc}"/>
       <param name="destfile" value="${jgroups.dest}"/>

@@ -25,7 +25,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.14 2008-07-22 15:05:51 michiel Exp $
+ * @version $Id: Multicast.java,v 1.15 2008-07-29 20:56:18 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -145,6 +145,10 @@ public class Multicast extends ClusterManager {
             log.service("Stopped communication receiver " + mcr);
             mcr = null;
         }
+    }
+
+    public String toString() {
+        return "MultiCast ClusterManager";
     }
 
 }
