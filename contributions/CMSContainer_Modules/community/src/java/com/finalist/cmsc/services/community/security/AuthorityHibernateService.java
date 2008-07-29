@@ -102,7 +102,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     
     @Transactional(readOnly = true)
     public List<Authority> getAllAuthorities(PagingStatusHolder holder) {
-        Criteria criteria = getSession().createCriteria(Authority.class);//在criteria里面加去重的条件
+        Criteria criteria = getSession().createCriteria(Authority.class);
         return addConditionToCriteria(holder,criteria); 
     }
 
