@@ -27,7 +27,7 @@ import org.mmbase.util.functions.*;
  * binary resource on another server using an url. 
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.1.2.1 2008-04-11 09:23:42 pierre Exp $
+ * @version $Id: ReferredAttachments.java,v 1.1.2.2 2008-07-29 08:21:00 pierre Exp $
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {
@@ -193,8 +193,11 @@ public class ReferredAttachments extends Attachments {
             } else {
                 title = "[" + fileName + "]";
             }            
-	    HttpServletResponse res = (HttpServletResponse) a.get("response");
-            return "<a href=\"" + res.encodeURL(url) + "\" target=\"extern\">" + title + "</a>";
+	          HttpServletResponse res = (HttpServletResponse) a.get("response");
+            if (res != null) {
+                url = res.encodeURL(url);
+            } 
+            return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
           }
         }
         return super.getSGUIIndicator(node, a);
