@@ -1,6 +1,8 @@
 package com.finalist.cmsc.paging;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -95,14 +97,14 @@ public class PagingUtils {
       else {
          holder.setPage(0);
       }
-      
+
       if (StringUtils.isNotBlank(sort)) {
-			holder.setSort(sort);
-	  }
-	  
+         holder.setSort(sort);
+      }
+
       if (StringUtils.isNotBlank(dir)) {
-		    holder.setDir(dir);
-	  }
+         holder.setDir(dir);
+      }
 
       pagingStatusHolderLocal.set(holder);
       return holder;
@@ -122,4 +124,10 @@ public class PagingUtils {
       return holder;
    }
 
+   public static void setPagingAndSortingInformation(NodeQuery query) {
+      PagingStatusHolder pagingHolder = getStatusHolder();
+      query.setOffset(pagingHolder.getOffset());
+      query.setMaxNumber(pagingHolder.getPageSize());
+      Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+   }
 }
