@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.11 2008-07-14 13:51:36 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.12 2008-07-29 10:01:21 michiel Exp $
  */
 
 public class CronEntry {
@@ -27,36 +27,40 @@ public class CronEntry {
 
     public static final Pattern ALL = Pattern.compile(".*");
 
-    /**
-     * A CronEntry of this type will run without the overhead of an extra thread. This does mean
-     * though that such a job will halt the cron-daemon itself.  Such jobs must therefore be
-     * extremely short-living, and used with care (only if you have a lot of those which must run
-     * very often)
-     */
-    public static final int SHORT_JOB_TYPE = 0;
 
-    public static final String SHORT_JOB_TYPE_STRING = "short";
+    public enum Type {
+        /**
+         * A CronEntry of this type will run without the overhead of an extra thread. This does mean
+         * though that such a job will halt the cron-daemon itself.  Such jobs must therefore be
+         * extremely short-living, and used with care (only if you have a lot of those which must run
+         * very often)
+         *
+         * Since we use a thread-pool for other types of jobs now any way, it is doubtfull if it is
+         * ever usefull to opt for this type.
+         */
+        SHORT,
+        /**
+         * The default job type is the 'must be one' job. Such jobs are not started if the same job is
+         * still running. They are wrapped in a seperate thread, so other jobs can be started during the
+         * execution of this one.
+         */
+        MUSTBEONE,
+        /**
+         * The 'can be more' type job is like a 'must be one' job, but the run() method of such jobs is even
+         * called (when scheduled) if it itself is still running.
+         */
+        CANBEMORE;
 
-    /**
-     * The default job type is the 'must be one' job. Such jobs are not started if the same job is
-     * still running. They are wrapped in a seperate thread, so other jobs can be started during the
-     * execution of this one.
-     */
-    public static final int MUSTBEONE_JOB_TYPE = 1;
+        public static Type DEFAULT = MUSTBEONE;
+        public static Type valueOf(int i) {
+            if (i == -1) return DEFAULT;
+            if (i < 0 || i >= Type.values().length) {
+                throw new IndexOutOfBoundsException("Invalid ordinal");
+            }
+            return Type.values()[i];
+        }
+     }
 
-    public static final String MUSTBEONE_JOB_TYPE_STRING = "mustbeone";
-
-    /**
-     * The 'can be more' type job is like a 'must be one' job, but the run() method of such jobs is even
-     * called (when scheduled) if it itself is still running.
-     */
-    public static final int CANBEMORE_JOB_TYPE = 2;
-
-    public static final String CANBEMORE_JOB_TYPE_STRING = "canbemore";
-
-    public static final int DEFAULT_JOB_TYPE = MUSTBEONE_JOB_TYPE;
-
-    public static final String DEFAULT_JOB_TYPE_STRING = MUSTBEONE_JOB_TYPE_STRING;
 
     private CronJob cronJob;
 
@@ -79,26 +83,26 @@ public class CronEntry {
     private final CronEntryField month       = new CronEntryField(); // 1-12
     private final CronEntryField dayOfWeek   = new CronEntryField(); // 0-7 (0 or 7 is sunday)
 
-    private int type = DEFAULT_JOB_TYPE;
+    private Type type = Type.DEFAULT;
 
     private final Pattern servers;
 
     public CronEntry(String id, String cronTime, String name, String className, String configuration) throws Exception {
-        this(id, cronTime, name, className, configuration, DEFAULT_JOB_TYPE);
+        this(id, cronTime, name, className, configuration, Type.DEFAULT);
     }
 
     public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString) throws Exception {
-        this(id, cronTime, name, className, configuration, stringToJobType(typeString));
+        this(id, cronTime, name, className, configuration, typeString == null ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()));
     }
     public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString, Pattern servers) throws Exception {
-        this(id, cronTime, name, className, configuration, stringToJobType(typeString), servers);
+        this(id, cronTime, name, className, configuration, typeString == null  ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()), servers);
     }
 
     /**
      * @throws ClassCastException if className does not refer to a Runnable.
      * @throws RuntimeException if the cronTime format isn't correct
      */
-    public CronEntry(String id, String cronTime, String name, String className, String configuration, int type) throws Exception {
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, Type type) throws Exception {
         this(id, cronTime, name, className, configuration, type, ALL);
     }
 
@@ -107,7 +111,7 @@ public class CronEntry {
      * @throws ClassCastException if className does not refer to a Runnable.
      * @throws RuntimeException if the cronTime format isn't correct
      */
-    public CronEntry(String id, String cronTime, String name, String className, String configuration, int type, Pattern servers) throws Exception {
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, Type type, Pattern servers) throws Exception {
         this.id = id;
         this.name = name == null ? "" : name;
         this.className = className;
@@ -172,28 +176,28 @@ public class CronEntry {
                 }
             };
         switch (type) {
-            case SHORT_JOB_TYPE :
-                {
-                    try {
-                        setLastRun(new Date());
-                        Interruptable thread = new Interruptable(cronJob, threads, ready);
-                        thread.run();
-                    } catch (Throwable t) {
-                        log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
-                    }
-                    return true;
+        case SHORT:
+            {
+                try {
+                    setLastRun(new Date());
+                    Interruptable thread = new Interruptable(cronJob, threads, ready);
+                    thread.run();
+                } catch (Throwable t) {
+                    log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
                 }
-            case MUSTBEONE_JOB_TYPE :
-                if (isAlive()) {
-                    return false;
-                }
-                // fall through
-            case CANBEMORE_JOB_TYPE :
-            default :
-                setLastRun(start);
-                Interruptable thread = new Interruptable(cronJob, threads, ready);
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(thread);
                 return true;
+            }
+        case MUSTBEONE:
+            if (isAlive()) {
+                return false;
+            }
+            // fall through
+        case CANBEMORE:
+        default :
+            setLastRun(start);
+            Interruptable thread = new Interruptable(cronJob, threads, ready);
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(thread);
+            return true;
         }
 
     }
@@ -232,7 +236,7 @@ public class CronEntry {
         return configuration;
     }
     public String getType() {
-        return jobTypeToString(type);
+        return type.toString().toLowerCase();
     }
     public String getClassName() {
         return className;
@@ -300,7 +304,7 @@ public class CronEntry {
     }
 
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + jobTypeToString(type) + " on servers " + servers;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + type + " on servers " + servers;
     }
 
     public int hashCode() {
@@ -316,45 +320,6 @@ public class CronEntry {
     }
 
 
-    /**
-     * Convert a jobType int to a jobType String. invalid types are accepted and return DEFAULT_JOB_TYPE_STRING
-     * @param type the job type
-     * @return The string representation of the job type
-     */
-    public static String jobTypeToString(int type) {
-        switch (type) {
-        case SHORT_JOB_TYPE :
-            return SHORT_JOB_TYPE_STRING;
-        case MUSTBEONE_JOB_TYPE :
-            return MUSTBEONE_JOB_TYPE_STRING;
-        case CANBEMORE_JOB_TYPE :
-            return CANBEMORE_JOB_TYPE_STRING;
-        }
-        return DEFAULT_JOB_TYPE_STRING;
-    }
 
-    /**
-     * Convert a jobType String to a jobType int. first the string is lowered cased and trimed.
-     * null values and invalid values are accepted and return the DEFAULT_JOB_TYPE
-     * @param type the string representation of the job type
-     * @return the int representation of the jobType
-     */
-    public static int stringToJobType(String type) {
-
-        if (type == null) {
-            return DEFAULT_JOB_TYPE;
-        }
-        type = type.toLowerCase().trim();
-
-        if (type.equals(SHORT_JOB_TYPE_STRING)) {
-            return SHORT_JOB_TYPE;
-        } else if (type.equals(MUSTBEONE_JOB_TYPE_STRING)) {
-            return MUSTBEONE_JOB_TYPE;
-        } else if (type.equals(CANBEMORE_JOB_TYPE_STRING)) {
-            return CANBEMORE_JOB_TYPE;
-        }
-
-        return DEFAULT_JOB_TYPE;
-    }
 
 }

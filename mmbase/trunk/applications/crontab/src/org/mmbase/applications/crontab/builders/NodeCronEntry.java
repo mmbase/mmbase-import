@@ -7,6 +7,8 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab.builders;
 
+import  org.mmbase.applications.crontab.CronEntry;
+
 import org.mmbase.bridge.Node;
 import java.util.*;
 
@@ -15,17 +17,17 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.2 2008-07-14 13:51:36 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.3 2008-07-29 10:01:21 michiel Exp $
  * @since MMBase-1.8.6
  */
 
-public class NodeCronEntry extends org.mmbase.applications.crontab.CronEntry {
+public class NodeCronEntry extends CronEntry {
 
     private static final Logger log = Logging.getLoggerInstance(NodeCronEntry.class);
 
 
     public NodeCronEntry(Node node) throws Exception {
-        super("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"),node.getIntValue("type"));
+        super("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"), CronEntry.Type.valueOf(node.getIntValue("type")));
         assert node != null;
         if (node.getNodeManager().hasField("lastrun")) {
             lastRun = node.getDateValue("lastrun");

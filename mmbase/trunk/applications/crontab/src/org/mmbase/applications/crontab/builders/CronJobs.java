@@ -18,7 +18,7 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.6 2008-07-14 13:51:36 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.7 2008-07-29 10:01:21 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder implements Runnable {
 
@@ -155,7 +155,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
      */
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
-        node.setValue("type", CronEntry.DEFAULT_JOB_TYPE);
+        node.setValue("type", CronEntry.Type.DEFAULT.ordinal());
         node.setValue("crontime", "*/5 * * * *");
     }
 
