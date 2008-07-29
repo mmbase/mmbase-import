@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.14 2007-10-02 12:15:14 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.15 2008-07-29 09:17:46 michiel Exp $
  */
 class ApplicationInstaller {
 
@@ -79,8 +79,8 @@ class ApplicationInstaller {
         }
 
         ApplicationReader reader = getApplicationReader(applicationName);
-        Versions ver = (Versions)mmb.getBuilder("versions");
         if (reader != null) {
+            Versions ver = (Versions) mmb.getBuilder("versions");
             // test autodeploy
             if (autoDeploy) {
                 if (!reader.hasAutoDeploy()) {
@@ -130,8 +130,9 @@ class ApplicationInstaller {
                         int appVersion = -1;
                         try {
                             String appVersionAttr = reqapp.get("version");
-                            if (appVersionAttr != null)
+                            if (appVersionAttr != null) {
                                 appVersion = Integer.parseInt(appVersionAttr);
+                            }
                         } catch (Exception e) {}
                         if (installedAppVersion == -1 || appVersion > installedAppVersion) {
                             log.service("Application '" + applicationName + "' requires : " + appName);
