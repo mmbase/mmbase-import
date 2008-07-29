@@ -229,7 +229,7 @@ public class PreferenceHibernateService extends HibernateService implements Pref
           }
        }
        else {
-          criteria.addOrder(Order.desc("number"));
+          criteria.addOrder(Order.desc("id"));
        }
        copyPropertiesToVO(preferences,criteria.list());
        return preferences;
