@@ -9,7 +9,9 @@ package org.mmbase.applications.crontab;
 
 import java.util.*;
 import org.mmbase.util.DynamicDate;
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.logging.*;
+import java.util.concurrent.DelayQueue;
 
 /**
  * CronDaemon is a "crontab" clone written in java.
@@ -18,9 +20,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.15 2008-07-14 13:42:36 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.16 2008-07-29 13:36:34 michiel Exp $
  */
-public class CronDaemon  {
+public class CronDaemon  implements ProposedJobs.Listener {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
@@ -30,14 +32,54 @@ public class CronDaemon  {
     private Set<CronEntry> removedCronEntries;
     private Set<CronEntry> addedCronEntries;
 
+    private DelayQueue<ProposedJobs.Event> proposedJobs = null;
+
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
         cronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
         removedCronEntries = Collections.synchronizedSet(new HashSet<CronEntry>());
-        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
+        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable  order
+        EventManager.getInstance().addEventListener(this);
         start();
+    }
+
+
+    public void notify(ProposedJobs.Event event) {
+        synchronized(proposedJobs) {
+            Iterator<ProposedJobs.Event> i = proposedJobs.iterator();
+            while (i.hasNext()) {
+                ProposedJobs.Event proposed = i.next();
+                if (event.equals(proposed)) {
+                    if (proposed.getMachine().compareTo(event.getMachine()) > 0) {
+                        event = proposed;
+                    }
+                    // remove any way, to readd later after the loop.
+                    i.remove();
+                }
+            }
+            proposedJobs.add(event);
+        }
+    }
+
+    protected void consumeJobs() {
+        synchronized(proposedJobs) {
+            ProposedJobs.Event event = proposedJobs.poll();
+            while (event != null) {
+                if (event.isLocal()) {
+                    CronEntry proposed = event.getCronEntry();
+                    CronEntry local = getById(cronEntries, event.getCronEntry().getId());
+                    if (local.equals(proposed)) {
+                        //local.setLastRun(event.getCronStart());
+                        org.mmbase.util.ThreadPools.jobsExecutor.execute(local.getExecutable());
+                    }
+                } else {
+                    /// event will be execute somewhere else
+                    /// could administrate this, and perhaps watch if it sucessfully succeeds
+                }
+            }
+        }
     }
 
     /**
@@ -70,6 +112,10 @@ public class CronDaemon  {
             }
         } else {
             addEntry(entry);
+        }
+        if (entry.getType() == CronEntry.Type.BALANCE && proposedJobs == null) {
+            proposedJobs = new DelayQueue<ProposedJobs.Event>();
+            cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
         }
 
     }
@@ -108,13 +154,7 @@ public class CronDaemon  {
         log.service("Removed entry " + entry);
     }
 
-    /**
-     * Starts the daemon, which you might want to do if you have stopped if for some reason. The
-     * daemon is already started on default.
-     */
-    public void start() {
-        log.info("Starting CronDaemon");
-        cronTimer = new Timer(true);
+    protected Date getFirst() {
         Date first;
         try {
             first = DynamicDate.eval(DynamicDate.getInstance("tominute next minute"));
@@ -122,6 +162,17 @@ public class CronDaemon  {
             log.fatal(parseException); // could not happen
             first = new Date();
         }
+        return first;
+    }
+
+    /**
+     * Starts the daemon, which you might want to do if you have stopped if for some reason. The
+     * daemon is already started on default.
+     */
+    public void start() {
+        log.info("Starting CronDaemon");
+        cronTimer = new Timer(true);
+        Date first = getFirst();
         log.debug("First run at " + first);
         cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000);
     }
