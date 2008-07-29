@@ -12,6 +12,7 @@ import java.util.regex.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.HashCodeUtil;
 
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.logging.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.14 2008-07-29 15:21:45 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.15 2008-07-29 15:42:24 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -193,10 +194,17 @@ public class CronEntry implements java.io.Serializable {
                 public void run() {
                     CronEntry.this.incCount();
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, Events.DONE));
                 }
             };
+        Runnable begin = new Runnable() {
+                public void run() {
+                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, Events.STARTED));
+                }
+            };
+
         setLastRun(start);
-        Interruptable thread = new Interruptable(cronJob, threads, ready);
+        Interruptable thread = new Interruptable(cronJob, threads, begin, ready);
         return thread;
     }
 
@@ -212,7 +220,7 @@ public class CronEntry implements java.io.Serializable {
                 return true;
             }
         case BALANCE: {
-            org.mmbase.core.event.EventManager.getInstance().propagateEvent(new ProposedJobs.Event(this, currentTime));
+            EventManager.getInstance().propagateEvent(new ProposedJobs.Event(this, currentTime));
             return true;
         }
         case MUSTBEONE:

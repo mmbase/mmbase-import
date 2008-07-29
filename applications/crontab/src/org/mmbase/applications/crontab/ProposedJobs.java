@@ -19,15 +19,11 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: ProposedJobs.java,v 1.2 2008-07-29 15:21:45 michiel Exp $
+ * @version $Id: ProposedJobs.java,v 1.3 2008-07-29 15:42:24 michiel Exp $
  */
 
 public class ProposedJobs {
     private static final Logger log = Logging.getLoggerInstance(ProposedJobs.class);
-
-
-    public static int TYPE_PROPOSE = 100;
-    public static int TYPE_DONE    = 101;
 
     public static class Event extends org.mmbase.core.event.Event implements Delayed, java.io.Serializable {
 
