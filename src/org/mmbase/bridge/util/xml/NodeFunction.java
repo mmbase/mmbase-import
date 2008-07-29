@@ -51,7 +51,7 @@ import javax.xml.xpath.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.21 2007-04-09 19:10:27 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.22 2008-07-29 09:19:10 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -117,7 +117,7 @@ public  class NodeFunction {
      * @since MMBase-1.8
      */
     public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
-        // it only want to work withh a NodeList. I think my book sais that it should also work with
+        // it only wants to work withh a NodeList. I think my book sais that it should also work with
         // Element, but no..
 
         try {
@@ -165,7 +165,7 @@ public  class NodeFunction {
 
             Function func = null;
             Parameters params = null;
-            if (function.indexOf("(") > -1) { 
+            if (function.indexOf("(") > -1) {
                 List args = new ArrayList();
                 String functionName = org.mmbase.util.functions.NodeFunction.getFunctionNameAndFillArgs(function, args);
                 func = node.getFunction(functionName);
@@ -176,7 +176,7 @@ public  class NodeFunction {
                 func = node.getFunction(function);
                 params = func.createParameters();
             }
-            
+
             params.setIfDefined(Parameter.CLOUD, cloud);
             if (request instanceof HttpServletRequest) {
                 params.setIfDefined(Parameter.REQUEST, (HttpServletRequest) request);
