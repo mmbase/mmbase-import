@@ -19,7 +19,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Fulltext search portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class SearchPortlet extends CmscPortlet {
 
@@ -45,7 +45,7 @@ public class SearchPortlet extends CmscPortlet {
 
    private static final String SEARCH_CATEGORY = "searchCategory";
 
-   private static final String SEARCH_TARGET = "search.target";
+//   private static final String SEARCH_TARGET = "search.target";
 
    private static final String SEARCH_INDEX = "indexName";
 

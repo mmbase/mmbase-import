@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
@@ -126,7 +125,8 @@ public class GuestBookPortlet extends ContentPortlet {
                 if (body.length() > MAX_BODY_LENGTH) {
                     body = body.substring(0, MAX_BODY_LENGTH);
                 }
-                message.setStringValue(BODY_FIELD, request.getParameter(BODY_FIELD));
+                message.setStringValue(BODY_FIELD, body);
+                
                 log.debug("saving new guestmessage: " + message);
                 message.commit();
 

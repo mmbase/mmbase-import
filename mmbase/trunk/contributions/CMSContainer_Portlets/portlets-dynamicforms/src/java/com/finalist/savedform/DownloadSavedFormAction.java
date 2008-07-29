@@ -85,11 +85,10 @@ public class DownloadSavedFormAction extends MMBaseAction {
                savedFormNodeList.size(), values);
          return null;
       }
-      else {
-         String message = getResources(request, "SAVEDFORM").getMessage(locale, "incorrect.nodenumber", nodeNumber);
-         request.setAttribute("error", message);
-         String returnurl = request.getParameter("returnurl");
-         return new ActionForward(returnurl);
-      }
+      
+      String message = getResources(request, "SAVEDFORM").getMessage(locale, "incorrect.nodenumber", nodeNumber);
+      request.setAttribute("error", message);
+      String returnurl = request.getParameter("returnurl");
+      return new ActionForward(returnurl);
    }
 }
