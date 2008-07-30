@@ -25,7 +25,8 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response)
     throws Exception{
       SearchForm searchform = (SearchForm) actionForm;
-      PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+      PagingUtils.initStatusHolder(request);
+      PagingStatusHolder holder = PagingUtils.getStatusHolder();
       int totalCount = 0;
       List<Authority> authorities = new ArrayList<Authority>();
       
