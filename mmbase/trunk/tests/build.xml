@@ -47,7 +47,9 @@
       <arg value="-dbname.0" />
       <arg value="test" />
       <classpath>
-        <pathelement path="${tests.lib}/hsqldb*.jar" />
+        <fileset dir="${lib}">
+          <include name="hsqldb*.jar" />
+        </fileset>
       </classpath>
     </java>
   </target>
@@ -145,7 +147,6 @@
       </classpath>
     </available>
     <echo level="debug" message="${run.classpath}" />
-    <property name="inited" value="true" />
   </target>
 
 
@@ -346,7 +347,7 @@ Build-compiler: ${build.compiler}
           <jvmarg value="-Duser.dir=${tests.work.dir}" />
         </java>
       </daemons>
-      <echo message="starting client" />
+      <echo message="starting client ${run.rmmci.client}" />
       <java
           classname="${ui.class}"
           fork="true"
@@ -479,7 +480,7 @@ Build-compiler: ${build.compiler}
     <echo message="========================================TYPEREL========================================" />
     <antcall target="run.typerel" inheritRefs="true"/>
     <sleep seconds="10" />
-    <antcall target="run.all.bridge" />
+    <antcall target="run.all.bridge" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================UTIL========================================" />
     <antcall target="run.util" inheritRefs="true"/>
