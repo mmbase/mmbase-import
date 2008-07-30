@@ -28,11 +28,8 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 			throws Exception {
 		SearchGroupForm searchform = (SearchGroupForm) form;
 		List<Authority> authorities = new ArrayList<Authority>();
-		PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
-		
-		holder.getSort();
-		holder.getDir();
-		
+		PagingUtils.initStatusHolder(request);
+	        PagingStatusHolder holder = PagingUtils.getStatusHolder();
 		int totalCount = 0;
 		HashMap map = new HashMap();
 
