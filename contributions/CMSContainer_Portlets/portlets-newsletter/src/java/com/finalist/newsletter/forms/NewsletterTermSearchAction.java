@@ -20,7 +20,7 @@ public class NewsletterTermSearchAction extends MMBaseFormlessAction {
 	@Override
 	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 		String tmpName = request.getParameter("name");

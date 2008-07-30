@@ -37,7 +37,7 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 
 		log.debug("No parameter specified,go to edit page ,show related publications");
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
 		Date endDate = new Date();
@@ -56,7 +56,7 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 	public ActionForward searchPublicationStatistic(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.debug("parameter specified, search newsletterpublication ");
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 		NewsletterPublicationManageForm myForm = (NewsletterPublicationManageForm) form;
@@ -112,8 +112,8 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 		List<Map<String, String>> results = convertPublicationsToMap(publications);
 		if (results.size() > 0) {
 			request.setAttribute("results", results);
-			pagingHolder.setListSize(resultCount);
 		}
+		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
 		return mapping.findForward("success");
 	}

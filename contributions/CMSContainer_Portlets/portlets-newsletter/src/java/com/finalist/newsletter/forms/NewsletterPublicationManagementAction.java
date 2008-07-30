@@ -39,7 +39,8 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 			throws Exception {
 		log.debug("No parameter specified,go to edit page ,show related publications");
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
+		
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
 		Date now = new Date();
@@ -60,7 +61,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 	public ActionForward searchPublication(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		log.debug("parameter specified, search newsletterpublication ");
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 		NewsletterPublicationManageForm myForm = (NewsletterPublicationManageForm) form;
 		String tmpTitle = myForm.getTitle();
