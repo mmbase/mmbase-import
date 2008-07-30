@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.74 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.75 2008-07-30 12:16:14 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -59,7 +59,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
 
     public void setNotfound(String i) throws JspTagException {
-        notfound = getAttribute(i);
+        notfound = getAttribute(i, true);
     }
 
     /**
