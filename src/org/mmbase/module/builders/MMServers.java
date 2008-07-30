@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.53 2008-07-30 09:20:52 michiel Exp $
+ * @version $Id: MMServers.java,v 1.54 2008-07-30 09:29:28 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mmbase.datatypes.resources.StateConstants {
 
@@ -205,16 +205,20 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
      */
     private boolean checkMySelf(MMObjectNode node) {
         boolean state = true;
-        log.debug("checkMySelf() updating timestamp");
-        node.setValue("state", ACTIVE);
-        node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
-        if (!checkedSystem) {
-            node.setValue("os", osstr);
-            node.setValue("host", mmb.getHost());
-            node.setValue("jdk", javastr);
-            checkedSystem = true;
+        try {
+            log.debug("checkMySelf() updating timestamp");
+            node.setValue("state", ACTIVE);
+            node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
+            if (!checkedSystem) {
+                node.setValue("os", osstr);
+                node.setValue("host", mmb.getHost());
+                node.setValue("jdk", javastr);
+                checkedSystem = true;
+            }
+            node.commit();
+        } catch (org.mmbase.storage.StorageException se) {
+            log.warn(se);
         }
-        node.commit();
         log.debug("checkMySelf() updating timestamp done");
         return state;
     }
@@ -244,17 +248,20 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
      * @javadoc
      */
     private void createMySelf(String machineName, String host) {
+        try {
+            MMObjectNode node = getNewNode("system");
+            node.setValue("name", machineName);
+            node.setValue("state", ACTIVE);
+            node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
+            node.setValue("os", osstr);
+            node.setValue("host", host);
+            node.setValue("jdk", javastr);
+            insert("system", node);
+        } catch  (Throwable sqe) {
+            log.error(e.getMessage(), sqe);
 
-        MMObjectNode node = getNewNode("system");
-        node.setValue("name", machineName);
-        node.setValue("state", ACTIVE);
-        node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
-        node.setValue("os", osstr);
-        node.setValue("host", host);
-        node.setValue("jdk", javastr);
-        insert("system", node);
+        }
     }
-
     /**
      * @javadoc
      */
