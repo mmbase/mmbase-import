@@ -77,7 +77,7 @@ public interface PersonService {
     
    public List<PersonExportImportVO> getPersonExportImportVO();
    
-   public List<Person> getAssociatedPersons(Map conditions,PagingStatusHolder holder);
+   public List<Person> getAssociatedPersons(Map conditions);
 
    public int getAssociatedPersonsNum(Map map,PagingStatusHolder holder);
 }

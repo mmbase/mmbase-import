@@ -9,32 +9,29 @@
  */
 package com.finalist.cmsc.services.community.person;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Example;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.MatchMode;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.HibernateService;
 import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
 import com.finalist.cmsc.services.community.preferences.Preference;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.paging.*;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Remco Bos
@@ -117,7 +114,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    }
    @Transactional
    public List<Person> getAllPeople(PagingStatusHolder holder) {
-      return getAssociatedPersons(null,holder);
+      return getAssociatedPersons(null);
    }
     @Transactional
    public List<Person> getAllPersons() {
@@ -138,7 +135,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          if ("desc".equals(dir)) {
             criteria.addOrder(Property.forName(propertyName).desc());
          }
-      
+
    }
    /** {@inheritDoc} */
    @Transactional
@@ -179,7 +176,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
       return person;
    }
-   
+
    @Transactional(readOnly = true)
    public Person getPersonByEmail(String email){
       Person person = null;
@@ -189,7 +186,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
       return person;
    }
-   
+
   @Transactional
    public void batchClean(){
       List<Person> persons = getAllPersons();
@@ -200,14 +197,14 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          }
       }
    }
-   
+
    @Transactional(propagation = Propagation.REQUIRED)
    public void deleteRelationRecord(Long id) {
       preferenceService.batchCleanByAuthenticationId(id);
       deletePersonByAuthenticationId(id);
       authenticationService.deleteAuthentication(id);
    }
-   
+
    @Transactional(propagation = Propagation.REQUIRED)
    @SuppressWarnings("unchecked")
    public void creatRelationRecord(PersonExportImportVO xperson) {
@@ -223,7 +220,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          preferenceService.createPreference(preference, userId);
       }
    }
-   
+
    @Transactional(readOnly = true)
    public List<PersonExportImportVO> getPersonExportImportVO() {
       List<PersonExportImportVO> XPersons = new ArrayList<PersonExportImportVO>();
@@ -237,7 +234,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
       return XPersons;
    }
-      
+
    private void converPersonPropertis(Person t, Person o) {
       o.setFirstName(t.getFirstName());
       o.setInfix(t.getInfix());
@@ -246,7 +243,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       o.setEmail(t.getEmail());
       o.setUri(t.getUri());
    }
-   
+
    private PersonExportImportVO transformToPersonExportImportVO(Person tempPerson) {
       PersonExportImportVO o = new PersonExportImportVO();
       converPersonPropertis(tempPerson, o);
@@ -261,25 +258,22 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       o.setPreferences(preferences);
       return o;
    }
-      @Transactional(readOnly = true)
-      public List<Person> getAssociatedPersons(Map conditions,PagingStatusHolder holder) {
-         StringBuffer strb=new StringBuffer();
-         basicGetAssociatedPersons(conditions,strb);
-      
-         if("fullname".equals(holder.getSort())){
-           strb.append(String.format(" order by %s %s","person.firstName "+holder.getDir(),",person.lastName "+holder.getDir()));
-         }else if("username".equals(holder.getSort())){
-           strb.append(String.format(" order by %s %s", "authentication.userId",holder.getDir()));
-         }else if("email".equals(holder.getSort())){
-           strb.append(String.format(" order by %s %s","person.email",holder.getDir()));
-         }
 
-         Query q = getSession().createQuery(strb.toString());
+   @Transactional(readOnly = true)
+   public List<Person> getAssociatedPersons(Map conditions) {
 
-         q.setMaxResults(holder.getPageSize())
-          .setFirstResult(holder.getOffset());
+      PagingStatusHolder holder = PagingUtils.getStatusHolder();
 
-         return q.list();
+      StringBuffer strb = new StringBuffer();
+      basicGetAssociatedPersons(conditions, strb);
+
+      strb.append(" "+holder.getSortToken());
+
+      Query q = getSession().createQuery(strb.toString());
+
+      q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
+
+      return q.list();
    }
    private void basicGetAssociatedPersons(Map conditions, StringBuffer strb){
       strb.append("select distinct person from Person person , Authentication authentication "
@@ -323,7 +317,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          }else{
             String groups = conditions.get("group").toString();
             strb.append(" and authority.name='"+groups+"'");
-         }         
+         }
       }
    }
       @Transactional(readOnly = true)
