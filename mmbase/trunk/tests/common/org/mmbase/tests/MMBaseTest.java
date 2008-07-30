@@ -52,7 +52,7 @@ public abstract class MMBaseTest extends TestCase {
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
         }
-        System.out.println("================================================================================");
+        System.out.println("--------------------------------------------------------------------------------");
         System.out.println("Starting test");
     }
 
