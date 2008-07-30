@@ -50,7 +50,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
 	protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 
 		log.debug("No parameter specified,go to subscriber page ,show related subscribers");
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
@@ -67,7 +67,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 	}
 
 	public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		PagingUtils.getStatusHolder(request);
+		PagingUtils.initStatusHolder(request);
 
 		log.debug("parameter action specified, go to the subscribers page, show related subscriber list");
 		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));

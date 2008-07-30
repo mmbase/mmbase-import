@@ -192,8 +192,9 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       else {
          SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), Long.decode("1"), endDate.getTime());
       }
-
-      PagingUtils.setPagingAndSortingInformation(nodeQuery);
+      if (paging) {
+			PagingUtils.setPagingAndSortingInformation(nodeQuery);
+		}
 
       return convertPublicationsToMap(nodeQuery.getList());
    }
