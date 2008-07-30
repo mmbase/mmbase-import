@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.51 2008-04-03 13:36:55 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.52 2008-07-30 09:00:06 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -120,7 +120,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private String getUptimeString(int uptime) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if (uptime >= (24 * 3600)) {
             int d = uptime / (24 * 3600);
             result.append(d).append(" d ");
@@ -160,7 +160,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 Thread.sleep(thisTime);
             } catch (InterruptedException e) {
                 log.debug(Thread.currentThread().getName() +" was interrupted.");
-                continue;
+                break;
             }
         }
     }
@@ -205,7 +205,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         }
         return new ArrayList<MMObjectNode>();
     }
-    
+
     /**
      * @javadoc
      */
@@ -250,7 +250,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     private void createMySelf(String machineName, String host) {
-        
+
         MMObjectNode node = getNewNode("system");
         node.setValue("name", machineName);
         node.setValue("state", ACTIVE);
