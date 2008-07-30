@@ -156,24 +156,35 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     
     @Transactional(readOnly = true)
     public List<Authority> getAssociatedAuthorities(Map conditions, PagingStatusHolder holder) {
+    	List<Authority> authorities=new ArrayList<Authority>();
      StringBuffer strb = new StringBuffer();
      basicGetAssociatedAuthorities(conditions, strb);
-     if ("groupName".equals(holder.getSort())) {
-      strb.append(String.format(" order by %s %s","authority.name", holder.getDir()));
+     if ("group".equals(holder.getSort())) {
+      strb.append(String.format(" order by %s %s","authorities.name", holder.getDir()));
      }
-     Query q = getSession().createQuery(strb.toString());
+     Query q = getSession().createSQLQuery(strb.toString());
      q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
-
-     return q.list();
+     List l=q.list();
+     for(Object s:l){
+    	 Authority authority=new Authority();
+    	 String str=((Object[])s)[0].toString();
+    	 authority =findAuthorityByName(str);
+    	 authorities.add(authority);
+     }
+     return authorities;
     }
 
     private void basicGetAssociatedAuthorities(Map conditions, StringBuffer strb){
-       strb.append("select distinct authority from Person person , Authentication authentication "
-						+ "left join authentication.authorities authority "
-						+ "where person.authenticationId = authentication.id");
+       strb.append("select distinct asn.name as groupName ," +
+       		"concat(p.firstName ,p.lastName) as fullNmae from  authorities asn" +
+       		" left outer join authentication_authorities on" +
+       		" asn.id=authentication_authorities.authority_id" +
+       		" left outer join authentication on" +
+       		" authentication_authorities.authentication_id=authentication.id" +
+       		" left outer join people p on p.authenticationId=authentication.id");
      if (null!=conditions&&conditions.containsKey("group")) {
       String group =  (String) conditions.get("group");
-      strb.append(" and upper(authority.name) like'%" + group.toUpperCase() + "%'");
+      strb.append(" where upper(asn.name) like'%" + group.toUpperCase() + "%'");
      }
      
      if (null!=conditions&&conditions.containsKey("username")) {
@@ -183,16 +194,14 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 			for(String m:members){
 				String[] names = m.split(" ");
 				if(names.length>2) continue;
-				if(i==0)strb.append(" and (");
+				if(i==0&&null==conditions&&conditions.containsKey("group"))strb.append(" where (");
+				if(i==0&&null!=conditions&&conditions.containsKey("group"))strb.append(" or (");
 				if(i>0)strb.append("or(");
 				if (names.length == 2)
-					strb.append(" person.firstName like'%" + names[0]
-							+ "%'and person.lastName like'%" + names[1] + "%')"
-							+ "or ( person.firstName like'%" + names[0] + " " + names[1]
-							+ "%'" + "or person.lastName like'%" + names[0] + " "
-							+ names[1] + "%'");
+					strb.append(" upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()
+							+ "%'or upper(concat(p.firstName ,p.lastName)) like'%" + names[1].toUpperCase() + "%'");
 				else if (names.length == 1)
-					strb.append("person.firstName like'%" + names[0]+ "%' or person.lastName like'%" + names[0] + "%'");
+					strb.append("upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()+ "%'");
 				strb.append(")");
 				i++;
 			}
@@ -203,7 +212,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     public int getAssociatedAuthoritiesNum(Map conditions, PagingStatusHolder holder) {
      StringBuffer strb = new StringBuffer();
      basicGetAssociatedAuthorities(conditions, strb);
-     Query q = getSession().createQuery(strb.toString());
+     Query q = getSession().createSQLQuery(strb.toString());
      return q.list().size();
     }
 }
