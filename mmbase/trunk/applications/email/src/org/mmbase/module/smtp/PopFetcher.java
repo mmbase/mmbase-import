@@ -22,7 +22,7 @@ import javax.mail.search.*;
  * A mail fetcher that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
  *
- * @version $Id: PopFetcher.java,v 1.4 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id: PopFetcher.java,v 1.5 2008-07-30 05:03:07 michiel Exp $
  */
 public class PopFetcher extends MailFetcher implements CronJob {
     private static final Logger log = Logging.getLoggerInstance(PopFetcher.class);
@@ -30,7 +30,7 @@ public class PopFetcher extends MailFetcher implements CronJob {
     private static final String LASTRUN_ALIAS = PopFetcher.class.getName() + ".lastrun";
     // alias of mmevents node which remembers time of last run.
 
-    CronEntry entry;
+    private CronEntry entry;
 
     public void init(CronEntry cronEntry) {
         entry = cronEntry;
@@ -39,7 +39,9 @@ public class PopFetcher extends MailFetcher implements CronJob {
     public void stop() {
     }
 
-
+    public CronEntry getEntry() {
+        return entry;
+    }
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
