@@ -82,7 +82,7 @@ public class PreferenceAction extends DispatchAction {
       BeanUtils.copyProperties(preference, preferenceForm);
 
       PagingUtils.initStatusHolder(request);
-		PagingStatusHolder holder = PagingUtils.getStatusHolder();
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
       
 
       int offset = pagingHolder.getOffset();
