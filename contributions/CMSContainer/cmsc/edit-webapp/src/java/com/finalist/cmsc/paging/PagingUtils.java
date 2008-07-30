@@ -87,6 +87,7 @@ public class PagingUtils {
     * @deprecated use initStatusHolder instead
     */
    public static PagingStatusHolder getStatusHolder(HttpServletRequest request) {
+	   PagingUtils.initStatusHolder(request);
       return getStatusHolder();
    }
 
