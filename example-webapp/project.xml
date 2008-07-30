@@ -21,18 +21,6 @@ See http://www.MMBase.org/license
 				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
-<!-- 
-   		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-bugtracker</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<mmbase.templates.bundle>true</mmbase.templates.bundle>
-				<mmbase.templates.path>mmbase/bugtracker</mmbase.templates.path>
-			</properties>
-		</dependency>
- -->
    		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-clustering</artifactId>
@@ -53,17 +41,6 @@ See http://www.MMBase.org/license
 				<mmbase.templates.path>mmbase/resources</mmbase.templates.path>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
 				<mmbase.examples.path>mmexamples/resources</mmbase.examples.path>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-packaging</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<mmbase.templates.path>mmbase</mmbase.templates.path>
-				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples/packaging</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
