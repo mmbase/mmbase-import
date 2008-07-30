@@ -12,6 +12,8 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.*;
+import org.mmbase.util.ThreadPools;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
@@ -30,9 +32,9 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.52 2008-07-30 09:00:06 michiel Exp $
+ * @version $Id: MMServers.java,v 1.53 2008-07-30 09:20:52 michiel Exp $
  */
-public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
+public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mmbase.datatypes.resources.StateConstants {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout = 60 * 15; // 15 minutes
@@ -42,6 +44,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private final String javastr;
     private final String osstr;
     private final List<String> possibleServices = new CopyOnWriteArrayList<String>();
+    private ScheduledFuture future;
 
     /**
      * Function uptime
@@ -96,7 +99,22 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @since MMBase-1.7
      */
     protected void start() {
-        MMBaseContext.startThread(this, "MMServers");
+        future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    if (mmb != null && mmb.getState() && ! mmb.isShutdown()) {
+                        MMServers.this.doCheckUp();
+                    }
+                }
+            },
+            2000,
+            intervalTime, TimeUnit.MILLISECONDS);
+    }
+    public void shutdown() {
+        super.shutdown();
+        if (future != null) {
+            log.debug("Canceling mmserver schedule");
+            future.cancel(true);
+        }
     }
 
     /**
@@ -140,30 +158,6 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         return result.toString();
     }
 
-    /**
-     * run, checkup probe runs every intervaltime to
-     * set the state of the server (used in clusters)
-     * @since MMBase-1.7
-     */
-    public void run() {
-        while (!mmb.isShutdown()) {
-            long thisTime = intervalTime;
-            if (mmb != null && mmb.getState()) {
-                doCheckUp();
-            } else {
-                // shorter wait, the server is starting
-                thisTime = 2 * 1000; // wait 2 second
-            }
-
-            // wait the defined time
-            try {
-                Thread.sleep(thisTime);
-            } catch (InterruptedException e) {
-                log.debug(Thread.currentThread().getName() +" was interrupted.");
-                break;
-            }
-        }
-    }
 
     /**
      * @javadoc
