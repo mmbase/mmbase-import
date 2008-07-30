@@ -32,17 +32,15 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.54 2008-07-30 09:29:28 michiel Exp $
+ * @version $Id: MMServers.java,v 1.55 2008-07-30 09:49:45 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mmbase.datatypes.resources.StateConstants {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout = 60 * 15; // 15 minutes
-    private long intervalTime = 60 * 1000; // 1 minute
+    private long intervalTime = 60; // 1 minute
 
     private boolean checkedSystem = false;
-    private final String javastr;
-    private final String osstr;
     private final List<String> possibleServices = new CopyOnWriteArrayList<String>();
     private ScheduledFuture future;
 
@@ -63,25 +61,29 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
         addFunction(getUpTime);
     }
 
-    /**
-     * @javadoc
-     */
-    public MMServers() {
-        javastr = System.getProperty("java.version") + "/" + System.getProperty("java.vm.name");
-        osstr = System.getProperty("os.name") + "/" + System.getProperty("os.version");
+
+    private static String getJavaString() {
+        return System.getProperty("java.version") + "/" + System.getProperty("java.vm.name");
+    }
+
+    private static String getOsString() {
+        return System.getProperty("os.name") + "/" + System.getProperty("os.version");
     }
 
     public boolean init() {
-        if (oType != -1)
+        if (oType != -1) {
             return true; // inited already
-        if (!super.init())
+        }
+
+        if (!super.init()) {
             return false;
+        }
         String tmp = getInitParameter("ProbeInterval");
         if (tmp != null) {
-            intervalTime = (long)Integer.parseInt(tmp) * 1000;
-            log.service("ProbeInterval was configured to be " + intervalTime / 1000 + " seconds");
+            intervalTime = (long)Integer.parseInt(tmp);
+            log.service("ProbeInterval was configured to be " + intervalTime + " seconds");
         } else {
-            log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
+            log.service("ProbeInterval defaults to " + intervalTime + " seconds");
         }
          tmp = getInitParameter("ServiceTimeout");
         if (tmp != null) {
@@ -106,8 +108,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
                     }
                 }
             },
-            2000,
-            intervalTime, TimeUnit.MILLISECONDS);
+            2,
+            intervalTime, TimeUnit.SECONDS);
     }
     public void shutdown() {
         super.shutdown();
@@ -210,9 +212,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
             node.setValue("state", ACTIVE);
             node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
             if (!checkedSystem) {
-                node.setValue("os", osstr);
+                node.setValue("os", getOsString());
                 node.setValue("host", mmb.getHost());
-                node.setValue("jdk", javastr);
+                node.setValue("jdk", getJavaString());
                 checkedSystem = true;
             }
             node.commit();
@@ -253,12 +255,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
             node.setValue("name", machineName);
             node.setValue("state", ACTIVE);
             node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
-            node.setValue("os", osstr);
+            node.setValue("os", getOsString());
             node.setValue("host", host);
-            node.setValue("jdk", javastr);
+            node.setValue("jdk", getJavaString());
             insert("system", node);
         } catch  (Throwable sqe) {
-            log.error(e.getMessage(), sqe);
+            log.error(sqe.getMessage(), sqe);
 
         }
     }
@@ -341,7 +343,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, org.mm
      * @return Returns the intervalTime.
      */
     public long getIntervalTime() {
-        return intervalTime;
+        return intervalTime * 1000;
     }
 
     /**
