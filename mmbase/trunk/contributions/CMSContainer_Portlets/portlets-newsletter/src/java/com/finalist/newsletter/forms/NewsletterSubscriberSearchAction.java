@@ -106,8 +106,6 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 	private List<Map> searchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
 		List<Map> results = new ArrayList<Map>();
 
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolderInSorting("number", "asc");
-
 		Set<Long> authenticationIds = new HashSet<Long>();
 		authenticationIds = subscriptionService.getAuthenticationByTerms(newsletterId, terms);
 		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, true);

@@ -33,6 +33,9 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
 		if (StringUtils.isNotBlank(email)) {
 			strb.append(" and person.email like '%" + email.trim() + "%'");
 		}
+		if (StringUtils.isNotBlank(userName)) {
+			strb.append(" and authentication1.userId like '%" + userName.trim() + "%'");
+		}
 		if (authenticationIds.size() > 0) {
 			StringBuffer idStr = new StringBuffer(" and authentication1.id in (");
 			for (Long authentication : authenticationIds) {
