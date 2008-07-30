@@ -17,7 +17,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.13 2008-07-18 05:49:32 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.14 2008-07-30 10:58:08 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -83,6 +83,12 @@ public abstract class ThreadPools {
         if (core != null) {
             log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + core);
             ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(Integer.parseInt(core));
+        }
+
+        String schedSize = props.get("scheduler.coresize");
+        if (schedSize != null) {
+            log.info("Setting scheduler pool size from " + ((ThreadPoolExecutor) scheduler).getCorePoolSize() + " to " + schedSize);
+            ((ThreadPoolExecutor) scheduler).setCorePoolSize(Integer.parseInt(schedSize));
         }
     }
 
