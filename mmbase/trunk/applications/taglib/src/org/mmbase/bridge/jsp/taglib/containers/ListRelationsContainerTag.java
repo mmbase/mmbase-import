@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.19 2008-06-27 14:39:25 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.20 2008-07-30 12:24:14 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -51,10 +51,10 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
      * @param r a role
      */
     public void setRole(String r) throws JspTagException {
-        role  = getAttribute(r);
+        role  = getAttribute(r, true);
     }
     public void setSearchdir(String s) throws JspTagException {
-        searchDir = getAttribute(s);
+        searchDir = getAttribute(s, true);
     }
 
 
