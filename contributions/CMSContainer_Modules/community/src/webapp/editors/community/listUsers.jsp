@@ -77,27 +77,30 @@
    <div class="body">
 
          <mm:notpresent referid="newsletterId" >
-            <form action="${addGroup}" method="post">
+            <form action="${addGroup}" method="post" name="selectform" id="selectform">
                <input type="submit" value="add To Group" name="submitButton" onclick="return addToGroup()"/>
          </mm:notpresent>
          <mm:present referid="newsletterId">
-            <form action="${subscribeUrl}" method="post">
+            <form action="${subscribeUrl}" method="post" name="selectform" id="selectform">
             <input type="submit" value="Subscribe" name="subscribe"/>
             <input type="hidden" name="newsletterId" value="${newsletterId}"/>
          </mm:present>
-         <edit:ui-table items="${personForShow}" var="person" size="${totalCount}" requestURI="/editors/community/SearchConditionalUser.do">
+         <edit:ui-table items="${personForShow}" var="person" size="${totalCount}"
+                        requestURI="/editors/community/SearchConditionalUser.do">
             <edit:ui-tcolumn title="">
                <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
-               <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="edit"></a>
-               <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="delete"></a>
+               <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}"><img
+                     src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="edit"></a>
+               <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}"><img
+                     src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="delete"></a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.fullname" sort="fullname">
+            <edit:ui-tcolumn titlekey="community.search.fullname" sort="person.firstName,person.lastName">
                <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}">${person.fullname}</a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.username" sort="username">
+            <edit:ui-tcolumn titlekey="community.search.username" sort="authentication.userId">
                ${person.username }
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.emailAddress" sort="email">
+            <edit:ui-tcolumn titlekey="community.search.emailAddress" sort="person.email">
                ${person.email}
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="community.search.memberOf">
