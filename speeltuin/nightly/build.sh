@@ -90,7 +90,7 @@ if [ 1 == 1 ] ; then
     cd ${BUILD_HOME}/nightly-build/cvs/mmbase/tests
     # Ant sucks incredibly. This classapth should not be necessary, but really, it is.
     export CLASSPATH=${BUILD_HOME}/.ant/lib/ant-apache-log4j.jar:${BUILD_HOME}/.ant/lib/log4j-1.2.13.jar
-    ${antcommand} -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:.  run.all  2>&1 | tee  ${builddir}/tests-results.log 
+    ${antcommand} -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:.  run.all  2>&1 | tee  ${builddir}/tests-results.log
 fi
 
 
@@ -103,18 +103,18 @@ showtests=1
 if [ 1 == 1 ] ; then
     if [ -f latest/messages.log ] ; then
         if (( `cat latest/messages.log  | grep 'FAILED' | wc -l` > 0 )) ; then
-	          echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
-	          echo -e "Build on ${version} failed:\n\n" | \
-		            cat latest/messages.log latest/errors.log | grep -B 10 "FAILED" | \
-		            mutt -s "Build failed ${version}" ${BUILD_MAILADDRESS}
-	          showtests=0;
+	    echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
+	    echo -e "Build on ${version} failed:\n\n" | \
+		cat latest/messages.log latest/errors.log | grep -B 10 "FAILED" | \
+		mutt -s "Build failed ${version}" ${BUILD_MAILADDRESS}
+	    showtests=0;
         fi
     else
         echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
         echo -e "No build created on ${version}\n\n" | \
             tail -q -n 20 - latest/errors.log | \
             mutt -s "Build failed ${version}" ${BUILD_MAILADDRESS}
-	      showtests=0;
+	showtests=0;
     fi
 fi
 
@@ -125,12 +125,12 @@ if [ 1 == $showtests ] ; then
     echo Test results | tee -a ${builddir}/messages.log
 
     if [ -f latest/tests-results.log ] ; then
-	      if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then
-	          echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
-	          (echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
+	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then
+	    echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
+	    (echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
                 cat latest/tests-results.log  | grep -P  '(^Tests run:|^[0-9]+\)|^\tat org\.mmbase|FAILURES|========================|OK)' ) | \
-		            mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
-	      fi
+		mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
+	fi
     fi
 fi
 
