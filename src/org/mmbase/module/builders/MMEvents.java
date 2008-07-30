@@ -16,22 +16,20 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import java.util.concurrent.*;
 
 /**
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.25 2008-06-12 09:44:07 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.26 2008-07-30 11:35:28 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
-    MMEventsProbe probe;
+
     DateStrings datestrings;
     private int notifyWindow = 3600;
-    private boolean enableNotify = true;
-
-    public MMEvents() {
-    }
+    private ScheduledFuture future = null;
 
     public boolean init() {
         super.init();
@@ -43,18 +41,27 @@ public class MMEvents extends MMObjectBuilder {
                 notifyWindow = nw;
             } catch (NumberFormatException xx) {}
         }
+        boolean enableNotify = true;
+
         tmp = getInitParameter("EnableNotify");
         if (tmp != null && (tmp.equals("false") || tmp.equals("no"))) {
-            enableNotify=false;
+            enableNotify = false;
         }
-        if (enableNotify) probe = new MMEventsProbe(this);
+        if (enableNotify) {
+            future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    MMEvents.this.probeCall();
+                }
+                },
+                100,  // shortly after
+                300, TimeUnit.SECONDS);
+        }
         return true;
     }
 
     public void shutdown() {
-        if (enableNotify && probe != null) {
-            probe.stop();
-            probe = null;
+        if (future != null) {
+            future.cancel(true);
         }
         super.shutdown();
     }
@@ -63,7 +70,7 @@ public class MMEvents extends MMObjectBuilder {
         int tmp = node.getIntValue("start");
         //String str=DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
         String str = DateSupport.getTime(tmp) + "/" + DateSupport.getMonthDay(tmp) + "/" + DateSupport.getMonth(tmp) + "/" + DateSupport.getYear(tmp);
-            return(str);
+        return str;
     }
 
     public String getGUIIndicator(String field, MMObjectNode node) {
@@ -119,12 +126,12 @@ public class MMEvents extends MMObjectBuilder {
         return super.getValue(node, field);
     }
 
-    public void probeCall() {
+    private void probeCall() {
         // the queue is really a bad idea have to make up
         // a better way.
-        List<MMObjectNode> also = new ArrayList<MMObjectNode>();
+        final List<MMObjectNode> also = new ArrayList<MMObjectNode>();
         log.debug("MMEvent probe CALL");
-        int now=(int)(System.currentTimeMillis()/1000);
+        int now = (int)(System.currentTimeMillis()/1000);
         log.debug("The currenttime in seconds NOW="+now);
         MMObjectNode snode = null, enode = null;
 
@@ -160,81 +167,76 @@ public class MMEvents extends MMObjectBuilder {
         } catch (SearchQueryException e) {
             log.error(e);
         }
-        MMObjectNode wnode=null;
-        int sleeptime=-1;
-        if (snode!=null && enode==null) {
-            sleeptime=snode.getIntValue("start");
-            wnode=snode;
+        MMObjectNode wnode = null;
+        int sleeptime = -1;
+        if (snode != null && enode == null) {
+            sleeptime = snode.getIntValue("start");
+            wnode = snode;
         }
-        if (snode==null && enode!=null) {
-            sleeptime=enode.getIntValue("stop");
-            wnode=enode;
+        if (snode == null && enode != null) {
+            sleeptime = enode.getIntValue("stop");
+            wnode = enode;
         }
-        if (snode!=null && enode!=null) {
-            if (snode.getIntValue("start")<enode.getIntValue("stop")) {
-                sleeptime=snode.getIntValue("start");
-                wnode=snode;
+        if (snode != null && enode != null) {
+            if (snode.getIntValue("start") < enode.getIntValue("stop")) {
+                sleeptime = snode.getIntValue("start");
+                wnode = snode;
             } else {
-                sleeptime=enode.getIntValue("stop");
-                wnode=enode;
+                sleeptime = enode.getIntValue("stop");
+                wnode = enode;
             }
         }
 
-        if (sleeptime!=-1) {
+        if (sleeptime != -1) {
+            // WTF?
+
             if (log.isDebugEnabled()) {
                 log.debug("SLEEPTIME=" + (sleeptime - now) + " wnode=" + wnode + " also=" + also);
             }
-            try {
-                Thread.sleep((sleeptime - now) * 1000);
-            } catch (InterruptedException f) {
-                log.debug("interrupted while sleeping");
-                return;
-            }
-            log.debug("Node local change " + wnode.getNumber());
-            super.nodeLocalChanged(mmb.getMachineName(), "" + wnode.getNumber(), tableName, "c");
-            for (MMObjectNode a : also) {
-                if ((a.getIntValue("start") == sleeptime) || (a.getIntValue("stop") == sleeptime)) {
-                    log.debug("Node local change " + a.getIntValue("number"));
-                    super.nodeLocalChanged(mmb.getMachineName(),"" + a.getNumber(), tableName,"c");
-                }
-            }
-        } else {
-            try {
-                Thread.sleep(300*1000);
-            } catch (InterruptedException f) {
-                log.debug("interrupted while sleeping");
-                return;
-            }
+            final MMObjectNode waitNode = wnode;
+            final int sleep = sleeptime;
+            ThreadPools.scheduler.schedule(new Runnable() {
+                    public void run() {
+                        log.debug("Node local change " + waitNode.getNumber());
+                        MMEvents.super.nodeLocalChanged(mmb.getMachineName(), "" + waitNode.getNumber(), tableName, "c");
+                        for (MMObjectNode a : also) {
+                            if ((a.getIntValue("start") == sleep) || (a.getIntValue("stop") == sleep)) {
+                                log.debug("Node local change " + a.getIntValue("number"));
+                                MMEvents.super.nodeLocalChanged(mmb.getMachineName(),"" + a.getNumber(), tableName,"c");
+                            }
+                        }
+                    }
+                }, (sleeptime - now), TimeUnit.SECONDS);
         }
     }
 
     public int insert(String owner,MMObjectNode node) {
-        int val=node.getIntValue("start");
-        int newval=(int)(System.currentTimeMillis()/1000);
-        if (val==-1) {
-            node.setValue("start",newval);
+        int val = node.getIntValue("start");
+        int newval = (int)(System.currentTimeMillis()/1000);
+        if (val == -1) {
+            node.setValue("start", newval);
 
         }
-        val=node.getIntValue("stop");
-        if (val==-1) {
-            node.setValue("stop",newval);
+        val = node.getIntValue("stop");
+        if (val == -1) {
+            node.setValue("stop", newval);
 
         }
-        return(super.insert(owner,node));
+        return super.insert(owner, node);
     }
 
     public boolean commit(MMObjectNode node) {
-        int val=node.getIntValue("start");
-        int newval=(int)(System.currentTimeMillis()/1000);
-        if (val==-1) {
-            node.setValue("start",newval);
+        int val = node.getIntValue("start");
+        int newval= ( int)(System.currentTimeMillis()/1000);
+        if (val == -1) {
+            node.setValue("start", newval);
 
         }
-        val=node.getIntValue("stop");
-        if (val==-1) {
-            node.setValue("stop",newval);
+        val = node.getIntValue("stop");
+        if (val == -1) {
+            node.setValue("stop", newval);
 
         }
-        return(super.commit(node));
+        return super.commit(node);
     }
 }
