@@ -14,12 +14,12 @@ import java.io.File;
 import java.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.*;
 
 /**
  * Original javadoc.
 
- *  This will run as a thread after it has been started.
+ *  This will schedule a job after it has been started.
  *  It will check every interval if one of it's files has been changed.
  *  When one of them has been changed, the onChange method will be called, with the file that
  *  was changed. After that the thread will stop.
@@ -63,15 +63,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.49 2008-07-11 14:47:15 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.50 2008-07-30 10:38:50 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
 
-    private static FileWatcherRunner fileWatchers = new FileWatcherRunner();
-    static {
-        fileWatchers.start();
-    }
 
     /**
      *	The default delay between every file modification check, set to 60
@@ -83,6 +79,13 @@ public abstract class FileWatcher {
      * The one thread doing al the work also needs a delay.
      */
     static public long THREAD_DELAY = 10000;
+
+
+    static ScheduledFuture future;
+    static FileWatcherRunner fileWatchers = new FileWatcherRunner();
+    static {
+        future = ThreadPools.scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
+    }
 
 
 
@@ -116,8 +119,9 @@ public abstract class FileWatcher {
      * @since MMBase-1.8
      */
     public static void shutdown() {
-        fileWatchers.run = false;
-        fileWatchers.interrupt();
+        future.cancel(true);
+        fileWatchers.cancel();
+        fileWatchers = null;
         log.service("Shut down file watcher thread");
     }
 
@@ -132,7 +136,7 @@ public abstract class FileWatcher {
     private Set<File> removeFiles = new HashSet<File>();
     private boolean stop = false;
     private boolean continueAfterChange = false;
-    private long lastCheck = 0;
+    private long lastCheck = System.currentTimeMillis();
 
     protected FileWatcher() {
         this(true);
@@ -159,7 +163,8 @@ public abstract class FileWatcher {
     public void setDelay(long delay) {
         this.delay = delay;
         if (delay < THREAD_DELAY) {
-            log.service("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms.");
+            log.info("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms. Set to " + THREAD_DELAY);
+            this.delay = THREAD_DELAY;
         }
     }
 
@@ -346,21 +351,13 @@ public abstract class FileWatcher {
      * The one thread to handle all FileWatchers. In earlier implementation every FileWatcher had
      * it's own thread, but that is avoided now.
      */
-    private static class FileWatcherRunner extends Thread {
+    private static class FileWatcherRunner implements Runnable {
 
-
-        boolean run = true;
-        /**
+        /*
          * Set of file-watchers, which are currently active.
          */
         private Set<FileWatcher> watchers = new CopyOnWriteArraySet<FileWatcher>();
 
-        FileWatcherRunner() {
-            super("MMBase FileWatcher thread");
-            log.service("Starting the file-watcher thread");
-            setPriority(MIN_PRIORITY);
-            setDaemon(true);
-        }
 
         void add(FileWatcher f) {
             watchers.add(f);
@@ -371,44 +368,35 @@ public abstract class FileWatcher {
          *  It will never stop, this thread is a daemon.
          */
         public void run() {
-            // todo: how to stop this thread except through interrupting it?
-            List<FileWatcher> removed = new ArrayList<FileWatcher>();
-            while (run) {
-                try {
-                    long now = System.currentTimeMillis();
-                    for (FileWatcher f : watchers) {
-                        if (now - f.lastCheck > f.delay) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
-                            }
-                            // System.out.print(".");
-                            f.removeFiles();
-                            //changed returns true if we can stop watching
-                            if (f.changed() || f.mustStop()) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Removing filewatcher " + f + " " + f.mustStop());
-                                }
-                                removed.add(f);
-                            }
-                            f.lastCheck = now;
+            try {
+                long now = System.currentTimeMillis();
+                Iterator<FileWatcher> i =  watchers.iterator();
+                while(i.hasNext()) {
+                    FileWatcher f = i.next();
+                    long staleness = (now - f.lastCheck);
+                    if (staleness >= f.delay) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("Filewatcher with " + f.delay  + " ms <= " + staleness  + " ms is expired. Currently it's watching: " + f.getClass().getName() + " " + f.toString());
                         }
+                        // System.out.print(".");
+                        f.removeFiles();
+                        //changed returns true if we can stop watching
+                        if (f.changed() || f.mustStop()) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Removing filewatcher " + f + " " + f.mustStop());
+                            }
+                            i.remove();
+                        }
+                        f.lastCheck = now;
                     }
-                    watchers.removeAll(removed);
-                    removed.clear();
-                    if (log.isTraceEnabled()) {
-                        log.trace("Sleeping " + THREAD_DELAY + " ms");
-                    }
-                    Thread.sleep(THREAD_DELAY);
-                } catch (InterruptedException e) {
-                    Thread ct = Thread.currentThread();
-                    log.debug((ct != null ? ct.getName() : "MMBase") + " was interrupted.");
-                    break; // likely interrupted due to MMBase going down - break out of loop
-                } catch (Throwable ex) {
-                    // unexpected exception?? This run method should never interrupt, so we catch everything.
-                    log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
                 }
-                // when we found a change, we exit..
+            } catch (Throwable ex) {
+                // unexpected exception?? This run method should never interrupt, so we catch everything.
+                log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
             }
+        }
+
+        public void cancel() {
             watchers.clear();
         }
     }
