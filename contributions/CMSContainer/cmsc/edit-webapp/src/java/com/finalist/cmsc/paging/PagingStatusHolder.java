@@ -72,8 +72,8 @@ public class PagingStatusHolder {
       this.listSize = listSize;
    }
 
-   public int getOffset(){
-      return page*getPageSize();      
+   public int getOffset() {
+      return page * getPageSize();
    }
 
    public String getDir() {
@@ -85,27 +85,40 @@ public class PagingStatusHolder {
    }
 
    public void setDefaultSort(String column, String direction) {
-      if(StringUtils.isBlank(this.sort)&& StringUtils.isNotBlank(column)){
+      if (StringUtils.isBlank(this.sort) && StringUtils.isNotBlank(column)) {
          this.setSort(column);
 
-         String dir = StringUtils.isNotBlank(direction)?direction : "asc";
+         String dir = StringUtils.isNotBlank(direction) ? direction : "asc";
          this.setDir(dir);
       }
    }
-   
+
    public String getMMBaseDirection() {
 
-		return "asc".equals(this.dir) ? "up" : "down";
+      return "asc".equals(this.dir) ? "up" : "down";
 
    }
-   
+
    public String getSortToken() {
-		String token = "";
-		
-		if (StringUtils.isNotBlank(sort)) {
-			token = String.format("order by %s %s", sort, dir);
-		}
-		
-		return token;
-	}
+      if (null == sort) {
+         return "";
+      }
+
+      StringBuffer token = new StringBuffer("");
+
+      if (sort.contains(",")) {
+         String[] sorts = StringUtils.split(sort,",");
+
+         token.append(String.format("order by %s %s", sorts[0], dir));
+
+         for (int i = 1; i < sorts.length; i++) {
+            token.append(String.format(" , %s %s", sorts[i], dir));
+         }
+      }
+      else {
+         token.append(String.format("order by %s %s", sort, dir));
+      }
+
+      return token.toString();
+   }
 }
