@@ -201,7 +201,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 					strb.append(" upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()
 							+ "%'or upper(concat(p.firstName ,p.lastName)) like'%" + names[1].toUpperCase() + "%'");
 				else if (names.length == 1)
-					strb.append("upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()+ "%'");
+					strb.append(" upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()+ "%'");
 				strb.append(")");
 				i++;
 			}
