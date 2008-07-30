@@ -52,7 +52,8 @@ public class SearchConditionalUserAction extends AbstractCommunityAction {
 			map.put("group", groupName);
 			map.put("strict", "strict");
 		}
-		PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+	    PagingUtils.initStatusHolder(request);
+	    PagingStatusHolder holder = PagingUtils.getStatusHolder();
 		List<Person> persons;
 		int totalCount = 0;
 		if (map.size() > 0) {
