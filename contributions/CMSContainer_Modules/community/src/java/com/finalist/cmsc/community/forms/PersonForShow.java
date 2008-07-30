@@ -10,8 +10,9 @@ public class PersonForShow extends ActionForm{
 	private String email;
 	private String groups;
 	private Long authId;
+   private boolean inGroup;
 
-	public String getFullname() {
+   public String getFullname() {
 		return fullname;
 	}
 
@@ -51,5 +52,12 @@ public class PersonForShow extends ActionForm{
 		this.authId = authId;
 	}
 
-	
+
+   public boolean isInGroup() {
+      return inGroup;
+   }
+
+   public void setInGroup(boolean inGroup) {
+      this.inGroup = inGroup;
+   }
 }

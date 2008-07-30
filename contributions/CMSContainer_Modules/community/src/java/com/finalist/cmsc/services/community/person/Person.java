@@ -121,4 +121,7 @@ public class Person {
 		return true;
 	}
 
+   public String getFullName(){
+      return this.getFirstName() + " " +this.getLastName();
+   }
 }
