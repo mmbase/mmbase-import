@@ -81,7 +81,16 @@ public class PagingUtils {
       return 30;
    }
 
+   /**
+    * @param request
+    * @return
+    * @deprecated use initStatusHolder instead
+    */
    public static PagingStatusHolder getStatusHolder(HttpServletRequest request) {
+      return getStatusHolder();
+   }
+
+   public static void initStatusHolder(HttpServletRequest request) {
       PagingStatusHolder holder = pagingStatusHolderLocal.get();
       if (null == holder) {
          holder = new PagingStatusHolder();
@@ -107,7 +116,6 @@ public class PagingUtils {
       }
 
       pagingStatusHolderLocal.set(holder);
-      return holder;
    }
 
    public static PagingStatusHolder getStatusHolder() {
