@@ -1,7 +1,7 @@
 package com.finalist.cmsc.paging;
 
-import org.apache.commons.lang.StringUtils;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import org.apache.commons.lang.StringUtils;
 
 public class PagingStatusHolder {
    private int page;
@@ -26,17 +26,17 @@ public class PagingStatusHolder {
       }
 
       if (listSize < getPageSize()) {
-         return 1;
-      }
-
-      int remainder = listSize % getPageSize();
-
-      if (0 == remainder) {
-         return listSize / getPageSize();
+         pageCount = 1;
       }
       else {
-         return listSize / getPageSize() + 1;
+         pageCount = listSize / getPageSize();
+
+         if (0 != listSize % getPageSize()) {
+            pageCount++;
+         }
       }
+
+      return pageCount;
    }
 
    public int getPageSize() {
@@ -109,14 +109,14 @@ public class PagingStatusHolder {
       if (sort.contains(",")) {
          String[] sorts = StringUtils.split(sort,",");
 
-         token.append(String.format("order by %s %s", sorts[0], dir));
+         token.append(String.format(" order by %s %s", sorts[0], dir));
 
          for (int i = 1; i < sorts.length; i++) {
             token.append(String.format(" , %s %s", sorts[i], dir));
          }
       }
       else {
-         token.append(String.format("order by %s %s", sort, dir));
+         token.append(String.format(" order by %s %s", sort, dir));
       }
 
       return token.toString();

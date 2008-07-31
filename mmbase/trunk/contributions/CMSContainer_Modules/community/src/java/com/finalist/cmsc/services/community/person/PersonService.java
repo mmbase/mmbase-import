@@ -63,7 +63,7 @@ public interface PersonService {
 
    List<Person> getAllPersons();
    
-   public List<Person> getAllPeople(PagingStatusHolder holder);
+   public List<Person> getAllPeople();
    
    public int countAllPersons();
 
@@ -79,5 +79,5 @@ public interface PersonService {
    
    public List<Person> getAssociatedPersons(Map conditions);
 
-   public int getAssociatedPersonsNum(Map map,PagingStatusHolder holder);
+   public int getAssociatedPersonsNum(Map<String,String> map);
 }
