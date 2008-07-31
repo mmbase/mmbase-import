@@ -146,9 +146,6 @@
             <include name="**"/>
           </fileset>
         </copy>
-        <replace file="${build.webapp.dir}/WEB-INF/classes/oscache.properties"
-                 token="$${mmbaseroot.datadir}"
-                 value="${mmbaseroot.datadir}"/>
       </then>
     </if>
   </target>

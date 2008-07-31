@@ -20,7 +20,6 @@
 
   <property file="my.properties"/>
   <property file="build.properties"/>
-  <property file="configure.properties"/>
 
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
