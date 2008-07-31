@@ -62,9 +62,9 @@
          unknown="false" validate="false">
          <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="false" />
       </action>
-      <action path="/editors/community/SearchConditionalUser" type="com.finalist.cmsc.community.forms.SearchConditionalUserAction"
-         unknown="false" validate="false" name="searchForm" scope="request">
-         <forward name="group" path="/editors/community/moveUserBetweenGroup.jsp" redirect="false" />
+      <action path="/editors/community/SearchConditionalUser" type="org.springframework.web.struts.DelegatingActionProxy"
+         unknown="false" validate="false" name="searchForm" scope="request" parameter="method">
+         <forward name="group" path="/editors/community/userlist_addusertogroup.jsp" redirect="false" />
          <forward name="success" path="/editors/community/listUsers.jsp" redirect="false" />
       </action>
      <action path="/editors/community/AddUserToGroupInit" type="com.finalist.cmsc.community.forms.AddUserToGroupInitAction"

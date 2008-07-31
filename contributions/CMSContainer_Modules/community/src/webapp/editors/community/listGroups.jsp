@@ -62,8 +62,11 @@
                <a href="./deleteGroupAction.do?groupid=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16"></a>
          </edit:ui-tcolumn>
          <edit:ui-tcolumn titlekey="community.search.groupname" sort="group">
-               <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do"/>
-               <a href="${userActionUrl}?groupName=${result.groupName}">${result.groupName}</a>
+            <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do">
+               <c:param name="groupName" value="${result.groupName}"/>
+               <c:param name="method" value="listGroupMembers"/>
+            </c:url>
+               <a href="${userActionUrl}">${result.groupName}</a>
           </edit:ui-tcolumn>
           <edit:ui-tcolumn titlekey="community.search.users" >
                ${result.users }
