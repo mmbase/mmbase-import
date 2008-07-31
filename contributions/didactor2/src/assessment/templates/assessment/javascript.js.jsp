@@ -10,40 +10,18 @@ function toggle(number) {
     $(".toggle_div" + number + ",#toggle_div" + number).toggle();
     var img = $("#toggle_image" + number)[0];
     var org = img.src;
-    var src = img.src;
-    src = src.replace("minus", "plus");
-    if (src == org) {
-	src = src.replace("plus", "minus");
-    }
-    img.src = src;
-
-}
-
-
-function toggleAll(image,number) {
-    var toggles = number.split(",");
-    if( document.getElementById("toggle_div" + toggles[0]).style.display=='none' ){
-        for (i=0;i<toggles.length;i++) {
-            document.getElementById("toggle_div" + toggles[i]).style.display = '';
-        }
-        document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/minus.gif"
-                                  objectlist="$includePath" />";
-    } else {
-        for (i=0;i<toggles.length;i++) {
-            document.getElementById("toggle_div" + toggles[i]).style.display = 'none';
-        }
-        document.getElementById("toggle_image" + image).src = "<mm:treefile page="/assessment/gfx/plus.gif"
-                                  objectlist="$includePath" />";
+    img.src = img.src.replace("minus", "plus");
+    if (img.src == org) {
+	img.src = img.src.replace("plus", "minus");
     }
 }
-function doAction(prompt) {
-    var conf;
-    if (prompt && prompt!="") {
-	conf = confirm(prompt);
-    } else {
-	conf = true;
-    }
-    return conf;
-}
+
+$(document).ready(function() {
+        $(".col.problem").click(function() {
+                $(document).find(".col.problem .extra").hide();
+                $(this).find(".extra").show();
+            });
+    });
+
 </mm:cloud>
 </mm:content>
