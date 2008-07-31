@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.42 2008-06-13 10:31:37 pierre Exp $
+# $Id: build.properties.default,v 1.43 2008-07-31 20:20:16 andre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -115,7 +115,12 @@ fileupload.dest=${download.dir}/${fileupload.file}
 fileupload.loc=http://www.mmbase.org/download/jars/${fileupload.file}
 fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
 
-
+# ----- Commons Logging ----------
+commons-logging.version=commons-logging-1.0.4
+commons-logging.file=${commons-logging.version}.tar.gz
+commons-logging.dest=${download.dir}/${commons-logging.file}
+commons-logging.loc=http://archive.apache.org/dist/commons/logging/binaries/${commons-logging.file}
+commons-logging.jar=${expand.dir}/${commons-logging.version}/commons-logging.jar
 
 # ----- Standard taglib + jstl ------------
 taglibs-standard.version=jakarta-taglibs-standard-1.1.2
