@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="problems" maintainer="didactor.nl" version="1" extends="object">
-  <status>active</status>
-  <classfile>Dummy</classfile>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="problems" maintainer="didactor.nl" version="1" extends="object">
   <searchage>31</searchage>
   <names>
     <singular xml:lang="nl">Probleem</singular>
@@ -14,45 +15,25 @@
     <description xml:lang="nl">Een probleem</description>
     <description xml:lang="en">A problem</description>
   </descriptions>
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
   <fieldlist>
-    <field>
+    <field name="name">
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>3</input>
-          <list>3</list>
-          <search>3</search>
-        </positions>
-      </editor>
-      <db>
-        <name>name</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
-    <field>
+    <field name="description">
       <gui>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="en">Description</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>4</input>
-          <list>-1</list>
-          <search>4</search>
-        </positions>
-      </editor>
-      <db>
-        <name>description</name>
-        <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
     </field>
   </fieldlist>
 </builder>

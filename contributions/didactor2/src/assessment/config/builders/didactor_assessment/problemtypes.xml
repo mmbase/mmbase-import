@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="problemtypes" maintainer="didactor.nl" version="1" extends="object">
-  <status>active</status>
-  <classfile>Dummy</classfile>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="problemtypes" maintainer="didactor.nl" version="1" extends="object">
   <searchage>9999</searchage>
-
   <names>
     <singular xml:lang="nl">Probleem type</singular>
     <singular xml:lang="en">Problem type</singular>
@@ -16,102 +16,46 @@
     <description xml:lang="nl"></description>
     <description xml:lang="en"></description>
   </descriptions>
-
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
   <fieldlist>
-
-   <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
+   <field name="name">
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>1</input>
-          <list>1</list>
-          <search>1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>name</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
-    <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
+    <field name="key">
       <gui>
         <guiname xml:lang="nl">Sleutel</guiname>
         <guiname xml:lang="en">Key</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>1</input>
-          <list>1</list>
-          <search>1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>key</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="nl"></description>
         <description xml:lang="en"></description>
       </descriptions>
-      <gui>
-        <guiname xml:lang="nl">Omschrijving</guiname>
-        <guiname xml:lang="en">Description</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>2</input>
-          <list>2</list>
-          <search>2</search>
-        </positions>
-      </editor>
-      <db>
-        <name>description</name>
-        <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="1024" />
+      </datatype>
     </field>
 
-    <field>
-      <descriptions>
-        <description xml:lang="nl"></description>
-        <description xml:lang="en"></description>
-      </descriptions>
+    <field name="pos">
       <gui>
         <guiname xml:lang="nl">Position</guiname>
         <guiname xml:lang="en">Position</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>3</input>
-          <list>3</list>
-          <search>3</search>
-        </positions>
-      </editor>
-      <db>
-        <name>pos</name>
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <editor><positions><list>3</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
