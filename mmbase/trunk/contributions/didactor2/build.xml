@@ -7,6 +7,9 @@
     </classpath>
   </taskdef>
 
+  <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml" dest="install-dependency.xml"
+       usetimestamp="true"  ignoreerrors="true" />
+
   <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask">
     <classpath>
       <pathelement location="lib/AntelopeTasks_3.4.2.jar" />
