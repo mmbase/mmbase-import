@@ -75,6 +75,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       new POConvertUtils<Newsletter>().convert(newsletter, node);
       newsletter.setSendempty(node.getBooleanValue("sendempty"));
       newsletter.setTxtempty(node.getStringValue("txtempty"));
+      newsletter.setReplyAddress(node.getStringValue("replyto_mail"));
       pub.setNewsletter(newsletter);
 
       return pub;

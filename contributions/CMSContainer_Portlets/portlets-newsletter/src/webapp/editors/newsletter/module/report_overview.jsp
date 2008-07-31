@@ -83,7 +83,7 @@
 <div class="editor">
    <div class="body"> 
       <table>
-         <tr><td><a href="module/newslettertermlist.jsp"><fmt:message key="index.link.manageterm"/></a></td></tr>
+         <tr><td><a href="module/NewsletterTermAction.do?method=list&init=true"><fmt:message key="index.link.manageterm"/></a></td></tr>
          <tr><td><a href="SubscriptionImportExportAction.do?action=export"><fmt:message key="index.link.exportall"/></a></td></tr>
          <tr><td><a href="SubscriptionManagement.do?action=showImportPage"><fmt:message key="index.link.import"/></a></td></tr>
          <tr><td><a href="ShowNewsletters.do?action=show"><fmt:message key="index.link.newsletterstatistic"/></a></td></tr>

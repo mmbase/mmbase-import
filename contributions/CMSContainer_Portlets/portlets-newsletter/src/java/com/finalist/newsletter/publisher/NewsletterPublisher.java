@@ -52,11 +52,10 @@ public class NewsletterPublisher {
    public void deliver(Publication publication, Subscription subscription) {
       try {
          NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-         Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
-         
+        // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
+         Newsletter newsletter = publication.getNewsletter();
          String replyAddress = newsletter.getReplyAddress();
          String toEmail = subscription.getEmail();
-
          Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
 
          setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress, newsletter.getReplyName());

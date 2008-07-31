@@ -51,12 +51,11 @@
                 <c:forEach var="bounce" items="${resultList}" >
                <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
                    <td >
-                   <c:out  value="${bounce.userId}"/> 
+                   <c:out  value="${bounce.userName}"/> 
                    </td>
                    <td>
                    <c:out  value="${bounce.newsLetterTitle}"/>
                    </td>
-
                    <td >
                    <c:out  value="${bounce.bounceDate}"/> 
                    </td>
@@ -74,7 +73,7 @@
 </form>
 </div>
 <c:if test="${resultCount == 0}">
-<fmt:message key="newsletter.term.noresult" />
+<fmt:message key="newsletter.bounce.noresult" />
 </c:if>
 <c:if test="${resultCount > 0}">
 <%@include file="../../repository/searchpages.jsp" %>

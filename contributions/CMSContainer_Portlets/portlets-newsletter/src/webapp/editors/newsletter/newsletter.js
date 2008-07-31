@@ -14,7 +14,6 @@ function massDelete(confirmmessage) {
                  objectnumbers = objectnumbers.substr(0,objectnumbers.length - 1);
                  document.forms[0].deleteRequest.value = objectnumbers;
                  document.forms[0].method.value = "delete";
-                 document.forms[0].offset.value = "0";
                  document.forms[0].submit();
         }
     }   

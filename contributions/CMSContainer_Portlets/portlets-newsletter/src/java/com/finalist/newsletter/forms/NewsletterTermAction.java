@@ -23,7 +23,7 @@ public class NewsletterTermAction  extends DispatchAction{
    private  static final String  MESSAGE_TERM_EXIST = "newsletter.term.exist";
    
    private  static final String  ACTION_FORWORD_ADD = "add";
-   private  static final String  ACTION_FORWORD_list = "list";
+   private  static final String  ACTION_FORWORD_LIST = "list";
    private  static final String  ACTION_FORWORD_SUCCESS = "success";
    private  static final String  LIST_OFFSET = "offset";
    private  static final String  LIST_NEWSLETTER = "newsletter";
@@ -47,10 +47,9 @@ public class NewsletterTermAction  extends DispatchAction{
       }
       else {
          NewsletterTermUtil.addTerm(termForm.getName());
-         termForm.reset();
       }
-      termForm.setName(null);
-      ActionForward forward =  mapping.findForward(ACTION_FORWORD_list);
+      request.setAttribute("lastAction", "add");
+      ActionForward forward =  mapping.findForward(ACTION_FORWORD_LIST);
       return forward;
    }
    
@@ -58,7 +57,7 @@ public class NewsletterTermAction  extends DispatchAction{
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm)form;
-      termForm.reset();
+      termForm.clear();
       return mapping.findForward(ACTION_FORWORD_ADD);
    }
    
@@ -80,7 +79,7 @@ public class NewsletterTermAction  extends DispatchAction{
             NewsletterTermUtil.deleteTerm(Integer.parseInt(id));
          }
       }
-      return mapping.findForward(ACTION_FORWORD_list);
+      return mapping.findForward(ACTION_FORWORD_LIST);
    }
    
   
@@ -108,7 +107,14 @@ public class NewsletterTermAction  extends DispatchAction{
          HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm)form;
-
+      Object lastAction = request.getAttribute("lastAction");
+      if(lastAction != null && lastAction.equals("add")){
+         termForm.clear();
+      }
+      String init = request.getParameter("init");
+      if(StringUtils.isNotEmpty(init) && init.equals("true")) {
+         termForm.clear();
+      }
       int pageSize = 12;
       int offset = 0;
       if(StringUtils.isNotEmpty(termForm.getOffset())) {
@@ -123,7 +129,6 @@ public class NewsletterTermAction  extends DispatchAction{
       if(resultList == null || resultList.size() ==0) {
          if(offset >= 1) {
             resultList = NewsletterTermUtil.searchTerms(termForm.getName(), (offset-1)*pageSize, pageSize);
-            request.setAttribute(LIST_OFFSET, (offset-1));
             termForm.setOffset(String.valueOf(offset-1));
          }
       }

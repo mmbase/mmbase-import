@@ -75,7 +75,7 @@ public class NewsletterBounceUtil {
          desBounce.setNewsLetterTitle(publicationNode.getStringValue("title"));
       }
       if(srcBounceNode.getIntValue("userid") > 0 ){
-         String userName = CommunityModuleAdapter.getCurrentUserName();
+         String userName = CommunityModuleAdapter.getUserNameByAuthenticationId(srcBounceNode.getIntValue("userid"));
          if(userName != null){
             desBounce.setUserName(userName);
          }
