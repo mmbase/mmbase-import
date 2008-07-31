@@ -2,11 +2,12 @@
     version="2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <!--
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
   -->
   <jsp:output omit-xml-declaration="true" />
