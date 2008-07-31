@@ -7,7 +7,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: delete.tagx,v 1.5 2008-07-18 16:13:26 michiel Exp $
+      @version $Id: delete.tagx,v 1.6 2008-07-31 13:00:05 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -18,7 +18,6 @@
   <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
                            description="Whether deleting must be confirmed"
                            />
-
 
   <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
     <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
