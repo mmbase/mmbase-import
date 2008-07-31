@@ -3,6 +3,7 @@
     version="2.0">
 
   <di:html
+      expires="0"
       styleClass="assessment"
       title_key="assessment.assessment_matrix"
       xmlns:jsp="http://java.sun.com/JSP/Page"
