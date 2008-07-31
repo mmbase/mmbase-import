@@ -59,7 +59,7 @@ function postUpdate(originalRequest) {
 <div class="tab_active">
 <div class="body">
    <div>
-      <a href="#"><fmt:message key="newsletter.term.title" /></a>
+      <a href="NewsletterTermAction.do?method=list&init=true"><fmt:message key="newsletter.term.title" /></a>
    </div>
 </div>
 </div>

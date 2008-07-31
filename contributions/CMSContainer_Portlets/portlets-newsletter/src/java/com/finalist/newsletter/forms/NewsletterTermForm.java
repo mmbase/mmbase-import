@@ -43,4 +43,9 @@ public class NewsletterTermForm extends ActionForm {
    public void reset(){
       name = null;
    }
+   public void clear(){
+      name = null;
+      offset = null;;
+      number = null;
+   }
 }
