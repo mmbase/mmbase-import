@@ -24,9 +24,13 @@
             if (resultLength == "1") {
                offset = eval(offset - 1);
             }
-            var url = "${actionUrl}?method=delete";
-            url += "&id=" + number + "&offset=" + offset;
-            document.location = url;
+            if(offset < 0) {
+               offset = 0;
+            }
+            document.forms[0].method.value = "delete";
+            $("id").value = number;
+            $("page").value = offset;
+            document.forms[0].submit();
          }
       }
 
@@ -54,6 +58,8 @@
                <html:hidden property="method" value="list"/>
                <html:hidden property="order"/>
                <html:hidden property="direction"/>
+               <input type="hidden" name="page" id="page" value=""/>
+               <input type="hidden" name="id" id="id" value=""/>
                <%@include file="preferenceform.jsp" %>
             </html:form>
          </div>
@@ -88,10 +94,6 @@
          </mm:hasrank>
          </edit:ui-tcolumn>
          </edit:ui-table>
-         <c:if test="${isAddSuccess != null}">
-            <fmt:message key="community.preference.add.success"/>
-         </c:if>
-
 </mm:cloud>
 </body>
 </html:html>

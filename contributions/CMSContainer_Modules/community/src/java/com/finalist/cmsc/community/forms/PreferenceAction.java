@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,6 +19,9 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
 
 public class PreferenceAction extends DispatchAction {
 
+   private static final String FORWARD_LIST = "list";
+   private static final String FORWARD_SUCCESS = "success";
+   private static final String FORWARD_INIT = "init";
    private PreferenceService preferenceService;
 
    public void setPreferenceService(PreferenceService preferenceService) {
@@ -33,23 +37,17 @@ public class PreferenceAction extends DispatchAction {
       preferenceForm.clear();
       preferenceService.createPreference(preference);
       request.setAttribute("isAddSuccess", "true");
-      return mapping.findForward("success");
+      return mapping.findForward(FORWARD_LIST);
    }
 
    public ActionForward addInit(ActionMapping mapping, ActionForm form,
                                 HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      List<String> userIds = preferenceService.getAllUserIds();
-      request.setAttribute("users", userIds);
-      return mapping.findForward("init");
-   }
-
-   public ActionForward init(ActionMapping mapping, ActionForm form,
-                             HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
       PreferenceForm preferenceForm = (PreferenceForm) form;
       preferenceForm.clear();
-      return mapping.findForward("success");
+      List<String> userIds = preferenceService.getAllUserIds();
+      request.setAttribute("users", userIds);
+      return mapping.findForward(FORWARD_INIT);
    }
 
    public ActionForward delete(ActionMapping mapping, ActionForm form,
@@ -59,7 +57,7 @@ public class PreferenceAction extends DispatchAction {
       if (id != null) {
          preferenceService.deletePreference(id);
       }
-      return mapping.findForward("list");
+      return mapping.findForward(FORWARD_LIST);
    }
 
    public ActionForward modify(ActionMapping mapping, ActionForm form,
@@ -78,15 +76,26 @@ public class PreferenceAction extends DispatchAction {
          throws Exception {
 
       PreferenceForm preferenceForm = (PreferenceForm) form;
+      Object lastAction = request.getAttribute("isAddSuccess");
+      Object isAdd = request.getAttribute("isAddSuccess");
+      if(isAdd != null && isAdd.equals("true")){
+         preferenceForm.clear();
+      }
+      String reload = request.getParameter("reload");
+      if(StringUtils.isNotEmpty(reload) && reload.equals("true")) {
+         preferenceForm.clear();
+      }
       PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
 
       PagingUtils.initStatusHolder(request);
 		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
       
-
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
+            System.out.println("------------------>page="+request.getParameter("page"));
+      System.out.println("------------------>offset="+offset);
+      
       /*pagingHolder.getSort();
       pagingHolder.getDir();*/
       
@@ -102,6 +111,6 @@ public class PreferenceAction extends DispatchAction {
       request.setAttribute("totalCount", totalCount);
       request.setAttribute("results", preferences);
       request.setAttribute("isList", "true");
-      return mapping.findForward("success");
+      return mapping.findForward(FORWARD_SUCCESS);
    }
 }
