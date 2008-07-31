@@ -83,5 +83,10 @@
     <mm:component name="test" block="suburls" />
 
     <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
+
+    <h2>form tag</h2>
+    <mm:form page="/justsomeurl" mode="url">
+      <p>${_ eq '/justsomeurl' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:form>
   </div>
 </jsp:root>
