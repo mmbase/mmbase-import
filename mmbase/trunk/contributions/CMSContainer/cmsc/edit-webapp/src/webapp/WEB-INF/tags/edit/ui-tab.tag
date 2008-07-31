@@ -1,6 +1,6 @@
 <%@ tag body-content="scriptless" %>
-<%@ attribute name="key" rtexprvalue="true" required="true" %>
-<%@ attribute name="title" rtexprvalue="true" required="true" %>
+<%@ attribute name="key" rtexprvalue="true" required="false" %>
+<%@ attribute name="title" rtexprvalue="true" required="false" %>
 <%@ attribute name="active" rtexprvalue="true" required="false" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
