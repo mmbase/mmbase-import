@@ -11,10 +11,11 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.pageflow.Url;
+import org.mmbase.bridge.jsp.taglib.pageflow.*;
 import org.mmbase.bridge.Transaction;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.18 2008-04-22 07:54:30 michiel Exp $
+ * @version $Id: FormTag.java,v 1.19 2008-07-31 09:54:08 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -65,6 +66,8 @@ public class FormTag extends TransactionTag implements Writer {
     private Attribute page = Attribute.NULL;
     private Attribute clazz = Attribute.NULL;
 
+    private Attribute absolute = Attribute.NULL;
+
     private Object previous;
 
     protected boolean valid = true;
@@ -101,6 +104,10 @@ public class FormTag extends TransactionTag implements Writer {
         page = getAttribute(p);
     }
 
+    public void setAbsolute(String a) throws JspTagException {
+        absolute = getAttribute(a, true);
+    }
+
 
     public int doStartTag() throws JspTagException {
         if (getId() != null) {
@@ -112,7 +119,7 @@ public class FormTag extends TransactionTag implements Writer {
         }
         pageContext.setAttribute(KEY, this, SCOPE);
         m = getMode();
-        Url u = new Url(this, page.getString(this), Url.getComponent(this));
+        Url u = new Url(this, page.getString(this), absolute.getString(this));
         u.setProcess();
         String url = u.toString();
 
