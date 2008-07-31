@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.20 2008-07-31 13:00:05 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.21 2008-07-31 13:04:16 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -88,7 +88,7 @@
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
     <div class="list ${type}">
-      <div id="${type}_${seq}" class="list">
+      <div id="${type}_${seq}" class="listinfo">
         <input type="hidden" name="type" value="${type}" />
         <input type="hidden" name="path" value="${path}" />
         <input type="hidden" name="role" value="${r}" />

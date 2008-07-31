@@ -4,43 +4,41 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page buffer="200kb" />
   <jsp:output omit-xml-declaration="true" />
+  <!--
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+
+  -->
   <div
       class="mm_c c_searchrelate b_examples ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
 
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
-    <script type="text/javascript">
-      <!-- some javascript to make the examples slide away/slideToggable -->
-      $(document).ready(function() {
-      $("div.drawer > div").hide();
-      $("div.drawer h1 a").click(function(e) {
-      $(e.target).parent().parent().children("div").slideToggle("fast");
-      return false;
-      });
-      });
-    </script>
     <h1>${title}</h1>
     <mm:cloud rank="basic user">
 
       <mm:import externid="mag">default.mags</mm:import>
 
       <mm:hasnode number="$mag" inverse="true">
-	<p>
-	  You need to have the MyNews application installed.
-	</p>
+        <p>
+          You need to have the MyNews application installed.
+        </p>
       </mm:hasnode>
       <mm:hasnode number="$mag">
         <mm:node number="$mag">
           <h1>Using node ${_node}</h1>
-          <mm:include page="/mmexamples/searchrelate/example1.jspx" />
-          <mm:include page="/mmexamples/searchrelate/example2.jspx" />
-          <mm:include page="/mmexamples/searchrelate/example3.jspx" />
-          <mm:include page="/mmexamples/searchrelate/example4.jspx" />
-          <mm:include page="/mmexamples/searchrelate/example5.jspx" />
-          <mm:include page="/mmexamples/searchrelate/relatednodes.jspx" />
+          <mm-sr:relatednodes type="news" orderby="posrel.pos"
+                              item="/mmexamples/searchrelate/news.jspx"
+                              role="posrel" />
+
+          <!--
+          <mm-sr:tabs
+              directory="/mmexamples/searchrelate/"
+              path="example1,example2,example3,example4,example5,relatednodes" />
+          -->
         </mm:node>
       </mm:hasnode>
     </mm:cloud>
