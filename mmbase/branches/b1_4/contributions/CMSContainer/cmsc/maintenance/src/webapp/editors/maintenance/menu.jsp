@@ -18,8 +18,8 @@
 <mm:cloud jspvar="cloud" loginpage="login.jsp" rank="administrator">
 	<ul class="shortcuts">
        <li class="views">
-          <c:url var="unlinkUrl" value="/editors/maintenance/view_usage.jsp"/>
-          <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.view_layout.etc_usage" /></a>
+          <c:url var="usageUrl" value="/editors/maintenance/view_usage.jsp"/>
+          <a href="${usageUrl}" target="rightpane"><fmt:message key="maintenance.view_layout.etc_usage" /></a>
        </li>
         <li class="advancedpublish">
            <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
@@ -28,6 +28,10 @@
         <li class="advancedpublish">
            <c:url var="checksumUrl" value="/editors/maintenance/compute-checksums.jsp"/>
            <a href="${checksumUrl}" target="rightpane"><fmt:message key="maintenance.checksum" /></a>
+        </li>
+        <li class="advancedpublish">
+           <c:url var="cleanNVPUrl" value="/editors/maintenance/clean-non-visible-portlets.jsp"/>
+           <a href="${cleanNVPUrl}" target="rightpane"><fmt:message key="maintenance.cleannonvisportlets"/></a>
         </li>
 
 		<%--  <cmsc:hasfeature name="rmmci">  --%>

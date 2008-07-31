@@ -49,3 +49,21 @@ ArrayList<Integer> numbers = new ArrayList<Integer>();
          layout.title:<mm:field name="layout.title" /><hr />
       </c:if>
    </mm:list>
+
+<mm:present referid="confirm">
+   <%
+   for(int i : numbers) {
+   %>
+      <mm:deletenode number="<%=String.valueOf(i)%>" deleterelations="true"/><b> - Deleted: <%=i%></b><br/>
+   <%             
+   }
+   %>
+</mm:present>
+
+</mm:log>
+</mm:cloud>
+      <b>Done!</b><br/>
+</div>
+</div>
+   </body>
+</html:html>
