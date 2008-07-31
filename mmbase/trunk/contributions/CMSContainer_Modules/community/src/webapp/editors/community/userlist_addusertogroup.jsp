@@ -3,39 +3,18 @@
 %><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-
-
 <mm:content type="text/html" encoding="UTF-8" expires="0">
    <cmscedit:head title="reactions.title">
       <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
+      <script type="text/javascript" src="js/formcheck.js"></script>
       <script type="text/javascript">
          window.onload = function ()
          {
-            // handle onclick event for element of ID="foo"
-            Event.observe('selectform', 'submit', doStuff[useCapture = false]);
-         }
-
-         function doStuff(useCapture) {
-            alert(useCapture);
-            return false;
-         }
-         
-         function addToGroup() {
-            var checkboxs = document.forms[1].getElementsByTagName("input");
-            var objectnumbers = '';
-            for (i = 0; i < checkboxs.length; i++) {
-               if (checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
-                  objectnumbers += checkboxs[i].value;
-               }
-            }
-            if (objectnumbers == '') {
-               alert("<fmt:message key="community.search.promptuser"/>");
-               return false;
-            }
-            return true;
+            Event.observe("selectform", "submit", function(e) {
+               addToGroup("chk_", "<fmt:message key="community.search.promptuser"/>", e)
+            })
          }
       </script>
-
    </cmscedit:head>
 
    <body>
@@ -60,7 +39,6 @@
                   style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat">
                   <fmt:message key="view.new.user"/>
                </a>
-
             <p>
                <html:form action="/editors/community/SearchConditionalUser.do" method="post">
                      <%@include file="search_user_form_table.jspf" %>
