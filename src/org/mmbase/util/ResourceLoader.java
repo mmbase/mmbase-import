@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.65 2008-07-21 13:32:37 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.66 2008-07-31 19:17:00 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -151,9 +151,8 @@ public class ResourceLoader extends ClassLoader {
     private static  ResourceLoader configRoot = null;
     private static  ResourceLoader webRoot = null;
     private static  ResourceLoader systemRoot = null;
+
     private static ServletContext  servletContext = null;
-
-
 
     // these should perhaps be configurable:
     public static final String    RESOURCENAME_FIELD  = "name";
@@ -163,9 +162,27 @@ public class ResourceLoader extends ClassLoader {
     public static final String    LASTMODIFIED_FIELD  = "lastmodified";
     public static final String    DEFAULT_CONTEXT     = "admin";
 
-    public static final int   TYPE_CONFIG  = 0;
-    public static final int   TYPE_WEB     = 1;
+    /**
+     * The available ResourceLoaders wrapped into an enum, which makes them available dynamicly
+     * (with <code>ResourceLoader.Type.valueOf(string).get())</code>
+     * @since MMBase-1.9
+     */
 
+    public enum Type {
+        CONFIG {
+            public ResourceLoader get() { return ResourceLoader.getConfigurationRoot(); }
+
+        },
+        WEB {
+            public ResourceLoader get() { return ResourceLoader.getWebRoot(); }
+
+        },
+        SYSTEM {
+            public ResourceLoader get() { return ResourceLoader.getWebRoot(); }
+
+        };
+        public abstract ResourceLoader get();
+    }
 
 
     // This should perhaps be a member (too) to allow for better authorisation support.
@@ -319,7 +336,7 @@ public class ResourceLoader extends ClassLoader {
             configRoot = new ResourceLoader();
 
             //adds a resource that can load from nodes
-            configRoot.roots.add(configRoot.new NodeURLStreamHandler(TYPE_CONFIG));
+            configRoot.roots.add(configRoot.new NodeURLStreamHandler(Type.CONFIG.ordinal()));
 
             // mmbase.config settings
             String configPath = null;
@@ -740,27 +757,35 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
+
+    /**
+     * sice MMBase-1.9
+     */
+    protected static boolean validateable(URL url) throws IOException {
+       // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
+        boolean xsd = true;
+        Reader r = new InputStreamReader(url.openStream());
+        BufferedReader reader = new BufferedReader(r);
+        String line = reader.readLine();
+        int lineNumber = 0;
+        while (lineNumber < 2 && line != null) {
+            if (line.startsWith("<!DOCTYPE")) {
+                log.debug("Using DTD to validate '" + url + "'");
+                xsd = false;
+            }
+            line = reader.readLine();
+            lineNumber++;
+        }
+        reader.close();
+        return xsd;
+    }
     /**
      * Static version of {@link #getDocument(String, boolean, Class)}, can e.g. be used in combination with {@link #getResourceList(String)}
      */
     public static Document getDocument(URL url, boolean validation, Class<?> baseClass) throws org.xml.sax.SAXException, IOException {
         boolean xsd = validation;
         if (validation) {
-            // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
-            Reader r = new InputStreamReader(url.openStream());
-            if (r == null) return null;
-            BufferedReader reader = new BufferedReader(r);
-            String line = reader.readLine();
-            int lineNumber = 0;
-            while (lineNumber < 2 && line != null) {
-                if (line.startsWith("<!DOCTYPE")) {
-                    log.debug("Using DTD to validate '" + url + "'");
-                    xsd = false;
-                }
-                line = reader.readLine();
-                lineNumber++;
-            }
-            reader.close();
+            xsd = validateable(url);
         }
 
         InputSource source = getInputSource(url);
@@ -1708,7 +1733,7 @@ public class ResourceLoader extends ClassLoader {
             while (res.startsWith("/")) {
                 res = res.substring(1);
             }
-            if (log.isDebugEnabled()) {
+            if (log != null && log.isDebugEnabled()) {
                 log.debug("Name  " + name + " is resource " + res);
             }
             return res;
