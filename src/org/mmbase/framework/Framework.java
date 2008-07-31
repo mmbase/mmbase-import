@@ -19,17 +19,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The MMBase Framework displays and processes components. 
+ * The MMBase Framework displays and processes components.
  * {@link Component}s consist of {@link Block}s which typically are pieces of JSP.
- * The framework uses an urlfilter {@link FrameworkFilter} that can be configured 
+ * The framework uses an urlfilter {@link FrameworkFilter} that can be configured
  * in 'config/framework.xml'.
- * 
+ *
  * @author Johannes Verelst
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.54 2008-07-15 05:53:29 michiel Exp $
+ * @version $Id: Framework.java,v 1.55 2008-07-31 16:28:33 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
