@@ -37,25 +37,28 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 	@Override
 	protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		log.debug("No parameter specified,go to edit page ,show related publications");
+      log.debug("No parameter specified,go to edit page ,show related publications");
 
-		PagingUtils.initStatusHolder(request);
-		
-		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
-		Date now = new Date();
-		int resultCount = publicationService.searchPublication(newsletterId, "", "", null, now, false).size();
+      PagingUtils.initStatusHolder(request);
+      int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
-		List<Publication> publications;
-		publications = publicationService.searchPublication(newsletterId, "", "", null, now, true);
-		List<Map<String, String>> results = convertPublicationsToMap(publications);
-		if (results.size() > 0) {
-			request.setAttribute("results", results);
-		}
-		request.setAttribute("resultCount",resultCount);
-		request.setAttribute("newsletterId", newsletterId);
-		return mapping.findForward("newsletterpublicationlist");
-	}
+      Date now = new Date();
+
+      int resultCount = publicationService.searchPublication(newsletterId, "", "", null, now, false).size();
+
+      List<Publication>  publications = publicationService.searchPublication(newsletterId, "", "", null, now, true);
+      List<Map<String, String>> results = convertPublicationsToMap(publications);
+
+
+      if (results.size() > 0) {
+         request.setAttribute("results", results);
+         request.setAttribute("resultCount", resultCount);
+      }
+
+      request.setAttribute("newsletterId", newsletterId);
+      return mapping.findForward("newsletterpublicationlist");
+   }
 
 	@SuppressWarnings("deprecation")
 	public ActionForward searchPublication(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
