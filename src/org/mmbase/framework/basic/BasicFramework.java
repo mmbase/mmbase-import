@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.19 2008-07-18 12:59:58 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.20 2008-07-31 09:42:32 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -84,7 +84,12 @@ public class BasicFramework extends Framework {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
         frameworkParameters.set(ACTION, state.getId());
-        return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        String url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        if (url == null) {
+            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        } else {
+            return url;
+        }
     }
 
     public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
