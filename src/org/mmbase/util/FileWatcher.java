@@ -63,7 +63,7 @@ import java.util.concurrent.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.51 2008-07-30 11:34:35 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.52 2008-07-31 14:31:01 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -379,9 +379,8 @@ public abstract class FileWatcher {
         public void run() {
             try {
                 long now = System.currentTimeMillis();
-                Iterator<FileWatcher> i =  watchers.iterator();
-                while(i.hasNext()) {
-                    FileWatcher f = i.next();
+                List<FileWatcher> removed = new ArrayList<FileWatcher>(); // copyonwritearraylist's iterator  does not support remove
+                for (FileWatcher f : watchers) {
                     long staleness = (now - f.lastCheck);
                     if (staleness >= f.delay) {
                         if (log.isTraceEnabled()) {
@@ -394,10 +393,13 @@ public abstract class FileWatcher {
                             if (log.isDebugEnabled()) {
                                 log.debug("Removing filewatcher " + f + " " + f.mustStop());
                             }
-                            i.remove();
+                            removed.add(f);
                         }
                         f.lastCheck = now;
                     }
+                }
+                if (removed.size() > 0) {
+                    watchers.removeAll(removed);
                 }
             } catch (Throwable ex) {
                 // unexpected exception?? This run method should never interrupt, so we catch everything.
