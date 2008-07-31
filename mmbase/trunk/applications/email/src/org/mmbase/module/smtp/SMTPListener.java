@@ -19,7 +19,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.7 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id: SMTPListener.java,v 1.8 2008-07-31 13:23:03 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -74,8 +74,12 @@ public class SMTPListener extends Thread {
             String portnr = properties.get("port");
             port = Integer.parseInt(portnr);
 
+            if (port == -1) {
+                log.info("port of smtp module is -1, therefore not starting a listener");
+            }
             host = properties.get("hostname");
             if (host == null) host = "localhost";
+
 
             try {
                 ssocket = new ServerSocket();
