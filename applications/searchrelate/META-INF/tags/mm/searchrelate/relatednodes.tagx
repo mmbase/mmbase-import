@@ -9,7 +9,7 @@
 
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.18 2008-07-24 14:22:25 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.19 2008-07-31 11:21:26 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -62,7 +62,7 @@
   <mm:import id="itemjsp">
     <c:choose>
       <c:when test="${! empty li}">
-        <mm:log>Using, change to item please</mm:log>
+        <mm:log>Using li, change to item please</mm:log>
         <jsp:text>${empty li ? '/mmbase/searchrelate/list/item.jspx' : li}</jsp:text>
       </c:when>
       <c:otherwise>
