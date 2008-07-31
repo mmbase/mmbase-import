@@ -56,7 +56,7 @@
                      </mm:haspage>
                      <mm:haspage page="/editors/community/preferencesearch.jsp">
                         <li class="community">
-                           <c:url var="communityUrl" value="/editors/community/preferencesearch.jsp"/>
+                           <c:url var="communityUrl" value="/editors/community/PreferenceAction.do?method=list&reload=true"/>
                            <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community.reference" /></a>
                         </li>
                      </mm:haspage>
