@@ -7,9 +7,6 @@
     </classpath>
   </taskdef>
 
-  <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml" dest="install-dependency.xml"
-       usetimestamp="true"  ignoreerrors="true" />
-
   <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask">
     <classpath>
       <pathelement location="lib/AntelopeTasks_3.4.2.jar" />
@@ -34,7 +31,18 @@
 
   <property name="mmbase.ignorefiles"     value="templates/index.jsp,templates/WEB-INF/web.xml,templates/WEB-INF/config/security/security.xml" />
 
-  <import file="install-dependency.xml" />
+
+  <if>
+    <not>
+      <available file="install-dependency.xml" />
+    </not>
+    <then>
+      <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml" dest="install-dependency.xml"
+           usetimestamp="true"  ignoreerrors="true" />
+    </then>
+  </if>
+
+  <import file="install-dependency.xml" optional="true" />
 
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
@@ -81,6 +89,7 @@
 
   <target name="clean">
     <delete dir="${build.dir}" />
+    <delete file="install-dependency.xml" />
   </target>
 
 
