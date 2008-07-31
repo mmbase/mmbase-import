@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.1 2008-07-31 16:43:42 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.2 2008-07-31 19:17:00 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -37,6 +37,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
 
     protected String resource;
+    protected String type = "web";
 
     public ResourceRenderer(String t, Block parent) {
         super(t, parent);
@@ -51,12 +52,19 @@ public class ResourceRenderer extends AbstractRenderer {
     }
 
 
+    public void setType(String t) {
+        type = t;
+    }
+
+
+
+
     public void render(Parameters blockParameters, Parameters frameworkParameters,
                        Writer w, WindowState state) throws FrameworkException {
 
 
         try {
-            Reader r = ResourceLoader.getWebRoot().getReader(resource);
+            Reader r = ResourceLoader.Type.valueOf(type).get().getReader(resource);
             char[] buf = new char[1000];
             int c;
             while ((c = r.read(buf, 0, 1000)) > 0) {
