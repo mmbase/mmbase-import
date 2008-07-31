@@ -37,38 +37,6 @@
              token="$${war.time}"
              value="${war.time}"/>
 
-    <for list="${caches}"
-         param="param">
-      <sequential>
-        <propertyregex
-            override="yes"
-            property="par.name"
-            input="@{param}"
-            regexp="(.*?)=(.*?)"
-            select="\1"
-            casesensitive="false" />
-        <propertyregex
-            override="yes"
-            global="true"
-            property="par.value"
-            input="@{param}"
-            regexp="(.*)=(.*)"
-            select="\2"
-            casesensitive="false" />
-        <!--
-        <echo message="@{param} ${par.name} == ${par.value}" />
-        -->
-        <xslt style="setcachesize.xslt"
-              in="${build.webapp.dir}/WEB-INF/config/caches.xml"
-              out="${build.webapp.dir}/WEB-INF/config/caches.help.xml">
-          <param name="cache" expression="${par.name}" />
-          <param name="size"  expression="${par.value}" />
-        </xslt>
-        <move file="${build.webapp.dir}/WEB-INF/config/caches.help.xml"
-              tofile="${build.webapp.dir}/WEB-INF/config/caches.xml" />
-      </sequential>
-    </for>
-
 
     <!-- A dirty hack, if you ask me-->
     <!--
