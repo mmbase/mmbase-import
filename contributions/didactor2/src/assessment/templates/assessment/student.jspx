@@ -1,0 +1,86 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    class="student">
+  <jsp:output omit-xml-declaration="true" />
+  <!--
+
+  -->
+
+  <!--
+      Let her administrate her 'goals'.
+  -->
+  <h2><di:translate key="assessment.goals" /></h2>
+  <div class="goals">
+    <mm:node number="$user">
+      <mm-sr:relatednodes type="goals" role="posrel" orderby="posrel.pos" />
+    </mm:node>
+  </div>
+
+  <h2><di:translate key="assessment.problems" /></h2>
+
+  <div class="problems">
+
+    <!-- show the learnblocks -->
+    <mm:node number="${education}">
+      <span class="head problem">&amp;nbsp;</span>
+      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
+        <span class="head" style="width: ${60 / status.count}%"><mm:field name="name" /></span>
+      </mm:relatednodes>
+      <span class="head delete">&amp;nbsp;</span>
+    </mm:node>
+
+
+    <!-- now the problems, divided per type.
+         they can be edited by the user
+    -->
+    <mm:listnodes orderby="pos" type="problemtypes">
+      <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
+
+      <mm-sr:relatednodes
+          item="/assessment/matrix.div.jspx"
+          path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
+        <jsp:attribute name="constraints">
+          <mm:addnode element="people" number="${user}" />
+        </jsp:attribute>
+      </mm-sr:relatednodes>
+    </mm:listnodes>
+
+    <!--
+        now links to the feed back pages
+    -->
+    <span class="head problem"><di:translate key="assessment.feedback_coach" /></span>
+    <mm:node number="${education}">
+      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
+        <span class="col" style="width: ${60 / status.count}%">
+          <mm:listrelationscontainer role="classrel" type="people">
+            <mm:addnode element="people" number="$user"/>
+            <mm:listrelations>
+              <mm:relatednodes type="popfeedback">
+                <mm:node id="feedback" />
+              </mm:relatednodes>
+            </mm:listrelations>
+          </mm:listrelationscontainer>
+
+          <mm:notpresent referid="feedback">
+            &amp;nbsp;
+          </mm:notpresent>
+          <mm:present referid="feedback">
+            <mm:treefile page="/assessment/feedback.jspx" objectlist="$includePath"
+                         referids="$referids,feedback@feedback_n"
+                         write="false"
+                         >
+              <a href="${_}">
+                <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                        title="assessment.goto_feedback" />
+              </a>
+            </mm:treefile>
+          </mm:present>
+        </span>
+      </mm:relatednodes>
+    </mm:node>
+  </div>
+</div>
