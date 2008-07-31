@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.99 2008-07-28 16:25:10 michiel Exp $
+ * @version $Id: Module.java,v 1.100 2008-07-31 13:46:03 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -341,8 +341,8 @@ public abstract class Module extends DescribedFunctionProvider {
                 m.shutdown();
                 log.service("Shut down " + m.getName());
             }
+            modules.clear();
         }
-        modules = null;
     }
 
     public static synchronized final void startModules() {
