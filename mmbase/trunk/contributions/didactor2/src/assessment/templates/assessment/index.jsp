@@ -20,7 +20,6 @@
 
       <mm:include page="navigation.jspx" />
 
-
       <div class="mainContent">
         <div class="contentBody">
           <di:hasrole role="student">
@@ -28,8 +27,12 @@
               <form name="coachform" method="post">
                 <select name="coachmode"
                         onChange="coachform.submit();">
-                  <mm:option value="true" compare="${coachmode}"><di:translate key="assessment.overview_students" /></mm:option>
-                  <mm:option value="false" compare="${coachmode}"><di:translate key="assessment.personal_assessment" /></mm:option>
+                  <mm:option value="true" compare="${coachmode}">
+                    <di:translate key="assessment.overview_students" />
+                  </mm:option>
+                  <mm:option value="false" compare="${coachmode}">
+                    <di:translate key="assessment.personal_assessment" />
+                  </mm:option>
                 </select>
               </form>
             </di:hasrole>
