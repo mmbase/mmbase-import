@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
- * @version $Id: QueryAddNodeTag.java,v 1.2 2008-07-24 08:54:02 michiel Exp $
+ * @version $Id: QueryAddNodeTag.java,v 1.3 2008-07-31 08:14:23 michiel Exp $
  */
 public class QueryAddNodeTag extends ContextReferrerTag implements QueryContainerReferrer {
 
@@ -57,7 +57,7 @@ public class QueryAddNodeTag extends ContextReferrerTag implements QueryContaine
         }
 
         for (String n : node.getList(this)) {
-            query.addNode(step, Integer.parseInt(n));
+            query.addNode(step, query.getCloud().getNode(n).getNumber());
         }
         findWriter(false); // just to call haveBody.., because constraint is not officially a
                            // writerreferer (but e.g. _ can be used in attributes)
