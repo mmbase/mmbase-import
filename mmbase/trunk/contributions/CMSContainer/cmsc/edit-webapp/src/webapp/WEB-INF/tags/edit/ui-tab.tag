@@ -1,5 +1,6 @@
 <%@ tag body-content="scriptless" %>
 <%@ attribute name="key" rtexprvalue="true" required="true" %>
+<%@ attribute name="title" rtexprvalue="true" required="true" %>
 <%@ attribute name="active" rtexprvalue="true" required="false" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -11,7 +12,16 @@
 <div class="${class}">
    <div class="body">
       <div>
-         <a href="${action}"><fmt:message key="${key}"/></a>
+         <c:choose>
+            <c:when test="${empty title}">
+               <a href="${action}"><fmt:message key="${key}"/></a>
+            </c:when>
+            <c:otherwise>
+               <a href="${action}">${title}</a>
+            </c:otherwise>
+         </c:choose>
       </div>
    </div>
 </div>
+
+ 
