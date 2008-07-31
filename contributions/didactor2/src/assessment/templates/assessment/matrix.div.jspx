@@ -10,7 +10,7 @@
 
   -->
   <mm:import externid="source" required="true" />
-  <mm:import externid="icondir" required="true" />
+  <mm:import externid="icondir" />
 
 
   <!-- Display the problem itself -->
