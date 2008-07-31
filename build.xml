@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.175 2008-06-19 18:52:20 michiel Exp $
+$Id: build.xml,v 1.176 2008-07-31 20:20:16 andre Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -314,6 +314,7 @@ builddate=${builddate}
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
+    <copy file="${commons-logging.jar}" tofile="${release.lib.dir}/commons-logging.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy todir="${webapp.dir}/mmbase/jquery">
       <fileset dir="${jquery.dir}"/>
@@ -355,6 +356,7 @@ builddate=${builddate}
     <copy file="${servlet.jar}"               todir="${compile.lib.dir}" />
     <copy file="${jspapi.jar}"                todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}"            tofile="${compile.lib.dir}/commons-fileupload.jar" />
+    <copy file="${commons-logging.jar}"       tofile="${compile.lib.dir}/commons-logging.jar" />
     <copy file="${log4j.jar}"                 tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javaactivation.jar}"        todir="${compile.lib.dir}" />
     <copy file="${taglibs-standard-jstl.jar}" todir="${compile.lib.dir}" />
@@ -675,6 +677,8 @@ Build-compiler: ${build.compiler}
             <filename name="standard*.jar" />
             <filename name="log4j*.jar" />
             <filename name="commons-fileupload*.jar" />
+            <filename name="commons-fileupload*.jar" />
+            <filename name="commons-logging*.jar" />
             <!-- Xalan is used only by context security
                  Would be nice to drop that dependency.
                  In real life always editwizard depend too
@@ -1031,6 +1035,12 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${fileupload.jar}"/>
     </antcall>
 
+    <echo message="commons-logging" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${commons-logging.loc}"/>
+      <param name="destfile" value="${commons-logging.dest}"/>
+      <param name="expandedfile" value="${commons-logging.jar}"/>
+    </antcall>
 
     <echo message="JSTL" />
     <antcall target="downloadgz">
