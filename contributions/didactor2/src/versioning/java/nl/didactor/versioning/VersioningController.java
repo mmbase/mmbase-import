@@ -31,6 +31,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+
+/*
+ * @javadoc
+ */
 public class VersioningController
 {
   private static Logger log = Logging.getLoggerInstance(VersioningController.class.getName());
