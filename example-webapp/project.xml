@@ -98,26 +98,6 @@ See http://www.MMBase.org/license
 				<mmbase.templates.path>mmexamples</mmbase.templates.path>
 			</properties>
 		</dependency>
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-myyahoo</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
-				<mmbase.templates.path>mmexamples</mmbase.templates.path>
-			</properties>
-		</dependency>
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-mycompany</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
-				<mmbase.templates.path>mmexamples</mmbase.templates.path>
-			</properties>
-		</dependency>
     
   </dependencies>
   <build>
