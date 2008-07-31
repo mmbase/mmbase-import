@@ -123,14 +123,14 @@
                <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="edit"></a>
                <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="delete"></a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.fullname" sort="fullname">
+            <edit:ui-tcolumn titlekey="community.search.fullname" sort="person.firstName,person.lastName">
                <c:url var="userActionUrl" value="/editors/community/userAddInitAction.do"/>
                <a href="${userActionUrl}?authid=${person.authId}">${person.fullname}</a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.username" sort="username">
+            <edit:ui-tcolumn titlekey="community.search.username" sort="authentication.userId">
                ${person.username }
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.emailAddress" sort="email">
+            <edit:ui-tcolumn titlekey="community.search.emailAddress" sort="person.email">
                ${person.email}
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="community.search.memberOf">
