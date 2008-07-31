@@ -203,6 +203,7 @@
             <include name="di_components/**" />
             <include name="translations/**" />
             <include name="security/**" />
+            <include name="utils/**" />
             <include name="datatypes.xml" />
           </fileset>
         </copy>
