@@ -71,12 +71,14 @@
 
 
     <!-- A dirty hack, if you ask me-->
+    <!--
     <replace dir="${build.wizards.dir}/data/config"
              token="$${wizards.pages.text.ftype}"
              value="${wizards.pages.text.ftype}"
              summary="true"
              includes="**/*.xml"
     />
+    -->
 
   </target>
 </project>
