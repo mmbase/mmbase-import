@@ -6,6 +6,7 @@
    <!-- Data Sources Definitions -->
    <!-- Form Bean Definitions -->
    <form-beans>
+      <form-bean name="referdatafilebean" type="com.finalist.cmsc.community.forms.ReferenceImportUploadForm"/>
       <form-bean name="communityUserForm" type="com.finalist.cmsc.community.forms.UserForm" />
       <form-bean name="communityGroupForm" type="com.finalist.cmsc.community.forms.GroupForm" />
       <form-bean name="preferenceForm" type="com.finalist.cmsc.community.forms.PreferenceForm" />
