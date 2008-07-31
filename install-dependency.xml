@@ -215,6 +215,7 @@
   <target name="searchrelate" depends="mmbase,jstl">
     <antcall target="install.module">
       <param name="name" value="searchrelate" />
+      <param name="mmbase.templates.path" value="mmbase/searchrelate/" />
     </antcall>
   </target>
 
