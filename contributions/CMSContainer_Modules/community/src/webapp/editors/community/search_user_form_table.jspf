@@ -1,0 +1,24 @@
+<table border="0">
+   <tbody>
+      <tr>
+         <td style="width:150px"><fmt:message key="community.search.fullname"/></td>
+         <td><html:text style="width: 250px" property="fullName"/></td>
+      </tr>
+      <tr>
+         <td style="width:150px"><fmt:message key="community.search.username"/></td>
+         <td><html:text style="width: 250px" property="userName"/></td>
+      </tr>
+      <tr>
+         <td style="width:150px"><fmt:message key="community.search.emailAddress"/></td>
+         <td><html:text style="width: 250px" property="emailAddr"/></td>
+      </tr>
+      <tr>
+         <td style="width:150px"><fmt:message key="community.search.groups"/></td>
+         <td><html:text style="width: 250px" property="groups"/></td>
+      </tr>
+      <tr>
+         <td style="width:150px"></td>
+         <td><input type="submit" value="Search" name="submitButton"/></td>
+      </tr>
+   </tbody>
+</table>

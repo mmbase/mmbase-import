@@ -64,18 +64,25 @@
   <bean name="authorityService" class="com.finalist.cmsc.services.community.security.AuthorityHibernateService" />
   <bean name="preferenceService" class="com.finalist.cmsc.services.community.preferences.PreferenceHibernateService" />
   <bean name="personService" class="com.finalist.cmsc.services.community.person.PersonHibernateService" />
-  
-  <!-- Actions -->
-  <bean name="/editors/community/PreferenceAction" class="com.finalist.cmsc.community.forms.PreferenceAction">
-      <property name="preferenceService"><ref bean="preferenceService"></ref></property>
-  </bean>
-  
-  <bean name="/editors/community/ReferenceImportExportAction" class="com.finalist.cmsc.community.forms.ReferenceImportExportAction">
-     
-	  <property name="personService"><ref bean="personService"></ref></property>
-	  
-  </bean>
-  <import resource="spring-security.xml" />
+
+   <!-- Actions -->
+   <bean name="/editors/community/PreferenceAction" class="com.finalist.cmsc.community.forms.PreferenceAction">
+      <property name="preferenceService" ref="preferenceService"/>
+   </bean>
+
+   <bean name="/editors/community/ReferenceImportExportAction"
+         class="com.finalist.cmsc.community.forms.ReferenceImportExportAction">
+      <property name="personService" ref="personService"/>
+   </bean>
+
+   <bean name="/editors/community/SearchConditionalUser"
+         class="com.finalist.cmsc.community.forms.SearchConditionalUserAction">
+      <property name="personService" ref="personService"/>
+      <property name="authenticationService" ref="authenticationService"/>
+      <property name="authorityService" ref="authorityService"/>
+   </bean>
+
+   <import resource="spring-security.xml"/>
    <!-- Services Holder-->
    <bean id="contextHolder" class="com.finalist.cmsc.services.community.ApplicationContextFactory"/>
 </beans>
