@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.45 2008-06-26 10:18:48 michiel Exp $;
+ * @version $Id: Url.java,v 1.46 2008-07-31 09:54:08 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -89,9 +89,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         internal = intern;
     }
 
-    public Url(ContextReferrerTag t, String p, Component comp) throws JspTagException {
+    public Url(ContextReferrerTag t, String p, String a) throws JspTagException {
         tag = t;
-        abs = "false";
+        abs = a;
         encodeUrl = true;
         escapeAmps = true;
         page = p;
@@ -99,6 +99,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         frameworkParams = null;
         internal = false;
     }
+
 
     public static Component getComponent(ContextReferrerTag tag) {
         HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
@@ -120,7 +121,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     public String getLegacy(boolean writeamp) throws JspTagException {
         Map<String, Object> m = new HashMap<String, Object>();
-        m.putAll(params);
+        if (params != null) {
+            m.putAll(params);
+        }
         if (log.isDebugEnabled()) {
             log.debug("legacy url " + page + m);
         }
