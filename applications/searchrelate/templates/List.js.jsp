@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.17 2008-07-24 14:22:25 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.18 2008-07-31 13:00:05 michiel Exp $
  */
 
 
@@ -37,9 +37,10 @@ function List(d) {
 
     this.callBack = null; // called on delete and create
 
-    this.type = this.find(this.div, "form.list").find("input[name = 'type']")[0].value;
-    this.item = this.find(this.div, "form.list").find("input[name = 'item']")[0].value;
-    this.source = this.find(this.div, "form.list").find("input[name = 'source']")[0].value;
+    this.type = this.find(this.div, ".list").find("input[name = 'type']")[0].value;
+    this.item = this.find(this.div, ".list").find("input[name = 'item']")[0].value;
+    this.source = this.find(this.div, ".list").find("input[name = 'source']")[0].value;
+    this.icondir = this.find(this.div, ".list").find("input[name = 'icondir']")[0].value;
 
 
     this.lastChange = null;
@@ -252,11 +253,11 @@ List.prototype.commit = function(stale, async) {
 		params.item   = this.item;
 		params.seq    = this.seq;
 		params.source = this.source;
+		params.icondir = this.icondir;
 		this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
 		});
-
 
 		var self = this;
 		this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
