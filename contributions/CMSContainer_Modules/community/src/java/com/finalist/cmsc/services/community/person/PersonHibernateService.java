@@ -39,13 +39,16 @@ import java.util.Map;
 public class PersonHibernateService extends HibernateService implements PersonService {
 
    private AuthenticationService authenticationService;
-    private PreferenceService preferenceService;
+   private PreferenceService preferenceService;
+
    @Required
    public void setPreferenceService(PreferenceService preferenceService) {
       this.preferenceService = preferenceService;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Transactional(readOnly = true)
    public Person getPersonByUserId(String userId) {
       if (StringUtils.isBlank(userId)) {
@@ -54,7 +57,9 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       return findPersonByUserId(userId);
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Transactional
    @SuppressWarnings("unchecked")
    public List<Person> getPersons(Person example) {
@@ -67,7 +72,9 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Transactional
    public List<Person> getLikePersons(Person example) {
       if (example == null) {
@@ -106,38 +113,35 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       return person;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Transactional
    public void updatePerson(Person person) {
       getSession().saveOrUpdate(person);
       getSession().flush();
    }
+
    @Transactional
-   public List<Person> getAllPeople(PagingStatusHolder holder) {
+   public List<Person> getAllPeople() {
       return getAssociatedPersons(null);
    }
-    @Transactional
-   public List<Person> getAllPersons() {
-          Criteria criteria = getSession().createCriteria(Person.class);
-        return criteria.list();
-   }
-    @Transactional(readOnly = true)
-    public int countAllPersons(){
-       Criteria criteria = getSession().createCriteria(Person.class);
-       return criteria.list().size();
-    }
-    private void addOrder(PagingStatusHolder holder, String propertyName,
-         Criteria criteria) {
-         String dir = holder.getDir();
-         if ("asc".equals(dir)) {
-            criteria.addOrder(Property.forName(propertyName).asc());
-         }
-         if ("desc".equals(dir)) {
-            criteria.addOrder(Property.forName(propertyName).desc());
-         }
 
+   @Transactional
+   public List<Person> getAllPersons() {
+      Criteria criteria = getSession().createCriteria(Person.class);
+      return criteria.list();
    }
-   /** {@inheritDoc} */
+
+   @Transactional(readOnly = true)
+   public int countAllPersons() {
+      Criteria criteria = getSession().createCriteria(Person.class);
+      return criteria.list().size();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
    @Transactional
    public boolean deletePersonByAuthenticationId(Long authenticationId) {
       if (authenticationId != null) {
@@ -166,7 +170,9 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       this.authenticationService = authenticationService;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Transactional(readOnly = true)
    public Person getPersonByAuthenticationId(Long authenticationId) {
       Person person = null;
@@ -178,20 +184,20 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    }
 
    @Transactional(readOnly = true)
-   public Person getPersonByEmail(String email){
+   public Person getPersonByEmail(String email) {
       Person person = null;
-      if(email != null){
+      if (email != null) {
          Criteria criteria = getSession().createCriteria(Person.class).add(Restrictions.eq("email", email));
          person = findPersonByCriteria(criteria);
       }
       return person;
    }
 
-  @Transactional
-   public void batchClean(){
+   @Transactional
+   public void batchClean() {
       List<Person> persons = getAllPersons();
       for (Person tempPerson : persons) {
-         if(null!=tempPerson){
+         if (null != tempPerson) {
             long authId = tempPerson.getAuthenticationId();
             deleteRelationRecord(authId);
          }
@@ -209,7 +215,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @SuppressWarnings("unchecked")
    public void creatRelationRecord(PersonExportImportVO xperson) {
       Authentication authentication = xperson.getAuthentication();
-       authentication = authenticationService.createAuthentication(authentication);
+      authentication = authenticationService.createAuthentication(authentication);
       Person person = new Person();
       converPersonPropertis(xperson, person);
       person.setAuthenticationId(authentication.getId());
@@ -224,7 +230,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @Transactional(readOnly = true)
    public List<PersonExportImportVO> getPersonExportImportVO() {
       List<PersonExportImportVO> XPersons = new ArrayList<PersonExportImportVO>();
-      List<Person> persons =getAllPersons();
+      List<Person> persons = getAllPersons();
       if (null == persons) {
          return null;
       }
@@ -267,7 +273,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       StringBuffer strb = new StringBuffer();
       basicGetAssociatedPersons(conditions, strb);
 
-      strb.append(" "+holder.getSortToken());
+      strb.append(holder.getSortToken());
 
       Query q = getSession().createQuery(strb.toString());
 
@@ -275,37 +281,42 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
       return q.list();
    }
-   private void basicGetAssociatedPersons(Map conditions, StringBuffer strb){
-      strb.append("select distinct person from Person person , Authentication authentication "
-                  + "left join authentication.authorities authority "
-                  + "where person.authenticationId = authentication.id");
-      if (conditions!=null&&conditions.containsKey("fullname")) {
+
+   private void basicGetAssociatedPersons(Map<String, String> conditions, StringBuffer strb) {
+
+      strb.append("select distinct person from Person person , Authentication authentication ").
+            append("left join authentication.authorities authority ").
+            append("where person.authenticationId = authentication.id");
+
+      if (conditions.size() < 1) {
+         return;
+      }
+
+      if (conditions.containsKey("fullname")) {
          String[] names = conditions.get("fullname").toString().split(" ");
-         if (names.length == 2)
+         if (names.length == 2) {
             strb.append(" and (person.firstName='" + names[0]
                   + "'and person.lastName='" + names[1] + "')"
                   + "or person.firstName='" + names[0] + " " + names[1]
                   + "'" + "or person.lastName='" + names[0] + " "
                   + names[1] + "'");
-         else if (names.length == 1)
+         }
+         else if (names.length == 1) {
             strb.append(" and person.firstName='" + names[0]
                   + "' or person.lastName='" + names[0] + "'");
+         }
       }
-      if (conditions!=null&&conditions.containsKey("username")) {
-         String username = conditions.get("username").toString();
-         strb.append(" and upper(authentication.userId) like '%"
-               + username.toUpperCase() + "%'");
-      }
-      if (conditions!=null&&conditions.containsKey("email")) {
-         String email = conditions.get("email").toString();
-         strb.append(" and upper(person.email) like '%"
-               + email.toUpperCase() + "%'");
-      }
-      if (conditions!=null&&conditions.containsKey("group")) {
+
+      strb.append(condition("and upper(authentication.userId) like '%@%", "username", conditions));
+      strb.append(condition("and upper(person.email) like '%@%'", "email", conditions));
+
+
+      if (conditions.containsKey("group")) {
          if (!conditions.containsKey("strict")) {
-            String[] groups = conditions.get("group").toString().split(" ");
-            if (groups.length < 1)
+            String[] groups = conditions.get("group").split(" ");
+            if (groups.length < 1) {
                return;
+            }
             strb.append(" and (");
             strb.append("upper(authority.name)like '%"
                   + groups[0].toUpperCase() + "%'");
@@ -314,17 +325,40 @@ public class PersonHibernateService extends HibernateService implements PersonSe
                      + groups[i].toUpperCase() + "%'");
             }
             strb.append(")");
-         }else{
+         }
+         else {
             String groups = conditions.get("group").toString();
-            strb.append(" and authority.name='"+groups+"'");
+            strb.append(" and authority.name='" + groups + "'");
          }
       }
+
    }
-      @Transactional(readOnly = true)
-      public int getAssociatedPersonsNum(Map conditions,PagingStatusHolder holder) {
-         StringBuffer strb = new StringBuffer();
-         basicGetAssociatedPersons(conditions,strb);
-         Query q = getSession().createQuery(strb.toString());
-         return q.list().size();
+
+   @Transactional(readOnly = true)
+   public int getAssociatedPersonsNum(Map<String, String> conditions) {
+      StringBuffer strb = new StringBuffer();
+      basicGetAssociatedPersons(conditions, strb);
+      Query q = getSession().createQuery(strb.toString());
+      return q.list().size();
    }
+
+   private static String condition(String query, String name, Map<String, String> conditions) {
+      String condition = "";
+
+      if (conditions.containsKey(name)) {
+         if (query.contains("%")) {
+            query = StringUtils.replace(query, "%", "%%");
+         }
+         query = StringUtils.replace(query, "@", "%s");
+
+         condition = String.format(query, conditions.get(name));
+      }
+
+      if (condition.length() > 1 && !condition.startsWith(" ")) {
+         condition += " ";
+      }
+
+      return condition;
+   }
+
 }
