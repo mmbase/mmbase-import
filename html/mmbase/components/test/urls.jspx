@@ -85,7 +85,7 @@
     <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
 
     <h2>form tag</h2>
-    <mm:form page="/justsomeurl" mode="url">
+    <mm:form page="/justsomeurl" mode="url" absolute="context">
       <p>${_ eq '/justsomeurl' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:form>
   </div>
