@@ -8,15 +8,22 @@
   <jsp:output omit-xml-declaration="true" />
   <!--
 
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
   -->
 
   <!--
       Let her administrate her 'goals'.
   -->
   <h2><di:translate key="assessment.goals" /></h2>
+
   <div class="goals">
     <mm:node number="$user">
-      <mm-sr:relatednodes type="goals" role="posrel" orderby="posrel.pos" />
+      <mm:treefile page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+        <mm-sr:relatednodes type="goals"
+                            icondir="${_}"
+                            role="posrel" orderby="posrel.pos" />
+      </mm:treefile>
     </mm:node>
   </div>
 
@@ -40,13 +47,16 @@
     <mm:listnodes orderby="pos" type="problemtypes">
       <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
 
-      <mm-sr:relatednodes
-          item="/assessment/matrix.div.jspx"
-          path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
-        <jsp:attribute name="constraints">
-          <mm:addnode element="people" number="${user}" />
-        </jsp:attribute>
-      </mm-sr:relatednodes>
+      <mm:treefile page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+        <mm-sr:relatednodes
+            item="/assessment/matrix.div.jspx"
+            icondir="${_}"
+            path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
+          <jsp:attribute name="constraints">
+            <mm:addnode element="people" number="${user}" />
+          </jsp:attribute>
+        </mm-sr:relatednodes>
+      </mm:treefile>
     </mm:listnodes>
 
     <!--

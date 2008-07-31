@@ -10,6 +10,8 @@
 
   -->
   <mm:import externid="source" required="true" />
+  <mm:import externid="icondir" required="true" />
+
 
   <!-- Display the problem itself -->
   <span class="col problem">
@@ -50,6 +52,6 @@
   </mm:node>
 
   <span class="col">
-    <mm-sr:delete source="${source}" />
+    <mm-sr:delete source="${source}" icondir="${icondir}" />
   </span>
 </jsp:root>
