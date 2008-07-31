@@ -307,7 +307,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          }
       }
 
-      strb.append(condition("and upper(authentication.userId) like '%@%", "username", conditions));
+      strb.append(condition("and upper(authentication.userId) like '%@%'", "username", conditions));
       strb.append(condition("and upper(person.email) like '%@%'", "email", conditions));
 
 
@@ -350,15 +350,12 @@ public class PersonHibernateService extends HibernateService implements PersonSe
             query = StringUtils.replace(query, "%", "%%");
          }
          query = StringUtils.replace(query, "@", "%s");
-
+                                                   
          condition = String.format(query, conditions.get(name));
       }
 
-      if (condition.length() > 1 && !condition.startsWith(" ")) {
-         condition += " ";
-      }
+      return " "+condition;
 
-      return condition;
    }
 
 }
