@@ -29,6 +29,8 @@ body.assessment div.inter {
   width: 100%;
   font-weight: bold;
   text-align: center;
+  background-color: #999;
+  color: white;
 }
 
 body.assessment ol {

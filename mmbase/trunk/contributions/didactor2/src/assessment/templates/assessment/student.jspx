@@ -19,7 +19,7 @@
 
   <div class="goals">
     <mm:node number="$user">
-      <mm:treefile page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+      <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
         <mm-sr:relatednodes type="goals"
                             icondir="${_}"
                             role="posrel" orderby="posrel.pos" />
@@ -47,7 +47,9 @@
     <mm:listnodes orderby="pos" type="problemtypes">
       <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
 
-      <mm:treefile page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+      <mm:treefile
+          write="false"
+          page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
         <mm-sr:relatednodes
             item="/assessment/matrix.div.jspx"
             icondir="${_}"
@@ -62,35 +64,40 @@
     <!--
         now links to the feed back pages
     -->
-    <span class="head problem"><di:translate key="assessment.feedback_coach" /></span>
-    <mm:node number="${education}">
-      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-        <span class="col" style="width: ${60 / status.count}%">
-          <mm:listrelationscontainer role="classrel" type="people">
-            <mm:addnode element="people" number="$user"/>
-            <mm:listrelations>
-              <mm:relatednodes type="popfeedback">
-                <mm:node id="feedback" />
-              </mm:relatednodes>
-            </mm:listrelations>
-          </mm:listrelationscontainer>
+    <div>
+      <span class="head problem">
+        <di:translate key="assessment.feedback_coach" />
+      </span>
+      <mm:node number="${education}">
+        <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
+          <span class="col" style="width: ${60 / status.count}%">
+            <mm:listrelationscontainer role="classrel" type="people">
+              <mm:addnode element="people" number="$user"/>
+              <mm:listrelations>
+                <mm:relatednodes type="popfeedback">
+                  <mm:node id="feedback" />
+                </mm:relatednodes>
+              </mm:listrelations>
+            </mm:listrelationscontainer>
 
-          <mm:notpresent referid="feedback">
-            &amp;nbsp;
-          </mm:notpresent>
-          <mm:present referid="feedback">
-            <mm:treefile page="/assessment/feedback.jspx" objectlist="$includePath"
-                         referids="$referids,feedback@feedback_n"
-                         write="false"
-                         >
-              <a href="${_}">
-                <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                        title="assessment.goto_feedback" />
-              </a>
-            </mm:treefile>
-          </mm:present>
-        </span>
-      </mm:relatednodes>
-    </mm:node>
+            <mm:notpresent referid="feedback">
+              &amp;nbsp;
+            </mm:notpresent>
+            <mm:present referid="feedback">
+              <mm:treefile
+                  page="/assessment/feedback.jspx" objectlist="$includePath"
+                  referids="$referids,feedback@feedback_n"
+                  write="false"
+                  >
+                <a href="${_}">
+                  <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                          title="assessment.goto_feedback" />
+                </a>
+              </mm:treefile>
+            </mm:present>
+          </span>
+        </mm:relatednodes>
+      </mm:node>
+    </div>
   </div>
 </div>
