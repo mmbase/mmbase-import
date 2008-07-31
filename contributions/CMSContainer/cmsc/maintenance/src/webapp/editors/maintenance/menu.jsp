@@ -29,6 +29,10 @@
            <c:url var="checksumUrl" value="/editors/maintenance/compute-checksums.jsp"/>
            <a href="${checksumUrl}" target="rightpane"><fmt:message key="maintenance.checksum" /></a>
         </li>
+        <li class="advancedpublish">
+           <c:url var="cleanNVPUrl" value="/editors/maintenance/clean-non-visible-portlets.jsp"/>
+           <a href="${cleanNVPUrl}" target="rightpane"><fmt:message key="maintenance.cleannonvisportlets"/></a>
+        </li>
 
 		<%--  <cmsc:hasfeature name="rmmci">  --%>
 			<mm:haspage page="/editors/publish-remote">
