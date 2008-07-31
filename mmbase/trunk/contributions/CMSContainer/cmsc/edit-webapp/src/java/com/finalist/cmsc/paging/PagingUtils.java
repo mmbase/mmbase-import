@@ -4,15 +4,19 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
-import java.util.Map;
 
 
 public class PagingUtils {
 
-   public static ThreadLocal<PagingStatusHolder> pagingStatusHolderLocal = new ThreadLocal<PagingStatusHolder>();
+   private static ThreadLocal<PagingStatusHolder> pool = new ThreadLocal<PagingStatusHolder>();
+
+
+   public static PagingStatusHolder getStatusHolder() {
+      return pool.get();
+   }
+
    public static final int DEFAULTPAGESIZE = 30;
    public static final int FIRSTPAGE = 1;
 
@@ -69,14 +73,6 @@ public class PagingUtils {
       return href(pagecontext, nextPage.toString()).toString();
    }
 
-   public static void savePagingStatus(ServletRequest request) {
-      Map paraMap = request.getParameterMap();
-
-//      threadLocal.set(paraMap);
-
-
-   }
-
    public static int getSystemPageSize() {
       return 30;
    }
@@ -92,10 +88,9 @@ public class PagingUtils {
    }
 
    public static void initStatusHolder(HttpServletRequest request) {
-      PagingStatusHolder holder = pagingStatusHolderLocal.get();
-      if (null == holder) {
-         holder = new PagingStatusHolder();
-      }
+      PagingStatusHolder holder = new PagingStatusHolder();
+      pool.set(holder);
+
 
       String page = request.getParameter("page");
       String sort = request.getParameter("sortby");
@@ -115,12 +110,6 @@ public class PagingUtils {
       if (StringUtils.isNotBlank(dir)) {
          holder.setDir(dir);
       }
-
-      pagingStatusHolderLocal.set(holder);
-   }
-
-   public static PagingStatusHolder getStatusHolder() {
-      return pagingStatusHolderLocal.get();
    }
 
    public static PagingStatusHolder getStatusHolderInSorting(String column, String direction) {
