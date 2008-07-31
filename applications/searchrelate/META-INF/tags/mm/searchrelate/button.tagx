@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: button.tagx,v 1.1 2008-07-18 16:13:26 michiel Exp $
+      @version $Id: button.tagx,v 1.2 2008-07-31 11:21:26 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -21,7 +21,6 @@
   <mm:haspage page="${icons}/${type}.jspx">
     <c:set var="alt"><mm:include page="${icons}/${type}.jspx" /></c:set>
   </mm:haspage>
-  <mm:log>${alt.class} :${alt} ${mm:escape('tagstripper(NONE),trimmer', alt)}</mm:log>
   <mm:haspage page="${icons}/${type}.png">
     <mm:link page="${icons}/${type}.png">
       <img class="icon"
