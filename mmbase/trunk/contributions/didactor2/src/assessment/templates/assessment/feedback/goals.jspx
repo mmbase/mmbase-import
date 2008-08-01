@@ -8,13 +8,13 @@
   <jsp:output omit-xml-declaration="true" />
   <tr>
     <td colspan="2">
-      <!-- class is grayBar?? wtf wtf -->
-      <div class="grayBar" style="width:100%;">
+      <div>
         <di:img src="/assessment/gfx/minus.gif"
                 title="assessment.show_goals"
                 onclick="toggle('goals')"
                 id="toggle_imagegoals"
                 />
+        <jsp:text> </jsp:text>
         <di:translate key="assessment.goals" />
       </div>
     </td>
@@ -36,7 +36,7 @@
               <mm:field name="name" />&amp;nbsp;
             </td>
           </tr>
-          <tr id="toggle_div${_node}"> <!-- style="display:none"-->
+          <tr id="toggle_div${_node}" style="display:none">
             <td>&amp;nbsp;</td>
             <td>
               <mm:field name="description" />&amp;nbsp;

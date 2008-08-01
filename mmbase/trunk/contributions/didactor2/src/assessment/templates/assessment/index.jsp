@@ -13,8 +13,8 @@
       component="assessmment" >
 
     <mm:import externid="coachmode">
-      <di:hasrole role="coach">true</di:hasrole>
-      <di:hasrole role="coach" inverse="true">false</di:hasrole>
+      <di:hasrole role="teacher">true</di:hasrole>
+      <di:hasrole role="teacher" inverse="true">false</di:hasrole>
     </mm:import>
 
     <div class="rows">
