@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.75 2008-02-22 14:00:08 nklasens Exp $
+     * @version  $Id: list.jsp,v 1.76 2008-08-01 16:39:30 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -105,7 +105,7 @@ org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
     Wizard wiz = null;
-    wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
+    wiz = new Wizard(request, ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
     linkable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='link']")!=null);
     unlinkable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']")!=null);
