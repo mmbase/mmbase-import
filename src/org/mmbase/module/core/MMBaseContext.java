@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.60 2008-07-11 13:37:04 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.61 2008-08-01 19:20:35 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -390,5 +390,12 @@ public class MMBaseContext {
      */
     public static boolean isInitialized() {
         return initialized;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static String getMachineName() {
+        return MMBase.machineName;
     }
 }
