@@ -308,7 +308,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    private void removeNoneSubscribers(List<Person> persons) {
       for (int i = 0; i < persons.size(); i++) {
          Person person = persons.get(i);
-         List<Subscription> subscrioptions = subscriptionCAO.getSubscriptionByUserIdAndStatus(person.getId().intValue(), null);
+         List<Subscription> subscrioptions = subscriptionCAO.getSubscriptionByUserIdAndStatus(person.getAuthenticationId().intValue(), null);
          if (subscrioptions.size() < 1) {
             persons.remove(i);
          }
