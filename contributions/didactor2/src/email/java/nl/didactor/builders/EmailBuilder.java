@@ -80,18 +80,24 @@ public class EmailBuilder extends MMObjectBuilder {
                 log.error("Cannot send mail '" + node + "'");
                 // TODO: we have to notify the user that something went wrong. Ideally, a bounce message
             }
+        } else {
+            log.debug("Nothing to do, type is not " + TYPE_TOSEND + " but " + node.getIntValue("type"));
         }
         return node;
     }
     {
         addFunction(new NodeFunction("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
                 protected Object getFunctionValue(final Node node, Parameters parameters) {
-                    log.debug("We're in startmail - args: " + parameters);
+                    if (log.isDebugEnabled()) {
+                        log.debug("We're in startmail - args: " + parameters + " type " + node.getIntValue("type"));
+                    }
                     if (node.getIntValue("type") == TYPE_NORMAL) {
+                        log.debug("Sending");
                         org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                                 public void run() {
-                                    node.setIntValue("type", TYPE_TOSEND);
-                                    node.commit();
+                                    log.debug("Sending now!");
+                                    boolean success = sendmail.sendMail(node);
+                                    log.debug("Success: " + success);
                                 }
                             });
                     }
