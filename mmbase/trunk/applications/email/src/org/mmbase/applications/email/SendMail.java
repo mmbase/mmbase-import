@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.46 2008-08-01 12:32:49 michiel Exp $
+ * @version $Id: SendMail.java,v 1.47 2008-08-01 13:10:33 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -470,9 +470,6 @@ public class SendMail extends AbstractSendMail {
 
         try {
 
-            if (log.isServiceEnabled()) {
-                log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ") using " + session);
-            }
             // construct a message
             MimeMessage msg = new MimeMessage(session);
             // msg = super.constructMessage()....
@@ -627,8 +624,16 @@ public class SendMail extends AbstractSendMail {
                 errors.append("\nIO: " + e.getMessage());
             }
             */
+            Address[] all = msg.getAllRecipients();
+            if (all != null && all.length > 0) {
+                if (log.isServiceEnabled()) {
+                    log.service("JMSendMail sending mail to " + to + " cc:" + cc + " bcc:" + bcc + " (node " + n.getNumber() + ")" + " from " + from + " (mime-type " + mimeType + ") using " + session);
+                }
+                Transport.send(msg, onlyto);
+            } else {
+                log.debug("nothing to do");
+            }
 
-            Transport.send(msg, onlyto);
             log.debug("JMSendMail done.");
         } catch (javax.mail.MessagingException e) {
             log.error("JMSendMail failure: " + e.getMessage(), e);
