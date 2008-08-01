@@ -12,6 +12,8 @@ package org.mmbase.module.core;
 import java.io.File;
 import java.util.*;
 import java.text.DateFormat;
+import javax.naming.*;
+import javax.sql.DataSource;
 
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
@@ -43,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.249 2008-08-01 19:20:35 michiel Exp $
+ * @version $Id: MMBase.java,v 1.250 2008-08-01 22:15:08 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1349,6 +1351,31 @@ public class MMBase extends ProcessorModule {
         log.info("MMBase data dir: " + dataDir);
         return dataDir;
 
+    }
+    /**
+     * Returns the datasource as was configured with mmbaseroot.xml properties.
+     * since MMBase-1.9
+     */
+    public DataSource getDataSource() {
+        // get the Datasource for the database to use
+        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
+        // is stored in the mmbaseroot module configuration file
+        String dataSourceURI = getInitParameter("datasource");
+        if (dataSourceURI != null) {
+            try {
+                String contextName = getInitParameter("datasource-context");
+                if (contextName == null) {
+                    contextName = "java:comp/env";
+                }
+                log.service("Using configured datasource " + dataSourceURI);
+                Context initialContext = new InitialContext();
+                Context environmentContext = (Context) initialContext.lookup(contextName);
+                return (DataSource)environmentContext.lookup(dataSourceURI);
+            } catch(NamingException ne) {
+                log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Will attempt to use JDBC Module to access database.");
+            }
+        }
+        return null;
     }
 
 
