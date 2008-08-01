@@ -21,13 +21,11 @@
 
   <contextsourcelist/>
 
-  <description><![CDATA[Installs a few basic resources such as urls, attachments , posrel , images and the image cache.<br />
+  <description><![CDATA[Installs a few basic resources such as urls, attachments, posrel, images and the image cache.
 A few other applications depend on this application.
-For images and icaches, either JAI or Imagemagick is required, see the documentation
-for more information about how to install one of these tools.
+For images and icaches, either JAI or Imagemagick is required, see the documentation for more information about how to install one of these tools.
 ]]></description>
 
-  <install-notice><![CDATA[Urls, attachments, posrel , images and icaches installed.
-]]></install-notice>
+  <install-notice><![CDATA[Urls, attachments, posrel, images and icaches are installed.]]></install-notice>
 
 </application>
