@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.248 2008-08-01 08:00:49 michiel Exp $
+ * @version $Id: MMBase.java,v 1.249 2008-08-01 19:20:35 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -144,7 +144,7 @@ public class MMBase extends ProcessorModule {
      * for each node in your cluster. This is not the machines dns name
      * (as defined by host as name or ip number).
      */
-    private static String machineName = "unknown";
+    static String machineName = "unknown";
 
     /**
      * The host or ip number of the machine this module is
@@ -764,7 +764,7 @@ public class MMBase extends ProcessorModule {
      * This value is set using the configuration file.
      * @return the machine name as a <code>String</code>
      */
-    public static String getMachineName() {
+    public String getMachineName() {
         return machineName;
     }
 
