@@ -20,6 +20,7 @@
                     onclick="toggle(${problemtype})"
                     id="toggle_image${problemtype}" />
           </mm:relatednodes>
+          <jsp:text> </jsp:text>
           <di:translate key="assessment.${_node.key}" /><!-- wtf, how can this be realy dynamic then -->
         </div>
       </td>
@@ -35,7 +36,7 @@
                       title="assessment.show_problem"
                       onclick="toggle(${_node});"
                       id="toggle_image${_node})" />
-              <b><mm:field name="name" />&amp;nbsp;</b>
+              <b>&amp;nbsp;<mm:field name="name" /></b>
             </td>
           </tr>
           <mm:listrelationscontainer role="posrel" type="learnblocks">
