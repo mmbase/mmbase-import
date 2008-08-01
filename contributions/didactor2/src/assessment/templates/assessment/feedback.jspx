@@ -12,7 +12,6 @@
 
     <mm:import externid="feedback_n" required="true" />
     <mm:import externid="student" required="true" />
-    <mm:import externid="assessment_evaluationtest" />
     <mm:import externid="coachmode" />
 
     <mm:include page="navigation.jspx" />
@@ -74,47 +73,68 @@
 
               <tr>
                 <td colspan="2">
-                  <!-- show answers to questions in final test -->
-                  <mm:node number="$assessment_evaluationtest" notfound="skip">
-                    <mm:node referid="owner">
-                      <mm:compare referid="class" value="null">
-                        <mm:relatednodes type="classes">
-                          <mm:remove referid="class"/>
-                          <mm:import id="class"><mm:field name="number" /></mm:import>
-                        </mm:relatednodes>
-                      </mm:compare>
-                      <mm:import id="copybookNo"><di:copybook /></mm:import>
-                    </mm:node>
-                    <!-- get madetest -->
-                    <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-                      <mm:constraint field="copybooks.number" referid="copybookNo"/>
-                      <mm:relatednodes>
-                        <mm:last>
-                          <mm:node id="madetest" />
-                        </mm:last>
-                      </mm:relatednodes>
-                    </mm:relatednodescontainer>
-                    <!-- show question -->
-                    <mm:present referid="madetest">
-                      <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
-                        <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
-                        <mm:treeinclude
-                            debug="html"
-                            page="$page" objectlist="$includePath" referids="$referids">
-                          <mm:param name="question"><mm:field name="number"/></mm:param>
-                          <mm:param name="testnumber"><mm:write referid="assessment_evaluationtest"/></mm:param>
-                          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-                        </mm:treeinclude>
-                      </mm:relatednodes>
-                    </mm:present>
+
+                  <mm:node number="$provider">
+                    <mm:relatednodes path="related,educations,related,tests" element="tests">
+                      <mm:relatednodescontainer role="related" type="problemtypes">
+                        <mm:size>
+                          <mm:compare value="0">
+                            <mm:node id="assessment_evaluationtest" />
+                          </mm:compare>
+                        </mm:size>
+                      </mm:relatednodescontainer>
+                    </mm:relatednodes>
                   </mm:node>
+                  <mm:present referid="assessment_evaluationtest">
+
+
+                    <!-- show answers to questions in final test -->
+                    <mm:node referid="assessment_evaluationtest">
+                      <mm:node referid="owner">
+
+                        <mm:compare referid="class" value="null">
+                          <mm:relatednodes type="classes">
+                            <mm:remove referid="class"/>
+                            <mm:import id="class"><mm:field name="number" /></mm:import>
+                          </mm:relatednodes>
+                        </mm:compare>
+                        <di:copybook student="${_node}">
+                          <mm:node id="copybookNo" />
+                        </di:copybook>
+                      </mm:node>
+
+                      <!-- get madetest -->
+                      <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+                        <mm:constraint field="copybooks.number" referid="copybookNo"/>
+                        <mm:relatednodes max="1">
+                          <mm:node id="madetest" />
+                        </mm:relatednodes>
+                      </mm:relatednodescontainer>
+
+                      <!-- show question -->
+                      <mm:present referid="madetest">
+                        <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                          <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                          <mm:treeinclude
+                              debug="html"
+                              page="$page" objectlist="$includePath" referids="$referids">
+                            <mm:param name="question"><mm:field name="number"/></mm:param>
+                            <mm:param name="testnumber"><mm:write referid="assessment_evaluationtest"/></mm:param>
+                            <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                          </mm:treeinclude>
+                        </mm:relatednodes>
+                      </mm:present>
+                    </mm:node>
+                  </mm:present>
                 </td>
               </tr>
             </table>
+            <!--
             <input type="submit" />
             <mm:valid>
               VALID
             </mm:valid>
+            -->
           </mm:form>
         </mm:node>
       </div>
