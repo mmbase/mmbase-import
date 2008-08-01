@@ -66,6 +66,7 @@
          unknown="false" validate="false" name="searchForm" scope="request" parameter="method">
          <forward name="group" path="/editors/community/userlist_addusertogroup.jsp" redirect="false" />
          <forward name="success" path="/editors/community/listUsers.jsp" redirect="false" />
+         <forward name="listcandidate" path="/editors/community/userlist_subscribercandidate.jsp" redirect="false" />
       </action>
      <action path="/editors/community/AddUserToGroupInit" type="com.finalist.cmsc.community.forms.AddUserToGroupInitAction"
          unknown="false" validate="false" name="searchForm">

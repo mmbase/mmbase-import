@@ -2,13 +2,20 @@
                requestURI="/editors/community/SearchConditionalUser.do">
    <edit:ui-tcolumn title="">
       <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
+      <c:if test="${not hiddenOperation}">
       <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}"><img
             src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="edit"></a>
       <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}"><img
             src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="delete"></a>
+      </c:if>
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.fullname" sort="person.firstName,person.lastName">
+   <c:if test="${not hiddenOperation}">
       <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}">${person.fullname}</a>
+   </c:if>
+   <c:if test="${hiddenOperation}">
+      ${person.fullname}
+   </c:if>
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.username" sort="authentication.userId">
       ${person.username }

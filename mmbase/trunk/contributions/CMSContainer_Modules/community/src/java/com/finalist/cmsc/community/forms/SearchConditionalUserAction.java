@@ -78,6 +78,24 @@ public class SearchConditionalUserAction extends DispatchAction {
 		return actionMapping.findForward("group");
 	}
    
+	public ActionForward searchCandidateSubscriber(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+			HttpServletResponse httpServletResponse) throws Exception {
+
+		setPagingInformation(request);
+		Map<String, String> map = getParameterMap(actionForm);
+
+		map.put("strict", "strict");
+
+		List<Person> persons = personService.getAssociatedPersons(map);
+		int totalCount = personService.getAssociatedPersonsNum(map);
+
+		setSharedAttributes(request, persons, totalCount);
+
+		request.setAttribute("groupName", map.get("group"));
+		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
+		return actionMapping.findForward("listcandidate");
+	}
+
    private List<PersonVO> convertToVO(List<Person> persons) {
       List<PersonVO> perShow;
       perShow = new ArrayList<PersonVO>();
@@ -106,12 +124,13 @@ public class SearchConditionalUserAction extends DispatchAction {
    }
 
    private Map<String, String> getParameterMap(ActionForm actionForm) {
-      Map<String, String> map = ParameterMapper.wrap(actionForm).
-            map("fullname", "fullName").
-            map("username", "userName").
-            map("email", "emailAddr").
-            map("group", "groups").
-            getMap();
+		Map<String, String> map = ParameterMapper.wrap(actionForm)
+		.map("fullname", "fullName")
+		.map("username", "userName")
+		.map("email", "emailAddr")
+		.map("group", "groups")
+		.map("group", "groupName")
+		.getMap();
       return map;
    }
 
