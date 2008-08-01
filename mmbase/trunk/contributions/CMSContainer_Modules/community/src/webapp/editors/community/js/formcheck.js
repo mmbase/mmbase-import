@@ -14,3 +14,12 @@ function addToGroup(name, message, event) {
       Event.stop(event);
    }
 }
+
+function search(){
+   document.forms[0].page.value = "0";
+   document.forms[0].submit(); 
+}
+function create() {
+   document.forms[0].method.value = "addInit";
+   document.forms[0].submit();
+}

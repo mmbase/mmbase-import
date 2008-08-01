@@ -9,6 +9,7 @@
    <c:url var="actionUrl" value="/editors/community/PreferenceAction.do"/>
    <c:url var="userActionUrl" value="/editors/community/userAddInitAction.do"/>
    <script src="../../js/prototype.js" type="text/javascript"></script>
+   <script src="js/formcheck.js" type="text/javascript"></script>
    <script type="text/javascript">
       function update(number) {
          var myAjax = new Ajax.Request(
@@ -34,10 +35,6 @@
          }
       }
 
-      function create() {
-         document.forms[0].method.value = "addInit";
-         document.forms[0].submit();
-      }
       function postUpdate() {
          alert('<fmt:message key="community.preference.update.success" />');
       }
@@ -58,7 +55,7 @@
                <html:hidden property="method" value="list"/>
                <html:hidden property="order"/>
                <html:hidden property="direction"/>
-               <input type="hidden" name="page" id="page" value=""/>
+               <input type="hidden" name="page" id="page" value="${page}"/>
                <input type="hidden" name="id" id="id" value=""/>
                <%@include file="preferenceform.jsp" %>
             </html:form>
