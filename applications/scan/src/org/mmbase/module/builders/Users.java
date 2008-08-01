@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Users.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Users.java,v 1.11 2008-08-01 22:01:32 michiel Exp $
  */
 public class Users extends MMObjectBuilder {
 
@@ -30,7 +30,7 @@ public class Users extends MMObjectBuilder {
     LRUHashtable<String, Integer> cache = new LRUHashtable<String, Integer>(100);
 
     // rico's funkie password generator
-    protected PasswordGeneratorInterface pwgen = new PasswordGenerator ();
+    protected PasswordGenerator pwgen = new PasswordGenerator ();
     
     /**
     * replace call, when called in format MMBASE-BUILDER-users-xxxxx

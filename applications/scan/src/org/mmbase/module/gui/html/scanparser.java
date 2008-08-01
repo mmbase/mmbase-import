@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.76 2008-02-03 17:33:58 nklasens Exp $
+ * @version $Id: scanparser.java,v 1.77 2008-08-01 22:01:32 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -44,7 +44,7 @@ public class scanparser extends ProcessorModule {
     private static idInterface id=null;
     private static MMBase mmbase=null;
     private static TransactionHandlerInterface transactionhandler;
-    private static Hashtable<String, ProcessorInterface> processors = new Hashtable<String, ProcessorInterface>();
+    private static Hashtable<String, ProcessorModule> processors = new Hashtable<String, ProcessorModule>();
     private static RandomPlus rnd;
     private static int crcseed;
 
@@ -1227,7 +1227,7 @@ public class scanparser extends ProcessorModule {
     }
 
     /**
-     *  try to acces a module (Must be a ProcessorInterface)
+     *  try to acces a module (Must be a ProcessorModule)
      *  and replace "part" by whatever the processor returns.
      */
     private final String do_mod(scanpage sp,String part) {
@@ -1239,7 +1239,7 @@ public class scanparser extends ProcessorModule {
             String moduleName = part.substring(0,index);
             String moduleCommand = part.substring(index+1,part.length());
 
-            ProcessorInterface proc = getProcessor(moduleName);
+            ProcessorModule proc = getProcessor(moduleName);
             if (proc == null) {
                 log.error("do_mod(): no Processor(" + moduleName +") found for page("+sp.getUrl()+")");
                 return "";
@@ -1252,7 +1252,7 @@ public class scanparser extends ProcessorModule {
     /**
      * give a name an you get the  processor (Interface), if procName does not exists then null is returned.
      */
-    private final ProcessorInterface getProcessor(String procName) {
+    private final ProcessorModule getProcessor(String procName) {
         if (processors.containsKey(procName)) {
             return processors.get(procName);
         } else {
@@ -1264,9 +1264,9 @@ public class scanparser extends ProcessorModule {
                 // debug(obj);
             }
 
-            if (obj instanceof ProcessorInterface) {
+            if (obj instanceof ProcessorModule) {
                 //debug("servscan.getProcessor: we have a new Processor("+procName+")");
-                ProcessorInterface pr = (ProcessorInterface) obj;
+                ProcessorModule pr = (ProcessorModule) obj;
                 processors.put(procName,pr);
                 return pr;
             } else {
@@ -1351,7 +1351,7 @@ public class scanparser extends ProcessorModule {
         String tokje;
 
         Vector cmds;
-        ProcessorInterface tmpprocessor=null;
+        ProcessorModule tmpprocessor=null;
 
         part=dodollar(part,session,sp);
 
@@ -1543,7 +1543,7 @@ public class scanparser extends ProcessorModule {
     private String do_list(String cmd,String template, sessionInfo session,scanpage sp) throws ParseException {
         long ll1,ll2;
         StringBuffer rtn=new StringBuffer();
-        ProcessorInterface tmpprocessor=null;
+        ProcessorModule tmpprocessor=null;
         String command=null;
         String sorted=null;
         String sortedpos=null;
