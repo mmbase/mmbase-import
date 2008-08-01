@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.publish;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.services.Service;
 
@@ -44,5 +43,8 @@ public abstract class PublishService extends Service {
 
 
    public abstract String getRemoteUrl(String appPath);
+
+
+   public abstract Cloud getRemoteCloud(Cloud cloud);
 
 }

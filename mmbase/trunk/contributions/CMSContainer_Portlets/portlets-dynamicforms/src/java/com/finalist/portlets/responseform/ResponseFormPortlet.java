@@ -27,13 +27,12 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.remotepublishing.PublishManager;
-import org.mmbase.remotepublishing.util.PublishUtil;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
+import com.finalist.cmsc.services.publish.Publish;
 
 public class ResponseFormPortlet extends ContentPortlet {
 
@@ -197,7 +196,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
       RelationUtil.createRelation(responseForm, savedResponse, "posrel");
       if (ServerUtil.isLive()) {
-         PublishUtil.publishOrUpdateNode(savedResponse);
+         Publish.publish(savedResponse);
       }
 
       NodeManager savedFieldMgr = cloud.getNodeManager("savedfieldvalue");
@@ -209,7 +208,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                                        // form field from staging
          if (ServerUtil.isLive()) {
             Node liveFormFieldNode = cloud.getNode(key);
-            Node stagingFormFieldNode = PublishManager.getSourceNode(liveFormFieldNode);
+            Node stagingFormFieldNode = Publish.getRemoteNode(liveFormFieldNode);
             formFieldNumber = String.valueOf(stagingFormFieldNode.getNumber());
          }
          Node savedFieldValue = savedFieldMgr.createNode();
@@ -219,7 +218,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
          RelationUtil.createRelation(savedResponse, savedFieldValue, "posrel");
          if (ServerUtil.isLive()) {
-            PublishUtil.publishOrUpdateNode(savedFieldValue);
+            Publish.publish(savedFieldValue);
          }
 
       }

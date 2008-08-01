@@ -16,14 +16,17 @@ import javax.portlet.*;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.*;
-import org.mmbase.remotepublishing.PublishManager;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class PollPortlet extends ContentPortlet {
 
+   @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException {
       String action = request.getParameter(ACTION_PARAM);
       if (action == null) {
@@ -44,7 +47,7 @@ public class PollPortlet extends ContentPortlet {
                message.setIntValue("counter", counter);
                message.commit();
                if (ServerUtil.isLive()) {
-                  Node messageStaging = PublishManager.getSourceNode(message);
+                  Node messageStaging = Publish.getRemoteNode(message);
                   messageStaging.setIntValue("counter", counter);
                   messageStaging.commit();
                }
@@ -62,6 +65,7 @@ public class PollPortlet extends ContentPortlet {
    }
 
 
+   @Override
    public void processEdit(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       super.processEdit(request, response);
 

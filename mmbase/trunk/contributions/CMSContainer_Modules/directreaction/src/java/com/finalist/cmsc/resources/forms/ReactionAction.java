@@ -1,8 +1,6 @@
 package com.finalist.cmsc.resources.forms;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,19 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.remotepublishing.CloudManager;
+import org.apache.struts.action.*;
+import org.mmbase.bridge.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
-import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.services.publish.Publish;
 
 public class ReactionAction extends SearchAction {
 
@@ -65,10 +58,10 @@ public class ReactionAction extends SearchAction {
       Cloud cloud = cloudProvider.getCloud();
 
       /* The DirectReactions should use the staging cloud if we are
-       *  running in single-war-file mode. 
+       *  running in single-war-file mode.
        */
       try{
-    	  Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
+    	    Cloud remoteCloud = Publish.getRemoteCloud(cloud);
           return remoteCloud;	//In case there is a live.server
       } catch(NoClassDefFoundError e){
     	  return cloud;			//In case there is only a staging (single) server
@@ -76,11 +69,13 @@ public class ReactionAction extends SearchAction {
    }
 
 
+   @Override
    public String getRequiredRankStr() {
       return null;
    }
 
 
+   @Override
    protected void addConstraints(SearchForm searchForm, NodeManager nodeManager,
          QueryStringComposer queryStringComposer, NodeQuery query) {
       ReactionForm form = (ReactionForm) searchForm;
