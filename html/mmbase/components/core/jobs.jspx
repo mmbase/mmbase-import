@@ -12,27 +12,22 @@
   <div
       class="mm_c c_core b_jobs ${requestScope.className}"
       id="${requestScope.componentId}">
+    <p>
+      This is an overview of the several ThreadPools which are used in MMBase, and which are collected
+      <a href="http://www.mmbase.org/mm/multiproject/mmbase/xref/org/mmbase/util/ThreadPools.html">in org.mmbase.util.ThreadPools</a>
+    </p>
     <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
     <table summary="Jobs statistics" border="0" cellspacing="0" cellpadding="3">
       <caption>Jobs statistics</caption>
-      <tr>
-        <th>Executor</th><th>#Active</th><th>#Completed</th><th>Pool size</th><th>Queue</th>
-      </tr>
-      <tr>
-        <th>Scheduler</th>
-        <jsp:scriptlet>ThreadPoolExecutor executor = (ThreadPoolExecutor) ThreadPools.scheduler;</jsp:scriptlet>
-        <jsp:directive.include file="job.jspf" />
-      </tr>
-      <tr>
-        <th>Filters</th>
-        <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.filterExecutor;</jsp:scriptlet>
-        <jsp:directive.include file="job.jspf" />
-      </tr>
-      <tr>
-        <th>Jobs</th>
-        <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.jobsExecutor;</jsp:scriptlet>
-        <jsp:directive.include file="job.jspf" />
-      </tr>
+      <tr><th colspan="5">Scheduler</th></tr>
+      <jsp:scriptlet>ThreadPoolExecutor executor = (ThreadPoolExecutor) ThreadPools.scheduler;</jsp:scriptlet>
+      <jsp:directive.include file="job.jspf" />      
+      <tr><th colspan="5">Filters</th></tr>
+      <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.filterExecutor;</jsp:scriptlet>
+      <jsp:directive.include file="job.jspf" />
+      <tr><th colspan="5">Jobs</th></tr>
+      <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.jobsExecutor;</jsp:scriptlet>
+      <jsp:directive.include file="job.jspf" />
     </table>
 
   </div>
