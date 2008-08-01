@@ -16,7 +16,13 @@
           <th class="listHeader">&amp;nbsp;</th>
           <mm:node number="$education">
             <mm:relatednodes type="learnblocks" path="posrel,learnblocks" id="learnblocks" orderby="posrel.pos">
-              <th class="listHeader"><di:translate key="assessment.period" /><mm:index /></th>
+              <th class="listHeader">
+                <mm:field name="name" />
+                <!--
+                    <br />
+                <di:translate key="assessment.period" /><jsp:text> </jsp:text><mm:index />
+                -->
+              </th>
             </mm:relatednodes>
           </mm:node>
         </tr>
@@ -36,10 +42,10 @@
                             title="assessment.show.problems"
                             onclick="toggle(${class})"
                             id="toggle_image${class}" />
-
+                    <jsp:text> </jsp:text>
                     <mm:field name="name" node="class" />
                   </th>
-                  <c:forEach begin="0" end="${fn:length(learnblocks)}">
+                  <c:forEach begin="1" end="${fn:length(learnblocks)}">
                     <th class="listHeader">&amp;nbsp;</th>
                   </c:forEach>
                 </tr>
