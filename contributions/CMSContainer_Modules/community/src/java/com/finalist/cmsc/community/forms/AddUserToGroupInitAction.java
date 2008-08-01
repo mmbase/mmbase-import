@@ -1,18 +1,12 @@
 package com.finalist.cmsc.community.forms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.action.*;
 
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
@@ -22,6 +16,7 @@ import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.Authority;
 
 public class AddUserToGroupInitAction extends AbstractCommunityAction{
+   @Override
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response)
     throws Exception{
       SearchForm searchform = (SearchForm) actionForm;
@@ -29,9 +24,9 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
       int totalCount = 0;
       List<Authority> authorities = new ArrayList<Authority>();
-      
-      
-      if(!StringUtil.isEmptyOrWhitespace(searchform.getGroup())){
+
+
+      if(StringUtils.isNotBlank(searchform.getGroup())){
          //have conditons searching
          authorities.clear();
          HashMap map = new HashMap();
@@ -41,7 +36,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
             totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,holder);
          }
       }else{
-         //no conditions search         
+         //no conditions search
          //need authId from the last jsp
     	 if(searchform.getChk_()!=null){
          StringBuffer userAllId = new StringBuffer();
@@ -55,12 +50,13 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
          authorities = getAuthorityService().getAllAuthorities(holder);
          totalCount = getAuthorityService().countAllAuthorities();
       }
-      if(authorities!=null)
+      if(authorities!=null) {
          request.setAttribute("groupForShow", convertAuthrityTOVO(authorities));
+      }
          request.setAttribute("totalCount", totalCount);
          removeFromSession(request,searchform);
          return actionMapping.findForward("success");
-      
+
    }
    private List<GroupForShowVO> convertAuthrityTOVO(List<Authority> authorities){
       List<GroupForShowVO> groupForShow = new ArrayList<GroupForShowVO>();
