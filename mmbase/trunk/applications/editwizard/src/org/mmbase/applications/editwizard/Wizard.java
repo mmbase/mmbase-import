@@ -34,7 +34,7 @@ import java.io.*;
 
 import java.util.*;
 
-import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.xml.transform.TransformerException;
 
@@ -47,7 +47,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.165 2008-08-01 07:57:26 michiel Exp $
+ * @version $Id: Wizard.java,v 1.166 2008-08-01 16:31:18 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -168,11 +168,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param cloud the Cloud to use
      * @throws WizardException when wizard creation failed
      */
-    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
+    public Wizard(HttpServletRequest request, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
         wizardConfig.objectNumber = dataid;
         wizardConfig.wizard = wizardname;
-        initialize(context, uri, wizardConfig, cloud);
+        initialize(request, uri, wizardConfig, cloud);
     }
 
     /**
@@ -184,9 +184,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param cloud the Cloud to use
      * @throws WizardException when wizard creation failed
      */
-    public Wizard(String context, URIResolver uri,
+    public Wizard(HttpServletRequest request, URIResolver uri,
                   Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
-        initialize(context, uri, wizardConfig, cloud);
+        initialize(request, uri, wizardConfig, cloud);
     }
 
     public int getByteSize() {
@@ -201,8 +201,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             sizeof.sizeof(constraints);
     }
 
-    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
-        context = c;
+    private void initialize(HttpServletRequest request, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
+        context = request.getContextPath();
         uriResolver = uri;
         constraints = Utils.parseXML("<constraints/>");
 
@@ -217,7 +217,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         variables.put("username", cloud.getUser().getIdentifier());
 
         // actually load the wizard
-        loadWizard(wizardConfig);
+        loadWizard(wizardConfig, request);
     }
 
     public void setSessionId(String s) {
@@ -377,7 +377,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @throws WizardException when wizard loading failed
      */
-    protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException {
+    protected void loadWizard(Config.WizardConfig wizardConfig, HttpServletRequest request) throws WizardException {
         if (wizardConfig.wizard == null) {
             throw new WizardException("Wizardname may not be null");
         }
@@ -407,7 +407,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         storeConfigurationAttributes(wizardConfig);
 
         // load wizard schema
-        loadSchema(wizardSchemaFile); // expanded filename of the wizard
+        loadSchema(wizardSchemaFile, request); // expanded filename of the wizard
 
 
         // If the given dataid=new, we have to create a new object first, given
@@ -493,7 +493,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param req the ServletRequest contains the name-value pairs received through the http connection
      * @throws WizardException when request processing failed
      */
-    public void processRequest(ServletRequest req) throws WizardException {
+    public void processRequest(HttpServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
 
         if ((curform != null) && !curform.equals("")) {
@@ -575,7 +575,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @see #processRequest
      */
-    private void storeValues(ServletRequest req) throws WizardException {
+    private void storeValues(HttpServletRequest req) throws WizardException {
         Enumeration<String> list = req.getParameterNames();
         log.debug("Synchronizing editor data, using the request");
 
@@ -653,7 +653,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
     }
 
-    private String buildDate(ServletRequest req, String name) {
+    private String buildDate(HttpServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
@@ -668,7 +668,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
     }
 
-    private String buildTime(ServletRequest req, String name) {
+    private String buildTime(HttpServletRequest req, String name) {
         try {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
@@ -683,7 +683,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
     }
 
-    private String buildDateTime(ServletRequest req, String name) {
+    private String buildDateTime(HttpServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
@@ -701,7 +701,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
     }
 
-    private String buildDuration(ServletRequest req, String name) {
+    private String buildDuration(HttpServletRequest req, String name) {
         try {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
@@ -1127,13 +1127,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param wizardSchemaFile Url to schema file
      * @throws WizardException when schema loading failed
      */
-    private void loadSchema(URL  wizardSchemaFile) throws WizardException {
+    private void loadSchema(URL  wizardSchemaFile, HttpServletRequest request) throws WizardException {
         schema = wizardSchemaCache.getDocument(wizardSchemaFile);
 
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            List<URL> dependencies = resolveIncludes(schema.getDocumentElement());
+            List<URL> dependencies = resolveIncludes(schema.getDocumentElement(), request);
             resolveShortcuts(schema.getDocumentElement(), true);
 
             wizardSchemaCache.put(wizardSchemaFile, schema, dependencies);
@@ -1162,7 +1162,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @throws WizardException when included urls failed to load
      * @returns    A list of included files.
      */
-    private List<URL> resolveIncludes(Node node) throws WizardException{
+    private List<URL> resolveIncludes(Node node, HttpServletRequest request) throws WizardException{
         List<URL> result = new ArrayList<URL>();
 
         Document targetdoc = node.getOwnerDocument();
@@ -1182,21 +1182,22 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     for (Block b : bt.getBlocks()) {
                         log.info("Including " + b);
                         Renderer body = b.getRenderer(Renderer.Type.valueOf(render));
-                        Parameters params = b.createParameters();
+                        if (! body.equals(Renderer.Type.valueOf(render).getEmpty(b))) {
+                            Parameters params = b.createParameters();
 
-                        //fillStandardParameters(params);
+                            params.setIfDefined(Parameter.REQUEST, request);
 
-                        Framework fw = Framework.getInstance();
-                        if (fw == null) throw new WizardException("No MMBase Framework found");
-                        Parameters frameworkParams = fw.createParameters();
-                        //fillStandardParameters(frameworkParams);
-                        try {
-                            Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, Renderer.WindowState.NORMAL, Wizard.class);
-                            parent.insertBefore(targetdoc.importNode(doc.getDocumentElement(), true), blockElement);
-                        } catch (FrameworkException fwe) {
-                            throw new WizardException(fwe);
+                            Framework fw = Framework.getInstance();
+                            if (fw == null) throw new WizardException("No MMBase Framework found");
+                            Parameters frameworkParams = fw.createParameters();
+                            frameworkParams.setIfDefined(Parameter.REQUEST, request);
+                            try {
+                                Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, Renderer.WindowState.NORMAL, Wizard.class);
+                                parent.insertBefore(targetdoc.importNode(doc.getDocumentElement(), true), blockElement);
+                            } catch (FrameworkException fwe) {
+                                throw new WizardException(fwe);
+                            }
                         }
-
                     }
                 }
                 parent.removeChild(blockElement);
@@ -1264,7 +1265,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     }
 
                     // recurse!
-                    result.addAll(resolveIncludes(externalPart));
+                    result.addAll(resolveIncludes(externalPart, request));
 
                     // place loaded external part in parent...
                     Node parent = referer.getParentNode();
@@ -2095,7 +2096,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param req The ServletRequest where the commands (name/value pairs) reside.
      * @throws WizardException when failed to process command
      */
-    private void processCommands(ServletRequest req) throws WizardException {
+    private void processCommands(HttpServletRequest req) throws WizardException {
         log.debug("processing commands");
         mayBeClosed = false;
         startWizard = false;
