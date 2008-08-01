@@ -71,14 +71,12 @@
       <mm:node number="${education}">
         <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
           <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
-            <mm:listrelationscontainer role="classrel" type="people">
-              <mm:addnode element="people" number="$user"/>
-              <mm:listrelations>
-                <mm:relatednodes type="popfeedback">
-                  <mm:node id="feedback" />
-                </mm:relatednodes>
-              </mm:listrelations>
-            </mm:listrelationscontainer>
+
+            <mm:relation role="classrel" to="${user}">
+              <mm:relatednodes type="popfeedback">
+                <mm:node id="feedback" />
+              </mm:relatednodes>
+            </mm:relation>
 
             <mm:notpresent referid="feedback">
               &amp;nbsp;
