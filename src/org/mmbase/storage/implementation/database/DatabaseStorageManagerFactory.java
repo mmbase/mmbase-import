@@ -13,7 +13,6 @@ import java.sql.*;
 import java.util.StringTokenizer;
 
 
-import javax.naming.*;
 import javax.sql.DataSource;
 import java.io.*;
 import javax.servlet.ServletContext;
@@ -42,7 +41,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.53 2008-04-14 17:18:22 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.54 2008-08-01 22:15:08 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -157,25 +156,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @since MMBase-1.8
      */
     protected DataSource createDataSource(File binaryFileBasePath) {
-        DataSource ds = null;
-        // get the Datasource for the database to use
-        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
-        // is stored in the mmbaseroot module configuration file
-        String dataSourceURI = mmbase.getInitParameter("datasource");
-        if (dataSourceURI != null) {
-            try {
-                String contextName = mmbase.getInitParameter("datasource-context");
-                if (contextName == null) {
-                    contextName = "java:comp/env";
-                }
-                log.service("Using configured datasource " + dataSourceURI);
-                Context initialContext = new InitialContext();
-                Context environmentContext = (Context) initialContext.lookup(contextName);
-                ds = (DataSource)environmentContext.lookup(dataSourceURI);
-            } catch(NamingException ne) {
-                log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
-            }
-        }
+        DataSource ds = mmbase.getDataSource();
+
         if (ds == null) {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
