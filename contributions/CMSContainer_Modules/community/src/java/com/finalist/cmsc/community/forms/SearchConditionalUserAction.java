@@ -54,26 +54,29 @@ public class SearchConditionalUserAction extends DispatchAction {
    }
 
 
-   public ActionForward listGroupMembers(ActionMapping actionMapping, ActionForm actionForm,
-                                          HttpServletRequest request, HttpServletResponse httpServletResponse)
-            throws Exception {
+   public ActionForward listGroupMembers(ActionMapping actionMapping,
+			ActionForm actionForm, HttpServletRequest request,
+			HttpServletResponse httpServletResponse) throws Exception {
+		SearchForm searchform = (SearchForm) actionForm;
 
-      setPagingInformation(request);
-      Map<String, String> map = getParameterMap(actionForm);
+		Map<String, String> map = getParameterMap(actionForm);
 
-      String groupName = request.getParameter("groupName");
+		String groupName = request.getParameter("groupName");
+		String[] authIds = searchform.getChk_();
+		if (null != authIds) {
+			removeAuthorityFromUser(groupName, authIds);
+		}
+		setPagingInformation(request);
+		map.put("group", groupName);
+		map.put("strict", "strict");
+		List<Person> persons = personService.getAssociatedPersons(map);
+		int totalCount = personService.getAssociatedPersonsNum(map);
 
-      map.put("group", groupName);
-      map.put("strict", "strict");
+		setSharedAttributes(request, persons, totalCount);
 
-      List<Person> persons = personService.getAssociatedPersons(map);
-      int totalCount = personService.getAssociatedPersonsNum(map);
-
-      setSharedAttributes(request, persons, totalCount);
-
-      request.setAttribute("groupName", groupName);
-      return actionMapping.findForward("group");
-   }
+		request.setAttribute("groupName", groupName);
+		return actionMapping.findForward("group");
+	}
    
    private List<PersonVO> convertToVO(List<Person> persons) {
       List<PersonVO> perShow;
@@ -117,4 +120,11 @@ public class SearchConditionalUserAction extends DispatchAction {
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
       holder.setDefaultSort("person.id","desc");
    }
+   private void removeAuthorityFromUser(String groupName, String[] authIds) {
+		for (String authId : authIds) {
+			if (null!=authId) {
+				authenticationService.removeAuthenticationFromAuthority(authId, groupName);
+			}			
+		}
+	}
 }
