@@ -1,7 +1,4 @@
-<%@include file="globals.jsp"
-%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"
-%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
-%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@include file="globals.jsp"%>
 
 <mm:content type="text/html" encoding="UTF-8" expires="0">
    <cmscedit:head title="reactions.title">
