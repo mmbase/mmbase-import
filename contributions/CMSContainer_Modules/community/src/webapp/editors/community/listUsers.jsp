@@ -30,10 +30,10 @@
                style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message
                   key="view.new.user"/>
             </a>
-         <p>
-            <html:form action="/editors/community/SearchConditionalUser.do" method="post">
-               <%@include file="search_user_form_table.jspf" %>
-            </html:form>
+         </p>
+         <html:form action="/editors/community/SearchConditionalUser.do" method="post">
+            <%@include file="search_user_form_table.jspf" %>
+         </html:form>
       </div>
    </div>
 
@@ -46,7 +46,7 @@
          <input type="button" id="foo" value="test"/>
 
          <form action="${addGroup}" method="post" name="selectform" id="selectform">
-            <input type="submit" value="add To Group" name="submitButton" onclick="return addToGroup()"/>
+            <input type="submit" value="<fmt:message key="community.search.addtogroup"/>" name="submitButton" onclick="return addToGroup()"/>
             <%@ include file="userlist_table.jspf" %>
          </form>
       </div>
