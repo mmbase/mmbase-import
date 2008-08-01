@@ -5,6 +5,7 @@
 <html>
    <cmscedit:head title="index.title">
       <script src="../repository/search.js" type="text/javascript"></script>
+      <link href="<c:url value="/editors/css/newsletter.css"/>" rel="stylesheet" type="text/css">
    </cmscedit:head>
 
    <body>
@@ -26,7 +27,7 @@
    <div class="editor">
       <div style="padding-left:10px;">
       <p>
-         <a href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/type/email_add.png'/>) left center no-repeat" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
+         <a class="addemail" href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
             <fmt:message key="newsletter.publication.search.linkterm"/>
          </a>
       </p>

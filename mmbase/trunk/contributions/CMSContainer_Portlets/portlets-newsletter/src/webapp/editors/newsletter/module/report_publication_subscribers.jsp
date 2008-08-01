@@ -6,6 +6,7 @@
 <html>
    <cmscedit:head title="index.title">
       <script src="../repository/search.js" type="text/javascript"></script>
+      <link href="<c:url value="/editors/css/newsletter.css"/>" rel="stylesheet" type="text/css">
    </cmscedit:head>
    <body>
    <edit:ui-tabs>
@@ -26,12 +27,20 @@
    <div class="editor">
       <div style="padding-left:10px;">
       <p>
-         <a href="../community/SearchConditionalUser.do?newsletterId=${requestScope.newsletterId}&method=subscribeNewsletters" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/type/email_add.png'/>) left center no-repeat" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
+         <c:url var="newsubscriberlink" value="/editors/community/SearchConditionalUser.do">
+            <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
+            <c:param name="method" value="searchCandidateSubscriber"/>
+         </c:url>
+         <a class="addemail" href="${newsubscriberlink}" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
             <fmt:message key="newsletter.publication.link.newsubscriber"/>
          </a>
       </p>
       <p>
-         <a href="../community/userAddInitAction.do?newsletterId=${requestScope.newsletterId}&forward=newslettersubscription" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/type/email_add.png'/>) left center no-repeat" title="<fmt:message key='newsletter.publication.link.newuser'/>">
+         <c:url var="newuserlink" value="/editors/community/userAddInitAction.do">
+            <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
+            <c:param name="forward" value="newslettersubscription"/>
+         </c:url>
+         <a class="addemail" href="${newuserlink}" title="<fmt:message key='newsletter.publication.link.newuser'/>">
             <fmt:message key="newsletter.publication.link.newuser"/>
          </a>
       </p>
