@@ -1,1 +1,4 @@
-./email/email.xml
+email/emails.xml
+email/email.xml
+email/mailboxes.xml
+email/mailrule.xml
