@@ -2,27 +2,21 @@
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setBundle basename="cmsc-community" scope="request" />
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <cmscedit:head title="reactions.title"></cmscedit:head>
 
-<div class="tabs">
-   <div class="tab">
-      <div class="body">
-         <div>
-            <a href="${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do">
-               Users
-            </a>
-         </div>
-      </div>
-   </div>
-   <div class="tab_active">
-      <div class="body">
-         <div>
-            <a href="#">
-               Groups
-            </a>
-         </div>
-      </div>
-   </div>
+
+<edit:ui-tabs>
+      <edit:ui-tab key="community.search.users">
+         ${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do
+      </edit:ui-tab>      
+      <edit:ui-tab key="community.search.groups" active="true">
+         ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
+      </edit:ui-tab>
+</edit:ui-tabs>
+
 
 <div class="editor">
    <div style="padding-left:10px;">
@@ -42,7 +36,7 @@
                   <tr>&nbsp;</tr>
                   <tr>
                      <td style="width:150px">&nbsp;</td>
-                     <td><input type="submit" name="submit" value="Search"> </td>
+                     <td><input type="submit" name="submit" value="<fmt:message key="community.search.searchbatton"/>"> </td>
                   </tr>
                </tbody>
             </table>
@@ -55,22 +49,8 @@
    <div class="ruler_green"><div>&nbsp; result &nbsp;</div></div>
    <div class="body">
       <form action="">
-         <table border="0" style="padding-left:10px;">
-         <edit:ui-table items="${results}" var="result" size="${totalCount}" requestURI="/editors/community/searchConditionalGroupAction.do">
-         <edit:ui-tcolumn title="">&nbsp;
-               <a href="./SearchConditionalUser.do?groupName=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16"></a>
-               <a href="./deleteGroupAction.do?groupid=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16"></a>
-         </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.search.groupname" sort="group">
-            <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do">
-               <c:param name="groupName" value="${result.groupName}"/>
-               <c:param name="method" value="listGroupMembers"/>
-            </c:url>
-               <a href="${userActionUrl}">${result.groupName}</a>
-          </edit:ui-tcolumn>
-          <edit:ui-tcolumn titlekey="community.search.users" >
-               ${result.users }
-          </edit:ui-tcolumn>
-          </edit:ui-table></form>      
+        <%@ include file="grouplist_table.jspf"%> 
+       </form>      
    </div>
 </div>
+</mm:content>
