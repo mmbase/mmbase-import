@@ -17,12 +17,13 @@ import org.mmbase.cache.Cache;
 
 import org.mmbase.applications.dove.*;
 
-import org.mmbase.util.ResourceWatcher;
-import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.*;
+import org.mmbase.framework.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.functions.*;
 
 import java.util.regex.*;
 
@@ -46,7 +47,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.164 2008-07-21 13:09:01 michiel Exp $
+ * @version $Id: Wizard.java,v 1.165 2008-08-01 07:57:26 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -569,7 +570,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Internal method which is used to store the passed values. this method is called by processRequest.
-     * @param req http servlet request containing new values
+     * @param req http servlet requets containing new values
      * @throws WizardException when failed to store data in the wizard data structure
      *
      * @see #processRequest
@@ -1161,14 +1162,51 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @throws WizardException when included urls failed to load
      * @returns    A list of included files.
      */
-    private List<URL> resolveIncludes(Node node) throws WizardException {
+    private List<URL> resolveIncludes(Node node) throws WizardException{
         List<URL> result = new ArrayList<URL>();
+
+        Document targetdoc = node.getOwnerDocument();
+
+        /// resolve blocks
+        NodeList blocks= Utils.selectNodeList(node,
+                                              "//blocks");
+        if (blocks != null) {
+            for (int i = 0; i < blocks.getLength(); i++) {
+                Element blockElement = (Element) blocks.item(i);
+                Node parent = blockElement.getParentNode();
+
+                for (Block.Type bt : ComponentRepository.getInstance().getBlockClassification(blockElement.getAttribute("classification"))) {
+                    String render = blockElement.getAttribute("render").toUpperCase();
+                    if ("".equals(render)) render = "BODY";
+
+                    for (Block b : bt.getBlocks()) {
+                        log.info("Including " + b);
+                        Renderer body = b.getRenderer(Renderer.Type.valueOf(render));
+                        Parameters params = b.createParameters();
+
+                        //fillStandardParameters(params);
+
+                        Framework fw = Framework.getInstance();
+                        if (fw == null) throw new WizardException("No MMBase Framework found");
+                        Parameters frameworkParams = fw.createParameters();
+                        //fillStandardParameters(frameworkParams);
+                        try {
+                            Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, Renderer.WindowState.NORMAL, Wizard.class);
+                            parent.insertBefore(targetdoc.importNode(doc.getDocumentElement(), true), blockElement);
+                        } catch (FrameworkException fwe) {
+                            throw new WizardException(fwe);
+                        }
+
+                    }
+                }
+                parent.removeChild(blockElement);
+            }
+        }
 
         // Resolve references to elements in other wizards. This can be by inclusion
         // or extension.
         NodeList externalReferences = Utils.selectNodeList(node,
                                                            "//*[@include or @extends]");
-        Document targetdoc = node.getOwnerDocument();
 
         if (externalReferences != null) {
             for (int i = 0; i < externalReferences.getLength(); i++) {
