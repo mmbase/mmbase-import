@@ -92,11 +92,21 @@
                     </a>
                   </td>
                   <td>
-                    <b>
-                      <xsl:value-of select="field[1]" />
-                    </b>
-                    <br />
-                    <xsl:value-of select="field[2]" />
+                    <xsl:for-each select="field">
+                       <xsl:if test="string-length(text())>0">
+                          <xsl:choose>
+                             <xsl:when test="position() = 1">
+                             <b>
+                               <xsl:value-of select="." />
+                             </b>
+                             </xsl:when>
+                             <xsl:otherwise>
+                                <br />
+                                <xsl:value-of select="." />
+                             </xsl:otherwise>
+                          </xsl:choose>
+                       </xsl:if>
+                    </xsl:for-each>
                   </td>
                 </xsl:when>
                 <xsl:when test="@type=&apos;audioparts&apos;">
