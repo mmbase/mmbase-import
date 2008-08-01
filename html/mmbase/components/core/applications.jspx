@@ -53,7 +53,7 @@
       <mm:import id="installedversion"><mm:function module="mmadmin" name="INSTALLEDVERSION" referids="application" /></mm:import>
     
       <h3>Application <mm:write referid="application" /></h3>
-      <p><mm:function module="mmadmin" name="DESCRIPTION" referids="application" /></p>
+      <p><mm:function module="mmadmin" name="DESCRIPTION" referids="application" escape="none" /></p>
       
       <table border="0" cellspacing="0" cellpadding="3">
         <caption>Install the application <mm:write referid="application" />.</caption>
