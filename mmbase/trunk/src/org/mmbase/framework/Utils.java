@@ -21,10 +21,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.1 2008-07-31 16:43:33 michiel Exp $
+ * @version $Id: Utils.java,v 1.2 2008-08-01 16:29:07 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
+    private static final Logger log = Logging.getLoggerInstance(Utils.class);
 
     private Utils() {
         // this class has no instances
@@ -36,6 +37,9 @@ public abstract class Utils {
         boolean xsd = false;
         Writer w = new StringWriter();
         fw.render(renderer, blockParameters, frameworkParameters, w, state);
+        if (log.isDebugEnabled()) {
+            log.debug("Parsing " + w.toString() + " of " +  renderer + " of " + renderer.getBlock());
+        }
         InputSource source = new InputSource(new StringReader(w.toString()));
         XMLEntityResolver resolver = new XMLEntityResolver(true, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
