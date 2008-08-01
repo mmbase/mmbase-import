@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.59 2008-08-01 19:36:51 michiel Exp $
+ * @version $Id: JDBC.java,v 1.60 2008-08-01 21:12:52 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -78,6 +78,7 @@ public class JDBC extends ProcessorModule {
             },
             probeTime, probeTime, TimeUnit.MILLISECONDS);
         log.info("Module JDBC started (" + this + ")");
+        ThreadPools.identify(future, "JDBC Probe");
 
     }
 
