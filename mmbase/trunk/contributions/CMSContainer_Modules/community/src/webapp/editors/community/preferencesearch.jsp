@@ -47,7 +47,7 @@
 
    <mm:import externid="action">search</mm:import><%-- either: search of select --%>
 
-   <edit:ui-singletab key="community.preference.title"/>
+   <edit:ui-singletab key="community.preference.title" action="${actionUrl}?method=list&reload=true"/>
 
       <div class="editor" style="height:500px">
          <div style="padding-left:10px;">
