@@ -7,7 +7,7 @@
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 
 <form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:renderURL/>" target="_self">
-   <input name="action" value="subscribe"/>
+   <input name="action" type="hidden" value="subscribe"/>
 
    <div class="heading">
       <h3><fmt:message key="subscription.introduction.title"/></h3>
