@@ -24,10 +24,10 @@
       <div class="mainContent">
         <div class="contentBody">
           <di:hasrole role="student">
-            <di:hasrole role="coach">
+            <di:hasrole role="teacher">
               <form name="coachform" method="post">
                 <select name="coachmode"
-                        onChange="coachform.submit();">
+                        onchange="$('form[name =coachform]').submit();">
                   <mm:option value="true" compare="${coachmode}">
                     <di:translate key="assessment.overview_students" />
                   </mm:option>
