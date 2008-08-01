@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.45 2008-08-01 11:23:09 michiel Exp $
+ * @version $Id: SendMail.java,v 1.46 2008-08-01 12:32:49 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -466,7 +466,7 @@ public class SendMail extends AbstractSendMail {
         String body    = n.getStringValue("body");
         String subject = n.getStringValue("subject");
         String mimeType = n.getNodeManager().hasField("mimetype") ? n.getStringValue("mimetype") : null;
-        if (mimeType == null) mimeType = "text/html";
+        if (mimeType == null || "".equals(mimeType)) mimeType = "text/html";
 
         try {
 
@@ -701,6 +701,7 @@ public class SendMail extends AbstractSendMail {
         List<InternetAddress> remoteRecipients = new ArrayList<InternetAddress>();
         List<InternetAddress>  localRecipients = new ArrayList<InternetAddress>();
         if (onlyto != null) {
+            log.debug("Sending to " + onlyto);
             try {
                 InternetAddress[] recipients = InternetAddress.parse(onlyto);
                 for (InternetAddress recipient : recipients) {
@@ -716,8 +717,10 @@ public class SendMail extends AbstractSendMail {
         } else {
             String to = n.getStringValue("to");
             try {
+                log.debug("" + to);
                 InternetAddress[] recipients = InternetAddress.parse(to);
                 for (InternetAddress recipient : recipients) {
+                    log.debug(recipient);
                     if (isLocal(recipient)) {
                         localRecipients.add(recipient);
                     } else {
@@ -763,19 +766,14 @@ public class SendMail extends AbstractSendMail {
         }
 
         if (localRecipients.size() > 0) {
-            InternetAddress[] ia = new InternetAddress[localRecipients.size()];
-            for (int i=0; i<localRecipients.size(); i++) {
-                ia[i] = localRecipients.get(i);
-            }
-            sendLocalMail(ia, n);
+            sendLocalMail(localRecipients.toArray(new InternetAddress[]{}), n);
         }
 
         if (remoteRecipients.size() > 0) {
-            InternetAddress[] ia = new InternetAddress[remoteRecipients.size()];
-            for (int i=0; i<remoteRecipients.size(); i++) {
-                ia[i] = remoteRecipients.get(i);
-            }
-            sendRemoteMail(ia, n);
+            sendRemoteMail(remoteRecipients.toArray(new InternetAddress[]{}), n);
+        }
+        if (localRecipients.size() == 0 && remoteRecipients.size() == 0) {
+            log.service("Not mailing " + n + " because no recipients");
         }
 
         return true;
