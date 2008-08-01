@@ -18,7 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mmbase.module.ProcessorInterface;
+import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.sessionInfo;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.servlet.JamesServlet;
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.31 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: scanpage.java,v 1.32 2008-08-01 22:01:32 michiel Exp $
  */
 public class scanpage extends PageInfo {
     // logger
@@ -53,7 +53,7 @@ public class scanpage extends PageInfo {
      * This values is set and used by scanparser to determine the default
      * processor to call when interpreting LIST tags.
      */
-    public ProcessorInterface processor;
+    public ProcessorModule processor;
     /**
      * Object for accessing values sent by a form using
      * enctype multipart/form-data.

@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.mmbase.module.ProcessorInterface;
+import org.mmbase.module.ProcessorModule;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @application SCAN
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.9 2004-10-11 11:17:43 pierre Exp $
+* @version $Id: HTMLElement.java,v 1.10 2008-08-01 22:01:32 michiel Exp $
 *
 */
 public abstract class HTMLElement {
@@ -36,7 +36,7 @@ public abstract class HTMLElement {
     /**
     * The processor which will be called by the parse routine.
     */
-    protected ProcessorInterface processor = null;
+    protected ProcessorModule processor = null;
 
     /**
     * The value what will be put after the NAME= tag
@@ -163,7 +163,7 @@ public abstract class HTMLElement {
     /**
     * Calls the parser and returns the String returned by generate.
     */
-    protected String generateHTML(scanpage sp,ProcessorInterface proc, Vector macro) {
+    protected String generateHTML(scanpage sp,ProcessorModule proc, Vector macro) {
         log.debug("generateHTML");
         processor=proc;
         //this.user = user;
