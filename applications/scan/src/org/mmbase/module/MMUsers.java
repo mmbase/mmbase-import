@@ -24,13 +24,13 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.15 2008-06-13 09:59:44 nklasens Exp $
+ * @version $Id: MMUsers.java,v 1.16 2008-08-01 21:46:51 michiel Exp $
  */
 public class MMUsers extends ProcessorModule {
 
     private static Logger log = Logging.getLoggerInstance(MMUsers.class.getName());
 
-    private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
+    private PasswordGenerator pwgen = new PasswordGenerator ();
     private MMBase mmbase;
     private sessionsInterface sessions;
     private SendMailInterface sendMail;
