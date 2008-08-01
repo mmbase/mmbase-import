@@ -16,14 +16,40 @@ import org.mmbase.util.xml.UtilReader;
  * Generic MMBase Thread Pools
  *
  * @since MMBase 1.8
- * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.15 2008-08-01 20:17:18 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ThreadPools.java,v 1.16 2008-08-01 21:04:52 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
+    private static Map<Future, String> identifiers = Collections.synchronizedMap(new WeakHashMap<Future, String>());
+
     /**
-     * Generic Thread Pools which can be used by 'filters'.
+     * There is no way to identify the FutureTask objects returned in
+     * the getQueue methods of the executors.  This works around that.
+     * Used by admin pages. 
+     * @since MMBase-1.9
+     */
+    public static String identify(Future r, String s) {
+        return identifiers.put(r, s);
+    }
+    /**
+     * returns a identifier string for the given task.
+     * @since MMBase-1.9
+     */
+    public static String getString(Future r) {
+        String s = identifiers.get(r);
+        if (s == null) return "" + r;
+        return s;
+    }
+
+    /**
+     * Generic Thread Pools which can be used by 'filters'. Filters
+     * are short living tasks. This is mainly used by {@link
+     * org.mmbase.util.transformers.ChainedCharTransformer} (and only
+     * when transforming a Reader).
+     * 
+     * Code performing a similar task could also use this thread pool.
      */
     public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
 
@@ -46,7 +72,10 @@ public abstract class ThreadPools {
     }
 
     /**
-     * For jobs there are 'scheduled', and typically happen on larger time-scales.
+     * All kind of jobs that should happend in a seperat Thread can be
+     * executed by this executor. E.g. sending mail could be done by a
+     * jobs of this type.
+     * 
      */
     public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
 
@@ -56,6 +85,11 @@ public abstract class ThreadPools {
         });
 
     /**
+     * This executor is for repeating tasks. E.g. every running
+     * {@link org.mmbase.module.Module}  has a  {@link
+     * org.mmbase.module.Module#maintainance} which is scheduled to
+     * run every hour.
+     *
      * @since MMBase-1.9
      */
     public static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
