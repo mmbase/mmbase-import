@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.5 2008-02-05 15:05:36 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.6 2008-08-01 15:59:23 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -41,32 +41,27 @@ public class PeopleClassFunction {
         if (foundClasses.size() > 1) {
             log.debug("more classes related! for node " + node.getNumber());
             claz = null;
-            try {
-                Date now = org.mmbase.util.DynamicDate.eval(org.mmbase.util.DynamicDate.getInstance("tohour"));
-                NodeIterator ni = foundClasses.nodeIterator();
-                CLASS:
-                while (ni.hasNext()) {
-                    claz = ni.nextNode();
-                    log.debug("considering " + claz);
-                    NodeList mmevents = claz.getRelatedNodes("mmevents");
-                    NodeIterator ei = mmevents.nodeIterator();
-                    if (ei.hasNext()) {
-                        Node event = ei.nextNode();
-                        if (event.getDateValue("start").before(now)) {
-                            log.debug(" " + claz + " was started so using this one");
-                            break CLASS;
-                        } else {
-                            log.debug(event.getDateValue("start") + " is after " + now);
-                        }
+            Date now = org.mmbase.util.DynamicDate.eval("tohour");
+            NodeIterator ni = foundClasses.nodeIterator();
+            CLASS:
+            while (ni.hasNext()) {
+                claz = ni.nextNode();
+                log.debug("considering " + claz);
+                NodeList mmevents = claz.getRelatedNodes("mmevents");
+                NodeIterator ei = mmevents.nodeIterator();
+                if (ei.hasNext()) {
+                    Node event = ei.nextNode();
+                    if (event.getDateValue("start").before(now) && event.getDateValue("stop").after(now)) {
+                        log.debug(" " + claz + " was started and not stopped so using this one");
+                        break CLASS;
                     } else {
-                        log.debug("No mmevents coupled to " + claz);
+                        log.debug(event.getDateValue("start") + " is after " + now);
                     }
+                } else {
+                    log.debug("No mmevents coupled to " + claz);
+                        // what does that mean?
                 }
-            } catch (org.mmbase.util.dateparser.ParseException pe) {
-                // could  not happen
-                log.error(pe);
             }
-
         } else if (foundClasses.size() == 1) {
             claz = foundClasses.getNode(0);
         } else {
