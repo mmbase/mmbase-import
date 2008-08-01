@@ -7,12 +7,13 @@
       description="Find copybook, for current, or given student"
       />
   <jsp:directive.attribute name="student"    />
+  <jsp:directive.attribute name="classNumber"    />
 
   <mm:node number="${empty student ? user : student}">
 
     <!-- Direct relation people->classrel->education -->
     <c:choose>
-      <c:when test="${empty class}">
+      <c:when test="${empty class and empty classNumber}">
         <mm:relation role="classrel" to="${education}">
           <mm:relatednodes type="copybooks">
             <jsp:doBody />
@@ -21,8 +22,10 @@
       </c:when>
       <c:otherwise>
         <!-- people->classrel->class->related->education -->
-        <mm:relation role="classrel" to="${class}">
-          <jsp:doBody />
+        <mm:relation role="classrel" to="${empty classNumber ? class : classNumber}">
+          <mm:relatednodes type="copybooks">
+            <jsp:doBody />
+          </mm:relatednodes>
         </mm:relation>
       </c:otherwise>
     </c:choose>
