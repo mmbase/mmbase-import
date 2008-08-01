@@ -63,7 +63,7 @@ import java.util.concurrent.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.52 2008-07-31 14:31:01 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.53 2008-08-01 21:21:41 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -94,6 +94,11 @@ public abstract class FileWatcher {
             scheduler =  new ScheduledThreadPoolExecutor(1);
         }
         future = scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
+        try {
+            Class.forName("org.mmbase.util.ThreadPools").getMethod("identify", Future.class, String.class).invoke(null, future, "File Watcher");
+        } catch (Exception cnfe) {
+            // never mind
+        }
     }
 
 
