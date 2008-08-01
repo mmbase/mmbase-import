@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.14 2008-02-01 14:13:01 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.15 2008-08-01 15:58:09 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -96,7 +96,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
      * objects to provider and education objects. This method does the needed queries.
      */
     protected Node selectByRelatedUrl(NodeList nodes, String url) {
-        log.debug("Select  for " + url);
+        log.debug("Select for " + url);
         NodeIterator ni = nodes.nodeIterator();
         while (ni.hasNext()) {
             Node suggestion = ni.nextNode();
@@ -153,7 +153,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         if (session == null) {
             return ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         } else {
-            log.debug("from session");
+            log.trace("from session");
             Object c = session.getAttribute(getSessionName());
             if (c != null) {
                 if (c instanceof Cloud) {
