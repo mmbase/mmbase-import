@@ -1,7 +1,6 @@
 package com.finalist.cmsc.struts;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -79,21 +78,29 @@ public class WizardInitAction extends MMBaseFormlessAction {
             return ret;
          }
       }
-      session.setAttribute("contenttype", contenttype);
 
       String wizardConfigName = request.getParameter("wizardConfigName");
       if (StringUtils.isEmpty(wizardConfigName)) {
          NodeList list = null;
          NodeManager manager = cloud.getNodeManager("editwizards");
          list = manager.getList("nodepath = '" + contenttype + "'", null, null);
-         if (list.isEmpty()) {
-            throw new IllegalStateException("Unable to find a wizard for contenttype " + contenttype + " or objectnumber "
-                  + objectNumber);
+         if (!list.isEmpty()) {
+            Node wizard = list.getNode(0);
+            wizardConfigName = wizard.getStringValue("wizard");
          }
-
-         Node wizard = list.getNode(0);
-         wizardConfigName = wizard.getStringValue("wizard");
+         else {
+            String typeWizard = "config/" + contenttype + "/" + contenttype;
+            if (editwizardExists(typeWizard)) {
+               wizardConfigName = typeWizard;
+            }
+            else {
+               throw new IllegalStateException("Unable to find a wizard for contenttype " + contenttype + " or objectnumber "
+                     + objectNumber);
+            }
+         }
       }
+
+      session.setAttribute("contenttype", contenttype);
 
       String sessionkey = request.getParameter("sessionkey");
       if (sessionkey == null || sessionkey.length() == 0) {
@@ -119,5 +126,18 @@ public class WizardInitAction extends MMBaseFormlessAction {
       ActionForward ret = new ActionForward(actionForward);
       ret.setRedirect(true);
       return ret;
+   }
+
+
+   private boolean editwizardExists(String wizard) {
+      String wizardSchema = "/editors/" + wizard + ".xml";
+      Set<String> webInfResources = this.getServlet().getServletContext().getResourcePaths(wizardSchema);
+      /*
+       * @see javax.servlet.ServletContext#getResourcePaths(String) getResourcePaths returns a Set
+       *      containing the directory listing, or null if there are no resources in the web
+       *      application whose path begins with the supplied path. we are using a full path instead
+       *      of a partial path. webInfResources.isEmpty() is true when the resource exists
+       */
+      return webInfResources != null;
    }
 }
