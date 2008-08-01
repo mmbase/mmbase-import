@@ -1,5 +1,5 @@
 <%@ page import="org.mmbase.module.core.MMBase" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <div
 	class="mm_c c_core b_connections ${requestScope.componentClassName}"
@@ -30,7 +30,7 @@
   </table>
   <p>
     <mm:link page="databases">
-      <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
+      <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" /></a>
       <a href="${_}">Return to Database Overview</a>
     </mm:link>
   </p>
