@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
+import org.mmbase.module.core.MMBase;
 
 
 import org.mmbase.util.logging.*;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.60 2008-08-01 21:12:52 michiel Exp $
+ * @version $Id: JDBC.java,v 1.61 2008-08-01 22:32:20 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -61,24 +62,33 @@ public class JDBC extends ProcessorModule {
 
     public void onload() {
         getProps();
-        getDriver();
-        loadSupport();
-        poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
-        poolHandler.setMaxLifeTime(maxLifeTime);
+        if (Module.getModule(MMBase.class, false).getDataSource() == null) {
+            getDriver();
+            loadSupport();
+            poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
+            poolHandler.setMaxLifeTime(maxLifeTime);
+        } else {
+            log.service("Not setting up poolhandler, because we will use data-source of application container");
+        }
     }
 
     /*
      * Initialize the properties and get the driver used
      */
     public void init() {
-        future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    JDBC.this.checkTime();
-                }
-            },
-            probeTime, probeTime, TimeUnit.MILLISECONDS);
-        log.info("Module JDBC started (" + this + ")");
-        ThreadPools.identify(future, "JDBC Probe");
+        if (Module.getModule(MMBase.class, false).getDataSource() == null) {
+            
+            future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+                        JDBC.this.checkTime();
+                    }
+                },
+                probeTime, probeTime, TimeUnit.MILLISECONDS);
+            log.info("Module JDBC started (" + this + ")");
+            ThreadPools.identify(future, "JDBC Probe");
+        } else {
+            log.service("Not setting up JDBC Probe, because we will use data-source of application container");
+        }
 
     }
 
@@ -103,8 +113,8 @@ public class JDBC extends ProcessorModule {
     public void unload() {
     }
     protected void shutdown() {
-        future.cancel(true);
-        poolHandler.shutdown();
+        if (future != null) future.cancel(true);
+        if (poolHandler != null) poolHandler.shutdown();
     }
 
     /**
