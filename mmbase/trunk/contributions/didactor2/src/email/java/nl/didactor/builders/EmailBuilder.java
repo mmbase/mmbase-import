@@ -14,7 +14,7 @@ import java.util.*;
  * This class handles objects of type 'emails'. When new emails are created,
  * it checks whether this email should be sent using the 'sendmail' module.
  *
- * @todo MM: It is not entirely clear to me why Didactor needs its own email builder
+ * @todo MM: It is entirely not clear to me why Didactor needs its own email builder
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
