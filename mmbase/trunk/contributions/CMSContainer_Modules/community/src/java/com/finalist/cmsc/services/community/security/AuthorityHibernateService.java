@@ -194,8 +194,8 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 			for(String m:members){
 				String[] names = m.split(" ");
 				if(names.length>2) continue;
-				if(i==0&&null==conditions&&conditions.containsKey("group"))strb.append(" where (");
-				if(i==0&&null!=conditions&&conditions.containsKey("group"))strb.append(" or (");
+				if(i==0&&null==conditions.get("group"))strb.append(" where (");
+				if(i==0&&null!=conditions.get("group"))strb.append(" or (");
 				if(i>0)strb.append("or(");
 				if (names.length == 2)
 					strb.append(" upper(concat(p.firstName ,p.lastName)) like'%" + names[0].toUpperCase()
