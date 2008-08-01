@@ -1,18 +1,12 @@
 package com.finalist.cmsc.community.forms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.action.*;
 
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
@@ -23,7 +17,8 @@ import com.finalist.cmsc.services.community.security.Authority;
 
 public class SearchConditionalGroupAction extends AbstractCommunityAction {
 
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	@Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		SearchGroupForm searchform = (SearchGroupForm) form;
@@ -50,11 +45,11 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 	private HashMap getParameterMap(SearchGroupForm searchform) {
 		HashMap map = new HashMap();
 
-		if (!StringUtil.isEmptyOrWhitespace(searchform.getMember())) {
+		if (StringUtils.isNotBlank(searchform.getMember())) {
 			map.put("username", searchform.processNames(searchform.getMember()));
 		}
 
-		if (!StringUtil.isEmptyOrWhitespace(searchform.getGroupname())) {
+		if (StringUtils.isNotBlank(searchform.getGroupname())) {
 			map.put("group", searchform.getGroupname());
 		}
 		return map;
@@ -83,7 +78,7 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 					group.setUsers("");
 				}
 				groupForShow.add(group);
-			}			
+			}
 		}
 		return groupForShow;
    }

@@ -1,18 +1,12 @@
 package com.finalist.cmsc.community.forms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.action.*;
 
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
@@ -23,31 +17,32 @@ import com.finalist.cmsc.services.community.security.Authority;
 
 public class EditUserToGroupAction extends AbstractCommunityAction{
 	/**响应add user to group这个提交键*/
-	
-	public ActionForward execute(ActionMapping actionMapping,ActionForm actionForm, HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	@Override
+   public ActionForward execute(ActionMapping actionMapping,ActionForm actionForm, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		SearchForm searchform = (SearchForm) actionForm;
-		
+
 		if (null == searchform.getOption() || null == searchform.getGroupName()) {
 			return actionMapping.findForward(CANCEL);
 		}
-		
+
 		String groupName = searchform.getGroupName();
 		String[] authIds = searchform.getChk_();
 		String forword = searchform.getOption();
-		
+
 		if ("remove".equals(forword)) {
 			removeAuthorityFromUser(groupName, authIds);
 			request.setAttribute("searchform", searchform);
 		}
 		if ("add".equals(forword)) {
-			
+
 			PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
 			int totalCount = 0;
 			List<Authority> authorities = new ArrayList<Authority>();
 
-			if (!StringUtil.isEmptyOrWhitespace(searchform.getGroup())) {
+			if (StringUtils.isNotBlank(searchform.getGroup())) {
 				// have conditons searching
-			
+
 				HashMap map = new HashMap();
 				map.put("group", searchform.getGroup());
 
@@ -55,7 +50,7 @@ public class EditUserToGroupAction extends AbstractCommunityAction{
 						map, holder);
 				totalCount = getAuthorityService().getAssociatedAuthoritiesNum(
 						map, holder);
-				
+
 			} else {
 				// no conditions search
 				// need authId from the last jsp
@@ -82,14 +77,14 @@ public class EditUserToGroupAction extends AbstractCommunityAction{
 
 		}
 		return actionMapping.findForward(forword);
-		
-		
+
+
 	}
 	private void removeAuthorityFromUser(String groupName, String[] authIds) {
 		for (String authId : authIds) {
 			if (null!=authId) {
 				getAuthenticationService().removeAuthenticationFromAuthority(authId, groupName);
-			}			
+			}
 		}
 	}
 	private List<GroupForShowVO> convertAuthrityTOVO(List<Authority> authorities){
@@ -115,6 +110,6 @@ public class EditUserToGroupAction extends AbstractCommunityAction{
 		}
 		return groupForShow;
 	}
-	
+
 }
 
