@@ -13,10 +13,18 @@
     <mm:import externid="feedback_n" required="true" />
     <mm:import externid="student" required="true" />
     <mm:import externid="coachmode" />
+    <mm:import externid="studentClass">
+      <mm:node referid="student">
+        <mm:relatednodes type="classes" max="1" orderby="number" directions="down">
+          <mm:field name="number" />
+        </mm:relatednodes>
+      </mm:node>
+    </mm:import>
 
     <mm:include page="navigation.jspx" />
 
     <div class="mainContent">
+
       <div class="contentBody">
         <mm:node number="$feedback_n">
           <mm:relatednodes type="classrel">
@@ -91,14 +99,7 @@
                     <!-- show answers to questions in final test -->
                     <mm:node referid="assessment_evaluationtest">
                       <mm:node referid="owner">
-
-                        <mm:compare referid="class" value="null">
-                          <mm:relatednodes type="classes">
-                            <mm:remove referid="class"/>
-                            <mm:import id="class"><mm:field name="number" /></mm:import>
-                          </mm:relatednodes>
-                        </mm:compare>
-                        <di:copybook student="${_node}">
+                        <di:copybook student="${_node}" classNumber="${studentClass}">
                           <mm:node id="copybookNo" />
                         </di:copybook>
                       </mm:node>
