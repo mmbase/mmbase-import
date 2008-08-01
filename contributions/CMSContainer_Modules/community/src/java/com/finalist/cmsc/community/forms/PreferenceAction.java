@@ -76,7 +76,6 @@ public class PreferenceAction extends DispatchAction {
          throws Exception {
 
       PreferenceForm preferenceForm = (PreferenceForm) form;
-      Object lastAction = request.getAttribute("isAddSuccess");
       Object isAdd = request.getAttribute("isAddSuccess");
       if(isAdd != null && isAdd.equals("true")){
          preferenceForm.clear();
@@ -93,8 +92,6 @@ public class PreferenceAction extends DispatchAction {
       
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
-            System.out.println("------------------>page="+request.getParameter("page"));
-      System.out.println("------------------>offset="+offset);
       
       /*pagingHolder.getSort();
       pagingHolder.getDir();*/
@@ -111,6 +108,7 @@ public class PreferenceAction extends DispatchAction {
       request.setAttribute("totalCount", totalCount);
       request.setAttribute("results", preferences);
       request.setAttribute("isList", "true");
+      request.setAttribute("page", pagingHolder.getPage());
       return mapping.findForward(FORWARD_SUCCESS);
    }
 }
