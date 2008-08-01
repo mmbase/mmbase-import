@@ -20,8 +20,8 @@
    </tr>
    <tr>
    <td></td>
-   <td><input type="submit" name="submitButton"  
-            value="<fmt:message key="community.preference.submit" />"/>   
+   <td><input type="button" name="submitButton"  
+            value="<fmt:message key="community.preference.submit" />" onclick="search()"/>   
   </td>
 </tr>
 </table>
