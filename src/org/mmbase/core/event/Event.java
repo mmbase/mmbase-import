@@ -12,10 +12,10 @@ import org.mmbase.module.core.MMBase;
 
 /**
  * This class is the base class for all mmbase events
- * 
+ *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.12 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: Event.java,v 1.13 2008-08-01 08:01:25 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -36,7 +36,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
         return machine;
     }
     public boolean isLocal() {
-        return MMBase.getMMBase().getMachineName().equals(machine);
+        return MMBase.getMachineName().equals(machine);
     }
 
 
