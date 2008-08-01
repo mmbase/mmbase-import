@@ -30,7 +30,7 @@
   </table>
   <p>
     <mm:link page="databases">
-      <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" /></a>
+      <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
       <a href="${_}">Return to Database Overview</a>
     </mm:link>
   </p>
