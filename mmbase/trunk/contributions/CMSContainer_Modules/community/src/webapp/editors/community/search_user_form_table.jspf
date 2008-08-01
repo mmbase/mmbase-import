@@ -18,7 +18,7 @@
       </tr>
       <tr>
          <td style="width:150px"></td>
-         <td><input type="submit" value="Search" name="submitButton"/></td>
+         <td><input type="submit" value="<fmt:message key="community.search.submit"/>" name="submitButton"/></td>
       </tr>
    </tbody>
 </table>

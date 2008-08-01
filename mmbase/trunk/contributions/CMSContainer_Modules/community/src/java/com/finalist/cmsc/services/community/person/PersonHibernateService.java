@@ -295,15 +295,15 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       if (conditions.containsKey("fullname")) {
          String[] names = conditions.get("fullname").toString().split(" ");
          if (names.length == 2) {
-            strb.append(" and (person.firstName='" + names[0]
-                  + "'and person.lastName='" + names[1] + "')"
-                  + "or person.firstName='" + names[0] + " " + names[1]
-                  + "'" + "or person.lastName='" + names[0] + " "
-                  + names[1] + "'");
+            strb.append(" and ((person.firstName like '%" + names[0]
+                  + "%' and person.lastName like '%" + names[1] + "%')"
+                  + " or person.firstName like '%" + names[0] + " " + names[1]
+                  + "%'" + "or person.lastName like '%" + names[0] + " "
+                  + names[1] + "%')");
          }
          else if (names.length == 1) {
-            strb.append(" and person.firstName='" + names[0]
-                  + "' or person.lastName='" + names[0] + "'");
+            strb.append(" and (person.firstName like '%" + names[0]
+                  + "%' or person.lastName like '%" + names[0] + "%')");
          }
       }
 
