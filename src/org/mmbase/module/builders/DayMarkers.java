@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.49 2008-07-09 17:24:37 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.50 2008-08-01 21:12:26 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -97,6 +97,7 @@ public class DayMarkers extends MMObjectBuilder {
             100 +  // shortly after
             3600 * 24 - ((now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)) * 60 + now.get(Calendar.SECOND)),  // some effort to run shortly after midnight
             3600 * 24, TimeUnit.SECONDS);
+        ThreadPools.identify(future, "DayMarker creation");
         return result;
     }
 

@@ -22,7 +22,7 @@ import java.util.concurrent.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.26 2008-07-30 11:35:28 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.27 2008-08-01 21:12:26 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -55,6 +55,7 @@ public class MMEvents extends MMObjectBuilder {
                 },
                 100,  // shortly after
                 300, TimeUnit.SECONDS);
+            ThreadPools.identify(future, "MMEvents Probe");
         }
         return true;
     }
