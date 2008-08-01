@@ -16,7 +16,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.ProcessorInterface;
+import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.PageInfo;
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.38 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: ModuleHandler.java,v 1.39 2008-08-01 22:02:24 michiel Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -157,8 +157,8 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
-            return ((ProcessorInterface)mmbaseModule).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(null)), command);
+        if (mmbaseModule instanceof ProcessorModule) {
+            return ((ProcessorModule)mmbaseModule).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(null)), command);
         } else {
             throw new BridgeException("getInfo() is not supported by this module.");
         }
@@ -173,7 +173,7 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
+        if (mmbaseModule instanceof ProcessorModule) {
                 Hashtable<String, Object> cmds = new Hashtable<String, Object>();
                 if (parameter == null) { parameter = "-1"; }
                 cmds.put(command,parameter);
@@ -184,7 +184,7 @@ public class ModuleHandler implements Module, InvocationHandler {
                 } else {
                     partab = new Hashtable<String, Object>();
                 }
-                ((ProcessorInterface)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
+                ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
                 if (auxparameters != null) auxparameters.putAll(partab);
         } else {
             throw new BridgeException("process() is not supported by this module.");
@@ -196,12 +196,12 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorInterface) {
+        if (mmbaseModule instanceof ProcessorModule) {
             Cloud cloud = getCloud(parameters);
             log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
             try {
                 List<org.mmbase.module.core.MMObjectNode> v 
-                    = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
+                    = ((ProcessorModule)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
                 log.info("Got list " + v);
                 if (v.size() == 0) {
                     return cloud.createNodeList();
