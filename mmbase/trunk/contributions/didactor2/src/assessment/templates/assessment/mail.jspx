@@ -56,7 +56,7 @@
               <mm:compare referid="tested_coaches" value="" inverse="true">
                 <di:translate key="assessment.mail_to_coach___text_below_title" />
 
-                <form action="mail_to_coach_send.jsp" method="post">
+                <form action="mail_send.jspx" method="post">
                   <input type="hidden" name="provider" value="${provider}"/>
                   <input type="hidden" name="education" value="${education}"/>
                   <input type="hidden" name="class" value="${class}"/>
