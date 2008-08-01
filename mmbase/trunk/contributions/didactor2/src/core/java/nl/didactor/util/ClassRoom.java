@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: ClassRoom.java,v 1.7 2008-01-22 08:51:59 michiel Exp $
+ * @version $Id: ClassRoom.java,v 1.8 2008-08-01 09:35:05 michiel Exp $
  */
 public class ClassRoom extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassRoom.class);
@@ -57,7 +57,7 @@ public class ClassRoom extends FunctionProvider {
                 klass.getStringValue("number"),
                 "classes,classrel,people,related,roles",
                 "roles.name,people.number,people.firstname,people.lastname",
-                "roles.name='teacher'",
+                "roles.name='" + role + "'",
                 "people.lastname,people.firstname",
                 null,
                 null,
@@ -67,7 +67,7 @@ public class ClassRoom extends FunctionProvider {
         while (people.hasNext()) {
             list.add(people.nextNode().getNodeValue("people.number"));
         }
-        log.info("Found " + list + " for " + klass.getNumber() + " " + role);
+        log.debug("Found " + list + " for " + klass.getNumber() + " " + role);
         return list;
     }
 
