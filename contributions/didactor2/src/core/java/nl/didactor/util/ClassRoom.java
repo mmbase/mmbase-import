@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: ClassRoom.java,v 1.8 2008-08-01 09:35:05 michiel Exp $
+ * @version $Id: ClassRoom.java,v 1.9 2008-08-01 15:58:26 michiel Exp $
  */
 public class ClassRoom extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassRoom.class);
@@ -81,7 +81,7 @@ public class ClassRoom extends FunctionProvider {
     }
 
     /**
-     * Same as getPeople, but only returns students NOTE: persons without a role will be included!
+     * Same as getPeople, but only returns students.
      * @param klass
      * @return List of student Nodes
      */
