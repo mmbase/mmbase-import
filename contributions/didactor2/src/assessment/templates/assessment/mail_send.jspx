@@ -1,0 +1,33 @@
+<di:html
+    styleClass="assessment"
+    title_key="assessment.mail_to_coach__title"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    css="/assessment/css/base.css"
+    component="assessmment" >
+
+  <div class="rows">
+   <div class="mainContent">
+      <h1><di:translate key="assessment.mail_to_coach___title" /></h1>
+
+      <mm:import externid="list_of_coaches" />
+      <div class="contentBody">
+        <mm:import externid="message" id="body" escape="none"/>
+
+        <mm:listnodes referid="list_of_coaches" id="coach">
+          <mm:createnode type="emails">
+            <mm:setfield name="from"><mm:write referid="from"/></mm:setfield>
+            <mm:setfield name="to"><di:person /> &lt;${_node.email}&gt;</mm:setfield>
+            <mm:setfield name="subject"><di:translate key="assessment.mail_to_coach_letter___subject" /></mm:setfield>
+            <mm:setfield name="body"><mm:write referid="body" escape="text/plain"/></mm:setfield>
+            <mm:function name="oneshot()" />
+          </mm:createnode>
+        </mm:listnodes>
+
+        <di:translate key="assessment.mail_to_coach_sent___done_message" />
+      </div>
+   </div>
+  </div>
+</di:html>
