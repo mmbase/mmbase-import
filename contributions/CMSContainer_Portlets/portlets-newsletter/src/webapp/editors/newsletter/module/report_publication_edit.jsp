@@ -5,6 +5,7 @@
 <html:html>
    <cmscedit:head title="index.title">
       <script src="../repository/search.js" type="text/javascript"></script>
+      <link href="<c:url value="/editors/css/newsletter.css"/>" rel="stylesheet" type="text/css">
    </cmscedit:head>
 
    <body>
@@ -26,12 +27,12 @@
    <div class="editor">
       <div style="padding-left:10px;">
       <p>
-         <a href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=false&forward=newslettermanage" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/type/email_add.png'/>) left center no-repeat" title="<fmt:message key='site.newsletterpublication.new.blank'/>">
+         <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=false&forward=newslettermanage" title="<fmt:message key='site.newsletterpublication.new.blank'/>">
             <fmt:message key="site.newsletterpublication.new.blank"/>
          </a>
       </p>
       <p>
-         <a href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=true&forward=newslettermanage" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/type/email_add.png'/>) left center no-repeat" title="<fmt:message key='site.newsletterpublication.new.withcontent'/>">
+         <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=true&forward=newslettermanage" title="<fmt:message key='site.newsletterpublication.new.withcontent'/>">
             <fmt:message key="site.newsletterpublication.new.withcontent"/>
          </a>
       </p>
