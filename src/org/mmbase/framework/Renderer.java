@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * A Renderer is stateless.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.19 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: Renderer.java,v 1.20 2008-08-01 16:30:01 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -64,7 +64,7 @@ public interface Renderer {
         /**
          * Returns a renderer that does nothing.
          */
-        Renderer getEmpty(final Block block) {
+        public Renderer getEmpty(final Block block) {
             return new Renderer() {
                 public Type getType() { return Type.this; }
                 public void render(Parameters parameters, Parameters urlparameters, Writer w, WindowState state) { };
@@ -72,6 +72,14 @@ public interface Renderer {
                 public Block getBlock() { return block ; };
                 public String toString() { return "EMPTY Renderer"; }
                 public URI getUri() { try {return new URI("mmbase:/renderer/" + Type.this + "/empty");} catch (Exception e) { return null;} }
+                public boolean equals(Object o) {
+                    if (o instanceof Renderer) {
+                        Renderer r = (Renderer) o;
+                        return getUri().equals(r.getUri()) && getBlock().equals(r.getBlock());
+                    } else {
+                        return false;
+                    }
+                }
             };
         }
     }
