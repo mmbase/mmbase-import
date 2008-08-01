@@ -14,9 +14,11 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.AbstractNodeList;
 import org.mmbase.util.Casting;
-
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 public abstract class AbstractCollectionNodeList<E extends Node> extends AbstractBridgeList<E> {
+    private static final Logger log = Logging.getLoggerInstance(AbstractCollectionNodeList.class);
 
     protected Cloud cloud;
     protected final NodeManager nodeManager;
@@ -83,26 +85,32 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
             return o;
         }
         Node node = null;
-        if (o instanceof String) { // a string indicates a nodemanager by name
-            node = getCloud().getNodeManager((String)o);
-        } else if (o instanceof Map) {
-            if (nodeManager != null) {
-                node = new MapNode((Map) o, nodeManager);
+        try {
+            if (o instanceof String &&
+                ! org.mmbase.datatypes.StringDataType.INTEGER_PATTERN.matcher((String) o).matches()) { // a string indicates a nodemanager by name
+                node = getCloud().getNodeManager((String)o);
+            } else if (o instanceof Map) {
+                if (nodeManager != null) {
+                    node = new MapNode((Map) o, nodeManager);
             } else {
-                node = new MapNode((Map) o, getCloud());
-            }
-        } else {
-            if (! (wrappedCollection instanceof NodeList)) {
-                // last desperate try, depend on a nodelist of cloud (that know how to convert core objects..)
-                // hackery
-                node = AbstractNodeList.convertWithBridgeToNode(cloud, nodeManager, o);
-                if (node == null) {
-                    node = AbstractNodeList.convertMMObjectNodetoBridgeNode(cloud, nodeManager, o);
+                    node = new MapNode((Map) o, getCloud());
                 }
             } else {
+                if (! (wrappedCollection instanceof NodeList)) {
+                    // last desperate try, depend on a nodelist of cloud (that know how to convert core objects..)
+                    // hackery
+                    node = AbstractNodeList.convertWithBridgeToNode(cloud, nodeManager, o);
+                    if (node == null) {
+                        node = AbstractNodeList.convertMMObjectNodetoBridgeNode(cloud, nodeManager, o);
+                    }
+                } else {
                 // even more desperate!
-                node = getCloud().getNode(Casting.toString(o));
+                    node = getCloud().getNode(Casting.toString(o));
+                }
             }
+        } catch (Throwable t) {
+            // letting the exception go, would cause infinite loops here and there because 'next' cancels like that.
+            log.error(t.getMessage(), t);
         }
         wrappedCollection.set(index, node);
         return node;
