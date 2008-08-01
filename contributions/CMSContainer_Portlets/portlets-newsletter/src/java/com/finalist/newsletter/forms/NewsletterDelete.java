@@ -25,52 +25,51 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterDelete extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
-   private static final String ACTION_REMOVE = "remove";
+	/** name of submit button in jsp to confirm removal */
+	private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
-   private static final String ACTION_CANCEL = "cancel";
+	/** name of submit button in jsp to cancel removal */
+	private static final String ACTION_CANCEL = "cancel";
 
-   @Override
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+	@Override
+	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      if (isRemoveAction(request)) {
-         String objectnumber = getParameter(request, "number", true);
-         Node newsletterNode = cloud.getNode(objectnumber);
+		if (isRemoveAction(request)) {
+			String objectnumber = getParameter(request, "number", true);
+			Node newsletterNode = cloud.getNode(objectnumber);
 
-         UserRole role = NavigationUtil.getRole(newsletterNode.getCloud(), newsletterNode, false);
-         boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
+			UserRole role = NavigationUtil.getRole(newsletterNode.getCloud(), newsletterNode, false);
+			boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
 
-         if (NavigationUtil.getChildCount(newsletterNode) > 0 && !isWebMaster) {
-            return mapping.findForward("newsletterdeletewarning");
-         }
+			if (NavigationUtil.getChildCount(newsletterNode) > 0 && !isWebMaster) {
+				return mapping.findForward("newsletterdeletewarning");
+			}
 
-         int number = newsletterNode.getNumber();
-         NewsletterUtil.deleteRelatedElement(number);
-        // NewsletterUtil.deleteNewsletterTermsForNewsletter(newsletterNode);
-         NewsletterUtil.deleteSubscriptionByTerm(newsletterNode);
-         NavigationUtil.deleteItem(newsletterNode);
+			int number = newsletterNode.getNumber();
+			NewsletterUtil.deleteRelatedElement(number);
+			newsletterNode.deleteRelations();
+			NavigationUtil.deleteItem(newsletterNode);
 
-         if(StringUtils.isNotEmpty(getParameter(request,"forward"))){
-        	 return mapping.findForward("newslettermanage");
-         }
-         return mapping.findForward(SUCCESS);
-      }
+			if (StringUtils.isNotEmpty(getParameter(request, "forward"))) {
+				return mapping.findForward("newslettermanage");
+			}
+			return mapping.findForward(SUCCESS);
+		}
 
-      if (isCancelAction(request)) {
-         return mapping.findForward(SUCCESS);
-      }
+		if (isCancelAction(request)) {
+			return mapping.findForward(SUCCESS);
+		}
 
-      // neither remove or cancel, show confirmation page
-      return mapping.findForward("newsletterdelete");
-   }
+		// neither remove or cancel, show confirmation page
+		return mapping.findForward("newsletterdelete");
+	}
 
-   private boolean isCancelAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_CANCEL) != null;
-   }
+	private boolean isCancelAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_CANCEL) != null;
+	}
 
-   private boolean isRemoveAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_REMOVE) != null;
-   }
+	private boolean isRemoveAction(HttpServletRequest request) {
+		return getParameter(request, ACTION_REMOVE) != null;
+	}
 
 }

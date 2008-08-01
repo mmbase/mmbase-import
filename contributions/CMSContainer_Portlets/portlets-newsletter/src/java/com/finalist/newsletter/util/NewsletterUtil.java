@@ -64,11 +64,11 @@ public abstract class NewsletterUtil {
 
    public static void deleteRelatedElement(int number) {
 
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
-      Node newsletterNode = cloud.getNode(number);
-      deleteNewsletterTermsForNewsletter(newsletterNode);
-      deleteNewsletterLogForNewsletter(number);
-   }
+		Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+		Node newsletterNode = cloud.getNode(number);
+		deleteSubscriptionByNewsletter(newsletterNode);
+		deleteNewsletterLogForNewsletter(number);
+	}
 
    public static void deleteNewsletterLogForNewsletter(int newsletterNumber) {
 
@@ -88,23 +88,11 @@ public abstract class NewsletterUtil {
          }
       }
    }
-   public static void deleteNewsletterTermsForNewsletter(Node newsletterNode) {
-      NodeManager newsletterTermNodeManager = newsletterNode.getCloud().getNodeManager("term");
-      NodeList terms = newsletterNode.getRelatedNodes(newsletterTermNodeManager);
-      if (terms != null) {
-         for (int i = 0; i < terms.size(); i++) {
-            Node termNode = terms.getNode(i);
-            deleteSubscriptionByTerm(termNode);
-            termNode.deleteRelations();
-            termNode.delete();
-         }
-      }
-   }
 
-   public static void deleteSubscriptionByTerm(Node termNode) {
+   public static void deleteSubscriptionByNewsletter(Node newsletterNode) {
 
-      NodeManager subscriptionNodeManager = termNode.getCloud().getNodeManager("subscriptionrecord");
-      NodeList subscriptions = termNode.getRelatedNodes(subscriptionNodeManager);
+      NodeManager subscriptionNodeManager = newsletterNode.getCloud().getNodeManager("subscriptionrecord");
+      NodeList subscriptions = newsletterNode.getRelatedNodes(subscriptionNodeManager);
       if (subscriptions != null) {
          for (int i = 0; i < subscriptions.size(); i++) {
             Node subscriptionNode = subscriptions.getNode(i);
