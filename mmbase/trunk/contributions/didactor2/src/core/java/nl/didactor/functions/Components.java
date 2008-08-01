@@ -11,10 +11,10 @@ import java.util.*;
  * Returns the componetnbs related to an object.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Components.java,v 1.1 2008-01-18 12:22:58 michiel Exp $
+ * @version $Id: Components.java,v 1.2 2008-08-01 15:58:44 michiel Exp $
  */
 public class Components {
-    protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
+    protected final static Logger log = Logging.getLoggerInstance(Components.class);
 
     private Node node;
 
