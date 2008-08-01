@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A {@link Renderer} implementation based on an MMBase's ResourceLoader. Blocks renders with this,
+ * A {@link Renderer} implementation based on an MMBase's {@link org.mmbase.util.ResourceLoader}. Blocks rendered with this,
  * cannot have parameters.
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.2 2008-07-31 19:17:00 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.3 2008-08-01 16:29:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -64,7 +64,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
 
         try {
-            Reader r = ResourceLoader.Type.valueOf(type).get().getReader(resource);
+            Reader r = ResourceLoader.Type.valueOf(type.toUpperCase()).get().getReader(resource);
             char[] buf = new char[1000];
             int c;
             while ((c = r.read(buf, 0, 1000)) > 0) {
