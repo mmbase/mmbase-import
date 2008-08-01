@@ -12,9 +12,11 @@ package org.mmbase.module.database;
 
 import java.util.*;
 import java.sql.*;
+import java.util.concurrent.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
+
 
 import org.mmbase.util.logging.*;
 
@@ -25,9 +27,9 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.58 2008-02-20 10:34:22 michiel Exp $
+ * @version $Id: JDBC.java,v 1.59 2008-08-01 19:36:51 michiel Exp $
  */
-public class JDBC extends ProcessorModule implements JDBCInterface {
+public class JDBC extends ProcessorModule {
 
     private static final Logger log = Logging.getLoggerInstance(JDBC.class);
 
@@ -42,11 +44,11 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String databaseSupportClass;
     private DatabaseSupport databaseSupport;
     private MultiPoolHandler poolHandler;
-    private JDBCProbe probe = null;
     private String jdbcName;
     private String jdbcPassword;
     private long probeTime;
     private long maxLifeTime = 120000;
+    private ScheduledFuture future;
 
     {
         addFunction(new GetNodeListFunction("POOLS", PARAMS_PAGEINFO));
@@ -69,9 +71,12 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Initialize the properties and get the driver used
      */
     public void init() {
-        // This is now called in onload(), which is called before init()
-        // getProps();
-        probe = new JDBCProbe(this, probeTime);
+        future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    JDBC.this.checkTime();
+                }
+            },
+            probeTime, probeTime, TimeUnit.MILLISECONDS);
         log.info("Module JDBC started (" + this + ")");
 
     }
@@ -97,6 +102,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public void unload() {
     }
     protected void shutdown() {
+        future.cancel(true);
         poolHandler.shutdown();
     }
 
