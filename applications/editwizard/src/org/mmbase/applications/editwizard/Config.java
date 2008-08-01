@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.71 2008-04-03 19:51:38 michiel Exp $
+ * @version $Id: Config.java,v 1.72 2008-08-01 16:31:35 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -870,7 +870,7 @@ public class Config implements java.io.Serializable {
             if (wizard.wizard == null) {
                 throw new WizardException("Wizardname may not be null, configurated by class with name: " + this.getClass().getName());
             }
-            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard, cloud);
+            wizard.wiz = new Wizard(request, config.uriResolver, wizard, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
