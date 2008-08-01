@@ -22,7 +22,7 @@ import com.finalist.cmsc.services.workflow.Workflow;
 
 
 public abstract class Publisher {
-    
+
     protected static final String SOURCE = "SOURCE";
     protected static final String DESTINATION = "DESTINATION";
 
@@ -40,7 +40,7 @@ public abstract class Publisher {
 
     public void publish(Node node, NodeList nodes) {
         publish(node);
-        
+
         for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
             Node pnode = iterator.next();
             Date publishDate;
@@ -53,7 +53,7 @@ public abstract class Publisher {
             PublishUtil.publishOrUpdateNode(cloud, pnode.getNumber(), publishDate);
         }
     }
-    
+
     public void remove(Node node) {
         PublishUtil.removeFromQueue(node);
     }
@@ -62,20 +62,20 @@ public abstract class Publisher {
         PublishUtil.removeNode(cloud, node.getNumber());
     }
 
-    
+
     public static List<Node> findContentBlockNodes(Node node) {
         List<Node> nodes = new ArrayList<Node>();
         findContentBlockNodes(node, nodes);
         return nodes;
     }
-    
+
     private static void findContentBlockNodes(Node node, List<Node> nodes) {
         if (nodes.contains(node) || TypeUtil.isSystemType(node.getNodeManager().getName())) {
             return;
         }
 
         nodes.add(node);
-        RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);        
+        RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);
         if (!rml.isEmpty()) {
             NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
             while (childs.hasNext()) {
@@ -96,27 +96,36 @@ public abstract class Publisher {
     }
 
     public int getRemoteNumber(Node node) {
-        Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
-        Iterator<Integer> iter = numbers.values().iterator();
-        if (iter.hasNext()) {
-            return iter.next();
-        }
-        return -1;
+       if (PublishManager.isPublished(node)) {
+           Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
+           Iterator<Integer> iter = numbers.values().iterator();
+           if (iter.hasNext()) {
+               return iter.next();
+           }
+       }
+       return -1;
     }
 
     public Node getRemoteNode(Node node) {
-        Map<Integer,Node> numbers = PublishManager.getPublishedNodes(node);
-        Iterator<Node> iter = numbers.values().iterator();
-        if (iter.hasNext()) {
-            return iter.next();
-        }
-        return null;
+       if (PublishManager.isPublished(node)) {
+          Map<Integer, Node> numbers = PublishManager.getPublishedNodes(node);
+          Iterator<Node> iter = numbers.values().iterator();
+          if (iter.hasNext()) {
+             return iter.next();
+          }
+       }
+       else {
+          if (PublishManager.isImported(node)) {
+             return PublishManager.getSourceNode(node);
+          }
+       }
+       return null;
     }
 
     protected boolean isPublished(Node node) {
         return PublishManager.isPublished(node);
     }
-    
+
 
     protected void publishNodes(Map<Node, Date> nodes) {
         for (Map.Entry<Node, Date> entry : nodes.entrySet()) {
@@ -129,7 +138,7 @@ public abstract class Publisher {
     protected void publishNode(Node parent, List<Integer> relatedNodes) {
         PublishUtil.publishOrUpdateRelations(cloud, parent.getNumber(), relatedNodes);
     }
-    
+
     protected void removeNodes(Collection<Node> removeNodes) {
         for (Node pnode : removeNodes) {
             PublishUtil.removeFromQueue(pnode);

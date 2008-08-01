@@ -14,13 +14,6 @@
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>
-
-        <dependency>
-            <groupId>mmapps</groupId>
-            <artifactId>remotepublishing</artifactId>
-            <version>1.0.15</version>
-            <type>jar</type>
-        </dependency>        
 	</dependencies>
 </project>
 

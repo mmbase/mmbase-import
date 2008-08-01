@@ -5,18 +5,15 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.remotepublishing.CloudManager;
+import org.mmbase.bridge.*;
 
-import com.finalist.cmsc.directreaction.util.*;
+import com.finalist.cmsc.directreaction.util.Reaction;
+import com.finalist.cmsc.services.publish.Publish;
 
 /**
  * The GetReactionTag will retrieve a single reaction node from the live
  * database and then populate and return a Reaction object.
- * 
+ *
  * @author jderuijter
  */
 public class GetReactionTag extends SimpleTagSupport {
@@ -25,6 +22,7 @@ public class GetReactionTag extends SimpleTagSupport {
    private String var;
 
 
+   @Override
    public void doTag() {
       Cloud remoteCloud = getLiveCloud();
       Node node = remoteCloud.getNode(number);
@@ -40,7 +38,7 @@ public class GetReactionTag extends SimpleTagSupport {
    public Cloud getLiveCloud() {
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       Cloud cloud = cloudProvider.getCloud();
-      Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
+      Cloud remoteCloud = Publish.getRemoteCloud(cloud);
       return remoteCloud;
    }
 
