@@ -77,12 +77,6 @@ img
     float: right;
 }
 
-#content div.mm_c
-{
-    padding-left: 1ex;
-    padding-right: 1ex;
-}
-
 #footer
 {
     clear: both;
@@ -184,14 +178,16 @@ html>body #navigation li a { width: auto; }
 /*********** content classes etc. ***********/
 h2.top
 {
-	padding-left: 6px;
+	padding-left: 12px;
 	font-size: 1.8em;
-	margin-top: 0px;
-	/*text-transform: capitalize;*/
-	background-color: #efefef;
-	border-bottom: 1px solid #002828;
-	border-right: 1px solid #002828;
 	line-height: 1.1em;
+	margin: 12px 0 12px 0;
+}
+
+#content div.mm_c
+{
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 /* form stuff */

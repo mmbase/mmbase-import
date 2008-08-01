@@ -13,7 +13,9 @@
         <mm:cloudinfo type="mmbaseversion"><fmt:param value="${_}" /></mm:cloudinfo>
       </fmt:message>
     </h3>
-    <fmt:message key="welcome.text" />
+    <fmt:message key="welcome.text">
+      <mm:link page="/"><fmt:param value="${_}" /></mm:link>
+    </fmt:message>
     <fmt:message key="welcome.sources" />
     <p><em> -- <fmt:message key="welcome.greetings" /></em></p>
   </div>
