@@ -27,10 +27,27 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		SearchGroupForm searchform = (SearchGroupForm) form;
-		List<Authority> authorities = new ArrayList<Authority>();
+		PagingStatusHolder holder = setPagingInformation(request);
+		HashMap map = getParameterMap(searchform);
+		List<Authority> authorities = getAuthorityService().getAssociatedAuthorities(map,holder);
+		int totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,holder);
+		setSharedAttributes(request, authorities, totalCount);
+		return mapping.findForward("success");
+	}
+
+	private void setSharedAttributes(HttpServletRequest request, List<Authority> authorities, int totalCount) {
+		request.setAttribute("totalCount", totalCount);
+		request.setAttribute("results", convertAuthrityTOVO(authorities));
+	}
+
+	private PagingStatusHolder setPagingInformation(HttpServletRequest request) {
 		PagingUtils.initStatusHolder(request);
 	        PagingStatusHolder holder = PagingUtils.getStatusHolder();
-		int totalCount = 0;
+	        holder.setDefaultSort("asn.id","desc");
+		return holder;
+	}
+
+	private HashMap getParameterMap(SearchGroupForm searchform) {
 		HashMap map = new HashMap();
 
 		if (!StringUtil.isEmptyOrWhitespace(searchform.getMember())) {
@@ -40,16 +57,7 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
 		if (!StringUtil.isEmptyOrWhitespace(searchform.getGroupname())) {
 			map.put("group", searchform.getGroupname());
 		}
-		if (map.size() > 0) {
-			authorities = getAuthorityService().getAssociatedAuthorities(map,holder);
-			totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,holder);
-		} else {
-			authorities = getAuthorityService().getAllAuthorities(holder);
-			totalCount = getAuthorityService().countAllAuthorities();
-		}
-		request.setAttribute("totalCount", totalCount);
-		request.setAttribute("results", convertAuthrityTOVO(authorities));
-		return mapping.findForward("success");
+		return map;
 	}
 
 	private List<GroupForShowVO> convertAuthrityTOVO(List<Authority> authorities){
