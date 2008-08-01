@@ -6,7 +6,7 @@
 %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
 %>
-<fmt:setBundle basename="cmsc-community" scope="request" />
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <cmscedit:head title="reactions.title">
 <script type="text/javascript">
       function addToGroup(){
@@ -26,6 +26,7 @@
 </script> 
 </cmscedit:head>
 
+<body>
 <div class="tabs">
    <div class="tab_active">
       <div class="body">
@@ -59,7 +60,7 @@
                   <tr>&nbsp;</tr>
                   <tr>
                      <td style="width:150px">&nbsp;</td>
-                     <td><input type="submit" name="submit" value="Search"> </td>
+                     <td><input type="submit" name="submitButton" value="<fmt:message key="community.search.submit"/>"> </td>
                   </tr>
                </tbody>
             </table>
@@ -71,7 +72,7 @@
    <div class="ruler_green"><div>&nbsp; <fmt:message key="community.search.selectGroup"/> &nbsp;</div></div>
    <div class="body">
     <form action="${pageContext.request.contextPath }/editors/community/AddUserToGroup.do?users=${users}" method="post">
-         <p><input type="submit" value="add User To Group" name="submitButton" onclick="return addToGroup()"/></p>
+         <p><input type="submit" value="<fmt:message key="community.search.addtogroup"/>" name="submitButton" onclick="return addToGroup()"/></p>
          <edit:ui-table items="${groupForShow}" var="group" size="${totalCount}" requestURI="/editors/community/AddUserToGroupInit.do">
             <edit:ui-tcolumn title="">
                <input type="checkbox" name="chk_group" value="${group.groupName}"/>
@@ -86,3 +87,5 @@
       </form>
    </div>
 </div>
+</body>
+</mm:content>
