@@ -20,7 +20,7 @@ import javax.mail.internet.*;
  * @application Mail
  * @author Michiel Meeuwissen
  */
-abstract public class AbstractSendMail extends WatchedReloadableModule { //implements SendMailInterface {
+abstract public class AbstractSendMail extends WatchedReloadableModule {
 
     /*
     public AbstractSendMail(String name) {
