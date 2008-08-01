@@ -52,8 +52,8 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
 		NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
 		int number = Integer.parseInt(getParameter(request, "number", true));
-
-		if (NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
+		Node newsletterNode = NewsletterPublicationUtil.getNewsletterByPublicationNumber(number);
+		if (NewsletterUtil.isPaused(newsletterNode)) {
 			request.setAttribute("isPaused", true);
 			return mapping.findForward(SUCCESS);
 		}
@@ -72,7 +72,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 			if (ServerUtil.isSingle()) {
 				sendResults = publicationService.deliver(number);
 				publicationService.setStatus(number, Publication.STATUS.DELIVERED);
-				NewsletterUtil.logPubliction(number, HANDLE.POST);
+				NewsletterUtil.logPubliction(newsletterNode.getNumber(), HANDLE.POST);
 				request.setAttribute("isSingle", true);
 				request.setAttribute("sendResults", sendResults);
 				request.setAttribute("sendSuccess", sendResults.get(NewsletterPublicationService.SEND_SUCCESS).size());
