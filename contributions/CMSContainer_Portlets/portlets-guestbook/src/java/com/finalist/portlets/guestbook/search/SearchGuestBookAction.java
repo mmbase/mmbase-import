@@ -1,9 +1,6 @@
 package com.finalist.portlets.guestbook.search;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,32 +8,22 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.remotepublishing.CloudManager;
-import org.mmbase.storage.search.CompositeConstraint;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.FieldValueConstraint;
-import org.mmbase.storage.search.SortOrder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.apache.struts.action.*;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.resources.forms.QueryStringComposer;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
- * 
- * 
+ *
+ *
  */
 public class SearchGuestBookAction extends MMBaseAction {
 
@@ -154,7 +141,7 @@ public class SearchGuestBookAction extends MMBaseAction {
       Cloud cloud = cloudProvider.getCloud();
       log.debug("Using remote cloud?: " + isRemote);
       if (isRemote) {
-         return CloudManager.getCloud(cloud, "live.server");
+         return Publish.getRemoteCloud(cloud);
       }
       return cloud;
    }

@@ -6,16 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentAction;
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm;
+import com.finalist.cmsc.services.publish.Publish;
 
 public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
 
@@ -46,12 +44,13 @@ public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
       Cloud cloud = cloudProvider.getCloud();
       log.debug("Using remote cloud?: " + isRemote);
       if (isRemote) {
-         return CloudManager.getCloud(cloud, "live.server");
+         return Publish.getRemoteCloud(cloud);
       }
       return cloud;
    }
 
 
+   @Override
    public String getRequiredRankStr() {
       return BASIC_USER;
    }

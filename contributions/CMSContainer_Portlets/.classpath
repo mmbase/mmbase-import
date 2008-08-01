@@ -16,6 +16,7 @@
 	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
 	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
 	<classpathentry kind="src" path="portlets-newsletter/src/java"/>
+	<classpathentry kind="src" path="portlets-preferences/src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
@@ -81,16 +82,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/commons-mmbaselogging-1.3.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/commons-mmbaselogging/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/mmcommons-1.4.3.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/mmcommons/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.15.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/remotepublishing/apidocs/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>

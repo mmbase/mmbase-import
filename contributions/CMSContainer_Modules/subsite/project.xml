@@ -8,16 +8,10 @@
     	This module allows the user to make sub sites, which can be called just like normal pages.
     </description>
     <dependencies>
-         <dependency>
+      <dependency>
          <groupId>finalist</groupId>
          <artifactId>cmsc-modules-publish-remote</artifactId>
          <version>${cmscmodules.version}</version>
-         <type>jar</type>
-      </dependency>
-      <dependency>
-         <groupId>mmapps</groupId>
-         <artifactId>remotepublishing</artifactId>
-         <version>1.0.15</version>
          <type>jar</type>
       </dependency>
     </dependencies>

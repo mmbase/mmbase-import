@@ -44,12 +44,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>mmapps</groupId>
-			<artifactId>remotepublishing</artifactId>
-			<version>1.0.15</version>
-			<type>mmbase-module</type>
-		</dependency>
-		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-rmmci</artifactId>
 			<version>${mmbasermmci.version}</version>
