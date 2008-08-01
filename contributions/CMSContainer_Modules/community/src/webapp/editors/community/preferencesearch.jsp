@@ -69,7 +69,7 @@
                         requestURI="/editors/community/PreferenceAction.do">
          <edit:ui-tcolumn title="">
          <mm:hasrank minvalue="administrator">
-            <a href="javascript:deleteInfo('${preference.id}','${offset}',${fn:length(results)})">
+            <a href="javascript:deleteInfo('${preference.id}','${page}',${fn:length(results)})">
                <img src="../gfx/icons/delete.png" title="<fmt:message key=" community.preference.delete" />"/></a>
          </mm:hasrank>
          </edit:ui-tcolumn>
