@@ -1,43 +1,21 @@
-<%@include file="globals.jsp"
-      %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"
-      %>
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
-      %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:setBundle basename="cmsc-community" scope="request"/>
-<cmscedit:head title="reactions.title">
-   <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
-   <script type="text/javascript">
-      window.onload = function ()
-      {
-         // handle onclick event for element of ID="foo"
-         Event.observe('foo', 'click', doStuff);
-      }
+<%@include file="globals.jsp"%>
+<mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp"/>
 
-      function doStuff() {
-         alert("hhhhh");
-      }
-      function addToGroup() {
-         var checkboxs = document.forms[1].getElementsByTagName("input");
-         var objectnumbers = '';
-         for (i = 0; i < checkboxs.length; i++) {
-            if (checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
-               objectnumbers += checkboxs[i].value;
-            }
+<mm:content type="text/html" encoding="UTF-8" expires="0">
+   <cmscedit:head title="reactions.title">
+      <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
+      <script type="text/javascript" src="js/formcheck.js"></script>
+      <script type="text/javascript">
+         window.onload = function ()
+         {
+            Event.observe("selectform", "submit", function(e) {
+               addToGroup("chk_", "<fmt:message key="community.search.promptuser"/>", e)
+            })
          }
-         if (objectnumbers == '') {
-            alert("<fmt:message key="community.search.promptuser"/>");
-            return false;
-         }
-         return true;
-      }
-   </script>
+      </script>
+   </cmscedit:head>
 
-</cmscedit:head>
-<body>
-<mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
-
+   <body>
    <edit:ui-tabs>
       <edit:ui-tab key="community.search.users" active="true"/>
       <edit:ui-tab key="community.search.groups">
@@ -73,5 +51,5 @@
          </form>
       </div>
    </div>
-</mm:cloud>
-</body>
+   </body>
+</mm:content>
