@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.30 2007-11-30 16:20:09 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.31 2008-08-01 12:33:06 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -143,12 +143,13 @@ public class EmailBuilder extends MMObjectBuilder {
 
     {
         addFunction(new NodeFunction/*<Void>*/("mail", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Void getFunctionValue(Node node, Parameters parameters) {
+                protected Boolean getFunctionValue(Node node, Parameters parameters) {
                     log.debug("We're in mail - args: " + parameters);
                     setType(node, parameters);
 
                     // get the mailtype so we can call the correct handler/method
                     int mailType = node.getIntValue("mailtype");
+                    boolean success = false;
                     switch(mailType) {
                     case TYPE_ONESHOT :
                         // deleting the node happens in EmailExpireHandler
