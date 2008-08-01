@@ -7,6 +7,13 @@
   <description xml:lang="en">Email component</description>
   <description xml:lang="nl">E-mail component</description>
 
+  <setting name="nodemanager">
+    <datatype base="nodemanagers"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <default value="email, emails" />
+      <required value="true" />
+    </datatype>
+  </setting>
+
   <block name="email"
          classification="mmbase.tools"
          mimetype="text/html">
@@ -16,7 +23,7 @@
       Tool to monitor the email application. Like emails that are scheduled and/or send.
     </description>
     <description xml:lang="nl">
-      Tool om de e-mail applicatie te monitoren. Zoals e-mails die klaargezet zijn ('scheduled') voor 
+      Tool om de e-mail applicatie te monitoren. Zoals e-mails die klaargezet zijn ('scheduled') voor
       verzending en/of al zijn verzonden.
     </description>
     <body jsp="index.jspx">
@@ -27,12 +34,8 @@
          mimetype="text/html">
     <title xml:lang="en">Email queue</title>
     <title xml:lang="nl">E-mail queue</title>
-    <description xml:lang="en">
-      E-mail queue
-    </description>
-    <description xml:lang="nl">
-      E-mail queue
-    </description>
+    <description xml:lang="en">E-mail queue</description>
+    <description xml:lang="nl">E-mail queue</description>
     <body jsp="/mmbase/admin/tools/email/emailqueue.jsp">
     </body>
   </block>
