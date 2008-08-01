@@ -2,6 +2,7 @@
 %><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
+  <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
 <mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
@@ -9,7 +10,7 @@
 
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
-<mm:import externid="node_number" required="true" from="parameters"/>
+<mm:import externid="node_number" required="true" from="parameters" escape="trimmer" />
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
 
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
