@@ -159,9 +159,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     	List<Authority> authorities=new ArrayList<Authority>();
      StringBuffer strb = new StringBuffer();
      basicGetAssociatedAuthorities(conditions, strb);
-     if ("group".equals(holder.getSort())) {
-      strb.append(String.format(" order by %s %s","authorities.name", holder.getDir()));
-     }
+     strb.append(holder.getSortToken());
      Query q = getSession().createSQLQuery(strb.toString());
      q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
      List l=q.list();
