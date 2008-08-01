@@ -8,14 +8,14 @@ package org.mmbase.core.event;
 
 import java.io.Serializable;
 
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 
 /**
  * This class is the base class for all mmbase events
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.13 2008-08-01 08:01:25 michiel Exp $
+ * @version $Id: Event.java,v 1.14 2008-08-01 19:21:04 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -30,13 +30,13 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     /**
      * Every event originates from a certain machine, which is identified by a String.
-     * If this equals {@link MMBase#getMachineName()} then this is a local event.
+     * If this equals {@link MMBaseContext.getMachineName()} then this is a local event.
      */
     public String getMachine() {
         return machine;
     }
     public boolean isLocal() {
-        return MMBase.getMachineName().equals(machine);
+        return MMBaseContext.getMachineName().equals(machine);
     }
 
 
@@ -54,7 +54,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
      */
     public Event(String machine, int type) {
         this.machine =  machine == null ?
-            MMBase.getMMBase().getMachineName() :
+            MMBaseContext.getMachineName() :
             machine;
         this.eventType    = type;
     }
@@ -67,7 +67,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
      * @since MMBase-1.8.4
      */
     public Event() {
-        this(MMBase.getMMBase().getMachineName());
+        this(MMBaseContext.getMachineName());
     }
 
     public Object clone(){
