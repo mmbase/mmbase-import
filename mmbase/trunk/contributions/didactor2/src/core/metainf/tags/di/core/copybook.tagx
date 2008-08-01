@@ -3,40 +3,27 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.tag 
-      description="Find copybook, for current student"
+  <jsp:directive.tag
+      description="Find copybook, for current, or given student"
       />
-  <jsp:directive.attribute name="student"    /> 
+  <jsp:directive.attribute name="student"    />
 
   <mm:node number="${empty student ? user : student}">
 
     <!-- Direct relation people->classrel->education -->
     <c:choose>
-      <c:when test="${empty class}">        
-        <mm:relatedcontainer path="classrel,educations">
-         <mm:constraint field="educations.number" value="$education"/>         
-         <mm:related>
-            <mm:node element="classrel">
-              <mm:relatednodes type="copybooks">
-                <jsp:doBody />
-              </mm:relatednodes>
-            </mm:node>
-         </mm:related>
-        </mm:relatedcontainer>
+      <c:when test="${empty class}">
+        <mm:relation role="classrel" to="${education}">
+          <mm:relatednodes type="copybooks">
+            <jsp:doBody />
+          </mm:relatednodes>
+        </mm:relation>
       </c:when>
       <c:otherwise>
         <!-- people->classrel->class->related->education -->
-        
-        <mm:relatedcontainer path="classrel,classes">
-          <mm:constraint field="classes.number" value="$class"/>
-          <mm:related>
-            <mm:node element="classrel">
-              <mm:relatednodes type="copybooks">
-                <jsp:doBody />
-              </mm:relatednodes>
-            </mm:node>
-          </mm:related>
-        </mm:relatedcontainer>
+        <mm:relation role="classrel" to="${class}">
+          <jsp:doBody />
+        </mm:relation>
       </c:otherwise>
     </c:choose>
   </mm:node>
