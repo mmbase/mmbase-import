@@ -11,7 +11,9 @@
   <div class="rows">
 
     <mm:import externid="feedback_n" required="true" />
+    <mm:import externid="student" required="true" />
     <mm:import externid="assessment_evaluationtest" />
+    <mm:import externid="coachmode" />
 
     <mm:include page="navigation.jspx" />
 

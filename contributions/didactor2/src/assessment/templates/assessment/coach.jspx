@@ -58,25 +58,30 @@
                         </mm:relatednodes>
                       </mm:relation>
 
-                      <mm:notpresent referid="feedback">
-                        &amp;nbsp;
-                      </mm:notpresent>
-                      <mm:present referid="feedback">
-                        <mm:treefile
-                            page="/assessment/feedback.jspx" objectlist="$includePath"
-                            referids="$referids,feedback@feedback_n"
-                            write="false"
-                            >
-                          <a href="${_}">
-                            <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                                    title="assessment.goto_feedback" />
-                          </a>
-                        </mm:treefile>
-                      </mm:present>
+                      <c:choose>
+                        <c:when test="${empty feedback}">
+                          &amp;nbsp;
+                        </c:when>
+                        <c:otherwise>
+                          <mm:treefile
+                              page="/assessment/feedback.jspx" objectlist="$includePath"
+                              referids="$referids,feedback@feedback_n"
+                              write="false"
+                              >
+                            <mm:param name="coachmode" value="true" />
+                            <a href="${_}">
+                              <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                                      title="assessment.goto_feedback" />
+                            </a>
+                          </mm:treefile>
+                          <mm:remove referid="feedback" />
+                        </c:otherwise>
+                      </c:choose>
 
                       <mm:node number="$student">
                         <di:copybook />
                       </mm:node>
+
                       <mm:node number="${assessment_evaluationtest}" notfound="skip">
                         <!-- get madetest -->
                         <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
