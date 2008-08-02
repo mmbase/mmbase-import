@@ -29,17 +29,17 @@ package org.mmbase.util;
  *</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeMeasurable.java,v 1.4 2005-05-20 09:02:54 michiel Exp $
+ * @version $Id: SizeMeasurable.java,v 1.5 2008-08-02 15:32:24 michiel Exp $
  */
 public interface SizeMeasurable {
     /**
      * Determines the byte-size of this object
      */
-    public int getByteSize();
+    int getByteSize();
 
     /**
      * Determines the byte-size of this object using the given SizeOf instance.
      * A SizeOf instance stores a Set already counted objects. So this method is typically called by SizeOf itself (recursion).
      */
-    public int getByteSize(SizeOf sizeof);
+    int getByteSize(SizeOf sizeof);
 }
