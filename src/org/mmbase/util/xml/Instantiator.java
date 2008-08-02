@@ -18,11 +18,29 @@ import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Utilities to use an XML to instantiate Java objects, using reflection.
+ * Utilities to use an XML to instantiate Java objects, using
+ * reflection. This is used by various configuration-read code, which
+ * all perform similar tasks of instantiating and configurating
+ * certain objects.
+ * 
+ * Supported are schemes like
+ <pre><![CDATA[
+  <class name="class name">
+     <param name="parameter name">parameter value</param>
+      ...
+  </class>
+  and
+  <anyelement class="class name">
+     <param name="parameter name">parameter value</param>
+      ...
+  </anyname>
+  ]]>
+ * Param subtags are matched with 'setters' on the created object.
+ *
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.4 2008-07-24 11:34:08 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.5 2008-08-02 15:15:00 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -31,11 +49,17 @@ public abstract class Instantiator {
     /**
      * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
      * used on set-methods on the newly created object. 
+     * @param classElement a 'class' element with a 'name' attribute,
+     *        or any element with a 'class' attribute.
+     * @param args Constructor arguments.
+     * @throws NoSuchMethodError If not matching constructor could be found
+     * @throws ClassNotFoundException If the specified class does not exist.
+     * @return A newly created object. Never <code>null</code>.
      */
     public static Object getInstance(Element classElement, Object... args)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         String className = classElement.getAttribute("name");
-        if ("".equals(className)) className = classElement.getAttribute("class"); // for urlconverters config (not ok yet)
+        if ("".equals(className)) className = classElement.getAttribute("class"); 
         Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
@@ -76,7 +100,7 @@ public abstract class Instantiator {
     }
 
     /**
-     * Given the name of a property, a clazz, on object and a value, set the property on the
+     * Given the name of a property, a clazz, an object and a value, set the property on the
      * object. The point of this method is that it converts the name of the property to an actual
      * method name (set&lt;Name of the property&gt;). The methods needs to have precisely
      * <em>one</em> parameter. The type of this parameter may be anything as long as it can be
@@ -104,7 +128,12 @@ public abstract class Instantiator {
         }
     }
 
-
+    /**
+     * Instantiates on object with the first child with name 'class'. So, this searches the child, and then
+     * calls {@link #getInstance(Element, Object...)}.
+     * @param element Element in which a child specifying a java object must be searched.
+     * @return a new object, or <code>null</code> if no matching child found.
+     */
     public static Object getInstanceWithSubElement(Element element, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         NodeList childs =  element.getChildNodes();
         Object instance = null;
@@ -112,6 +141,7 @@ public abstract class Instantiator {
             Node node = childs.item(i);
             if (node instanceof Element && node.getNodeName().equals("class")) {
                 instance =  getInstance((Element) node, args);
+                break;
             }
         }
         return instance;
