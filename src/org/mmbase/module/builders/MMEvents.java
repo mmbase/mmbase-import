@@ -22,18 +22,16 @@ import java.util.concurrent.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.27 2008-08-01 21:12:26 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.28 2008-08-02 15:35:46 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
 
-    DateStrings datestrings;
     private int notifyWindow = 3600;
     private ScheduledFuture future = null;
 
     public boolean init() {
         super.init();
-        datestrings = new DateStrings(mmb.getLanguage());
         String tmp = getInitParameter("NotifyWindow");
         if (tmp != null) {
             try {
@@ -67,65 +65,6 @@ public class MMEvents extends MMObjectBuilder {
         super.shutdown();
     }
 
-    public String getGUIIndicator(MMObjectNode node) {
-        int tmp = node.getIntValue("start");
-        //String str=DateSupport.getMonthDay(tmp)+"/"+DateSupport.getMonth(tmp)+"/"+DateSupport.getYear(tmp);
-        String str = DateSupport.getTime(tmp) + "/" + DateSupport.getMonthDay(tmp) + "/" + DateSupport.getMonth(tmp) + "/" + DateSupport.getYear(tmp);
-        return str;
-    }
-
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("start")) {
-            int str = node.getIntValue("start");
-            return(DateSupport.getTimeSec(str) + " on " + DateSupport.getMonthDay(str) + "/" + DateSupport.getMonth(str) + "/" + DateSupport.getYear(str));
-        } else if (field.equals("stop")) {
-            int str = node.getIntValue("stop");
-            return(DateSupport.getTimeSec(str) + " on " + DateSupport.getMonthDay(str) + "/" + DateSupport.getMonth(str) + "/" + DateSupport.getYear(str));
-        } else if (field.equals("playtime")) {
-            int str=node.getIntValue("playtime");
-            return DateSupport.getTimeSecLen(str);
-        }
-        return null;
-    }
-
-    public Object getValue(MMObjectNode node, String field) {
-        if (field.indexOf("time_") !=- 1) {
-            int str = node.getIntValue(field.substring(5));
-            return DateSupport.getTime(str);
-        } else if (field.equals("time(start)")) {
-            //node.prefix = "mmevents.";
-            int str = node.getIntValue("start");
-            //node.prefix="";
-            return DateSupport.getTime(str);
-        } else if (field.equals("time(stop)")) {
-            //node.prefix="mmevents.";
-            int str = node.getIntValue("stop");
-            //node.prefix="";
-            return DateSupport.getTime(str);
-        } else if (field.indexOf("timesec_") != -1) {
-            int str = node.getIntValue(field.substring(8));
-            return DateSupport.getTimeSec(str);
-        } else if (field.indexOf("longmonth_") != -1) {
-            int str = node.getIntValue(field.substring(10));
-            return datestrings.getMonth(DateSupport.getMonthInt(str));
-        } else if (field.indexOf("month_") != -1) {
-            int str = node.getIntValue(field.substring(6));
-            return datestrings.getShortMonth(DateSupport.getMonthInt(str));
-        } else if (field.indexOf("weekday_") != -1) {
-            int str = node.getIntValue(field.substring(8));
-            return datestrings.getDay(DateSupport.getWeekDayInt(str));
-        } else if (field.indexOf("shortday_") != -1) {
-            int str = node.getIntValue(field.substring(8));
-            return datestrings.getShortDay(DateSupport.getWeekDayInt(str));
-        } else if (field.indexOf("day_") != -1) {
-            int str = node.getIntValue(field.substring(4));
-            return ""+DateSupport.getDayInt(str);
-        } else if (field.indexOf("year_") != -1) {
-            int str = node.getIntValue(field.substring(5));
-            return DateSupport.getYear(str);
-        }
-        return super.getValue(node, field);
-    }
 
     private void probeCall() {
         // the queue is really a bad idea have to make up

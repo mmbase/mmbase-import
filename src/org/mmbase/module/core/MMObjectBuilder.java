@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.428 2008-07-18 04:46:44 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.429 2008-08-02 15:35:46 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1831,46 +1831,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
         }
 
-        // time functions
-        if(function.equals("date")) {                    // date
-            int v = node.getIntValue(field);
-            return DateSupport.date2string(v);
-        } else if (function.equals("time")) {            // time hh:mm
-            int v = node.getIntValue(field);
-            return DateSupport.getTime(v);
-        } else if (function.equals("timesec")) {        // timesec hh:mm:ss
-            int v = node.getIntValue(field);
-            return DateSupport.getTimeSec(v);
-        } else if (function.equals("longmonth")) {        // longmonth September
-            int v = node.getIntValue(field);
-            return DateStrings.ENGLISH_DATESTRINGS.getMonth(DateSupport.getMonthInt(v));
-        } else if (function.equals("monthnumber")) {
-            int v = node.getIntValue(field);
-            return "" + (DateSupport.getMonthInt(v)+1);
-        } else if (function.equals("month")) {            // month Sep
-            int v = node.getIntValue(field);
-            return DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(v));
-        } else if (function.equals("weekday")) {        // weekday Sunday
-            int v = node.getIntValue(field);
-            return DateStrings.DUTCH_DATESTRINGS.getDay(DateSupport.getWeekDayInt(v));
-        } else if (function.equals("shortday")) {        // shortday Sun
-            int v = node.getIntValue(field);
-            return DateStrings.DUTCH_DATESTRINGS.getShortDay(DateSupport.getWeekDayInt(v));
-        } else if (function.equals("day")) {            // day 4
-            int v = node.getIntValue(field);
-            return ""+DateSupport.getDayInt(v);
-        } else if (function.equals("shortyear")) {            // year 01
-            int v = node.getIntValue(field);
-            return (DateSupport.getYear(v)).substring(2);
-        } else if (function.equals("year")) {            // year 2001
-            int v = node.getIntValue(field);
-            return DateSupport.getYear(v);
-        } else if (function.equals("thisdaycurtime")) {            //
-            int curtime=node.getIntValue(field);
-            // gives us the next full day based on time (00:00)
-            int days = curtime/(3600*24);
-            return "" + ((days*(3600*24))-3600);
-        } else if (function.equals("age")) {
+        if (function.equals("age")) {
             Integer val = Integer.valueOf(node.getAge());
             return val.toString();
         } else if (function.equals("wap")) {
