@@ -29,12 +29,15 @@ import org.w3c.dom.Element;
       init();
     }
  </pre>
- * This produces a 'watched map' utilProperties. Every time the underlying config file(s) are changed 'init' is called. Init is called on instantation of the surrounding class too.
+ * This produces a 'watched map' utilProperties. Every time the
+ * underlying config file(s) are changed 'init' is called. Init is
+ * called on instantation of the surrounding class too. The map is
+ * unmodifiable, and only mirrors the resource(s) "utils/myutil.xml".
  *
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.36 2008-07-25 15:13:52 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.37 2008-08-02 15:15:25 michiel Exp $
  */
 public class UtilReader {
 
