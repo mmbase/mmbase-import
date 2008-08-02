@@ -11,10 +11,11 @@ package org.mmbase.util.functions;
 import java.lang.annotation.*;
 
 /**
- * 
+ * This annotation can be used on methods, to make the parameter of
+ * the corresponding {@link BeanFunction} required.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Required.java,v 1.2 2007-08-06 13:01:11 michiel Exp $
+ * @version $Id: Required.java,v 1.3 2008-08-02 15:14:40 michiel Exp $
  * @since MMBase-1.9
  */
 @Retention(RetentionPolicy.RUNTIME)
