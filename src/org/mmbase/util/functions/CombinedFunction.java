@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * are provided, the better it is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.8 2008-07-11 14:48:56 michiel Exp $
+ * @version $Id: CombinedFunction.java,v 1.9 2008-08-02 15:14:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class CombinedFunction<R> implements Function<R> {
@@ -77,7 +77,7 @@ public class CombinedFunction<R> implements Function<R> {
                 }
                 Object v = parameters.get(p);
                 if (v != null && ! "".equals(v)) {
-                    log.info("Scoring with parameter " + p);
+                    log.debug("Scoring with parameter " + p);
                     scoreCounter++;
                 }
             }

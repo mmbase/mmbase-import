@@ -15,11 +15,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Maintains all methods of a certain class as function object (as long as they have unique names).
+ * Maintains all methods of a certain class as function objects (as long as they have unique names).
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: ClassFunctionProvider.java,v 1.3 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: ClassFunctionProvider.java,v 1.4 2008-08-02 15:14:40 michiel Exp $
  */
 public class ClassFunctionProvider extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassFunctionProvider.class);
