@@ -20,7 +20,7 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.20 2008-07-29 20:56:13 michiel Exp $
+ * @version $Id: CronDaemon.java,v 1.21 2008-08-04 13:36:28 michiel Exp $
  */
 public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 
@@ -33,7 +33,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     private Set<CronEntry> addedCronEntries;
 
     private DelayQueue<ProposedJobs.Event> proposedJobs = null;
-    private final DelayQueue<Events.Event> runningJobs = new DelayQueue<Events.Event>();
+    private final DelayQueue<RunningCronEntry> runningJobs = new DelayQueue<RunningCronEntry>();
 
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
@@ -81,13 +81,28 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     public void notify(Events.Event event) {
         synchronized(runningJobs) {
             switch (event.getType()) {
-            case Events.STARTED: runningJobs.add(event); break;
-            case Events.INTERRUPTED:
-            case Events.DONE   : runningJobs.remove(event); break;
+            case Events.STARTED: runningJobs.add(event.getEntry()); break;
+            case Events.INTERRUPTED: log.service("Removing " + event  + " from " + runningJobs);
+            case Events.DONE   :
+                if (! runningJobs.remove(event.getEntry())) {
+                    log.warn("" + event + " was not administrated as running in: " + runningJobs);
+                }
+                break;
             case Events.INTERRUPT: {
-                if (event.getDestination().equals(org.mmbase.module.core.MMBase.getMMBase().getMachineName())) {
-                    Interruptable i = getCronEntry(event.getCronEntry().getId()).getThread(event.getId());
-                    if (i != null)  i.interrupt();
+                String dest = event.getEntry().getMachine();
+                if (dest.equals(org.mmbase.module.core.MMBaseContext.getMachineName())) {
+                    CronEntry entry = getCronEntry(event.getEntry().getCronEntry().getId());
+                    int threadId = event.getEntry().getId();
+                    RunningCronEntry running = new RunningCronEntry(entry, event.getEntry().getStart(), dest, threadId);
+                    Interruptable i = entry.getThread(threadId);
+                    if (i != null)  {
+                        log.info("Will interrupt " + i);
+                        i.interrupt();
+                        EventManager.getInstance().propagateEvent(new Events.Event(running, Events.INTERRUPTED));
+
+                    } else {
+                        log.service("No job " + running);
+                    }
                 }
                 break;
             }
@@ -96,7 +111,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         }
     }
     public boolean interrupt(String machine, String entry, int id) {
-        EventManager.getInstance().propagateEvent(new Events.Event(getCronEntry(entry), null, Events.INTERRUPT, id, machine));
+        EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(getCronEntry(entry), null, machine, id), Events.INTERRUPT));
         return true;
     }
 
@@ -134,15 +149,15 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
             return Collections.emptyList();
         }
     }
-    public List<Events.Event> getRunning() {
+    public List<RunningCronEntry> getRunning() {
        synchronized(runningJobs) {
-           return new ArrayList<Events.Event>(runningJobs);
+           return new ArrayList<RunningCronEntry>(runningJobs);
        }
     }
 
     protected void detectFailedJobs() {
         synchronized(runningJobs) {
-            for (Events.Event event = runningJobs.poll(); event != null; event = runningJobs.poll()) {
+            for (RunningCronEntry running = runningJobs.poll(); running != null; running = runningJobs.poll()) {
             }
         }
     }

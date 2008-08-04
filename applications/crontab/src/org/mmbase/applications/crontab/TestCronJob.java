@@ -27,6 +27,8 @@ public class TestCronJob extends AbstractCronJob implements CronJob {
             log.info("sleeping");
             Thread.sleep(130 * 1000);
             log.info("sleeped");
-        } catch (Exception e) {}
+        } catch (InterruptedException e) {
+            log.info("Interrupted");
+        }
     }
 }

@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab;
 
 import org.mmbase.core.event.*;
-import org.mmbase.util.HashCodeUtil;
-import java.util.Date;
 import java.util.concurrent.*;
 
 import org.mmbase.util.logging.*;
@@ -19,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: Events.java,v 1.4 2008-07-29 20:56:13 michiel Exp $
+ * @version $Id: Events.java,v 1.5 2008-08-04 13:36:28 michiel Exp $
  */
 
 public class Events {
@@ -30,45 +28,21 @@ public class Events {
     public static final int INTERRUPTED    = 102;
     public static final int INTERRUPT      = 103;
 
-    public static class Event extends org.mmbase.core.event.Event implements Delayed {
+    public static class Event extends org.mmbase.core.event.Event {
 
-        protected final CronEntry entry;
-        protected final Date started;
-        protected final int thread;
-        protected final String destination;
+        protected final RunningCronEntry entry;
 
-        public Event(CronEntry entry, Date started, int type, int thread, String destination) {
+        public Event(RunningCronEntry entry, int type) {
             super(null, type);
             this.entry = entry;
-            this.started = started;
-            this.thread = thread;
-            this.destination = destination;
         };
-        public CronEntry getCronEntry() {
+        public RunningCronEntry getEntry() {
             return entry;
         }
 
-        public Date getStart() {
-            return started;
-        }
-        public int getId() {
-            return thread;
-        }
-        public String getDestination() {
-            return destination;
-        }
 
         public String toString() {
-            return getMachine() + ":" + thread + ":" + entry.getId();
-        }
-        public long getDelay(TimeUnit unit) {
-            long delay = started.getTime() + entry.getMaxDuration() - System.currentTimeMillis();
-            if (delay < 0) delay = 0;
-            return unit.convert(delay, TimeUnit.MILLISECONDS);
-        }
-        public int compareTo(Delayed d) {
-            return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
-
+            return getMachine() + ":" + entry;
         }
 
     }

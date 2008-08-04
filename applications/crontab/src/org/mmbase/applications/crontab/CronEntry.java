@@ -9,7 +9,7 @@ package org.mmbase.applications.crontab;
 
 import java.util.*;
 import java.util.regex.*;
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.HashCodeUtil;
 
 import org.mmbase.core.event.EventManager;
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.17 2008-07-29 20:47:20 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.18 2008-08-04 13:36:28 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -53,6 +53,11 @@ public class CronEntry implements java.io.Serializable {
          */
          CANBEMORE, //2
 
+
+         /**
+          * Don't run at all
+          */
+          DISABLED,
         /**
          * A job of this type runs exactly once in the load balanced mmbase cluster. Before the job
          * is started, communication between mmbase's in the server will be done, to negotiate who
@@ -181,7 +186,7 @@ public class CronEntry implements java.io.Serializable {
         Interruptable t = getThread(thread);
         boolean r = t != null && t.interrupt();
         if (r) {
-            EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, t.getStartTime(), Events.INTERRUPTED, t.getId(), null));
+            EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(CronEntry.this, t.getStartTime(), MMBaseContext.getMachineName(), t.getId()), Events.INTERRUPTED));
         }
         return r;
     }
@@ -211,12 +216,12 @@ public class CronEntry implements java.io.Serializable {
                 public void run(Interruptable i) {
                     CronEntry.this.incCount();
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.DONE, i.getId(), null));
+                    EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(CronEntry.this, start, MMBaseContext.getMachineName(), i.getId()), Events.DONE));
                 }
             };
         Interruptable.CallBack begin = new Interruptable.CallBack() {
                 public void run(Interruptable i) {
-                    EventManager.getInstance().propagateEvent(new Events.Event(CronEntry.this, start, Events.STARTED, i.getId(), null));
+                    EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(CronEntry.this, start, MMBaseContext.getMachineName(), i.getId()), Events.STARTED));
                 }
             };
 
@@ -227,6 +232,8 @@ public class CronEntry implements java.io.Serializable {
 
     public boolean kick(Date currentTime) {
         switch (type) {
+        case DISABLED:
+            return false;
         case SHORT:
             {
                 try {
@@ -319,7 +326,7 @@ public class CronEntry implements java.io.Serializable {
     }
 
     boolean mustRun(Date date) {
-        String machineName = MMBase.getMMBase().getMachineName();
+        String machineName = MMBaseContext.getMachineName();
 
         if (! servers.matcher(machineName).matches()) {
             log.debug("This cron entry " + this + " must not run because this machine " + machineName + " does not match " + servers);

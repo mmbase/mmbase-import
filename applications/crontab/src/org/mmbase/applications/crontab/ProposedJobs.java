@@ -17,9 +17,9 @@ import java.util.concurrent.*;
 import org.mmbase.util.logging.*;
 
 /**
-
- * @author Michiel Meeuwissen
- * @version $Id: ProposedJobs.java,v 1.5 2008-07-29 20:56:13 michiel Exp $
+ * Wraps a CronEntry with a proposed start date.
+ *
+ * @version $Id: ProposedJobs.java,v 1.6 2008-08-04 13:36:28 michiel Exp $
  */
 
 public class ProposedJobs {
