@@ -20,12 +20,16 @@ import org.mmbase.util.functions.*;
  * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
- * @version $Id: ClusteringModule.java,v 1.13 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: ClusteringModule.java,v 1.14 2008-08-04 22:34:35 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
 
     private ClusterManager clusterManager = null;
     private static final  Logger log = Logging.getLoggerInstance(ClusteringModule.class);
+
+    public ClusteringModule(String name) {
+        super(name);
+    }
 
     /* (non-Javadoc)
      * @see org.mmbase.module.Module#init()
