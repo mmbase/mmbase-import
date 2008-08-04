@@ -54,16 +54,17 @@
 
 		<mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
 			<edit:ui-tabs>
-				<edit:ui-tab key="community.search.users" />
+				<edit:ui-tab key="community.search.users" >
+				${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do
+                </edit:ui-tab>
 				<edit:ui-tab key="community.search.groups">
-            ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
+                    ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
                 </edit:ui-tab>
 				<fmt:message key="community.search.prompt" var="title">
 					<fmt:param value="${requestScope.groupName}" />
 				</fmt:message>
-				<edit:ui-tab title="${title}" active="true">
-            ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
-                </edit:ui-tab>
+				<edit:ui-tab title="${title}" active="true"/>
+                    
 			</edit:ui-tabs>
 
 			<div class="editor">
