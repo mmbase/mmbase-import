@@ -27,25 +27,15 @@
 </cmscedit:head>
 
 <body>
-<div class="tabs">
-   <div class="tab_active">
-      <div class="body">
-         <div>
-            <a href="#">
-               <fmt:message key="community.search.users"/>
-            </a>
-         </div>
-      </div>
-   </div>
-   <div class="tab">
-      <div class="body">
-         <div>
-            <a href="${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do">
-               <fmt:message key="community.search.groups"/>
-            </a>
-         </div>
-      </div>
-   </div>
+<edit:ui-tabs>
+      <edit:ui-tab key="community.search.users" active="true">
+         #
+      </edit:ui-tab>
+      <edit:ui-tab key="community.search.groups">
+         ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
+      </edit:ui-tab>
+   </edit:ui-tabs>
+
    <div class="editor">
       <div style="padding-left:10px;">
       <p></p>
@@ -71,19 +61,10 @@
 <div class="editor">
    <div class="ruler_green"><div>&nbsp; <fmt:message key="community.search.selectGroup"/> &nbsp;</div></div>
    <div class="body">
-    <form action="${pageContext.request.contextPath }/editors/community/AddUserToGroup.do?users=${users}" method="post">
+     <c:url var="addtoGroup" value="/editors/community/AddUserToGroup.do?users=${users}"/>
+    <form action="${addtoGroup}" method="post">
          <p><input type="submit" value="<fmt:message key="community.search.addUser"/>" name="submitButton" onclick="return addToGroup()"/></p>
-         <edit:ui-table items="${groupForShow}" var="group" size="${totalCount}" requestURI="/editors/community/AddUserToGroupInit.do">
-            <edit:ui-tcolumn title="">
-               <input type="checkbox" name="chk_group" value="${group.groupName}"/>
-            </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.groupname" sort="group">
-               <a href="#">${group.groupName}</a>
-            </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="community.search.users">
-               ${group.users}
-            </edit:ui-tcolumn>
-         </edit:ui-table>
+        <%@ include file="grouplist_addusertogroup.jspf" %>
       </form>
    </div>
 </div>
