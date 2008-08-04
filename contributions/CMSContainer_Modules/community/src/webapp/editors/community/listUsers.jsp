@@ -43,7 +43,6 @@
       </div>
       <div class="body">
          <c:url var="addGroup" value="/editors/community/AddUserToGroupInit.do"/>
-         <input type="button" id="foo" value="test"/>
 
          <form action="${addGroup}" method="post" name="selectform" id="selectform">
             <input type="submit" value="<fmt:message key="community.search.addUser"/>" name="submitButton" onclick="return addToGroup()"/>
