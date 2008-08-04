@@ -35,8 +35,8 @@
 
   <block name="captchamail"
     classification="mmbase.examples resources">
-    <title xml:lang="en">E-mail with captcha</title>
-    <title xml:lang="nl">E-mail met captcha</title>
+    <title xml:lang="en">Captcha e-mail</title>
+    <title xml:lang="nl">Captcha e-mail</title>
     <description xml:lang="en">
       Mail form, with captcha Turing test. The email builder must be
       installed for this to work.
