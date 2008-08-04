@@ -20,7 +20,7 @@
 
 <div class="editor">
    <div style="padding-left:10px;">
-     <p><a href="${pageContext.request.contextPath }/editors/community/groupInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat">New Group</a><p>
+     <p><a href="${pageContext.request.contextPath }/editors/community/groupInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="community.search.newGroup"/></a><p>
       <html:form action="/editors/community/searchConditionalGroupAction.do" method="post">
             <table border="0">
                <tbody>
@@ -46,7 +46,7 @@
 </div>
 
 <div class="editor">
-   <div class="ruler_green"><div>&nbsp; result &nbsp;</div></div>
+   <div class="ruler_green"><div>&nbsp; <fmt:message key="community.preference.result" /> &nbsp;</div></div>
    <div class="body">
       <form action="">
         <%@ include file="grouplist_table.jspf"%> 
