@@ -10,6 +10,13 @@
   <description xml:lang="en">MMBase Editwizards</description>
   <description xml:lang="nl">MMBase Editwizards</description>
 
+  <setting name="location">
+    <description xml:lang="en">Where the editwizards are installed</description>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="/mmbase/edit/wizard/" />
+    </datatype>
+  </setting>
+
   <block name="examples"
          classification="mmbase.examples"
          mimetype="text/html">
@@ -19,13 +26,26 @@
   </block>
 
   <block name="simple.example">
+    <title xml:lang="en">Simple examples</title>
+    <title xml:lang="nl">Eenvoudige voorbeelden</title>
+    <body jsp="simple.example.jspx">
+      <param name="wizards" />
+    </body>
   </block>
 
 
   <block name="dutch.example">
+    <title xml:lang="en">I18N examples</title>
+    <title xml:lang="nl">Internationalisatie-voorbeelden</title>
+    <body jsp="dutch.example.jspx">
+      <param name="language" />
+    </body>
   </block>
 
   <block name="logo.example">
+    <title xml:lang="en">Simple XSL example</title>
+    <title xml:lang="nl">Eenvoudig XSL-voorbeeld</title>
+    <body jsp="logo/example.jspx" />
   </block>
 
   <block name="newftype.example">
