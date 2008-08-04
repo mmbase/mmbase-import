@@ -14,12 +14,11 @@
   ScheduledFuture future = (ScheduledFuture) runnable;</jsp:scriptlet>
   <td>
     <jsp:expression>ThreadPools.getString(future)</jsp:expression>
-  </td>	
+  </td>
   <td>
-  <jsp:expression>future.getDelay(TimeUnit.HOURS)</jsp:expression>h
-  <jsp:expression>future.getDelay(TimeUnit.MINUTES) % 60</jsp:expression>min
-  <jsp:expression>future.getDelay(TimeUnit.SECONDS) %
-  60</jsp:expression>s
+  <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 3600 % 3600</jsp:expression>h
+  <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 60  % 60</jsp:expression>min
+  <jsp:expression>future.getDelay(TimeUnit.SECONDS) % 60</jsp:expression>s
   </td>
   </tr><tr>
    <jsp:scriptlet>}</jsp:scriptlet>
