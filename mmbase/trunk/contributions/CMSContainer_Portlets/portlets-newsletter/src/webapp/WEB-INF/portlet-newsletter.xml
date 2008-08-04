@@ -4,7 +4,7 @@
       xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
 
    <portlet>
-      <description>a newsletter portlet</description>
+      <description>a Newsletter Portlet</description>
       <portlet-name>newslettercontentportlet</portlet-name>
       <display-name>Newsletter Content Portlet</display-name>
       <portlet-class>
@@ -19,8 +19,9 @@
          <value>newsletter/newslettercontent.jsp</value>
       </init-param>
       <supports>
-         <mime-type>text/*</mime-type>
+         <mime-type>text/html</mime-type>
          <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>EDIT</portlet-mode>
          <portlet-mode>HELP</portlet-mode>
          <portlet-mode>EDIT_DEFAULTS</portlet-mode>
          <portlet-mode>DELETE</portlet-mode>
@@ -29,9 +30,9 @@
       <supported-locale>nl</supported-locale>
       <resource-bundle>portlets-newslettercontent</resource-bundle>
       <portlet-info>
-         <title>newsletter Portlet</title>
-         <short-title>newslettercontent</short-title>
-         <keywords>newslettercontent</keywords>
+         <title>Newsletter Portlet</title>
+         <short-title>NewsletterContent</short-title>
+         <keywords>NewsletterContent</keywords>
       </portlet-info>
    </portlet>
 
@@ -72,8 +73,8 @@
       <resource-bundle>portlets-newslettersubscription</resource-bundle>
       <portlet-info>
          <title>Newsletter Subscription Portlet</title>
-         <short-title>newslettersubscription</short-title>
-         <keywords>newslettersubscription</keywords>
+         <short-title>NewsletterSubscription</short-title>
+         <keywords>NewsletterSubscription</keywords>
       </portlet-info>
    </portlet>
    <portlet>
@@ -102,9 +103,9 @@
       <supported-locale>nl</supported-locale>
       <resource-bundle>portlets-unsubscribe</resource-bundle>
       <portlet-info>
-         <title>unsubscribe Portlet</title>
-         <short-title>unsubscribe</short-title>
-         <keywords>unsubscribe</keywords>
+         <title>Unsubscribe Portlet</title>
+         <short-title>Unsubscribe</short-title>
+         <keywords>Unsubscribe</keywords>
       </portlet-info>
    </portlet>
 </portlet-app>
