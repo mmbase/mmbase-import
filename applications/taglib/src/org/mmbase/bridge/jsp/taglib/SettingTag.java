@@ -13,6 +13,7 @@ import org.mmbase.framework.*;
 import org.mmbase.framework.basic.State;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -21,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.6 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: SettingTag.java,v 1.7 2008-08-04 17:06:47 michiel Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {
@@ -33,28 +34,29 @@ public class SettingTag extends CloudReferrerTag implements Writer {
         name = getAttribute(n);
     }
     public void setComponent(String c) throws JspTagException {
-        component = getAttribute(c);
+        component = getAttribute(c, true);
     }
 
     protected Component getComponent() throws JspTagException {
-        String c = component.getString(this);
-        if (c.length() == 0) {
-            return null;
-            /*
-            State state = State.getState(pageContext.getRequest());
-            if (! state.isRendering()) {
+        if (component == Attribute.NULL) {
+
+            HttpServletRequest req = (HttpServletRequest) getPageContext().getRequest();
+            State state =  State.getState(req);
+            if (state.isRendering()) {
+                return state.getBlock().getComponent();
+            } else {
                 throw new JspTagException("No current component found");
             }
-            return state.getBlock().getComponent();
-            */
         } else {
+            String c = component.getString(this);
             return ComponentRepository.getInstance().getComponent(c);
         }
     }
 
 
     public int doStartTag() throws JspTagException {
-        Setting<?> setting = getComponent().getSetting(name.getString(this));
+        Component comp = getComponent();
+        Setting<?> setting = comp.getSetting(name.getString(this));
         if (setting == null) throw new JspTagException("No setting '" + name.getString(this) + "' in component '" + getComponent() + "'");
         Framework fw = Framework.getInstance();
         Parameters parameters = fw.createSettingValueParameters();
