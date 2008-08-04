@@ -7,15 +7,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
     <mm:import externid="type" />
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
     <mm:notpresent referid="type">
-      <h1>Classified blocks</h1>
+      <h4>Classified blocks</h4>
       <mm:functioncontainer>
         <mm:listfunction set="components" name="blockClassification">
           <mm:write request="blockType" />
           <mm:include page="blockType.jspx" />
         </mm:listfunction>
       </mm:functioncontainer>
-      <h1>Unclassified blocks</h1>
+      <h4>Unclassified blocks</h4>
       <mm:functioncontainer>
         <mm:param name="id"></mm:param>
         <mm:listfunction set="components" name="blockClassification">
@@ -25,7 +27,7 @@
       </mm:functioncontainer>
     </mm:notpresent>
     <mm:present referid="type">
-      <h1>Blocks for ${type}</h1>
+      <h4>Blocks for ${type}</h4>
       <mm:functioncontainer>
         <mm:param name="id">${type}</mm:param>
         <mm:listfunction set="components" name="blockClassification">
