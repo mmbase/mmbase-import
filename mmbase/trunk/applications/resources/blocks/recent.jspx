@@ -7,11 +7,12 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-  <h1>Recent</h1>
+  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+  <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
   <mm:cloud>
     <mm:listnodes type="images" orderby="number" directions="down" max="50">
       <div class="image" title="${_node.title}: ${_node.filesize}">
-        <h1><mm:field name="title" write="true"><mm:isempty><mm:field name="filename" /></mm:isempty></mm:field></h1>
+        <h4><mm:field name="title" write="true"><mm:isempty><mm:field name="filename" /></mm:isempty></mm:field></h4>
         <mm:link page="/mmbase/edit/x/change.jspx" referids="_node@node">
           <mm:param name="back"><mm:url absolute="context" /></mm:param>
           <a href="${_}">

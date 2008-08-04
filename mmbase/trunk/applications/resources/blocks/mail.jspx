@@ -15,9 +15,11 @@
       class="mm_c mm_c_resources mm_c_b_mail ${requestScope.componentClassName}"
       id="${requestScope.componentId}"
       xmlns="http://www.w3.org/1999/xhtml">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
     <c:if test="${! empty title}"><h3>${title}</h3></c:if>
     <mm:hasnodemanager name="email" inverse="true">
-      <p>The builder 'email' must be installed for this example to work.</p>
+      <p>The builder 'email' is not installed. It is needed for this example to work.</p>
     </mm:hasnodemanager>
     <mm:hasnodemanager name="email">
     <mm:form>
