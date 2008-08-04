@@ -1,7 +1,6 @@
 package com.finalist.cmsc.community.forms;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,6 +108,7 @@ public class PreferenceAction extends DispatchAction {
       request.setAttribute("results", preferences);
       request.setAttribute("isList", "true");
       request.setAttribute("page", pagingHolder.getPage());
+      request.setAttribute("forward", mapping.findForward("list").getPath()+"/page="+pagingHolder.getPage());
       return mapping.findForward(FORWARD_SUCCESS);
    }
 }

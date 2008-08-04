@@ -8,6 +8,7 @@
 <cmscedit:head title="community.preference.title">
    <c:url var="actionUrl" value="/editors/community/PreferenceAction.do"/>
    <c:url var="userActionUrl" value="/editors/community/userAddInitAction.do"/>
+   <link href="community.css" type="text/css" rel="stylesheet" />
    <script src="../../js/prototype.js" type="text/javascript"></script>
    <script src="js/formcheck.js" type="text/javascript"></script>
    <script type="text/javascript">
