@@ -21,7 +21,7 @@
    <tr>
    <td></td>
    <td><input type="button" name="submitButton"  
-            value="<fmt:message key="community.preference.submit" />" onclick="search()"/>   
+            value="<fmt:message key="community.preference.submit" />" onclick="search()" class="button"/>   
   </td>
 </tr>
 </table>
