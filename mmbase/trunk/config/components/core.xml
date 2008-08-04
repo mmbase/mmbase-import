@@ -38,17 +38,12 @@
 
   <!-- admin -->
   <block name="servers"
-         classification="mmbase.admin"
+         classification="mmbase.admin:10"
          mimetype="text/html">
     <title xml:lang="en">Servers</title>
     <title xml:lang="nl">Servers</title>
-    <description xml:lang="en">An overview describing all MMBase servers running on this system</description>
-    <description xml:lang="nl">Een overzicht van alle MMBase servers op dit systeem</description>
-    <head>
-      <class name="org.mmbase.framework.StringRenderer">
-        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/components/core/style.css" type="text/css" />]]></param>
-      </class>
-    </head>
+    <description xml:lang="en">An overview describing the MMBase servers running on this system</description>
+    <description xml:lang="nl">Een overzicht van de MMBase servers op dit systeem</description>
     <body jsp="servers.jspx">
       <param name="server" type="String" />
     </body>
