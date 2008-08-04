@@ -8,10 +8,10 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
 
-  <mm:import externid="wizards">wizard</mm:import>
-  <mm:import id="jsps"><mm:write value="/mmbase/edit/$wizards/jsp" /></mm:import>
+  <mm:import externid="wizards"><mm:setting name="location" /></mm:import>
+  <mm:import id="jsps">${wizards}/jsp</mm:import>
   <mm:link>
-    <mm:param name="wizards">wizard.deprecated</mm:param>
+    <mm:param name="wizards">/mmbase/edit/wizard.deprecated</mm:param>
     <h1>Editwizard - samples (<a href="${_}">Deprecated look, if installed</a>)</h1>
   </mm:link>
   <p>
