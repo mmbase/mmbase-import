@@ -15,12 +15,13 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class facilitates the use of nodes for system properties.
  * The special property "mmservers" is used to switch between environments.
- * This class will search for the mmbaseroot machinename in the value of the "mmservers" property  
+ * This class will search for the mmbaseroot machinename in the value of the "mmservers" property
+ * @since MMBase-1.9
+ * @author Nico Klasens
  */
 public class SystemProperties {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(SystemProperties.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SystemProperties.class);
 
     private final static String PROPERTY_BUILDER = "systemproperties";
 
@@ -34,7 +35,7 @@ public class SystemProperties {
     private static final String KEY = "key";
 
     private static final String MMSERVERS_PROPERTY = "mmservers";
-    
+
     /** Environment server is running in (development,test,acceptance,production) */
     private static String environment = DEFAULT;
 
@@ -43,7 +44,7 @@ public class SystemProperties {
 
     /**
      * Returns the value of the property with the key
-     * 
+     *
      * @param key The key of the property node.
      * @return The value of the properties node.
      */
@@ -57,7 +58,7 @@ public class SystemProperties {
 
     /**
      * Returns the value of the property with the key
-     * 
+     *
      * @param component The component name of the property
      * @param key The key of the property
      * @return The value of the properties node.
@@ -72,7 +73,7 @@ public class SystemProperties {
 
     /**
      * Returns the value of the property with the key
-     * 
+     *
      * @param component The component value of the properties
      * @return The properties.
      */
@@ -84,7 +85,7 @@ public class SystemProperties {
         return getComponentProps(component);
     }
 
-    
+
     /**
      * Set the value of the property
      * @param key The key of the property
@@ -112,7 +113,7 @@ public class SystemProperties {
         setProp(component, key, value);
     }
 
-    
+
     private static void setEnvironment() {
         String propertyKey = MMSERVERS_PROPERTY;
         MMObjectNode mmservers = getPropertyNode(propertyKey);
@@ -180,7 +181,7 @@ public class SystemProperties {
         return readProperty(key, property);
     }
 
-    
+
     private static void setProp(String key, String value) {
         MMObjectNode property = getPropertyNode(key);
         updateProperty(property, key, null,value);
@@ -230,7 +231,7 @@ public class SystemProperties {
         MMObjectNode property = getComponentPropertyNode(component, key);
         return readProperty(key, property);
     }
-    
+
     private static MMObjectNode getComponentPropertyNode(String component, String key) {
         try {
             MMObjectBuilder propertiesManager = getPropertiesBuilder();
@@ -246,8 +247,8 @@ public class SystemProperties {
             query.setConstraint(composite);
 
             List<MMObjectNode> resultList = propertiesManager.getNodes(query);
-            if (resultList.size() > 0) { 
-                return resultList.get(0); 
+            if (resultList.size() > 0) {
+                return resultList.get(0);
             }
             return null;
         }
@@ -257,7 +258,7 @@ public class SystemProperties {
     }
 
     private static String readProperty(String key, MMObjectNode property) {
-        String result = "";
+        String result = null;
         if (property != null) {
             result = property.getStringValue(environment);
             if (!DEFAULT.equals(environment) && (result == null || "".equals(result))) {
