@@ -70,6 +70,10 @@ public class UserAddInitAction extends AbstractCommunityAction {
 		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
 			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
 			request.getSession().setAttribute("forward", request.getParameter("forward"));
+         //community preference return back
+         if(request.getParameter("path") != null) {
+            request.getSession().setAttribute("path", request.getParameter("path"));
+         }
 		}
 		return actionMapping.findForward(SUCCESS);
 	}

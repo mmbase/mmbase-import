@@ -80,7 +80,7 @@
       </action>
       
      <!-- ==== Reference management ==== -->
-      <action path="/editors/community/PreferenceAction" name="preferenceForm" type="org.springframework.web.struts.DelegatingActionProxy"  scope="request"
+      <action path="/editors/community/PreferenceAction" name="preferenceForm" type="org.springframework.web.struts.DelegatingActionProxy"  scope="session"
          validate="false" unknown="true" parameter="method">
          <forward name="success" path="/editors/community/preferencesearch.jsp" redirect="false" />
          <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="false" />
