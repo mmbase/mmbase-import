@@ -32,6 +32,13 @@
         </mm:link>
       </td>
       <td>A simple one-step person editor. First-name, last-name and related articles.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/people.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
     </tr>
     <tr>
       <td>
@@ -42,6 +49,13 @@
         </mm:link>
       </td>
       <td>You can also upload images with an editwizard. Here is shown how this can be done.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${wizards}/data/lib/createimage.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
     </tr>
     <tr>
       <td>
@@ -53,6 +67,13 @@
         </mm:link>
       </td>
       <td>An editor for news articles. In the one step you can create or add a news article and relate people and images to it.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/news.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
     </tr>
     <tr><td>
       <mm:link referids="referrer,templates" page="$jsps/list.jsp">
@@ -79,6 +100,13 @@
       Only shows the news articles related to a specific node (the magazine, of course). This also
       shows the 'new from list' functionality (new in MMBase- 1.8.5).
     </td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/news_origin.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
     </tr>
   </table>
   <hr />
