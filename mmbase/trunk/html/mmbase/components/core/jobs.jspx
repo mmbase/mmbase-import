@@ -12,13 +12,11 @@
   <div
       class="mm_c c_core b_jobs ${requestScope.className}"
       id="${requestScope.componentId}">
-    <p>
-      This is an overview of the several ThreadPools which are used in MMBase, and which are collected
-      <a href="http://www.mmbase.org/mm/multiproject/mmbase/xref/org/mmbase/util/ThreadPools.html">in org.mmbase.util.ThreadPools</a>
-    </p>
     <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
     <table summary="Jobs statistics" border="0" cellspacing="0" cellpadding="3">
-      <caption>Jobs statistics</caption>
+      <caption>
+        ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+      </caption>
       <tr><th colspan="5">Scheduler</th></tr>
       <jsp:scriptlet>ThreadPoolExecutor executor = (ThreadPoolExecutor) ThreadPools.scheduler;</jsp:scriptlet>
       <jsp:directive.include file="job.jspf" />      
