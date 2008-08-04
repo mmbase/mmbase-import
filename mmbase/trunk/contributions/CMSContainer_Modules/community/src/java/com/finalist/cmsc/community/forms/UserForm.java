@@ -120,19 +120,25 @@ public class UserForm extends ActionForm {
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		ActionErrors actionErrors = new ActionErrors();
 		if (account.equals("")) {
-         actionErrors.add("account", new ActionMessage("userform.account.empty"));
-      }
-		if (email.equals("")) {
-			actionErrors.add("email", new ActionMessage("userform.email.empty"));
+			actionErrors.add("account", new ActionMessage(
+					"userform.account.empty"));
 		}
-		if (this.getAction().equalsIgnoreCase(ACTION_ADD)){
-		   validatePassword(actionErrors);
+		if (email.equals("")) {
+			actionErrors
+					.add("email", new ActionMessage("userform.email.empty"));
+		}
+		if(!email.equals("")&&!email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")){
+			actionErrors.add("email",new ActionMessage("userform.email.not.regular"));
+		}
+		if (this.getAction().equalsIgnoreCase(ACTION_ADD)) {
+			validatePassword(actionErrors);
 		} else {
-		   if (this.getAction().equalsIgnoreCase(ACTION_EDIT)){
-   		   if (StringUtils.isNotBlank(passwordText) || StringUtils.isNotBlank(passwordConfirmation)){
-   		      validatePassword(actionErrors);
-   		   }
-		   }
+			if (this.getAction().equalsIgnoreCase(ACTION_EDIT)) {
+				if (StringUtils.isNotBlank(passwordText)
+						|| StringUtils.isNotBlank(passwordConfirmation)) {
+					validatePassword(actionErrors);
+				}
+			}
 		}
 		return actionErrors;
 	}
