@@ -17,7 +17,9 @@
 
    <body>
    <edit:ui-tabs>
-      <edit:ui-tab key="community.search.users" active="true"/>
+      <edit:ui-tab key="community.search.users" active="true">
+         ${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do
+      </edit:ui-tab>
       <edit:ui-tab key="community.search.groups">
          ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
       </edit:ui-tab>
