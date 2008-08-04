@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.21 2007-11-01 10:11:38 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.22 2008-08-04 09:45:23 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -63,15 +63,15 @@ public class SetFunction extends AbstractFunction<Object> {
                 return Byte.class;
             } else if (primitive.equals(Character.TYPE)) {
                 return  Short.class;
-            } else if (primitive.equals(Character.TYPE)) {
+            } else if (primitive.equals(Integer.TYPE)) {
                 return Integer.class;
-            } else if (primitive.equals(Character.TYPE)) {
+            } else if (primitive.equals(Long.TYPE)) {
                 return Long.class;
-            } else if (primitive.equals(Character.TYPE)) {
+            } else if (primitive.equals(Float.TYPE)) {
                 return Float.class;
-            } else if (primitive.equals(Character.TYPE)) {
+            } else if (primitive.equals(Double.TYPE)) {
                 return Double.class;
-            } else if (primitive.equals(Character.TYPE)) {
+            } else if (primitive.equals(Void.TYPE)) {
                 return Void.class;
             }
         }
