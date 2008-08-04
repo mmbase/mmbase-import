@@ -17,6 +17,8 @@ import com.finalist.cmsc.services.community.preferences.Preference;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.Authority;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Remco Bos
@@ -267,18 +270,12 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
    @Transactional(readOnly = true)
    public List<Person> getAssociatedPersons(Map conditions) {
-
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
-
       StringBuffer strb = new StringBuffer();
       basicGetAssociatedPersons(conditions, strb);
-
       strb.append(holder.getSortToken());
-
       Query q = getSession().createQuery(strb.toString());
-
       q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
-
       return q.list();
    }
 
@@ -326,10 +323,15 @@ public class PersonHibernateService extends HibernateService implements PersonSe
             }
             strb.append(")");
          }
-         else {
+         else if("strict".equals(conditions.get("strict"))){
             String groups = conditions.get("group").toString();
             strb.append(" and authority.name='" + groups + "'");
          }
+         else {
+        	 String exceptNames=conditions.get("strict").toString();
+             String groupName = conditions.get("group").toString();
+             strb.append(" and authentication.userId not in ('" + exceptNames + "')");
+          }
       }
 
    }
