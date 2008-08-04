@@ -6,13 +6,28 @@
 			src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
 		<script type="text/javascript" src="js/formcheck.js"></script>
 		<script type="text/javascript">
-         window.onload = function ()
-         {
-            Event.observe("selectform", "submit", function(e) {
-               addToGroup("chk_", "<fmt:message key="community.search.promptuser"/>", e)
-            })
+      function addToGroup(){
+      var checkboxs = document.forms[1].getElementsByTagName("input");
+      var objectnumbers = '';
+      for(i = 0; i < checkboxs.length; i++) {
+         if(checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+            objectnumbers += checkboxs[i].value;
          }
-         function removeFromGroup(){
+      }
+      if(objectnumbers == ''){
+         alert("<fmt:message key="community.search.promptuser"/>");
+         return false;
+      }
+      //document.getElementById("option").value ="add";
+      return true;
+      }
+      
+      function selectOtherUsers(){
+      document.getElementById("option").value ="select";
+      return true;
+      }    
+         
+      function removeFromGroup(){
       var checkboxs = document.forms[1].getElementsByTagName("input");
       var objectnumbers = '';
       var j=0;
@@ -27,38 +42,41 @@
          return false;
       }
      if(confirm("<fmt:message key="community.search.option"><fmt:param>"+j+"</fmt:param></fmt:message>")){
-      //document.getElementById("option").value ="remove";
+      document.getElementById("option").value ="remove";
       return true;
 	 }
 	 return false;
    }
-      </script>
+     </script>
 	</cmscedit:head>
 
 	<body>
+
 		<mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
 			<edit:ui-tabs>
 				<edit:ui-tab key="community.search.users" />
 				<edit:ui-tab key="community.search.groups">
             ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
-         </edit:ui-tab>
+                </edit:ui-tab>
 				<fmt:message key="community.search.prompt" var="title">
 					<fmt:param value="${requestScope.groupName}" />
 				</fmt:message>
 				<edit:ui-tab title="${title}" active="true">
             ${pageContext.request.contextPath }/editors/community/searchConditionalGroupAction.do
-         </edit:ui-tab>
+                </edit:ui-tab>
 			</edit:ui-tabs>
 
 			<div class="editor">
+
 				<div style="padding-left:10px;">
 					<p>
-						<a href="userAddInitAction.do"
-							style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat">
-							<fmt:message key="view.new.user" /> </a>
+						&nbsp;
 					<p>
-						<html:form action="/editors/community/SearchConditionalUser.do"
-							method="post">
+						<html:form
+							action="/editors/community/SearchConditionalUser.do?method=listGroupMembers&&groupName=${groupName}" method="post">
+						<c:if test="${option}">
+						    <input type="hidden" id="option" name="option" value="select"/>
+						</c:if>
 							<%@include file="search_user_form_table.jspf"%>
 						</html:form>
 				</div>
@@ -78,14 +96,27 @@
 						<c:param name="groupName" value="${groupName}" />
 						<c:param name="method" value="listGroupMembers" />
 					</c:url>
-					<form action="${editGroup}" method="post" id="selectform">
-						<input type="submit"
-							value="<fmt:message key="community.search.addUser" />"
-							name="submitButton" onclick="return addToGroup()" />
-						<input type="submit" name="submitButton2"
-							value="<fmt:message key="community.search.removeUser" />"
-							onclick="return removeFromGroup()" />
-						<%@ include file="userlist_table.jspf"%>
+					<c:choose>
+						<c:when test="${empty option}">
+							<form action="${userActionUrl}" method="post" id="selectform">
+								<input type="hidden" id="option" name="option" />
+								<input type="submit"
+									value="<fmt:message key="community.search.selectUser" ><fmt:param>${groupName}</fmt:param></fmt:message>"
+									name="submitButton" onclick="return selectOtherUsers()" />
+								<input type="submit" name="submitButton2"
+									value="<fmt:message key="community.search.removeUser" />"
+									onclick="return removeFromGroup()" />
+						</c:when>
+						<c:otherwise>
+							<form
+								action="${pageContext.request.contextPath}/editors/community/AddUserToGroup.do?groupName=${groupName}"
+								method="post" id="selectform">
+								<input type="submit"
+									value="<fmt:message key="community.search.addUserToGroup"><fmt:param>${groupName}</fmt:param></fmt:message>"
+									name="submitButton" onclick="return addToGroup()" />
+						</c:otherwise>
+					</c:choose>
+					<%@ include file="userlist_table.jspf"%>
 					</form>
 				</div>
 			</div>
