@@ -72,10 +72,11 @@
          unknown="false" validate="false" name="searchForm">
          <forward name="success" path="/editors/community/addUserToGroup.jsp" redirect="false" />
       </action>
-      
+      <!-- ==========select user add to group ============-->
      <action path="/editors/community/AddUserToGroup" type="com.finalist.cmsc.community.forms.AddUserToGroupAction"
          unknown="false" validate="false" name="searchForm" scope="request">
          <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="true" />
+		 <forward name="group" path="/editors/community/searchConditionalGroupAction.do" redirect="true" />
       </action>
       
      <!-- ==== Reference management ==== -->
