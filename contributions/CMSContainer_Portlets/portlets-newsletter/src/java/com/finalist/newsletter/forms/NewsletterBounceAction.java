@@ -37,13 +37,6 @@ public class NewsletterBounceAction  extends DispatchAction{
       request.setAttribute("offset", offset);
       return mapping.findForward("success");
    }
-    public ActionForward add(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
-
-      NewsletterBounceUtil.add();
-
-      return null;
-      }
     
     public ActionForward getItem(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)
     throws Exception {
