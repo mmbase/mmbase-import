@@ -1,7 +1,7 @@
 /*
  This software is OSI Certified Open Source Software.
  OSI Certified is a certification mark of the Open Source Initiative.
- 
+
  The license (Mozilla version 1.0) can be read at the MMBase site.
  See http://www.MMBase.org/license
 */
@@ -24,7 +24,7 @@ import java.util.Locale;
    &lt;property name="memory"&gt;*&#047;10 * * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl&lt;/property&gt;
    </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MemoryWarner.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: MemoryWarner.java,v 1.6 2008-08-04 14:12:38 michiel Exp $
  */
 
 public class MemoryWarner extends AbstractCronJob  {
@@ -47,18 +47,18 @@ public class MemoryWarner extends AbstractCronJob  {
             if (use > limit) {
                 log.info("Memory use " + usePerc + " > " +  limitPerc);
                 log.info("Used memory over " + limitPerc + " , mailing " + config[1]);
-                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); 
+                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
                 if (cloud.hasNodeManager("email")) {
                     NodeManager email = cloud.getNodeManager("email");
                     Node message = email.createNode();
                     message.setValue("from", "memorywarner@" + java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("to", config[1]);
-                    message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use, for " + 
-                                     org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" + 
+                    message.setValue("subject", "Out of memory warning: more than " + limitPerc + " in use, for " +
+                                     org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "@" +
                                      java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("body", "Memory use " + usePerc + " > " + limitPerc);
                     message.commit();
-                    Function<?> mail = message.getFunction("mail");
+                    Function  mail = message.getFunction("mail");
                     Parameters params = mail.createParameters();
                     params.set("type", "oneshot");
                     mail.getFunctionValue(params);
