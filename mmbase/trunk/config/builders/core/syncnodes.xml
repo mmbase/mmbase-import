@@ -68,7 +68,8 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="now" />
         <required value="true" />
       </datatype>
     </field>
