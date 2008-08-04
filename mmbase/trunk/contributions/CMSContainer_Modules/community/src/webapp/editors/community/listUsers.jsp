@@ -46,7 +46,7 @@
          <input type="button" id="foo" value="test"/>
 
          <form action="${addGroup}" method="post" name="selectform" id="selectform">
-            <input type="submit" value="<fmt:message key="community.search.addtogroup"/>" name="submitButton" onclick="return addToGroup()"/>
+            <input type="submit" value="<fmt:message key="community.search.addUser"/>" name="submitButton" onclick="return addToGroup()"/>
             <%@ include file="userlist_table.jspf" %>
          </form>
       </div>

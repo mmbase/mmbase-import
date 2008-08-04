@@ -72,7 +72,7 @@
    <div class="ruler_green"><div>&nbsp; <fmt:message key="community.search.selectGroup"/> &nbsp;</div></div>
    <div class="body">
     <form action="${pageContext.request.contextPath }/editors/community/AddUserToGroup.do?users=${users}" method="post">
-         <p><input type="submit" value="<fmt:message key="community.search.addtogroup"/>" name="submitButton" onclick="return addToGroup()"/></p>
+         <p><input type="submit" value="<fmt:message key="community.search.addUser"/>" name="submitButton" onclick="return addToGroup()"/></p>
          <edit:ui-table items="${groupForShow}" var="group" size="${totalCount}" requestURI="/editors/community/AddUserToGroupInit.do">
             <edit:ui-tcolumn title="">
                <input type="checkbox" name="chk_group" value="${group.groupName}"/>
