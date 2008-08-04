@@ -120,9 +120,4 @@
     </tr>
 
   </table>
-  <div class="link">
-    <mm:link page="examples">
-      <a href="${_}"><img alt="back" src="${mm:link('mmbase/style/images/back.png')}" /></a>
-    </mm:link>
-  </div>
 </div>
