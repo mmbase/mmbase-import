@@ -7,17 +7,19 @@
   <jsp:output omit-xml-declaration="true" />
   <!--
     xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
-
-
   -->
-  <mm:import externid="to"    from="request" >webmaster@localhost</mm:import>
+  <mm:import externid="to"    from="request">webmaster@localhost</mm:import>
   <mm:import externid="title" from="request">Mail to ${to}</mm:import>
   <mm:import externid="image" from="request" />
   <div 
       class="mm_c mm_c_resources mm_c_b_mail ${requestScope.componentClassName}"
       id="${requestScope.componentId}"
       xmlns="http://www.w3.org/1999/xhtml">
-    <c:if test="${! empty title}"><h1>${title}</h1></c:if>
+    <c:if test="${! empty title}"><h3>${title}</h3></c:if>
+    <mm:hasnodemanager name="email" inverse="true">
+      <p>The builder 'email' must be installed for this example to work.</p>
+    </mm:hasnodemanager>
+    <mm:hasnodemanager name="email">
     <mm:form>
       <mm:import externid="captcha" />
       <c:choose>
@@ -80,5 +82,6 @@
         </c:choose>
       </mm:present>
     </mm:form>
+    </mm:hasnodemanager>
   </div>
 </mm:cloud>
