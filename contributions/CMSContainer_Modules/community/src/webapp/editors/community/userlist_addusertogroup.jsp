@@ -74,7 +74,7 @@
 					<p>
 						<html:form
 							action="/editors/community/SearchConditionalUser.do?method=listGroupMembers&&groupName=${groupName}" method="post">
-						<c:if test="${option}">
+						<c:if test="${not empty option}">
 						    <input type="hidden" id="option" name="option" value="select"/>
 						</c:if>
 							<%@include file="search_user_form_table.jspf"%>
