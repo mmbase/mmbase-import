@@ -41,7 +41,7 @@
 		<prompt xml:lang="zh">发件人</prompt>
 	</field>
 
-	<field name="replyto_mail" dtmaxlength="40">
+	<field name="replyto_mail" dtmaxlength="40" dtrequired="true">
 		<prompt xml:lang="en">E-mail reply</prompt>
 		<prompt xml:lang="nl">E-mail antwoord</prompt>
 		<prompt xml:lang="zh">收件人邮箱</prompt>
