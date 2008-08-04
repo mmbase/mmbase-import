@@ -20,9 +20,34 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.18 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.19 2008-08-04 14:12:38 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
+
+    //some hackery to make it 1.8 compatible. Can be dropped if not necessary any more.
+    private static interface Function<C> extends org.mmbase.util.functions.Function {
+    }
+
+    private static abstract class AbstractFunction<C> extends org.mmbase.util.functions.AbstractFunction implements Function<C> {
+        public AbstractFunction(String name, Parameter[] def, ReturnType returnType) {
+            super(name, def, returnType);
+        }
+        public AbstractFunction(String name, Parameter<?>... def) {
+            this(name, def, null);
+        }
+    }
+    private static class Parameter<C> extends org.mmbase.util.functions.Parameter {
+        public Parameter(String name, Class type, boolean required) {
+            super(name, type, required);
+        }
+        public Parameter(String name, Class type, Object o) {
+            super(name, type, o);
+        }
+        public Parameter(String name, Class type) {
+            super(name, type, null);
+        }
+
+    }
 
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
     protected CronDaemon cronDaemon = null;
@@ -49,7 +74,7 @@ public class CrontabModule extends WatchedReloadableModule {
       </pre>
      */
     public void init() {
-        for (Map.Entry<String, String> entry : getInitParameters().entrySet()) {
+        for (Map.Entry<String, String> entry : ((Map<String, String>) getInitParameters()).entrySet()) {
             addJob(entry);
         }
         readMoreJobs();
@@ -150,7 +175,7 @@ public class CrontabModule extends WatchedReloadableModule {
 
         };
     {
-        Function f = addFunction(listFunction);
+         addFunction(listFunction);
     }
 
     protected final static Parameter<String> ENTRY = new Parameter<String>("entry", String.class, true);
@@ -161,7 +186,7 @@ public class CrontabModule extends WatchedReloadableModule {
      */
     protected Function<Boolean> kickFunction = new AbstractFunction<Boolean>("kick", ENTRY) {
             public Boolean getFunctionValue(Parameters arguments) {
-                String id = arguments.get(ENTRY);
+                String id = (String) arguments.get(ENTRY);
                 return cronDaemon.getCronEntry(id).kick(DynamicDate.eval("tominute"));
             }
 
@@ -175,9 +200,9 @@ public class CrontabModule extends WatchedReloadableModule {
      */
     protected Function<Boolean> interruptFunction = new AbstractFunction<Boolean>("interrupt", ENTRY, THREAD, MACHINE) {
             public Boolean getFunctionValue(Parameters arguments) {
-                String id = arguments.get(ENTRY);
-                Integer thread = arguments.get(THREAD);
-                String machine = arguments.get(MACHINE);
+                String id = (String) arguments.get(ENTRY);
+                Integer thread = (Integer) arguments.get(THREAD);
+                String machine = (String) arguments.get(MACHINE);
                 return cronDaemon.interrupt(machine, id, thread);
             }
 
