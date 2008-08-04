@@ -41,10 +41,10 @@ revision=MMBase-1_8
 headrevision="-A"
 
 #release:
-#version=MMBase-1_8_6_rc1
-#cvsversion=
-#revision=MMBase-1_8_6_rc1
-#headrevision="-r MMBase-1_8_6_rc1"
+#version=MMBase-1_8_6_Final
+#Bcvsversion=
+#revision=MMBase-1_8_6_Final
+#headrevision="-r MMBase-1_8_6_Final"
 
 echo $cvsversion
 
@@ -82,7 +82,7 @@ if ( true ) ; then
     done
     echo "Build from ${revision} ${cvsversionoption} ${cvsversion} against java 1.4 are" > ${builddir}/README
     for i in 'src' 'documentation' 'tests' 'config' 'html' \
-        'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
+        'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/cloudcontext' \
         'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
         'applications/media' 'applications/packaging' 'applications/community' 'applications/largeobjects' \
         'contributions/aselect' 'contributions/mmbar'  'contributions/multilanguagegui' \
@@ -95,7 +95,7 @@ if ( true ) ; then
     echo "==========UPDATING TO HEAD========" >> ${builddir}/messages.log
     echo "Build from HEAD ${cvsversionoption} ${cvsversion} against java 1.5 are" >> ${builddir}/README
     for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/thememanager' 'contributions/didactor2' 'applications/richtext' \
-        'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'contributions/poll' 'contributions/calendar' \
+        'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'applications/crontab' 'contributions/poll' 'contributions/calendar' \
     ; do
     echo updating to HEAD `pwd`/$i | tee -a   ${builddir}/messages.log
     echo $i >> ${builddir}/README
