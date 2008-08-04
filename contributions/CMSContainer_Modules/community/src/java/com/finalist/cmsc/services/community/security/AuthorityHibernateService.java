@@ -162,19 +162,20 @@ public class AuthorityHibernateService extends HibernateService implements Autho
      strb.append(holder.getSortToken());
      Query q = getSession().createSQLQuery(strb.toString());
      q.setMaxResults(holder.getPageSize()).setFirstResult(holder.getOffset());
-     List l=q.list();
-     for(Object s:l){
+     List<String> l=q.list();
+     for(String s:l){
     	 Authority authority=new Authority();
-    	 String str=((Object[])s)[0].toString();
-    	 authority =findAuthorityByName(str);
+    	 //String str=((Object[])s)[0].toString();
+    	 authority =findAuthorityByName(s);
     	 authorities.add(authority);
      }
      return authorities;
     }
 
     private void basicGetAssociatedAuthorities(Map conditions, StringBuffer strb){
-       strb.append("select distinct asn.name as groupName ," +
-       		"concat(p.firstName ,p.lastName) as fullNmae from  authorities asn" +
+       strb.append("select distinct asn.name as groupName " +
+       		//",concat(p.firstName ,p.lastName) as fullNmae " +
+       		"from  authorities asn" +
        		" left outer join authentication_authorities on" +
        		" asn.id=authentication_authorities.authority_id" +
        		" left outer join authentication on" +
