@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.32 2008-07-18 05:48:36 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.33 2008-08-04 11:15:14 michiel Exp $
  */
 public class SortedBundle {
 
@@ -135,7 +135,7 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap<Object,Object> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String,Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
+    public static SortedMap<Object,Object> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap<Object,Object> m = knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
@@ -199,7 +199,11 @@ public class SortedBundle {
 
         if (provider != null) {
             key = provider.get(bundleKey.toUpperCase());
-            if (key == null) key = bundleKey;
+            if (key == null) {
+                log.warn("Could not find " + bundleKey.toUpperCase() + " in " + constantsProvider);
+                key = bundleKey;
+
+            }
         } else {
             key = bundleKey;
         }
