@@ -1,0 +1,36 @@
+<mm:cloud
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_mmexamples b_index ${requestScope.componentClassName}"
+      id="${requestScope.componentId}">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <p>
+     MMBase is based on the single idea of creating a object cloud that represents
+     what you want to share with people. We create objects like images, newsitems, or
+     urls and store them as objects in MMBase. We then create relations between them.
+     This makes it possible for MMBase to generate basic (generic) editors, since
+     they all have the same basic idea of how an object is represented, as well as
+     the relations to other objects.
+    </p><p>
+     Generic editors are meant primarily for site administrators. For your users you
+     are encouraged to set up the task-based (specific) editwizards. In the urls
+     given below we have setup an admin account so you can edit/change the objects
+     within the installed cloud. 
+    </p>
+
+    <dl>
+      <dt>
+        <a href="${mm:link('/mmexamples/mynews.jsp')}">MyNews</a>
+      </dt>
+      <dd>
+        
+      </dd>
+    </dl>
+    
+  </div>
+</mm:cloud>
