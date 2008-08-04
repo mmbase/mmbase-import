@@ -10,6 +10,8 @@ package org.mmbase.applications.crontab.builders;
 import org.mmbase.applications.crontab.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.Event;
 import org.mmbase.util.logging.*;
 import java.util.*;
 
@@ -18,7 +20,7 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.7 2008-07-29 10:01:21 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.8 2008-08-04 15:32:28 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder implements Runnable {
 
@@ -27,9 +29,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
     CronDaemon cronDaemon = null;
 
     public CronJobs() {
-        Thread t = new Thread(this);
-        t.setDaemon(true);
-        t.start();
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(this);
     }
 
     /**
@@ -54,7 +54,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
                 entry = new NodeCronEntry(node);
                 NodeList servers = node.getRelatedNodes("mmservers");
                 if (servers.size() > 0) {
-                    String machineName = MMBase.getMMBase().getMachineName();
+                    String machineName = MMBaseContext.getMachineName();
                     boolean found = false;
                     for (int i=0; i<servers.size(); i++) {
                         Node server = servers.getNode(i);
@@ -81,82 +81,68 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         }
     }
 
-    /**
-     * Inserts a cronjob into the database, and create and adds a  cronEntry to the CronDeamon
-     */
-    public int insert(String owner, MMObjectNode objectNodenode) {
-        int number = super.insert(owner, objectNodenode);
-        try {
-            if (cronDaemon != null) {
-                Node node = getCloud().getNode(number);
+    public void notify(NodeEvent event) {
+        log.info("Received " + event);
+        switch(event.getType()) {
+        case Event.TYPE_NEW: {
+            try {
+                Node node = getCloud().getNode(event.getNodeNumber());
                 cronDaemon.add(new NodeCronEntry(node));
+            } catch (Exception e) {
+                throw new RuntimeException("error while creating cron entry with id " + event.getNodeNumber() + " error " + e.getMessage());
             }
-        } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + number + " error " + e.getMessage(), e);
+            break;
         }
-        return number;
-    }
-
-    /**
-     * Commits a cronjob to the database.
-     * On commit of a cronjob, the job is first removed from the cronDeamon and a new cronEntry is created and added to the CronDaemon.
-     */
-    public boolean commit(MMObjectNode node) {
-        Set<String> changed = node.getChanged();
-        boolean retval = super.commit(node);
-        CronEntry entry = cronDaemon.getCronEntry("" + node.getNumber());
-        if (entry == null) {
-            log.warn("cron entry with ID " + node.getNumber() + " was not found. this usualy means it was invalid");
-        } else {
-            if (entry instanceof NodeCronEntry) {
-                if (changed.contains("classfile") ||
-                    changed.contains("name") ||
-                    changed.contains("type")) {
-                    log.debug("Changed fields " + changed);
-                    cronDaemon.remove(entry);
-                } else {
-                    log.debug("Ignored " + node);
-                    return retval;
-                }
-            } else {
-                log.warn("How come, " + entry + " is not a node-entry");
+        case Event.TYPE_DELETE: {
+            String number = "" + event.getNodeNumber();
+            CronEntry entry = cronDaemon.getCronEntry(number);
+            if (entry != null) {
                 cronDaemon.remove(entry);
             }
+            break;
         }
-        try {
-            log.debug("Replacing cronentry " + entry);
-            Node n = getCloud().getNode(node.getNumber());
-            cronDaemon.add(new NodeCronEntry(n));
-        } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage());
+        case Event.TYPE_CHANGE: {
+            CronEntry entry = cronDaemon.getCronEntry("" + event.getNodeNumber());
+            if (entry == null) {
+                log.warn("cron entry with ID " + event.getNodeNumber() + " was not found. this usualy means it was invalid");
+            } else {
+                if (entry instanceof NodeCronEntry) {
+                    Set<String> changed = event.getChangedFields();
+                    if (changed.contains("classfile") ||
+                        changed.contains("name") ||
+                        changed.contains("crontime") ||
+                        changed.contains("type")) {
+                        log.debug("Changed fields " + changed);
+                        cronDaemon.remove(entry);
+                        try {
+                            Node n = getCloud().getNode(event.getNodeNumber());
+                            CronEntry newEntry = new NodeCronEntry(n);
+                            log.debug("Replacing cronentry " + entry + " with " + newEntry);
+                            cronDaemon.add(newEntry);
+                        } catch (Exception e) {
+                            throw new RuntimeException("error while creating cron entry with id " + event.getNodeNumber() + " error " + e.getMessage());
+                        }
+                    } else {
+                        log.debug("Ignored " + event);
+                    }
+                } else {
+                    log.warn("How come, " + entry + " is not a node-entry");
+                }
+            }
+            break;
         }
-        return retval;
-    }
+        default: {
+            log.debug("Ignored " + event);
+        }
 
-    /**
-     * removes the node from the database and also removes it from the CronDaemon
-     */
-    public void removeNode(MMObjectNode objectNodenode) {
-        String number = "" + objectNodenode.getNumber();
-        super.removeNode(objectNodenode);
-        CronEntry entry = cronDaemon.getCronEntry(number);
-        if (entry != null) {
-            cronDaemon.remove(entry);
         }
-    }
 
+    }
 
     private Cloud getCloud() {
-        return LocalContext.getCloudContext().getCloud("mmbase");
+        return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
 
-    /**
-     *	sets the default type and crontime (does not work)
-     */
-    public void setDefaults(MMObjectNode node) {
-        super.setDefaults(node);
-        node.setValue("type", CronEntry.Type.DEFAULT.ordinal());
-        node.setValue("crontime", "*/5 * * * *");
-    }
+
 
 }
