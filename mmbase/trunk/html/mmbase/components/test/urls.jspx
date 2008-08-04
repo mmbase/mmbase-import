@@ -82,6 +82,41 @@
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
 
+
+    <h2>Framework params</h2>
+
+    <mm:link page="view_source" absolute="context">
+      <mm:frameworkparam name="component">core</mm:frameworkparam>
+      <mm:frameworkparam name="category">foo</mm:frameworkparam>
+      <mm:param name="page">index.jspx</mm:param>
+      <p>${_ eq '/mmbase/foo/core/view_source?1.2:page=index.jspx' ? 'ok' : 'NOT ok'}: '${_}' NE '/mmbase/foo/core/view_source?1.2:page=index.jspx'</p> <!-- 1.2? -->
+    </mm:link>
+
+    <mm:link page="servers" absolute="context">
+      <mm:frameworkparam name="component">core</mm:frameworkparam>
+      <mm:frameworkparam name="category">foo</mm:frameworkparam>
+      <p>${_ eq '/mmbase/foo/core/servers' ? 'ok' : 'NOT ok'}: '${_}' NE '/mmbase/foo/core/servers'</p>
+    </mm:link>
+
+    <p>
+      <c:catch var="not_exist">
+        <mm:link page="does_not_exists" absolute="context">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <jsp:text>NOT ok: ${_}</jsp:text>
+        </mm:link>
+      </c:catch>
+      <c:if test="${empty not_exist}">
+        <jsp:text> Should have thrown exception, becuase the specified  block does not exist</jsp:text>
+      </c:if>
+      <c:if test="${not empty not_exist}">
+        <jsp:text>Ok: ${not_exist}</jsp:text>
+      </c:if>
+    </p>
+
+
+
+
+
     <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
 
     <h2>form tag</h2>
