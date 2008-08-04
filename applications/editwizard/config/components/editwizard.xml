@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="editwizard"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">MMBase Editwizards</description>
+  <description xml:lang="nl">MMBase Editwizards</description>
+
+  <block name="examples"
+         classification="mmbase.examples"
+         mimetype="text/html">
+    <title xml:lang="en">Editwizard examples</title>
+    <title xml:lang="nl">Ediwizard voorbeelden</title>
+    <body jsp="examples.jspx" />
+  </block>
+
+  <block name="simple.example">
+  </block>
+
+
+  <block name="dutch.example">
+  </block>
+
+  <block name="logo.example">
+  </block>
+
+  <block name="newftype.example">
+  </block>
+
+  <block name="advanced.example">
+  </block>
+
+  <block name="startwizard.example">
+  </block>
+
+  <block name="component.example">
+  </block>
+
+  <block name="style.po.example">
+  </block>
+
+  <block name="style.preditor.example">
+  </block>
+
+  <block name="style.finalist.example">
+  </block>
+
+</component>
