@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.43 2008-07-31 20:20:16 andre Exp $
+# $Id: build.properties.default,v 1.44 2008-08-04 09:46:04 ernst Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -109,11 +109,11 @@ xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 
 # ----- Jakarta file upload ----------
-fileupload.version=commons-fileupload-1.0
+fileupload.version=commons-fileupload-1.2
 fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
 fileupload.loc=http://www.mmbase.org/download/jars/${fileupload.file}
-fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
+fileupload.jar=${expand.dir}/${fileupload.version}/lib/${fileupload.version}.jar
 
 # ----- Commons Logging ----------
 commons-logging.version=commons-logging-1.0.4
@@ -121,6 +121,14 @@ commons-logging.file=${commons-logging.version}.tar.gz
 commons-logging.dest=${download.dir}/${commons-logging.file}
 commons-logging.loc=http://archive.apache.org/dist/commons/logging/binaries/${commons-logging.file}
 commons-logging.jar=${expand.dir}/${commons-logging.version}/commons-logging.jar
+
+# ----- Apache Commons IO ----------
+io.version=commons-io-1.4
+io.file=${io.version}.tar.gz
+io.dest=${download.dir}/${io.file}
+io.loc=http://www.mmbase.org/download/jars/${io.file}
+io.jar=${expand.dir}/${io.version}/${io.version}.jar
+
 
 # ----- Standard taglib + jstl ------------
 taglibs-standard.version=jakarta-taglibs-standard-1.1.2
