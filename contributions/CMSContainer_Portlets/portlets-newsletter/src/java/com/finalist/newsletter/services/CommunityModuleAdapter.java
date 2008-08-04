@@ -62,6 +62,9 @@ public class CommunityModuleAdapter {
    public static String getUserNameByAuthenticationId(int authenticationId) {
       AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory.getApplicationContext().getBean("authenticationService");
       com.finalist.cmsc.services.community.security.Authentication authentication = authenticationService.getAuthenticationById(new Long(authenticationId));
-      return authentication.getUserId();
+      if(authentication !null) {
+         return authentication.getUserId();
+      }
+      return null;
    }
 }
