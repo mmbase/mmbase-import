@@ -102,7 +102,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
 	public void pause(int subscriptionId) {
 		Node record = cloud.getNode(subscriptionId);
-		record.setStringValue("status", "PAUSE");
+		record.setStringValue("status", "PAUSED");
 		record.commit();
 	}
 
