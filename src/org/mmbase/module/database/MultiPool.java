@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.57 2005-12-17 16:18:58 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.57.2.1 2008-08-04 14:11:57 michiel Exp $
  */
 public class MultiPool {
 
@@ -169,7 +169,7 @@ public class MultiPool {
             con = DriverManager.getConnection(url, name, password);
         }
         databaseSupport.initConnection(con);
-        return new MultiConnection(this, con);
+        return new MultiConnectionImplementation(this, con);
     }
 
     /**
