@@ -10,6 +10,7 @@
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -114,8 +115,15 @@ public class UserAddAction extends AbstractCommunityAction {
 			ActionForward ret;
 			String newsletterId = (String) httpServletRequest.getSession().getAttribute("newsletterId");
 			if (StringUtils.isNotBlank(tmpForward)) {
-				ret = new ActionForward("/editors/newsletter/NewsletterPublicationSubscriberSearch.do?newsletterId="
+            if(tmpForward.equals("communitypreference")) {
+               String path = (String) httpServletRequest.getSession().getAttribute("path");
+               path = path.substring(0,path.indexOf("page")-1)+"&"+path.substring(path.indexOf("page"));
+               ret = new ActionForward(path);
+            }
+            else {
+				   ret = new ActionForward("/editors/newsletter/NewsletterPublicationSubscriberSearch.do?newsletterId="
 						+ httpServletRequest.getSession().getAttribute("newsletterId"));
+            }
 				ret.setRedirect(true);
 			} else {
 				ret = actionMapping.findForward(SUCCESS);
@@ -130,11 +138,11 @@ public class UserAddAction extends AbstractCommunityAction {
 			if ("newslettersubscribers".equals(tmpForward)) {
 				ActionForward ret = new ActionForward(actionMapping.findForward("newslettersubscribers").getPath() + "?newsletterId="
 						+ httpServletRequest.getSession().getAttribute("newsletterId"));
-				httpServletRequest.getSession().removeAttribute("forward");
-				httpServletRequest.getSession().removeAttribute("newsletterId");
+            clearSession(httpServletRequest.getSession());
 				ret.setRedirect(true);
 				return ret;
-			} else if ("newslettersubscription".equals(tmpForward)) {
+			} 
+         else if ("newslettersubscription".equals(tmpForward)) {
 				ActionForward ret;
 				if (((UserForm) actionForm).getAction().equalsIgnoreCase(UserForm.ACTION_ADD)) {
 					ret = new ActionForward(actionMapping.findForward("newslettersubscription").getPath() + "?newsletterId="
@@ -145,13 +153,26 @@ public class UserAddAction extends AbstractCommunityAction {
 							+ httpServletRequest.getSession().getAttribute("newsletterId"));
 				}
 
-				httpServletRequest.getSession().removeAttribute("forward");
-				httpServletRequest.getSession().removeAttribute("newsletterId");
+            clearSession(httpServletRequest.getSession());
 				ret.setRedirect(true);
 				return ret;
 			}
+         else if(tmpForward.equals("communitypreference")) {
+            String path = (String) httpServletRequest.getSession().getAttribute("path");
+            path = path.substring(0,path.indexOf("page")-1)+"&"+path.substring(path.indexOf("page"));
+            ActionForward  ret = new ActionForward(path);
+            clearSession(httpServletRequest.getSession());
+            ret.setRedirect(true);
+				return ret;
+           }
 		}
 		removeFromSession(httpServletRequest, actionForm);
 		return actionMapping.findForward(SUCCESS);
 	}
+
+   private void clearSession(HttpSession session){
+      session.removeAttribute("forward");
+      session.removeAttribute("newsletterId");
+      session.removeAttribute("path");
+   }
 }
