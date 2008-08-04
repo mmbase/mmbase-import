@@ -49,6 +49,9 @@
   </block>
 
   <block name="newftype.example">
+    <title xml:lang="en">XSL example</title>
+    <title xml:lang="nl">XSL-voorbeeld</title>
+    <body jsp="newftype/example.jspx" />
   </block>
 
   <block name="advanced.example">

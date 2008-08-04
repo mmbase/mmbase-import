@@ -12,7 +12,7 @@
   </p>
   <mm:import id="ew"><mm:setting name="location" />/jsp</mm:import>
   <mm:import id="templates">/mmbase/components/editwizard/logo/</mm:import>
-  <mm:import id="referrer"><mm:url absolute="context" />/</mm:import>
+  <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
 
   <table>
     <tr>
