@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
-import java.util.concurrent.*;
+import edu.emory.mathcs.backport.java.util.concurrent.*;
 import javax.naming.*;
 
 import org.mmbase.util.logging.Logger;
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.2.2.2 2008-08-04 08:37:30 michiel Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.2.2.3 2008-08-04 08:40:57 michiel Exp $
  */
 public class ApplicationContextReader {
 
