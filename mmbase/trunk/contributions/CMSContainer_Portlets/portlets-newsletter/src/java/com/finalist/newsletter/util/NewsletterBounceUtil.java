@@ -27,9 +27,6 @@ public class NewsletterBounceUtil {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager bounceManager = cloud.getNodeManager("newsletterbounce");
       NodeQuery query = bounceManager.createQuery();
-     // query.addStep(bounceManager);
-      
-      //SearchUtil.addLimitConstraint(query, offset, pageSize);
       query.setMaxNumber(pageSize);
       query.setOffset(offset);
       NodeList bounceNodes = query.getList();
@@ -84,8 +81,7 @@ public class NewsletterBounceUtil {
       desBounce.setBounceDate(srcBounceNode.getDateValue("bouncedate"));
       desBounce.setBounceContent(srcBounceNode.getStringValue("content"));
       
-   }
-   
+   }   
     
    public static NewsletterBounce getNewsletterBounce(int number){
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -93,20 +89,5 @@ public class NewsletterBounceUtil {
       NewsletterBounce bounce = new NewsletterBounce();
       copyProperties(bounceNode,bounce);
       return bounce;
-   }
-   
-   public static void add(){
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeManager bounceManager = cloud.getNodeManager("newsletterbounce"); 
-      for(int i = 0 ; i < 20 ; i++){
-         Node node = bounceManager.createNode();
-         node.setIntValue("newsletter", i);
-         node.setIntValue("userid", i);
-         
-         node.setStringValue("content","ddddddddddddddddddd");
-         node.setDateValue("bouncedate",new Date());
-         node.commit();
-         
-      }
    }
 }
