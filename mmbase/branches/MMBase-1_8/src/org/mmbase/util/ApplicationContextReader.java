@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import java.util.concurrent.*;
 import javax.naming.*;
 
 import org.mmbase.util.logging.Logger;
@@ -20,11 +21,34 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.2.2.1 2008-07-14 15:22:33 michiel Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.2.2.2 2008-08-04 08:37:30 michiel Exp $
  */
 public class ApplicationContextReader {
 
     private static Logger log = Logging.getLoggerInstance(ApplicationContextReader.class);
+
+    private static final Map cache = new ConcurrentHashMap();
+
+
+    /**
+     * As {@link #getProperties(String)} but caching, so it may conserve some cpu cycles, and
+     * withouth throwing the exception
+     *
+     * @since MMBase-1.8.7
+     */
+    public static Map getCachedProperties(String path) {
+        Map m = (Map) cache.get(path);
+        if (m == null) {
+            try {
+                m = getProperties(path);
+            } catch (javax.naming.NamingException ne) {
+                log.error(ne);
+                m =  Collections.emptyMap();
+            }
+            cache.put(path, m);
+        }
+        return m;
+    }
 
     /**
      * @javadoc
