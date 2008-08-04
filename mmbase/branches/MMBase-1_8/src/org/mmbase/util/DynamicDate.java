@@ -49,6 +49,16 @@ public class DynamicDate extends Date {
         }
 
     }
+    /**
+     * @since MMBase-1.8.7
+     */
+    public static Date eval(final String format) {
+        try {
+            return eval(getInstance(format));
+        } catch (ParseException e) {
+            return new Date(-1);
+        }
+    }
 
     /**
      *  Makes sure the argument 'date' is no DynamicDate any more. So this returns a fixed date
