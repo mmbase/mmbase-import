@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.176 2008-07-31 20:20:16 andre Exp $
+$Id: build.xml,v 1.177 2008-08-04 09:46:04 ernst Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -314,6 +314,7 @@ builddate=${builddate}
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
+    <copy file="${io.jar}"             tofile="${release.lib.dir}/commons-io.jar" />
     <copy file="${commons-logging.jar}" tofile="${release.lib.dir}/commons-logging.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy todir="${webapp.dir}/mmbase/jquery">
@@ -356,6 +357,7 @@ builddate=${builddate}
     <copy file="${servlet.jar}"               todir="${compile.lib.dir}" />
     <copy file="${jspapi.jar}"                todir="${compile.lib.dir}" />
     <copy file="${fileupload.jar}"            tofile="${compile.lib.dir}/commons-fileupload.jar" />
+    <copy file="${io.jar}" tofile="${compile.lib.dir}/commons-io.jar" />
     <copy file="${commons-logging.jar}"       tofile="${compile.lib.dir}/commons-logging.jar" />
     <copy file="${log4j.jar}"                 tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${javaactivation.jar}"        todir="${compile.lib.dir}" />
@@ -1034,6 +1036,14 @@ Build-compiler: ${build.compiler}
       <param name="destfile" value="${fileupload.dest}"/>
       <param name="expandedfile" value="${fileupload.jar}"/>
     </antcall>
+    
+    <echo message="io" />
+    <antcall target="downloadgz">
+      <param name="sourcefile" value="${io.loc}"/>
+      <param name="destfile" value="${io.dest}"/>
+      <param name="expandedfile" value="${io.jar}"/>
+    </antcall>
+
 
     <echo message="commons-logging" />
     <antcall target="downloadgz">
@@ -1112,11 +1122,11 @@ Build-compiler: ${build.compiler}
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
   <target name="clean.documentation" description="Clean the generated documentation">
-    <ant target="clean" antfile="build-documentation.xml">
-      <property name="mmbase.default.dir" value=".." />
-      <property name="download.dir" value="${download.dir}" />
-      <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
-    </ant>
+      <ant target="clean" antfile="build-documentation.xml">
+          <property name="mmbase.default.dir" value=".." />
+          <property name="download.dir" value="${download.dir}" />
+          <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
+      </ant>
   </target>
 
   <!-- =================================================================== -->
