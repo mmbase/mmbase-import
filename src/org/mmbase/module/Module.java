@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.101 2008-08-01 21:11:55 michiel Exp $
+ * @version $Id: Module.java,v 1.102 2008-08-04 14:16:18 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -120,7 +120,7 @@ public abstract class Module extends DescribedFunctionProvider {
             },
             3600 - (now.get(Calendar.MINUTE) * 60 + now.get(Calendar.SECOND)),  // some effort to run exactly at hour
             3600, TimeUnit.SECONDS);
-        ThreadPools.identify(future, "maintainance probe for module " + (name == null ? this.getClass().getName() : name));
+        ThreadPools.identify(future, "Maintainance for '" + (name == null ? this.getClass().getName() : name) + "'");
     }
     /**
      * @since MMBase-1.8
