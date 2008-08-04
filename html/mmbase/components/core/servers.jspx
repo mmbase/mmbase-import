@@ -8,7 +8,6 @@
       class="mm_c c_core b_servers ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-    PATH: <jsp:expression>org.mmbase.framework.FrameworkFilter.getPath(request)</jsp:expression>
     <mm:notpresent referid="server">
       <table summary="servers" border="0" cellspacing="0" cellpadding="3">
         <caption>
@@ -55,12 +54,6 @@
           </tr>
         </mm:listnodes>
       </table>
-
-      <div id="aboutthisredbox">
-        You are seeing this text which is only meant to test the MMBase framework.
-        This means rendering stuff with the Component Framework for the above servers block
-        in the head of a document works: a stylesheet is correctly included.
-      </div>
 
     </mm:notpresent>
     <mm:present referid="server">
