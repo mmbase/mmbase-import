@@ -17,7 +17,8 @@
       </dt>
       <dd>
         Small example of a news/magazine system. A more recent version has been rewritten
-        to the component framework and can be found at /mmbase/examples/mynews/magazine.
+        to the component framework and can be found at 
+        <a href="${mm:link('/mmbase/examples/mynews/magazine')}">/mmbase/examples/mynews/magazine</a>.
       </dd>
       <dt>
         <a href="${mm:link('/mmexamples/taglib/')}">MMBase tag library examples</a>
@@ -26,7 +27,7 @@
         A lot of different examples for the MMBase taglib.
       </dd>
       <dt>
-        <mm:link page="editors">
+        <mm:link page="jsp-editors">
           <a href="${_}">Editors</a>
         </mm:link>
       </dt>
@@ -36,7 +37,10 @@
     <h4>Other demo's</h4>
     <dl>
       <dt>
-        <a href="as">EditWizards</a>
+        <mm:link page="examples">
+          <mm:frameworkparam name="component">editwizard</mm:frameworkparam>
+          <a href="${_}">EditWizards</a>
+        </mm:link>
       </dt>
       <dd>Different editwizard-examples.</dd>
     </dl>
