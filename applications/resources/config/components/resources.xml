@@ -16,7 +16,10 @@
   <block name="recent"
          classification="mmbase.examples resources"
          mimetype="text/html">
-    <description xml:lang="en">Displays recent resources</description>
+    <title xml:lang="en">Recent resources</title>
+    <title xml:lang="nl">Recente resources</title>
+    <description xml:lang="en">Displays recent resources in MMBase</description>
+    <description xml:lang="nl">Toont recent in MMBase ingevoerde resources</description>
     <head jsp="head.jspx" />
     <body jsp="recent.jspx">
       <param name="nodetypes" />
@@ -32,9 +35,15 @@
 
   <block name="captchamail"
     classification="mmbase.examples resources">
+    <title xml:lang="en">E-mail with captcha</title>
+    <title xml:lang="nl">E-mail met captcha</title>
     <description xml:lang="en">
       Mail form, with captcha Turing test. The email builder must be
       installed for this to work.
+    </description>
+    <description xml:lang="nl">
+      Mail form, met een captcha Turing test. De 'email' builder moet 
+      geïnstalleerd zijn voor dit voorbeeld.
     </description>
     <body jsp="mail.jspx">
       <param name="to" type="String" />
