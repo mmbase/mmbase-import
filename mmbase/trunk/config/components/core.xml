@@ -15,6 +15,11 @@
   <bundle name="org.mmbase.framework.resources.core" />
 
 
+  <action name="view_source" rank="administrator">
+    <description xml:lang="en">Whether the source code of templates may be seen</description>
+  </action>
+
+
   <!-- about etc. -->
   <block name="welcome"
          classification="mmbase.about:10"
@@ -77,7 +82,7 @@
   </block>
 
   <block name="modules"
-         classification="mmbase.admin mmbase.modules"
+         classification="mmbase.admin"
          mimetype="text/html">
     <title xml:lang="en">Modules</title>
     <title xml:lang="nl">Modules</title>
@@ -87,12 +92,12 @@
   </block>
 
   <block name="jobs"
-         classification="mmbase.admin"
+         classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Jobs</title>
     <title xml:lang="nl">Jobs</title>
     <description xml:lang="en">
-      An overview of the several ThreadPools which are used in MMBase, and which 
+      An overview of the several ThreadPools which are used in MMBase, and which
       are collected in org.mmbase.util.ThreadPools.
     </description>
     <description xml:lang="nl">
@@ -103,11 +108,13 @@
   </block>
 
   <block name="datatypes"
-         classification="mmbase.admin"
+         classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Data Types</title>
     <title xml:lang="nl">Datatypes</title>
     <body jsp="datatypes.jspx">
+      <param name="nodemanager"      type="String" />
+      <param name="field"   type="String" />
     </body>
   </block>
 
@@ -234,7 +241,7 @@
   </block>
 
   <block name="transactions"
-         classification="mmbase.admin"
+         classification="mmbase.tools"
          mimetype="text/html">
     <title xml:lang="en">Transactions</title>
     <title xml:lang="nl">Transacties</title>
@@ -364,7 +371,7 @@
   </block>
 
   <block name="component-block-tree"
-         classification=""
+         classification="mmbase.components"
          mimetype="text/html">
     <title xml:lang="en">Components tree</title>
     <title xml:lang="nl">Componentenboom</title>
@@ -422,6 +429,15 @@
         <param name="xslt">xslt/rss.xslt</param>
 
       </class>
+    </body>
+  </block>
+
+  <block name="view_source"
+         mimetype="text/html">
+    <title xml:lang="nl">Sourcecode-viewer</title>
+    <title xml:lang="en">Source code displayer</title>
+    <body jsp="cite.jspx">
+      <param name="page" />
     </body>
   </block>
 
