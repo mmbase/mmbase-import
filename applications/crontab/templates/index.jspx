@@ -9,8 +9,10 @@
   </jsp:scriptlet>
   <jsp:directive.include file="head.jspx" />
   <mm:content type="text/html" language="en" expires="0">
-    <body class="basic">
-      <mm:component name="crontab" block="admin" />
-    </body>
+    <mm:cloud rank="administrator">
+      <body class="basic">
+        <mm:include page="/mmbase/components/crontab/index.jspx" />
+      </body>
+    </mm:cloud>
   </mm:content>
 </html>

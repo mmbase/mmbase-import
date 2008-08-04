@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MMBaseCacheClearerJob.java,v 1.1 2006-09-05 16:24:06 michiel Exp $
+ * @version $Id: MMBaseCacheClearerJob.java,v 1.2 2008-08-04 14:12:38 michiel Exp $
  */
 
 public class MMBaseCacheClearerJob extends AbstractCronJob  {
@@ -30,13 +30,13 @@ public class MMBaseCacheClearerJob extends AbstractCronJob  {
     public final void run() {
         if (caches != null && caches.length > 0) {
             log.service("Clearing " + java.util.Arrays.asList(caches));
-            for (String cache : caches) {
-                CacheManager.getCache(cache).clear();
+            for (Object cache : caches) {
+                CacheManager.getCache((String) cache).clear();
             }
         } else {
             log.service("Clearing " + CacheManager.getCaches());
-            for (String cache :  CacheManager.getCaches()) {
-                CacheManager.getCache(cache).clear();
+            for (Object cache :  CacheManager.getCaches()) {
+                CacheManager.getCache((String) cache).clear();
             }
         }
     }
