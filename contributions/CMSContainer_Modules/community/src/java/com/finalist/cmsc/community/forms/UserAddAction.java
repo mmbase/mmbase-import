@@ -157,7 +157,7 @@ public class UserAddAction extends AbstractCommunityAction {
 				ret.setRedirect(true);
 				return ret;
 			}
-         else if(tmpForward.equals("communitypreference")) {
+         else if("communitypreference".equals(tmpForward)) {
             String path = (String) httpServletRequest.getSession().getAttribute("path");
             path = path.substring(0,path.indexOf("page")-1)+"&"+path.substring(path.indexOf("page"));
             ActionForward  ret = new ActionForward(path);
