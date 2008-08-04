@@ -16,7 +16,7 @@
     <jsp:expression>ThreadPools.getString(future)</jsp:expression>
   </td>
   <td>
-  <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 3600 % 3600</jsp:expression>h
+  <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 3600 </jsp:expression>h
   <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 60  % 60</jsp:expression>min
   <jsp:expression>future.getDelay(TimeUnit.SECONDS) % 60</jsp:expression>s
   </td>
