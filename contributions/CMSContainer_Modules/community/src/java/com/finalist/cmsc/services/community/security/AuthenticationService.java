@@ -140,5 +140,7 @@ public interface AuthenticationService {
 	Authentication getAuthenticationById(Long authenticationId);
 
 	public Authentication createAuthentication(Authentication authentication);
-   public void removeAuthenticationFromAuthority(String authId, String groupName);
+    public void removeAuthenticationFromAuthority(String authId, String groupName);
+
+    public void addAuthorityToUserByAuthenticationId(String authId, String groupName);
 }

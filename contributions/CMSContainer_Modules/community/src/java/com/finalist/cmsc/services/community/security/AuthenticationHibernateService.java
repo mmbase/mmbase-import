@@ -102,6 +102,16 @@ public class AuthenticationHibernateService extends HibernateService implements 
 		authentication.addAuthority(authority);
 		getSession().flush();
 	}
+	//addAuthorityToUserByAuthenticationId is just makeup addAuthorityToUser fuction
+	@Transactional
+	public void addAuthorityToUserByAuthenticationId(String AuthenticationId, String authorityName) {
+		//Long Authenticationid=Long.getLong(AuthenticationId);
+		Long Authenticationid=Long.parseLong(AuthenticationId);
+		Authentication authentication = getAuthenticationById(Authenticationid);
+		Authority authority = authorityService.findAuthorityByName(authorityName);
+		authentication.addAuthority(authority);
+		getSession().flush();
+	}
 
 	/** {@inheritDoc} */
 	@Transactional
