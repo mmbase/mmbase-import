@@ -1,5 +1,5 @@
 <!--
-  $Id: build-documentation.xml,v 1.1 2008-03-25 21:03:08 nklasens Exp $
+  $Id: build-documentation.xml,v 1.2 2008-08-05 12:19:53 pierre Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -360,7 +360,7 @@
   <!-- =================================================================== -->
 
   <!-- only needed for builder.docs -->
-  <target name="doc.resources" depends="init.get">
+  <target name="doc.resources" depends="init">
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
