@@ -87,7 +87,7 @@
                                     </c:otherwise>
                                  </c:choose>
                                  <a href="javascript:showInfo(<mm:field name='number'/>,'<%="/editors/newsletter/NewletterPublicationAction.do" + request.getAttribute("geturl")%>')">
-                                    <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" />
+                                    <img src="../gfx/icons/info.png" title="<fmt:message key="newsletter.subscriber.info" />" />
                                  </a>
                               </td>
                               <td onMouseDown="objClick(this);"><mm:field name="title" /></td>

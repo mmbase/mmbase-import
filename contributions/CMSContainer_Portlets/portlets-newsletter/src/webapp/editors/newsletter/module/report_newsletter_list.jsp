@@ -34,12 +34,11 @@
             </tr>
          </table>
       </form>
-
-      <div class="ruler_green">
-         <div><fmt:message key="newsletteroverview.title"/></div>
-      </div>
-      </c:if>
-
+   </div>
+   </c:if>
+</div>
+<div class="editor">
+   <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletteroverview.title"/>&nbsp;</div></div>
       <div class="body">
          <c:choose>
             <c:when test="${fn:length(results) gt 0}">
@@ -92,7 +91,6 @@
             </c:otherwise>
          </c:choose>
       </div>
-
    </div>
 </div>
 <script>
