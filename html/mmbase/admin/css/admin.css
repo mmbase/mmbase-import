@@ -201,6 +201,10 @@ h2.top
 	background-color: #fff9f9;
 }
 
+#content dl { line-height: 1.4em; }
+#content dl dt { font-weight: bold; }
+#content dl dd { margin-left: 1em; }
+
 /* form stuff */
 label
 {
