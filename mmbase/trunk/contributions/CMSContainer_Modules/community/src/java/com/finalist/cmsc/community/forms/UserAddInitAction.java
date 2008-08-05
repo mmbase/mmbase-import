@@ -32,11 +32,43 @@ public class UserAddInitAction extends AbstractCommunityAction {
 	private static Log log = LogFactory.getLog(UserAddInitAction.class);
 
 	protected static final String AUTHENTICATION_ID = "authid";
-
+	protected static final String FORWARD_GROUP = "group";
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 
 		String authId = request.getParameter(AUTHENTICATION_ID);
+		String groupFoeward=request.getParameter(FORWARD_GROUP);
+		setUserFormParamater(actionForm, authId);
+		if (null==groupFoeward||",".equals(groupFoeward)) {
+			setNewsletterForward(request);
+		}else{
+			setGroupForward(request, groupFoeward);
+		}		
+		return actionMapping.findForward(SUCCESS);
+	}
+
+	private void setGroupForward(HttpServletRequest request, String groupFoeward) {
+		String[] temp=groupFoeward.split(",");
+		String groupNmae=temp[0];
+		if (temp.length==2) {
+			String option = temp[1];
+			request.setAttribute("option",option);
+		}			
+		request.setAttribute("groupName",groupNmae);
+	}
+
+	private void setNewsletterForward(HttpServletRequest request) {
+		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
+			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
+			request.getSession().setAttribute("forward", request.getParameter("forward"));
+         //community preference return back
+         if(request.getParameter("path") != null) {
+            request.getSession().setAttribute("path", request.getParameter("path"));
+         }
+		}
+	}
+
+	private void setUserFormParamater(ActionForm actionForm, String authId) {
 		UserForm userForm = (UserForm) actionForm;
 		userForm.clear();
 
@@ -67,14 +99,5 @@ public class UserAddInitAction extends AbstractCommunityAction {
 			// new
 			userForm.setAction(UserForm.ACTION_ADD);
 		}
-		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
-			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
-			request.getSession().setAttribute("forward", request.getParameter("forward"));
-         //community preference return back
-         if(request.getParameter("path") != null) {
-            request.getSession().setAttribute("path", request.getParameter("path"));
-         }
-		}
-		return actionMapping.findForward(SUCCESS);
 	}
 }
