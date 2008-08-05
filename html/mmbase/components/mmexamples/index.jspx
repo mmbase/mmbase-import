@@ -43,6 +43,19 @@
         </mm:link>
       </dt>
       <dd>Different editwizard-examples.</dd>
+      <dt>
+        <mm:link page="/mmexamples/codings/">
+          <a href="${_}">Codings</a>
+        </mm:link>
+      </dt>
+      <dd>Shows text in different encodings.</dd>
+      <dt>
+        <mm:link page="datatypes">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <a href="${_}">Datatypes</a>
+        </mm:link>
+      </dt>
+      <dd>MMBase has powerful support for datatypes.</dd>
     </dl>
 
   </div>
