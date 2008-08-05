@@ -27,24 +27,21 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
 
 
       if(StringUtils.isNotBlank(searchform.getGroup())){
-         //have conditons searching
-         authorities.clear();
+         //have conditions searching
          HashMap map = new HashMap();
          map.put("group", searchform.getGroup());
-         if (map.size() > 0) {
-            authorities = getAuthorityService().getAssociatedAuthorities(map,holder);
-            totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,holder);
-         }
+         authorities = getAuthorityService().getAssociatedAuthorities(map,holder);
+         totalCount = getAuthorityService().getAssociatedAuthoritiesNum(map,holder);
       }else{
          //no conditions search
          //need authId from the last jsp
     	 if(searchform.getChk_()!=null){
-         StringBuffer userAllId = new StringBuffer();
-         for(String authId:searchform.getChk_()){
-            String userId = getAuthenticationService().getAuthenticationById(Long.parseLong(authId)).getUserId();
-            userAllId.append(userId+";");
-         }
-         request.getSession().setAttribute("users",userAllId.substring(0, userAllId.length()-1)); //contact string[]
+	         StringBuffer userAllId = new StringBuffer();
+	         for(String authId:searchform.getChk_()){
+	            String userId = getAuthenticationService().getAuthenticationById(Long.parseLong(authId)).getUserId();
+	            userAllId.append(userId+";");
+	         }
+	         request.getSession().setAttribute("users",userAllId.substring(0, userAllId.length()-1)); //contact string[]
     	 }
 
          authorities = getAuthorityService().getAllAuthorities(holder);
@@ -53,9 +50,9 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction{
       if(authorities!=null) {
          request.setAttribute("groupForShow", convertAuthrityTOVO(authorities));
       }
-         request.setAttribute("totalCount", totalCount);
-         removeFromSession(request,searchform);
-         return actionMapping.findForward("success");
+      request.setAttribute("totalCount", totalCount);
+      removeFromSession(request,searchform);
+      return actionMapping.findForward("success");
 
    }
    private List<GroupForShowVO> convertAuthrityTOVO(List<Authority> authorities){
