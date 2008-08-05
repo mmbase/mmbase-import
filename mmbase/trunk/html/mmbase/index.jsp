@@ -52,7 +52,10 @@
                   <mm:link page="/mmbase/admin"><a href="${_}">Admin pages</a></mm:link>
                 </li>
                 <li class="weight_100">
-                  <mm:link page="/mmbase/examples"><a href="${_}">Examples</a></mm:link>
+                  <mm:link page="index">
+                    <mm:frameworkparam name="component">mmexamples</mm:frameworkparam>
+                    <a href="${_}">Examples</a>
+                  </mm:link>
                 </li>
               </ul>
              </div>
