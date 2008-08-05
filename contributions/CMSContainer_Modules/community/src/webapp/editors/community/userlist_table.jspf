@@ -3,7 +3,7 @@
    <edit:ui-tcolumn title="">
       <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
       <c:if test="${not hiddenOperation}">
-      <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}">
+      <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}&&group=${groupName},${option}">
       <img  src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="<fmt:message key="community.search.edit"/>"></a>
       <a href="${pageContext.request.contextPath }/editors/community/deleteUserAction.do?authid=${person.authId}&&group=${groupName},${option}">
       <img  src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key="community.search.delete"/>"></a>
@@ -11,7 +11,7 @@
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.fullname" sort="person.firstName,person.lastName">
    <c:if test="${not hiddenOperation}">
-      <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}">${person.fullname}</a>
+      <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}&&group=${groupName},${option}">${person.fullname}</a>
    </c:if>
    <c:if test="${hiddenOperation}">
       ${person.fullname}

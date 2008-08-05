@@ -21,22 +21,26 @@ public class DeleteUserAction extends AbstractCommunityAction {
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
-		String path=request.getParameter(FORWARD_GROUP);
+		String groupFoeward=request.getParameter(FORWARD_GROUP);
 		deleteUser(request);
-		if (null==path||",".equals(path)) {
+		if (null==groupFoeward||",".equals(groupFoeward)) {
 			return mapping.findForward(SUCCESS);
 		}else {
 			//deleteUser(request);
-			String[] temp=path.split(",");
-			String groupNmae=temp[0];
-			if (temp.length==2) {
-				String option = temp[1];
-				request.setAttribute("option",option);
-			}			
-			request.setAttribute("groupName",groupNmae);
+			setGroupParamater(request, groupFoeward);
 			return mapping.findForward(FORWARD_GROUP);
 		}
 		//return mapping.findForward(SUCCESS);
+	}
+
+	private void setGroupParamater(HttpServletRequest request, String groupFoeward) {
+		String[] temp=groupFoeward.split(",");
+		String groupNmae=temp[0];
+		if (temp.length==2) {
+			String option = temp[1];
+			request.setAttribute("option",option);
+		}			
+		request.setAttribute("groupName",groupNmae);
 	}
 
 	private void deleteUser(HttpServletRequest request) {
