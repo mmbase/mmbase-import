@@ -75,7 +75,7 @@
          </mm:hasrank>
          </edit:ui-tcolumn>
          <edit:ui-tcolumn titlekey="community.preference.user.upper">
-         <a href="${userActionUrl}?authid=${preference.authenticationId}">${preference.userId}</a>
+         <a href="${userActionUrl}?authid=${preference.authenticationId}&forward=communitypreference&path=${forward}">${preference.userId}</a>
          </edit:ui-tcolumn>
          <edit:ui-tcolumn titlekey="community.preference.module.upper">
             ${preference.module}
