@@ -11,12 +11,14 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 
 import org.mmbase.bridge.jsp.taglib.*;
+
+import java.util.*;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 
-import org.mmbase.util.Casting;
+import org.mmbase.util.*;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -39,7 +41,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.9 2008-07-23 17:09:32 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.10 2008-08-05 12:18:46 sdeboer Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -179,4 +181,10 @@ public class Functions {
         return treefile(page, ContextReferrerTag.getThreadPageContext(), objectList);
     }
 
+    /**
+     * @since MMBase-1.8.8
+     */
+    public static Map applicationContext(String path) {
+      return ApplicationContextReader.getCachedProperties(path);
+    }
 }
