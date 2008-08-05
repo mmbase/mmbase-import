@@ -71,6 +71,7 @@
         <mm:link page="view_source">
           <mm:frameworkparam name="component">core</mm:frameworkparam>
           <mm:param name="page">/mmbase/components/editwizard/samples/news.xml</mm:param>
+          <mm:param name="xml">true</mm:param>
           <a href="${_}">See XML</a>
         </mm:link>
       </td>
