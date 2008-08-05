@@ -62,7 +62,7 @@
     <tr>
       <td>Advanced Wizards</td><td>Some more sophisticated examples</td>
       <td class="link" >
-        <mm:link page="advances.example">
+        <mm:link page="advanced.example">
           <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
         </mm:link>
       </td>
