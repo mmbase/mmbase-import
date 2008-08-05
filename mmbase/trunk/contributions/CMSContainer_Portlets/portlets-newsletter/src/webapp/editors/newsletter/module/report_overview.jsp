@@ -42,7 +42,7 @@
          </td>
          <td width="33%">
             <h1 style="font-size:14px; font-weight:normal; text-transform:uppercase; letter-spacing:2px; color:#418001;">
-               <fmt:message key="index.link.title.publicationstats"/>
+               <fmt:message key="index.link.allsubscriber"/>
             </h1>
          </td>
          <td width="33%">
@@ -50,8 +50,8 @@
                <fmt:message key="index.link.title.publicationstats"/>
             </h1>
          </td>
-   </tr>
-   <tr>
+      </tr>
+      <tr>
          <td>
             <p>
                <a href="SubscriptionManagement.do?action=newsletterOverview">
@@ -79,18 +79,16 @@
 
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="index.title.task"/>&nbsp;</div></div>
-</div>
-<div class="editor">
    <div class="body"> 
-      <table>
-         <tr><td><a href="module/NewsletterTermAction.do?method=list&init=true"><fmt:message key="index.link.manageterm"/></a></td></tr>
-         <tr><td><a href="SubscriptionImportExportAction.do?action=export"><fmt:message key="index.link.exportall"/></a></td></tr>
-         <tr><td><a href="SubscriptionManagement.do?action=showImportPage"><fmt:message key="index.link.import"/></a></td></tr>
-         <tr><td><a href="ShowNewsletters.do?action=show"><fmt:message key="index.link.newsletterstatistic"/></a></td></tr>
-      </table>
+      <div style="padding-left:10px;">
+      <p><a href="module/NewsletterTermAction.do?method=list&init=true"><fmt:message key="index.link.manageterm"/></a></p>
+      <p><a href="SubscriptionImportExportAction.do?action=export"><fmt:message key="index.link.exportall"/></a></p>
+      <p><a href="SubscriptionManagement.do?action=showImportPage"><fmt:message key="index.link.import"/></a></p>
+      <p><a href="ShowNewsletters.do?action=show"><fmt:message key="index.link.newsletterstatistic"/></a></p>
+      </div>
+      <br/>
    </div>
 </div>
-
 </body>
 </html:html>
 </mm:content>

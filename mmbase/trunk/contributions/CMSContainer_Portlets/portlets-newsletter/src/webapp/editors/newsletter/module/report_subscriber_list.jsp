@@ -59,10 +59,10 @@
                            <th><fmt:message key="subscriptiondetail.emailaddress"/></th>
                         </thead>
                         <tbody>
-                           <%--@elvariable id="results" type="java.util.List"--%>
+                           <c:set var="useSwapStyle">true</c:set>
                            <c:forEach items="${results}" var="result">
                               <pg:item>
-                                 <tr>
+                                 <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
                                     <td><input type="checkbox" name="ids" value="${result.id}"/></td>
                                     <td>
                                        <a href="SubscriptionManagement.do?action=listSubscriptionByPerson&subsriberId=${result.id}">
@@ -72,6 +72,7 @@
                                     <td>${result.fullname}</td>
                                     <td>${result.email}</td>
                                  </tr>
+                                 <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                               </pg:item>
                            </c:forEach>
                         </tbody>

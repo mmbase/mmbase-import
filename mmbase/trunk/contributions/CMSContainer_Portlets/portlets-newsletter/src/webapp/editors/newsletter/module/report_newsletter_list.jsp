@@ -57,10 +57,10 @@
                            <th><fmt:message key="globalstats.total.subscriptions"/></th>
                         </thead>
                         <tbody>
-                              <%--@elvariable id="results" type="java.util.List"--%>
+                           <c:set var="useSwapStyle">true</c:set>
                            <c:forEach items="${results}" var="result">
                               <pg:item>
-                                 <tr>
+                                 <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
                                     <td><input type="checkbox" name="ids" value="${result.id}"/></td>
                                     <td>
                                        <a href="SubscriptionManagement.do?action=listSubscription&newsletterId=${result.id}">
@@ -71,6 +71,7 @@
                                     <td>${result.countSentPublicatons}</td>
                                     <td>${result.countSubscriptions}</td>
                                  </tr>
+                                 <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                               </pg:item>
                            </c:forEach>
                         </tbody>
