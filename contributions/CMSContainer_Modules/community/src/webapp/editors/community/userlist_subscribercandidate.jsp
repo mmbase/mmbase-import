@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
 %><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
 %><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <cmscedit:head title="reactions.title">
    <script type="text/javascript">
       function addToSubscribe(){
@@ -46,10 +46,11 @@
             <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
          </c:url>
          <form action="${addSubscribe}" method="post" name="selectform" id="selectform">
-            <input type="submit" value="add to Subscribe" name="submitButton" onclick="return addToSubscribe()"/>
+            <input type="submit" value="<fmt:message key='community.search.addToSubscribe'/>" name="submitButton" onclick="return addToSubscribe()"/>
             <c:set var="hiddenOperation" value="true"/>
             <%@ include file="userlist_table.jspf" %>
          </form>
       </div>
    </div>
 </body>
+</mm:content>
