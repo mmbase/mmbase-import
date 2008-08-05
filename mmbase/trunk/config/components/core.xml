@@ -112,6 +112,12 @@
          mimetype="text/html">
     <title xml:lang="en">Data Types</title>
     <title xml:lang="nl">Datatypes</title>
+    <description xml:lang="en">
+      Overview of datatypes
+    </description>
+    <description xml:lang="nl">
+      Overzicht van datatypes
+    </description>
     <body jsp="datatypes.jspx">
       <param name="nodemanager"      type="String" />
       <param name="field"   type="String" />
@@ -376,10 +382,13 @@
     <title xml:lang="en">Components tree</title>
     <title xml:lang="nl">Componentenboom</title>
     <description xml:lang="en">
-      Hierarchical tree view of the available components.
+      Hierarchical tree view of the available components and blocks. A block
+      can get a classification which determines its position in the admin menu.
     </description>
-    <description xml:lang="en">
-       Hierarchish overzicht van de beschikbare componenten.
+    <description xml:lang="nl">
+       Hierarchisch overzicht van de beschikbare componenten en blocken. 
+       Een block kan een classificatie meekrijgen die o.a. aangeeft 
+       op welke plek in het admin menu een block getoond moet worden.
     </description>
     <body jsp="components/tree.jspx">
     </body>
@@ -390,16 +399,6 @@
          mimetype="text/html">
     <description xml:lang="en">Generic mmbase login box</description>
     <body jsp="login.jspx">
-    </body>
-  </block>
-
-
-  <!-- examples -->
-  <block name="mmexamples"
-         classification="mmbase.examples"
-         mimetype="text/html">
-    <description xml:lang="en">Shows the MMBase example pages</description>
-    <body jsp="examples/index.jspx">
     </body>
   </block>
 
