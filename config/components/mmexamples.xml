@@ -35,8 +35,8 @@
     </body>
   </block>
 
-  <block name="editors"
-         classification="mmbase.examples"
+  <block name="jsp-editors"
+         classification=""
          mimetype="text/html">
     <title xml:lang="en">JSP editors</title>
     <title xml:lang="nl">JSP editors</title>
