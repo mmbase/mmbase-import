@@ -7,7 +7,7 @@
 
     <date>2007-08-05</date>
 
-    <edition>$Id: index.xml,v 1.66 2007-12-07 10:24:41 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.67 2008-08-05 19:20:31 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -113,9 +113,11 @@
   <section id="introduction">
     <title>Introduction</title>
 
+<!-- 
     <para>If you ran the documentation build with PDF's enabled then the PDF
     versions of these documents can be accessed via the <ulink
     url="index-pdf.html">PDF index page</ulink>.</para>
+ -->
 
     <itemizedlist>
       <listitem>
