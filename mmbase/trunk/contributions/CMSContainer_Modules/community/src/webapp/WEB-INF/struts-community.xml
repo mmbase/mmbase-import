@@ -61,6 +61,7 @@
       <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
          unknown="false" validate="false">
          <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="false" />
+		 <forward name="group" path="/editors/community/searchConditionalUserAction.do?method=listGroupMembers" redirect="false" />
       </action>
       <action path="/editors/community/SearchConditionalUser" type="org.springframework.web.struts.DelegatingActionProxy"
          unknown="false" validate="false" name="searchForm" scope="request" parameter="method">
