@@ -1,7 +1,9 @@
 <%@include file="globals.jsp" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"%>
+<fmt:setBundle basename="cmsc-community" scope="request" />
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 
-<cmscedit:head title="reactions.title">
-</cmscedit:head>
+<cmscedit:head title="reactions.title"/>
 
 <div class="tabs">
    <div class="tab_active">
@@ -33,3 +35,4 @@
       </div>
    </div>
 </div>
+</mm:content>
