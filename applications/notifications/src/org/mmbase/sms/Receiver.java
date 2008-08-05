@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.9 2007-11-19 15:05:42 michiel Exp $
+ * @version $Id: Receiver.java,v 1.10 2008-08-05 12:02:27 pierre Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -68,7 +68,7 @@ public  class Receiver implements Runnable {
     private List<Handler> handlers = new ArrayList<Handler>();
 
     protected Receiver(String configFile) {
-        Map<String, ?> config = new UtilReader(configFile).getProperties();
+        Map<String, ?> config = new UtilReader(configFile).getMaps();
         log.info("Found " + config);
         if (config.size() == 0) {
             log.error("No SMS-handlers found in " + configFile );
