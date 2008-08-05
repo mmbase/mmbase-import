@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.29 2008-07-24 08:12:26 michiel Exp $
+ * @version $Id: Functions.java,v 1.30 2008-08-05 12:16:23 sdeboer Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -203,8 +203,12 @@ public class Functions {
      */
     public static boolean hasAlias(Node node, String alias) {
          return node.getAliases().contains(alias);
-     }
+    }
 
-
-
+    /**
+     * @since MMBase-1.8.8
+     */
+    public static Map applicationContext(String path) {
+      return ApplicationContextReader.getCachedProperties(path);
+    }
 }
