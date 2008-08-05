@@ -62,10 +62,17 @@ public class SearchConditionalUserAction extends DispatchAction {
 			ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 		SearchForm searchform = (SearchForm) actionForm;
+		String option = searchform.getOption();
 		Map<String, String> map = getParameterMap(actionForm);
 		String groupName = request.getParameter("groupName");
+		if (null==groupName||"".equals(groupName)) {
+			groupName = (String) request.getAttribute("groupName");
+		}
+		if (null==option||"".equals(option)) {
+			option = (String) request.getAttribute("option");
+		}		
 		String[] authIds = searchform.getChk_();
-		chooseOption(request, searchform, map, groupName, authIds);
+		chooseOption(request, option, map, groupName, authIds);
 		List<Person> persons = personService.getAssociatedPersons(map);
 		int totalCount = personService.getAssociatedPersonsNum(map);
 		setSharedAttributes(request, persons, totalCount);
@@ -73,8 +80,8 @@ public class SearchConditionalUserAction extends DispatchAction {
 		return actionMapping.findForward("group");
 	}
 
-private void chooseOption(HttpServletRequest request, SearchForm searchform, Map<String, String> map, String groupName, String[] authIds) {
-	String option = searchform.getOption();
+private void chooseOption(HttpServletRequest request, String option, Map<String, String> map, String groupName, String[] authIds) {
+	//String option = searchform.getOption();
 	if (null != authIds&&"remove".equals(option)) {
 		removeAuthorityFromUser(groupName, authIds);
 	}

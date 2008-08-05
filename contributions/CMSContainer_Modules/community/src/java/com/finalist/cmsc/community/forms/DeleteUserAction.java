@@ -16,16 +16,35 @@ import org.apache.struts.action.ActionMapping;
 public class DeleteUserAction extends AbstractCommunityAction {
 
     protected static final String AUTHENTICATION_ID = "authid";
+    protected static final String FORWARD_GROUP = "group";
 
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
+		String path=request.getParameter(FORWARD_GROUP);
+		deleteUser(request);
+		if (null==path||",".equals(path)) {
+			return mapping.findForward(SUCCESS);
+		}else {
+			//deleteUser(request);
+			String[] temp=path.split(",");
+			String groupNmae=temp[0];
+			if (temp.length==2) {
+				String option = temp[1];
+				request.setAttribute("option",option);
+			}			
+			request.setAttribute("groupName",groupNmae);
+			return mapping.findForward(FORWARD_GROUP);
+		}
+		//return mapping.findForward(SUCCESS);
+	}
+
+	private void deleteUser(HttpServletRequest request) {
 		String authenticationId = request.getParameter(AUTHENTICATION_ID);
 		if (StringUtils.isNotBlank(authenticationId)) {
 			Long authId = Long.valueOf(authenticationId);
-            getPersonService().deletePersonByAuthenticationId(authId);
+			getPersonService().deletePersonByAuthenticationId(authId);
 			getAuthenticationService().deleteAuthentication(authId);
 		}
-		return mapping.findForward(SUCCESS);
 	}
 }
