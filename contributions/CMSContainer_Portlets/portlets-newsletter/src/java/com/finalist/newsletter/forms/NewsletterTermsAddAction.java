@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
@@ -13,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class NewsletterTermsAddAction extends MMBaseFormlessAction {
