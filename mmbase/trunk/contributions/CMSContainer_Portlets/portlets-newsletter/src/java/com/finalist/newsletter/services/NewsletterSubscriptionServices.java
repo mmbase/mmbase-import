@@ -53,8 +53,6 @@ public interface NewsletterSubscriptionServices {
 
 	Set<Subscription> getSubscriptions(String newsletterId, String name, String email);
 
-	public List<Person> getAllSubscribers();
-
 	public List<Person> getAllSubscribers(String name, String email);
 
 	public List<Subscription> getSubscriptionBySubscriber(String newsletterid);
