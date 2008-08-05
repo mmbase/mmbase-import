@@ -9,7 +9,7 @@
 <cmscedit:contentblock title="view.title" titleClass="content_block_pink">
 <mm:cloud loginpage="../login.jsp" rank='administrator'>
 	<mm:cloudinfo type="user" id="cloudusername" write="false" />
-   <html:form action="/editors/community/userAddAction">
+   <html:form action="/editors/community/userAddAction?group=${groupName},${option}">
 		<div id="user">
 		<table class="formcontent">
      
