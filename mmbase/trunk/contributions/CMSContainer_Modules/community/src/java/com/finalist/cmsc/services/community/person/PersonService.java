@@ -11,6 +11,7 @@ package com.finalist.cmsc.services.community.person;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 import com.finalist.cmsc.paging.PagingStatusHolder;
@@ -80,4 +81,6 @@ public interface PersonService {
    public List<Person> getAssociatedPersons(Map conditions);
 
    public int getAssociatedPersonsNum(Map<String,String> map);
+   
+   public List<Person> getPersonsByAuthenticationIds(Set<Integer> authenticationIds, String name, String email);
 }
