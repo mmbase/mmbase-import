@@ -17,11 +17,12 @@ package org.mmbase.bridge.jsp.taglib.util;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: Debug.java,v 1.3 2007-07-30 17:22:59 michiel Exp $
+ * @version $Id: Debug.java,v 1.4 2008-08-06 12:17:18 michiel Exp $
  */
 public enum Debug {
 
     NONE,
+    LOG,
 
     HTML {
         public String start(String name, Object url) {
