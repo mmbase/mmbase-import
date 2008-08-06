@@ -16,13 +16,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
-import org.mmbase.framework.basic.State;
 
 /**
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.29 2008-04-18 13:49:01 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.30 2008-08-06 12:18:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -111,10 +110,6 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             }
             if (log.isDebugEnabled()) {
                 log.debug("fw: " + frameworkParams + " rp:" + pageContext.getRequest().getParameterMap());
-            }
-            State state = State.getState(pageContext.getRequest());
-            if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
-                state = new State(pageContext.getRequest());
             }
             Debug d = Debug.valueOfOrEmpty(debug.getString(this));
             w.write(d.start(component.getName(), renderer.getUri()));

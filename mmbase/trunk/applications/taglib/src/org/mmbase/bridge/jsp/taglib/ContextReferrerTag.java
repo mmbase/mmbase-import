@@ -23,6 +23,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.framework.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
@@ -35,7 +36,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.108 2008-07-17 10:58:08 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.109 2008-08-06 12:18:54 michiel Exp $
  * @see ContextTag
  */
 
@@ -718,6 +719,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
     }
 
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected Block getCurrentBlock() throws JspTagException {
+        Framework fw = Framework.getInstance();
+        Parameters params = fw.createParameters();
+        fillStandardParameters(params);
+        Block b = fw.getRenderingBlock(params);
+        return b;
+    }
 
 
     // Writer Implementation
