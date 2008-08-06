@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="mags" maintainer="mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="en">Magazine</singular>
@@ -37,7 +37,9 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="Magazine title" />
+      </datatype>
       <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
@@ -115,7 +117,7 @@
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    
+
   </fieldlist>
 
 </builder>
