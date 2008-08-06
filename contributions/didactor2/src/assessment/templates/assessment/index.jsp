@@ -25,7 +25,7 @@
         <div class="contentBody">
           <di:hasrole role="student">
             <di:hasrole role="teacher">
-              <form name="coachform" method="post">
+              <form name="coachform" method="get">
                 <select name="coachmode"
                         onchange="$('form[name =coachform]').submit();">
                   <mm:option value="true" compare="${coachmode}">

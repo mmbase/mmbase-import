@@ -97,5 +97,42 @@
         </mm:relatednodes>
       </mm:node>
     </div>
+
+    <!--
+         Finally, the use is given the option to 'close' the last lesson
+    -->
+
+    <div>
+
+      <mm:import externid="step" />
+
+      <jsp:directive.include file="evaluationtest.jspf" />
+
+      <mm:treefile page="/assessment/closelesson.jsp"
+                   objectlist="$includePath"
+                   referids="$referids"
+                   write="false"
+                   >
+
+        <form name="closelessonform" action="${_}"   method="post">
+          <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
+          <mm:node number="lesson"  notfound="skip">
+            <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
+              <input type="submit" class="formbutton" value="${di:translate('assessment.close_and_send_to_coach')}" />
+            </mm:related>
+          </mm:node>
+          <input type="submit" class="formbutton" value="${di:translate('assessment.close_and_send_to_coach')}" />
+        </form>
+        <mm:node number="$assessment_evaluationtest" notfound="skip">
+
+        </mm:node>
+        <form name="closelessonform" action="${_}"  method="post">
+          <mm:node number="" notfound="skip">
+            <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
+            <mm:param name="learnobject"></mm:param>
+          </mm:node>
+        </form>
+      </mm:treefile>
+    </div>
   </div>
 </div>
