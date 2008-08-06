@@ -326,7 +326,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <target name="package.update.blocks" if="blocks.exists">
     <zip zipfile="${project.zip}" update="true">
-      <zipfileset dir="${project.source.dir}/blocks" prefix="${zip.name}/web-app/components/blocks/${project.name}" >
+      <zipfileset dir="${project.source.dir}/blocks" prefix="${zip.name}/web-app/mmbase/components/${project.name}" >
         <patternset id="web-app.block.files">
           <include name="**" />
         </patternset>
