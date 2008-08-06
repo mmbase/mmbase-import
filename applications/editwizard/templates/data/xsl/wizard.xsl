@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.18 2008-07-09 08:19:46 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.19 2008-08-06 09:25:47 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1033,7 +1033,7 @@
   <xsl:template name="ftype-file">
     <xsl:choose>
       <xsl:when test="@dttype=&apos;data&apos; or @maywrite=&apos;false&apos;">
-        <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+        <a  href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
           <xsl:call-template name="prompt_do_download"/>
         </a>
       </xsl:when>
@@ -1050,7 +1050,7 @@
               <br/>
             </xsl:if>
             <xsl:if test="@size &gt; 0">
-              <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+              <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
                 <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
               </a>
@@ -1068,7 +1068,7 @@
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
             (<xsl:value-of select="round((upload/@size) div 100) div 10"/> K)
             <br/>
-            <a target="_blank" href="file://{upload/path}">
+            <a  href="file://{upload/path}">
               <xsl:call-template name="prompt_do_download"/>
             </a>
             <br/>
