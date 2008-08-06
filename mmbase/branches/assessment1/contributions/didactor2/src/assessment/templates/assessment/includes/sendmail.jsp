@@ -10,7 +10,7 @@
 
 </mm:createnode>
 
-<!-- send the email node (Didactor way) -->                
+<!-- send the email node (Didactor way) -->
 <mm:node referid="mail1">
    <mm:setfield name="type">1</mm:setfield>
 </mm:node>
