@@ -38,7 +38,7 @@
 <!ATTLIST query where CDATA #IMPLIED >
 <!ATTLIST query orderby CDATA #IMPLIED >
 
-<!ELEMENT form-schema ( title | subtitle | field | fieldset | list)* >
+<!ELEMENT form-schema ( title | subtitle | field | fieldset | list | blocks )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 <!ATTLIST form-schema include CDATA #IMPLIED >
 <!ATTLIST form-schema extends CDATA #IMPLIED >
