@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.47 2008-08-01 13:10:33 michiel Exp $
+ * @version $Id: SendMail.java,v 1.48 2008-08-06 14:23:11 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -362,7 +362,7 @@ public class SendMail extends AbstractSendMail {
 
     }
 
-    protected static final Set<String> RECOGNIZED_HEADERS = new HashSet<String>(Arrays.asList(new String[] {"CC", "BCC", "Reply-To", "Subject"}));
+    protected static final Set<String> RECOGNIZED_HEADERS = new HashSet<String>(Arrays.asList(new String[] {"CC", "BCC", "Reply-To", "Subject", "Content-Type", "Mime-Version"}));
 
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
