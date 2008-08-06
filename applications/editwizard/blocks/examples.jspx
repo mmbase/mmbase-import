@@ -78,9 +78,9 @@
 
     <tr>
       <td>Component blocks</td>
-      <td>Examples abou how to include mmbase component framework blocks.</td>
+      <td>Examples about how to include mmbase component framework blocks.</td>
       <td class="link" >
-        <mm:link page="startwizard.example">
+        <mm:link page="components.example">
           <a href="${_}"><img alt="&gt;" src="${mm:link('/mmbase/style/images/next.png')}" /></a>
         </mm:link>
       </td>

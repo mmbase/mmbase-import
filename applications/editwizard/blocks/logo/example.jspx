@@ -26,6 +26,13 @@
       <td>
         A simple one-step person editor.
       </td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${templates}xsl/base.xsl</mm:param>
+          <a href="${_}">See XSL</a>
+        </mm:link>
+      </td>
     </tr>
   </table>
   <hr />

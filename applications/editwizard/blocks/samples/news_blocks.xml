@@ -11,7 +11,7 @@
   <action type="delete" />
 
   <action type="load">
-    <blocks classification="test.editwizards" render="head" />
+    <blocks classification="editwizard.block.schema.test" render="head" />
   </action>
 
   <form-schema id="step1">
@@ -28,6 +28,6 @@
 
   </form-schema>
 
-  <blocks classification="test.editwizards" />
+  <blocks classification="editwizard.block.schema.test" />
 
 </wizard-schema>
