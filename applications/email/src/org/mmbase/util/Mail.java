@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @application Mail
  * @author Rob Vermeulen
- * @version $Id: Mail.java,v 1.4 2007-11-14 16:38:45 michiel Exp $
+ * @version $Id: Mail.java,v 1.5 2008-08-06 14:23:29 michiel Exp $
  */
 public class Mail {
 
@@ -53,8 +53,8 @@ public class Mail {
      * @param from teh sender of the mail
      */
     public Mail(String to, String from) {
-        this.to=to;
-        this.from=from;
+        this.to = to;
+        this.from = from;
         headers.put("To", to);
         headers.put("From", from);
     }
