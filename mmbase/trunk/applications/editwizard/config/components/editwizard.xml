@@ -55,21 +55,47 @@
   </block>
 
   <block name="advanced.example">
+    <title xml:lang="en">Advanced example</title>
+    <title xml:lang="nl">Een meer geavanceerd voorbeeld</title>
+    <body jsp="advanced/example.jspx" />
   </block>
 
   <block name="startwizard.example">
+    <title xml:lang="en">Example with all kind of 'startwizard's</title>
+    <title xml:lang="nl">Een meer geavanceerd voorbeeld met 'startwizard'</title>
+    <body jsp="startwizard/example.jspx" />
   </block>
 
-  <block name="component.example">
+  <block name="components.example">
+    <title xml:lang="en">Example with &lt;blocks&gt;</title>
+    <title xml:lang="nl">Een voorbeeld met &lt;blocks&gt;</title>
+    <body jsp="components/example.jspx" />
   </block>
+
+
+  <block
+      name="testwizards"
+      classification="editwizard.block.schema.test"
+      mimetype="application/xml">
+    <body>
+      <class name="org.mmbase.framework.ResourceRenderer">
+        <param name="resource">samples/test.schema.xml</param>
+      </class>
+    </body>
+  </block>
+
+
 
   <block name="style.po.example">
+    <body jsp="po/example.jspx" />
   </block>
 
   <block name="style.preditor.example">
+    <body jsp="preditor/example.jspx" />
   </block>
 
   <block name="style.finalist.example">
+    <body jsp="finalist/example.jspx" />
   </block>
 
 </component>
