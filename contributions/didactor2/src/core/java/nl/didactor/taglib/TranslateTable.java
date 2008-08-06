@@ -1,11 +1,11 @@
 package nl.didactor.taglib;
-import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.ResourceWatcher;
-import org.mmbase.util.ReaderInputStream;
+import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
 
 import java.util.*;
 import java.io.*;
 import java.text.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The translationtable will walk the current directory and
  * read all files found in it.
- * @version $Id: TranslateTable.java,v 1.19 2008-01-22 08:49:36 michiel Exp $
+ * @version $Id: TranslateTable.java,v 1.20 2008-08-06 17:14:47 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
@@ -117,8 +117,9 @@ public class TranslateTable {
             // but we also want the property files to be in unicode.
             // Following trick with Transforming readers and so on, arranges that.
             Properties props = new Properties();
-            InputStream in = new ReaderInputStream(new org.mmbase.util.transformers.TransformingReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"),
-                                                                                                       new org.mmbase.util.transformers.UnicodeEscaper()), "ISO-8859-1");
+            InputStream in = new ReaderInputStream(new TransformingReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"),
+                                                                          new UnicodeEscaper()),
+                                                   "ISO-8859-1");
             props.load(in);
 
             for (Map.Entry entry : props.entrySet()) {
@@ -308,7 +309,7 @@ public class TranslateTable {
         while (true) {
             String gkey = namespace + "." + toString(locale) + "." + key;
             if (log.isTraceEnabled()) {
-                log.trace("Looking for translation for [" + gkey + "]");
+                log.trace("Looking for translation for [" + gkey + "] in " + translationTable);
             }
             String translation = translationTable.get(gkey);
             if (translation != null) {
