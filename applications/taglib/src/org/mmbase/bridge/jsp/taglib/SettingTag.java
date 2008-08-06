@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.framework.*;
-import org.mmbase.framework.basic.State;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.7 2008-08-04 17:06:47 michiel Exp $
+ * @version $Id: SettingTag.java,v 1.8 2008-08-06 12:18:54 michiel Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {
@@ -39,11 +38,9 @@ public class SettingTag extends CloudReferrerTag implements Writer {
 
     protected Component getComponent() throws JspTagException {
         if (component == Attribute.NULL) {
-
-            HttpServletRequest req = (HttpServletRequest) getPageContext().getRequest();
-            State state =  State.getState(req);
-            if (state.isRendering()) {
-                return state.getBlock().getComponent();
+            Block b = getCurrentBlock();
+            if (b != null) {
+                return b.getComponent();
             } else {
                 throw new JspTagException("No current component found");
             }
