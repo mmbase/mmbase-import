@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: State.java,v 1.7 2008-08-06 12:00:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -215,7 +215,7 @@ public class State {
         log.debug("found block " + blockName + " at parameters");
         Block block = r.getBlock();
         if (blockName == null) {
-            log.warn("No such block " + blockName);
+            //log.warn("No such block " + blockName, new Exception());
             return r;
         } else {
             Block toBlock = block.getComponent().getBlock(blockName);

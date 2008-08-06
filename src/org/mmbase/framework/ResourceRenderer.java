@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.3 2008-08-01 16:29:31 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.4 2008-08-06 12:00:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -65,6 +65,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
         try {
             Reader r = ResourceLoader.Type.valueOf(type.toUpperCase()).get().getReader(resource);
+            if (r == null) throw new FrameworkException("No such resource " +  ResourceLoader.Type.valueOf(type.toUpperCase()).get().getResource(resource));
             char[] buf = new char[1000];
             int c;
             while ((c = r.read(buf, 0, 1000)) > 0) {
