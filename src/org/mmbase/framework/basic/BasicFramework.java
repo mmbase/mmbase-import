@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.20 2008-07-31 09:42:32 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.21 2008-08-06 12:00:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -144,7 +144,12 @@ public class BasicFramework extends Framework {
     public Block getRenderingBlock(Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
-        return state.getBlock();
+        if (state.isRendering()) {
+            return state.getBlock();
+        } else {
+            return null;
+        }
+
     }
 
 
