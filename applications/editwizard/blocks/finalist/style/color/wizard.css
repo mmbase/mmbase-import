@@ -1,0 +1,88 @@
+/**
+  Editwizard cascading style sheet.
+
+  This is the style specific to 'wizard' pages.
+
+  @version  $Id: wizard.css,v 1.1 2008-08-06 16:41:47 michiel Exp $
+*/
+@import url("base.css");
+
+td.stepother {
+  background-color: #7198B8;
+  border-color: #F0F0F0;
+}
+
+td.stepcurrent {
+  border-color: #F0F0F0;
+}
+
+td.stepother a.valid:link,
+td.stepother a.valid:visited,
+td.stepother a.valid:hover,
+td.stepother a.valid:active {
+  color: #FFFFFF;
+}
+
+td.stepcurrent a.notvalid:link,
+td.stepcurrent a.notvalid:visited,
+td.stepcurrent a.notvalid:hover,
+td.stepcurrent a.notvalid:active,
+td.stepother a.notvalid:link,
+td.stepother a.notvalid:visited,
+td.stepother a.notvalid:hover,
+td.stepother a.notvalid:active {
+  color: #FF0000;
+}
+
+div.buttonscontent {
+	background-color: #4A7BA5;
+	color: #FFFFFF;
+}
+
+table.buttonscontent  {
+	border-color: #164872;
+}
+
+tr.itemline  {
+	background-color: #164872;
+}
+
+span.notvalid {
+	color: #cc0000;
+}
+
+span.valid { 
+    color: #062A4A;
+}
+
+table.listcontent {
+	border-color: #4A7BA5;
+	background-color: #4A7BA5;
+	color: #FFFFFF;
+}
+
+td.listprompt {
+	color:#FFFFFF;
+}
+
+tr.itemcanvas {
+	background-color: #9DBDD8;
+}
+
+td.itemprefix  {
+	background-color: #4A7BA5;
+}
+
+table.itemrow {
+	border-color: #9DBDD8;
+}
+
+table.itemrow-hover {
+	border-color: #9DBDD8;
+	background-color: #BAD3E8;
+}
+
+
+table.fieldscontent  {
+	border-color: #9DBDD8;
+}
