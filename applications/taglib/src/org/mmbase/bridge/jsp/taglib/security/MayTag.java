@@ -12,8 +12,10 @@ package org.mmbase.bridge.jsp.taglib.security;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.framework.*;
 import org.mmbase.security.Action;
 import org.mmbase.util.functions.Parameters;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -23,7 +25,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MayTag.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: MayTag.java,v 1.6 2008-08-06 12:18:54 michiel Exp $
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {
@@ -52,7 +54,14 @@ public class MayTag extends CloudReferrerTag implements Condition {
     public int doStartTag() throws JspTagException {
         String ns = namespace.getString(this);
         if ("".equals(ns)) ns = null;
+        if (ns == null) {
+            Block b = getCurrentBlock();
+            if (b != null) {
+                ns = b.getComponent().getName();
+            }
+        }
         Action a = getCloudContext().getActionRepository().get(ns, action.getString(this));
+        if (a == null) throw new JspTagException("No action " + ns + " " + action + " found");
         Parameters params = a.createParameters();
         fillStandardParameters(params);
         if (a == null) throw new JspTagException("No such action '" + action.getString(this) + "'");
