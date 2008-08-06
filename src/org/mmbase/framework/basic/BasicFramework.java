@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.21 2008-08-06 12:00:11 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.22 2008-08-06 12:19:28 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -250,7 +250,11 @@ public class BasicFramework extends Framework {
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (request == null) throw new IllegalArgumentException("No request object given");
+
         State state = State.getState(request);
+        if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
+            state = new State(request);
+        }
 
         try {
 
