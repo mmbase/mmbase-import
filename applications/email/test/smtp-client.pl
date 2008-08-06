@@ -15,9 +15,10 @@
 # compare it do other implementations like this (please replace with your own gmail account and smtp server).
 #
 # ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=smtp.omroep.nl --from=michiel@meeuw.org --to=mihxiil@gmail.com --data=multipart.mail
-
-
-
+#
+# If you don't have an smpt server available, you can always try the one of google:
+# michiel@mitulo:~/mmbase/1.8/applications/email/test$ ./smtp-client.pl  --enable-auth --host=smtp.gmail.com --user=mihxiltest@gmail.com  --from=michiel@meeuw.org --to=mihxiil@gmail.com --data=related.multipart.mail
+# Enter password for mihxiltest@gmail.com@smtp.gmail.com :
 #
 # Simple SMTP client with STARTTLS and AUTH support.
 # Michal Ludvig <michal@logix.cz>, 2003-2006
