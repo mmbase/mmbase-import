@@ -8,10 +8,11 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="page" required="true" />
 
+  <h2>${page}</h2>
   <mm:may action="view_source">
-    <mm:import externid="page" required="true" />
-    <mm:import externid="xml">${fn:endsWith(page, '.xml') or fn:endsWith(page, '.jspx')}</mm:import>
+    <mm:import externid="xml">${fn:endsWith(page, '.xml') or fn:endsWith(page, '.jspx') or fn:endsWith(page, '.xsl') or fn:endsWith(page, '.xslt')}</mm:import>
     <c:choose>
       <c:when test="${xml eq true}">
         <mm:formatter xslt="xslt/xmlverbatim.xsl" escape="none">
