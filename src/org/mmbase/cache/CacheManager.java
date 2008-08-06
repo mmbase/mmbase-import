@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.36 2008-08-05 12:18:51 pierre Exp $
+ * @version $Id: CacheManager.java,v 1.37 2008-08-06 17:48:36 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -120,7 +120,6 @@ public abstract class CacheManager {
         return putCache(cache, true);
     }
 
-    private static String machineName = null;
     /**
      * @since MMBase-1.9
      */
@@ -129,12 +128,7 @@ public abstract class CacheManager {
         try {
             props.put("type", "CacheMBean");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-            if (machineName == null) {
-                org.mmbase.module.core.MMBase mmb = org.mmbase.module.Module.getModule(org.mmbase.module.core.MMBase.class, false);
-                if (mmb != null) {
-                    machineName = org.mmbase.module.core.MMBase.getMMBase().getMachineName();
-                }
-            }
+            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
             if (machineName != null) {
                 props.put("mmb", machineName);
             } else {
@@ -311,7 +305,6 @@ public abstract class CacheManager {
         if(mbs.queryNames(getObjectName(null), null).size() > 0) {
             log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null), null));
         }
-        machineName = null;
         caches.clear();
     }
 
