@@ -7,7 +7,6 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
-   <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
   <h1>Editwizard Examples (startwizards)</h1>
   <p>
     This is a set up with news articles and authors. By use of
