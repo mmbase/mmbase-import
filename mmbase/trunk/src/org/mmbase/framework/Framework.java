@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.55 2008-07-31 16:28:33 michiel Exp $
+ * @version $Id: Framework.java,v 1.56 2008-08-06 12:00:11 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -121,7 +121,9 @@ public abstract class Framework {
      */
     public abstract Block getBlock(Parameters frameworkParameters);
 
-
+    /**
+     * Returns the block, which is currently rendering, or <code>null</code>
+     */
     public abstract Block getRenderingBlock(Parameters frameworkParameters);
 
     /**
