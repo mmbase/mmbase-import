@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="people" maintainer="mmbase.org" version="0" extends="object">
   <searchage>1000</searchage>
   <names>
@@ -86,7 +86,9 @@
           <search>3</search>
         </positions>
       </editor>
-      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="you@example.com" />
+      </datatype>
       <db>
         <name>email</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -116,6 +118,6 @@
         <type state="persistent" size="12" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    
-  </fieldlist>  
+
+  </fieldlist>
 </builder>

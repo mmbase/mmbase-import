@@ -41,7 +41,9 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="Article title" />
         <required value="true" />
+        <minLength value="2" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -58,6 +60,17 @@
       </gui>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
+        <!--
+        <enumeration enforce="never">
+          <entry xml:lang="nl" value="hokus pokus" />
+          <entry xml:lang="nl" value="simsalabim" />
+          <entry xml:lang="nl" value="pilatus pas" />
+          <entry xml:lang="nl" value="abcracadabra" />
+          <entry xml:lang="en" value="simsalabim" />
+          <entry xml:lang="en" value="pilatus pas" />
+          <entry xml:lang="en" value="hocus pocus" />
+        </enumeration>
+        -->
       </datatype>
     </field>
     <field name="intro">
@@ -110,6 +123,7 @@
         <default value="now" />
       </datatype>
     </field>
+    <!--
     <field name="lastmodified" state="system">
       <editor>
         <positions>
@@ -126,19 +140,19 @@
       </editor>
       <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-
+    -->
     <field name="magazine" state="virtual">
+      <descriptions>
+        <description xml:lang="en">A virtual field, backreferring to the magazine</description>
+      </descriptions>
       <editor>
         <positions>
           <input>-1</input>
         </positions>
       </editor>
-      <descriptions>
-        <description xml:lang="en">A virtual field, backreferring to the magazine</description>
-      </descriptions>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <field name="utitle" state="virtual">
+    <field name="utitle" state="virtual" readonly="true">
       <descriptions>
         <description xml:lang="en">Another silly example of a virtual field</description>
       </descriptions>
@@ -148,7 +162,7 @@
   <functionlist>
     <!--
         As an example, we add some functions to this builder
-        All based on ExampleBean.
+        Often based on ExampleBean.
         But you can also add functions by FunctionProvider or Function implementations.
     -->
     <function key="integerFunction" name="aaa">
@@ -159,6 +173,13 @@
     </function>
     <function name="successor">
       <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <!--
+        An example using 'PatternNodeFunctionProvider' where the entire function value is based
+        on the 'pattern' in the key. This cases just puts the value of the title field between brackets.
+    -->
+    <function key="[{NODE.title}]" name="ccc">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
   </functionlist>
 </builder>
