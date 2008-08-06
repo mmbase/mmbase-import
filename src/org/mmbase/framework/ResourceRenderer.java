@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.5 2008-08-06 15:47:19 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.6 2008-08-06 15:48:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -39,13 +39,6 @@ public class ResourceRenderer extends AbstractRenderer {
     protected String resource;
     protected String type = "web";
 
-    public String getResource() {
-        if (type.equals("web")) {
-            return resource.charAt(0) == '/' ? resource : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + resource;
-        } else {
-            return resource;
-        }
-    }
 
     public ResourceRenderer(String t, Block parent) {
         super(t, parent);
@@ -55,13 +48,20 @@ public class ResourceRenderer extends AbstractRenderer {
         return new Parameter[] {};
     }
 
-    public void setName(String r) {
+    public void setResource(String r) {
         resource = r;
     }
 
 
     public void setType(String t) {
         type = t;
+    }
+    private String getResource() {
+        if (type.equals("web")) {
+            return resource.charAt(0) == '/' ? resource : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + resource;
+        } else {
+            return resource;
+        }
     }
 
 
