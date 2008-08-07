@@ -57,7 +57,6 @@
                   >
                 <mm:link referid="wizardjsp" referids="_node@objectnumber">
                   <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
-                  <mm:param name="objectnumber">new</mm:param>
                   <td><a href="${_}" title="edit" target="text"><mm:field name="name"/></a></td>
                 </mm:link>
               </di:leaf>
