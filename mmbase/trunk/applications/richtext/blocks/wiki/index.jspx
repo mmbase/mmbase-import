@@ -10,11 +10,15 @@
   <ol>
     <mm:listnodes type="wikiobjects">
       <li>
-        <mm:link page="page" referids="_node@o">
+        <mm:link page="page" referids="_node@n">
           <a href="${_}"><mm:nodeinfo type="gui" /></a>
         </mm:link>
       </li>
     </mm:listnodes>
+    <mm:link page="edit">
+      <mm:param name="n">new</mm:param>
+      <a href="${_}">[CREATE]</a>
+    </mm:link>
   </ol>
 
 </div>
