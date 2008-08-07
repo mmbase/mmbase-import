@@ -21,43 +21,14 @@ See http://www.MMBase.org/license
   </properties>
 
   <!--
-      <dependency>
+  <dependencies>
+    <dependency>
       <groupId>kupu</groupId>
       <artifactId>kupu-mmbase</artifactId>
       <version>1.3.5</version>
       <url>http://kupu.oscom.org/</url>
-      </dependency>
-  -->
-  <!--
-  <build>
-    <resources>
-      <resource>
-        <directory>build/</directory>
-        <targetPath>WEB-INF/lib</targetPath>
-        <includes>
-          <include>*kupu-i18.jar</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <targetPath>${basedir}/META-INF</targetPath>
-        <directory>META-INF</directory>
-        <excludes>
-          <exclude>"**/CVS"</exclude>
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
-
-      <resource>
-        <directory>mmbase</directory>
-        <targetPath>mmbase</targetPath>
-        <includes>
-          <include>**</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-    </resources>
-  </build>
+    </dependency>
+  </dependencies>
   -->
 
 </project>
