@@ -1,18 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+<?xml version="1.0" ?>
+<project xmlns:ant="jelly:ant"
+         xmlns:artifact="artifact"
+         >
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
--->
-<project xmlns:ant="jelly:ant">
-
-  <preGoal name="java:jar-resources">
-    <!-- Set the property html.dir that your Ant build uses to put the HTML into -->
-    <ant:property name="build.dir" value="target" />
-    <ant:ant dir="${basedir}" antfile="build.xml" target="kupu" />
+  <preGoal name="mmbase-module:webapp">
+    <attainGoal name="kupu" />
   </preGoal>
+
+  <goal name="kupu">
+
+    <ant:ant dir="${basedir}" antfile="build.xml" target="kupu">
+      <ant:property name="build.dir" value="target" />
+      <ant:property name="project.build.dir" location="target/richtext/lib" />
+    </ant:ant>
+
+    <artifact:install
+        artifact="${maven.build.dir}/richtext/lib/kupu-i18n.jar"
+        artifactIdOverride="kupu-i18n"
+        type="jar"
+        project="${pom}"/>
+    <artifact:install
+        artifact="${maven.build.dir}/richtext/lib/mmbase-kupu-i18n.jar"
+        artifactIdOverride="mmbase-kupu-i18n"
+        type="jar"
+        project="${pom}"/>
+
+  </goal>
 
 
 </project>
