@@ -65,7 +65,7 @@
                     <tr>
                       <td>
                         <textarea name="message" class="popFormInput" cols="50" rows="5">
-                          <jsp:text> </jsp:text>
+                          <jsp:text></jsp:text>
                         </textarea>
                       </td>
                     </tr>
