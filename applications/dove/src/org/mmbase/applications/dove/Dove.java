@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.96 2008-07-27 14:54:49 andre Exp $
+ * @version $Id: Dove.java,v 1.97 2008-08-07 20:04:19 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -850,11 +850,11 @@ public class Dove extends AbstractDove {
                             if (isOriginal) {
                                 originalNodes.put(node.getAttribute(ELM_NUMBER), values);
                             } else {
-                                newNodes.put(node.getAttribute(ELM_NUMBER),values);
+                                newNodes.put(node.getAttribute(ELM_NUMBER), values);
                             }
                         }
                         if (! isOriginal) {
-                            values.put("_status",node.getAttribute(ELM_STATUS));
+                            values.put("_status", node.getAttribute(ELM_STATUS));
                         }
 
                         String context = node.getAttribute(ELM_CONTEXT);
@@ -864,10 +864,10 @@ public class Dove extends AbstractDove {
 
                         if (isRelation) {
                             String role = node.getAttribute(ELM_ROLE);
-                            if (role!=null) values.put("_role",role);
+                            if (role!=null) values.put("_role", role);
 
                             String source = node.getAttribute(ELM_SOURCE);
-                            if (source!=null) values.put("_source",source);
+                            if (source!=null) values.put("_source", source);
 
                             String destination = node.getAttribute(ELM_DESTINATION);
                             if (destination!=null) values.put("_destination", destination);
@@ -950,15 +950,15 @@ public class Dove extends AbstractDove {
      * @param aliases a Map with mappings from XML aliases to node reference values
      * @return the node reference value
      */
-    protected String getNodeReferenceFromValue(String name, Map<String,Object> values, Map<String, Integer> aliases) {
-        String result=null;
-        String value=(String)values.get(name);
-        Object tmp=aliases.get(value);
-        if (tmp==null) {
+    protected String getNodeReferenceFromValue(String name, Map<String, Object> values, Map<String, Integer> aliases) {
+        String result = null;
+        String value = (String) values.get(name);
+        Object tmp = aliases.get(value);
+        if (tmp == null) {
             // oke its not a temporary alias, return the original value
-            result=value;
+            result = value;
         } else {
-            result=""+tmp;
+            result = ""+tmp;
         }
         return result;
     }
@@ -1067,7 +1067,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewNode(String alias, Map<String,Object> values, Map<String, Integer> aliases, Map<Node, Element> addedNodes, Element out, Cloud cloud) {
+    protected boolean putNewNode(String alias, Map<String, Object> values, Map<String, Integer> aliases, Map<Node, Element> addedNodes, Element out, Cloud cloud) {
         String type = (String) values.get("_otype");
 
         NodeManager nm = cloud.getNodeManager(type);
@@ -1082,13 +1082,14 @@ public class Dove extends AbstractDove {
         }
         newnode.commit();
         int number = newnode.getNumber();
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Created new node " + number);
-        aliases.put(alias,new Integer(number));
-        objectelement.setAttribute(ELM_NUMBER,""+number);
+        }
+        aliases.put(alias, Integer.valueOf(number));
+        objectelement.setAttribute(ELM_NUMBER, "" + number);
         objectelement.setAttribute(ELM_OLDNUMBER, alias);
         // keep in transaction for later update...
-        addedNodes.put(newnode,objectelement);
+        addedNodes.put(newnode, objectelement);
         // add node to response
         out.appendChild(objectelement);
         return true;
@@ -1130,11 +1131,11 @@ public class Dove extends AbstractDove {
         newnode.commit();
         int number = newnode.getNumber();
         if (log.isServiceEnabled()) log.service("Created new relation " + number);
-        aliases.put(alias, new Integer(number));
+        aliases.put(alias, Integer.valueOf(number));
         // keep in transaction for later update...
         addedRelations.put(newnode,relationelement);
         // add node to response
-        relationelement.setAttribute(ELM_NUMBER,""+number); // result in transaction ???
+        relationelement.setAttribute(ELM_NUMBER, "" + number); // result in transaction ???
         out.appendChild(relationelement);
         return true;
 
@@ -1398,9 +1399,9 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on - if null, a cloud will be created by the Dove class
      * @param repository Repository that contains the blobs
      */
-    public void doRequest(Element in, Element out, Cloud cloud, Map<String,byte[]> repository) {
+    public void doRequest(Element in, Element out, Cloud cloud, Map<String, byte[]> repository) {
         // set repository for blobs
-        if (repository == null) repository = new HashMap<String,byte[]>();
+        if (repository == null) repository = new HashMap<String, byte[]>();
 
         Element command = getFirstElement(in);
         if ((cloud == null)) {
@@ -1458,11 +1459,11 @@ public class Dove extends AbstractDove {
 
             String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
             String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
-            if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
+            if ((methodName == null) || (methodName.equals(""))) methodName = "name/password";
             String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
-            if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
+            if ((cloudName == null) || (cloudName.equals(""))) cloudName = "mmbase";
             Map<String, String> user = new HashMap<String, String>();
-            if ((userName!=null) && (!userName.equals(""))) {
+            if ((userName != null) && (! userName.equals(""))) {
                 user.put("username", userName);
                 user.put("password", password);
             }
