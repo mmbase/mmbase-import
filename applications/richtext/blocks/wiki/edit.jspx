@@ -7,9 +7,17 @@
     class="mm_c c_wiki b_page ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="o" required="true" />
+  <mm:import externid="n" required="true" />
 
   <mm:cloud method="asis" jspvar="cloud">
+
+
+    <mm:compare referid="n" value="new">
+      <mm:createnode type="wikiobjects" id="newnode" />
+      <mm:redirect referids="newnode@n" />
+    </mm:compare>
+
+
     <mm:param name="org.mmbase.xml-mode" value="wiki" />
     <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
     <mm:param name="org.mmbase.richtext.wiki.load_relations" value="false" />
@@ -17,10 +25,10 @@
     <mm:form id="transaction"  commitonclose="false">
 
 
-      <mm:node number="${o}">
+      <mm:node number="${n}">
         <div id="main">
 
-          <input type="hidden" name="o" value="${_node}" />
+          <input type="hidden" name="n" value="${_node}" />
           <mm:nodeinfo type="type" write="false" id="type" />
           <input type="hidden" name="objecttype" value="${type}" />
           <table class="wiki ${type}">

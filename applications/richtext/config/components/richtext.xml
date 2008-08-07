@@ -2,14 +2,18 @@
 <component
     name="richtext"
     defaultblock="rich"
+    version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
-  <class name="org.mmbase.framework.BasicComponent" />
-  <description xml:lang="nl">Richtext</description>
-  <description xml:lang="en">Richtext</description>
 
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Richtext</title>
+  <title xml:lang="en">Richtext</title>
+
+  <dependency component="resources" version="1" />
 
   <block name="rich"
          classification="mynews"

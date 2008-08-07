@@ -7,13 +7,14 @@
     class="mm_c c_wiki b_page ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="o" required="true" />
+  <mm:import externid="n" required="true" />
 
-  <mm:node referid="o">
+
+  <mm:node referid="n">
     <h2><mm:field name="title" /></h2>
     <p>v: <mm:field name="version" /></p>
     <rich:field name="body" />
-    <mm:link page="edit" referids="_node@o">
+    <mm:link page="edit" referids="_node@n">
       <a href="${_}">[Modify]</a>
     </mm:link>
   </mm:node>
