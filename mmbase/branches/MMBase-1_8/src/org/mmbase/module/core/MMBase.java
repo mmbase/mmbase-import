@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.13 2008-04-16 12:20:29 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.14 2008-08-07 08:53:47 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -150,7 +150,7 @@ public class MMBase extends ProcessorModule {
      * for each node in your cluster. This is not the machines dns name
      * (as defined by host as name or ip number).
      */
-    private String machineName = "unknown";
+    static String machineName = "unknown";
 
     /**
      * The host or ip number of the machine this module is
@@ -431,14 +431,14 @@ public class MMBase extends ProcessorModule {
         mmbaseState = STATE_SHUT_DOWN;
 
         //shutdown in the reverse order as init does
-        
+
         org.mmbase.core.event.EventManager.getInstance().shutdown();
 
         org.mmbase.util.ThreadPools.shutdown();
 
         mmbaseCop = null;
 
-        if (mmobjs != null) { 
+        if (mmobjs != null) {
             for (Iterator mmbobjecIter = mmobjs.values().iterator(); mmbobjecIter.hasNext();) {
                 MMObjectBuilder builder = (MMObjectBuilder) mmbobjecIter.next();
                 builder.shutdown();
@@ -455,11 +455,11 @@ public class MMBase extends ProcessorModule {
 
         clusterBuilder = null;
         rootBuilder = null;
-        
+
         cloudModel = null;
 
         storageManagerFactory = null;
-        
+
         // there all over the place static references to mmbasroot are maintained, which I cannot
         // change presently. so let's clean up mmbaseroot itself as well as possible...
         mmbaseroot = null;
@@ -1130,12 +1130,11 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-        if (cloudModel != null) {
+            if (cloudModel != null) {
                 cloudModel.addBuilder(builderName,path+builderName+".xml");
             }
             return loadBuilderFromXML(builderName, path);
         } else {
-            log.error("Cannot find specified builder " + builderName);
             throw new BuilderConfigurationException("Cannot find specified builder " + builderName);
         }
     }
@@ -1239,9 +1238,13 @@ public class MMBase extends ProcessorModule {
                     }
                 }
             }
+        } catch (BuilderConfigurationException bcfe) {
+            loading.remove(builderName);
+            log.error("Builder configuration exception During reading of '" + builderName + "': " + bcfe.getMessage());
+            return null;
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
-            log.error(Logging.stackTrace(e));
+            log.error(e.getMessage(), e);
             return null;
         }
         loading.remove(builderName);
