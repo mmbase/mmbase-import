@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.19 2008-07-31 13:04:16 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.20 2008-08-07 09:32:09 michiel Exp $
  */
 
 
@@ -170,7 +170,7 @@ List.prototype.bindCreate = function(a) {
 			    });
 			    a.list.executeCallBack("create", r);
 			} else {
-			    alert(status);
+			    alert(status + " with " + url);
 
 			}
 		    } catch (ex) {
