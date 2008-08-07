@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.66 2008-07-31 19:17:00 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.67 2008-08-07 18:49:29 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -993,7 +993,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Determine wether File f is shadowed.
      * @param name Check for resource with this name
-     * @param file The file to check for this resource.
+     * @param f The file to check for this resource.
      * @return The URL for the shadowing resource, or <code>null</code> if not shadowed.
      * @throws IllegalArgumentException if <code>file</code> is not a file associated with the resource with given name.
      */
@@ -1329,6 +1329,9 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ApplicationContext
 
+    /**
+     * @since MMBase-1.9
+     */
     protected class ApplicationContextFileURLStreamHandler extends AbstractFileURLStreamHandler {
         private Map<String, String> FILES;
         ApplicationContextFileURLStreamHandler() {
@@ -1603,7 +1606,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * URLStreamHandler based on the servletContext object of ResourceLoader
- */
+     */
     protected  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ServletResourceURLStreamHandler(String r) {
@@ -2011,7 +2014,7 @@ public class ResourceLoader extends ClassLoader {
         }
 
         /**
-         * Returns last URL which can be written, and which is still earlier the the first URL which can be read (or the same URL).
+         * Returns last URL which can be written, and which is still earlier than the first URL which can be read (or the same URL).
          * This ensures that when used for writing, it will then be the prefered one for reading.
          */
         protected URLConnection getOutputConnection() {
