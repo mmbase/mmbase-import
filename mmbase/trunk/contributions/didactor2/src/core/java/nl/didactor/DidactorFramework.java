@@ -8,11 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package nl.didactor;
+
+import nl.didactor.component.MMBaseComponent;
 import org.mmbase.framework.basic.BasicFramework;
 import org.mmbase.framework.*;
-import org.w3c.dom.Element;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
+
+import org.w3c.dom.Element;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorFramework.java,v 1.1 2008-08-07 15:08:14 michiel Exp $
+ * @version $Id: DidactorFramework.java,v 1.2 2008-08-07 16:33:49 michiel Exp $
  * @since Didactor-2.3
  */
 public class DidactorFramework extends BasicFramework {
@@ -59,13 +62,17 @@ public class DidactorFramework extends BasicFramework {
                             log.info("No object found for " + comp.getName() + " wich has blocks classified as didactor. createing one now");
                             node = nm.createNode();
                             node.setStringValue("name", comp.getName());
+                            node.setStringValue("classname", MMBaseComponent.class.getName());
                             node.commit();
+                            nl.didactor.component.Component.register(comp.getName(), new MMBaseComponent(node));
                             continue COMPONENT;
                         }
                     }
 
                 }
                 log.service("No blocks classified as didactor found for " + comp);
+            } else {
+
             }
         }
     }
