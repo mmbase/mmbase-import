@@ -2,13 +2,7 @@
  * Component description interface.
  */
 package nl.didactor.component;
-import nl.didactor.component.Component;
-import nl.didactor.builders.*;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMBase;
-import java.util.Map;
+
 
 public class BasicComponent extends Component {
     private String name;
