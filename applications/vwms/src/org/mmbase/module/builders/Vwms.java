@@ -16,6 +16,7 @@ import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.Mail;
 import org.mmbase.util.logging.*;
+import org.mmbase.applications.email.SendMail;
 
 /**
  * Virtual WebMasterS (VWMS) are agents within MMBase.
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.22 2007-11-14 16:33:06 michiel Exp $
+ * @version $Id: Vwms.java,v 1.23 2008-08-07 08:26:41 michiel Exp $
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
