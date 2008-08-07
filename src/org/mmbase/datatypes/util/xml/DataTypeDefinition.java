@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.65 2008-07-15 19:41:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.66 2008-08-07 18:54:38 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -195,12 +195,13 @@ public class DataTypeDefinition {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
                 if (childElement.getLocalName().equals("handler")) {
-                    String mimeType = childElement.getAttribute("mimetype");
-                    try {
-                        Handler handler = (Handler) Instantiator.getInstance(childElement);
-                        dataType.getHandlers().put(mimeType, handler);
-                    } catch (Exception e) {
-                        log.error("For mimetype " + mimeType + " " + e.getMessage());
+                    for (String mimeType : childElement.getAttribute("mimetype").split(",")) {
+                        try {
+                            Handler handler = (Handler) Instantiator.getInstance(childElement);
+                            dataType.getHandlers().put(mimeType, handler);
+                        } catch (Exception e) {
+                            log.error("For mimetype " + mimeType + " " + e.getMessage());
+                        }
                     }
                 }
             }
