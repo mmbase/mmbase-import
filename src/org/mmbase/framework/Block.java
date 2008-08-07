@@ -17,10 +17,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A Block is a representation of a page within a component. It has two renderers,
- * 'head' and 'body', and a processor. 
+ * 'head' and 'body', and a processor.
  *
  * Blocks can be configured in a {@link Component}. A typical block, this one is the
- * 'applications' block (the former 'Applications' admin page) which is one of the 
+ * 'applications' block (the former 'Applications' admin page) which is one of the
  * core components, looks like this:
  *
  * <p>
@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.40 2008-04-25 14:31:38 andre Exp $
+ * @version $Id: Block.java,v 1.41 2008-08-07 14:51:06 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -315,7 +315,7 @@ public class Block {
             return false;
         }
 
-        Type getParent() {
+        public Type getParent() {
             return parent;
         }
         public boolean equals(Object o) {
