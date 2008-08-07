@@ -14,9 +14,13 @@
       <mm:import externid="mode"/>
 
       <mm:node number="$user">
-        <mm:relatednodes role="classrel" type="educations" id="directly_related" />
+        <mm:hasrelationmanager
+            sourcemanager="people"
+            destinationmanager="educations" role="classrel">
+          <mm:relatednodes role="classrel" type="educations" id="directly_related" />
+        </mm:hasrelationmanager>
 
-        <mm:relatednodes add="directly_related"
+        <mm:relatednodes add="directly_related?"
                          element="educations"
                          path="people,classrel,classes,classrel,educations">
           <!-- Do check: is anybody online for this education -->
