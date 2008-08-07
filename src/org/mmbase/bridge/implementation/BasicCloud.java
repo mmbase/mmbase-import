@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.187 2008-07-29 09:20:52 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.188 2008-08-07 09:46:26 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -424,7 +424,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
         RelationManager rm = getRelationManager(source.getNumber(), destination.getNumber(), r);
         if (rm == null) {
-            throw new NotFoundException("Relation manager from '" + source + "' to '" + destination + "' as '" + roleName + "' does not exist.");
+            throw new NotFoundException("Relation manager from '" + source.getName() + "' to '" + destination.getName() + "' as '" + roleName + "' does not exist.");
         } else {
             return rm;
         }
