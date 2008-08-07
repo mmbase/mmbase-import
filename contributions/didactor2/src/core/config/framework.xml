@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <framework
-    class="org.mmbase.framework.basic.BasicFramework"
+    class="nl.didactor.DidactorFramework"
     xmlns="http://www.mmbase.org/xmlns/framework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.1 2008-07-04 15:25:51 michiel Exp $
+      version: $Id: framework.xml,v 1.2 2008-08-07 15:08:28 michiel Exp $
   -->
   <!--
       In this file the classes of the UrlConverters need to be listed in the order
