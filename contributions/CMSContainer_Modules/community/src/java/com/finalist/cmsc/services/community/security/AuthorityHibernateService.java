@@ -173,7 +173,7 @@ public class AuthorityHibernateService extends HibernateService implements Autho
     }
 
     private void basicGetAssociatedAuthorities(Map conditions, StringBuffer strb){
-       strb.append("select distinct asn.name as groupName " +
+       strb.append("select distinct asn.name " +
        		//",concat(p.firstName ,p.lastName) as fullNmae " +
        		"from  authorities asn" +
        		" left outer join authentication_authorities on" +
