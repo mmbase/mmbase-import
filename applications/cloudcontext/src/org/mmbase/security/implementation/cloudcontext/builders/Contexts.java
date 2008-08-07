@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.55 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: Contexts.java,v 1.56 2008-08-07 20:01:51 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -957,25 +957,13 @@ public class Contexts extends MMObjectBuilder {
             }
         } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             Parameters a = Functions.buildParameters(PARENTSALLOW_PARAMETERS, args);
-            if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
+            return parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)));
         } else if (function.equals("grant")) {
             Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
-            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
+            return grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")));
         } else if (function.equals("revoke")) {
             Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
-            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
+            return revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")));
         } else if (function.equals("maygrant")) {
             Parameters a = Functions.buildParameters(MAYGRANT_PARAMETERS, args);
             if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {

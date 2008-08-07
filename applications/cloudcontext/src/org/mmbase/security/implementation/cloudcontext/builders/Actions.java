@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
+import org.mmbase.security.implementation.cloudcontext.User;
 import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
@@ -24,7 +25,7 @@ import org.mmbase.util.functions.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Actions.java,v 1.1 2008-04-12 14:30:37 michiel Exp $
+ * @version $Id: Actions.java,v 1.2 2008-08-07 20:01:51 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Actions extends MMObjectBuilder {
@@ -45,12 +46,10 @@ public class Actions extends MMObjectBuilder {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(this);
                     query.setMaxNumber(1);
-                    StepField componentField = query.getField(getField(FIELD_COMPONENT));
-                    BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(componentField, component.getName());
-                    StepField actionField = query.getField(getField(FIELD_ACTION));
-                    BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(actionField, action.getName());
-                    
-                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND, constraint1, constraint2));
+                    query.setConstraint(new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND, 
+                                                                     new BasicFieldValueConstraint(query.getField(getField(FIELD_COMPONENT)), component.getName()),
+                                                                     new BasicFieldValueConstraint(query.getField(getField(FIELD_ACTION)),    action.getName())
+                                                                     ));
                     List<MMObjectNode> resultList = getNodes(query);
                     if (resultList.size() == 0) {
                         log.service("No node found for action " + action + " creating one now");
@@ -66,6 +65,14 @@ public class Actions extends MMObjectBuilder {
             }
         }
         return true;
+    }
+
+    public static Actions getBuilder() {
+        return (Actions) MMBase.getMMBase().getBuilder("mmbaseactions");
+    }
+
+    public boolean check(User user, Action ac, Parameters parameters) {
+        return ac.getDefault().check(user, ac, parameters);
     }
 
 
