@@ -33,11 +33,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * Make XSL Transformations
  *
- * @core (?) Not specific to MMBase, but used by build files for generation of documentation.
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.39 2007-11-30 15:49:52 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.40 2008-08-07 18:53:07 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
