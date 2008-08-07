@@ -17,12 +17,13 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.16 2008-08-01 21:04:52 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.17 2008-08-07 18:53:34 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
-    private static Map<Future, String> identifiers = Collections.synchronizedMap(new WeakHashMap<Future, String>());
+    private static Map<Future, String> identifiers = 
+        Collections.synchronizedMap(new WeakHashMap<Future, String>());
 
     /**
      * There is no way to identify the FutureTask objects returned in
@@ -72,9 +73,9 @@ public abstract class ThreadPools {
     }
 
     /**
-     * All kind of jobs that should happend in a seperat Thread can be
+     * All kind of jobs that should happen in a seperate Thread can be
      * executed by this executor. E.g. sending mail could be done by a
-     * jobs of this type.
+     * job of this type.
      * 
      */
     public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
@@ -100,12 +101,12 @@ public abstract class ThreadPools {
 
 
 
-    public static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
+    static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
 
     /**
      * @since MMBase-1.9
      */
-    public static void configure() {
+    static void configure() {
 
         Map<String,String> props = properties.getProperties();
         String max = props.get("jobs.maxsize");
