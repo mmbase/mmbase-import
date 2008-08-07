@@ -25,8 +25,8 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.14 2008-07-15 20:47:20 michiel Exp $
- * @deprecated Not used, no good interface (see MMB-526), wrobg nae not worth the hassle to fix this, there
+ * @version $Id: CVSReader.java,v 1.15 2008-08-07 18:49:11 michiel Exp $
+ * @deprecated Not used, no good interface (see MMB-526), wrong name, not worth the hassle to fix this, there
  * must be better CSV readers out there.
  */
 public class CVSReader {
