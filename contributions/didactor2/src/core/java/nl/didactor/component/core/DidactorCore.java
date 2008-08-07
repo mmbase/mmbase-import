@@ -1,7 +1,5 @@
-/**
- * Component description interface.
- */
 package nl.didactor.component.core;
+
 import nl.didactor.component.Component;
 import nl.didactor.builders.*;
 import org.mmbase.security.Action;

@@ -34,7 +34,7 @@ public abstract class Component {
     private final List<Component> interestedComponents = new ArrayList<Component>();
     private MMObjectNode node;
 
-    private final Map<String, Setting> settings = new HashMap<String, Setting>();
+    protected final Map<String, Setting> settings = new HashMap<String, Setting>();
     private final Map<String, String>  scopes   = new HashMap<String, String>();
 
     /** The string indicating the path for templates of this component */
@@ -86,7 +86,7 @@ public abstract class Component {
 
     /**
      * Initializes the component. This is called during startup
-     * of Didactor. This method will be called every time your Didactor
+     * of Di\dactor. This method will be called every time your Didactor
      * installation is restarted.
      */
     public void init() {
@@ -314,7 +314,7 @@ public abstract class Component {
         Object retval = null;
 
         for (String scopeName : scope) {
-            String scopeReferId = scopes.get(scopeName);
+            String scopeReferId = getScopesMap().get(scopeName);
             if (log.isDebugEnabled()) {
                 log.debug("Trying on scope '" + scopeName + "' (" + scopeReferId + ")");
             }
@@ -561,8 +561,12 @@ public abstract class Component {
     /**
      * @javadoc
      */
-    public Collection<String> getScopes() {
-        return scopes.keySet();
+    public final Collection<String> getScopes() {
+        return getScopesMap().keySet();
+    }
+
+    public Map<String, String> getScopesMap() {
+        return Collections.unmodifiableMap(scopes);
     }
 
     /**
