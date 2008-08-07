@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.22 2008-08-06 12:19:28 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.23 2008-08-07 14:04:55 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -138,7 +138,7 @@ public class BasicFramework extends Framework {
             urlConverter.add(buc);
         }
         */
-        log.info("Configured BasicFramework: " + this);
+        log.info("Configured  " + this.getClass() + " " + this);
 
     }
     public Block getRenderingBlock(Parameters frameworkParameters) {
