@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.23 2008-03-03 14:34:29 michiel Exp $
+ * @version $Id: AbstractDove.java,v 1.24 2008-08-07 20:04:19 michiel Exp $
  */
 
 public abstract class AbstractDove {
@@ -294,7 +294,7 @@ public abstract class AbstractDove {
             return out;
         }
         log.error("Request doesn't contain a <REQUEST> tag.");
-        Element err = addContentElement(ERROR,"Request doesn't contain a <REQUEST> tag.", out);
+        Element err = addContentElement(ERROR, "Request doesn't contain a <REQUEST> tag.", out);
         err.setAttribute(ELM_TYPE, IS_CLIENT);
         return out;
     }
