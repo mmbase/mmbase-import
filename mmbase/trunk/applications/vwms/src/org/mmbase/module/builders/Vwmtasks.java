@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.19 2007-06-18 15:18:05 michiel Exp $
+ * @version $Id: Vwmtasks.java,v 1.20 2008-08-07 08:26:41 michiel Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -134,7 +134,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         while (kicker!=null) {
             log.debug("Periodically sleep " + SLEEP_TIME
                       + " seconds and add all new vwmtasks that were created since last check ("
-                      + DateSupport.date2string(lastchecked) + ").");
+                      + lastchecked + ").");
             try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){return;}
             getVwmTasks();
         }
@@ -190,15 +190,6 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
             } else {
                 return "unknown";
             }
-        } else if (field.equals("changedtime")) {
-            int str=node.getIntValue("changedtime");
-            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
-        } else if (field.equals("wantedtime")) {
-            int str=node.getIntValue("wantedtime");
-            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
-        } else if (field.equals("expiretime")) {
-            int str=node.getIntValue("expiretime");
-            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
         }
         return null;
     }
