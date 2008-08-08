@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.30 2008-08-01 11:23:40 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.31 2008-08-08 08:05:48 michiel Exp $
  * @since  MMBase-1.7
  */
 class EmailHandler {
@@ -83,7 +83,6 @@ class EmailHandler {
         // to see when it was mailed vs the requested mail
         // time
         node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
-        node.setValue("mailstatus", (int)(System.currentTimeMillis()/1000));
 
         // commit the changes to the cloud
         if (node.getNumber() > 0) {
