@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Formats a long with hour:minutes:seconds. Ready for setting and getting, and also casting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Duration.java,v 1.2 2008-07-08 22:11:26 michiel Exp $
+ * @version $Id: Duration.java,v 1.3 2008-08-08 18:50:51 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -33,19 +33,20 @@ public class Duration {
 
 
     public static class DataType extends LongDataType {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
 
         public DataType(String name) {
             super(name, false);
         }
 
+        @Override
         protected Number castString(Object preCast) throws CastException {
             if (preCast instanceof String) {
                 if (! DURATION_PATTERN.matcher((String) preCast).matches()) {
                     throw new CastException("Not a duration: " + preCast);
                 }
-            } 
-            Long l =  SetString.getLong(Casting.toString(preCast)); 
+            }
+            Long l =  SetString.getLong(Casting.toString(preCast));
             return l;
         }
         protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
