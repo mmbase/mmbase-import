@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.75 2008-07-30 12:16:14 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.76 2008-08-08 12:58:10 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -54,7 +54,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
         }
-        this.number = getAttribute(number);
+        this.number = getAttribute(number, true);
     }
 
 
