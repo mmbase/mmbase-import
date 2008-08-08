@@ -126,10 +126,7 @@
         <mm:node number="$assessment_evaluationtest" notfound="skip">
 
         </mm:node>
-        <form name="closelessonform" action="${_}"  method="post">
-		
-        
-        </form>
+
       </mm:treefile>
     </div>
   </div>
