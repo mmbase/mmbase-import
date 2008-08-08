@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.56 2008-08-06 12:00:11 michiel Exp $
+ * @version $Id: Framework.java,v 1.57 2008-08-08 13:39:52 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -88,14 +88,23 @@ public abstract class Framework {
     }
 
     /**
-     * CSS-id to be used on block
+     * CSS-id to be used on block. This key will be used by the framework to communicate it to the
+     * block. Normally put on the request.
      */
-    public final static String COMPONENT_ID_KEY    = "componentId";
+    public final static String COMPONENT_ID_KEY    = "org.mmbase.componentId";
 
     /**
-     * CSS-class to be used on block. T
+     * CSS-class to be used on block.
      */
-    public final static String COMPONENT_CLASS_KEY = "componentClassName";
+    public final static String COMPONENT_CLASS_KEY = "org.mmbase.componentClassName";
+
+    /**
+     * If a component's block implementation decides to support <a
+     * href="http://www.mmbase.org/documentation/applications/taglib/frontenddevelopers/taglib/include.html">'tree/leaf
+     * including'</a> it can use this framework-provided path for it. Not all frameworks would
+     * support it, but then you simply don't have tree-overriding.
+     */
+    public final static String COMPONENT_INCLUDEPATH_KEY = "org.mmbase.includePath";
 
 
     /**
@@ -178,7 +187,7 @@ public abstract class Framework {
      * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects.
      */
     public abstract Node getUserNode(Parameters frameworkParameters);
-;
+
 
     /**
      * Return the builder name that is used to store users. This will return the name of the nodemanager that returns
