@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.9 2008-06-26 15:29:28 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.10 2008-08-08 13:05:59 michiel Exp $
 
        These are didactor specific datatypes.
 
@@ -155,6 +155,27 @@
       <entry value="0" xml:lang="en" display="One of the answers can be selected" />
       <entry value="1" xml:lang="en" display="Zero or more answwers can be selected" />
       <entry value="2" xml:lang="en" display="A value answer can be selected" /> <!-- I have no idea what this is -->
+    </enumeration>
+  </datatype>
+
+
+  <datatype base="eline" id="didactor_bars">
+    <default value="provider" />
+    <required value="true" />
+    <enumeration>
+      <entry value="provider"  />
+      <entry value="education" />
+      <entry value="application" />
+    </enumeration>
+  </datatype>
+
+  <datatype base="eline" id="didactor_nodeproviders">
+    <default value="education" />
+    <required value="true" />
+    <enumeration>
+      <entry value="provider"  />
+      <entry value="education" />
+      <entry value="people" />
     </enumeration>
   </datatype>
 
