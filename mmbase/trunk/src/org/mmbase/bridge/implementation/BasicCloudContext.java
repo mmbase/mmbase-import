@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.60 2008-07-18 04:42:20 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.61 2008-08-08 11:30:58 michiel Exp $
  */
 public abstract class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -236,7 +236,7 @@ public abstract class BasicCloudContext implements CloudContext {
         return mmb != null && mmb.getState() && check();
     }
 
-    public void assertUp() {
+    public CloudContext assertUp() {
         // TODO implement with some nice notify-mechanism.
         CloudContext ctx = LocalContext.getCloudContext();
         while (!MMBaseContext.isInitialized() || ! isUp()) {
@@ -248,6 +248,7 @@ public abstract class BasicCloudContext implements CloudContext {
                 // I hate java.
             }
         }
+        return this;
     }
 
 
