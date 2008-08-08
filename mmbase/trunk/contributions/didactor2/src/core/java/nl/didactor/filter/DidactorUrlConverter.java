@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.3 2008-08-08 13:42:06 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.4 2008-08-08 16:01:17 michiel Exp $
  */
 public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -64,7 +64,12 @@ public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConve
                     b.append(block.getName());
                     b.append('/');
                 }
-                return b.toString();
+                if (action) {
+                    return b.toString();
+                } else {
+                    return  org.mmbase.framework.basic.BasicUrlConverter.getUrl(b.toString(), parameters , request, escapeAmps);
+                }
+
             } else {
                 log.debug("No block found");
                 return null;
@@ -109,7 +114,6 @@ public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConve
                 }
                 log.debug("Putting on request " + value + " -> " + request.getAttribute(value));
                 request.setAttribute("node", request.getAttribute(value));
-                request.setAttribute(Framework.COMPONENT_INCLUDEPATH_KEY, request.getAttribute("includePath"));
 
                 result.append("?name=");
                 result.append(component.getName());
