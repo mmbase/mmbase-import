@@ -1,0 +1,23 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    version="2.0">
+  <div
+      class="mm_c c_shoutbox b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+    <mm:import externid="source" />
+
+    <mm:node number="${source}">
+      <mm-sr:relatednodes type="shouts"
+                          role="posrel"
+                          fields="from,title,body"
+                          item="/mmbase/components/shoutbox/item.jspx"
+                          />
+    </mm:node>
+  </div>
+
+</jsp:root>
+
