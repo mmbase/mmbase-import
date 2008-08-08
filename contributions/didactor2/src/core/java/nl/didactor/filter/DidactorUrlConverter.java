@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.1 2008-07-04 15:10:59 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.2 2008-08-08 11:48:18 michiel Exp $
  */
 public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -99,6 +99,17 @@ public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConve
                 assert path[1].equals(directory.substring(1));
                 // article mode
                 Component component = ComponentRepository.getInstance().getComponent(path[2]);
+                Setting<String> setting = (Setting<String>) component.getSetting("didactor_nodeprovider");
+                String value = "education";
+                if (setting != null) {
+                    Framework fw = Framework.getInstance();
+                    Parameters ps = fw.createSettingValueParameters();
+                    ps.setIfDefined(Parameter.REQUEST, request);
+                    value = fw.getSettingValue(setting, ps);
+                }
+                log.debug("Putting on request " + value + " -> " + request.getAttribute(value));
+                request.setAttribute("node", request.getAttribute(value));
+
                 result.append("?name=");
                 result.append(component.getName());
                 Block block = path.length > 3 ? component.getBlock(path[3]) : component.getDefaultBlock();

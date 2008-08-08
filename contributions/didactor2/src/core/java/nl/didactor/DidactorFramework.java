@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorFramework.java,v 1.2 2008-08-07 16:33:49 michiel Exp $
+ * @version $Id: DidactorFramework.java,v 1.3 2008-08-08 11:48:18 michiel Exp $
  * @since Didactor-2.3
  */
 public class DidactorFramework extends BasicFramework {
@@ -33,15 +33,15 @@ public class DidactorFramework extends BasicFramework {
 
     public DidactorFramework(Element el) {
         super(el);
-        dispatchComponents();
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {public void run() {DidactorFramework.this.dispatchComponents() ;}});
     }
 
     protected void dispatchComponents() {
         // make sure every component has a corresponding component object
         // This ought to make any mmbase component useable in didactor.
 
+        Cloud cloud = ContextProvider.getDefaultCloudContext().assertUp().getCloud("mmbase", "class", null);
 
-        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
         NodeManager nm = cloud.getNodeManager("components");
 
         ComponentRepository rep = ComponentRepository.getInstance();

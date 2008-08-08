@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The didactor component wrapping an mmbase component.
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseComponent.java,v 1.1 2008-08-07 16:33:49 michiel Exp $
+ * @version $Id: MMBaseComponent.java,v 1.2 2008-08-08 11:48:18 michiel Exp $
  */
 
 public class MMBaseComponent extends nl.didactor.component.Component {
@@ -71,11 +71,15 @@ public class MMBaseComponent extends nl.didactor.component.Component {
     }
 
 
+    protected org.mmbase.framework.Component getComponent() {
+        return ComponentRepository.getInstance().getComponent(name);
+    }
+
 
     @Override
     public Map<String, String> getScopesMap() {
         Map<String, String> scopes = new HashMap<String, String>();
-        for (Block block : ComponentRepository.getInstance().getComponent(name).getBlocks()) {
+        for (Block block : getComponent().getBlocks()) {
             CLASS:
             for (Block.Type type : block.getClassification()) {
                 while (! type.getParent().getName().equals("didactor")) {
@@ -91,6 +95,11 @@ public class MMBaseComponent extends nl.didactor.component.Component {
 
     public int getNumber() {
         return number;
+    }
+
+    public String getTemplateBar() {
+        Framework fw = Framework.getInstance();
+        return (String) fw.getSettingValue(getComponent().getSetting("didactor_templatebar"), fw.createSettingValueParameters());
     }
 
 }
