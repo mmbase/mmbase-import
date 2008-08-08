@@ -85,13 +85,15 @@
                       </c:choose>
 
                       <mm:node number="$student">
-                        <di:copybook />
+                        <di:copybook>
+                          <mm:node id="copybookNo" />
+                        </di:copybook>
                       </mm:node>
 
                       <mm:node number="${assessment_evaluationtest}" notfound="skip">
                         <!-- get madetest -->
                         <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-                          <mm:constraint field="copybooks.number" referid="copybookNo"/>
+
                           <mm:relatednodes>
                             <mm:treefile page="/assessment/showtest.jsp"
                                          write="false"
@@ -109,6 +111,7 @@
                       </mm:node>
                     </td>
                   </mm:relatednodes>
+
                 </mm:node>
               </tr>
             </mm:relatednodes>

@@ -125,6 +125,8 @@
             </mm:valid>
             -->
           </mm:form>
+          <di:blocks classification="communication" />
+
         </mm:node>
       </div>
     </div>
