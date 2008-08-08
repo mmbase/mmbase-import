@@ -19,7 +19,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.34 2008-07-17 17:15:27 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.35 2008-08-08 11:30:58 michiel Exp $
  */
 public interface CloudContext {
 
@@ -201,7 +201,7 @@ public interface CloudContext {
      * Assert whether MMbase is up and running. This will wait until it is.
      * @since MMBase-1.8
      */
-    public void assertUp();
+    public CloudContext assertUp();
 
     /**
      * The String which could be used to acquire this cloud context using {@link ContextProvider.getCloudContext(String)}.
