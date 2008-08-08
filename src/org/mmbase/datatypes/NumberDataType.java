@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.25 2008-08-08 18:30:52 andre Exp $
+ * @version $Id: NumberDataType.java,v 1.26 2008-08-08 19:08:46 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number&Comparable<E>> extends ComparableDataType<E> {
@@ -33,20 +33,28 @@ abstract public class NumberDataType<E extends Number&Comparable<E>> extends Com
         super(name, classType);
     }
 
+
+    protected Number castString(Object preCast, Cloud cloud) throws CastException {
+         if (preCast instanceof String) {
+             Locale l = cloud.getLocale();
+             NumberFormat nf = NumberFormat.getNumberInstance(l);
+             try {
+                 return nf.parse((String) preCast);
+             } catch (ParseException pe) {
+                 throw new CastException("Not a number: " + preCast);
+             }
+         }
+         return Casting.toDouble(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
+     }
+
+
+
     /**
      * @since MMBase-1.9
      */
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
-        //return castString(preCast);
-        
-        Locale l = node.getCloud().getLocale();
-        NumberFormat nf = NumberFormat.getNumberInstance(l);
-        try {
-            return nf.parse((String) preCast);
-        } catch (ParseException pe) {
-            throw new CastException("Not a number: " + preCast);
-        }
+        return castString(preCast, getCloud(node, field));
     }
 }
