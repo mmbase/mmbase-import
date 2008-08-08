@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.47 2008-07-28 15:52:17 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.48 2008-08-08 08:53:30 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -173,6 +173,19 @@ public class BasicComponent implements Component {
         }
     }
 
+    private void addParameters(Element rendererElement, Block b) {
+        Parameter[] params = Parameter.readArrayFromXml(rendererElement);
+        boolean automatic = rendererElement.getAttribute("automaticParameters").equals("true");
+        if (params.length == 0 && automatic) {
+            // if addParameters function never called, it behaves with 'AutoDefinedParameters'.
+        } else {
+            if (automatic) {
+                log.warn("Ignoring that automaticParameters, because parameters were explictely defined");
+            }
+            b.addParameters(params);
+        }
+    }
+
     private Renderer getRenderer(String name, Element block, Block b) {
         NodeList renderElements = block.getElementsByTagName(name);
         log.debug("Number of [" + name + "] elements: " + renderElements.getLength());
@@ -193,10 +206,8 @@ public class BasicComponent implements Component {
                     return null;
                 }
             }
-            Parameter[] params = Parameter.readArrayFromXml(renderElement);
-            if (params.length > 0) { // a bit to simple, how can you explicitely make a renderer parameter-less now?
-                b.addParameters(params);
-            }
+            addParameters(renderElement, b);
+
             if (renderer == null) {
                 renderer = subRenderer;
             } else {
@@ -230,10 +241,8 @@ public class BasicComponent implements Component {
                 return null;
             }
         }
-        Parameter[] params = Parameter.readArrayFromXml(processorElement);
-        if (params.length > 0) { // a bit to simple, how can you explicitely make a processor parameter-less now?
-            b.addParameters(params);
-        }
+        addParameters(processorElement, b);
+
         return processor;
 
     }

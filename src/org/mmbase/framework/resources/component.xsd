@@ -143,6 +143,7 @@
       </xsd:element>
     </xsd:sequence>
     <xsd:attribute name="jsp" type="xsd:token" />
+    <xsd:attribute name="automaticParameters" type="xsd:boolean" default="false" />
     <!-- you may want to xinclude fieldlists, xincludes may add xml:base attributes -->
     <xsd:attribute ref="xml:base" />
   </xsd:complexType>
