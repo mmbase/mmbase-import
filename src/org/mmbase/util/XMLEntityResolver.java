@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.69 2008-04-14 17:17:27 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.70 2008-08-08 11:15:12 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -154,12 +154,12 @@ public class XMLEntityResolver implements EntityResolver {
         systemIDtoResource.put(systemID, new FileResource(c, xsd));
     }
 
-    private String definitionPath;
+    private final String definitionPath;
 
     private boolean hasDefinition; // tells whether or not a DTD/XSD is set - if not, no validition can take place
 
-    private boolean  validate;
-    private Class<?>    resolveBase;
+    private final boolean  validate;
+    private final   Class<?>    resolveBase;
 
 
 
@@ -180,6 +180,9 @@ public class XMLEntityResolver implements EntityResolver {
         validate    = v;
         resolveBase = base;
     }
+    /**
+     * @since MMBase-1.9
+     */
     protected static StringBuilder camelAppend(StringBuilder sb, String s) {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
@@ -192,6 +195,9 @@ public class XMLEntityResolver implements EntityResolver {
         }
         return sb;
     }
+    /**
+     * @since MMBase-1.9
+     */
     protected static void appendEntities(StringBuilder sb, Object o, String prefix, int level, Set<Object> os) {
         os.add(o);
         org.mmbase.util.transformers.Identifier identifier = new org.mmbase.util.transformers.Identifier();
@@ -255,15 +261,20 @@ public class XMLEntityResolver implements EntityResolver {
     }
     protected static String ents = null;
     protected static boolean logEnts = true;
+    /**
+     * @since MMBase-1.9
+     */
     protected static synchronized String getMMEntities() {
         if (ents == null) {
             StringBuilder sb = new StringBuilder();
             try {
+                Set<Object> added = new HashSet<Object>();
+                appendEntities(sb, org.mmbase.framework.Framework.getInstance(), "framework", 0, added);
+                appendEntities(sb, org.mmbase.framework.ComponentRepository.getInstance(), "componentRepository", 0, added);
+
                 org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
                 if (mmbase != null) {
-                    appendEntities(sb, mmbase, "mmbase", 0, new HashSet<Object>());
-                } else {
-                    return sb.toString();
+                    appendEntities(sb, mmbase, "mmbase", 0, added);
                 }
             } catch (Throwable ie) {
                 log.warn(ie.getMessage());
@@ -276,6 +287,9 @@ public class XMLEntityResolver implements EntityResolver {
         }
         return ents;
     }
+    /**
+     * @since MMBase-1.9
+     */
     public static void clearMMEntities(boolean le) {
         ents = null;
         logEnts = le;
@@ -328,15 +342,17 @@ public class XMLEntityResolver implements EntityResolver {
                     log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
                     log.debug("Find culpit: ", new Exception());
                     return null;
-                } else {
+                } else if (systemId.endsWith(".dtd")) {
                     // perhaps this should not be done if it is about resolving _entities_ rather then dtd.
                     log.debug("Not validating, no need to resolve DTD (?), returning empty resource for " + systemId);
                     return new InputSource(new ByteArrayInputStream(new byte[0]));
                 }
             } else {
-                log.debug("mmbase resource");
-                String mmResource = systemId.substring(22);
+                final String mmResource = systemId.substring(DOMAIN.length());
                 // first, try MMBase config directory (if initialized)
+                if (log.isDebugEnabled()) {
+                    log.debug("mmbase resource " + ResourceLoader.getConfigurationRoot().getResource(mmResource));
+                }
                 definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
                 if (definitionStream == null) {
                     Class<?> base = resolveBase; // if resolveBase was specified, use that.
@@ -361,10 +377,12 @@ public class XMLEntityResolver implements EntityResolver {
                         if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + resource);
                         definitionStream = getClass().getResourceAsStream(resource);
                     }
+                } else {
+                    log.debug("Found resource in mmbase resource loader " + definitionStream);
                 }
                 if (definitionStream == null) {
                     if (resolveBase != null) {
-                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir) " + resolveBase + " " + mmResource);
                     } else {
                         log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     }
