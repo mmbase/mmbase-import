@@ -1,19 +1,16 @@
 <jsp:root
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
 
   <div class="menuSeperator"><jsp:text> </jsp:text></div>
   <div class="menuItem">
-    <mm:treefile page="/mailform/" objectlist="$includePath"
-                 referids="${referids}"
-                 write="false"
-                 >
+    <mm:link page="index" >
       <a href="${_}" class="menubar">
-        <di:translate key="mailform.education_menu_item_mail_to_coach" />
+        <fmt:message key="menu" />
       </a>
-    </mm:treefile>
+    </mm:link>
   </div>
 </jsp:root>
 
