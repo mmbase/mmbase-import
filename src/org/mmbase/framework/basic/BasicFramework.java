@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.24 2008-08-08 12:44:17 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.25 2008-08-08 14:41:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -235,11 +235,15 @@ public class BasicFramework extends Framework {
         }
     }
 
-     protected void setBlockParametersForProcess(State state, Parameters blockParameters) {
+    protected void setBlockParametersForProcess(State state, Parameters blockParameters) {
         ServletRequest request = state.getRequest();
         for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
+    }
+
+    protected String getComponentClass() {
+        return "mm_fw_basic";
     }
 
     /**
@@ -258,7 +262,7 @@ public class BasicFramework extends Framework {
 
         try {
 
-            request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
+            request.setAttribute(COMPONENT_CLASS_KEY, getComponentClass());
 
             Renderer actualRenderer = state.startBlock(frameworkParameters, renderer);
             if (! actualRenderer.equals(renderer)) {
