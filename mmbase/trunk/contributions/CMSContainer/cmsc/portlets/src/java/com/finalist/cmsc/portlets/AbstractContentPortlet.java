@@ -16,6 +16,8 @@ import java.util.*;
 
 import javax.portlet.*;
 
+import net.sf.mmapps.commons.bridge.CloudUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -31,8 +33,6 @@ import com.finalist.cmsc.services.versioning.VersioningException;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
-
-import net.sf.mmapps.commons.bridge.CloudUtil;
 
 public abstract class AbstractContentPortlet extends CmscPortlet {
 
@@ -163,6 +163,9 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
                      if (!Workflow.hasWorkflow(node)) {
                         Workflow.create(node, "");
                      }
+                     else {
+                        Workflow.addUserToWorkflow(node);
+                     }
                   }
                }
                setEditResponse(request, response, nodesMap);
@@ -225,7 +228,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
    protected void setMetaData(RenderRequest req, String elementId) {
       try {
          ContentElement element = ContentRepository.getContentElement(elementId);
-         if (element != null) { //When element not found, skip it. 
+         if (element != null) { //When element not found, skip it.
             PortletFragment portletFragment = getPortletFragment(req);
             portletFragment.addHeaderResource(new MetaHeaderResource(true, "title", element.getTitle()));
             portletFragment.addHeaderResource(new MetaHeaderResource(true, "subject", element.getKeywords()));

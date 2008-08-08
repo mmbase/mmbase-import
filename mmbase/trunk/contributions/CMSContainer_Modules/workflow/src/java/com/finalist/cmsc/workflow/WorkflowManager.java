@@ -101,12 +101,34 @@ public abstract class WorkflowManager {
       return !list.isEmpty();
    }
 
+   protected void addUserToWorkflow(Node node, String type) {
+      Node user = SecurityUtil.getUserNode(cloud);
+
+      NodeList items = getWorkflows(node, type);
+      for (Iterator<Node> iterator = items.iterator(); iterator.hasNext();) {
+         Node workflowItem = iterator.next();
+         NodeList assignedUsers = getAssignedUsers(workflowItem);
+         boolean found = false;
+         for (Iterator<Node> iterator2 = assignedUsers.iterator(); iterator2.hasNext();) {
+            Node assignedUser = iterator2.next();
+            if (user.getNumber() == assignedUser.getNumber()) {
+               found = true;
+            }
+         }
+         if (!found) {
+            relateToUser(workflowItem, user);
+         }
+      }
+   }
+
 
    public abstract boolean isWorkflowElement(Node node, boolean isWorkflowItem);
 
 
    protected abstract List<Node> getUsersWithRights(Node channel, Role role);
 
+
+   public abstract void addUserToWorkflow(Node node);
 
    /**
     * Is the user allowed to approve the node
@@ -278,8 +300,7 @@ public abstract class WorkflowManager {
       changeWorkflow(wfItem, status, remark);
 
       Node user = SecurityUtil.getUserNode(cloud);
-      RelationManager assignedrel = cloud.getRelationManager(WORKFLOW_MANAGER_NAME, SecurityUtil.USER, ASSIGNEDREL);
-      wfItem.createRelation(user, assignedrel).commit();
+      relateToUser(wfItem, user);
 
       RelationManager creatorrel = cloud.getRelationManager(WORKFLOW_MANAGER_NAME, SecurityUtil.USER, CREATORREL);
       wfItem.createRelation(user, creatorrel).commit();
@@ -471,6 +492,8 @@ public abstract class WorkflowManager {
    }
 
 
+
+
    protected void removeRelationsToUsers(Node workflowItem) {
       workflowItem.deleteRelations(ASSIGNEDREL);
    }
@@ -482,6 +505,17 @@ public abstract class WorkflowManager {
       for (Node node : users) {
          workflowItem.createRelation(node, manager).commit();
       }
+   }
+
+
+   private void relateToUser(Node workflowItem, Node user) {
+      RelationManager manager = cloud.getRelationManager(WORKFLOW_MANAGER_NAME, SecurityUtil.USER, ASSIGNEDREL);
+      workflowItem.createRelation(user, manager).commit();
+   }
+
+
+   protected NodeList getAssignedUsers(Node workflowItem) {
+      return workflowItem.getRelatedNodes(SecurityUtil.USER, ASSIGNEDREL, DESTINATION);
    }
 
 
@@ -551,5 +585,6 @@ public abstract class WorkflowManager {
 
       return clone;
    }
+
 
 }

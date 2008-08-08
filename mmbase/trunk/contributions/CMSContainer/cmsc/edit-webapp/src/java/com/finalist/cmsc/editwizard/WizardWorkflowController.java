@@ -136,14 +136,24 @@ public class WizardWorkflowController extends WizardController {
 
          if (wizardConfig.wiz.committed()) {
             if (NEW_OBJECT.equals(objectnr)) {
-               if (wizardConfig.wiz.committed() && !Workflow.hasWorkflow(editNode)) {
-                  Workflow.create(editNode, workflowcomment);
+               if (wizardConfig.wiz.committed()) {
+                  if (!Workflow.hasWorkflow(editNode)) {
+                     Workflow.create(editNode, workflowcomment);
+                  }
+                  else {
+                     Workflow.addUserToWorkflow(editNode);
+                  }
                }
             }
             else {
-               if (!Workflow.hasWorkflow(editNode) && !CANCEL.equals(workflowCommand)) {
-                  log.debug("object " + objectnr + " missing workflow. creating one. ");
-                  Workflow.create(editNode, "");
+               if (!CANCEL.equals(workflowCommand)) {
+                  if (!Workflow.hasWorkflow(editNode)) {
+                     log.debug("object " + objectnr + " missing workflow. creating one. ");
+                     Workflow.create(editNode, "");
+                  }
+                  else {
+                     Workflow.addUserToWorkflow(editNode);
+                  }
                }
             }
 

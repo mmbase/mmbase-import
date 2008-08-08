@@ -12,9 +12,8 @@ package com.finalist.cmsc.services.sitemanagement;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.NavigationUtil;
-
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.workflow.Workflow;
 
@@ -37,6 +36,9 @@ public class WorkflowSiteManagementAdminService extends SiteManagementAdminServi
       super.updatePage(page);
       if (!Workflow.hasWorkflow(page)) {
          Workflow.create(page, "");
+      }
+      else {
+         Workflow.addUserToWorkflow(page);
       }
    }
 

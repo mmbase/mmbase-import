@@ -152,6 +152,10 @@ public class DummyWorkflowService extends WorkflowService {
       return true;
    }
 
+   @Override
+   public void addUserToWorkflow(Node node) {
+      // nothing
+   }
 
    @Override
    protected Log getLogger() {

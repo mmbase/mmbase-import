@@ -189,4 +189,9 @@ public class LinkWorkflow extends RepositoryWorkflow {
       return RepositoryUtil.getRole(node.getCloud(), channel, false);
    }
 
+   @Override
+   public void addUserToWorkflow(Node node) {
+      addUserToWorkflow(node, TYPE_LINK);
+   }
+
 }
