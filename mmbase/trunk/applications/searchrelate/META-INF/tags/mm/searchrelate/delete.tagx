@@ -6,8 +6,10 @@
     version="2.0"
     >
   <!--
+
+
       @author Michiel Meeuwissen
-      @version $Id: delete.tagx,v 1.6 2008-07-31 13:00:05 michiel Exp $
+      @version $Id: delete.tagx,v 1.7 2008-08-08 14:29:20 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
