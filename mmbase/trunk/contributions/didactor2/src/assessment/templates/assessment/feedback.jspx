@@ -125,7 +125,9 @@
             </mm:valid>
             -->
           </mm:form>
-          <di:blocks classification="communication" />
+          <mm:node referid="student">
+            <di:blocks classification="communication" />
+          </mm:node>
 
         </mm:node>
       </div>
