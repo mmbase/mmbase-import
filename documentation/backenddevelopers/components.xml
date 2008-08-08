@@ -7,7 +7,7 @@
 
     <date>2007-02-09</date>
 
-    <edition>$Id: components.xml,v 1.17 2008-07-09 21:43:22 michiel Exp $</edition>
+    <edition>$Id: components.xml,v 1.18 2008-08-08 13:40:56 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -308,8 +308,8 @@
       contain:</para>
 
       <programlisting>&lt;div
-    class="mm_c c_core b_welcome ${requestScope.componentClassName}"
-    id="${requestScope.componentId}"
+    class="mm_c c_core b_welcome ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
 &gt;</programlisting>
 
       <para>In future the class specification should be extended with classes
