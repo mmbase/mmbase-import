@@ -127,10 +127,8 @@
 
         </mm:node>
         <form name="closelessonform" action="${_}"  method="post">
-          <mm:node number="" notfound="skip">
-            <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
-            <mm:param name="learnobject"></mm:param>
-          </mm:node>
+		
+        
         </form>
       </mm:treefile>
     </div>
