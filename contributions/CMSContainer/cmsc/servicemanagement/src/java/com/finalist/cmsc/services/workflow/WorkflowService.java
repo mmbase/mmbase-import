@@ -89,6 +89,9 @@ public abstract class WorkflowService extends Service {
    public abstract boolean isAccepted(Node node);
 
 
+   public abstract void addUserToWorkflow(Node node);
+
+
    @Override
    protected void init(Properties properties) throws Exception {
 
@@ -113,6 +116,5 @@ public abstract class WorkflowService extends Service {
    }
 
    protected abstract Log getLogger();
-
 
 }

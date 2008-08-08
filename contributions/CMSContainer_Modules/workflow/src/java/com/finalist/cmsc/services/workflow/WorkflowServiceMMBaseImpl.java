@@ -229,6 +229,18 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
       return true;
    }
 
+   @Override
+   public void addUserToWorkflow(Node node) {
+      if (hasWorkflow(node)) {
+         WorkflowManager manager = getManager(node);
+         String status = manager.getStatus(node);
+         if (WorkflowManager.STATUS_DRAFT.equals(status)) {
+            manager.addUserToWorkflow(node);
+         }
+      }
+
+   }
+
 
    @Override
    protected Log getLogger() {

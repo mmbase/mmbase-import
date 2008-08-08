@@ -191,4 +191,9 @@ public class ContentWorkflow extends RepositoryWorkflow {
       return RepositoryUtil.getRole(node.getCloud(), creationNode, false);
    }
 
+   @Override
+   public void addUserToWorkflow(Node node) {
+      addUserToWorkflow(node, TYPE_CONTENT);
+   }
+
 }

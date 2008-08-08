@@ -167,7 +167,6 @@ public class PageWorkflow extends WorkflowManager {
       return hasWorkflow(node, TYPE_PAGE);
    }
 
-
    @Override
    protected Node getWorkflowNode(Node node) {
       return getWorkflowNode(node, TYPE_PAGE);
@@ -228,5 +227,12 @@ public class PageWorkflow extends WorkflowManager {
       }
       return NavigationUtil.getRole(node.getCloud(), page, false);
    }
+
+
+   @Override
+   public void addUserToWorkflow(Node node) {
+      addUserToWorkflow(node, TYPE_PAGE);
+   }
+
 
 }
