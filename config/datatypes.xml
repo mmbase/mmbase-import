@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.67 2008-08-07 19:59:21 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.68 2008-08-08 12:42:44 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -841,6 +841,13 @@
       <getprocessor type="string">
         <class name="org.mmbase.datatypes.processors.NodeNumber" />
       </getprocessor>
+    </specialization>
+
+    <specialization id="user">
+      <class name="org.mmbase.datatypes.UserNodeDataType" />
+      <description xml:lang="en">
+        Only nodes associated with users are possible. Default value is current user.
+      </description>
     </specialization>
   </datatype>
 
