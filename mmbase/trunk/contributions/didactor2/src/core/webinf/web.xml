@@ -43,12 +43,11 @@
   </filter>
 
   <filter-mapping>
-    <filter-name>FrameworkFilter</filter-name>
+    <filter-name>Didactor Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
   <filter-mapping>
-    <filter-name>Didactor Filter</filter-name>
+    <filter-name>FrameworkFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
