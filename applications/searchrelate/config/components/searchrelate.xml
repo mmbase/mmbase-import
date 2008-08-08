@@ -9,6 +9,7 @@
   <class name="org.mmbase.framework.BasicComponent" />
 
   <dependency component="core" version="9" />
+  <dependency component="taglib" version="2" />
 
   <bundle name="org.mmbase.searchrelate.resources.searchrelate" />
 
