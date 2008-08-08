@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.23 2008-08-07 14:04:55 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.24 2008-08-08 12:44:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -214,7 +214,7 @@ public class BasicFramework extends Framework {
     /**
      */
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] { ACTION, Parameter.REQUEST, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+        return new Parameter[] { ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
     }
 
     public Parameters createParameters() {
@@ -303,7 +303,7 @@ public class BasicFramework extends Framework {
 
     public Node getUserNode(Parameters frameworkParameters) {
         Cloud cloud = frameworkParameters.get(Parameter.CLOUD);
-        return cloud.getCloudContext().getAuthentication().getNode(cloud.getUser());
+        return cloud == null ? null : cloud.getCloudContext().getAuthentication().getNode(cloud.getUser());
     }
 
     public String getUserBuilder() {
@@ -358,9 +358,11 @@ public class BasicFramework extends Framework {
         boolean useSession = parameters != null && parameters.get(USE_REQ);
         if (useSession) {
             HttpServletRequest req = parameters.get(Parameter.REQUEST);
-            Object v = req.getSession(true).getAttribute(getKey(setting));
-            if (v != null) {
-                return setting.getDataType().cast(v, null, null);
+            if (req != null) {
+                Object v = req.getSession(true).getAttribute(getKey(setting));
+                if (v != null) {
+                    return setting.getDataType().cast(v, null, null);
+                }
             }
         }
         if (settingValues.containsKey(setting)) {
