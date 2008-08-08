@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.15 2008-08-01 15:58:09 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.16 2008-08-08 16:00:54 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -381,6 +381,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             } else {
                 attributes.put("includePath", "" + provider.getNumber());
             }
+
             attributes.put("referids", "class?,workgroup?,student?,c?");
 
             providerCache.put(key, attributes);
@@ -422,6 +423,8 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
         }
+        request.setAttribute(org.mmbase.framework.Framework.COMPONENT_INCLUDEPATH_KEY, request.getAttribute("includePath"));
+
         assert request.getAttribute("provider") != null : "attributes" + attributes;
         for (Map.Entry<String, Object> entry : userAttributes.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
