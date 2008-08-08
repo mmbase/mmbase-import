@@ -381,6 +381,11 @@ public class Authentication extends org.mmbase.security.Authentication {
         return getUserNode(cloud, cloud.getUser().getIdentifier());
 
     }
+    @Override
+    public Node getNode(org.mmbase.security.UserContext userContext) throws SecurityException {
+        return getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null), userContext.getIdentifier());
+    }
+
 
     private static final Parameter[]  NAME_PASSWORD_PARAMS = new Parameter[] {PARAMETER_USERNAME,
                                                                               PARAMETER_PASSWORD,
