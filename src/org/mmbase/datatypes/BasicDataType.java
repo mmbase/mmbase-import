@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.92 2008-07-17 16:27:16 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.93 2008-08-09 09:22:59 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -328,7 +328,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     protected Cloud getCloud(Cloud cloud) {
         if (cloud == null) {
-            log.info("No cloud found");
+            log.debug("No cloud found");
+            cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
+        }
+        if (cloud == null) {
             CloudContext context = ContextProvider.getDefaultCloudContext();
             if (! context.isUp()) return null;
             cloud  = context.getCloud("mmbase", "class", null);
