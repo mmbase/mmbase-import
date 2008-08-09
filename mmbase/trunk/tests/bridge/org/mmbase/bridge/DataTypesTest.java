@@ -41,7 +41,7 @@ public class DataTypesTest extends BridgeTest {
             commit(node3);
 
             cases = new Object[] {
-                /*            {field,    
+                /*            {field,
                               {valid values},
                               {invalid values}} */
                 new Object[] {"string",
@@ -104,7 +104,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                               }},
                 new Object[] {"handle",
-                              new Object[] {new byte[] {4, 3, 2, 1}, getBinary(), null}, 
+                              new Object[] {new byte[] {4, 3, 2, 1}, getBinary(), null},
                               new Object[] {new byte[] {1, 2}}
                 },
                 new Object[] {"boolean",
@@ -434,5 +434,14 @@ public class DataTypesTest extends BridgeTest {
         assertTrue(dt instanceof DateTimeDataType);
     }
 
+
+    public void testLocaleFloat() {
+        Cloud cloud = getCloud();
+        cloud.setLocale(new Locale("nl", "NL"));
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("float");
+        DataType dt = field.getDataType();
+        field.getDataType().validate("1,2");
+    }
 
 }
