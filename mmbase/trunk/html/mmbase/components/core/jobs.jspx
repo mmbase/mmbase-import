@@ -11,7 +11,7 @@
   <mm:cloud rank="administrator">
   <div
       class="mm_c c_core b_jobs ${requestScope.className}"
-      id="${requestScope.componentId}">
+      id="${requestScope['org.mmbase.componentId']}">
     <p><em><mm:time time="now" format=":FULL.FULL" /></em> - <mm:cloudinfo type="user" /></p>
     <table summary="Jobs statistics" border="0" cellspacing="0" cellpadding="3">
       <caption>

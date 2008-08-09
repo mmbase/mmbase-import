@@ -6,7 +6,7 @@
   <jsp:output omit-xml-declaration="true" />
   <div
       class="mm_c c_core b_401 ${requestScope.className}"
-      id="${requestScope.componentId}">
+      id="${requestScope['org.mmbase.componentId']}">
     <h2>
       <fmt:message key="401.title">
         <fmt:param>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</fmt:param>

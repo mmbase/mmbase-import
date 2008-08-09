@@ -6,15 +6,15 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="c_ c_x b_change ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="c_ c_x b_change ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
     <!--
          Offers a form for one existing MMBase node.
          Also handles the form.
 
          TODO: Some way to edit relations? NODE-field editor?
 
-         $Id: change.jspx,v 1.7 2008-07-14 17:52:07 michiel Exp $
+         $Id: change.jspx,v 1.8 2008-08-09 11:29:47 michiel Exp $
     -->
     <mm:import externid="ok" from="request">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
@@ -30,7 +30,7 @@
             validator.validateHook = function(valid) {
               document.getElementById('okbutton').disabled = this.invalidElements != 0;
             }
-            validator.setup(document.getElementById("${requestScope.componentId}"));
+            validator.setup(document.getElementById("${requestScope['org.mmbase.componentId']}"));
           </script>
 
           <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>

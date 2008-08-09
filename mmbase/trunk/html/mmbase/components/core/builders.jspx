@@ -6,8 +6,8 @@
   <mm:import externid="application" />
   <mm:import externid="app" />
   <div
-      class="mm_c c_core b_builders ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="mm_c c_core b_builders ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
 
   <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
   <table summary="builders" border="0" cellspacing="0" cellpadding="3">

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <div
-    class="mm_c c_core b_view_source ${requestScope.componentClassName}"
-    id="${requestScope.componentId}"
+    class="mm_c c_core b_view_source ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"

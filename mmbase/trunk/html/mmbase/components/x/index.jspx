@@ -9,8 +9,8 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud method="asis">
   <div
-      class="c_ c_x b_index ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="c_ c_x b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
     <mm:import externid="nodemanager">object</mm:import>
     <mm:import externid="only" />
     <mm:import externid="pagesize" from="request,">50</mm:import>
@@ -35,7 +35,6 @@
     </mm:compare>
 
     <mm:url id="thispage" write="false" />
-    <p>page: ${thispage}</p>
     <mm:form id="form">
       <input type="hidden" name="pagesize" value="${pagesize}" />
       <h1>

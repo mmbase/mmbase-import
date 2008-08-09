@@ -4,8 +4,8 @@
           >
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c c_mmexamples b_index ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="mm_c c_mmexamples b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
 

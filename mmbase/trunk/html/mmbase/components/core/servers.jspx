@@ -5,8 +5,8 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="server" from="request" />
   <div
-      class="mm_c c_core b_servers ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="mm_c c_core b_servers ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <mm:notpresent referid="server">
       <table summary="servers" border="0" cellspacing="0" cellpadding="3">

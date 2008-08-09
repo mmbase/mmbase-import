@@ -11,7 +11,7 @@
   <mm:cloud rank="administrator">
   <div
       class="mm_c c_core b_datatypes ${requestScope.className}"
-      id="${requestScope.componentId}">
+      id="${requestScope['org.mmbase.componentId']}">
 
       <table>
         <mm:cloud>
