@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.109 2008-07-25 10:19:06 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.110 2008-08-09 11:24:08 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -265,7 +265,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         Node          node = null;
         Field field;
         DataType dataType = getDataType();
-        fieldProvider = "".equals(parentFieldId.getValue(this)) ? null : findFieldProvider(dataType != null);
+        fieldProvider = "".equals(parentFieldId.getValue(this)) ? null : findFieldProvider(dataType == null);
         if (fieldProvider == null) {
             final DataType dt = dataType;
             fieldProvider = new FieldProvider() {
