@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.159 2008-07-16 11:02:43 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.160 2008-08-09 09:49:54 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -542,7 +542,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 tag.setUser(cloud.getUser());
             }
         }
-
+        org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
         return EVAL_BODY;
     }
 
@@ -1347,6 +1347,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
         prevCloud = null;
+        org.mmbase.bridge.util.CloudThreadLocal.unbind();
         return super.doEndTag();
     }
 
