@@ -9,8 +9,8 @@
   <mm:import externid="cmd"     jspvar="cmd" />
   
   <div
-      class="mm_c c_core b_builders-field ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="mm_c c_core b_builders-field ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
 
     
       <h3>View builder ${builder}, field ${field}</h3>

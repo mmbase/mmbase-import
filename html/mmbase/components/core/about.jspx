@@ -1,12 +1,12 @@
-<mm:cloud 
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
+<mm:cloud
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     name="mmbase" method="asis">
   <jsp:output omit-xml-declaration="true" />
   <div
       class="mm_c c_core b_welcome ${requestScope.className}"
-      id="${requestScope.componentId}">
+      id="${requestScope['org.mmbase.componentId']}">
     <h2><fmt:message key="welcome.title" /></h2>
     <h3>
       <fmt:message key="welcome.yourrunning" >

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    class="mm_c c_core b_components ${requestScope.componentClassName}"
-    id="${requestScope.componentId}"
+    class="mm_c c_core b_components ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -89,7 +89,19 @@
               <tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
               <tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
               <tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
-              <tr><th>Classification</th><td><jsp:expression>Arrays.asList(b.getClassification())</jsp:expression></td></tr>
+              <tr>
+                <th>Classification</th>
+                <td>
+                  <jsp:expression>Arrays.asList(b.getClassification())</jsp:expression>
+                  <jsp:scriptlet>
+                    for (Block.Type type : b.getClassification()) {
+                  </jsp:scriptlet>
+                  <jsp:expression>type.getParent()</jsp:expression>
+                  <jsp:scriptlet>
+                    }
+                  </jsp:scriptlet>
+                </td>
+              </tr>
             </table>
           </mm:stringlist>
         </mm:function>

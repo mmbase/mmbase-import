@@ -18,8 +18,8 @@
     </c:when>
     <c:otherwise>
       <div
-          class="test mm_c c_test b_test ${requestScope.componentClassName}"
-          id="${requestScope.componentId}">
+          class="test mm_c c_test b_test ${requestScope['org.mmbase.componentClassName']}"
+          id="${requestScope['org.mmbase.componentId']}">
         <h1>a = ${a}</h1>
         <h1>b = ${b}</h1>
         <p>Render state: ${requestScope['org.mmbase.framework.state']}</p>

@@ -2,8 +2,8 @@
 <%@page import="org.mmbase.util.transformers.*,org.mmbase.util.*,java.util.*,java.net.*,org.w3c.dom.*,java.io.*" %>
 <mm:content>
 <div
-    class="mm_c c_core b_resourceedit ${requestScope.componentClassName}"
-    id="${requestScope.componentId}"
+    class="mm_c c_core b_resourceedit ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
     xmlns="http://www.w3.org/1999/xhtml"
    >
   <style>

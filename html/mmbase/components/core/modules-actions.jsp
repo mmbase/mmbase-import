@@ -9,8 +9,8 @@
 <mm:import externid="cmd"      jspvar="cmd" />
 <mm:import externid="action" />
 <div
-  class="mm_c c_core b_modules ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
+  class="mm_c c_core b_modules ${requestScope['org.mmbase.componentClassName']}"
+  id="${requestScope['org.mmbase.componentId']}">
 
 <%
 Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");

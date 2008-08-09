@@ -1,7 +1,7 @@
 <div
     xmlns:jsp="http://java.sun.com/JSP/Page" 
 	class="mm_c c_core b_welcome ${requestScope.className}"
-	id="${requestScope.componentId}">
+	id="${requestScope['org.mmbase.componentId']}">
   <jsp:output omit-xml-declaration="true" />
   <h1>MOZILLA PUBLIC LICENSE</h1>
   <h2>Version 1.0</h2>
