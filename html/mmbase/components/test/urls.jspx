@@ -9,8 +9,8 @@
   <mm:import externid="b" >B</mm:import>
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="test mm_c c_test b_urls ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="test mm_c c_test b_urls ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
 
 
     <h1>
@@ -75,9 +75,9 @@
 
     <!-- implicit write -->
     <mm:import id="test1"><mm:link absolute="context" page="/justsomeurl" /></mm:import>
-    <p>${test1 eq '/justsomeurl' ? 'ok' : 'NOT ok'}: '${test1}' NE '/justsomeurl' </p>
+    <p>${test1 eq '/justsomeurl' ? 'ok' : 'NOT ok'}: '${test1}' EQ '/justsomeurl' </p>
     <mm:import id="test2"><mm:url absolute="context" page="/justsomeurl"><mm:param name="a" value="A" /></mm:url></mm:import>
-    <p>${test2 eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: '${test2}' NE '/justsomeurl' </p>
+    <p>${test2 eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: '${test2}' EQ '/justsomeurl' </p>
 
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
@@ -89,13 +89,13 @@
       <mm:frameworkparam name="component">core</mm:frameworkparam>
       <mm:frameworkparam name="category">foo</mm:frameworkparam>
       <mm:param name="page">index.jspx</mm:param>
-      <p>${_ eq '/mmbase/foo/core/view_source?1.2:page=index.jspx' ? 'ok' : 'NOT ok'}: '${_}' NE '/mmbase/foo/core/view_source?1.2:page=index.jspx'</p> <!-- 1.2? -->
+      <p>${_ eq '/mmbase/foo/core/view_source?1.2:page=index.jspx' ? 'ok' : 'NOT ok'}: '${_}'</p>
     </mm:link>
 
     <mm:link page="servers" absolute="context">
       <mm:frameworkparam name="component">core</mm:frameworkparam>
       <mm:frameworkparam name="category">foo</mm:frameworkparam>
-      <p>${_ eq '/mmbase/foo/core/servers' ? 'ok' : 'NOT ok'}: '${_}' NE '/mmbase/foo/core/servers'</p>
+      <p>${_ eq '/mmbase/foo/core/servers' ? 'ok' : 'NOT ok'}: '${_}'</p>
     </mm:link>
 
     <p>
@@ -114,6 +114,7 @@
     </p>
 
 
+    <h2>Internal</h2>
 
 
 

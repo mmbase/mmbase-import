@@ -5,9 +5,9 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="component ${requestScope.componentClassName}"
+    class="component ${requestScope['org.mmbase.componentClassName']}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    id="${requestScope.componentId}">
+    id="${requestScope['org.mmbase.componentId']}">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" />
 

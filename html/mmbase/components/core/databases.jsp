@@ -2,8 +2,8 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator">
 <div
-  class="mm_c c_core b_databases ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
+  class="mm_c c_core b_databases ${requestScope['org.mmbase.componentClassName']}"
+  id="${requestScope['org.mmbase.componentId']}">
 <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 <table summary="databases" border="0" cellspacing="0" cellpadding="3">
   <caption>

@@ -2,8 +2,8 @@
 <mm:content>
 <mm:cloud rank="administrator">
 <div
-  class="mm_c c_core b_modules ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
+  class="mm_c c_core b_modules ${requestScope['org.mmbase.componentClassName']}"
+  id="${requestScope['org.mmbase.componentId']}">
 
   <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
   <table summary="MMBase modules" border="0" cellspacing="0" cellpadding="3">

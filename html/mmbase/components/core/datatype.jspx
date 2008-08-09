@@ -11,8 +11,8 @@
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
   <mm:cloud>
   <div
-      class="mm_c c_core b_datatype ${requestScope.className}"
-      id="${requestScope.componentId}">
+      class="mm_c c_core b_datatype ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
 
       <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
       <jsp:directive.include file="/mmbase/validation/mmbase.jspxf" />

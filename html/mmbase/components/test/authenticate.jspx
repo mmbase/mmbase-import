@@ -10,8 +10,8 @@
   <jsp:directive.page import="org.mmbase.security.*" />
   <div
       xmlns="http://www.w3.org/1999/xhtml"
-      class="mm_c c_core b_authenticate ${requestScope.componentClassName}"
-      id="${requestScope.componentId}">
+      class="mm_c c_core b_authenticate ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
     <h1>Authentication-test</h1>
     <p>Normally, only choosing the 'rank' should be enough</p>
     <mm:import externid="rank" jspvar="r" vartype="string" />

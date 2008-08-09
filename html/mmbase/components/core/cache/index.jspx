@@ -3,8 +3,8 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    class="component mm_c ${requestScope.componentClassName}"
-    id="${requestScope.componentId}">
+    class="component mm_c ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}">
   <jsp:directive.page import="org.mmbase.cache.*" />
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="administrator">
