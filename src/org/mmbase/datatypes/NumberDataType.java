@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.26 2008-08-08 19:08:46 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.27 2008-08-09 09:18:55 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number&Comparable<E>> extends ComparableDataType<E> {
@@ -55,6 +55,6 @@ abstract public class NumberDataType<E extends Number&Comparable<E>> extends Com
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
-        return castString(preCast, getCloud(node, field));
+        return castString(preCast, getCloud(getCloud(node, field)));
     }
 }
