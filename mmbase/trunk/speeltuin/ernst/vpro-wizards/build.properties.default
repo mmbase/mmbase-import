@@ -7,6 +7,16 @@ spring.dest=${download.dir}/${spring.file}
 spring.loc=http://downloads.sourceforge.net/springframework/${spring.file}
 spring.jar=${expand.dir}/${spring.version}/dist/spring.jar
 spring.mvc.jar=${expand.dir}/${spring.version}/dist/modules/spring-webmvc.jar
+spring.test.jar=${expand.dir}/${spring.version}/dist/modules/spring-test.jar
+
+# ----- Commons collections with generics
+commons.collections.version=collections-generic-4.01
+commons.collections.file=${commons.collections.version}.zip
+commons.collections.dest=${download.dir}/${commons.collections.file}
+commons.collections.loc=http://downloads.sourceforge.net/collections/${commons.collections.file}
+commons.collections.jar=${expand.dir}/${commons.collections.version}/${commons.collections.version}.jar
+
+
 
 mmbase.maven.repository=http://www.mmbase.org/maven
 
