@@ -9,21 +9,24 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.*;
+
 import java.util.Locale;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.27 2008-08-09 09:18:55 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.28 2008-08-11 15:51:02 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number&Comparable<E>> extends ComparableDataType<E> {
+    private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
 
     private static final long serialVersionUID = 1L;
     /**
@@ -38,11 +41,12 @@ abstract public class NumberDataType<E extends Number&Comparable<E>> extends Com
          if (preCast instanceof String) {
              Locale l = cloud.getLocale();
              NumberFormat nf = NumberFormat.getNumberInstance(l);
-             try {
-                 return nf.parse((String) preCast);
-             } catch (ParseException pe) {
-                 throw new CastException("Not a number: " + preCast);
-             }
+             ParsePosition p = new ParsePosition(0);
+             String s = (String) preCast;
+             Number number =  nf.parse(s, p);
+             log.info("Parsing " + preCast + " -> " + number);
+             if (p.getIndex() < s.length()) throw new CastException("Not a number: " + preCast);
+             return number;
          }
          return Casting.toDouble(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
      }
