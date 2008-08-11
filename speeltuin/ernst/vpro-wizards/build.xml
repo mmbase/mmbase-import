@@ -4,7 +4,7 @@
   <property name="project.package"   value="org/mmbase/applications/vpro-wizards" />
   <property name="project.comment"   value="The VPRO wizard toolkit for MMBase" />
 
-  <property name="project.jars.includes"   value="spring.jar,spring-webmvc.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
+  <property name="project.jars.includes"   value="spring.jar,spring-webmvc.jar,spring-test.jar,collections-generic*.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
   <property name="project.jars.dir" location="build" />
   <property name="java.source.version" value="1.5"/>
 
@@ -14,10 +14,18 @@
 
   <!--** create the jar **-->
     <target name="jar" description="Create the vpro-wizards jar"
-        depends="vpro-wizards.jars,project.manifest,buildbase.jar" />
+        depends="copy.resources,vpro-wizards.jars,project.manifest,buildbase.jar" />
 
     <target name="init" depends="buildbase.init">
         <available property="xerces.available"           file="${project.build.dir}/${xerces.file.noversion}"/>
+    </target>
+    
+    
+    <!--copy all the resources to the classes dir, so they become part of the jar-->
+    <target name="copy.resources" >
+        <copy todir="${project.build.dir}/classes">
+            <fileset dir="resources"/>
+        </copy>
     </target>
 
     <!--** get the dependencies **-->
@@ -31,17 +39,26 @@
             <param name="expandedfile" value="${spring.jar}"/>
         </antcall>
 
-        <echo message="hallo: ${project.jars.dir} ${project.jars.includes}" />
         <copy file="${spring.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
         <copy file="${spring.mvc.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+        <copy file="${spring.test.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
 
         <!--commons collections-->
         <echo message="download commons-collections" />
-        <antcall target="download">
+            <antcall target="download">
             <param name="sourcefile" value="${comm.collections.loc}"/>
             <param name="destfile" value="${download.dir}/${comm.collections.file}"/>
         </antcall>
         <copy file="${download.dir}/${comm.collections.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+        
+        <echo message="download commons-collections (with generics support)" />
+        <antcall target="downloadzip">
+            <param name="sourcefile" value="${commons.collections.loc}"/>
+            <param name="destfile" value="${commons.collections.dest}"/>
+            <param name="destdir" value="${expand.dir}"/>
+            <param name="expandedfile" value="${commons.collections.jar}"/>
+        </antcall>
+        <copy file="${commons.collections.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
 
 
         <!--commons lang-->
