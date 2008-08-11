@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.66 2008-08-07 18:54:38 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.67 2008-08-11 15:43:48 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -160,7 +160,7 @@ public class DataTypeDefinition {
         return this;
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description|handler");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
