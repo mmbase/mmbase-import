@@ -2,8 +2,8 @@ package nl.vpro.redactie.actions;
 
 import java.util.*;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections15.FactoryUtils;
+import org.apache.commons.collections15.MapUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
