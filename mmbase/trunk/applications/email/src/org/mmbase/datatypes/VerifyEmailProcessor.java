@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.7 2008-06-12 15:07:52 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.8 2008-08-12 09:15:18 michiel Exp $
 
  */
 
@@ -188,7 +188,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
         return encrypt(node.getNodeManager().getName() + SEP + field.getName() + SEP + key);
     }
 
-    public static boolean validate(Cloud cloud, String encryptedKey) {
+    public static Node validate(Cloud cloud, String encryptedKey) {
         String keyChain = decrypt(encryptedKey.replaceAll(" ", "+"));
         log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " )");
         int pos1 = keyChain.indexOf(SEP);
@@ -206,9 +206,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
             Node node = nl.getNode(0);
             node.setStringValue(field, key);
             node.commit();
-            return true;
+            return node;
         }
-        return false;
+        return null;
     }
 
     private static CharTransformer stripper;

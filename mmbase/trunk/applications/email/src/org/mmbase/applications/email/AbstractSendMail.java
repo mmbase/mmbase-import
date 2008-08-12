@@ -22,11 +22,9 @@ import javax.mail.internet.*;
  */
 abstract public class AbstractSendMail extends WatchedReloadableModule {
 
-    /*
     public AbstractSendMail(String name) {
         super(name);
     }
-    */
 
     /**
      * Send mail without extra headers
