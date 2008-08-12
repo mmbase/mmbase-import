@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.70 2008-08-11 13:29:50 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.71 2008-08-12 21:00:09 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -156,7 +156,7 @@
       </description>
       <pattern value="(?i)\A[0-9]{4}\s*[A-Z]{2}\z">
         <description xml:lang="nl">Ongeldige postcode. Een geldige postcode is bijv. 1234 AB.</description>
-        <description xml:lang="en">Invalide zipcode. A valid dutch zip code is e.g. 1234 AB.</description>
+        <description xml:lang="en">Invalid zip code. A valid dutch zip code is e.g. 1234 AB.</description>
       </pattern>
       <setprocessor>
         <class name="org.mmbase.util.transformers.UpperCaser" />
