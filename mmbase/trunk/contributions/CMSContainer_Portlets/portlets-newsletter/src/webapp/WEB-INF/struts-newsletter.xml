@@ -62,12 +62,12 @@
          <forward name="newsletterdashboard" path="/editors/newsletter/module/report_overview.jsp" redirect="false"/>
          <forward name="newsletteroverview" path="/editors/newsletter/module/report_newsletter_list.jsp"
                   redirect="false"/>
-         <forward name="newsletterdetail" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp"
+         <forward name="newsletterSubscriptionDetail" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp"
                   redirect="false"/>
          <forward name="importpage" path="/editors/newsletter/module/import.jsp" redirect="false"/>
-         <forward name="listsubscribers" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false"/>
+         <forward name="subscriberOverview" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false"/>
          <forward name="confirmunsubscribe" path="/editors/newsletter/module/confirm_unsubscribe.jsp" redirect="false"/>
-         <forward name="ubscriber_subscriptions" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp"
+         <forward name="subscriberSubscriptionDetail" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp"
                   redirect="false"/>
       </action>
       <action path="/editors/newsletter/SubscriptionImportExportAction" name="datafilebean"

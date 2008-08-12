@@ -107,7 +107,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 		List<Map> results = new ArrayList<Map>();
 
 		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionService.getAuthenticationByTerms(newsletterId, terms);
+		authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
 		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, true);
 		for (Object[] result : qResults) {
 			String tmpFullName = result[0].toString() + " " + result[1].toString();
@@ -124,7 +124,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 	private int countsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
 		int resultCount = 0;
 		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionService.getAuthenticationByTerms(newsletterId, terms);
+		authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
 		if (authenticationIds.size() > 0) {
 			resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, false).size();
 		}

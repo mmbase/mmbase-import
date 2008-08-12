@@ -12,7 +12,7 @@ public interface NewsletterCAO {
 
 	public List<Term> getALLTerm();
 
-	public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value);
+	public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value, boolean paging);
 
 	public int getNewsletterIdBySubscription(int id);
 

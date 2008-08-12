@@ -259,23 +259,21 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		return subscriptions;
 	}
 
-	public List<Subscription> getSubscriptionsByNewsletterId(String i) {
-		log.debug("Get all subscriptions of newsletter " + i);
-		return subscriptionCAO.getSubscription(Integer.parseInt(i));
+	public List<Subscription> getSubscriptionsByNewsletterId(String newsletterId) {
+		log.debug("Get all subscriptions of newsletter " + newsletterId);
+		return subscriptionCAO.getSubscription(Integer.parseInt(newsletterId));
 	}
 
-	public Set<Subscription> getSubscriptions(String newsletterId, String name, String email) {
-		Set<String> personIds = getPersonIdSet(name, email);
-
-		Set<Subscription> result = new HashSet<Subscription>();
-
-		for (Subscription subscription : getSubscriptionsByNewsletterId(newsletterId)) {
-			if (personIds.contains(subscription.getSubscriberId())) {
-				result.add(subscription);
-			}
+	public Set<Newsletter> getNewslettersBySubscription(int subscriberId, String title, boolean paging){
+		log.debug("Get Subscriptions of subscriberId" + subscriberId);
+		List<Newsletter> newsletters = subscriptionCAO.getNewslettersByScription(subscriberId, title, paging);
+		Set<Newsletter> results = new HashSet<Newsletter>();
+		for(Newsletter newsletter: newsletters){
+			String status = subscriptionCAO.getSubscription(newsletter.getId(), subscriberId).getStatus().toString();
+			newsletter.setStatus(status);
+			results.add(newsletter);
 		}
-
-		return result;
+		return results;
 	}
 
 	private Set<String> getPersonIdSet(String name, String email) {
@@ -313,8 +311,8 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		}
 	}
 	
-	public List<Subscription> getSubscriptionBySubscriber(String newsletterid) {
-		return subscriptionCAO.getSubscriptionByUserIdAndStatus(Integer.parseInt(newsletterid), null);
+	public List<Subscription> getSubscriptionBySubscriber(String subscriberId) {
+		return subscriptionCAO.getSubscriptionByUserIdAndStatus(Integer.parseInt(subscriberId), null);
 	}
 
 	public Subscription getSubscription(int userId, int newsletterId) {
@@ -374,8 +372,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
 	}
 
-	public Set<Long> getAuthenticationByTerms(int newsletterId, String terms) {
-		// TODO Auto-generated method stub
+	public Set<Long> getAuthenticationIdsByTerms(int newsletterId, String terms) {
 		List<Node> subscriptions = subscriptionCAO.getSubscriptionsByTerms(newsletterId, terms);
 
 		Set<Long> subscirberIds = new HashSet<Long>();
@@ -385,5 +382,21 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		return subscirberIds;
 	}
 
+	public Set<Long> getAuthenticationIdsByNewsletter(int newsletterId) {
+		List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
+		Set<Long> subscriberIds = new HashSet<Long>();
+		for(Subscription subscription: subscriptions){
+			subscriberIds.add(new Long(Integer.parseInt(subscription.getSubscriberId())));
+		}
+		return subscriberIds;
+	}
 
+	public Set<Long> getAuthenticationIds() {
+		List<Node> subscriptions = subscriptionCAO.getAllSubscriptions();
+		Set<Long> subscriberIds = new HashSet<Long>();
+		for(Node subscription: subscriptions){
+			subscriberIds.add(new Long(subscription.getIntValue("subscriber")));
+		}
+		return subscriberIds;
+	}
 }

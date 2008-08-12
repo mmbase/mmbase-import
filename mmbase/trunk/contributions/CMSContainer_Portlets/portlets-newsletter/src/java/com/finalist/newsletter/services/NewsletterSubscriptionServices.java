@@ -1,5 +1,6 @@
 package com.finalist.newsletter.services;
 
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.cmsc.services.community.person.Person;
 
@@ -49,21 +50,25 @@ public interface NewsletterSubscriptionServices {
 
 	public List<Subscription> getAllSubscription();
 
-	public List<Subscription> getSubscriptionsByNewsletterId(String i);
+	public List<Subscription> getSubscriptionsByNewsletterId(String newsletterId);
 
-	Set<Subscription> getSubscriptions(String newsletterId, String name, String email);
+	public Set<Newsletter> getNewslettersBySubscription(int subscriberId, String title, boolean paging);
 
 	public List<Person> getAllSubscribers(String name, String email);
 
-	public List<Subscription> getSubscriptionBySubscriber(String newsletterid);
-
+	public List<Subscription> getSubscriptionBySubscriber(String subscriberId);
+	
 	public Subscription getSubscription(int sbId, int nId);
 
 	void unSubscribeAllInNewsletter(int integer);
 
 	public void createSubscription(int userId, int newsletterId);
 
-	public Set<Long> getAuthenticationByTerms(int newsletterId, String terms);
+	public Set<Long> getAuthenticationIdsByTerms(int newsletterId, String terms);
+	
+	public Set<Long> getAuthenticationIdsByNewsletter(int newsletterId);
+	
+	public Set<Long> getAuthenticationIds();
 
 	public Set<Integer> getRecordIdByNewsletterAndName(int newsletter, String term);
 

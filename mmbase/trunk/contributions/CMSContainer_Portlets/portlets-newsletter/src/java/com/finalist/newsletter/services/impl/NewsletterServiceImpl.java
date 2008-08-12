@@ -41,33 +41,29 @@ public class NewsletterServiceImpl implements NewsletterService {
 		this.statisticCAO = statisticCAO;
 	}
 
-	public List<Newsletter> getAllNewsletter() {
-		return newsletterCAO.getNewsletterByConstraint(null, null, null);
+	public List<Newsletter> getAllNewsletter(boolean paging) {
+		return newsletterCAO.getNewsletterByConstraint(null, null, null, paging);
 	}
 
-	public String getNewsletterName(String newsletterId) {
+	public String getNewsletterName(int newsletterId) {
 		String name = "";
 
-		if (StringUtils.isNotBlank(newsletterId)) {
-			name = newsletterCAO.getNewsletterById(Integer.parseInt(newsletterId)).getTitle();
+		if (newsletterId >0) {
+			name = newsletterCAO.getNewsletterById(newsletterId).getTitle();
 		}
 
 		return name;
-	}
-
-	public int countAllNewsletters() {
-		return getAllNewsletter().size();
 	}
 
 	public int countAllTerms() {
 		return newsletterCAO.getALLTerm().size();
 	}
 
-	public List<Newsletter> getNewslettersByTitle(String title) {
+	public List<Newsletter> getNewslettersByTitle(String title, boolean paging) {
 
 		log.debug(String.format("Get newsletter by title %s", title));
 
-		return newsletterCAO.getNewsletterByConstraint("title", "like", title);
+		return newsletterCAO.getNewsletterByConstraint("title", "like", title, paging);
 	}
 
 	public Newsletter getNewsletterBySubscription(int id) {
@@ -78,7 +74,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 		return newsletterCAO.getNewsletterById(newsletterId);
 	}
 
-	public List<Newsletter> getNewsletters(String subscriber, String title) {
+	public List<Newsletter> getNewsletters(String subscriber, String title, boolean paging) {
 
 		log.debug(String.format("Get Newsletters by subscriber %s and title %s", subscriber, title));
 
@@ -86,13 +82,13 @@ public class NewsletterServiceImpl implements NewsletterService {
 		boolean tc = StringUtils.isNotBlank(title);
 
 		if (sc && tc) {
-			return getAllNewsletterBySubscriberAndTitle(subscriber, title);
+			return getAllNewsletterBySubscriberAndTitle(subscriber, title, paging);
 		} else if (sc && !tc) {
-			return getAllNewsletterBySubscriber(subscriber);
+			return getAllNewsletterBySubscriber(subscriber, paging);
 		} else if (tc) {
-			return getNewslettersByTitle(title);
+			return getNewslettersByTitle(title, paging);
 		} else {
-			return getAllNewsletter();
+			return getAllNewsletter(paging);
 		}
 	}
 
@@ -113,11 +109,11 @@ public class NewsletterServiceImpl implements NewsletterService {
 		subscriptionCAO.updateLastBounce(subscriptionNode.getNumber());
 	}
 
-	private List<Newsletter> getAllNewsletterBySubscriber(String subscriber) {
+	private List<Newsletter> getAllNewsletterBySubscriber(String subscriber, boolean paging) {
 		return null;
 	}
 
-	private List<Newsletter> getAllNewsletterBySubscriberAndTitle(String subscriber, String title) {
+	private List<Newsletter> getAllNewsletterBySubscriberAndTitle(String subscriber, String title, boolean paging) {
 		return null;
 	}
 
