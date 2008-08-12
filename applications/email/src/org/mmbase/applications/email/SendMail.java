@@ -22,6 +22,7 @@ import org.mmbase.module.smtp.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 
 /**
  * Module providing mail functionality based on JavaMail, mail-resources.
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.48 2008-08-06 14:23:11 michiel Exp $
+ * @version $Id: SendMail.java,v 1.49 2008-08-12 09:15:18 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -45,11 +46,12 @@ public class SendMail extends AbstractSendMail {
 
     private Pattern onlyToPattern = Pattern.compile(".*");
 
-    /**
+    public SendMail() {
+        this(null);
+    }
     public SendMail(String name) {
         super(name);
     }
-    */
 
     /**
      * Returns the domains that are te be consided 'local' domains.
@@ -786,6 +788,16 @@ public class SendMail extends AbstractSendMail {
 
     public Session getSession() {
         return session;
+    }
+
+    {
+        addFunction(new AbstractFunction("verifyEmail", new Parameter[] { new Parameter("signature", String.class, true), Parameter.CLOUD }, ReturnType.NODE) {
+                public Node getFunctionValue(Parameters parameters) {
+                    Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                    String signature = parameters.getString("signature");
+                    return org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, signature);
+                }
+            });
     }
 
 
