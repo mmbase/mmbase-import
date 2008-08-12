@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.77.2.6 2007-08-03 08:15:52 michiel Exp $
+ * @version $Id: Module.java,v 1.77.2.7 2008-08-12 08:15:13 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -79,6 +79,12 @@ public abstract class Module extends FunctionProvider {
     private boolean started = false;
 
     public Module() {
+        this(null);
+    }
+
+    public Module(String name) {
+        super();
+        setName(name);
         addFunction(getVersionFunction);
         addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
@@ -242,11 +248,11 @@ public abstract class Module extends FunctionProvider {
     public void loadInitParameters(String contextPath) {
         try {
             Map contextMap = ApplicationContextReader.getProperties(contextPath);
-            log.service("Loading parameters " + contextPath + " from " + contextPath);        
+            log.service("Loading parameters " + contextPath + " from " + contextPath);
             if (!contextMap.isEmpty()) {
                 properties.putAll(contextMap);
             }
-               
+
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
@@ -260,7 +266,7 @@ public abstract class Module extends FunctionProvider {
         loadInitParameters("mmbase/" + getName());
 
     }
-    
+
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -358,11 +364,11 @@ public abstract class Module extends FunctionProvider {
     public static boolean hasModule(String name) {
         boolean check = modules.containsKey(name.toLowerCase());
         if (!check) {
-            check = modules.containsKey(name);    
+            check = modules.containsKey(name);
         }
         return check;
     }
-    
+
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.

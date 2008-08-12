@@ -17,7 +17,7 @@ import org.mmbase.util.ResourceWatcher;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.4 2006-06-19 08:38:59 michiel Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.4.2.1 2008-08-12 08:17:45 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
@@ -30,8 +30,14 @@ public abstract class WatchedReloadableModule extends ReloadableModule {
             }
         };
 
+    public WatchedReloadableModule() {
+    }
+    public WatchedReloadableModule(String name) {
+        super(name);
+    }
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      * On the onload of a reloadable module, a filewatcher is started. You should call
      * super.onload if you need to override this.
      */
