@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * An utility to work with clouds on the session or as a ThreadLocal
  * @since MMBase-1.9
- * @version $Id: CloudUtil.java,v 1.2 2008-07-17 17:16:36 michiel Exp $
+ * @version $Id: CloudUtil.java,v 1.3 2008-08-12 19:48:55 michiel Exp $
  */
 public class CloudUtil {
 
@@ -31,8 +31,7 @@ public class CloudUtil {
     public static final String DEFAULT_CLOUD_NAME = "mmbase";
     public static final String DEFAULT_AUTHENTICATION = "name/password";
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(CloudUtil.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CloudUtil.class);
 
     private CloudUtil() {
         //Utility
@@ -103,8 +102,7 @@ public class CloudUtil {
         HttpSession session = req.getSession();
         if (session != null) {
             session.setAttribute(sessionname, cloud);
-        }
-        else {
+        } else {
             log.warn("Could not get or create a session to put the cloud on.");
         }
         return cloud;
