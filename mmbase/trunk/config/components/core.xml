@@ -208,10 +208,10 @@
     <title xml:lang="en">Builder fields</title>
     <title xml:lang="nl">Builder velden</title>
     <description xml:lang="en">
-      Folow-up for the first builders block, shows a builders fields.
+      Folow-up for the first builders block, shows a builders class and fields.
     </description>
     <description xml:lang="nl">
-      Overzicht van de velden van de geselecteerde builder.
+      Uitgebreide builder beschrijving: builder class en velden inclusief veld attributen.
     </description>
     <body jsp="builders-actions.jspx">
       <param name="builder" type="String" />
@@ -222,10 +222,10 @@
 
   <block name="builders-field"
          mimetype="text/html">
-    <title xml:lang="en">Attributes of builder fields</title>
-    <title xml:lang="nl">Attributen van builder velden</title>
+    <title xml:lang="en">Builder field attributes</title>
+    <title xml:lang="nl">Builder veld attributen</title>
     <description xml:lang="en">
-      Folow-up for the second builders block, shows the various attributes of a field.
+      The various attributes of a field.
     </description>
     <description xml:lang="nl">
       Verschillende attributen en overige specificaties van een builder veld.

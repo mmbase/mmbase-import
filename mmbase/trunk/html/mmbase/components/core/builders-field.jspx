@@ -13,13 +13,13 @@
       id="${requestScope['org.mmbase.componentId']}">
 
     
-      <h3>View builder ${builder}, field ${field}</h3>
+      <h3>View field '${field}' of builder '${builder}'</h3>
     <jsp:scriptlet> 
        Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
     </jsp:scriptlet>
     <table summary="builder field properties" cellspacing="0" cellpadding="3">
       <caption>
-        Description of the field <strong>${field}</strong> of <strong>${builder}</strong>
+   	    ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
       </caption>
     
       <tr>
@@ -138,7 +138,7 @@
       <mm:link page="builders-actions" referids="builder">
         <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" /></a>
       </mm:link>
-      Return to Builder Administration
+      Return to builder '${builder}'
     </p>
     
   </div>

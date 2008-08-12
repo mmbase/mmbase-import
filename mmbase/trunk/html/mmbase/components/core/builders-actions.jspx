@@ -12,20 +12,20 @@
       class="mm_c c_core b_builders-actions ${requestScope['org.mmbase.componentClassName']}"
       id="${requestScope['org.mmbase.componentId']}">
       
-      <h3>Administrate builder ${builder}</h3>
+      <h3>Administrate builder '${builder}'</h3>
+      
+      <mm:present referid="cmd">
+        <mm:functioncontainer module="mmadmin">
+           <mm:nodefunction name="$cmd" referids="builder,path" >
+             <div class="msg"><mm:field name="RESULT" escape="p" /></div>
+           </mm:nodefunction>
+         </mm:functioncontainer>
+      </mm:present>       
+      
       <table summary="description of ${builder}" border="0" cellspacing="0" cellpadding="3">
         <caption>
-          
+          ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
           <mm:function referids="builder" module="mmadmin" name="BUILDERDESCRIPTION" />
-          
-          <mm:present referid="cmd">
-            <mm:functioncontainer module="mmadmin">
-               <mm:nodefunction name="$cmd" referids="builder,path" >
-                 <mm:field name="RESULT" escape="p" />
-               </mm:nodefunction>
-             </mm:functioncontainer>
-          </mm:present>      
-        
         </caption>
         <tr>
           <th>Setting</th>
