@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.tests;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -60,8 +61,10 @@ public abstract class BridgeTest extends MMBaseTest {
     }
 
     protected Cloud getCloud() {
+        CloudThreadLocal.unbind();
         Cloud c = getCloudContext().getCloud("mmbase", "class", null);
         ensureDeployed(c, "local cloud");
+        CloudThreadLocal.bind(c);
         return c;
     }
 
