@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.93 2008-08-09 09:22:59 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.94 2008-08-12 17:24:12 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -290,7 +290,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * No need to override this. It is garantueed by javadoc that cast should work out of preCast
      * using Casting.toType. So that is what this final implementation is doing.
      *
-     * Override {@link #preCast(Object, Cloud, Node, Field)}
+     * Override {@link #cast(Object, Cloud, Node, Field)}
      */
     public final C cast(Object value, final Node node, final Field field) {
         if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
@@ -298,7 +298,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
             value = origin.cast(value, node, field);
         }
-        Cloud cloud = getCloud(node, field);
+        Cloud cloud = getCloud(getCloud(node, field));
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
@@ -318,17 +318,23 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     protected final Cloud getCloud(Node node, Field field) {
-        if (node != null) return node.getCloud();
-        if (field != null) return field.getNodeManager().getCloud();
+        if (node != null) {
+            log.trace("Using cloud of node");
+            return node.getCloud();
+        }
+        if (field != null) {
+            return field.getNodeManager().getCloud();
+        }
         return null;
     }
 
     /**
+     * Returns a cloud object if argument is <code>null</code>. Otherwise the argument.
      * @since MMBase-1.8.6
      */
     protected Cloud getCloud(Cloud cloud) {
         if (cloud == null) {
-            log.debug("No cloud found");
+            log.trace("No cloud found");
             cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
         }
         if (cloud == null) {
@@ -345,7 +351,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * cast to Number.
      */
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
-        return cast(value, getCloud(node, field), node, field);
+        return cast(value, getCloud(getCloud(node, field)), node, field);
     }
 
     /**
