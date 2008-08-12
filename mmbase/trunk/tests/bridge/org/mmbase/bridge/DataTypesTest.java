@@ -446,25 +446,24 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("float");
         DataType dt = field.getDataType();
-        field.getDataType().validate("1,2");
+        assertEquals(0, field.getDataType().validate("1,2").size());
 
         Node newNode = nodeManager.createNode();
-        newNode.setValue("float", "1,2");
+        newNode.setValue("float", "1,3");
 
-        assertEquals(1.2, newNode.getFloatValue("float"));
+        assertEquals(1.3, newNode.getFloatValue("float"), 0.001);
 
-        newNode.setValue("float", "1.2");
-        assertEquals(1.2, newNode.getFloatValue("float"));
+        newNode.setValue("float", "1.4");
+        assertEquals(1.4, newNode.getFloatValue("float"), 0.001);
 
         newNode.setValue("integer", "1e2");
         assertEquals(100, newNode.getIntValue("integer"));
 
         cloud.setLocale(Locale.US);
-        try {
-            field.getDataType().validate("1,2");
-            fail("1,2 is not a valid float value in locale US");
-        } catch (Exception e) {
-        }
+
+        assertTrue(field.getDataType().validate("1,5").size() > 0);
+
+
     }
 
 }
