@@ -8,10 +8,12 @@
               doctype-public="-//W3C//DTD XHTML 1.1//EN"
               doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"/>
 
+  <mm:import externid="mmbase_adminpages_language" from="parameters,cookie">client</mm:import>
+  <mm:write cookie="mmbase_adminpages_language" referid="mmbase_adminpages_language" />
   <mm:content expires="0"
               type="application/xhtml+xml"
               unacceptable="CRIPPLE"
-              postprocessor="none" language="client">
+              postprocessor="none" language="${mmbase_adminpages_language}">
 
     <c:if test="${! empty param.logout}">
       <mm:cloud method="logout" />
@@ -59,6 +61,17 @@
                   <mm:param name="logout" value="ok" />
                   <a href="${_}">logout</a>
                 </mm:link>
+                <mm:import externid="languages" vartype="list">nl,en,zh,fr,eo</mm:import>
+                <form method="post">
+                  <select name="mmbase_adminpages_language" onchange="this.form.submit()">
+                    <mm:option value="client" compare="${mmbase_adminpages_language}">-AUTO-</mm:option>
+                    <mm:stringlist referid="languages">
+                      <mm:option value="${_}" compare="${mmbase_adminpages_language}">
+                        <mm:locale language="${_}" jspvar="loc">${loc.displayLanguage}</mm:locale>
+                      </mm:option>
+                    </mm:stringlist>
+                  </select>
+                </form>
               </p>
             </div>
            </div>
@@ -99,6 +112,13 @@
                 <mm:component debug="xml" name="$component" block="${block}">
                   <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                 </mm:component>
+                <!--
+                <mm:may component="core" action="view_source">
+                  <mm:url page="${block}" internal="true" absolute="context">
+                    <mm:frameworkparam name="component">${component}</mm:frameworkparam>
+                  </mm:url>
+                </mm:may>
+                -->
               </c:catch>
               <c:if test="${! empty exception}">
                 <pre>
@@ -118,6 +138,7 @@
                 <li><a href="http://www.mmbase.org/mmdocs">documentation</a></li>
                 <li><a href="http://www.mmbase.org/bugs">bugs</a></li>
                 <li><a href="http://www.mmbase.org/contact">contact</a></li>
+                <li><a href="http://www.mmbase.org/principles">principles</a></li>
               </ul>
             </div>
           </div><!-- /#wrap -->
