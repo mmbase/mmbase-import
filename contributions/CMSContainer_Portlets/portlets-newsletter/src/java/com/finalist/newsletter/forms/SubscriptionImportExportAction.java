@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Collections;
 public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
+   private static final String PARAM_NEWSLETTERID = "newsletterId";
 
    NewsletterSubscriptionServices subscriptionServices;
    NewsletterService newsletterService;
@@ -116,48 +117,49 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    }
 
    public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form,
-                                           HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException{
-      SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
-      ActionMessages messages = new ActionMessages();
-      FormFile myFile = myForm.getDatafile();
-      boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
-      int tmpNewsletterId = Integer.parseInt((String)request.getParameter("newsletterId"));
-      if(isCSV){
-         byte[] fileData = myFile.getFileData();
-         String fileString = new String(fileData);
-         BufferedReader br = new BufferedReader(new StringReader(fileString));
-         String tmpLinsStr = br.readLine();
-         PersonService pService = (PersonService) ApplicationContextFactory.getBean("personService");
-         NewsletterSubscriptionServices subServices =(NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-         
-         while (tmpLinsStr != null ) {
-            String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
-            String tmpUserName = tmpUserInfo.substring(0, tmpUserInfo.indexOf(","));
-            String tmpUserEmail = tmpUserInfo.substring(tmpUserInfo.indexOf(",")+1, tmpUserInfo.length());			   
-            Person tmpPerson = pService.getPersonByEmail(tmpUserEmail);
-            if(tmpPerson == null){
-               AuthenticationService as = getAuthenticationService();
-               Authentication authentication = as.createAuthentication(tmpUserEmail, "cmsc1234");
-               Person tp = pService.createPerson(tmpUserName, "", "",authentication.getId());
-               tp.setEmail(tmpUserEmail);
-               pService.updatePerson(tp);
-               tmpPerson = pService.getPersonByEmail(tmpUserEmail);
-            }
-            int userId = tmpPerson.getId().intValue();
-            Subscription subRet = subServices.getSubscription(userId, tmpNewsletterId);
-            if(subRet == null)
-               subServices.createSubscription(userId, tmpNewsletterId);
-            tmpLinsStr = br.readLine();
-         }
-         return mapping.findForward("success");
-      }
-      else{
-    	  request.setAttribute("importType", "importCSV");
-    	  request.setAttribute("newsletterId", tmpNewsletterId);
-          messages.add("file", new ActionMessage("datafile.unsupport"));
-          saveMessages(request, messages);
-    	  return mapping.findForward("failed");
-      }
+                                           HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException{	   
+	   
+	   SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
+		ActionMessages messages = new ActionMessages();
+		FormFile myFile = myForm.getDatafile();
+		boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
+		int newsletterId = Integer.parseInt((String) request.getParameter(PARAM_NEWSLETTERID));
+		if (isCSV) {
+			byte[] fileData = myFile.getFileData();
+			String fileString = new String(fileData);
+			BufferedReader br = new BufferedReader(new StringReader(fileString));
+			String tmpLinsStr = br.readLine();
+			PersonService personService = (PersonService) ApplicationContextFactory.getBean("personService");
+			NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory
+					.getBean("subscriptionServices");
+
+			while (tmpLinsStr != null) {
+				String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
+				String tmpUserName = tmpUserInfo.substring(0, tmpUserInfo.indexOf(","));
+				String tmpUserEmail = tmpUserInfo.substring(tmpUserInfo.indexOf(",") + 1, tmpUserInfo.length());
+				Person tmpPerson = personService.getPersonByEmail(tmpUserEmail);
+				if (tmpPerson == null) {
+					AuthenticationService as = getAuthenticationService();
+					Authentication authentication = as.createAuthentication(tmpUserEmail, tmpUserEmail);
+					Person person = personService.createPerson(tmpUserName, "", "", authentication.getId());
+					person.setEmail(tmpUserEmail);
+					personService.updatePerson(person);
+					tmpPerson = personService.getPersonByEmail(tmpUserEmail);
+				}
+				int authId = tmpPerson.getAuthenticationId().intValue();
+				Subscription subRet = subscriptionServices.getSubscription(authId, newsletterId);
+				if (subRet == null)
+					subscriptionServices.createSubscription(authId, newsletterId);
+				tmpLinsStr = br.readLine();
+			}
+			return mapping.findForward("success");
+		} else {
+			request.setAttribute("importType", "importCSV");
+			request.setAttribute(PARAM_NEWSLETTERID, newsletterId);
+			messages.add("file", new ActionMessage("datafile.unsupport"));
+			saveMessages(request, messages);
+			return mapping.findForward("failed");
+		}
    }
    
    private List<Subscription> getSubscriptions(String type, String id) {

@@ -24,7 +24,7 @@
 
    <div class="editor">
       <br/>
-      <div style="padding-left:10px;">
+      <div  class="body" style="padding-left:10px;">
          <html:form action="editors/newsletter/NewsletterPublicationStatisticSearch.do">
             <input type="hidden" name="method" value="searchPublicationStatistic"/>
             <%@include file="report_publication_search.jsp"%>

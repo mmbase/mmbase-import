@@ -1,99 +1,66 @@
-<%@include file="globals.jsp" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
-
+<%@include file="globals.jsp" %><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
+%><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" 
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <cmscedit:head title="ewsletter.subscription.manage.newsletteroverview">
 </cmscedit:head>
 
-<div class="tabs">
-   <div class="tab_active">
-      <div class="body">
-         <div>
-            <a href="#"><fmt:message key="newsletteroverview.title"/></a>
-         </div>
-      </div>
-   </div>
-</div>
+<edit:ui-tabs>
+   <edit:ui-tab key="newsletteroverview.title" active="true">
+      #
+   </edit:ui-tab>
+</edit:ui-tabs>
 <div class="editor">
-   <c:if test="${fn:length(results) gt pagesize || not empty param.title }">
    <div class="body">
       <form method="POST" name="form" action="SubscriptionManagement.do">
          <input type="hidden" name="action" value="newsletterOverview"/>
          <table border="0">
             <tr>
-               <td style="width: 150px">Title</td>
-               <td><input type="text" name="title" value="${param.title}" style="width: 250px"/></td>
+               <td style="width:100px;"><fmt:message key="newspubform.title"/></td>
+               <td><input type="text" name="title" value="${param.title}" style="width: 200px"/></td>
             </tr>
             <tr>
-               <td colspan="2">
-                  <input type="submit" name="submitButton" onclick="document.forms['form'].submit()" value="Search"/>
-               </td>
+               <td style="width:100px;"></td>
+               <td><input type="submit" name="submitButton" value="<fmt:message key='newspubform.submit'/>"/></td>
             </tr>
          </table>
       </form>
    </div>
-   </c:if>
 </div>
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletteroverview.title"/>&nbsp;</div></div>
       <div class="body">
-         <c:choose>
-            <c:when test="${fn:length(results) gt 0}">
-               <form method="POST" name="operationform" action="SubscriptionManagement.do">
-                  <input type="hidden" name="action" id="action"/>
-                  <input type="hidden" name="type" id="action" value="newsletter"/>
-                  <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
-                     <pg:param name="action" value="newsletterOverview"/>
-                     <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
-                     <table>
-                        <thead>
-                           <th></th>
-                           <th><fmt:message key="newsletteroverview.newsletter"/></th>
-                           <th><fmt:message key="globalstats.total.publications"/></th>
-                           <th><fmt:message key="globalstats.total.sentsubscriptions"/></th>
-                           <th><fmt:message key="globalstats.total.subscriptions"/></th>
-                        </thead>
-                        <tbody>
-                           <c:set var="useSwapStyle">true</c:set>
-                           <c:forEach items="${results}" var="result">
-                              <pg:item>
-                                 <tr <c:if test="${useSwapStyle}">class="swap"</c:if>>
-                                    <td><input type="checkbox" name="ids" value="${result.id}"/></td>
-                                    <td>
-                                       <a href="SubscriptionManagement.do?action=listSubscription&newsletterId=${result.id}">
-                                             ${result.title}
-                                       </a>
-                                    </td>
-                                    <td>${result.countpublications}</td>
-                                    <td>${result.countSentPublicatons}</td>
-                                    <td>${result.countSubscriptions}</td>
-                                 </tr>
-                                 <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
-                              </pg:item>
-                           </c:forEach>
-                        </tbody>
-                     </table>
-                     <%@ include file="pager_index.jsp" %>
-                     <br>
-                  </pg:pager>
-                  <input type="button" name="submitButton" class="submit"
-                         onclick="exportsubscription()"
-                         value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
-                  <input type="button" name="submitButton"
-                         onclick="unsubscribeAll()"
-                         value="<fmt:message key="globalstats.total.unsubscribeselect"/>"/>
-               </form>
-            </c:when>
-            <c:otherwise>
-               <fmt:message key="error.no_items"/>
-            </c:otherwise>
-         </c:choose>
+      <form method="POST" name="operationform" action="SubscriptionManagement.do">
+         <input type="hidden" name="action" id="action"/>
+         <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">
+            <edit:ui-tcolumn title="" width="5%">
+               <input type="checkbox" name="ids" value="${result.id}"/>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletteroverview.newsletter" sort="title" width="15%">
+               <a href="SubscriptionManagement.do?action=listSubscription&newsletterId=${result.id}">${result.title}</a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="globalstats.total.publications" width="15%">
+               ${result.countpublications}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="globalstats.total.sentsubscriptions" width="15%">
+               ${result.countSentPublicatons}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="globalstats.total.subscriptions" width="15%">
+               ${result.countSubscriptions}
+            </edit:ui-tcolumn>
+         </edit:ui-table>
+         <c:if test="${resultCount gt 0}">
+            <input type="button" name="submitButton" class="submit" onclick="exportsubscription()" value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
+            <input type="button" name="submitButton" onclick="unsubscribeAll()" value="<fmt:message key="globalstats.total.unsubscribeselect"/>"/>
+         </c:if>
+         </form>
       </div>
+      
    </div>
 </div>
+</mm:content>
 <script>
    function exportsubscription() {
       var subscriptions = document.getElementsByName('ids');

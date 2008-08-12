@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.mmbase.bridge.Node;
 
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 
@@ -48,6 +49,8 @@ public interface NewsletterSubscriptionCAO {
    public Set<Node> getRecordByNewsletterAndName(int newsletterId,String termName);
 
    public Set<Node> getNewslettersByScriptionRecord(int authenticationId);
+   
+   public List<Newsletter> getNewslettersByScription(int subscriberId, String title, boolean paging);
 
    public Set<Node> getTermsByScriptionRecord(int authenticationId);
 
