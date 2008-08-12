@@ -15,10 +15,28 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.1 2007-03-28 12:20:43 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.2 2008-08-12 13:05:18 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
+
+
+    private static Thread newThread(Runnable r, String id) {
+        Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r, id) {
+                /**
+                 * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+                 */
+                public void run() {
+                    try {
+                        super.run();
+                    } catch (Throwable t) {
+                        log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
+                    }
+                }
+            };
+        t.setDaemon(true);
+        return t;
+    }
 
     /**
      * Generic Thread Pools which can be used by 'filters'.
@@ -32,20 +50,13 @@ public abstract class ThreadPools {
     public static final Executor jobsExecutor = new ThreadPoolExecutor(2, 10, 5, TimeUnit.MINUTES, new  LinkedBlockingQueue(), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "JOBTHREAD") {
-                        /**
-                         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
-                         */
-                        public void run() {
-                            try {
-                                super.run();
-                            } catch (Throwable t) {
-                                log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
-                            }
-                        }
-                    };
-                t.setDaemon(true);
-                return t;
+                return ThreadPools.newThread(r, "JOBTHREAD");
+            }
+        });
+
+    public static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                return ThreadPools.newThread(r, "SCHEDULERTHREAD");
             }
         });
 
@@ -56,6 +67,7 @@ public abstract class ThreadPools {
     public static final void shutdown() {
         ((ExecutorService) filterExecutor).shutdown();
         ((ExecutorService) jobsExecutor).shutdown();
+        ((ExecutorService) scheduler).shutdown();
     }
 
 }
