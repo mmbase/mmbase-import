@@ -133,6 +133,10 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"typedef",
                               new Object[] {node1, new Integer(node1.getNumber()),  null},
                               new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
+                /*,
+                new Object[] {"nonode_typedef",
+                              new Object[] {"object", "typedef", "datatypes", node1},
+                              new Object[] {"", "asjdlkf"}}*/
                 /*
                   XML not very well supported yet
                 new Object[] {"xml",
@@ -438,6 +442,7 @@ public class DataTypesTest extends BridgeTest {
     public void testLocaleFloat() {
         Cloud cloud = getCloud();
         cloud.setLocale(new Locale("nl", "NL"));
+
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("float");
         DataType dt = field.getDataType();
@@ -445,6 +450,7 @@ public class DataTypesTest extends BridgeTest {
 
         Node newNode = nodeManager.createNode();
         newNode.setValue("float", "1,2");
+
         assertEquals(1.2, newNode.getFloatValue("float"));
 
         newNode.setValue("float", "1.2");
