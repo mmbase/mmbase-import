@@ -20,11 +20,18 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.9.2.2 2007-10-08 14:14:37 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.9.2.3 2008-08-12 08:17:45 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
     private static final Logger log = Logging.getLoggerInstance(ReloadableModule.class);
+
+    public ReloadableModule() {
+    }
+    public ReloadableModule(String name) {
+        super(name);
+    }
+
 
     /**
      * Reloads the configuration file.
