@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.53 2008-08-12 19:41:31 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.54 2008-08-12 19:46:14 michiel Exp $
  */
 
 
@@ -62,7 +62,10 @@ MMBaseValidator.watcher = function() {
 
 
 MMBaseValidator.prototype.setup = function(el) {
-    if (el != null) this.root = el;
+    if (el != null) {
+	this.root = el;
+	if (this.root == window) this.root = this.root.document;
+    }
     if (this.root != null) {
 	var self = this;
 	$(document).ready(function(event) {
