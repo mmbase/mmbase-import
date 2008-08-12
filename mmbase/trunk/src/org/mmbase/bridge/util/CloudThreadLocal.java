@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * ThreadLocal to store an MMBase Bridge Cloud
  * @since MMBase-1.9
- * @version $Id: CloudThreadLocal.java,v 1.3 2008-08-09 09:48:43 michiel Exp $
+ * @version $Id: CloudThreadLocal.java,v 1.4 2008-08-12 19:48:55 michiel Exp $
  */
 public class CloudThreadLocal {
 
@@ -38,8 +38,8 @@ public class CloudThreadLocal {
      */
     public static void bind(Cloud cloud) {
         cleanupAnyOrphanedCloud();
-        if ( cloud != null ) {
-            context.set( cloud );
+        if (cloud != null) {
+            context.set(cloud);
         }
     }
 
@@ -50,16 +50,16 @@ public class CloudThreadLocal {
      */
     public static Cloud unbind() {
         Cloud cloud = context.get();
-        if ( cloud != null ) {
-            context.set( null );
+        if (cloud != null) {
+            context.set(null);
         }
         return cloud;
     }
 
     private static void cleanupAnyOrphanedCloud() {
         Cloud orphan = unbind();
-        if ( orphan != null ) {
-            log.warn( "Already cloud bound on call to bind(); make sure you clean up your cloud!" );
+        if (orphan != null) {
+            log.warn("Already cloud bound on call to bind(); make sure you clean up your cloud!");
         }
     }
 
