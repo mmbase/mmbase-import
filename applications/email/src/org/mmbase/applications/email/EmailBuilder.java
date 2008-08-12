@@ -276,15 +276,15 @@ public class EmailBuilder extends MMObjectBuilder {
      */
     List getDeliveredMailOlderThan(long expireAge) {
         // calc search time based on expire time
-        long age = (System.currentTimeMillis() / 1000) - expireAge;
-        // query database for the nodes
+        long age = System.currentTimeMillis() - expireAge * 1000;
 
+        // query database for the nodes
         NodeSearchQuery query = new NodeSearchQuery(this);
         BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), new Integer(STATE_DELIVERED)));
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailtype")),   new Integer(TYPE_ONESHOT)));
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldCompareConstraint.LESS));
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
         query.setConstraint(cons);
         try {
             // mailedtime constraints makes it useless to do a cached query.
