@@ -48,23 +48,30 @@ img
 
 #logo img { margin: 0 4px 0 0; }
 
-#head
-{
-	font-family: "Lucida Grande", sans-serif;
-	color: #fff;
-	float: right;
-	margin-top: 20px;
-	width: 80%;
+#head {
+  font-family: "Lucida Grande", sans-serif;
+  color: #fff;
+  float: right;
+  margin-top: 20px;
+  width: 80%;
 }
 
-#head h1
-{
-	color: #fff;
-	margin: 2px 0 0 4px;
+#head h1 {
+    color: #fff;
+    margin: 2px 0 0 4px;
 }
 
 #head p { margin: 0 0 0 4px; }
 #head a:link, #head a:visited { color: #fff; }
+
+#head form {
+  margin-left: 3ex;
+  display: inline;
+}
+#head form select {
+  background: #002828;
+  color: #fff;
+}
 
 #wrap
 {
