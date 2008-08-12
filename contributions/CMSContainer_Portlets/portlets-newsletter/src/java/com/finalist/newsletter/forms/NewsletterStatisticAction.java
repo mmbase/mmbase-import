@@ -27,7 +27,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			throws Exception {
 		
 		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+		List<Newsletter> newsletters = newsletterService.getAllNewsletter(false);
 
 		addBlankNewsletter(newsletters);
 
@@ -45,7 +45,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 
 		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
 		StatisticService service = (StatisticService) ApplicationContextFactory.getBean("statisticService");
-		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+		List<Newsletter> newsletters = newsletterService.getAllNewsletter(false);
 		addBlankNewsletter(newsletters);
 		request.setAttribute("newsletters", newsletters);
 		NewsLetterLogSearchForm searchForm = (NewsLetterLogSearchForm) form;
@@ -110,7 +110,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 
 		for (StatisticResult s : records) {
 			s.setShowingdate(DateUtil.parser(s.getLogdate()));
-			s.setName(newsletterService.getNewsletterName(Integer.toString(s.getNewsletterId())));
+			s.setName(newsletterService.getNewsletterName(s.getNewsletterId()));
 		}
 
 	}

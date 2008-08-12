@@ -19,6 +19,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
@@ -28,6 +29,9 @@ import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 
+import com.finalist.cmsc.beans.MMBaseNodeMapper;
+import com.finalist.cmsc.paging.PagingStatusHolder;
+import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
@@ -319,6 +323,35 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 		return newsletters;
 	}
 
+	public List<Newsletter> getNewslettersByScription(int subscriberId, String title, boolean paging){
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+		
+		NodeManager subscriptionNodeManager = cloud.getNodeManager("subscriptionrecord");
+		NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
+		NodeQuery query = cloud.createNodeQuery();
+		Step subscriptionStep = query.addStep(subscriptionNodeManager);
+		query.setNodeStep(subscriptionStep);
+		if(subscriberId>0){
+			SearchUtil.addEqualConstraint(query, subscriptionNodeManager.getField("subscriber"), Integer.toString(subscriberId));
+		}
+		RelationStep newsletterRelStep = query.addRelationStep(newsletterNodeManager, "newslettered","source");
+		Step newsletterStep = newsletterRelStep.getNext();
+		query.setNodeStep(newsletterStep);
+		if(StringUtils.isNotBlank(title)){
+			SearchUtil.addLikeConstraint(query, newsletterNodeManager.getField("title"), title);
+		}
+		if (paging) {
+			query.setMaxNumber(pagingHolder.getPageSize());
+			query.setOffset(pagingHolder.getOffset());
+		}
+		if (null != pagingHolder) {
+			Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+		}
+		List<Node> results = query.getList();
+		List<Newsletter> newsletters = MMBaseNodeMapper.convertList(results, Newsletter.class);
+		return newsletters;
+	}
+	
 	public Set<Node> getTermsByScriptionRecord(int authenticationId) {
 		NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
 		Query query = recordManager.createQuery();
@@ -401,5 +434,4 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
 		return subscriptions;
 	}
-
 }

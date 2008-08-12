@@ -1,20 +1,16 @@
-<%@include file="globals.jsp" %>
+<%@include file="globals.jsp" 
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 
 <cmscedit:head title="index.title"/>
 <body>
-
-<div class="tabs">
-   <div class="tab_active">
-      <div class="body">
-         <div>
-            <a href="#"><fmt:message key="index.title"/></a>
-         </div>
-      </div>
-   </div>
-</div>
+   <edit:ui-tabs>
+      <edit:ui-tab key="index.title" active="true">
+         #
+      </edit:ui-tab>
+   </edit:ui-tabs>
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletteroverview.newsletter"/>&nbsp;</div></div>
    <div class="body">
