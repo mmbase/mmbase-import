@@ -63,7 +63,7 @@ import java.util.concurrent.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.53 2008-08-01 21:21:41 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.54 2008-08-13 21:52:05 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -90,7 +90,7 @@ public abstract class FileWatcher {
             // to avoid depdencoy of rmmci on all threadpools
             scheduler = (ScheduledExecutorService) Class.forName("org.mmbase.util.ThreadPools").getField("scheduler").get(null);
         } catch (Exception cnfe) {
-            log.info(cnfe);
+            log.service(cnfe);
             scheduler =  new ScheduledThreadPoolExecutor(1);
         }
         future = scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
