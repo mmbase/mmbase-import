@@ -52,7 +52,9 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
     </field>
 
     <field name="logincount">
