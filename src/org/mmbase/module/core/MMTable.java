@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.28 2008-07-26 19:37:37 michiel Exp $
+ * @version $Id: MMTable.java,v 1.29 2008-08-13 21:35:25 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -170,7 +170,7 @@ public abstract class MMTable extends FunctionProvider {
         try {
             return storageConnector.getNode(number, useCache);
         } catch(IllegalArgumentException iae) {
-            log.warn(iae.getMessage());
+            log.service(iae.getMessage());
             if (log.isDebugEnabled()) {
                 log.debug(iae);
             }
