@@ -9,14 +9,29 @@
 
   <jsp:directive.attribute name="styleClass"        />
 
-  <mm:relatednodes type="images" role="background">
-    <!-- f(png)+s(500)+fill(rgba(255,255,255,80))+draw(rectangle 0,0,1000,1000)+draw(rectangle 240,0,1000,1000) -->
-    <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
-  </mm:relatednodes>
+  <mm:import id="startNode">${_node}</mm:import>
+  <mm:relatednodescontainer type="images" role="background">
+	<mm:size id="size" write="false"/>
+	<c:if test="${size eq 0}">
+		<mm:node number="${startNode}">
+		<mm:relatednodes path="posrel,object">
+			<mm:node>
+				<mm:relatednodes path="background,images">
+					<mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+				</mm:relatednodes>
+			</mm:node>
+		</mm:relatednodes>
+		</mm:node>
+	</c:if>
+  	<mm:listnodes>
+    	<!-- f(png)+s(500)+fill(rgba(255,255,255,80))+draw(rectangle 0,0,1000,1000)+draw(rectangle 240,0,1000,1000) -->
+    	<mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+  	</mm:listnodes>
+  </mm:relatednodescontainer>
   <div
       style="background-image: ${empty background ? '' : background}"
       class="${empty styleClass ? 'learnenvironment' : styleClass}">
-    <jsp:doBody />
+	<jsp:doBody />
   </div>
 </jsp:root>
 
