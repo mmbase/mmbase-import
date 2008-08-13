@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.12 2008-07-22 05:51:59 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.13 2008-08-13 08:38:19 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -29,11 +29,13 @@ public class TransactionTest extends BridgeTest {
         super(name);
     }
 
+    static int seq = 0;
     int newNode;
     int newNode2;
 
 
     public void setUp() {
+        seq++;
         // Create some test nodes
         Cloud cloud = getCloud();
         {
@@ -45,6 +47,7 @@ public class TransactionTest extends BridgeTest {
         {
             Node node = cloud.getNodeManager("news").createNode();
             node.setStringValue("title", "foo");
+            node.createAlias("test.news." + seq);
             node.commit();
             newNode2 = node.getNumber();
         }
@@ -277,6 +280,38 @@ public class TransactionTest extends BridgeTest {
     }
 
 
+
+    public void testAlias() {
+        Cloud cloud = getCloud();
+        {
+            Node node = cloud.getNode(newNode2);
+            node.setStringValue("title", "abcdef");
+            node.commit();
+            assertEquals("abcdef", node.getStringValue("title"));
+            node = cloud.getNode("test.news." + seq);
+            assertEquals("abcdef", node.getStringValue("title"));
+        }
+
+        {
+            Transaction t = cloud.getTransaction("bar12");
+
+            Node node = t.getNode(newNode2);
+            node.setStringValue("title", "abcdefg");
+            node.commit();
+            assertEquals("abcdefg", node.getStringValue("title"));
+            t.commit();
+            assertEquals("abcdefg", node.getStringValue("title"));
+
+            node = cloud.getNode("test.news." + seq);
+            assertEquals("abcdefg", node.getStringValue("title"));
+
+            node = cloud.getNode(newNode2);
+            assertEquals("abcdefg", node.getStringValue("title"));
+        }
+
+
+
+    }
 
 
 
