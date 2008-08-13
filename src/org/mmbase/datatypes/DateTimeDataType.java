@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.38 2007-12-10 12:27:01 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.39 2008-08-13 07:48:24 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -92,7 +92,7 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
     /**
-     * @return the maximum value as an <code>Date</code>, or a very very in the future if there is no maximum.
+     * @return the maximum value as an <code>Date</code>, or a date very very far in the future if there is no maximum.
      */
     public Date getMax() {
         Object max = getMaxRestriction().getValue();
