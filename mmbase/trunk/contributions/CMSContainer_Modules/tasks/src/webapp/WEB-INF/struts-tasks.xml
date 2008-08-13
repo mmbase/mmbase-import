@@ -8,6 +8,7 @@
 	<!-- ========== Form Bean Definitions =================================== -->
 	<form-beans>
 		<form-bean name="TaskForm" type="com.finalist.cmsc.tasks.forms.TaskForm" />
+		<form-bean name="showTaskForm" type="com.finalist.cmsc.tasks.forms.ShowTaskForm"/>
 	</form-beans>
 
 	<!-- ========== Global Exceptions Definitions =================================== -->
@@ -18,7 +19,7 @@
 
 		<action path="/editors/taskmanagement/TaskCreate" type="com.finalist.cmsc.tasks.forms.TaskCreate"
 	 		unknown="false" validate="false">
-         	<forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="true" />
+         	<forward name="success" path="/editors/taskmanagement/tasklist.jsp" />
 		</action>
 
 		<action path="/editors/taskmanagement/TaskDoneAction" type="com.finalist.cmsc.tasks.forms.TaskDoneAction"
@@ -37,6 +38,10 @@
 		<action path="/editors/taskmanagement/TaskInitAction" type="com.finalist.cmsc.tasks.forms.TaskInitAction"
 			name="TaskForm" scope="session" unknown="false" validate="false">
 			<forward name="success" path="/editors/taskmanagement/task.jsp" redirect="false" />
+		</action>
+		<action path="/editors/taskmanagement/showTaskAction" type="com.finalist.cmsc.tasks.forms.ShowTaskAction"
+			name="showTaskForm" scope="requewst" unknow="false" validate="false">
+			<forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="false"/>
 		</action>
 	</action-mappings>
 	

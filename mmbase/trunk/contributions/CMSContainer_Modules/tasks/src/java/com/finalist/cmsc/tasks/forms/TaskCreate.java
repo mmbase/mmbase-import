@@ -13,9 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.RelationManager;
 
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
@@ -25,23 +28,29 @@ public class TaskCreate extends MMBaseFormlessAction {
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+		ActionMessages messages = new ActionMessages();
+		String action = getParameter(request, "action");
 
-      String action = getParameter(request, "action");
+		if (action != null && "save".equals(action)) {
+			String lastEdited = getParameter(request, "ewnodelastedited");
 
-      if (action != null && "save".equals(action)) {
-         String lastEdited = getParameter(request, "ewnodelastedited");
+			Node taskNode = cloud.getNode(lastEdited);
 
-         Node taskNode = cloud.getNode(lastEdited);
-         NodeList userNodes = taskNode.getRelatedNodes("user");
-         Node userNode = (userNodes.size() > 0) ? userNodes.getNode(0) : null;
+			Node curUserNode = SecurityUtil.getUserNode(cloud);
+			RelationManager creatorrel = cloud.getRelationManager("task", "user", "creatorrel");
+			taskNode.createRelation(curUserNode, creatorrel).commit();
 
-         if (userNode != null) {
-            Node userFromNode = SecurityUtil.getUserNode(cloud);
+			NodeList assignUserNodes = taskNode.getRelatedNodes("user", "assignedrel", "destination");
+			String assignUserName = (assignUserNodes != null) ? assignUserNodes.getNode(0).getStringValue("username") : "";
 
-            TasksUtil.sendNotification(userNode, userFromNode, taskNode);
-         }
-      }
-      return mapping.findForward(SUCCESS);
-   }
+			Node assignUserNode = (assignUserNodes.size() > 0) ? assignUserNodes.getNode(0) : null;
 
+			if (assignUserNode != null) {
+				TasksUtil.sendNotification(assignUserNode, curUserNode, taskNode);
+			}
+			messages.add("createSuccess", new ActionMessage("task.create.message", assignUserName));
+			saveMessages(request, messages);
+		}
+		return mapping.findForward(SUCCESS);
+	}
 }
