@@ -23,7 +23,7 @@ import org.mmbase.util.*;
  * This class contains static methods related to creating a Query object using a (fragment of an) XML.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.16 2008-01-29 10:06:22 pierre Exp $
+ * @version $Id: QueryReader.java,v 1.17 2008-08-13 08:12:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class QueryReader {
@@ -62,7 +62,7 @@ public abstract class QueryReader {
         }
     }
 
-    /* Expands a fieldname in a multilevel query with the element nodemanager step if no step is given. 
+    /* Expands a fieldname in a multilevel query with the element nodemanager step if no step is given.
      */
     protected static String getFullFieldName(QueryDefinition queryDefinition, String fieldName) {
         if (queryDefinition.isMultiLevel && fieldName.indexOf('.') == -1) {
@@ -427,7 +427,7 @@ public abstract class QueryReader {
             } else {
                 queryDefinition.query = queryDefinition.elementManager.createQuery();
             }
-            if (element != null) {
+            if (element != null && ! "".equals(element)) {
                 queryDefinition.elementStep = queryDefinition.query.getStep(element);
             }
             if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList<FieldDefinition>();
