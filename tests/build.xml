@@ -96,7 +96,7 @@
     <mkdir dir="${tests.lib}" />
     <mkdir dir="${tests.work.dir}"/>
 
-    <echo message="Initing. Testing mbase version ${version}" />
+    <echo message="Initing. Testing mmbase version ${version}" />
 
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
