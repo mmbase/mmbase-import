@@ -111,7 +111,11 @@
                       </mm:node>
                     </td>
                   </mm:relatednodes>
-
+                  <td>
+                    <mm:node number="$student">
+                      <di:blocks classification="communication" />
+                    </mm:node>
+                  </td>
                 </mm:node>
               </tr>
             </mm:relatednodes>
