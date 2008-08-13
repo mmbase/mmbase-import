@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The didactor component wrapping an mmbase component.
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseComponent.java,v 1.2 2008-08-08 11:48:18 michiel Exp $
+ * @version $Id: MMBaseComponent.java,v 1.3 2008-08-13 11:03:58 michiel Exp $
  */
 
 public class MMBaseComponent extends nl.didactor.component.Component {
@@ -82,11 +82,16 @@ public class MMBaseComponent extends nl.didactor.component.Component {
         for (Block block : getComponent().getBlocks()) {
             CLASS:
             for (Block.Type type : block.getClassification()) {
+                if (type.getParent() == null) continue;
                 while (! type.getParent().getName().equals("didactor")) {
                     type = type.getParent();
                     if (type.getParent() == null) continue CLASS;
                 }
-                Scope.valueOf(type.getName().toUpperCase()).put(scopes);
+                try {
+                    Scope.valueOf(type.getName().toUpperCase()).put(scopes);
+                } catch (IllegalArgumentException iae) {
+                    // never mind. Not a recognized scope.
+                }
             }
         }
         log.info("Found " + scopes);
