@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.94 2008-08-12 17:24:12 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.95 2008-08-13 21:32:17 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -302,7 +302,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
-            log.error(ce);
+            log.service(ce);
             return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
         }
     }
