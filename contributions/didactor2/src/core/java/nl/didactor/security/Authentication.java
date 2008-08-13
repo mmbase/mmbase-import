@@ -50,8 +50,9 @@ public class Authentication extends org.mmbase.security.Authentication {
      */
     protected void load() {
         String[] securityClasses = {
-                "nl.didactor.security.aselect.ASelectSecurityComponent", // if available, use aselect first
-                PlainSecurityComponent.class.getName()      // always fall back on plain
+            PropertiesSecurityComponent.class.getName(),
+            "nl.didactor.security.aselect.ASelectSecurityComponent", // if available, use aselect first
+            PlainSecurityComponent.class.getName()      // always fall back on plain
         };
         for (String className : securityClasses) {
             try {
@@ -95,9 +96,9 @@ public class Authentication extends org.mmbase.security.Authentication {
     protected org.mmbase.security.UserContext request(org.mmbase.security.UserContext uc, HttpServletRequest req) {
         Node n = getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase"), uc.getIdentifier());
         req.setAttribute("user", n == null ? "0" : n.getNumber());
-        log.debug("Found user " + n.getNumber() + " " + uc);
+        log.debug("Found user " + (n == null ? "NULL" :  n.getNumber()) + " " + uc);
         Object education = req.getAttribute("education");
-        if (education != null) {
+        if (education != null && n != null) {
             Function fun = n.getFunction("class");
             Parameters params = fun.createParameters();
             params.set("education", education);
