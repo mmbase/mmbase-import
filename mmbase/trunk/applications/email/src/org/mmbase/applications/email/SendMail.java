@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.49 2008-08-12 09:15:18 michiel Exp $
+ * @version $Id: SendMail.java,v 1.50 2008-08-13 08:19:53 pierre Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -386,7 +386,7 @@ public class SendMail extends AbstractSendMail {
         String bcc = headers.get("BCC");
         if (bcc != null) {
             log.info("Adding bcc " + cc);
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(bcc));
+            msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
         }
 
         String replyTo = headers.get("Reply-To");

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.18.2.2 2006-12-27 16:47:06 michiel Exp $
+ * @version $Id: SendMail.java,v 1.18.2.3 2008-08-13 08:19:02 pierre Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -167,7 +167,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("CC")));
         }
         if (headers.get("BCC") != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("BCC")));
+            msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse((String)headers.get("BCC")));
         }
 
         if (headers.get("Reply-To") != null) {
