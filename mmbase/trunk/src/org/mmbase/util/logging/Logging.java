@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.46 2008-08-13 22:18:30 michiel Exp $
+ * @version $Id: Logging.java,v 1.47 2008-08-13 22:23:38 michiel Exp $
  */
 
 
@@ -180,7 +180,7 @@ public class Logging {
         }
 
 
-        log.info("Class to use for logging " + classToUse + " (" + configuration + ").  Configured in " + resourceLoader.getResource(configFile) + ".");
+        log.info("Logging: " + classToUse + " (" + configuration + ").  Configured in " + resourceLoader.getResource(configFile));
         // System.out.println("(Depending on your selected logging system no more logging");
         // System.out.println("might be written to this file. See the configuration of the");
         // System.out.println("selected logging system for more hints where logging will appear)");
