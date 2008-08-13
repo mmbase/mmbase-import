@@ -26,7 +26,6 @@
     <title xml:lang="nl">Invoeren afbeelding</title>
     <title xml:lang="en">Enter image</title>
     <field name="title" />
-    <field name="showtitle" />
     <field name="description" rows="8" />
     <field name="handle" />
   </form-schema>
