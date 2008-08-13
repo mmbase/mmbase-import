@@ -447,7 +447,7 @@ public class DataTypesTest extends BridgeTest {
         Field field = nodeManager.getField("float");
         DataType dt = field.getDataType();
 
-        System.out.println(cloud.getLocale());
+        System.out.print(cloud.getLocale());
         Collection<LocalizedString> errors = field.getDataType().validate("1,2");
         assertTrue("" + errors, errors.size() == 0);
 
