@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.33 2008-08-04 11:15:14 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.34 2008-08-13 07:47:48 michiel Exp $
  */
 public class SortedBundle {
 
@@ -200,7 +200,7 @@ public class SortedBundle {
         if (provider != null) {
             key = provider.get(bundleKey.toUpperCase());
             if (key == null) {
-                log.warn("Could not find " + bundleKey.toUpperCase() + " in " + constantsProvider);
+                log.debug("Could not find " + bundleKey.toUpperCase() + " in " + constantsProvider);
                 key = bundleKey;
 
             }
