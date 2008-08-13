@@ -51,7 +51,7 @@ public class DynamicDate extends Date {
     }
 
     /**
-     * @since MMBase-1.9
+     * @since MMBase-1.8.7
      */
     public static Date eval(final String format) {
         try {
