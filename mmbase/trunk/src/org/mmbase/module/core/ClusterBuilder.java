@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.94 2008-06-13 09:58:26 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.95 2008-08-13 21:41:41 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -834,9 +834,7 @@ public class ClusterBuilder extends VirtualBuilder {
             // rolename and store a filter on rnumber.
             int rnumber= mmb.getRelDef().getNumberByName(tableName);
             if (rnumber == -1) {
-                String msg= "Specified builder " + tableName + " does not exist.";
-                log.error(msg);
-                throw new IllegalArgumentException(msg);
+                throw new IllegalArgumentException("Specified builder '" + tableName + "' does not exist.");
             } else {
                 bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
                 roles.put(tableAlias, rnumber);
