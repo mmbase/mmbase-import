@@ -240,8 +240,8 @@
 
     <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}"/>
     <a href="${channelUrl}">${channelName}</a>
+    </mm:relatednodes>
 </td>
-</mm:relatednodes>
 </c:otherwise>
 </c:choose>
 </td>
