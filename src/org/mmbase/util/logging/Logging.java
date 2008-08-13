@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.45 2008-07-24 11:28:43 michiel Exp $
+ * @version $Id: Logging.java,v 1.46 2008-08-13 22:18:30 michiel Exp $
  */
 
 
@@ -145,7 +145,7 @@ public class Logging {
         // machine for the dtd's without giving an error! This line might give a hint
         // where to search for these kinds of problems..
 
-        log.info("Configuring logging with " + configFile + " (" + resourceLoader.getResource(configFile) + ")");
+        log.debug("Configuring logging with " + configFile + " (" + resourceLoader.getResource(configFile) + ")");
         ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
         configWatcher.add(configFile);
@@ -180,7 +180,7 @@ public class Logging {
         }
 
 
-        log.info("Class to use for logging " + classToUse);
+        log.info("Class to use for logging " + classToUse + " (" + configuration + ").  Configured in " + resourceLoader.getResource(configFile) + ".");
         // System.out.println("(Depending on your selected logging system no more logging");
         // System.out.println("might be written to this file. See the configuration of the");
         // System.out.println("selected logging system for more hints where logging will appear)");
