@@ -23,9 +23,9 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.7 2008-06-23 14:49:07 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.8 2008-08-13 08:09:53 michiel Exp $
  */
-public class BasicUser implements UserContext {
+public class BasicUser implements UserContext, Comparable<Object> {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
     protected final String authenticationType;
@@ -109,6 +109,17 @@ public class BasicUser implements UserContext {
         int result = 0;
         result = org.mmbase.util.HashCodeUtil.hashCode(result, authenticationType);
         return result;
+    }
+
+    public int compareTo(Object o) {
+        if (o instanceof UserContext) {
+            UserContext uc = (UserContext) o;
+            int result = getRank().compareTo(uc.getRank());
+            if (result != 0) return result;
+            return getIdentifier().compareTo(uc.getIdentifier());
+        } else {
+            return getIdentifier().compareTo(org.mmbase.util.Casting.toString(o));
+        }
     }
 
 }
