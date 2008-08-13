@@ -12,9 +12,10 @@
   -->
   <mm:import externid="source" required="true" />
   <mm:import externid="icondir" />
-
+  	
 
   <!-- Display the problem itself -->
+
   <span class="col problem">
     <div class="intro">
       <mm:field name="name">
@@ -36,10 +37,24 @@
   <!-- And, per lesson, how much trouble it gave -->
   <mm:node number="${education}">
     <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+		<mm:node>
+			<mm:import id="learnBlock"><mm:field name="number"/></mm:import>
+		</mm:node>
+	 	<mm:node referid="problem">
+		<mm:listrelationscontainer type="learnblocks" role="posrel">
+		<mm:size id="problemItem" write="false"/>
+	  	<c:if test="${problemItem eq 0}">
+			<mm:createrelation source="problem" destination="learnBlock" role="posrel" commitonclose="true">
+				<mm:setfield name="pos">2</mm:setfield>
+			</mm:createrelation>
+		</c:if>
+	  	</mm:listrelationscontainer>
+		</mm:node>
+	
       <mm:size id="size" write="false" />
       <span class="col" style="width: ${60 / size}%">
         <mm:listrelationscontainer type="problems" role="posrel">
-          <mm:addnode element="problems" number="${problem}" />
+        <mm:addnode element="problems" number="${problem}" />
           <mm:listrelations>
             <mm:field name="pos">
               <mm:fieldinfo datatype="didactor_assessment_troubles" type="input" />
@@ -49,6 +64,8 @@
         </mm:listrelationscontainer>
         <jsp:text>&amp;#160;</jsp:text>
       </span>
+
+
     </mm:relatednodes>
   </mm:node>
 
