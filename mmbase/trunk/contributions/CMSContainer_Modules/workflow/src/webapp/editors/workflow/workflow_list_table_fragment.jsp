@@ -35,6 +35,11 @@
             </a>
          </th>
       </c:if>
+      <th style="width: 140px;">
+         <a href="#" <%=onClickandStyle(pageContext, "publishdate")%>>
+            <fmt:message key="workflow.publishdate"/>
+         </a>
+      </th>
    </tr>
 </thead>
 
@@ -142,6 +147,9 @@
       <mm:field name="contentchannel.name"/>
    </td>
 </c:if>
+<td>
+   <mm:field name="${type}.publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
+</td>
 </tr>
 </mm:list>
 </tbody>
