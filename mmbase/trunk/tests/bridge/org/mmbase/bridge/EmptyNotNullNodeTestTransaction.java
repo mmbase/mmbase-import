@@ -23,7 +23,7 @@ public class EmptyNotNullNodeTestTransaction extends EmptyNotNullNodeTest {
     }
 
     protected Cloud getCloud() {
-        return super.getCloud().getTransaction("test_transaction");
+        return getTransaction();
     }
 
 
