@@ -22,8 +22,7 @@ public class DataTypesTestTransaction extends DataTypesTest {
         super(name);
     }
     protected Cloud getCloud() {
-        Cloud cloud = super.getCloud();
-        return cloud.createTransaction(getClass().getName());
+        return getTransaction();
     }
 
     protected byte[] getBinary() {

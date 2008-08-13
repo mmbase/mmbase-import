@@ -68,6 +68,18 @@ public abstract class BridgeTest extends MMBaseTest {
         return c;
     }
 
+    /**
+     * can be used to override getCloud
+     */
+    protected Cloud getTransaction() {
+        Cloud cloud = getCloudContext().getCloud("mmbase", "class", null);
+        ensureDeployed(cloud, "local cloud");
+        Cloud transaction = cloud.createTransaction(getClass().getName());
+        CloudThreadLocal.unbind();
+        CloudThreadLocal.bind(transaction);
+        return transaction;
+    }
+
     protected Cloud getRemoteCloud() {
         return getRemoteCloud("rmi://127.0.0.1:1221/remotecontext");
     }

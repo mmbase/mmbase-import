@@ -27,7 +27,7 @@ public class FilledNodeTestTransaction extends FilledNodeTest {
     }
 
     protected Cloud getCloud() {
-        return super.getCloud().getTransaction("test_transaction");
+        return getTransaction();
     }
 
     public void tearDown() {
