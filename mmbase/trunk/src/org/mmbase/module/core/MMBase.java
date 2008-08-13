@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.250 2008-08-01 22:15:08 michiel Exp $
+ * @version $Id: MMBase.java,v 1.251 2008-08-13 08:11:22 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -424,7 +424,7 @@ public class MMBase extends ProcessorModule {
                         builderOut.setExpandBuilder(false);
                         builderOut.writeToFile(writerpath + File.separator + builder.getTableName() + ".xml");
                     } catch (Exception ex) {
-                        log.error(Logging.stackTrace(ex));
+                        log.error(ex.getMessage(), ex);
                     }
                 }
             }
@@ -440,7 +440,7 @@ public class MMBase extends ProcessorModule {
             mmbaseCop = new MMBaseCop();
         } catch (Exception e) {
             log.fatal("Error loading the mmbase cop: " + e.getMessage());
-            log.error(Logging.stackTrace(e));
+            log.error(e.getMessage(), e);
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
@@ -867,7 +867,7 @@ public class MMBase extends ProcessorModule {
             } catch (Exception ex) {
                 log.error("Something went wrong while initializing builder " + builder.getTableName());
                 log.info("This builder will be removed from active builder list");
-                log.error(Logging.stackTrace(ex));
+                log.error(ex.getMessage(), ex);
                 bi.remove();
             }
         }
@@ -1098,6 +1098,10 @@ public class MMBase extends ProcessorModule {
             } else {
                 log.service("Inactive builder: " + parser.getSystemId());
             }
+        } catch (BuilderConfigurationException bcfe) {
+            loading.remove(builderName);
+            log.error(bcfe.getMessage() + " " + bcfe.getMessage());
+            return null;
         } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
             log.error(e.getClass() + " " + e.getMessage(), e);
