@@ -446,7 +446,9 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("float");
         DataType dt = field.getDataType();
-        assertEquals(0, field.getDataType().validate("1,2").size());
+
+        Collection<LocalizedString> errors = field.getDataType().validate("1,2");
+        assertTrue("" + errors, errors.size() == 0);
 
         Node newNode = nodeManager.createNode();
         newNode.setValue("float", "1,3");
