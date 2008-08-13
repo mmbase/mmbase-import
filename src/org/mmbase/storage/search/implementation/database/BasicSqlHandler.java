@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.9 2007-09-05 08:11:52 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.10 2008-08-13 09:01:25 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -155,9 +155,12 @@ public class BasicSqlHandler implements SqlHandler {
             append(stringValue).
             append("'");
         } else if (fieldType == Field.TYPE_DATETIME) {
-            // should this not be translated to a date first??
             if (value instanceof Number) {
-                sb.append(((Number) value).longValue());
+                // first translated to a date
+                Date dateValue = new Date(((Number) value).longValue()*1000);
+                sb.append("'");
+                appendDateValue(sb, dateValue);
+                sb.append("'");
             } else {
                 sb.append("'");
                 appendDateValue(sb, (Date) value);
