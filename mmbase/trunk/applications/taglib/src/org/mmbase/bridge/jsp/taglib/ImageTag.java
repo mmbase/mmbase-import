@@ -14,6 +14,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.78 2007-07-26 20:54:10 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.79 2008-08-14 13:42:18 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -197,7 +198,8 @@ public class ImageTag extends FieldTag {
         return urlConvert.booleanValue();
     }
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        initTag();
         Node originalNode = getNode();
         if (!originalNode.getNodeManager().hasField("handle")) {
             throw new JspTagException(

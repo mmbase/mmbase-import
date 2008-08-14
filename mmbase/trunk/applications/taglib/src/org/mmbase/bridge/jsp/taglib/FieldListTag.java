@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.*;
 import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
 import java.util.*;
@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.63 2008-04-25 14:23:28 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.64 2008-08-14 13:42:17 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -188,7 +188,8 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     /**
      *
      **/
-    public int doStartTag() throws JspTagException{
+    public int doStartTag() throws JspException{
+        initTag();
         collector = new ContextCollector(getContextProvider());
 
         if (varStatus != Attribute.NULL) {

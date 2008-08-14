@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.36 2007-07-18 07:50:47 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.37 2008-08-14 13:42:18 michiel Exp $
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -36,7 +36,8 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
     private String body = null;
     private Attribute valueId = Attribute.NULL;
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        initTag();
         setFieldVar(name.getString(this));
         return EVAL_BODY_BUFFERED;
     }
@@ -87,21 +88,21 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             // E.g. if you use ExprCalc to set an integer field, that would not work otherwise (because always double like '1.0')
             switch(type) {
             case Field.TYPE_NODE:
-            case Field.TYPE_INTEGER: 
+            case Field.TYPE_INTEGER:
                 value = Casting.toInteger(newValue);
                 break;
-            case Field.TYPE_LONG: 
+            case Field.TYPE_LONG:
                 value = Casting.toInteger(newValue);
                 break;
             default: // rest should go ok in core
                 value = newValue;
             }
 
-            
+
             if (log.isDebugEnabled()) {
                 log.debug("Setting field " + fieldName + " to " + value);
             }
-            
+
             node.setValue(fieldName, value);
 
             if (getId() != null) {
