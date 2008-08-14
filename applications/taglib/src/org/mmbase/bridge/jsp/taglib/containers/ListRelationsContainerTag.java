@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.21 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.22 2008-08-14 13:58:37 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -88,7 +88,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
 
     public int doStartTag() throws JspException {
-        super.doStartTag();
+        initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());

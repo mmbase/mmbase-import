@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.45 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.46 2008-08-14 13:59:34 michiel Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -79,7 +79,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspException{
-        super.doStartTag();
+        initTag();
         NodeManager nodeManager = null;
         if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
             Node node = getNode();

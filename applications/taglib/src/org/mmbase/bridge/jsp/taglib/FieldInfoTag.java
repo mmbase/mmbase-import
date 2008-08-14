@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.111 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.112 2008-08-14 13:59:34 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -260,6 +260,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private FieldProvider fieldProvider;
 
     public int doStartTag() throws JspTagException {
+        initTag();
         findWriter(false); // just to call haveBody;
 
         Node          node = null;
