@@ -38,7 +38,7 @@
   <mm:node number="${education}">
     <mm:relatednodes
         id="learnBlock"
-        type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+        element="learnblocks" path="posrel,learnblocks,components" orderby="posrel.pos">
 
       <mm:size id="size" write="false" />
       <span class="col" style="width: ${60 / size}%">
