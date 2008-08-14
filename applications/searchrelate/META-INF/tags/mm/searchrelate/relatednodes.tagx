@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.23 2008-08-14 12:17:22 jelle Exp $
+      @version $Id: relatednodes.tagx,v 1.24 2008-08-14 13:29:26 jelle Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -50,6 +50,9 @@
   <jsp:directive.attribute name="precreate"           type="java.lang.String"
                            description="Jsp to call just before commit of the create node."
                            />
+  <jsp:directive.attribute name="createposition"      type="java.lang.String"
+						   description="Position of create link, default is down"
+						   />
   <jsp:directive.attribute name="constraints"           fragment="true"
                            description="Will be called inside the relatednodescontainer, so you can add extra constraints. (Only works in mmbase ge 1.9)"
                            />
@@ -76,7 +79,8 @@
   </mm:import>
 
   <mm:import id="r">${empty role and empty path? 'posrel' : role}</mm:import>
-  <mm:import id="direction">${empty direction? 'UP' : direction}</mm:import>
+  <mm:import id="orderdirection">${empty direction? 'UP' : direction}</mm:import>
+  <mm:import id="createpos">${empty createposition? 'bottom' : createposition}</mm:import>
 
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
@@ -105,10 +109,19 @@
         <input type="hidden" name="source"   value="${_node}" />
         <input type="hidden" name="icondir"   value="${icondir}" />
       </div>
+	  <c:if test="${createpos eq 'top'">
+      <mm:link page="/mmbase/searchrelate/list/create.jspx"
+               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+        <a href="${_}" class="create">
+          <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+        </a>
+      </mm:link>
+      <span class="status">...</span>
+	 </c:if>
       <ol>
         <mm:node id="source" />
         <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q">
-          <mm:sortorder field="${order}" direction="${direction}" />
+          <mm:sortorder field="${order}" direction="${orderdirection}" />
           <jsp:invoke fragment="constraints" />
           <mm:relatednodes>
             <mm:include
@@ -119,7 +132,7 @@
         </mm:relatednodescontainer>
         <mm:write session="mm_list_query_${seq}" referid="q" />
       </ol>
-
+	  <c:if test="${createpos eq 'bottom'">
       <mm:link page="/mmbase/searchrelate/list/create.jspx"
                referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
         <a href="${_}" class="create">
@@ -127,6 +140,7 @@
         </a>
       </mm:link>
       <span class="status">...</span>
+	 </c:if>
     </div>
   </fmt:bundle>
 </jsp:root>
