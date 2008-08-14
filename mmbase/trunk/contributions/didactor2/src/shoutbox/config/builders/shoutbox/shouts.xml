@@ -22,6 +22,10 @@
   <fieldlist>
 
     <field name="from" type="system">
+	  <gui>
+        <guiname xml:lang="en">From</guiname>
+        <guiname xml:lang="nl">Van</guiname>
+      </gui>
       <editor><positions><list>2</list></positions></editor>
       <datatype base="user" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
