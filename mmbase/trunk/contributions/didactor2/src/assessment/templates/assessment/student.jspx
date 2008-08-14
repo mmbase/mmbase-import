@@ -34,16 +34,20 @@
     <!-- show the learnblocks -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodes id="learnBlock"  type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-        <mm:relation to="${user}" role="classrel" notfound="null">
-          <c:if test="${empty _node and empty firstopenlesson}">
-            <mm:node node="learnBlock" id="firstopenlesson" />
-          </c:if>
-          <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
-            <mm:field name="name" node="learnBlock" />
-          </span>
-        </mm:relation>
-      </mm:relatednodes>
+      <mm:relatednodescontainer path="posrel,learnblocks,components">
+        <mm:addnode element="components" number="component.assessment" />
+        <mm:sortorder field="posrel.pos" />
+        <mm:relatednodes id="learnBlock"  varStatus="status">
+          <mm:relation to="${user}" role="classrel" notfound="null">
+            <c:if test="${empty _node and empty firstopenlesson}">
+              <mm:node node="learnBlock" id="firstopenlesson" />
+            </c:if>
+            <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
+              <mm:field name="name" node="learnBlock" />
+            </span>
+          </mm:relation>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
       <span class="head delete">&amp;nbsp;</span>
     </mm:node>
 
@@ -77,30 +81,32 @@
       </span>
       <mm:node number="${education}">
         <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-          <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
+          <mm:relation to="component.assessment">
+            <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
 
-            <mm:relation role="classrel" to="${user}">
-              <mm:relatednodes type="popfeedback">
-                <mm:node id="feedback" />
-              </mm:relatednodes>
-            </mm:relation>
+              <mm:relation role="classrel" to="${user}">
+                <mm:relatednodes type="popfeedback">
+                  <mm:node id="feedback" />
+                </mm:relatednodes>
+              </mm:relation>
 
-            <mm:notpresent referid="feedback">
-              &amp;nbsp;
-            </mm:notpresent>
-            <mm:present referid="feedback">
-              <mm:treefile
-                  page="/assessment/feedback.jspx" objectlist="$includePath"
-                  referids="$referids,feedback@feedback_n,user@student"
-                  write="false"
-                  >
-                <a href="${_}">
-                  <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                          title="assessment.goto_feedback" />
-                </a>
-              </mm:treefile>
-            </mm:present>
-          </span>
+              <mm:notpresent referid="feedback">
+                &amp;nbsp;
+              </mm:notpresent>
+              <mm:present referid="feedback">
+                <mm:treefile
+                    page="/assessment/feedback.jspx" objectlist="$includePath"
+                    referids="$referids,feedback@feedback_n,user@student"
+                    write="false"
+                    >
+                  <a href="${_}">
+                    <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                            title="assessment.goto_feedback" />
+                  </a>
+                </mm:treefile>
+              </mm:present>
+            </span>
+          </mm:relation>
         </mm:relatednodes>
       </mm:node>
     </div>
