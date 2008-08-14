@@ -16,14 +16,15 @@
     <title xml:lang="nl">Beheer</title>
     <title xml:lang="en">Admin</title>
   </blocktype>
-  <blocktype name="mmbase.components"      weight="20">
-    <title xml:lang="nl">Componenten</title>
-    <title xml:lang="en">Components</title>
-  </blocktype>
-  <blocktype name="mmbase.tools"           weight="30">
+  <blocktype name="mmbase.tools"           weight="20">
     <title xml:lang="nl">Gereedschap</title>
     <title xml:lang="en">Tools</title>
   </blocktype>
+  <blocktype name="mmbase.components"      weight="30">
+    <title xml:lang="nl">Componenten</title>
+    <title xml:lang="en">Components</title>
+  </blocktype>
+
   <blocktype name="mmbase.edit"            weight="40">
     <title xml:lang="nl">Redactie</title>
     <title xml:lang="en">Edit</title>
