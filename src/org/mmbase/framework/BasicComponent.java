@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.48 2008-08-08 08:53:30 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.49 2008-08-14 20:19:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -38,7 +38,7 @@ public class BasicComponent implements Component {
     private final Map<String, Setting<?>> settings = new ConcurrentHashMap<String, Setting<?>>();
     private Block defaultBlock = null;
     private URI uri;
-    private int version = -1;
+    private float version = 0.0f;
 
     protected final Collection<Component> dependencies        = new CopyOnWriteArraySet<Component>();
     protected final Collection<VirtualComponent> unsatisfied  = new CopyOnWriteArraySet<VirtualComponent>();
@@ -55,7 +55,7 @@ public class BasicComponent implements Component {
     public URI getUri() {
         return uri;
     }
-    public int getVersion() {
+    public float getVersion() {
         return version;
     }
 
@@ -80,7 +80,7 @@ public class BasicComponent implements Component {
             for (int i = 0; i < depElements.getLength(); i++) {
                 Element element = (Element) depElements.item(i);
                 String name = element.getAttribute("component");
-                int version = Integer.parseInt(element.getAttribute("version"));
+                float version = Float.parseFloat(element.getAttribute("version"));
                 Component comp = ComponentRepository.getInstance().getComponent(name);
                 if (comp != null && comp.getVersion() >= version) {
                     dependencies.add(comp);

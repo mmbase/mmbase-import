@@ -19,7 +19,7 @@ import org.mmbase.security.Action;
  * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.20 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: Component.java,v 1.21 2008-08-14 20:19:26 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -33,7 +33,7 @@ public interface Component {
     /**
      * A component has a version number.
      */
-    int getVersion();
+    float getVersion();
 
     /**
      * All (satisfied) depedencies of this Component. See als {@link

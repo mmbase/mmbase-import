@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * A Virtual Component is a component which is only mentioned as a dependency of another component.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualComponent.java,v 1.5 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: VirtualComponent.java,v 1.6 2008-08-14 20:19:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class VirtualComponent {
@@ -22,10 +22,10 @@ public class VirtualComponent {
 
 
     private final String name;
-    private final int version;
+    private final float version;
 
 
-    public VirtualComponent(String name, int v) {
+    public VirtualComponent(String name, float v) {
         this.name = name;
         this.version = v;
     }
@@ -33,7 +33,7 @@ public class VirtualComponent {
     public String getName() {
         return name;
     }
-    public int getVersion() {
+    public float getVersion() {
         return version;
     }
 }
