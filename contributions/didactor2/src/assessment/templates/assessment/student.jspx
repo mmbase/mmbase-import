@@ -34,8 +34,7 @@
     <!-- show the learnblocks -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodescontainer path="posrel,learnblocks,components">
-        <mm:addnode element="components" number="component.assessment" />
+      <mm:relatednodescontainer path="posrel,learnblocks">
         <mm:sortorder field="posrel.pos" />
         <mm:relatednodes id="learnBlock"  varStatus="status">
           <mm:relation to="${user}" role="classrel" notfound="null">
@@ -81,41 +80,39 @@
       </span>
       <mm:node number="${education}">
         <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-          <mm:relation to="component.assessment">
-            <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
+          <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
 
-              <mm:relation role="classrel" to="${user}">
-                <mm:relatednodes type="popfeedback">
-                  <mm:node id="feedback" />
-                </mm:relatednodes>
-              </mm:relation>
+            <mm:relation role="classrel" to="${user}">
+              <mm:relatednodes type="popfeedback">
+                <mm:node id="feedback" />
+              </mm:relatednodes>
+            </mm:relation>
 
-              <mm:notpresent referid="feedback">
-                &amp;nbsp;
-              </mm:notpresent>
-              <mm:present referid="feedback">
-                <mm:treefile
-                    page="/assessment/feedback.jspx" objectlist="$includePath"
-                    referids="$referids,feedback@feedback_n,user@student"
-                    write="false"
-                    >
-                  <a href="${_}">
-                    <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                            title="assessment.goto_feedback" />
-                  </a>
-                </mm:treefile>
-              </mm:present>
-            </span>
-          </mm:relation>
-        </mm:relatednodes>
-      </mm:node>
+            <mm:notpresent referid="feedback">
+              &amp;nbsp;
+            </mm:notpresent>
+            <mm:present referid="feedback">
+              <mm:treefile
+                  page="/assessment/feedback.jspx" objectlist="$includePath"
+                  referids="$referids,feedback@feedback_n,user@student"
+                  write="false"
+                  >
+                <a href="${_}">
+                  <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                          title="assessment.goto_feedback" />
+                </a>
+              </mm:treefile>
+            </mm:present>
+          </span>
+      </mm:relatednodes>
+    </mm:node>
     </div>
 
     <!--
          Finally, the user is given the option to 'close' the last open lesson
     -->
 
-    <div>
+    <div style="clear: both;">
 
       <mm:import externid="step" />
 
