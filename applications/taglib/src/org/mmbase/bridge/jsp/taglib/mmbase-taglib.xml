@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.433 2008-08-05 12:16:23 sdeboer Exp $
+version: $Id: mmbase-taglib.xml,v 1.434 2008-08-14 11:24:15 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3640,6 +3640,7 @@ transaction was commited, following should result anything:
   <tag>
     <name>fieldinfo</name>
     <extends>fieldreferrer</extends>
+    <extends>nodereferrer</extends>
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
@@ -4494,6 +4495,14 @@ like the parameter list or the session (where ever it is available) --&gt;
         <info>Makes the URL absolute on the current servlet context, so it starts with /, but it is not prefixed by the context. The result could e.g. be used as an argument for another url-tag.</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
+    </attribute>
+    <attribute>
+      <name>internal</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <since>MMBase-1.9</since>
     </attribute>
     <example>
 &lt;mm:url referids="a?,name@b,c" page="codesamples/index.jsp"&gt;
