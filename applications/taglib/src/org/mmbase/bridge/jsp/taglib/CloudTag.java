@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import java.io.IOException;
 import java.io.File;
 
@@ -21,10 +22,9 @@ import javax.servlet.RequestDispatcher;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.ContextProvider;
-import org.mmbase.security.*; // hmm, not from bridge, but we do need it anyway
+import org.mmbase.security.*;
+
 import org.mmbase.util.functions.*;
-
-
 import org.mmbase.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.161 2008-08-09 10:09:30 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.162 2008-08-14 16:01:14 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -542,6 +542,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 tag.setUser(cloud.getUser());
             }
         }
+        org.mmbase.bridge.util.CloudThreadLocal.unbind();
         org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
         return EVAL_BODY;
     }
@@ -1355,6 +1356,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     public void doFinally() {
         // can be cleaned for gc:
         super.doFinally();
+        org.mmbase.bridge.util.CloudThreadLocal.unbind();
         cookies = null;
         cloudContext = null;
         cloud = null;
