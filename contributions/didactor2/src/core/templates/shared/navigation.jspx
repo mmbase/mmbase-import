@@ -10,7 +10,7 @@
 	<mm:import externid="name" />
 
     <div class="titlebar"></div>
- 	<h1><di:translate key="${name}.menu" /></h1>
+ 	<h1><di:translate key="${name}.name" /></h1>
   </div>
 
 </jsp:root>
