@@ -1,116 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="popfeedback" maintainer="didactor.nl" version="2" extends="object">
-  <status>active</status>
-  <classfile>Dummy</classfile>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="popfeedback" maintainer="didactor.nl" version="2" extends="object">
   <searchage>31</searchage>
 
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">POP Feedback</singular>
     <singular xml:lang="en">POP Feedback</singular>
-    <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">POP Feedbacks</plural>
     <plural xml:lang="en">POP Feedbacks</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="nl">Automatische POP Feedback</description>
     <description xml:lang="en">Automatic popfeedback</description>
   </descriptions>
 
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
-
-  <fieldlist>
+  <fieldlist name="rank">
     <field>
       <gui>
         <guiname xml:lang="nl">Rank</guiname>
         <guiname xml:lang="en">Rank</guiname>
-        <guitype>string</guitype>
       </gui>
-      <!-- editor related  -->
       <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>2</input>
-          <!-- position in list area of the editor -->
-          <list>2</list>
-          <!-- position in search area of the editor -->
-          <search>2</search>
-        </positions>
+        <positions><list>2</list></positions>
       </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>rank</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="255" key="false" notnull="true">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="255" />
+        <!--
+            I don't know what 'rank' is supposed to mean. Perhaps an enumeration?
+        -->
+      </datatype>
     </field>
-    <field>
+    <field name="text">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Tekst van de popfeedback</description>
         <description xml:lang="en">POP Feedback text</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Text</guiname>
         <guiname xml:lang="en">Text</guiname>
-        <guitype>string</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>3</input>
-          <!-- position in list area of the editor -->
-          <list>3</list>
-          <!-- position in search area of the editor -->
-          <search>3</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>text</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="65535" key="false" notnull="true">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
     </field>
-    <field>
+    <field name="status">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Status</description>
         <description xml:lang="en">Status</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>4</input>
-          <!-- position in list area of the editor -->
-          <list>4</list>
-          <!-- position in search area of the editor -->
-          <search>4</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>status</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <!-- I do not know what values this field can take -->
+      </datatype>
     </field>
   </fieldlist>
 </builder>
