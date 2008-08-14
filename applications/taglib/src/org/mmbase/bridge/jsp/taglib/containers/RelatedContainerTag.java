@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -23,7 +24,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.19 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.20 2008-08-14 11:24:15 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -68,7 +69,8 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
 
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
