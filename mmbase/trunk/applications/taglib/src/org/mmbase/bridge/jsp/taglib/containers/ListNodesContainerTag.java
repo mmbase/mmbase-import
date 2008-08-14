@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -23,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.26 2008-07-17 13:52:22 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.27 2008-08-14 11:24:15 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -106,7 +107,8 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return query.getCloud();
     }
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
@@ -117,6 +119,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             query = (NodeQuery) query.clone();
         } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+            if (query == null) {
+                throw new JspTagException("No query found in referred id " + getReferid());
+            }
             if (nodeManager != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'path' or 'element' attributes together with 'referid'");
             }

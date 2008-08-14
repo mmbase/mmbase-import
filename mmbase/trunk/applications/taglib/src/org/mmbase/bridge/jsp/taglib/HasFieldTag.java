@@ -13,6 +13,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NodeManager;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -20,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.NodeManager#hasField}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFieldTag.java,v 1.4 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: HasFieldTag.java,v 1.5 2008-08-14 11:24:15 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -48,7 +49,8 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
 
 
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         String nm = nodeManagerAtt.getString(this);
         NodeManager nodeManager = "".equals(nm) ? getNode().getNodeManager() : getCloudVar().getNodeManager(nm);
         if (nodeManager.hasField(name.getString(this)) != getInverse()) {

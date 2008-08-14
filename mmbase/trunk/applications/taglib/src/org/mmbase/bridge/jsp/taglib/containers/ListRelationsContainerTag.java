@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import java.util.*;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -24,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.20 2008-07-30 12:24:14 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.21 2008-08-14 11:24:15 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -86,7 +87,8 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     }
 
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());

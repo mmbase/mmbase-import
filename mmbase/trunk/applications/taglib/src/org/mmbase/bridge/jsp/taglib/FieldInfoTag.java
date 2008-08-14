@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.110 2008-08-09 11:24:08 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.111 2008-08-14 11:24:15 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -265,14 +265,17 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         Node          node = null;
         Field field;
         DataType dataType = getDataType();
-        fieldProvider = "".equals(parentFieldId.getValue(this)) ? null : findFieldProvider(dataType == null);
+        fieldProvider =
+            "".equals(parentFieldId.getValue(this)) // field="" means explicitely don't use a field provider, so is not the same as omitting the attribue altogether
+            ? null : findFieldProvider(dataType == null);
         if (fieldProvider == null) {
+            if (dataType == null) throw new JspTagException("No field provider found (" + parentFieldId + ") nor datatype specified");
             final DataType dt = dataType;
             fieldProvider = new FieldProvider() {
                     private final Field f = new DataTypeField(getCloudVar(), dt);
                     public Field getFieldVar() { return f; }
                     public String getId() { return null; }
-                    public Node getNodeVar() { return null; }
+                    public Node getNodeVar() throws JspTagException { return FieldInfoTag.this.getNode(); }
 
                 };
             field = fieldProvider.getFieldVar();
@@ -285,6 +288,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 dataType = field.getDataType();
             }
         }
+        log.debug("Found field provider " + fieldProvider + " node: " + node);
 
         String fieldName = field.getName();
 
@@ -317,6 +321,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_INPUT:
         case TYPE_FORID:
             if (node == null) { // try to find nodeProvider
+                log.debug("Getting field from " + fieldProvider);
                 node = fieldProvider.getNodeVar();
             } // node can stay null.
             if (field.isReadOnly()) {

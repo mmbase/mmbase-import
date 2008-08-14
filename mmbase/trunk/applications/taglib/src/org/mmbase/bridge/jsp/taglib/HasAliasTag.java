@@ -14,13 +14,14 @@ import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 
 /**
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Node#getAliases}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasAliasTag.java,v 1.2 2007-07-10 16:09:17 michiel Exp $
+ * @version $Id: HasAliasTag.java,v 1.3 2008-08-14 11:24:15 michiel Exp $
  * @since MMBase-1.8.5
  */
 
@@ -40,7 +41,8 @@ public class HasAliasTag extends NodeReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         Node n = getNode();
         if (n.getAliases().contains(name.getString(this)) != getInverse()) {
             return EVAL_BODY;

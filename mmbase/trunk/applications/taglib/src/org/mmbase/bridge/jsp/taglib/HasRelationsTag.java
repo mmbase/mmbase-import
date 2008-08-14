@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  * Whether current node has relations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRelationsTag.java,v 1.2 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: HasRelationsTag.java,v 1.3 2008-08-14 11:24:15 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -32,7 +32,8 @@ public class HasRelationsTag extends NodeReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspException {
+        super.doStartTag();
         if ((getNode().hasRelations()) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
