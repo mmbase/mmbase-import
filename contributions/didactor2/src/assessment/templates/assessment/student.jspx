@@ -34,8 +34,15 @@
     <!-- show the learnblocks -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-        <span class="head" style="width: ${60 / status.count}%"><mm:field name="name" /></span>
+      <mm:relatednodes id="learnBlock"  type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
+        <mm:relation to="${user}" role="classrel" notfound="null">
+          <c:if test="${empty _node and empty firstopenlesson}">
+            <mm:node node="learnBlock" id="firstopenlesson" />
+          </c:if>
+          <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
+            <mm:field name="name" node="learnBlock" />
+          </span>
+        </mm:relation>
       </mm:relatednodes>
       <span class="head delete">&amp;nbsp;</span>
     </mm:node>
@@ -62,7 +69,7 @@
     </mm:listnodes>
 
     <!--
-        now links to the feed back pages
+        Now links to the feed back pages
     -->
     <div>
       <span class="head problem">
@@ -84,7 +91,7 @@
             <mm:present referid="feedback">
               <mm:treefile
                   page="/assessment/feedback.jspx" objectlist="$includePath"
-                  referids="$referids,feedback@feedback_n"
+                  referids="$referids,feedback@feedback_n,user@student"
                   write="false"
                   >
                 <a href="${_}">
@@ -99,35 +106,41 @@
     </div>
 
     <!--
-         Finally, the use is given the option to 'close' the last lesson
+         Finally, the user is given the option to 'close' the last open lesson
     -->
 
     <div>
 
       <mm:import externid="step" />
 
-      <jsp:directive.include file="evaluationtest.jspf" />
+      <c:if test="${! empty firstopenlesson}">
 
-      <mm:treefile page="/assessment/closelesson.jsp"
-                   objectlist="$includePath"
-                   referids="$referids"
-                   write="false"
-                   >
+        <jsp:directive.include file="evaluationtest.jspf" />
 
-        <form name="closelessonform" action="${_}"   method="post">
-          <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
-          <mm:node number="lesson"  notfound="skip">
-            <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
-              <input type="submit" class="formbutton" value="${di:translate('assessment.close_and_send_to_coach')}" />
-            </mm:related>
+        <mm:treefile page="/assessment/closelesson.jsp"
+                     objectlist="$includePath"
+                     write="false"
+                     >
+
+          <form name="closelessonform" action="${_}"   method="post">
+            <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
+            <input type="hidden" name="coachmode" value="false"  />
+            <input type="hidden" name="lesson" value="${firstopenlesson}"  />
+            <mm:node referid="firstopenlesson">
+              <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
+                <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
+                  <input type="submit" class="formbutton" value="${_}" />
+                </di:translate>
+              </mm:related>
+            </mm:node>
+          </form>
+
+          <mm:node number="$assessment_evaluationtest" notfound="skip">
+
           </mm:node>
-          <input type="submit" class="formbutton" value="${di:translate('assessment.close_and_send_to_coach')}" />
-        </form>
-        <mm:node number="$assessment_evaluationtest" notfound="skip">
 
-        </mm:node>
-
-      </mm:treefile>
+        </mm:treefile>
+      </c:if>
     </div>
   </div>
 </div>

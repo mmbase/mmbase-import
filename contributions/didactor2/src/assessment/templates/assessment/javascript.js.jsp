@@ -16,10 +16,15 @@ function toggle(number) {
     }
 }
 
-$(document).ready(function() {
-        $(".col.problem").click(function() {
+var toggleExtra = function() {
                 $(document).find(".col.problem .extra").hide();
                 $(this).find(".extra").show();
+};
+
+$(document).ready(function() {
+        $(".col.problem").click(toggleExtra);
+        $("div.list").bind("mmsrCreated", function(a, r) {
+                $(r).click(toggleExtra);
             });
     });
 
