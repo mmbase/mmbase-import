@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
+import org.mmbase.util.transformers.Xml;
+
 
 /**
  * Representation of the values of 'debug' attributes, as used in tags like mm:include and
@@ -17,7 +19,7 @@ package org.mmbase.bridge.jsp.taglib.util;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: Debug.java,v 1.4 2008-08-06 12:17:18 michiel Exp $
+ * @version $Id: Debug.java,v 1.5 2008-08-14 11:22:50 michiel Exp $
  */
 public enum Debug {
 
@@ -26,10 +28,10 @@ public enum Debug {
 
     HTML {
         public String start(String name, Object url) {
-            return "\n<!-- " + name + " page = '" + url + "' -->\n";
+            return "\n<!-- " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->\n";
         }
         public String end(String name, Object url) {
-            return "\n<!-- END " + name + " page = '" + url + "' -->\n";
+            return "\n<!-- END " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->\n";
         }
     },
 
@@ -45,10 +47,10 @@ public enum Debug {
 
     XML {
         public String start(String name, Object url) {
-            return "<!-- " + name + " page = '" + url + "' -->";
+            return "<!-- " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->";
         }
         public String end(String name, String url) {
-            return "<!-- END " + name + " page = '" + url + "' -->";
+            return "<!-- END " + name + " page = '" + Xml.XMLEscape("" + url) + "' -->";
         }
     },
 
