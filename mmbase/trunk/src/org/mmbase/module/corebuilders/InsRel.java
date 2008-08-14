@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.59 2008-07-29 09:34:50 michiel Exp $
+ * @version $Id: InsRel.java,v 1.60 2008-08-14 11:40:09 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -699,13 +699,13 @@ public class InsRel extends MMObjectBuilder {
                 MMObjectNode node2 = getNode(node.getIntValue(FIELD_SOURCE));
                 String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
                 if (node2 != null) {
-                    return "" + node.getIntValue(FIELD_SOURCE) + ty + "(" + node2.getGUIIndicator()+")";
+                    return "" + node.getIntValue(FIELD_SOURCE) + ty + " (" + node2.getFunctionValue("gui", null) + ")";
                 }
             } else if (field.equals(FIELD_DESTINATION)) {
                 MMObjectNode node2 = getNode(node.getIntValue(FIELD_DESTINATION));
                 String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
                 if (node2 != null) {
-                    return "" + node.getIntValue(FIELD_DESTINATION) + ty + "(" + node2.getGUIIndicator() + ")";
+                    return "" + node.getIntValue(FIELD_DESTINATION) + ty + " (" + node2.getFunctionValue("gui", null) + ")";
                 }
             } else if (field.equals(FIELD_ROLE)) {
                 MMObjectNode node2 = mmb.getRelDef().getNode(node.getIntValue(FIELD_ROLE));
