@@ -9,6 +9,9 @@ body.assessment span.head {
   text-align: center;
   font-weight: bold;
 }
+body.assessment span.head.closed {
+  color: #aaa;
+}
 body.assessment span.problem {
   width: 35%;
 }
