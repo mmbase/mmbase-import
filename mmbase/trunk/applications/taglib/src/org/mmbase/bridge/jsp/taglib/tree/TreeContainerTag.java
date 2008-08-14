@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.13 2008-06-27 14:35:32 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.14 2008-08-14 13:58:54 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -103,6 +103,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     }
 
     public int doStartTag() throws JspTagException {
+        initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 

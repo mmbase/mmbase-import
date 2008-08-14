@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayWriteTag.java,v 1.12 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: MayWriteTag.java,v 1.13 2008-08-14 13:59:12 michiel Exp $
  */
 
 public class MayWriteTag extends NodeReferrerTag implements Condition {
@@ -54,7 +54,7 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
     }
 
     public int doStartTag() throws JspException {
-        super.doStartTag();
+        initTag();
         try {
             if ((getNodeToCheck().mayWrite()) != getInverse()) {
                 return EVAL_BODY;

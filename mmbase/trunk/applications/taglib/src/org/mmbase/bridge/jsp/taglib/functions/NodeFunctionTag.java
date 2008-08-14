@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.14 2007-11-01 09:32:13 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.15 2008-08-14 13:58:49 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -76,6 +76,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
     }
 
     public int doStartTag() throws JspTagException {
+        initTag();
         Object value = getFunctionValue(false); // don't register, 'fillVars' will do.
         if (value == null || "".equals(value)) {
             switch(Notfound.get(notfound, this)) {

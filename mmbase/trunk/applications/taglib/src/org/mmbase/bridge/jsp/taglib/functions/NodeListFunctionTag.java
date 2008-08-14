@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.17 2008-02-23 15:54:27 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.18 2008-08-14 13:58:49 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -113,6 +113,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     }
 
     public int doStartTag() throws JspTagException {
+        initTag();
         NodeList list;
         Object value = getFunctionValue(false);
 
