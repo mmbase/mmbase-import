@@ -25,7 +25,8 @@
 	
 		<di:include debug="html" page="/shared/navigation.jspx" />
       <div class="mainContent">
-        <div class="contentBody">
+        <div class="contentBodywit">
+	
           <mm:node number="${node}">
             <mm:component name="${name}" block="${block}" />
           </mm:node>
