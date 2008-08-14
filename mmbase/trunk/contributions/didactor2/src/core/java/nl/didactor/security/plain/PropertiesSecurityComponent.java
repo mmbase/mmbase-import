@@ -18,7 +18,7 @@ import nl.didactor.security.AuthenticationComponent;
 import nl.didactor.security.UserContext;
 
 /**
- * @version $Id: PropertiesSecurityComponent.java,v 1.1 2008-08-13 10:25:45 michiel Exp $
+ * @version $Id: PropertiesSecurityComponent.java,v 1.2 2008-08-14 16:09:46 michiel Exp $
  */
 
 public class PropertiesSecurityComponent implements AuthenticationComponent {
@@ -42,8 +42,11 @@ public class PropertiesSecurityComponent implements AuthenticationComponent {
         properties.clear();
         Properties props = new Properties();
         try {
-            InputStream is = ResourceLoader.getConfigurationRoot().getResource(file).openStream();
-            props.load(is);
+            java.net.URL u = ResourceLoader.getConfigurationRoot().getResource(file);
+            if (u.openConnection().getDoInput()) {
+                InputStream is = ResourceLoader.getConfigurationRoot().getResource(file).openStream();
+                props.load(is);
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
