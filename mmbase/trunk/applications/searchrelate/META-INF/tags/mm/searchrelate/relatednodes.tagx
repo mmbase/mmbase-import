@@ -2,11 +2,14 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     version="2.0"
     >
   <!--
+      xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.22 2008-08-14 11:50:50 jelle Exp $
+      @version $Id: relatednodes.tagx,v 1.23 2008-08-14 12:17:22 jelle Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -14,36 +17,41 @@
                    The user interface is very minimalistic. Without any commit button or so. Everything is arranged using javascript." />
 
 
-  <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
+  <jsp:directive.attribute name="type"        type="java.lang.String"
                            description="Type of mmbase related nodes. Like 'type' of mm:relatednodes." />
+
+  <jsp:directive.attribute name="path"        type="java.lang.String"
+                           description="Type of mmbase related nodes. Like 'path' of mm:relatednodes." />
+
+  <jsp:directive.attribute name="element"        type="java.lang.String" />
 
   <jsp:directive.attribute name="role"        type="java.lang.String"
                            description="Like 'role' of mm:relatednodes, but defaults to 'posrel'"
                            />
   <jsp:directive.attribute name="orderby"     type="java.lang.String"
                            description="Like orderby of mm:relatednodes, but default to &lt;role&gt;.pos"
-                           />
+                             />
+
   <jsp:directive.attribute name="direction"     type="java.lang.String"
-						   description="Direction of orderby of mm:relatednodes, but default to &lt;up&gt;.pos"
-						   />
+                           description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
+                             />
 
   <jsp:directive.attribute name="fields"      type="java.lang.String" />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String"
                            description="Directory from which to take create/delete icons, can be empty for default icons."
                            />
-  <jsp:directive.attribute name="li"           type="java.lang.String"
+  <jsp:directive.attribute name="item"           type="java.lang.String"
                            description="Jsp to use to present one li-item, can be empty for a default presentation."
+                           />
+  <jsp:directive.attribute name="li"           type="java.lang.String"
+                           description="DEPRECATED, will be removed soon, use item"
                            />
   <jsp:directive.attribute name="precreate"           type="java.lang.String"
                            description="Jsp to call just before commit of the create node."
                            />
   <jsp:directive.attribute name="constraints"           fragment="true"
                            description="Will be called inside the relatednodescontainer, so you can add extra constraints. (Only works in mmbase ge 1.9)"
-                           />
-
-  <jsp:directive.attribute name="alt"           type="java.lang.String"
-                           description="Alt text for the create-button. Defaults to '+'."
                            />
 
   <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
@@ -55,12 +63,25 @@
                                         e.g. if you use this tag again in the 'li', then you may want to put this explicitely to false"
                            />
 
-  <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
+  <mm:import id="itemjsp">
+    <c:choose>
+      <c:when test="${! empty li}">
+        <mm:log>Using li, change to item please</mm:log>
+        <jsp:text>${empty li ? '/mmbase/searchrelate/list/item.jspx' : li}</jsp:text>
+      </c:when>
+      <c:otherwise>
+        <jsp:text>${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</jsp:text>
+      </c:otherwise>
+    </c:choose>
+  </mm:import>
+
+  <mm:import id="r">${empty role and empty path? 'posrel' : role}</mm:import>
+  <mm:import id="direction">${empty direction? 'UP' : direction}</mm:import>
+
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
-  <mm:import id="direction">${empty direction ? direction : 'UP'}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
-  <mm:import from="request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
+  <mm:import from="parameters,request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_list_sequence" value="${seq + 1}" />
   <c:if test="${(seq eq 0 and empty load) or load}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
@@ -71,36 +92,41 @@
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
+
     <div class="list ${type}">
-      <mm:form id="${type}_${seq}" styleClass="list">
+      <div id="${type}_${seq}" class="listinfo">
         <input type="hidden" name="type" value="${type}" />
+        <input type="hidden" name="path" value="${path}" />
         <input type="hidden" name="role" value="${r}" />
         <input type="hidden" name="submit" value="${_node}" />
         <input type="hidden" name="fields" value="${fields}" />
-        <ol>
-          <mm:node id="source" />
+        <input type="hidden" name="item"   value="${itemjsp}" />
+        <input type="hidden" name="seq"   value="${seq}" />
+        <input type="hidden" name="source"   value="${_node}" />
+        <input type="hidden" name="icondir"   value="${icondir}" />
+      </div>
+      <ol>
+        <mm:node id="source" />
+        <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q">
+          <mm:sortorder field="${order}" direction="${direction}" />
+          <jsp:invoke fragment="constraints" />
+          <mm:relatednodes>
+            <mm:include
+                page="/mmbase/searchrelate/list/li.jspx"
+                referids="source,f@fields,icondir?,confirm?,itemjsp@item" />
+          </mm:relatednodes>
 
-          <mm:relatednodescontainer type="${type}" role="${r}">
-            <mm:sortorder field="${order}" direction="${direction}"/>
-            <jsp:invoke fragment="constraints" />
-            <mm:relatednodes>
-              <mm:include page="${empty li ? '/mmbase/searchrelate/list/li.jspx' : li}"
-                          referids="source,f@fields,icondir?,confirm?" />
-            </mm:relatednodes>
-          </mm:relatednodescontainer>
-        </ol>
-        <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
+        </mm:relatednodescontainer>
+        <mm:write session="mm_list_query_${seq}" referid="q" />
+      </ol>
 
-        <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?,precreate?,confirm?">
-          <a href="${_}" class="create">
-            <img class="icon"
-                 alt="${empty alt ? '+' : alt}"
-                 src="${icons}/create.png" />
-          </a>
-        </mm:link>
-        <span class="status">...</span>
-      </mm:form>
+      <mm:link page="/mmbase/searchrelate/list/create.jspx"
+               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+        <a href="${_}" class="create">
+          <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+        </a>
+      </mm:link>
+      <span class="status">...</span>
     </div>
   </fmt:bundle>
 </jsp:root>
