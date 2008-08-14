@@ -18,8 +18,8 @@
     <description xml:lang="en">Automatic popfeedback</description>
   </descriptions>
 
-  <fieldlist name="rank">
-    <field>
+  <fieldlist>
+    <field name="rank">
       <gui>
         <guiname xml:lang="nl">Rank</guiname>
         <guiname xml:lang="en">Rank</guiname>
