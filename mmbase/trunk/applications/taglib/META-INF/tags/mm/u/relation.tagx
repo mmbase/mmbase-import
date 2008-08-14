@@ -6,16 +6,21 @@
     >
   <jsp:directive.tag body-content="scriptless" />
   <jsp:directive.attribute name="to" type="java.lang.String"  required="true" />
+  <jsp:directive.attribute name="from" type="java.lang.String"  />
   <jsp:directive.attribute name="role" type="java.lang.String"  />
   <jsp:directive.attribute name="searchdir" type="java.lang.String"  />
   <jsp:directive.attribute name="notfound" type="java.lang.String"   />
-  <mm:listrelationscontainer role="${role}" type="object" searchdir="${searchdir}" >
-    <mm:addnode element="object" number="${to}" />
-    <mm:listrelations>
-      <mm:node id="thenode" />
-    </mm:listrelations>
-    <mm:node number="${empty thenode ? -1 : thenode}" notfound="${empty notfound ? 'skip' : notfound}" >
-      <jsp:doBody />
-    </mm:node>
-  </mm:listrelationscontainer>
+
+  <mm:node number="${from}"> <!-- so, if from is empty, then current node -->
+
+    <mm:listrelationscontainer role="${role}" type="object" searchdir="${searchdir}" >
+      <mm:addnode element="object" number="${to}" />
+      <mm:listrelations>
+        <mm:node id="thenode" />
+      </mm:listrelations>
+      <mm:node id="idnode" number="${empty thenode ? -1 : thenode}" notfound="${empty notfound ? 'skip' : notfound}" >
+        <jsp:doBody />
+      </mm:node>
+    </mm:listrelationscontainer>
+  </mm:node>
 </jsp:root>
