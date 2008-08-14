@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.82 2008-08-14 13:59:34 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.83 2008-08-14 19:58:50 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -213,7 +213,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected static final int NOT_HANDLED = -100;
 
-    protected int doStartTagHelper() throws JspTagException {
+    protected final int doStartTagHelper() throws JspTagException {
+        initTag();
         log.debug("doStartTaghelper");
 
         listHelper.doStartTagHelper();
@@ -240,7 +241,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             }
             return setReturnValues((BridgeList<Node>) o, true);
         }
-        initTag();
         return NOT_HANDLED;
     }
 
