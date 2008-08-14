@@ -30,14 +30,8 @@
         <guiname xml:lang="fr">Placent</guiname>
         <guiname xml:lang="nl">Positie</guiname>
       </gui>
-      <editor>
-        <positions>
-          <input>3</input>
-          <list>3</list>
-          <search>3</search>
-        </positions>
-      </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <editor><positions><list>3</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.PosrelCommitProcessor" />
         </commitprocessor>
