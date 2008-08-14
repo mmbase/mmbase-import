@@ -12,12 +12,8 @@
  * Items in the list can be added and deleted. They can also be edited (with validation).
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
- * Custom events (called on the associated div)
- * -  mmsrRelatedNodesReady
- * -  mmsrCreated
- *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.21 2008-08-14 13:16:21 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.22 2008-08-14 15:41:26 jelle Exp $
  */
 
 
@@ -45,8 +41,8 @@ function List(d) {
     this.item = this.find(this.div, ".listinfo").find("input[name = 'item']")[0].value;
     this.source = this.find(this.div, ".listinfo").find("input[name = 'source']")[0].value;
     this.icondir = this.find(this.div, ".listinfo").find("input[name = 'icondir']")[0].value;
-
-
+	this.createpos = this.find(this.div, ".listinfo").find("input[name = 'createpos']")[0].value;
+	
     this.lastChange = null;
     this.lastCommit = null;
 
@@ -151,6 +147,8 @@ List.prototype.bindCreate = function(a) {
 	params.item   = this.item;
 	params.mm_list_sequence  = List.seq++;
 	params.source = this.source;
+	params.createpos = this.parentNode.list.createpos;
+
 	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    try {
@@ -161,7 +159,11 @@ List.prototype.bindCreate = function(a) {
 				this.value = "";
 				a.list.validator.validateElement(this);
 			    });
-			    a.list.find(a.list.div, "ol").append(r);
+			    if (params.createpos == 'top') {
+			    	a.list.find(a.list.div, "ol").prepend(r);
+				} else {
+					a.list.find(a.list.div, "ol").append(r);
+				}
 			    a.list.validator.addValidation(r);
 			    a.list.find(r, "a.delete").each(function() {
 				a.list.bindDelete(this);
@@ -173,7 +175,6 @@ List.prototype.bindCreate = function(a) {
 			    }
 			    });
 			    a.list.executeCallBack("create", r);
-			    $(a.list.div).trigger("mmsrCreated", [r]);
 			} else {
 			    alert(status + " with " + url);
 
@@ -259,6 +260,8 @@ List.prototype.commit = function(stale, async) {
 		params.seq    = this.seq;
 		params.source = this.source;
 		params.icondir = this.icondir;
+		params.createpos = this.createpos;
+		
 		this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
