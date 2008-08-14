@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.24 2008-08-14 13:29:26 jelle Exp $
+      @version $Id: relatednodes.tagx,v 1.25 2008-08-14 15:41:26 jelle Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -90,7 +90,6 @@
   <c:if test="${(seq eq 0 and empty load) or load}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
-
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
   </c:if>
   <fmt:bundle
@@ -108,8 +107,9 @@
         <input type="hidden" name="seq"   value="${seq}" />
         <input type="hidden" name="source"   value="${_node}" />
         <input type="hidden" name="icondir"   value="${icondir}" />
+	    <input type="hidden" name="createpos"   value="${createpos}" />
       </div>
-	  <c:if test="${createpos eq 'top'">
+	  <c:if test="${createpos eq 'top'}">
       <mm:link page="/mmbase/searchrelate/list/create.jspx"
                referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
         <a href="${_}" class="create">
@@ -132,7 +132,7 @@
         </mm:relatednodescontainer>
         <mm:write session="mm_list_query_${seq}" referid="q" />
       </ol>
-	  <c:if test="${createpos eq 'bottom'">
+	  <c:if test="${createpos eq 'bottom'}">
       <mm:link page="/mmbase/searchrelate/list/create.jspx"
                referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
         <a href="${_}" class="create">
