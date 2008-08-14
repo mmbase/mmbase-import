@@ -36,7 +36,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.109 2008-08-06 12:18:54 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.110 2008-08-14 11:29:10 michiel Exp $
  * @see ContextTag
  */
 
@@ -209,7 +209,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             if ("_".equals(i)) {
                 throw new RuntimeException("'_' is not a valid id (it is reserved for the 'current writer')");
             }
-            id = getAttribute(i);
+            id = getAttribute(i, true);
         } catch (JspTagException j) {
             throw new RuntimeException(j);
         }
