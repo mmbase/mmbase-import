@@ -12,8 +12,12 @@
  * Items in the list can be added and deleted. They can also be edited (with validation).
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
+ * Custom events (called on the associated div)
+ * -  mmsrRelatedNodesReady
+ * -  mmsrCreated
+ *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.20 2008-08-07 09:32:09 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.21 2008-08-14 13:16:21 michiel Exp $
  */
 
 
@@ -169,6 +173,7 @@ List.prototype.bindCreate = function(a) {
 			    }
 			    });
 			    a.list.executeCallBack("create", r);
+			    $(a.list.div).trigger("mmsrCreated", [r]);
 			} else {
 			    alert(status + " with " + url);
 
