@@ -16,7 +16,7 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.13 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.14 2008-08-14 20:56:24 michiel Exp $
  * @see Parameter
  */
 
@@ -30,7 +30,7 @@ public class AutodefiningParameters extends Parameters {
     public AutodefiningParameters() {
         super(new Parameter[0]);
     }
-
+    @Override
     public boolean containsParameter(Parameter<?> param) {
         return true;
     }
@@ -50,6 +50,7 @@ public class AutodefiningParameters extends Parameters {
         return define(new Parameter<Object>(param, Object.class));
     }
 
+    @Override
     public int indexOfParameter(Parameter parameter) {
         int index = super.indexOfParameter(parameter);
         if (index == -1) {
@@ -59,6 +60,7 @@ public class AutodefiningParameters extends Parameters {
         }
     }
 
+    @Override
     public int indexOfParameter(String parameterName) {
         int index = super.indexOfParameter(parameterName);
         if (index == -1) {
