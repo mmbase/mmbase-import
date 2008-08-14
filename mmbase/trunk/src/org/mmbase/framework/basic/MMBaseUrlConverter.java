@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.10 2008-07-10 15:33:39 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.11 2008-08-14 20:27:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -154,9 +154,9 @@ public class MMBaseUrlConverter implements UrlConverter {
         if (processUrl) {
             // get current components ids
             if (state.isRendering()) {
-                map.put("action", state.getId());
+                map.put(BasicFramework.ACTION.getName(), state.getId());
             } else {
-                map.put("action", state.getUpcomingId());
+                map.put(BasicFramework.ACTION.getName(), state.getUpcomingId());
             }
         }
 

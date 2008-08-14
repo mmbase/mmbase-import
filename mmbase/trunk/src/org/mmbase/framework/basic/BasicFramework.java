@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.25 2008-08-08 14:41:38 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.26 2008-08-14 20:27:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -50,7 +50,7 @@ public class BasicFramework extends Framework {
     }
 
 
-    public static final Parameter<String> ACTION     = new Parameter<String>("action", String.class);
+    public static final Parameter<String> ACTION     = new Parameter<String>("_action", String.class);
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
     protected final UrlConverter fallbackConverter   = new BasicUrlConverter(this);
