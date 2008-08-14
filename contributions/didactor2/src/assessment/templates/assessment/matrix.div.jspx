@@ -38,7 +38,7 @@
   <mm:node number="${education}">
     <mm:relatednodes
         id="learnBlock"
-        element="learnblocks" path="posrel,learnblocks,components" orderby="posrel.pos">
+        element="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
 
       <mm:size id="size" write="false" />
       <span class="col" style="width: ${60 / size}%">
@@ -97,8 +97,10 @@
                     But also a consequence of insisting to use posrel for something which simply isn't.
                     I hate the people who 'designed' this.
 
-                <mm:fieldinfo field="pos" datatype="didactor_assessment_troubles" type="${empty _node  ? 'input' : 'guivalue'}" />
+                <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="${empty _node  ? 'input' : 'guivalue'}" />
+
                 -->
+
                 <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
                 <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
               </mm:relation>
