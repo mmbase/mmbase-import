@@ -9,7 +9,6 @@
 	<mm:import externid="confirm"/>
 	<mm:import externid="icondir"/>
 	<mm:import externid="new"/>
-	<div class="body">
 	<fieldset>
 	<legend>Bericht</legend>
 		<ul>
@@ -36,10 +35,7 @@
 					<mm:fieldinfo type="errors"/>
 				</mm:field>
 			</li>
-			<li>
-				<mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}"/>
-			</li>
 		</ul>
+		<mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}"/>
 	</fieldset>
-</div>
 </jsp:root>
