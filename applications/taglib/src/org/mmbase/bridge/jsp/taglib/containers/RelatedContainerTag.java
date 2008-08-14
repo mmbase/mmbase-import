@@ -24,7 +24,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.20 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.21 2008-08-14 13:58:37 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -70,7 +70,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
 
     public int doStartTag() throws JspException {
-        super.doStartTag();
+        initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (Query) getContextProvider().getContextContainer().getObject(getReferid());

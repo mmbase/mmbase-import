@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.14 2007-06-21 15:50:26 nklasens Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.15 2008-08-14 13:59:12 michiel Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
@@ -43,12 +43,13 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
     }
 
     public int doStartTag() throws JspTagException {
+        initTag();
         String roleStr = role.getString(this);
         RelationManager rm   = getCloudVar().getRelationManager(roleStr);
         Node sourceNode      = getNode(source.getString(this));
         Node destinationNode = getNode(destination.getString(this));
-        
-        boolean hasRelationManager = getCloudVar().hasRelationManager(sourceNode.getNodeManager(), 
+
+        boolean hasRelationManager = getCloudVar().hasRelationManager(sourceNode.getNodeManager(),
                                                             destinationNode.getNodeManager(), roleStr);
         if ((hasRelationManager && rm.mayCreateRelation(sourceNode, destinationNode)) != getInverse()) {
             return EVAL_BODY;

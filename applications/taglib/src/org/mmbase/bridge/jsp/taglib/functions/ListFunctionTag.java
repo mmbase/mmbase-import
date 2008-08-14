@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.15 2008-07-22 09:39:15 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.16 2008-08-14 13:58:49 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -86,6 +86,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     }
 
     public int doStartTag() throws JspTagException {
+        initTag();
         Object value = getFunctionValue(false); // registration is done in doInitBody
         if (value instanceof Collection && comparator.equals(Attribute.NULL)) {
             returnCollection = (Collection) value;

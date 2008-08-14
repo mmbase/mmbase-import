@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.20 2008-07-17 13:51:37 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.21 2008-08-14 13:58:37 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -51,6 +51,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
 
     public int doStartTag() throws JspTagException {
+        initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
