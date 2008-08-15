@@ -113,7 +113,10 @@
                   </mm:relatednodes>
                   <td>
                     <mm:node number="$student">
-                      <di:blocks classification="communication" />
+                      <mm:link page="/c/shoutbox/index/">
+						  <mm:param name="source">${_node}</mm:param>
+						<a href="${_}" name=""><di:translate key="assessment.messages"/></a>
+					  </mm:link>
                     </mm:node>
                   </td>
                 </mm:node>
