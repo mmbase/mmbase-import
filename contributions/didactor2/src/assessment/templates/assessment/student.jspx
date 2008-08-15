@@ -102,16 +102,11 @@
                      >
 
           <form name="closelessonform" action="${_}"   method="post">
-            <input type="submit" class="formbutton" value="${di:translate('assessment.back_to_lesson')}"  />
             <input type="hidden" name="coachmode" value="false"  />
             <input type="hidden" name="lesson" value="${firstopenlesson}"  />
-            <mm:node referid="firstopenlesson">
-              <mm:related path="posrel,problems,posrel,people" max="1" constraints="people.number=$user">
-                <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
-                  <input type="submit" class="formbutton" value="${_}" />
-                </di:translate>
-              </mm:related>
-            </mm:node>
+            <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
+              <input type="submit" class="formbutton" value="${_}" />
+            </di:translate>
           </form>
 
           <mm:node number="$assessment_evaluationtest" notfound="skip">
