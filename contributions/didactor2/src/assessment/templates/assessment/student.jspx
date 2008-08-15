@@ -60,7 +60,7 @@
       <mm:treefile
           write="false"
           page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
-        <mm-sr:relatednodes
+	    <mm-sr:relatednodes
             item="/assessment/matrix.div.jspx"
             icondir="${_}"
             path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
@@ -76,36 +76,12 @@
     -->
     <div>
       <span class="head problem">
-        <di:translate key="assessment.feedback_coach" />
+        <di:translate key="assessment.feedback_coach" />:   
+			<mm:link page="/c/shoutbox/index/">
+				<a href="${_}" name=""><di:translate key="assessment.messages"/></a>
+		    </mm:link>
       </span>
-      <mm:node number="${education}">
-        <mm:relatednodes type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" varStatus="status">
-          <span class="col" style="width: ${60 / (status.count + 1)}%"> <!-- the +1 helps IE, but is logically not necessary -->
-
-            <mm:relation role="classrel" to="${user}">
-              <mm:relatednodes type="popfeedback">
-                <mm:node id="feedback" />
-              </mm:relatednodes>
-            </mm:relation>
-
-            <mm:notpresent referid="feedback">
-              &amp;nbsp;
-            </mm:notpresent>
-            <mm:present referid="feedback">
-              <mm:treefile
-                  page="/assessment/feedback.jspx" objectlist="$includePath"
-                  referids="$referids,feedback@feedback_n,user@student"
-                  write="false"
-                  >
-                <a href="${_}">
-                  <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                          title="assessment.goto_feedback" />
-                </a>
-              </mm:treefile>
-            </mm:present>
-          </span>
-      </mm:relatednodes>
-    </mm:node>
+     
     </div>
 
     <!--
