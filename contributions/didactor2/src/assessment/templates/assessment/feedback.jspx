@@ -21,11 +21,11 @@
       </mm:node>
     </mm:import>
 
-    <mm:include page="navigation.jspx" />
+    <di:include page="/assesment/navigation.jspx" />
 
     <div class="mainContent">
 
-      <div class="contentBody">
+      <div class="contentBodywit">
         <mm:node number="$feedback_n">
           <mm:relatednodes type="classrel">
             <mm:node number="${_node.snumber}" id="owner" />
