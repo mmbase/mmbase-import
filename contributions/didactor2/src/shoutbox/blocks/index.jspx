@@ -8,7 +8,7 @@
 		<div class="mm_c c_shoutbox b_index ${requestScope['org.mmbase.componentClassName']}" id="${requestScope['org.mmbase.componentId']}">
 			<mm:import externid="source"/>
 			<mm:node number="${source}">
-				<mm-sr:relatednodes type="shouts" role="posrel" fields="from,title,body" item="/mmbase/components/shoutbox/item.jspx" orderby="posrel.pos"/>
+				<mm-sr:relatednodes type="shouts" role="posrel" fields="from,title,body" item="/mmbase/components/shoutbox/item.jspx" orderby="posrel.pos" direction="down" createposition="top"/>
 			</mm:node>
 		</div>
 	</div>
