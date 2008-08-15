@@ -8,7 +8,7 @@
 		<div class="rows">
 			<di:include page="/assesment/navigation.jspx"/>
 			<div class="mainContent">
-				<div class="contentBody">
+				<div class="contentBodywit">
 					<mm:node number="Default.Background" notfound="skip">
 						<mm:import id="background">url('<mm:image template="${di:setting('education', 'background_image_template')}"/>')</mm:import>
 					</mm:node>
