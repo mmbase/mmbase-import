@@ -101,9 +101,10 @@
 
                 -->
 
-                <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
-                <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
+
               </mm:relation>
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
             </mm:field>
           </mm:listrelations>
         </mm:listrelationscontainer>
