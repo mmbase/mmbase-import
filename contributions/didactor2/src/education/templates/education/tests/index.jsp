@@ -6,7 +6,7 @@
   <mm:content postprocessor="none" type="application/xml" expires="0">
     <mm:cloud rank="didactor user">
 
-
+<di:background>
       <mm:import id="testNo" externid="learnobject" required="true"/>
       <jsp:directive.include file="/education/tests/definitions.jsp"  />
 
@@ -74,7 +74,7 @@
       <mm:node number="$testNo">
         <jsp:directive.include file="../includes/component_link.jsp" />
       </mm:node>
-
+</di:background>
 
     </mm:cloud>
   </mm:content>
