@@ -9,7 +9,7 @@
     <mm:import externid="object" />
 	<mm:import externid="name" />
 
-    <div class="titlebar"></div>
+    <div class="titlebar"><!--nothing here --></div>
  	<h1><di:translate key="${name}.name" /></h1>
   </div>
 
