@@ -12,6 +12,7 @@ package org.mmbase.util;
 import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.2 2007-05-23 13:26:28 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.3 2008-08-18 11:02:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -231,7 +232,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
-     * 
+     *
      * This collection does have a well defined iteration order.
      *
      * @param locale The locale of <code>null</code> for the default locale.
@@ -261,7 +262,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
                     {
                         Locale orgLocale = useLocale;
-                        
+
                         LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
                         while (loc == null && useLocale != null) {
                             useLocale = LocalizedString.degrade(useLocale, orgLocale);
@@ -312,7 +313,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                             continue;
                                         }
                                     }
-                                    Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                    final Query query = QueryReader.parseQuery(element, useCloud, null).query;
                                     final org.mmbase.bridge.NodeList list = query.getList();
                                     subIterator = new Iterator() {
                                             final NodeIterator nodeIterator = list.nodeIterator();
@@ -321,7 +322,20 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                             }
                                             public Object next() {
                                                 org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                return new Entry(next, next.getFunctionValue("gui", null));
+                                                if (query instanceof NodeQuery) {
+                                                    return new Entry(next, next.getFunctionValue("gui", null));
+                                                } else {
+                                                    String alias = Queries.getFieldAlias((StepField) query.getFields().get(0));
+                                                    log.debug("using field " + alias);
+                                                    if (query.getFields().size() == 1) {
+                                                        return new Entry(next.getValue(alias),
+                                                                         next.getStringValue(alias));
+                                                    } else {
+                                                        String alias2 = Queries.getFieldAlias((StepField) query.getFields().get(1));
+                                                        return new Entry(next.getValue(alias),
+                                                                         next.getStringValue(alias2));
+                                                    }
+                                                }
                                             }
                                             public void remove() {
                                                 throw new UnsupportedOperationException();
@@ -425,7 +439,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     try {
                         queriesSize += Queries.count(QueryReader.parseQuery(element, cloud, null).query);
                     } catch (Exception e) {
-                        log.warn(e);
+                        log.warn(e.getMessage(), e);
                     }
                 } else {
                     queriesSize++;
@@ -522,7 +536,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
 
     /**
-     * Given a certain DOM parent element, it configures this LocalizedEntryListFactory with 
+     * Given a certain DOM parent element, it configures this LocalizedEntryListFactory with
      * sub tags of type 'entry' and 'query'
      */
 
@@ -556,7 +570,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 if (! resource.equals("")) {
                     Comparator comparator = null;
                     Class wrapper    = wrapperDefault;
-                    if (wrapper != null && 
+                    if (wrapper != null &&
                         (! Comparable.class.isAssignableFrom(wrapper)) &&
                         (! Boolean.class.equals(wrapper)) // in java < 1.5 Boolean is not comparable
                         ) {
