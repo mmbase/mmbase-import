@@ -139,7 +139,7 @@
     </field>
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="6" />        
+        <default value="6" />
         <enumeration enforce="onchange">
           <entry value="2" xml:lang="en" display="two" />
           <entry value="2" xml:lang="nl" display="twee" />
@@ -158,7 +158,7 @@
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
-        <enumeration enforce="never">          
+        <enumeration enforce="never">
           <entry value="2" />
           <entry value="4" />
           <entry value="6" />
@@ -227,7 +227,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
-    
+
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="2005-10-05" />
@@ -239,7 +239,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
-    
+
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
@@ -251,7 +251,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
-    
+
     <field>
       <datatype base="weeknumbers" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
@@ -271,7 +271,7 @@
         <type  state="persistent">INTEGER</type>
       </db>
     </field>
-    
+
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minLength value="3" />
@@ -282,7 +282,7 @@
         <type  size="100000"   state="persistent">BINARY</type>
       </db>
     </field>
-    
+
     <field>
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -290,14 +290,14 @@
         <type state="system" size="255" unique="true">STRING</type>
       </db>
     </field>
-    
+
     <field>
       <db>
         <name>boolean</name>
         <type state="persistent">BOOLEAN</type>
       </db>
     </field>
-    
+
     <field>
       <db>
         <name>node</name>
@@ -311,7 +311,7 @@
         <type state="persistent">NODE</type>
       </db>
     </field>
-    
+
     <field>
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="true" />
@@ -321,7 +321,7 @@
         <type state="persistent" >BOOLEAN</type>
       </db>
     </field>
-    
+
     <field>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -375,6 +375,16 @@
         <type state="persistent">NODE</type>
       </db>
     </field>
+    <field name="nonode_typedef">
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <query path="typedef" element="" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <distinct />
+            <field name="typedef.name" />
+          </query>
+        </enumeration>
+      </datatype>
+    </field>
 
     <field>
       <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -408,7 +418,7 @@
     <function name="test" key="[{NODE.number}]"> <!-- key of pattern function provider is interpreted as a pattern -->
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
-    <!-- provide  functions by bean -->    
+    <!-- provide  functions by bean -->
     <function key="integerFunction" name="aaa"><!-- key of bean function is interpreted as a method name-->
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
