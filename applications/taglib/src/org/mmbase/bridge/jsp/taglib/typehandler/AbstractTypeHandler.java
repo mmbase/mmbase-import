@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.48.2.8 2008-04-24 11:43:54 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48.2.9 2008-08-18 15:35:02 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -159,12 +159,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
     /**
-     * Returns the field value as specified by the client's post.
+     * Returns the field value as specified by the client's post. This is only <code>null</code> if
+     * the client didn't post a thing. It can be empty if the client means <code>null</code>
+     * (depending on the value of {@link #interpretEmptyAsNull}).
      */
     protected Object getFieldValue(Field field) throws JspTagException {
-        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
-        if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
-        return found;
+        return tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
     }
     protected boolean interpretEmptyAsNull(Field field) {
         return true;
@@ -198,10 +198,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object fieldValue = getFieldValue(field);
         DataType dt = field.getDataType();
         if (fieldValue == null) {
-            log.debug("Field value not found in context, using existing value ");
+            log.debug("Field value for " + field + " not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);
-        } else if (fieldValue.equals("") && ! field.isRequired()) {
-            log.debug("Field value found in context is empty, interpreting as null");
+        } else if (fieldValue.equals("") && interpretEmptyAsNull(field)) {
+            log.debug("Field value for " + field + " found in context is empty, interpreting as null");
             fieldValue = null;
         }
         if (log.isDebugEnabled()) {
@@ -284,6 +284,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(node, field, false);
         Object oldValue = node.getValue(fieldName);
+        log.debug("Using " + fieldValue + " for " + fieldName);
         if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
             return false;
         }  else {
