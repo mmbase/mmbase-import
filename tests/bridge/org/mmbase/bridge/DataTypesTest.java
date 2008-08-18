@@ -133,10 +133,10 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"typedef",
                               new Object[] {node1, new Integer(node1.getNumber()),  null},
                               new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
-                /*,
+                ,
                 new Object[] {"nonode_typedef",
-                              new Object[] {"object", "typedef", "datatypes", node1},
-                              new Object[] {"", "asjdlkf"}}*/
+                              new Object[] {"object", "typedef", "datatypes"},
+                              new Object[] {"", "asjdlkf", node1}}
                 /*
                   XML not very well supported yet
                 new Object[] {"xml",
