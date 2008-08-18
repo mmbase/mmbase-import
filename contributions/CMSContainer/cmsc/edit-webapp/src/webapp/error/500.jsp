@@ -17,6 +17,13 @@
    public static String getDateTimeString(long date) {
       return DATE_TIME_FORMAT.format(new Date(date));
    }
+   // add HTMLToTEXT
+   public static String HTMLToTEXT(String html){  
+	       html=html.replaceAll("<([^<>]+)>","");
+	       String text = html.replaceAll("=\\\"[^\\\"]*\\\""," ").replaceAll("\\<[^(\\<|\\>)]*\\>"," "); 
+	       return html.replaceAll("<([^<>]+)>","");  
+	         
+	   } 
 %>
 <%
    // $Name: not supported by cvs2svn $ will be expanded when checked out with an explicit tagname. For Example "cvs co -r first"
@@ -25,6 +32,8 @@
    long ticket = System.currentTimeMillis();
 
    String msg = com.finalist.cmsc.util.HttpUtil.getErrorInfo(request, exception, ticket, version);
+   //  filtrate html 
+   msg= HTMLToTEXT(msg);
    request.setAttribute("msg", msg);
 
    
