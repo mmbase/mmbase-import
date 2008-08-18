@@ -26,7 +26,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.25 2008-03-19 16:25:22 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.26 2008-08-18 08:46:01 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -130,7 +130,8 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             }
             public MMBaseEntry next() {
                 Node node = nodeIterator.nextNode();
-                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel, elementManager, elementStep, subQueries);
+                MMBaseEntry entry = new MMBaseEntry(node, (Collection<IndexFieldDefinition>) f, isMultiLevel,
+                                                    elementManager, elementStep, subQueries);
                 i++;
                 if (log.isServiceEnabled()) {
                     if (i % 100 == 0) {
