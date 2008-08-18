@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.105 2008-07-24 16:04:38 michiel Exp $
+ * @version $Id: Queries.java,v 1.106 2008-08-18 09:51:11 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -931,7 +931,7 @@ abstract public class Queries {
                             throw new UnsupportedOperationException("Cannot count distinct queries with fields of more than one step. Current fields: " + fields);
                         }
                     }
-                    if (sf.getFieldName().equals("number")) {
+                    if (resultName == null) {
                         resultName = sf.getFieldName();
                     }
                 }
