@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.434 2008-08-14 11:24:15 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.435 2008-08-18 14:38:06 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7584,6 +7584,13 @@ The 0 is just counter, which starts at 0 on every page.
       <possiblevalue>
         <value>AND</value>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="constraint" attribute="inverse" />
+      <since>MMBase-1.8.7</since>
     </attribute>
         <example>The following code lists all users with username 'admin' or 'test'.
 

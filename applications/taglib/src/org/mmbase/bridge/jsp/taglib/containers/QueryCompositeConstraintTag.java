@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.11 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.12 2008-08-18 14:38:06 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -34,6 +34,8 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
     protected Attribute container  = Attribute.NULL;
 
     protected Attribute operator  = Attribute.NULL;
+
+    protected Attribute inverse  = Attribute.NULL;
 
     private List<Constraint> constraints;
 
@@ -54,6 +56,10 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         } else {
             throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
         }
+    }
+
+    public void setInverse(String i) throws JspTagException {
+        inverse = getAttribute(i, true);
     }
 
     public void addChildConstraint(Constraint cons) throws JspTagException {
@@ -79,6 +85,9 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             } else {
                 newConstraint = Queries.addConstraint(query, newConstraint);
             }
+        }
+        if (inverse.getBoolean(this, false)) {
+            query.setInverse(newConstraint, true);
         }
         return newConstraint;
     }
