@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.35 2008-08-18 08:24:48 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.36 2008-08-18 08:46:01 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -54,7 +54,6 @@ public class MMBaseEntry implements IndexEntry {
     // of fields already indexed
     private final Set<String> indexed = new HashSet<String>();
 
-    private final float boost = 1.0f;
 
     MMBaseEntry(Node node, Collection<IndexFieldDefinition> fields, boolean multiLevel,
                 NodeManager elementManager, Step elementStep,
@@ -137,27 +136,32 @@ public class MMBaseEntry implements IndexEntry {
                        value = transformer.transform(value);
                    }
                 }
-                if (fieldDefinition.keyWord) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("add " + fieldName + " text, keyword" + value);
+                for (String v : value.split(fieldDefinition.split, "".equals(fieldDefinition.split) ? 1 : 0)) {
+                    // Trick with using the 'limit' argument of the split function makes sure that
+                    // split="" is equivalent to no splitting at all.
+
+                    if (fieldDefinition.keyWord) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("add " + fieldName + " text, keyword" + v);
+                        }
+                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                        field.setBoost(fieldDefinition.boost);
+                        Indexer.addField(document, field, fieldDefinition.multiple);
+                    } else if (fieldDefinition.storeText) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, store. Boost " + fieldDefinition.boost);
+                        }
+                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.TOKENIZED);
+                        field.setBoost(fieldDefinition.boost);
+                        Indexer.addField(document, field, fieldDefinition.multiple);
+                    } else {
+                        if (log.isTraceEnabled()) {
+                            log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, no store. Boost " + fieldDefinition.boost);
+                        }
+                        Field field = new Field(fieldName, v, Field.Store.NO, Field.Index.TOKENIZED);
+                        field.setBoost(fieldDefinition.boost);
+                        Indexer.addField(document, field, fieldDefinition.multiple);
                     }
-                     Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
-                     field.setBoost(fieldDefinition.boost);
-                     Indexer.addField(document, field, fieldDefinition.multiple);
-                } else if (fieldDefinition.storeText) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, store. Boost " + fieldDefinition.boost);
-                    }
-                    Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED);
-                    field.setBoost(fieldDefinition.boost);
-                    Indexer.addField(document, field, fieldDefinition.multiple);
-                } else {
-                    if (log.isTraceEnabled()) {
-                        log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, no store. Boost " + fieldDefinition.boost);
-                    }
-                    Field field = new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED);
-                    field.setBoost(fieldDefinition.boost);
-                    Indexer.addField(document, field, fieldDefinition.multiple);
                 }
             }
         }

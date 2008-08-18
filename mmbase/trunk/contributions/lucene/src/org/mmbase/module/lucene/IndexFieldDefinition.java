@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.10 2007-12-12 10:38:20 pierre Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.11 2008-08-18 08:46:01 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -63,6 +63,8 @@ public class IndexFieldDefinition extends FieldDefinition {
     public Indexer.Multiple multiple = Indexer.Multiple.ADD;
 
     public float boost = 1.0f;
+
+    public String split = "";
 
     IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set<String> allIndexedFieldsSet) {
         super();
@@ -106,6 +108,8 @@ public class IndexFieldDefinition extends FieldDefinition {
         if (QueryReader.hasAttribute(fieldElement,"boost")) {
             boost = Float.valueOf(QueryReader.getAttribute(fieldElement, "boost"));
         }
+        split = QueryReader.getAttribute(fieldElement, "split");
+
         if (!keyWord) {
             if (alias != null) {
                 allIndexedFieldsSet.add(alias);
