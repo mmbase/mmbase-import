@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.11 2008-08-18 10:24:40 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.12 2008-08-18 17:32:52 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -498,6 +498,7 @@ abstract public class Queries {
                 }
                 switch (operator) {
                 case OPERATOR_BETWEEN :
+                    value2 = field.getDataType().cast(value2, null, field);
                     Object compareValue2 = getCompareValue(fieldType, operator, value2);
                     newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
                     break;
