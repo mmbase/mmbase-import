@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.34 2008-08-15 11:20:50 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.35 2008-08-18 08:24:48 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -141,7 +141,9 @@ public class MMBaseEntry implements IndexEntry {
                     if (log.isTraceEnabled()) {
                         log.trace("add " + fieldName + " text, keyword" + value);
                     }
-                    Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED), fieldDefinition.multiple);
+                     Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                     field.setBoost(fieldDefinition.boost);
+                     Indexer.addField(document, field, fieldDefinition.multiple);
                 } else if (fieldDefinition.storeText) {
                     if (log.isTraceEnabled()) {
                         log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, store. Boost " + fieldDefinition.boost);
