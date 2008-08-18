@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.50 2008-08-18 11:05:10 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.51 2008-08-18 14:13:59 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -333,9 +333,14 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                             return new Entry<C, String>((C) next.getValue(alias),
                                                                              next.getStringValue(alias));
                                                         } else {
-                                                            String alias2 = Queries.getFieldAlias(query.getFields().get(1));
+                                                            StringBuilder buf = new StringBuilder();
+                                                            for (int i = 1 ; i < query.getFields().size(); i++) {
+                                                                String a = Queries.getFieldAlias(query.getFields().get(i));
+                                                                if (buf.length() > 0) buf.append(" ");
+                                                                buf.append(next.getStringValue(a));
+                                                            }
                                                             return new Entry<C, String>((C) next.getValue(alias),
-                                                                                        next.getStringValue(alias2));
+                                                                                        buf.toString());
                                                         }
                                                     }
                                                 }
@@ -438,7 +443,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     try {
                         queriesSize += Queries.count(QueryReader.parseQuery(element, cloud, null).query);
                     } catch (Exception e) {
-                        log.warn(e);
+                        log.warn(e.getMessage(), e);
                     }
                 } else {
                     queriesSize++;
