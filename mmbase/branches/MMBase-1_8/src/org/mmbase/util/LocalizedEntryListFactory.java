@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.3 2008-08-18 11:02:52 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.4 2008-08-18 14:12:27 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -331,9 +331,14 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                                         return new Entry(next.getValue(alias),
                                                                          next.getStringValue(alias));
                                                     } else {
-                                                        String alias2 = Queries.getFieldAlias((StepField) query.getFields().get(1));
+                                                        StringBuffer buf = new StringBuffer();
+                                                        for (int i = 1 ; i < query.getFields().size(); i++) {
+                                                            String a = Queries.getFieldAlias((StepField) query.getFields().get(i));
+                                                            if (buf.length() > 0) buf.append(" ");
+                                                            buf.append(next.getStringValue(a));
+                                                        }
                                                         return new Entry(next.getValue(alias),
-                                                                         next.getStringValue(alias2));
+                                                                         buf.toString());
                                                     }
                                                 }
                                             }
