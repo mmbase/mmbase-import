@@ -21,16 +21,20 @@ import org.mmbase.bridge.Transaction;
  */
 public class CreateNodeAction extends AbstractNodeAction {
 
-	private String nodemanager;
+	private String nodeType;
 
-	public final void setNodemanger(String nodemanger) {
-		this.nodemanager = nodemanger;
+	public final void setNodeType(String nodemanger) {
+		this.nodeType = nodemanger;
+	}
+
+	public final String getNodenType() {
+		return this.nodeType;
 	}
 
 	@Override
 	protected final void createCacheFlushHints() {
 		CacheFlushHint hint = new CacheFlushHint(CacheFlushHint.TYPE_NODE);
-		hint.setNodeType(nodemanager);
+		hint.setNodeType(nodeType);
 		addCachFlushHint(hint);
 	}
 
@@ -40,13 +44,10 @@ public class CreateNodeAction extends AbstractNodeAction {
 		if (nodeManager == null) {
 			return null;
 		} else {
-			if(nodeManager.mayCreateNode()){
+			if(mayCreate(nodeManager)){
 				return nodeManager.createNode();
-			}else{
-				addGlobalError("error.create.authorization", new String[]{nodemanager});
-				addGlobalError("error.create.node");
-				return null;
 			}
+			return null;
 		}
 	}
 
@@ -57,21 +58,15 @@ public class CreateNodeAction extends AbstractNodeAction {
 	 * @return the node manager used to create a new node with
 	 */
 	protected NodeManager resolveNodemanager(Transaction transaction) {
-		if (StringUtils.isBlank(nodemanager)) {
+		if (StringUtils.isBlank(nodeType)) {
 			addGlobalError("error.property.required", new String[] { "nodemanager", CreateNodeAction.class.getName() });
-			addGlobalError("error.create.node");
 			return null;
-		} else if (transaction.hasNodeManager(nodemanager)) {
-			return transaction.getNodeManager(nodemanager);
+		} else if (transaction.hasNodeManager(nodeType)) {
+			return transaction.getNodeManager(nodeType);
 		} else {
-			addGlobalError("error.illegal.nodemanager", new String[] { nodemanager });
-			addGlobalError("error.create.node");
+			addGlobalError("error.illegal.nodemanager", new String[] { nodeType });
 			return null;
 		}
-	}
-
-	protected final String getNodenmanager() {
-		return this.nodemanager;
 	}
 
 }

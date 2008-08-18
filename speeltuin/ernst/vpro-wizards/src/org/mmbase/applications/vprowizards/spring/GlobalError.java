@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.mmbase.module.core.MMBase;
 
 public class GlobalError {
 	

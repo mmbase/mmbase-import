@@ -122,10 +122,24 @@ See http://www.MMBase.org/license
         <directory>config</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
-          <exclude>applications/EmailExamples/**</exclude>
-          <exclude>applications/EmailExamples.xml</exclude>
         </excludes>
       </resource>
     </resources>
+    
+    <!-- Unit test cases -->
+    <!--
+    -->
+    <unitTestSourceDirectory>test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Tests.java</include>
+        <include>**/*Test.java</include>
+        <include>**/*TestSuite.java</include>
+      </includes>
+      <excludes>
+        <exclude>**/Abstract*Test.java</exclude>
+      </excludes>
+    </unitTest>
+    
   </build>
 </project>

@@ -46,7 +46,7 @@ public class UpdateNodeAction extends AbstractNodeAction {
 		this.nodenr = nodenr;
 	}
 
-	protected final String getNodenr() {
+	public final String getNodenr() {
 		return this.nodenr;
 	}
 

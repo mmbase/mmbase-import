@@ -128,7 +128,7 @@ public class PosrelSortHandler extends Handler<PosrelSortAction> {
 	}
 
 	/**
-	 * This method checks if there are no multiple occurences of posrel values.
+	 * This method checks if there are no multiple occurrences of posrel values.
 	 * if this is the case  then the posrels will be renumbered starting at the lowest value that was found.
 	 * @param targetType
 	 * @param containerType
