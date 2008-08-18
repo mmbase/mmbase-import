@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.49 2008-07-24 11:34:55 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.50 2008-08-18 11:05:10 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -73,7 +73,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             return "entries:" + entries + "uu:" + unusedKeys;
         }
     }
-    private HashMap<Locale, LocalizedEntry> localized  = new HashMap<Locale, LocalizedEntry>();   
+    private HashMap<Locale, LocalizedEntry> localized  = new HashMap<Locale, LocalizedEntry>();
     private ArrayList<Bundle> bundles  = new ArrayList<Bundle>(); // contains all Bundles
     private ArrayList<Serializable> fallBack = new ArrayList<Serializable>(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
@@ -231,7 +231,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
-     * 
+     *
      * This collection does have a well defined iteration order.
      *
      * @param locale The locale of <code>null</code> for the default locale.
@@ -249,7 +249,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         int   i = -1;
                         Locale useLocale = locale;
                         Cloud useCloud = cloud;
-                        
+
                         {
                             if (useLocale == null) {
                                 useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
@@ -259,7 +259,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                         private ChainedIterator iterator = new ChainedIterator();
                         private Iterator<Map.Entry<C, String>> subIterator = null;
                         private Map.Entry<C, String> next = null;
-                        
+
                         {
                             Locale orgLocale = useLocale;
 
@@ -284,11 +284,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                 iterator.addIterator(loc.entries.iterator());
                                 iterator.addIterator(loc.unusedKeys.iterator());
                             }
-                            
+
                             findNext();
                             while (i < index) next();
                         }
-                        
+
                         protected void findNext() {
                             next = null;
                             i++;
@@ -315,16 +315,29 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                 continue;
                                             }
                                         }
-                                        Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                        final Query query = QueryReader.parseQuery(element, useCloud, null).query;
                                         final org.mmbase.bridge.NodeList list = query.getList();
-                                        subIterator = new Iterator() {
+                                        subIterator = new Iterator<Map.Entry<C, String>>() {
                                                 final NodeIterator nodeIterator = list.nodeIterator();
                                                 public boolean hasNext() {
                                                     return nodeIterator.hasNext();
                                                 }
-                                                public Object next() {
+                                                public Map.Entry<C, String> next() {
                                                     org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                    return new Entry<Node, FieldValue>(next, next.getFunctionValue("gui", null));
+                                                    if (query instanceof NodeQuery) {
+                                                        return new Entry<C, String>((C) next, next.getFunctionValue("gui", null).toString());
+                                                    } else {
+                                                        String alias = Queries.getFieldAlias(query.getFields().get(0));
+                                                        log.debug("using field " + alias);
+                                                        if (query.getFields().size() == 1) {
+                                                            return new Entry<C, String>((C) next.getValue(alias),
+                                                                             next.getStringValue(alias));
+                                                        } else {
+                                                            String alias2 = Queries.getFieldAlias(query.getFields().get(1));
+                                                            return new Entry<C, String>((C) next.getValue(alias),
+                                                                                        next.getStringValue(alias2));
+                                                        }
+                                                    }
                                                 }
                                                 public void remove() {
                                                     throw new UnsupportedOperationException();
@@ -343,7 +356,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                 }
                             }
                         }
-                        
+
                         public boolean hasNext() {
                             return next != null || subIterator != null;
                         }
@@ -380,8 +393,8 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                             throw new UnsupportedOperationException();
                         }
                         // this is why we hate java:
-                        
-                        
+
+
                         public void remove() {
                             throw new UnsupportedOperationException();
                         }
@@ -525,7 +538,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
     /**
-     * Given a certain DOM parent element, it configures this LocalizedEntryListFactory with 
+     * Given a certain DOM parent element, it configures this LocalizedEntryListFactory with
      * sub tags of type 'entry' and 'query'
      */
 
@@ -561,7 +574,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 if (! resource.equals("")) {
                     Comparator comparator = null;
                     Class wrapper    = wrapperDefault;
-                    if (wrapper != null && 
+                    if (wrapper != null &&
                         (! Comparable.class.isAssignableFrom(wrapper)) &&
                         (! Boolean.class.equals(wrapper)) // in java < 1.5 Boolean is not comparable
                         ) {
