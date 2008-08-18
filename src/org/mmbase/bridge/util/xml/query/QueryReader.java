@@ -18,14 +18,16 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8.2.3 2008-01-23 15:36:42 pierre Exp $
+ * @version $Id: QueryReader.java,v 1.8.2.4 2008-08-18 11:07:48 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
+    private static final Logger log = Logging.getLoggerInstance(QueryReader.class);
 
     public static final String XSD_SEARCHQUERY_1_0 = "searchquery.xsd";
     public static final String NAMESPACE_SEARCHQUERY_1_0 = "http://www.mmbase.org/xmlns/searchquery";
@@ -61,7 +63,7 @@ public class QueryReader {
         }
     }
 
-    /* Expands a fieldname in a multilevel query with the element nodemanager step if no step is given. 
+    /* Expands a fieldname in a multilevel query with the element nodemanager step if no step is given.
      */
     protected static String getFullFieldName(QueryDefinition queryDefinition, String fieldName) {
         if (queryDefinition.isMultiLevel && fieldName.indexOf('.') == -1) {
@@ -174,8 +176,8 @@ public class QueryReader {
         }
         StepField stepField = null;
         String fieldName = "number";
-        if (hasAttribute(constraintElement,"element")) {
-            if (hasAttribute(constraintElement,"field")) {
+        if (hasAttribute(constraintElement, "element")) {
+            if (hasAttribute(constraintElement, "field")) {
                 throw new IllegalArgumentException("Can not specify both 'field' and 'element' attributes on ageconstraint");
             }
             fieldName = getAttribute(constraintElement,"element") + ".number";
@@ -412,12 +414,15 @@ public class QueryReader {
             queryDefinition.isMultiLevel = !path.equals(element);
 
 
-            if (element != null) {
+            if (element != null && ! "".equals(element)) {
                 queryDefinition.elementManager = cloud.getNodeManager(element);
             }
             if (!path.equals(element)) /* (queryDefinition.isMultiLevel) */ {
                 queryDefinition.query = cloud.createQuery();
                 Queries.addPath(queryDefinition.query, path, searchDirs);
+                if (log.isDebugEnabled()) {
+                    log.debug("" + queryDefinition.query.toSql());
+                }
             } else {
                 queryDefinition.query = queryDefinition.elementManager.createQuery();
             }
@@ -433,7 +438,9 @@ public class QueryReader {
 
             // custom configurations to the query
             queryDefinition.configure(queryElement);
-
+            if (log.isDebugEnabled()) {
+                log.debug("" + queryDefinition.query.toSql());
+            }
             NodeList childNodes = queryElement.getChildNodes();
             for (int k = 0; k < childNodes.getLength(); k++) {
                 if (childNodes.item(k) instanceof Element) {
