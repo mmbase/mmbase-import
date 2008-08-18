@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.10 2007-12-21 09:15:02 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.11 2008-08-18 11:08:56 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -418,9 +418,37 @@ SATURDAY=saturday]]></programlisting>
         </section>
         <section id="query">
           <title>Enumerations based on MMBase queries</title>
-          <para>
-            TODO: query sub element.
+          <para>Enumerations based on MMBase queries are most often used for 'NODE' typed
+          fields. You simply specify a mmbase query which specifies the allowed node values for the
+          field. The query is speficied with XML in the namespace
+          "http://www.mmbase.org/xmlns/searchquery" (This format is e.g. also used in the XML's of
+          the lucene contributions).
           </para>
+          <para>Most oftenly, the query simply lists all nodes of one certain type, effectively constraining the NODE-values to nodes of one certain type:
+          </para>
+          <programlisting><![CDATA[
+      <enumeration>
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+        </enumeration>
+      ]]></programlisting>
+          <section id="query_for_other_typed_field">
+            <title>Enumerations based on MMBase queries for fields which are not NODE</title>
+            <para>In this case it is essential to also use one or two field, and make the query 'distinct' and 'multilevel' (which avoids adding the 'number' field implicitely).
+            </para>
+            <para>In this example we make a STRING field with possible values defined by the field 'code' of another builder.</para>
+            <programlisting><![CDATA[
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <enumeration>
+          <query path="nz_courses" element="" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <distinct value="true" />
+            <field name="nz_courses.code" />
+            <field name="nz_courses.name" />
+          </query>
+        </enumeration>
+      </datatype>]]></programlisting>
+            <para>'element="" makes the query explicitely multilevel, even though only one step is present</para>
+          </section>
         </section>
 
       </section>
@@ -602,7 +630,7 @@ SATURDAY=saturday]]></programlisting>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
   </head>
   <body>
-    <script type="text/javascript">new MMBaseValidator(window);</script>
+    <script type="text/javascript">new MMBaseValidator(document);</script>
     ... the rest of your page..
 ]]></programlisting>
     </para>
