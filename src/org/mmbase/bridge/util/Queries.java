@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.106 2008-08-18 09:51:11 michiel Exp $
+ * @version $Id: Queries.java,v 1.107 2008-08-18 11:02:06 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1387,6 +1387,23 @@ abstract public class Queries {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the string which must be used for {@link Node#getValue} in the result set of the
+     * query of the given StepField.
+     * @since MMBase-1.8.7
+     */
+    public static String getFieldAlias(StepField sf) {
+        String alias = sf.getAlias();
+        if (alias == null) {
+            String stepAlias = sf.getStep().getAlias();
+            if (stepAlias == null) {
+                stepAlias = sf.getStep().getTableName();
+            }
+            alias = stepAlias + "." + sf.getFieldName();
+        }
+        return alias;
     }
 
     /**
