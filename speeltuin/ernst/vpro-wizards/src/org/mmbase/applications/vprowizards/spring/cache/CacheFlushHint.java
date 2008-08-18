@@ -2,6 +2,11 @@ package org.mmbase.applications.vprowizards.spring.cache;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * FIXME: why is there no indicator for the type of mutation (add:update:delete)?
+ * @author Ernst Bunders
+ *
+ */
 public class CacheFlushHint {
     private Map<String,Object> properties = new HashMap<String, Object>();
     private int type;

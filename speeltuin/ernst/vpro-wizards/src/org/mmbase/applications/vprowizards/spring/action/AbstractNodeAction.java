@@ -15,7 +15,9 @@ import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,26 +61,78 @@ public abstract class AbstractNodeAction extends Action {
 	@Override
 	public final void process(Map<String, Node> nodeMap, ResultContainer resultContainer) {
 		this.resultContainer = resultContainer;
+		
+		//get the node
 		node = createNode(resultContainer.getTransaction(), nodeMap, resultContainer.getRequest());
 		
-		if (resultContainer.containsGlobalErrors()) {
+		if (hasErrors()) {
 			return;
 		}
-		if (node == null) {
+		
+		if (node == null && isNodeNullIllegal()) {
 			throw new IllegalStateException(
 					"No node has been provided, and no error has been set. Either of these should happen");
 		}
-		if (shouldProcess(node)) {
-			setBasicFields();
+		
+		//now check if no illegal fields are set for this node type
+		if(node != null){
+			checkBasicFields();
+		}
+			
+		//no error and no overridden 'proceed' flag? Set the values and 
+		//call the post processing callback method.
+		if (!hasErrors() &&  shouldProcess(node)) {
+			if(node!= null){
+				setBasicFields();
+			}
+			
 			if (resultContainer.containsFieldErrors()) {
 				return;
 			}
-			if (getId() != null) {
-				resultContainer.getIdMap().put(getId(), node);
-				log.debug("node ["+node+"] is registered under id " + getId());
+			
+			if (node != null) {
+				if (getId() != null) {
+					resultContainer.getIdMap().put(getId(), node);
+					log.debug("node [" + node + "] is registered under id " + getId());
+				}
+				processNode(resultContainer.getTransaction());
 			}
-			processNode(resultContainer.getTransaction());
+			
+			//even with a null node it can be necessary to create a cache flush hint
+			//for instance when a node was deleted.
 			createCacheFlushHints();
+		}
+	}
+
+	/**
+	 * This template method determines if it is an error when the node is null.
+	 * Override this for concrete actions that actually don't need a node always.
+	 * @return true by default.
+	 */
+	protected boolean isNodeNullIllegal() {
+		return true;
+	}
+
+	/**
+	 * this template method is called before any changes are made to the node to edit. if it returns false, no more
+	 * action will be taken. Use this if you want to use some kind of switch.
+	 * 
+	 * @param node
+	 *            the current node.
+	 * @return true if there is no reason not to process this node
+	 */
+	protected boolean shouldProcess(Node node) {
+		return true;
+	}
+
+	/**
+	 * Check if all the fields set for this node action actually exist in the nodemanager.
+	 */
+	private void checkBasicFields() {
+		for(String fieldName: fields.keySet()){
+			if(!node.getNodeManager().hasField(fieldName)){
+				addFieldError(fieldName, "error.field.nonexistant", new String[]{fieldName, node.getNodeManager().getName()});
+			}
 		}
 	}
 
@@ -109,22 +163,13 @@ public abstract class AbstractNodeAction extends Action {
 	 */
 	protected void processNode(Transaction transaction) {};
 
-	/**
-	 * this template method is called before any changes are made to the node to edit. if it returns false, no more
-	 * action wil be taken. Use this if you want to use some kind of switch.
-	 * 
-	 * @param node
-	 *            the current node.
-	 * @return true if there is no reason not to process this node
-	 */
-	protected boolean shouldProcess(Node node) {
-		return true;
-	}
-	
 	protected final Locale getLocale(){
 		return resultContainer.getLocale();
 	}
 	
+	/**
+	 * @return the node that is created for this node action.
+	 */
 	protected final Node getNode(){
 		return node;
 	}
@@ -152,12 +197,36 @@ public abstract class AbstractNodeAction extends Action {
 	}
 	
 	/**
-	 * Creates a field error for this action
+	 * Create a field error for this action, using a key without place holder values
 	 * @param field
 	 * @param key
 	 */
 	protected final void addFieldError(String field, String key) {
 		resultContainer.getFieldErrors().add(new FieldError(field, key, getLocale()));
+	}
+	
+	
+	
+	/**
+	 * Creates a field error for this action, where there is some sort of error when setting the field.
+	 * This version does not take the (offending) field value but the error message.
+	 * This method uses it's own error message key.
+	 * @param field
+	 * @param message
+	 */
+	protected final void addFieldErrorTypeMessage(String field, String message) {
+		resultContainer.getFieldErrors().add(new FieldError(field, "error.field.message",new String[]{field, message}, getLocale()));
+	}
+	
+	/**
+	 * Creates a field error for this action, where the value set on some field is
+	 * invalid.
+	 * This method uses it's own error message key. 
+	 * @param field
+	 * @param value
+	 */
+	protected final void addFieldErrorTypeValue(String field, String value) {
+		resultContainer.getFieldErrors().add(new FieldError(field, "error.field.value",new String[]{field, value}, getLocale()));
 	}
 
 	
@@ -216,7 +285,7 @@ public abstract class AbstractNodeAction extends Action {
 					setChanged();
 				}
 			} catch (ParseException e) {
-				addFieldError(field, e.getMessage());
+				addFieldErrorTypeMessage(field, e.getMessage());
 			}
 		}
 
@@ -288,7 +357,7 @@ public abstract class AbstractNodeAction extends Action {
 
 			}
 		} catch (IOException e) {
-			addFieldError("file", "" + e);
+			addFieldErrorTypeMessage("file", "" + e);
 		}
 		if (changed) {
 			setChanged();
@@ -321,6 +390,85 @@ public abstract class AbstractNodeAction extends Action {
 
 	public String getId() {
 		return id;
+	}
+	
+	/**
+	 * Check if a relation is possible from the given source to the given destination with
+	 * the given relation manager.
+	 * @param relationManager
+	 * @return
+	 */
+	protected final boolean checkTypeRel(RelationManager relationManager, Node sourceNode, Node destinationNode) {
+		String constraints = String.format(
+				"snumber=%s AND dnumber=%s and rnumber=%s", 
+				"" + sourceNode.getNodeManager().getNumber(), 
+				"" + destinationNode.getNodeManager().getNumber(),
+				"" + relationManager.getNumber());
+		NodeList nl = relationManager.getList(constraints, null, null);
+		if(nl.size() == 0){
+			addGlobalError(
+					"error.create.relation.typerel", 
+					new String[]{sourceNode.getNodeManager().getName(), destinationNode.getNodeManager().getName(), relationManager.getName()});
+			addGlobalError("error.create.relation");
+			return false;
+		}
+		return true;
+	}
+	
+
+	/**
+	 * can the current owner create a node of this type?
+	 * set global error when fail.
+	 * @param nodeManager
+	 * @return true when allowed.
+	 */
+	protected final boolean mayWrite(NodeManager nodeManager) {
+		if(nodeManager == null){
+			throw new NullPointerException("argument nodeManager is null");
+		}
+		boolean mayWrite= nodeManager.mayWrite();
+		if(!mayWrite){
+			addGlobalError("error.authorization.write", new String[]{nodeManager.getName()});
+		}
+		return mayWrite;
+	}
+	
+	/**
+	 * can the current owner create a node of this type?
+	 * set global error when fail.
+	 * @param nodeManager
+	 * @return true when allowed.
+	 */
+	protected final boolean mayCreate(NodeManager nodeManager) {
+		if(nodeManager == null){
+			throw new NullPointerException("argument nodeManager is null");
+		}
+		boolean mayCreate = nodeManager.mayCreateNode();
+		if(!mayCreate){
+			addGlobalError("error.authorization.create", new String[]{nodeManager.getName()});
+		}
+		return mayCreate;
+	}
+	
+	/**
+	 * can the current owner delete this node?
+	 * set global error when fail.
+	 * @param nodeManager
+	 * @return true when allowed.
+	 */
+	protected final boolean mayDelete(Node node) {
+		if(node == null){
+			throw new NullPointerException("argument node is null");
+		}
+		boolean mayDelete = node.mayDelete();
+		if(!mayDelete){
+			addGlobalError("error.authorization.delete", new String[]{node.getNumber()+"", node.getNodeManager().getName()});
+		}
+		return mayDelete;
+	}
+	
+	protected final boolean hasErrors(){
+		return (resultContainer.getGlobalErrors().size() == 0 && resultContainer.getFieldErrors().size() == 0);
 	}
 
 	@Override
