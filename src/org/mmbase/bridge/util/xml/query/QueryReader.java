@@ -23,7 +23,7 @@ import org.mmbase.util.*;
  * This class contains static methods related to creating a Query object using a (fragment of an) XML.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.17 2008-08-13 08:12:22 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.18 2008-08-18 11:07:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class QueryReader {
@@ -55,8 +55,8 @@ public abstract class QueryReader {
      * searchquery namespace
      */
     static public String getAttribute(Element element, String localName) {
-        if (element.hasAttributeNS(NAMESPACE_SEARCHQUERY,localName)) {
-            return element.getAttributeNS(NAMESPACE_SEARCHQUERY,localName);
+        if (element.hasAttributeNS(NAMESPACE_SEARCHQUERY, localName)) {
+            return element.getAttributeNS(NAMESPACE_SEARCHQUERY, localName);
         } else {
             return element.getAttribute(localName);
         }
@@ -418,7 +418,7 @@ public abstract class QueryReader {
             QueryDefinition queryDefinition = configurer.getQueryDefinition();
             queryDefinition.isMultiLevel = !path.equals(element);
 
-            if (element != null) {
+            if (element != null && ! "".equals(element)) {
                 queryDefinition.elementManager = cloud.getNodeManager(Queries.removeDigits(element));
             }
             if (queryDefinition.isMultiLevel) {
