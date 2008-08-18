@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.9 2008-04-14 15:27:48 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.10 2008-08-18 09:50:04 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -935,10 +935,10 @@ abstract public class Queries {
                         step = sf.getStep();
                     } else {
                         if (! step.equals(sf.getStep())) {
-                            throw new UnsupportedOperationException("Cannot count distinct queries with fields of more than one step. Current fields: " + fields);
+                            throw new UnsupportedOperationException("Cannot count distinct queries with fields of more than one step. Current fields: " + fields + " " + step + " != " + sf.getStep());
                         }
                     }
-                    if (sf.getFieldName().equals("number")) {
+                    if (resultName == null) {
                         resultName = sf.getFieldName();
                     }
                 }
