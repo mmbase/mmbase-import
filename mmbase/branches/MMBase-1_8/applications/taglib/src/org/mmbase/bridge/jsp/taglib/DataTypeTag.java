@@ -32,19 +32,28 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.1.2.1 2008-08-19 09:38:07 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.1.2.2 2008-08-19 10:09:34 michiel Exp $
  * @since MMBase-1.8.7
  */
-public class DataTypeTag extends ContextReferrerTag {
+public class DataTypeTag extends CloudReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(DataTypeTag.class);
 
     public static final String KEY = "org.mmbase.taglib.datatypecollector";
     public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     private Attribute base = Attribute.NULL;
+    private Attribute nodeManager = Attribute.NULL;
+    private Attribute field = Attribute.NULL;
 
     public void setBase(String b) throws JspTagException {
         base = getAttribute(b);
+    }
+
+    public void setNodemanager(String n) throws JspTagException {
+        nodeManager = getAttribute(n);
+    }
+    public void setField(String f) throws JspTagException {
+        field = getAttribute(f);
     }
 
     protected DataTypeCollector getCollector() {
@@ -73,9 +82,22 @@ public class DataTypeTag extends ContextReferrerTag {
         "xmlns=\"" + DataTypeReader.NAMESPACE_DATATYPES + "\" " +
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
         "xsi:schemaLocation=\"" + DataTypeReader.NAMESPACE_DATATYPES + " " + DataTypeReader.NAMESPACE_DATATYPES + ".xsd\"";
+
+    protected BasicDataType getBaseDataType(DataTypeCollector collector) throws JspTagException {
+        if (base.getString(this).equals("")) {
+            String nm = nodeManager.getString(this);
+            if ("".equals(nm)) throw new JspTagException("Should specify either 'base' or 'nodemanager' attribute");
+            String fn = field.getString(this);
+            if ("".equals(fn)) throw new JspTagException("Attribute 'field' is required when using 'nodemanager' attribute");
+            return (BasicDataType) getCloudVar().getNodeManager(nm).getField(fn).getDataType();
+        } else {
+            return collector.getDataType(base.getString(this));
+        }
+    }
+
     public int doEndTag() throws JspTagException {
-        StringBuffer buf = new StringBuffer("<datatype base=\"");
-        buf.append(base.getString(this)).append("\" id=\"").append(getId()).append("\" ").append(ATTR).append(">");
+        StringBuffer buf = new StringBuffer("<datatype id=\"");
+        buf.append(getId()).append("\" ").append(ATTR).append(">");
         if (body != null) buf.append(body);
         buf.append("</datatype>");
         try {
@@ -85,7 +107,7 @@ public class DataTypeTag extends ContextReferrerTag {
                                                                                              errorHandler, resolver);
             Element element = dbuilder.parse(new InputSource(new StringReader(buf.toString()))).getDocumentElement();
             DataTypeCollector collector = getCollector();
-            BasicDataType dt = DataTypeReader.readDataType(element, collector.getDataType(base.getString(this)), collector).dataType;
+            BasicDataType dt = DataTypeReader.readDataType(element, getBaseDataType(collector), collector).dataType;
             if (log.isDebugEnabled()) {
                 log.debug("Created " + dt);
                 log.debug("In " + collector.getDataTypes());
