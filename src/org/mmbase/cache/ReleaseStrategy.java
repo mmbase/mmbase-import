@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.23 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.24 2008-08-19 17:20:23 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -69,32 +69,32 @@ public abstract class ReleaseStrategy {
      *
      */
     public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List<MMObjectNode> cachedResult) {
-        final Timer timer = new Timer();
+        final long startTime = System.nanoTime();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            long cost = timer.getNanoTime();
-            totalEvaluationNanoTime+= cost;
-            return new StrategyResult(shouldRelease, cost);
-        } else {
-            // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, timer.getTimeMillis());
-        }
-    }
-
-    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
-        Timer timer = new Timer();
-        if (isActive) {
-            boolean shouldRelease = doEvaluate(event, query, cachedResult);
-            totalEvaluated++;
-            if (!shouldRelease) totalPreserved++;
-            long cost = timer.getNanoTime();
+            long cost = System.nanoTime() - startTime;
             totalEvaluationNanoTime += cost;
             return new StrategyResult(shouldRelease, cost);
         } else {
             // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, timer.getTimeMillis());
+            return new StrategyResult(true, System.nanoTime() - startTime);
+        }
+    }
+
+    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+        final long startTime = System.nanoTime();
+        if (isActive) {
+            boolean shouldRelease = doEvaluate(event, query, cachedResult);
+            totalEvaluated++;
+            if (!shouldRelease) totalPreserved++;
+            long cost = System.nanoTime() - startTime;
+            totalEvaluationNanoTime += cost;
+            return new StrategyResult(shouldRelease, cost);
+        } else {
+            // if the cache is inactive it can not prevent the flush
+            return new StrategyResult(true, System.nanoTime() - startTime);
         }
     }
 
@@ -258,7 +258,7 @@ public abstract class ReleaseStrategy {
         }
 
         /**
-         * The cost of a node event evaluation. XXX What is the cost?
+         * The cost of a node event evaluation. This is in nanoseconds.
          */
         public long getCost() {
             return cost;
