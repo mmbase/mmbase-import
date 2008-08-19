@@ -20,7 +20,6 @@
    // add HTMLToTEXT
    public static String HTMLToTEXT(String html){  
 	       html=html.replaceAll("<([^<>]+)>","");
-	       String text = html.replaceAll("=\\\"[^\\\"]*\\\""," ").replaceAll("\\<[^(\\<|\\>)]*\\>"," "); 
 	       return html.replaceAll("<([^<>]+)>","");  
 	         
 	   } 
