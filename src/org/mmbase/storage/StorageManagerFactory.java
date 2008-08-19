@@ -12,6 +12,9 @@ package org.mmbase.storage;
 import java.util.*;
 import org.xml.sax.InputSource;
 import javax.servlet.ServletContext;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
@@ -35,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.34 2008-03-21 13:44:23 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.35 2008-08-19 17:15:45 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -158,8 +161,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     protected final void init(MMBase mmbase) throws StorageError {
         log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
-        attributes    = Collections.synchronizedMap(new HashMap<String, Object>()); // ConcurrentHashMap not possible because null-values are put (TODO)
-        typeMappings  = Collections.synchronizedList(new ArrayList<TypeMapping>()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
+        attributes    = new ConcurrentHashMap<String, Object>();
+        typeMappings  = new CopyOnWriteArrayList<TypeMapping>();
         storeBinaryAsFileObjects = Collections.synchronizedList(new ArrayList<String>());
         changeManager = new ChangeManager();
         try {
@@ -263,8 +266,10 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         }
 
         log.service("get type mappings");
-        typeMappings.addAll(reader.getTypeMappings());
-        Collections.sort(typeMappings);
+        List<TypeMapping> list = new ArrayList<TypeMapping>();
+        list.addAll(reader.getTypeMappings());
+        Collections.sort(list);
+        typeMappings.addAll(list);
 
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
@@ -369,7 +374,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * You cannot change this map, though you can change the attributes themselves.
      * @return an unmodifiable Map
      */
-    public Map getAttributes() {
+    public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
@@ -381,7 +386,9 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param attributes the map of attributes to add
      */
     public void setAttributes(Map<String, Object> attributes) {
-        this.attributes.putAll(attributes);
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            setAttribute(entry.getKey(), entry.getKey());
+        }
         log.debug("Database attributes " + this.attributes);
     }
 
@@ -404,6 +411,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param value the value of the attribute
      */
     public void setAttribute(String  key, Object value) {
+        if (value == null) value = "";
         attributes.put(key, value);
     }
 
