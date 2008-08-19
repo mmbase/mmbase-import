@@ -4,6 +4,7 @@
     defaultblock="index"
     version="9"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
@@ -18,7 +19,10 @@
         <param name="string"><![CDATA[
         <link rel="stylesheet"
               href="{REQUEST.getContextPath}/mmbase/components/x/style.css.jspx"
-              type="text/css" />]]></param>
+              type="text/css" />
+        <script type="text/javascript"
+              src="{REQUEST.getContextPath}/mmbase/components/x/index.js"> </script>
+              ]]></param>
       </class>
     </head>
     <body jsp="index.jspx">
@@ -42,7 +46,8 @@
               type="text/css" />]]></param>
       </class>
     </head>
-    <head jsp="/mmbase/validation/javascript.jspx" />
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
+
     <body jsp="change.jspx">
       <param name="node" />
       <param name="nodemanager" />
@@ -61,7 +66,7 @@
               type="text/css" />]]></param>
       </class>
     </head>
-    <head jsp="/mmbase/validation/javascript.jspx" />
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <body jsp="create.jspx">
       <param name="nodemanager" />
       <param name="pagesize" />
