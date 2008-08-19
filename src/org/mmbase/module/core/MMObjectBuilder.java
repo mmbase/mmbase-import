@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.429 2008-08-02 15:35:46 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.430 2008-08-19 20:34:39 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -301,12 +301,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
      * @since MMBase-1.8
      */
-    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter<Object>("function", String.class) }, ReturnType.UNKNOWN) {
+    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter<String>("function", String.class) }, ReturnType.UNKNOWN) {
             {
                 setDescription("Returns information about available functions");
             }
             protected Object getFunctionValue(Collection<Function<?>> functions, Parameters parameters) {
-                String function = (String) parameters.get("function");
+                String function = parameters.getString("function");
                 if (function == null || function.equals("")) {
                     Map<String, String> info = new HashMap<String, String>();
                     for (Function<?> f : functions) {
@@ -1273,7 +1273,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public int getDBType(String fieldName) {
         if (fields == null) {
-            log.error("getDBType(): fields are null on object : "+tableName);
+            log.error("getDBType(): fields are null on object : " + tableName);
             return Field.TYPE_UNKNOWN;
         }
         Field field = getField(fieldName);
