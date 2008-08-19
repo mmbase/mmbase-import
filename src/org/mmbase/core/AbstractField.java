@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.17 2008-02-16 22:13:53 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.18 2008-08-19 20:36:21 michiel Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field {
@@ -70,7 +70,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * @param name the name of the field
      * @param type the identifier for the MMBase base type for this field
      * @param listItemType If the type of this field is TYPE_LIST, then this is the MMBase base type for the list elements.
-     * @param state identifier (virtual, persistent, system, systemvirtual) 
+     * @param state identifier (virtual, persistent, system, systemvirtual)
      * @param dataType the data type of the field
      */
     protected AbstractField(String name, int type, int listItemType, int state, DataType<Object> dataType) {
@@ -107,7 +107,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         return getName().hashCode() * 13 + dataType.hashCode();
     }
 
-    public int getState() {
+    public final int getState() {
         return state;
     }
 
@@ -133,8 +133,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
     /**
      * Sets the datatype of a field.
      * It is possible that the datatype of a field is different from the actual field type.
-     * @param dataType 
-     * @throws IllegalArgumentException 
+     * @param dataType
+     * @throws IllegalArgumentException
      * @see #getType
      */
     public void setDataType(DataType<Object> dataType) throws IllegalArgumentException {
@@ -178,7 +178,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * @see org.mmbase.bridge.Field#isVirtual()
      */
     public boolean isVirtual() {
-       return getState() == STATE_VIRTUAL || getState() == STATE_SYSTEM_VIRTUAL;
+       return state == STATE_VIRTUAL || state == STATE_SYSTEM_VIRTUAL;
     }
 
     /**
