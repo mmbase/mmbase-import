@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.34 2005-11-23 10:29:39 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.34.2.1 2008-08-19 14:12:18 michiel Exp $
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -82,26 +82,12 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
                 node.setByteValue(fieldName, base64.transformBack(Casting.toString(value)));
             }
         } else {
-            String newValue = convert(Casting.toString(value));
-            // a bit of hackery to make it more likely that actually a right type is fed to the core.
-            // E.g. if you use ExprCalc to set an integer field, that would not work otherwise (because always double like '1.0')
-            switch(type) {
-            case Field.TYPE_NODE:
-            case Field.TYPE_INTEGER: 
-                value = Casting.toInteger(newValue);
-                break;
-            case Field.TYPE_LONG: 
-                value = Casting.toInteger(newValue);
-                break;
-            default: // rest should go ok in core
-                value = newValue;
-            }
+            value = convert(Casting.toString(value));
 
-            
             if (log.isDebugEnabled()) {
                 log.debug("Setting field " + fieldName + " to " + value);
             }
-            
+
             node.setValue(fieldName, value);
 
             if (getId() != null) {
