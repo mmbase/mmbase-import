@@ -92,7 +92,7 @@
             <mm:typeconstraint name="$nodemanager" descendants="false" />
           </mm:compare>
 
-          <mm:link id="base" page="." referids="$referids">
+          <mm:link id="base" page="index" referids="$referids">
             <mm:fieldlist nodetype="$nodemanager" type="search">
               <mm:fieldinfo type="reusesearchinput" />
               <mm:fieldinfo type="usesearchinput" />
@@ -112,7 +112,8 @@
                 <mm:import id="paging">
                   <mm:previousbatches max="10">
                     <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
-                    <mm:link referids="_@offset" referid="base">
+                    <mm:link
+                        referids="_@offset" referid="base">
                       <a href="${_}"><mm:index /></a>
                     </mm:link>
                     <jsp:text>, </jsp:text>
@@ -120,7 +121,8 @@
                   <span class="currentpage"><mm:index /></span>
                   <mm:nextbatches max="10">
                     <jsp:text>, </jsp:text>
-                    <mm:link referids="_@offset" referid="base">
+                    <mm:link
+                        referids="_@offset" referid="base">
                       <a href="${_}"><mm:index /></a>
                     </mm:link>
                     <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
