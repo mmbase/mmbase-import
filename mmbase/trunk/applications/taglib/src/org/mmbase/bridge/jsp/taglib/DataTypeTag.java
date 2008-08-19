@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.3 2008-08-19 10:14:35 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.4 2008-08-19 11:46:31 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -107,14 +107,14 @@ public class DataTypeTag extends CloudReferrerTag {
                                                                                              errorHandler, resolver);
             Element element = dbuilder.parse(new InputSource(new StringReader(buf.toString()))).getDocumentElement();
             DataTypeCollector collector = getCollector();
-            BasicDataType dt = DataTypeReader.readDataType(element, collector.getDataType(base.getString(this)), collector).dataType;
+            BasicDataType dt = DataTypeReader.readDataType(element, getBaseDataType(collector), collector).dataType;
+            collector.finish(dt);
+            getContextProvider().getContextContainer().register(getId(), dt);
+            BasicDataType old  = collector.addDataType(dt);
             if (log.isDebugEnabled()) {
                 log.debug("Created " + dt);
                 log.debug("In " + collector.getDataTypes());
             }
-            collector.finish(dt);
-            BasicDataType old  = collector.addDataType(dt);
-
         } catch (org.mmbase.datatypes.util.xml.DependencyException de) {
             throw new TaglibException(de);
         } catch (org.xml.sax.SAXException se) {

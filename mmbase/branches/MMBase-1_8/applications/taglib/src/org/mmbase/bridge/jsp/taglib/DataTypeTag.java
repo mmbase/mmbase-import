@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.1.2.2 2008-08-19 10:09:34 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.1.2.3 2008-08-19 11:44:16 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -100,6 +100,9 @@ public class DataTypeTag extends CloudReferrerTag {
         buf.append(getId()).append("\" ").append(ATTR).append(">");
         if (body != null) buf.append(body);
         buf.append("</datatype>");
+        if (log.isTraceEnabled()) {
+            log.trace("Parsing: " + buf);
+        }
         try {
             XMLErrorHandler errorHandler = new XMLErrorHandler(false, XMLErrorHandler.WARNING);
             XMLEntityResolver resolver = new XMLEntityResolver(true, DataTypeReader.class);
@@ -108,11 +111,12 @@ public class DataTypeTag extends CloudReferrerTag {
             Element element = dbuilder.parse(new InputSource(new StringReader(buf.toString()))).getDocumentElement();
             DataTypeCollector collector = getCollector();
             BasicDataType dt = DataTypeReader.readDataType(element, getBaseDataType(collector), collector).dataType;
+            collector.finish(dt);
+            getContextProvider().getContextContainer().register(getId(), dt);
             if (log.isDebugEnabled()) {
                 log.debug("Created " + dt);
                 log.debug("In " + collector.getDataTypes());
             }
-            collector.finish(dt);
             BasicDataType old  = collector.addDataType(dt);
 
         } catch (org.mmbase.datatypes.util.xml.DependencyException de) {
