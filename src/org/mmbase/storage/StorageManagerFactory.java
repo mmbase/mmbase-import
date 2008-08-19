@@ -38,10 +38,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.35 2008-08-19 17:15:45 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.36 2008-08-19 21:29:43 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
+    private static final Object NULL = new Object();
     private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
 
     /**
@@ -387,7 +388,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      */
     public void setAttributes(Map<String, Object> attributes) {
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-            setAttribute(entry.getKey(), entry.getKey());
+            setAttribute(entry.getKey(), entry.getValue());
         }
         log.debug("Database attributes " + this.attributes);
     }
@@ -399,7 +400,9 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @return the attribute value, or null if it is unknown
      */
     public Object getAttribute(String key) {
-        return attributes.get(key);
+        Object o = attributes.get(key);
+        if (o == NULL)  o = null;
+        return o;
     }
 
     /**
@@ -411,7 +414,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param value the value of the attribute
      */
     public void setAttribute(String  key, Object value) {
-        if (value == null) value = "";
+        if (value == null) value = NULL;
         attributes.put(key, value);
     }
 
@@ -436,6 +439,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @return the scheme value, <code>null</code> if there is no scheme
      */
     public Scheme getScheme(String key, String defaultPattern) {
+        Object o = getAttribute(key);
+        if (o!= null && ! (o instanceof Scheme)) throw new RuntimeException("value of " + key + " is not a Schema, but " + (o == null ? "NuLL" : o.getClass()) + " " + o);
         Scheme scheme = (Scheme) getAttribute(key);
         if (scheme == null && defaultPattern != null) {
             if (attributes.containsKey(key)) return null;
@@ -456,7 +461,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         if (pattern == null || pattern.equals("")) {
             setAttribute(key, null);
         } else {
-            setAttribute(key, new Scheme(this,pattern));
+            setAttribute(key, new Scheme(this, pattern));
         }
     }
 
