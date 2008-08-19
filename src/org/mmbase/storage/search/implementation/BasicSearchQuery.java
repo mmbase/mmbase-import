@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.47 2008-08-19 20:12:17 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.48 2008-08-19 22:03:12 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -42,8 +42,8 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     private List<Step> steps = new ArrayList<Step>();
     private  List<Step> unmodifiableSteps = Collections.unmodifiableList(steps); // getSteps is called very  very often
-    protected final List<StepField> fields = new ArrayList<StepField>();
-    private final List<SortOrder> sortOrders = new ArrayList<SortOrder>();
+    protected List<StepField> fields = new ArrayList<StepField>();
+    private List<SortOrder> sortOrders = new ArrayList<SortOrder>();
 
     /** Constraint.. */
     private Constraint constraint = null;
@@ -200,7 +200,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
-        fields.clear();
+        fields = new ArrayList<StepField>(q.getFields().size());
         MMBase mmb = MMBase.getMMBase();
         for (StepField field : q.getFields()) {
             Step step = field.getStep();
@@ -217,7 +217,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
-        sortOrders.clear();
+        sortOrders = new ArrayList<SortOrder>(q.getSortOrders().size());
         MMBase mmb = MMBase.getMMBase();
         for (SortOrder sortOrder : q.getSortOrders()) {
             StepField field = sortOrder.getField();
