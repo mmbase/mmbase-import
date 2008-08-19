@@ -21,12 +21,13 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.1 2006-07-18 15:17:00 michiel Exp $
- * @since   MMBase-1.8.2
+ * @version $Id: DataTypeField.java,v 1.1.2.1 2008-08-19 12:29:07 michiel Exp $
+ * @since   MMBase-1.8.7
  */
 
 public  class DataTypeField extends org.mmbase.core.AbstractField {
     protected final NodeManager nodeManager;
+    protected final Field field;
     public DataTypeField(final Cloud cloud, final DataType dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
@@ -38,30 +39,51 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
                     return Collections.unmodifiableMap(fieldTypes);
                 }
             };
+        field = null;
+    }
+    /**
+     * This constructor only wraps the given field to have another datatype.
+     * @since MMBase-1.9
+     */
+    public DataTypeField(final Field field, final DataType dataType)  {
+        super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
+        nodeManager = field.getNodeManager();
+        this.field = field;
     }
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
+
     public int getSearchPosition() {
-        return -1; // irrelevant, you cannot search
+        return field == null ? -1 : field.getSearchPosition();
     }
+
 
     public int getListPosition() {
-        return -1; // irrelevant, you cannot do listings
+        return field == null ? -1 : field.getListPosition();
     }
+
 
     public int getEditPosition() {
-        return 1;
+        return field == null ? 1 : field.getEditPosition();
     }
+
 
     public int getStoragePosition() {
-        return -1; // irrelevant, not stored
+        return field == null ? -1 : field.getStoragePosition();
     }
 
+
     public int getMaxLength() {
-        return Integer.MAX_VALUE; // not stored, so no such restriction
+        return field == null ? Integer.MAX_VALUE : // not stored, so no such restriction
+            field.getMaxLength();
     }
+
+    public boolean isReadOnly() {
+        return field == null ? true : field.isReadOnly();
+    }
+
 
     public String getGUIType() {
         return dataType.getName();
