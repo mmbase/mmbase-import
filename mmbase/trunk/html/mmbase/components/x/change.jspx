@@ -14,7 +14,7 @@
 
          TODO: Some way to edit relations? NODE-field editor?
 
-         $Id: change.jspx,v 1.8 2008-08-09 11:29:47 michiel Exp $
+         $Id: change.jspx,v 1.9 2008-08-19 20:30:48 michiel Exp $
     -->
     <mm:import externid="ok" from="request">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
@@ -22,7 +22,7 @@
     <mm:cloud rank="basic user">
       <mm:import externid="node" required="true" />
       <mm:form id="changeform" page="change" >
-        <mm:node referid="node">
+        <mm:node referid="node" commitonclose="false">
           <script type="text/javascript">
             var validator = new MMBaseValidator();
             validator.prefetchNodeManager('<mm:nodeinfo type="nodemanager" />');
@@ -84,7 +84,7 @@
         </mm:node>
       </mm:form>
       <div class="relations">
-        <mm:node referid="node">
+        <mm:node referid="node" commitonclose="false">
           <mm:listrelationscontainer>
             <h2>Relations: <mm:size /></h2>
             <table>
