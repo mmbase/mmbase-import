@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.24 2008-08-19 17:20:23 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.25 2008-08-19 17:22:54 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -276,6 +276,8 @@ public abstract class ReleaseStrategy {
      * @author Ernst Bunders This is a utility class to help timing the
      *         evaluation. Just create an instance before the evaluation and
      *         then use it to create the StrategyResult object
+     * @deprecated The only thing what this  does is knowing how to subtract, which is really not so
+     * difficult or verbose by itself
      */
     protected final static class Timer {
         private final long start;
