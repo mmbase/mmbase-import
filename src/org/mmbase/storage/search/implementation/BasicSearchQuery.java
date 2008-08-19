@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.46 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.47 2008-08-19 20:12:17 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -41,8 +41,9 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
     private List<Step> steps = new ArrayList<Step>();
-    protected List<StepField> fields = new ArrayList<StepField>();
-    private List<SortOrder> sortOrders = new ArrayList<SortOrder>();
+    private  List<Step> unmodifiableSteps = Collections.unmodifiableList(steps); // getSteps is called very  very often
+    protected final List<StepField> fields = new ArrayList<StepField>();
+    private final List<SortOrder> sortOrders = new ArrayList<SortOrder>();
 
     /** Constraint.. */
     private Constraint constraint = null;
@@ -142,7 +143,21 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
-        steps = new ArrayList<Step>();
+        steps = new ArrayList<Step>(q.getSteps().size());
+        /*
+        // if using .clear here:
+
+        org.mmbase.framework.FrameworkException: Index: 0, Size: 0
+        java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+        at java.util.ArrayList.RangeCheck(ArrayList.java:546)
+        at java.util.ArrayList.get(ArrayList.java:321)
+        at java.util.Collections$UnmodifiableList.get(Collections.java:1155)
+        at org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag.getRelatedQuery(ListRelationsContainerTag.java:81)
+        at org.mmbase.bridge.jsp.taglib.ListRelationsTag.doStartTag(ListRelationsTag.java:120)
+        at org.apache.jsp.mmbase.components.x.change_jspx._jspx_meth_mm_005flistrelations_005f0(change_jspx.java:1600)
+
+        Which is a bit suspicious
+        */
         Iterator<Step> i = q.getSteps().iterator();
         while(i.hasNext()) {
             Step step = i.next();
@@ -181,10 +196,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
         }
         //log.info("copied steps " + q.getSteps() + " became " + steps);
+        unmodifiableSteps = Collections.unmodifiableList(steps);
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
-        fields = new ArrayList<StepField>();
+        fields.clear();
         MMBase mmb = MMBase.getMMBase();
         for (StepField field : q.getFields()) {
             Step step = field.getStep();
@@ -201,7 +217,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
-        sortOrders = new ArrayList<SortOrder>();
+        sortOrders.clear();
         MMBase mmb = MMBase.getMMBase();
         for (SortOrder sortOrder : q.getSortOrders()) {
             StepField field = sortOrder.getField();
@@ -542,8 +558,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     // javadoc is inherited
     public List<Step> getSteps() {
-        // return as unmodifiable list
-        return Collections.unmodifiableList(steps);
+        return unmodifiableSteps;
     }
 
 
