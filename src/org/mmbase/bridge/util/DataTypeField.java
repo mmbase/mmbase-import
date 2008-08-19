@@ -21,8 +21,8 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.5 2008-07-25 09:35:25 michiel Exp $
- * @since   MMBase-1.8.2
+ * @version $Id: DataTypeField.java,v 1.6 2008-08-19 12:33:22 michiel Exp $
+ * @since   MMBase-1.8.7
  */
 
 public  class DataTypeField extends org.mmbase.core.AbstractField {
@@ -80,6 +80,11 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     public int getMaxLength() {
         return field == null ? Integer.MAX_VALUE : // not stored, so no such restriction
             field.getMaxLength();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return field == null ? true : field.isReadOnly();
     }
 
     @Override
