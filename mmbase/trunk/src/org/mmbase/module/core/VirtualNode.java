@@ -19,7 +19,7 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.15 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.16 2008-08-19 20:35:29 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
 
@@ -38,7 +38,7 @@ public class VirtualNode extends MMObjectNode {
         super(new VirtualBuilder(MMBase.getMMBase()), values);
     }
 
-
+    @Override
     public boolean isVirtual() {
         return true;
     }
@@ -46,6 +46,7 @@ public class VirtualNode extends MMObjectNode {
     /**
      * Overrides to no throw exception on non-existing fields
      */
+    @Override
     protected boolean checkFieldExistance(String fieldName) {
         return true;
     }
@@ -56,6 +57,7 @@ public class VirtualNode extends MMObjectNode {
       * implementation returns false.
       * @return <code>false</code>
       */
+    @Override
     public boolean commit() {
       return false;
     }
@@ -65,6 +67,7 @@ public class VirtualNode extends MMObjectNode {
      *  @return nothing, throws an exception
      *  @throws UnsupportedOperationException
      */
+    @Override
     public int insert(String userName) {
         throw new UnsupportedOperationException("Method insert is not implemented on a virtual node.");
     }
@@ -74,6 +77,7 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return <code>false</code>
      */
+    @Override
     public boolean hasRelations() {
         return false;
     }
@@ -83,6 +87,7 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
+    @Override
     public Enumeration<MMObjectNode> getRelations() {
         return new java.util.Vector<MMObjectNode>(0).elements();
     }
@@ -92,6 +97,7 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return 0, because Virtual nodes have no relations.
      */
+    @Override
     public int getRelationCount() {
         return 0;
     }
@@ -102,6 +108,7 @@ public class VirtualNode extends MMObjectNode {
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return 0, because Virtual nodes have no relations.
      */
+    @Override
     public int getRelationCount(String wantedtype) {
         return 0;
     }
@@ -111,10 +118,12 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node is always new (0)
      * @return the age in days (0)
      */
+    @Override
     public int getAge() {
         return 0;
     }
 
+    @Override
     public int getOType() {
         return -1;
     }
