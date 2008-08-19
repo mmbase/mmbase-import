@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.436 2008-08-19 09:41:24 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.437 2008-08-19 10:14:35 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8856,7 +8856,7 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>datatype</name>
-    <extends>contextreferrer</extends>
+    <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.DataTypeTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>This tag defines a new datatype with a lifetime of the current request. It's body is XML as used in datatypes.xml and builder xml's.</info>
@@ -8864,11 +8864,19 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="fieldinfo" attribute="datatype" />
     <attribute>
       <name>base</name>
-      <required>true</required>
+      <required>false</required>
     </attribute>
     <attribute>
       <name>id</name>
       <required>true</required>
+    </attribute>
+    <attribute>
+      <name>nodemanager</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
     </attribute>
   </tag>
 
