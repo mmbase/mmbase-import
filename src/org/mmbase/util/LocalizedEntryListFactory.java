@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.4 2008-08-18 14:12:27 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.5 2008-08-19 11:42:51 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -564,11 +564,16 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 String display = entryElement.getAttribute("display");
                 if (display.equals("")) display = value;
                 Object key = wrapperDefault != null ? Casting.toType(wrapperDefault, null, value) : value;
+                if (key instanceof org.mmbase.bridge.Node) {
+                    // if you sepcify node-typed enumeration by entry value=, then this happens.
+                    // Perhaps this should happen a bit more generically. Casting.toSerializable, or so.
+                    key = new Integer(((org.mmbase.bridge.Node) key).getNumber());
+                }
                 if (key instanceof java.io.Serializable) {
                     log.debug("Added " + key + "/" + display + " for " + locale);
                     add(locale, (java.io.Serializable) key, display);
                 } else {
-                    log.error("key " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
+                    log.error("key " + key.getClass() + " " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
                 }
             } else {
                 String resource = entryElement.getAttribute("basename");
