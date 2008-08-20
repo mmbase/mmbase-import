@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.41 2008-08-20 12:46:41 michiel Exp $
+ * @version $Id: Parameters.java,v 1.42 2008-08-20 21:11:30 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -46,6 +46,8 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     protected final Map<String, Object> backing;
 
     protected final List<Map.Entry<String, Object>> patternBacking;
+
+    // Index of the first PatternParameter
     protected int patternLimit = -1;
 
     /**
@@ -211,9 +213,16 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     public String toString() {
         StringBuilder buf = new StringBuilder("[");
         checkDef();
-        for (int i = fromIndex; i < toIndex; i++) {
-            if (i > fromIndex) buf.append(", ");
+        int i = fromIndex;
+        for (i = fromIndex; i < toIndex && i < patternLimit; i++) {
+            if (buf.length() > 1) buf.append(", ");
             buf.append(definition[i]).append('=').append(get(i));
+        }
+        if (patternBacking != null) {
+            for (Map.Entry<String, Object> entry : patternBacking) {
+                if (buf.length() > 1) buf.append(", ");
+                buf.append(entry.getKey()).append('=').append(entry.getValue());
+            }
         }
         buf.append("]");
         return buf.toString();
