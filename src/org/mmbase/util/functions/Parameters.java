@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.util.Casting;
+import org.mmbase.util.Entry;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.39 2008-01-22 16:43:41 michiel Exp $
+ * @version $Id: Parameters.java,v 1.40 2008-08-20 08:03:22 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -43,6 +44,9 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * The contents of this List are stored in this HashMap.
      */
     protected final Map<String, Object> backing;
+
+    protected final List<Map.Entry<String, Object>> patternBacking;
+    protected int patternLimit = -1;
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
@@ -78,18 +82,27 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      */
     public Parameters(Parameter<?>... def) {
         definition = Functions.define(def, new ArrayList<Parameter<?>>()).toArray(Parameter.emptyArray());
-        toIndex = definition.length;
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
         }
         backing = new HashMap<String, Object>();
+        List<Map.Entry<String, Object>> pb = null;
         // fill with default values, and check for non-unique keys.
-        for (int i = fromIndex; i < toIndex; i++) {
+        int i = fromIndex;
+        for (; i < definition.length; i++) {
+
+            if (definition[i]  instanceof PatternParameter) {
+                pb = new ArrayList<Map.Entry<String, Object>>();
+                break;
+            }
             if (backing.put(definition[i].getName(), definition[i].getDefaultValue()) != null) {
                 throw new IllegalArgumentException("Parameter keys not unique");
             }
 
         }
+        patternLimit = i + (pb == null ? 1 : 0);
+        toIndex = i;
+        patternBacking = pb;
 
     }
 
@@ -119,6 +132,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         this.backing = backing;
         toIndex = backing.size() - 1;
         definition = null;
+        patternBacking = null;
     }
 
     /**
@@ -156,6 +170,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         }
         toIndex = backing.size() - 1;
         definition = null;
+        patternBacking = null;
     }
 
 
@@ -165,12 +180,20 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     protected Parameters(Parameters  params, int from, int to) {
         backing = params.backing;
         definition = params.definition;
+        patternBacking = params.patternBacking;
         fromIndex = from + params.fromIndex;
         toIndex   = to   + params.fromIndex;
         if (fromIndex < 0) throw new IndexOutOfBoundsException("fromIndex < 0");
         if (toIndex > definition.length) throw new IndexOutOfBoundsException("toIndex greater than length of list");
         if (fromIndex > toIndex) throw new IndexOutOfBoundsException("fromIndex > toIndex");
 
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public boolean isHavingPatterns() {
+        return patternBacking != null;
     }
 
     protected final void checkDef() {
@@ -239,17 +262,29 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     // implementation of List
     public Object get(int i) {
         checkDef();
-        return backing.get(definition[i + fromIndex].getName());
+        int j = i + fromIndex;
+        if (j < patternLimit) {
+            return backing.get(definition[j].getName());
+        } else {
+            if (patternBacking == null) throw new IndexOutOfBoundsException();
+            return patternBacking.get(j - patternLimit).getValue();
+        }
     }
 
     // implementation of (modifiable) List
     // @throws NullPointerException if definition not set
     public Object set(int i, Object value) {
         checkDef();
-        Parameter<?> a = definition[i + fromIndex];
-        if (autoCasting) value = a.autoCast(value);
-        a.checkType(value);
-        return backing.put(a.getName(), value);
+        int j = i + fromIndex;
+        if (j < patternLimit) {
+            Parameter<?> a = definition[j];
+            if (autoCasting) value = a.autoCast(value);
+            a.checkType(value);
+            return backing.put(a.getName(), value);
+        } else {
+            if (patternBacking == null) throw new IndexOutOfBoundsException();
+            return patternBacking.get(j - patternLimit).setValue(value);
+        }
     }
 
 
@@ -258,7 +293,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      */
     public void checkRequiredParameters() {
         checkDef();
-        for (int i = fromIndex; i < toIndex; i++) {
+        for (int i = fromIndex; i < toIndex && i < patternLimit; i++) {
             Parameter<?> a = definition[i];
             if (a.isRequired() && (get(a.getName()) == null)) {
                 throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null (of (" + toString() + ")");
@@ -268,7 +303,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     /**
      * Returns the position of a parameter in the parameters list, using the Parameter as a qualifier.
-     * you can tehn acecss that paramter with {@link #get(int)}.
+     * you can then acecss that paramter with {@link #get(int)}.
      * @param parameter the parameter
      * @return the index of the parameter, or -1 if it doesn't exist
      */
@@ -276,7 +311,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     public int indexOfParameter(Parameter<?> parameter) {
         checkDef();
         int index = -1;
-        for (int i = fromIndex; i < toIndex; i++) {
+        for (int i = fromIndex; i < toIndex && i < patternLimit; i++) {
             if (definition[i].equals(parameter)) {
                 index = i - fromIndex;
                 break;
@@ -294,14 +329,20 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      */
     public int indexOfParameter(String parameterName) {
         checkDef();
-        int index = -1;
-        for (int i = fromIndex; i < toIndex; i++) {
+        for (int i = fromIndex; i < toIndex && i < patternLimit; i++) {
             if (definition[i].getName().equals(parameterName)) {
-                index = i - fromIndex;
-                break;
+                return i - fromIndex;
             }
         }
-        return index;
+        if (patternBacking != null) {
+            for (int i = 0; i < toIndex - patternLimit; i++) {
+                Map.Entry<String, Object> entry = patternBacking.get(i);
+                if (entry.getKey().equals(parameterName)) {
+                    return patternLimit + i - fromIndex;
+                }
+            }
+        }
+        return -1;
     }
 
 
@@ -351,6 +392,13 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             set(index, value);
             return this;
         } else {
+            for (int i = patternLimit; i < definition.length; i++) {
+                if (definition[i].matches(parameterName)) {
+                    patternBacking.add(new Entry<String, Object>(parameterName, value));
+                    toIndex++;
+                    return this;
+                }
+            }
             throw new IllegalArgumentException("The parameter '" + parameterName + "' is not defined (defined are " + toString() + ")");
         }
     }

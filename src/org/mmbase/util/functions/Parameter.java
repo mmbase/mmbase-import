@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.46 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: Parameter.java,v 1.47 2008-08-20 08:03:22 michiel Exp $
  * @see Parameters
  */
 
@@ -91,10 +91,15 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     public static <C> Parameter<C> readFromXml(Element element) {
         String name = element.getAttribute("name");
+        String regex = element.getAttribute("regex");
+
         String type = element.getAttribute("type");
         String required = element.getAttribute("required");
         String description   = element.getAttribute("description"); // actually description as attribute is not very sane
-        Parameter<C> parameter = new Parameter<C>(name, (Class<C>) getClassForName(type));
+        Parameter<C> parameter =
+            ! "".equals(regex) ?
+            new PatternParameter<C>(java.util.regex.Pattern.compile(regex), (Class<C>) getClassForName(type)) :
+            new Parameter<C>(name, (Class<C>) getClassForName(type));
         if (! "".equals(description)) {
             parameter.getLocalizedDescription().set(description, null); // just set it for the default locale...
         }
@@ -117,14 +122,14 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
             if (!fullyQualified) {
                 if (type.equals("int")) { // needed?
                     clazz = int.class;
-                    } else if (type.equals("NodeList")) {
+                } else if (type.equals("NodeList")) {
                     clazz = org.mmbase.bridge.NodeList.class;
                 } else if (type.equals("Node")) {
                     clazz =  org.mmbase.bridge.Node.class;
                 } else {
                     clazz = Class.forName("java.lang." + type);
                 }
-                } else {
+            } else {
                 clazz = Class.forName(type);
             }
         } catch (ClassNotFoundException cne) {
@@ -227,7 +232,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     protected static <C> Class<C> getClass(C v) {
         return (Class<C>) (v == null ? Object.class : v.getClass());
     }
-    
+
     /**
      * Create Parameter definition by example value
      * @since MMBase-1.9
@@ -311,6 +316,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     protected C autoCast(Object value) {
         return dataType.cast(value, null, null);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public boolean matches(String key) {
+        return getName().equals(key);
     }
 
     public int hashCode() {
