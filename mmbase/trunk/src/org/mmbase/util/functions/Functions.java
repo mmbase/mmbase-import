@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.18 2008-08-20 08:03:22 michiel Exp $
+ * @version $Id: Functions.java,v 1.19 2008-08-20 21:12:29 michiel Exp $
  */
 public class Functions {
 
@@ -50,8 +50,11 @@ public class Functions {
      * @return List with only simple Parameter's.
      */
     public static List<Parameter<?>> define(Parameter<?>[] def, List<Parameter<?>> list) {
-        boolean patterns = list.size() == 0 ? false : list.get(list.size() - 1) instanceof PatternParameter;
         if (def == null) return list;
+
+        int firstPattern = 0;
+        while (firstPattern < list.size() && ! (list.get(firstPattern) instanceof PatternParameter)) firstPattern++;
+        boolean patterns = false;
         for (Parameter d : def) {
             if (d instanceof Parameter.Wrapper) {
                 define(((Parameter.Wrapper) d).arguments, list);
@@ -60,7 +63,7 @@ public class Functions {
                 patterns = true;
             } else {
                 if (patterns) throw new IllegalArgumentException("PatternParameter's must be last in the definition");
-                list.add(d);
+                list.add(firstPattern, d); firstPattern++;
             }
         }
         return list;
