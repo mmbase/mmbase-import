@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.17 2005-08-29 08:54:15 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.18 2008-08-20 17:45:31 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -37,7 +37,7 @@ public class XMLErrorHandler implements ErrorHandler {
     private boolean error = false;
     private boolean fatal = false;
 
-    private StringBuffer messages = new StringBuffer();
+    private StringBuilder messages = new StringBuilder();
 
 
     public XMLErrorHandler() {
@@ -63,15 +63,39 @@ public class XMLErrorHandler implements ErrorHandler {
         }
     }
 
+    private boolean isJava5AndXInclude(Exception ex) {
+        if ( ("" + System.getProperty("java.version")).startsWith("1.5")) {
+            for (StackTraceElement el : ex.getStackTrace()) {
+                if (el.getClassName().equals("com.sun.org.apache.xerces.internal.xinclude.XIncludeHandler")) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
     public void error(SAXParseException ex) throws SAXException{
-        String message = getLocationString(ex)+": "+ ex.getMessage();
+        String message = getLocationString(ex)+": "+ ex.getClass() + " " + ex.getMessage();
+        if (isJava5AndXInclude(ex)) {
+            // I get horrible validation exceptions in the log when doing xinclude in java 5.
+            // It does not happen in java 6.
+            // If you ask me, the xml parser of java 5 simply sucks. Going to ignore this as an 'error'.
+            log.service(message + " (this probably does not make sense");
+            return;
+        }
+
         messages.append(message + "\n");
         error = true;
         if(logMessages) {
-            log.error(message);
-            log.debug(Logging.stackTrace(new Throwable()));
+            if (log.isDebugEnabled()) {
+                log.error(message, new Throwable());
+            } else {
+                log.error(message);
+            }
         }
-        if(exceptionLevel<=ERROR) {
+        if(exceptionLevel <= ERROR) {
             throw ex;
         }
     }
@@ -112,7 +136,7 @@ public class XMLErrorHandler implements ErrorHandler {
      * Returns a string of the location.
      */
     private String getLocationString(SAXParseException ex) {
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         String systemId = ex.getSystemId();
         if (systemId != null) {
             str.append(systemId);
