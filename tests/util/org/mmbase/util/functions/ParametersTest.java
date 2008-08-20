@@ -15,12 +15,17 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: ParametersTest.java,v 1.1 2008-08-20 08:00:01 michiel Exp $
+ * @verion $Id: ParametersTest.java,v 1.2 2008-08-20 12:43:49 michiel Exp $
  */
 public class ParametersTest extends TestCase {
 
     private static final Parameter<String> A = new Parameter<String>("a", String.class, "A");
     private static final Parameter<Integer> B = new Parameter<Integer>("b", Integer.class, true);
+    private static final Parameter<String> C = new Parameter<String>("c", String.class, "C");
+    private static final Parameter<String> D = new Parameter<String>("d", String.class, "D");
+    private static final Parameter<String> E = new Parameter<String>("e", String.class, "E");
+    private static final Parameter<String> F = new Parameter<String>("f", String.class, "F");
+
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     /**
      */
@@ -84,5 +89,41 @@ public class ParametersTest extends TestCase {
 
         assertEquals(5, params.get(1));
         assertEquals(6, params.get(2));
+    }
+
+    public void testWrapper() {
+        Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
+        assertEquals(4, params.size());
+        params.set(B, 5);
+
+        assertEquals("A", params.get(A));
+        assertTrue(5 == params.get(B));
+        assertEquals("C", params.get(C));
+        assertEquals("D", params.get(D));
+
+        assertEquals("A", params.get("a"));
+        assertEquals(5, params.get("b"));
+        assertEquals("C", params.get("c"));
+        assertEquals("D", params.get("d"));
+
+        assertEquals("A", params.get(0));
+        assertEquals(5, params.get(1));
+        assertEquals("C", params.get(2));
+        assertEquals("D", params.get(3));
+    }
+
+    public void testSubList() {
+        Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
+        params.set(B, 5);
+        Parameters subParams = params.subList(1, 3);
+        assertEquals(2, subParams.size());
+
+        assertTrue(5 == subParams.get(B));
+        assertEquals(5, subParams.get(0));
+        assertEquals(5, subParams.get("b"));
+
+        assertEquals("C", subParams.get(C));
+        assertEquals("C", subParams.get(1));
+        assertEquals("C", subParams.get("c"));
     }
 }
