@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.43 2008-08-20 21:35:38 michiel Exp $
+ * @version $Id: Parameters.java,v 1.44 2008-08-20 21:57:11 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -511,7 +511,18 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * @return value the parameter value
      */
     public Object get(String parameterName) {
-        return backing.get(parameterName);
+        Object o = backing.get(parameterName);
+        if (o == null) {
+            if (backing.containsKey(parameterName)) return null;
+            if (patternBacking != null) {
+                for (Map.Entry<String, Object> entry : patternBacking) {
+                    if (entry.getKey().equals(parameterName)) return entry.getValue();
+                }
+            }
+            return null;
+        } else {
+            return o;
+        }
     }
 
 
