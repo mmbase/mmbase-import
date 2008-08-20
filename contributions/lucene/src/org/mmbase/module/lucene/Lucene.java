@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.120 2008-08-20 10:53:20 michiel Exp $
+ * @version $Id: Lucene.java,v 1.121 2008-08-20 15:11:50 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -904,7 +904,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             return queryDefinition;
         } catch (Exception e) {
             configErrors.add(e.getMessage());
-            log.warn("Invalid query for index " + XMLWriter.write(queryElement, true, true), e);
+            log.warn("Invalid query in " + queryElement.getOwnerDocument().getDocumentURI() + " for index " + XMLWriter.write(queryElement, true, true), e);
             return null;
         }
     }
