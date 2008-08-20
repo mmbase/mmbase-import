@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.51 2008-07-23 13:58:48 michiel Exp $
+ * @version $Id: Searcher.java,v 1.52 2008-08-20 10:54:39 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -86,6 +86,19 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         return status != FullIndexEvents.Status.IDLE ? intermediateSize : -1;
     }
 
+    protected void repare(final CorruptIndexException ci, final boolean copy) {
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    log.info("Reparing index " + index + " because " + ci.getMessage());
+                    index.clear(true);
+                    if (! copy) {
+                        index.clear(false);
+                        index.fullIndex();
+                    }
+                }
+            });
+    }
+
     protected synchronized IndexSearcher getSearcher(boolean copy) throws IOException {
         if (copy) return  new IndexSearcher(index.getDirectoryForFullIndex());
         if (searcher != null && needsNewSearcher) {
@@ -107,9 +120,14 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 }, 10000);
         }
         if (searcher == null) {
-            searcher = new IndexSearcher(index.getDirectory());
-            needsNewSearcher = false;
-            return searcher;
+            try {
+                searcher = new IndexSearcher(index.getDirectory());
+                needsNewSearcher = false;
+                return searcher;
+            } catch (CorruptIndexException ci) {
+                repare(ci, copy);
+                throw ci;
+            }
         } else {
             return searcher;
         }
@@ -282,6 +300,10 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 return reader.numDocs();
             } catch ( FileNotFoundException nfe) {
                 log.debug(nfe + " returning -1");
+                return -1;
+            } catch (CorruptIndexException ci) {
+                repare(ci, copy);
+                log.warn(ci + " returning -1");
                 return -1;
             } catch (IOException ioe) {
                 log.service(ioe + " returning -1");
