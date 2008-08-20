@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.50 2008-08-01 21:12:26 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.51 2008-08-20 20:09:53 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -110,7 +110,7 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     public void shutdown() {
-        future.cancel(true);
+        if (future != null) future.cancel(true);
     }
 
     /**
