@@ -82,7 +82,7 @@
  <td class="data"><%=prop.getStringValue("item1")%></td>
  <td class="data" colspan="3"><%=prop.getStringValue("item2")%>&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
+    <a href="<mm:url page='<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>' />"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
 </td>
 </tr>
 
@@ -92,7 +92,7 @@
  <td class="data">add new</td>
  <td class="data" colspan="3">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newproperty.jsp?module="+module%>"/>"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add" border="0" /></a>
+    <a href="<mm:url page='<%="newproperty.jsp?module="+module%>' />"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add" border="0" /></a>
 </td>
 </tr>
 

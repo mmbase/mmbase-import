@@ -39,7 +39,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?module="+module%>' />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Module Administration</td>
 </tr>
 
