@@ -19,7 +19,7 @@
 <mm:listrelationscontainer role="<%=role%>" type="<%=otherManager.getName()%>" searchdir="<%=searchDir%>">
 <mm:size id="totalsize" write="false" />
 
-<mm:write id="externpageid" write="false" value="<%="page" + relationManager.getNumber() + searchDir%>" />
+<mm:write id="externpageid" write="false" value='<%="page" + relationManager.getNumber() + searchDir%>' />
 
 <mm:import id="page" externid="$externpageid">0</mm:import>
 
