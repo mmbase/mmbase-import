@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: ParametersTest.java,v 1.3 2008-08-20 21:10:35 michiel Exp $
+ * @verion $Id: ParametersTest.java,v 1.4 2008-08-20 21:35:02 michiel Exp $
  */
 public class ParametersTest extends TestCase {
 
@@ -85,8 +85,12 @@ public class ParametersTest extends TestCase {
         params.checkRequiredParameters();
         params.set("b", 5);
         assertEquals(2, params.size());
+        assertEquals(2, params.toMap().size());
+        assertEquals(2, params.toEntryList().size());
         params.set("bb", 6);
         assertEquals(3, params.size());
+        assertEquals(3, params.toMap().size());
+        assertEquals(3, params.toEntryList().size());
 
         assertTrue(1 == params.patternLimit);
         assertTrue(-1 == params.indexOfParameter(PB));
