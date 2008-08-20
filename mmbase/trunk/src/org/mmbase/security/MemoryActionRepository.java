@@ -18,11 +18,11 @@ import org.mmbase.util.logging.Logging;
  * this repository on startup.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.7 2008-01-21 17:28:15 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.8 2008-08-20 17:07:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
-    private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
+    private static final Logger log = Logging.getLoggerInstance(MemoryActionRepository.class);
 
     private final Map<String, Map<String, Action>> store = new HashMap<String, Map<String, Action>>();
 
@@ -33,7 +33,7 @@ public class MemoryActionRepository extends ActionRepository {
     }
 
     public void add(Action a) {
-        log.info("Adding " + a + " to " + this);
+        log.debug("Adding " + a + " to " + this);
         Map<String, Action> map = store.get(a.getNameSpace());
         if (map == null) {
             map = new HashMap<String, Action>();
