@@ -32,6 +32,7 @@
       <param name="nodemanager" />
       <param name="ok" />
       <param name="back" />
+      <param regex="form_.*" />
     </body>
   </block>
 
