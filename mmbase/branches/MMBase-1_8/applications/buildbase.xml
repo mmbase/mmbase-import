@@ -137,6 +137,7 @@ Create a build.xml with a DOCTYPE like this:
     <available property="config.available"        file="${project.config.dir}"/>
 
     <available property="templates.available"      file="${project.templates.dir}"/>
+    <available property="blocks.available"         file="${project.source.dir}/blocks"/>
     <available property="mmbase.templates.available"      file="${project.mmbase.templates.dir}"/>
 
 
@@ -465,7 +466,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </javadoc>
   </target>
 
-  <target name="install.templates" depends="init,install.mmbase.templates" if="templates.available">
+  <target name="install.templates" depends="init,install.mmbase.templates,install.blocks" if="templates.available">
     <copy todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
       <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
@@ -476,6 +477,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="install.mmbase.templates" depends="init" if="mmbase.templates.available">
     <copy todir="${templates.dir}" preservelastmodified="true">
       <fileset dir="${project.mmbase.templates.dir}">
+        <include name="**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="install.blocks" depends="init" if="blocks.available">
+    <copy todir="${webapp.dir}/mmbase/components/${project.name}" preservelastmodified="true">
+      <fileset dir="blocks">
         <include name="**" />
       </fileset>
     </copy>
