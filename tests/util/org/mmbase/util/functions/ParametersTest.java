@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: ParametersTest.java,v 1.2 2008-08-20 12:43:49 michiel Exp $
+ * @verion $Id: ParametersTest.java,v 1.3 2008-08-20 21:10:35 michiel Exp $
  */
 public class ParametersTest extends TestCase {
 
@@ -27,6 +27,7 @@ public class ParametersTest extends TestCase {
     private static final Parameter<String> F = new Parameter<String>("f", String.class, "F");
 
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
+    private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
     /**
      */
     public void testSimple() {
@@ -87,6 +88,15 @@ public class ParametersTest extends TestCase {
         params.set("bb", 6);
         assertEquals(3, params.size());
 
+        assertTrue(1 == params.patternLimit);
+        assertTrue(-1 == params.indexOfParameter(PB));
+        try {
+            params.set(PB, 7);
+            fail("You should not be able to set a value by a pattern parameter");
+        } catch (IllegalArgumentException iae) {
+        }
+
+
         assertEquals(5, params.get(1));
         assertEquals(6, params.get(2));
     }
@@ -110,6 +120,19 @@ public class ParametersTest extends TestCase {
         assertEquals(5, params.get(1));
         assertEquals("C", params.get(2));
         assertEquals("D", params.get(3));
+    }
+
+    public void testWrapperPatterns() {
+        Parameter[] params1 = new Parameter[] {A, PB};
+        Parameter[] params2 = new Parameter[]{ B, PC};
+        Parameters params = new Parameters(new Parameter.Wrapper(params1), new Parameter.Wrapper(params2));
+        // should have been no exceptions until now;
+
+        params.set(B, 5);
+
+
+
+
     }
 
     public void testSubList() {
