@@ -243,7 +243,7 @@
         <td>&nbsp;</td>
       </tr>
 
-      <mm:list nodes="<%=nodeID%>" path="<%=managerName+","+relman.getForwardRole()+","+mn.getName()%>">
+      <mm:list nodes="<%=nodeID%>" path='<%=managerName+","+relman.getForwardRole()+","+mn.getName()%>'>
         <% boolean mayeditrel=false; %>
         <mm:node element="<%=relman.getForwardRole()%>">
            <mm:maywrite><% mayeditrel=true; %></mm:maywrite>
@@ -253,7 +253,7 @@
           <td class="<%=relationlink%>">
           <% if ("none".equals(currentState)) { %>
             <a href="<mm:url page="editor.jsp">
-                <mm:param name="node"><mm:field name="<%=relman.getForwardRole()+".number"%>" /></mm:param>
+                <mm:param name="node"><mm:field name='<%=relman.getForwardRole()+".number"%>' /></mm:param>
                 <mm:param name="manager"><%=relman.getName()%></mm:param>
                 <mm:param name="depth"><%=states.size()%></mm:param>
               </mm:url>" target="_top">##</a>
@@ -263,7 +263,7 @@
             <%=mn.getGUIName()%>
               <br />(<%=relrole%>)
           </td>
-          <td class="<%=edittext%>"><mm:field name="<%=mn.getName()+".gui()"%>" /></td>
+          <td class="<%=edittext%>"><mm:field name='<%=mn.getName()+".gui()"%>' /></td>
         </tr>
         <% } %>
       </mm:list>

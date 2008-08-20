@@ -5,11 +5,11 @@
     <a href="<mm:url>
         <mm:param name="cache"><%=cache.getName()%></mm:param>
         <mm:param name="active">off</mm:param>
-      </mm:url>" >Turn off</a> | 
+      </mm:url>" >Turn off</a> |
     <a href="<mm:url>
        <mm:param name="cache"><%=cache.getName()%></mm:param>
        <mm:param name="clear">clear</mm:param>
-       </mm:url>">Clear</a>    
+       </mm:url>">Clear</a>
         <% } else { %>
     <a href="<mm:url>
         <mm:param name="cache"><%=cache.getName()%></mm:param>
@@ -25,6 +25,8 @@
   <td class="data"><%= cache.getHits() %></td>
   <td class="data">Misses</td>
   <td class="data"><%= cache.getMisses() %></td>
+  <td class="data">Implementation</td>
+  <td class="data"><%= cache.getImplementation() %></td>
 </tr>
 <tr>
   <td class="data">Size</td>

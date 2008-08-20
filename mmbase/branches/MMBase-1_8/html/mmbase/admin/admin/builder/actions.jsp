@@ -63,6 +63,13 @@
    <%=msg%>&nbsp;
  </td>
 </tr>
+<tr>
+  <td>
+    <jsp:expression>builder</jsp:expression>
+    <jsp:expression>cloud.getNodeManager(builder).getDescendants()</jsp:expression>
+  </td>
+</tr>
+
 
 <tr><td>&nbsp;</td></tr>
 
