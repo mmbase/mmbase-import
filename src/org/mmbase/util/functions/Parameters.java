@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.40 2008-08-20 08:03:22 michiel Exp $
+ * @version $Id: Parameters.java,v 1.41 2008-08-20 12:46:41 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -181,6 +181,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         backing = params.backing;
         definition = params.definition;
         patternBacking = params.patternBacking;
+        patternLimit   = params.patternLimit;
         fromIndex = from + params.fromIndex;
         toIndex   = to   + params.fromIndex;
         if (fromIndex < 0) throw new IndexOutOfBoundsException("fromIndex < 0");
