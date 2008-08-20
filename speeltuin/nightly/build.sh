@@ -26,22 +26,10 @@ export BUILD_MAILADDRESS=$MAILADDRESS
 
 echo generating version, and some directories
 
-version=`date -u '+%Y-%m-%d'`
-cvsversionoption="-D"
-cvsversion=`date  '+%Y-%m-%d %H:%M'`
-revision="-A"
 
-
-#version="MMBase-1.9.0.beta2"
-#cvsversion=
-#cvsversionoption="-r"
-#revision="MMBase-1_9_0_beta2"
-
-dir=${version}
+source version.sh
 
 # UNSTABLE branch
-builddir="/home/nightly/builds/${dir}"
-mkdir -p ${builddir}
 
 if [ 1 == 1 ] ; then
     cd ${BUILD_HOME}/nightly-build/cvs/mmbase
@@ -52,7 +40,7 @@ if [ 1 == 1 ] ; then
     echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
 # removes all 'target' directories
 # the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
-    find . -type d -name target -print | xargs rm -rf
+    find . -type d -name target -print | xargs rm -rf  >> ${builddir}/messages.log
 
     pwd
     echo "CVS" | tee -a ${builddir}/messages.log
@@ -77,12 +65,8 @@ if [ 1 == 1 ] ; then
     ((${MAVEN} multiproject:site | tee -a ${builddir}/messages.log) 3>&1 1>&2 2>&3 | tee -a ${builddir}/errors.log) 3>&1 1>&2 2>&3
 fi
 
-echo Copying todays artifacts | tee -a ${builddir}/messages.log
-echo $HOME
-for i in `/usr/bin/find $HOME/.maven/repository/mmbase -mtime -1` ; do
-    #echo copy $i to ${builddir} | tee -a ${builddir}/messages.log
-    cp $i ${builddir}
-done
+
+copy-artifacts.sh
 
 
 if [ 1 == 1 ] ; then
