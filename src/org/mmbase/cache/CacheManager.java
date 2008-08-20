@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.38 2008-08-20 17:55:42 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.39 2008-08-20 22:18:08 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -59,7 +59,7 @@ public abstract class CacheManager {
         return new Bean(getCache(name));
     }
     public static Set<Bean> getCaches(String className) {
-        Set<Bean> result = new HashSet<Bean>();
+        SortedSet<Bean> result = new TreeSet<Bean>();
         for (Cache c : caches.values()) {
             try {
                 if (className == null || Class.forName(className).isInstance(c)) {
@@ -318,7 +318,7 @@ public abstract class CacheManager {
         return cache.remove(key);
     }
 
-    public static class Bean<K, V> {
+    public static class Bean<K, V> implements Comparable<Bean<?, ?>> {
         /* private final Cache<K, V> cache; // this line prevents building in Java 1.5.0_07 probably because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620 */
         private final Cache cache;
         public Bean(Cache<K, V> c) {
@@ -374,6 +374,9 @@ public abstract class CacheManager {
         }
         public int hashCode() {
             return cache.hashCode();
+        }
+        public int compareTo(Bean<?, ?> bean) {
+            return getName().compareTo(bean.getName());
         }
     }
 }
