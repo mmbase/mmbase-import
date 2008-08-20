@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.42 2008-08-20 21:11:30 michiel Exp $
+ * @version $Id: Parameters.java,v 1.43 2008-08-20 21:35:38 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -539,7 +539,22 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
      * Gives the arguments back as a (unmodifiable) map.
      */
     public Map<String, Object> toMap() {
-        return Collections.unmodifiableMap(backing);
+        return new AbstractMap<String, Object>() {
+            public Set<Map.Entry<String, Object>> entrySet() {
+                return new AbstractSet<Map.Entry<String, Object>>() {
+                    public Iterator<Map.Entry<String, Object>> iterator() {
+                        return patternBacking != null ?
+                            new org.mmbase.util.ChainedIterator<Map.Entry<String, Object>>(backing.entrySet().iterator(), patternBacking.iterator())
+                            :
+                            backing.entrySet().iterator()
+                            ;
+                    }
+                    public int size() {
+                        return Parameters.this.size();
+                    }
+                };
+            }
+        };
     }
 
     /**
