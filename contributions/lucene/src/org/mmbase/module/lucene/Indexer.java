@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.60 2008-08-20 10:53:20 michiel Exp $
+ * @version $Id: Indexer.java,v 1.61 2008-08-20 11:17:02 michiel Exp $
  **/
 public class Indexer {
 
@@ -84,6 +84,7 @@ public class Indexer {
     private final List<IndexDefinition> queries;
 
 
+    private boolean fullIndexing = false;
 
     // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
     // actually it's ont very hard to simulate it:
@@ -412,53 +413,61 @@ public class Indexer {
      * and indexing the results.
      */
     public void fullIndex() {
-        log.service("Doing full index for " + toString());
-        long errorCountBefore = errorCount;
-        EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.START, 0));
-        IndexWriter writer = null;
-        Directory fullIndex = null;
-        try {
-            clear(true);
-            fullIndex = getDirectoryForFullIndex();
-            writer = new IndexWriter(fullIndex, analyzer, true);
-            long startTime = System.currentTimeMillis();
-            // process all queries
-            int subIndexNumber = 0;
-            for (IndexDefinition indexDefinition : queries) {
-                subIndexNumber++;
-                log.service("full index for " + indexDefinition);
-                CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
+        if (! fullIndexing) {
+            synchronized(this) {
+                log.service("Doing full index for " + toString());
+                long errorCountBefore = errorCount;
+                EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.START, 0));
+                IndexWriter writer = null;
+                Directory fullIndex = null;
                 try {
-                    index(j, writer, indexDefinition.getId());
+                    fullIndexing = true;
+                    clear(true);
+                    fullIndex = getDirectoryForFullIndex();
+                    writer = new IndexWriter(fullIndex, analyzer, true);
+                    long startTime = System.currentTimeMillis();
+                    // process all queries
+                    int subIndexNumber = 0;
+                    for (IndexDefinition indexDefinition : queries) {
+                        subIndexNumber++;
+                        log.service("full index for " + indexDefinition);
+                        CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
+                        try {
+                            index(j, writer, indexDefinition.getId());
+                        } finally {
+                            j.close();
+                        }
+                        if (Thread.currentThread().isInterrupted()) {
+                            log.info("Interrupted");
+                            return;
+                        }
+                    }
+                    writer.optimize();
+                    if (errorCountBefore == errorCount) {
+                        // first clean up, to remove possible mess
+                        clear(false);
+                        Directory.copy(fullIndex, getDirectory(), true);
+                        Date lastFullIndex = setLastFullIndex(startTime);
+                        log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
+                    } else if (Thread.currentThread().isInterrupted()) {
+                        addError("Interrupted, will not update the index");
+                    } else {
+                        addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
+                    }
+                    EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
+                } catch (Exception e) {
+                    addError("" + fullIndex + ": " + e.getMessage());
+                    log.error("Cannot run FullIndex: " + e.getMessage(), e);
                 } finally {
-                    j.close();
-                }
-                if (Thread.currentThread().isInterrupted()) {
-                    log.info("Interrupted");
-                    return;
-                }
-            }
-            writer.optimize();
-            if (errorCountBefore == errorCount) {
-                // first clean up, to remove possible mess
-                clear(false);
-                Directory.copy(fullIndex, getDirectory(), true);
-                Date lastFullIndex = setLastFullIndex(startTime);
-                log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
-            } else if (Thread.currentThread().isInterrupted()) {
-                addError("Interrupted, will not update the index");
-            } else {
-                addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
-            }
-            EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
-        } catch (Exception e) {
-            addError("" + fullIndex + ": " + e.getMessage());
-            log.error("Cannot run FullIndex: " + e.getMessage(), e);
-        } finally {
-            if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
+                    if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
+                    fullIndexing = false;
 
+                }
+                EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
+            }
+        } else {
+            log.info("Refusing to full-index, because already busy");
         }
-        EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
     }
 
     /**
@@ -566,6 +575,22 @@ public class Indexer {
             if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
         } catch (java.io.IOException ioe) {
             throw new RuntimeException(ioe);
+        }
+    }
+    protected void repare(final CorruptIndexException ci, final boolean copy) {
+        if (! fullIndexing) {
+            synchronized(this) {
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                        public void run() {
+                            log.info("Reparing index " + Indexer.this + " because " + ci.getMessage());
+                            Indexer.this.clear(true);
+                            if (! copy) {
+                                Indexer.this.clear(false);
+                                Indexer.this.fullIndex();
+                            }
+                        }
+                    });
+            }
         }
     }
 
