@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.26 2008-08-14 20:27:08 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.27 2008-08-20 17:07:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -110,7 +110,6 @@ public class BasicFramework extends Framework {
      * containing a list with UrlConverters.
      */
     protected void configure(Element el) {
-        log.info("Configuring " + getClass() + " with " + el.getOwnerDocument().getDocumentURI());
         try {
             description.fillFromXml("description", el);
 
@@ -138,7 +137,7 @@ public class BasicFramework extends Framework {
             urlConverter.add(buc);
         }
         */
-        log.info("Configured  " + this.getClass() + " " + this);
+        log.info("Configured with " + el.getOwnerDocument().getDocumentURI() + " " + getClass() + " " + this);
 
     }
     public Block getRenderingBlock(Parameters frameworkParameters) {
