@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.2.2.3 2008-08-04 08:40:57 michiel Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.2.2.4 2008-08-20 08:11:02 michiel Exp $
  */
 public class ApplicationContextReader {
 
@@ -43,7 +43,7 @@ public class ApplicationContextReader {
                 m = getProperties(path);
             } catch (javax.naming.NamingException ne) {
                 log.error(ne);
-                m =  Collections.emptyMap();
+                m =  new HashMap();
             }
             cache.put(path, m);
         }
