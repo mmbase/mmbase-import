@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.59 2008-07-21 14:25:54 michiel Exp $
+ * @version $Id: Indexer.java,v 1.60 2008-08-20 10:53:20 michiel Exp $
  **/
 public class Indexer {
 
@@ -418,6 +418,7 @@ public class Indexer {
         IndexWriter writer = null;
         Directory fullIndex = null;
         try {
+            clear(true);
             fullIndex = getDirectoryForFullIndex();
             writer = new IndexWriter(fullIndex, analyzer, true);
             long startTime = System.currentTimeMillis();
@@ -439,6 +440,8 @@ public class Indexer {
             }
             writer.optimize();
             if (errorCountBefore == errorCount) {
+                // first clean up, to remove possible mess
+                clear(false);
                 Directory.copy(fullIndex, getDirectory(), true);
                 Date lastFullIndex = setLastFullIndex(startTime);
                 log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
@@ -533,6 +536,36 @@ public class Indexer {
             } finally {
                 i.close();
             }
+        }
+    }
+
+    void clear(boolean copy) {
+        try {
+            Directory dir = copy ? getDirectoryForFullIndex(): getDirectory();
+            for (String file : dir.list()) {
+                if (file != null) {
+                    try {
+                        log.service("Deleting " + file);
+                        dir.deleteFile(file);
+                    } catch (Exception e) {
+                        log.warn(e);
+                    }
+                }
+            }
+            if (dir instanceof FSDirectory) {
+                File fsdir = ((FSDirectory) dir).getFile();
+                for (File file : fsdir.listFiles()) {
+                    try {
+                        log.service("Deleting " + file);
+                        file.delete();
+                    } catch (Exception e) {
+                        log.warn(e);
+                    }
+                }
+            }
+            if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
+        } catch (java.io.IOException ioe) {
+            throw new RuntimeException(ioe);
         }
     }
 

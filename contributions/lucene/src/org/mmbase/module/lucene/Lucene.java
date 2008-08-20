@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.119 2008-07-29 09:01:20 michiel Exp $
+ * @version $Id: Lucene.java,v 1.120 2008-08-20 10:53:20 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -238,22 +238,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     String index = event.getIndex();
                     Indexer indexer = indexerMap.get(index);
                     boolean copy = event.getCopy();
-                    try {
-                        Directory dir = copy ? indexer.getDirectoryForFullIndex(): indexer.getDirectory();
-                        for (String file : dir.list()) {
-                            if (file != null) {
-                                try {
-                                    log.service("Deleting " + file);
-                                    dir.deleteFile(file);
-                                } catch (Exception e) {
-                                    log.warn(e);
-                                }
-                            }
-                        }
-                        if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
-                    } catch (java.io.IOException ioe) {
-                        throw new RuntimeException(ioe);
-                    }
+                    indexer.clear(copy);
                 } break;
             }
         } else {
