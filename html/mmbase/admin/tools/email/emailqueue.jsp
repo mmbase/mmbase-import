@@ -1,7 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page import="org.mmbase.bridge.*" 
-%><%@page import="java.util.Hashtable" 
-%><%@include file="../../settings.jsp" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*"
+%><%@page import="java.util.Hashtable"
+%><%@include file="../../settings.jsp"
 %><mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
@@ -58,7 +58,7 @@
   <td class="data"><%=msg.getValue("item2")%></td>
   <td class="data"><%=msg.getValue("item3")%></td>
   <td class="data"><%=msg.getValue("item4")%></td>
-  <td class="data"><a href="<mm:url page="<%="fullmail.jsp?msg="+msg.getValue("item1")%>" />"><%=msg.getValue("item5")%></a></td>
+  <td class="data"><a href="<mm:url page='<%="fullmail.jsp?msg="+msg.getValue("item1")%>' />"><%=msg.getValue("item5")%></a></td>
 </tr>
 <%   } %>
 <% } %>

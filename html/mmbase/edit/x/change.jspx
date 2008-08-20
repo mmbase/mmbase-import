@@ -1,4 +1,4 @@
-<mm:content 
+<mm:content
     type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -7,27 +7,27 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page session="true" buffer="200kb" />
-  
+
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
-  
-    
-    <!-- 
+
+
+    <!--
          Offers a form for one existing MMBase node.
          Also handles the form.
-         
+
          TODO: Some way to edit relations? NODE-field editor?
-         
-         $Id: change.jspx,v 1.18 2006-07-15 15:28:30 michiel Exp $
+
+         $Id: change.jspx,v 1.18.2.1 2008-08-20 09:16:48 michiel Exp $
     -->
     <mm:import externid="ok">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
     <mm:import id="referids">nodemanager,only?,node,ok</mm:import>
     <mm:cloud rank="basic user">
       <mm:import externid="node" required="true" />
-      <mm:node referid="node">        
+      <mm:node referid="node">
         <mm:include page="head.jspx" />
       </mm:node>
-      <body>          
+      <body>
         <mm:form id="changeform" page="change.jspx" >
           <mm:node referid="node">
             <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
@@ -41,8 +41,8 @@
               <jsp:text> (<mm:nodeinfo type="guitype" />)</jsp:text>
               <jsp:directive.include file="logininfo.span.jspx" />
             </h1>
-            
-            
+
+
             <input type="hidden" name="node" value="${_node}" />
             <input type="hidden" name="submitted" value="submitted" />
             <table summary="fields of node ${_node}">
@@ -79,7 +79,7 @@
             </mm:compare>
           </mm:node>
         </mm:form>
-      </body>      
+      </body>
     </mm:cloud>
   </html>
 </mm:content>
