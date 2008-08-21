@@ -4,8 +4,8 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
   <jsp:output omit-xml-declaration="true" />
   <mm:context>
-    <mm:import id="javascript" from="request" externid="org.mmbase.jquery" />
-    <mm:notpresent referid="javascript">
+    <mm:import id="__javascript" from="request" externid="org.mmbase.jquery" />
+    <mm:notpresent referid="__javascript">
       <mm:link page="/mmbase/jquery/jquery-1.2.6.pack.js">
         <script src="${_}" type="text/javascript"><!-- help msie --></script>
       </mm:link>
