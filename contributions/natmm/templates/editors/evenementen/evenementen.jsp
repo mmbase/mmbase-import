@@ -148,9 +148,9 @@ thisCookie = new Cookie("soortIdFC", soortId ); thisCookie.setMaxAge(maxAge); re
 thisCookie = new Cookie("titelIdFC", titelId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
 thisCookie = new Cookie("natuurgebiedenIdFC",natuurgebiedenId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
 
-thisCookie = new Cookie("aanmelderNaamIdFC", aanmelderNaamId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
-thisCookie = new Cookie("aanmelderPostcodeIdFC", aanmelderPostcodeId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
-thisCookie = new Cookie("aanmelderNummerIdFC", aanmelderNummerId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
+// thisCookie = new Cookie("aanmelderNaamIdFC", aanmelderNaamId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
+// thisCookie = new Cookie("aanmelderPostcodeIdFC", aanmelderPostcodeId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
+// thisCookie = new Cookie("aanmelderNummerIdFC", aanmelderNummerId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
 
 thisCookie = new Cookie("beginDyIdFC", beginDyId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
 thisCookie = new Cookie("beginMnthIdFC", beginMnthId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie);
