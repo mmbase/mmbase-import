@@ -12,8 +12,12 @@
  * Items in the list can be added and deleted. They can also be edited (with validation).
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
+ * Custom events (called on the associated div)
+ * -  mmsrRelatedNodesReady
+ * -  mmsrCreated
+ *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.22 2008-08-14 15:41:26 jelle Exp $
+ * @version $Id: List.js.jsp,v 1.23 2008-08-21 08:58:33 michiel Exp $
  */
 
 
@@ -42,7 +46,7 @@ function List(d) {
     this.source = this.find(this.div, ".listinfo").find("input[name = 'source']")[0].value;
     this.icondir = this.find(this.div, ".listinfo").find("input[name = 'icondir']")[0].value;
 	this.createpos = this.find(this.div, ".listinfo").find("input[name = 'createpos']")[0].value;
-	
+
     this.lastChange = null;
     this.lastCommit = null;
 
@@ -174,7 +178,9 @@ List.prototype.bindCreate = function(a) {
 				    div.list = new List(div);
 			    }
 			    });
-			    a.list.executeCallBack("create", r);
+			    a.list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
+			    $(a.list.div).trigger("mmsrCreated", [r]);
+
 			} else {
 			    alert(status + " with " + url);
 
@@ -261,7 +267,7 @@ List.prototype.commit = function(stale, async) {
 		params.source = this.source;
 		params.icondir = this.icondir;
 		params.createpos = this.createpos;
-		
+
 		this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
