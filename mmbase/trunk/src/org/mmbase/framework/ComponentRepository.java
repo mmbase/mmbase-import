@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.39 2008-07-11 15:59:56 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.40 2008-08-21 16:36:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -177,7 +177,7 @@ public class ComponentRepository {
 
         ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
         Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
-        log.info("In " + loader + " the following components XML's were found " + components);
+        log.debug("In " + loader + " the following components XML's were found " + components);
         for (String resource : components) {
             for (URL url : loader.getResourceList(resource)) {
                 try {
