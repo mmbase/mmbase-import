@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The didactor component wrapping an mmbase component.
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseComponent.java,v 1.4 2008-08-21 09:08:46 michiel Exp $
+ * @version $Id: MMBaseComponent.java,v 1.5 2008-08-21 09:42:34 michiel Exp $
  */
 
 public class MMBaseComponent extends nl.didactor.component.Component {
@@ -106,7 +106,12 @@ public class MMBaseComponent extends nl.didactor.component.Component {
     @Override
     public String getTemplateBar() {
         Framework fw = Framework.getInstance();
-        return (String) fw.getSettingValue(getComponent().getSetting("didactor_templatebar"), fw.createSettingValueParameters());
+        if (fw == null) throw new IllegalStateException();
+        org.mmbase.framework.Component component = getComponent();
+        if (component == null) throw new IllegalStateException("No component '" + name + "' found");
+        org.mmbase.framework.Setting setting = component.getSetting("didactor_templatebar");
+        if (setting == null) throw new IllegalStateException();
+        return (String) fw.getSettingValue(setting, fw.createSettingValueParameters());
     }
 
 }
