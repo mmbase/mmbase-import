@@ -6,7 +6,7 @@
 			<di:hasrole role="teacher" inverse="true">false</di:hasrole>
 		</mm:import>
 		<div class="rows">
-			<di:include page="/assesment/navigation.jspx"/>
+			<di:include page="/assessment/navigation.jspx"/>
 			<div class="mainContent">
 				<div class="contentBodywit">
 					<mm:node number="Default.Background" notfound="skip">

@@ -21,7 +21,7 @@
       </mm:node>
     </mm:import>
 
-    <di:include page="/assesment/navigation.jspx" />
+    <di:include page="/assessment/navigation.jspx" />
 
     <div class="mainContent">
 
