@@ -6,7 +6,7 @@
 	<h1>
 		<di:translate key="assessment.education_menu_item_assessment"/>
 	</h1>
-	<script type="text/javascript" src="${mm:link('/assesment/javascript.js.jsp')}">
+	<script type="text/javascript" src="${mm:link('/assessment/javascript.js.jsp')}">
 		<jsp:text> </jsp:text>
 	</script>
 </div>
