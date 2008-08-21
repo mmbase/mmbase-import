@@ -246,10 +246,16 @@ AjaxTreeAction.prototype.execute = function(action, persistentId) {
 
 AjaxTreeAction.prototype.buildTree = function(request) {
 	try {
+		if(!request.responseXML||!request.responseText){
+			window.parent.location.href="#";
+			}
+		else{
 		var treeXml = request.responseXML.getElementsByTagName("tree")[0];
 		var tree = this.createTree(treeXml);
 		var element = document.getElementById(this.elementId);
 		element.innerHTML = tree.toString();
+				}
+		
 		try {
 			alphaImages();
 		}
