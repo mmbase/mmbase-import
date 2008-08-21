@@ -1,18 +1,12 @@
-<div
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    class="navigationbar">
-  <jsp:output omit-xml-declaration="true" />
-  <div class="titlebar">
-    <img src="${mm:treelink('/gfx/icon_pop.gif', includePath)}"
-         width="25" height="13" border="0"
-         title="${di:translate('assessment.assessment_matrix')}"
-         alt="${di:translate('assessment.assessment_matrix')}"
-         /> <di:translate key="assessment.assessment_matrix" />
-  </div>
-
-  <script type="text/javascript" src="javascript.js.jsp">
-    <jsp:text> </jsp:text>
-  </script>
+<?xml version="1.0"?>
+<div xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" xmlns:di="http://www.didactor.nl/ditaglib_1.0" xmlns:jsp="http://java.sun.com/JSP/Page" class="navigationbar">
+	<jsp:output omit-xml-declaration="true"/>
+	<di:include page="/logo.jspx"/>
+	<div class="titlebar"><!-- nothing here --></div>
+	<h1>
+		<di:translate key="assessment.education_menu_item_assessment"/>
+	</h1>
+	<script type="text/javascript" src="${mm:link('/assesment/javascript.js.jsp')}">
+		<jsp:text> </jsp:text>
+	</script>
 </div>
