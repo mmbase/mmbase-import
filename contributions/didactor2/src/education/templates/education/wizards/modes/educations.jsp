@@ -157,6 +157,7 @@
                                    directions="up"
                                    varStatus="status"
                                    searchdir="destination" type="learnobjects">
+
                     <mm:index id="learnblockcounter" write="false" />
                     <jsp:directive.include file="../whichimage.jsp" />
 
