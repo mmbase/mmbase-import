@@ -4,9 +4,8 @@
 <mm:import externid="showcode">false</mm:import>
 
 <mm:treefile id="wizardjsp" write="false" escapeamps="false"
-             page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="templates,referrer">
-  <mm:param name="language">${locale.language}</mm:param>
-  <mm:param name="loginmethod">delegate</mm:param>
+             page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" referids="templates">
+
 </mm:treefile>
 
 <mm:treefile id="listjsp" page="/mmbase/edit/wizard/jsp/list.jsp" objectlist="$includePath" referids="templates,referrer" write="false" escapeamps="false">
