@@ -65,16 +65,21 @@
             <di:include  page="/portalpages/backoffice/add_portalpages.jsp" />
           </mm:hasnode>
 
+          <di:blocks classification="didactor.metadata" />
+
           <!--
+
+              <mm:hasnode number="component.faq">
+              <mm:treeinclude debug="html" page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />
+              </mm:hasnode>
+
+
               follow a few more components which produce horribleness and must be cleaned.
 
               <mm:hasnode number="component.cmshelp">
               <mm:treeinclude debug="html" page="/cmshelp/backoffice/add_help.jsp" objectlist="" referids="listjsp,wizardjsp" />
               </mm:hasnode>
 
-              <mm:hasnode number="component.faq">
-              <mm:treeinclude debug="html" page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />
-              </mm:hasnode>
 
               <mm:hasnode number="component.news">
               <mm:treeinclude debug="html" page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />

@@ -7,9 +7,9 @@
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:import externid="wizardjsp" from="request" />
-  <mm:import  externid="branchPath" required="true" />
+  <mm:import id="parentBranch" externid="branchPath" required="true" />
   <mm:import  externid="b" from="request" required="true" />
-
+  <mm:import id="branchPath">${parentBranch}|</mm:import>
   <di:leaf styleClass="self2"
            branch="${b}"
            branchOffset="1"

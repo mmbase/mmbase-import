@@ -31,6 +31,7 @@
                 maxdepth="6">
               <mm:first inverse="true">
                 <mm:nodeinfo type="type">
+                  TYPE ${_}
                   <mm:treehaspage page="/education/wizards/show/${_}.jspx" objectlist="$includePath">
                     <mm:treeinclude page="/education/wizards/show/${_}.jspx"
                                     objectlist="$includePath"
