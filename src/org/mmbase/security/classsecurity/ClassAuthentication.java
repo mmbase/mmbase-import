@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.18 2008-06-09 09:53:20 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.19 2008-08-21 15:40:19 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -38,6 +38,8 @@ public class ClassAuthentication {
 
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
     public static final String DTD_CLASSSECURITY_1_0       = "classsecurity_1_0.dtd";
+
+    private static int MAX_DEPTH = 10;
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
@@ -145,7 +147,7 @@ public class ClassAuthentication {
                 }
             }
         }
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("Class authenticating (" + authenticatedClasses + ")");
         }
         Throwable t = new Throwable();
@@ -154,11 +156,19 @@ public class ClassAuthentication {
         for (Login n : authenticatedClasses) {
             if (application == null || application.equals(n.application)) {
                 Pattern p = n.classPattern;
+                int depth = 0;
                 for (StackTraceElement element : stack) {
                     String className = element.getClassName();
+                    if (depth++ > MAX_DEPTH) {
+                        // for performance reasons, don't exeggerate all this pattern checking and stuff
+                        log.debug("not found in time");
+                        break;
+                    }
                     if (className.startsWith("org.mmbase.security.")) continue;
                     if (className.startsWith("org.mmbase.bridge.implementation.")) continue;
-                    log.trace("Checking " + className);
+                    if (log.isTraceEnabled()) {
+                        log.trace("Checking " + className);
+                    }
                     if (p.matcher(className).matches()) {
                         if (log.isDebugEnabled()) {
                             log.debug("" + className + " matches! ->" + n + " " + n.getMap());
