@@ -34,8 +34,7 @@
     <!-- show the learnblocks -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodescontainer path="posrel,learnblocks,rolerel,components">
-        <mm:constraint field="components.number" operator="EQUAL" value="component.assessment"/>
+      <mm:relatednodescontainer path="posrel,learnblocks">
         <mm:sortorder field="posrel.pos" />
         <mm:relatednodes id="learnBlock"  varStatus="status">
           <mm:relation to="${user}" role="classrel" notfound="null">
@@ -78,12 +77,12 @@
     -->
     <div>
       <span class="head problem">
-        <di:translate key="assessment.feedback_coach" />:   
+        <di:translate key="assessment.feedback_coach" />:
 			<mm:link page="/c/shoutbox/index/">
 				<a href="${_}" name=""><di:translate key="assessment.messages"/></a>
 		    </mm:link>
       </span>
-     
+
     </div>
 
     <!--
