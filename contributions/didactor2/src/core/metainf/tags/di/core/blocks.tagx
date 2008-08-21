@@ -19,43 +19,43 @@
         <mm:param name="id">didactor.${classification}</mm:param>
         <mm:listfunction set="components" name="blockClassification">
           <mm:stringlist referid="_.blocks">
+
             <di:component name="${_.component.name}">
               <c:choose>
                 <c:when test="${! empty  _component.scopesMap.educations}">
                   <mm:node number="${_component.number}">
                     <mm:relation role="settingrel" to="${education}">
-                      <mm:first>
-                        <jsp:invoke fragment="beforefirst" />
-                      </mm:first>
-                      <jsp:doBody />
-                      <mm:component name="${_.component.name}" block="${_.name}" />
-                      <mm:last inverse="true">
-                        <jsp:invoke fragment="separator" />
-                      </mm:last>
-                      <mm:last>
-                      <jsp:invoke fragment="afterlast" />
-                      </mm:last>
+                      <mm:import id="do" />
                     </mm:relation>
                   </mm:node>
                 </c:when>
                 <c:otherwise>
-                  <mm:first>
-                    <jsp:invoke fragment="beforefirst" />
-                  </mm:first>
-                  <jsp:doBody />
-                  <mm:component name="${_.component.name}" block="${_.name}" />
-                  <mm:last inverse="true">
-                    <jsp:invoke fragment="separator" />
-                  </mm:last>
-                  <mm:last>
-                    <jsp:invoke fragment="afterlast" />
-                  </mm:last>
+                  <mm:import id="do" />
                 </c:otherwise>
               </c:choose>
             </di:component>
+
+
+            <mm:present referid="do">
+              <mm:first>
+                <jsp:invoke fragment="beforefirst" />
+              </mm:first>
+              <jsp:doBody />
+              <mm:component name="${_.component.name}" block="${_.name}" />
+              <mm:last inverse="true">
+                <jsp:invoke fragment="separator" />
+              </mm:last>
+              <mm:last>
+                <jsp:invoke fragment="afterlast" />
+              </mm:last>
+            </mm:present>
+            <mm:remove referid="do" />
+
           </mm:stringlist>
+
         </mm:listfunction>
       </mm:functioncontainer>
+
     </div>
   </mm:hasfunction>
 </jsp:root>
