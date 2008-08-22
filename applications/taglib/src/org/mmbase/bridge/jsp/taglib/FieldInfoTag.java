@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97.2.8 2008-08-19 12:34:12 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.9 2008-08-22 13:08:29 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -281,7 +281,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     private final Field f = new DataTypeField(getCloudVar(), dt);
                     public Field getFieldVar() { return f; }
                     public String getId() { return null; }
-                    public Node getNodeVar() throws JspTagException { return FieldInfoTag.this.getNode(); }
+                    public Node getNodeVar() throws JspTagException { return FieldInfoTag.this.getNode(false); }
 
                 };
             field = fieldProvider.getFieldVar();
