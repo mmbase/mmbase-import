@@ -17,20 +17,7 @@
           referids="education_topmenu_course?">
         <mm:param name="expires">0</mm:param>
         <script type="text/javascript">
-          function reloadMode() {
-          var xmlhttp =  new XMLHttpRequest();
-          xmlhttp.open('GET', '${_}', true);
-          xmlhttp.onreadystatechange = function() {
-          if (xmlhttp.readyState == 4) {
-          var ser = new XMLSerializer();
-          var s = ser.serializeToString(xmlhttp.responseXML);
-          document.getElementById('mode-${mode}').innerHTML = s;
-          restoreTree();
-          storeTree();
-          }
-          }
-          xmlhttp.send(null);
-          }
+          <jsp:directive.include file="reloadMode.js" />
         </script>
       </mm:treefile>
 
