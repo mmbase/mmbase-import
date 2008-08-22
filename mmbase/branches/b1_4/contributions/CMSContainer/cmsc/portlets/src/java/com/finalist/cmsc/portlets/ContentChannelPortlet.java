@@ -149,8 +149,14 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
          }
          setAttribute(req, "offset", offset);
 
-         String orderby = preferences.getValue(ORDERBY, null);
-         String direction = preferences.getValue(DIRECTION, null);
+         String orderby = req.getParameter(ORDERBY);
+         if(orderby == null) {
+        	 orderby = preferences.getValue(ORDERBY, null);
+         }
+         String direction = req.getParameter(DIRECTION);
+         if(direction == null) {
+        	 direction = preferences.getValue(DIRECTION, null);
+         }
          String useLifecycle = preferences.getValue(USE_LIFECYCLE, null);
 
          String archive = preferences.getValue(ARCHIVE, null);
