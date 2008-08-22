@@ -241,15 +241,7 @@ function openContent(type, number, el) {
         $(el).addClass("active");
     }
     if (document.getElementById('content-'+currentnumber)) {
-        var el = document.getElementById('content-'+currentnumber);
-        var classNames = el.className.split(" ");
-        var newClassNames = new Array();
-        for (var c in classNames) {
-            if (classNames[c] != 'selectedContent') {
-                newClassNames.push(classNames[c]);
-            }
-        }
-        el.className = newClassNames.join(" ");
+        $("#content-" + currentnumber).removeClass("selectedContent");
     }
     if ( number > 0 ) {
         currentnumber = number;
@@ -264,16 +256,7 @@ function openContent(type, number, el) {
     }
     requestContent(href);
 
-
-    if (document.getElementById('content-'+currentnumber)) {
-        var el = document.getElementById('content-'+currentnumber);
-        var orig = el.className;
-        var classNames = el.className.split(" ");
-        if (classNames.indexOf("selectedContent") == -1) {
-            classNames.push("selectedContent");
-        }
-        el.className = classNames.join(" ");
-    }
+    $("#content" + currentnumber).addClass("selectedContent");
 
 }
 
