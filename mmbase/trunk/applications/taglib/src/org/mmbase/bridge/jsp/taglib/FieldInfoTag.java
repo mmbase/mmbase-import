@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.113 2008-08-19 09:41:24 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.114 2008-08-22 13:02:07 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -74,6 +74,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_DATATYPEDESCRIPTION = 9;
     protected static final int TYPE_DATATYPEXML   = 10;
     protected static final int TYPE_FORID   = 11;
+    protected static final int TYPE_DEFAULTVALUE  = 12;
 
     protected static final int TYPE_UNSET     = 100;
 
@@ -107,6 +108,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     // public would be defendable because typehandlers perhaps could need it.
     protected int getType() throws JspTagException {
         String t = type.getString(this).toLowerCase();
+        log.debug(t);
         if ("".equals(t)) {
             return TYPE_UNSET;
         } else if ("name".equals(t)) {
@@ -117,6 +119,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             return TYPE_VALUE;
         } else if ("guivalue".equals(t)) {
             return TYPE_GUIVALUE;
+        } else if ("guivalue".equals(t)) {
+            return TYPE_DEFAULTVALUE;
        } else if ("type".equals(t)) {
             return TYPE_TYPE;
        } else if ("typedescription".equals(t)) {
@@ -286,7 +290,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     private final Field f = new DataTypeField(getCloudVar(), dt);
                     public Field getFieldVar() { return f; }
                     public String getId() { return null; }
-                    public Node getNodeVar() throws JspTagException { return FieldInfoTag.this.getNode(); }
+                    public Node getNodeVar() throws JspTagException {
+                        return FieldInfoTag.this.getNode(false);
+                    }
 
                 };
             field = fieldProvider.getFieldVar();
@@ -340,7 +346,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 if (node != null) {
                     infoType = TYPE_GUIVALUE;
                 } else {
-                    infoType = TYPE_UNSET;
+                    infoType = TYPE_DEFAULTVALUE;
                 }
             }
             break;
@@ -349,7 +355,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_USEINPUT:
             if (field.isReadOnly()) {
                 // ignore useinput
-                infoType = TYPE_UNSET;
+                infoType = TYPE_DEFAULTVALUE;
                 break;
             }
         case TYPE_VALUE:
@@ -369,6 +375,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
 
         Locale locale = getLocale();;
+        log.debug("Using locale " + locale);
 
         switch(infoType) {
         case TYPE_NAME:
@@ -461,6 +468,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_DATATYPEDESCRIPTION:
             show = dataType.getLocalizedDescription().get(locale);
             break;
+        case TYPE_DEFAULTVALUE:
+            show = Casting.toString(dataType.getDefaultValue(locale, getCloudVar(), field));
+            break;
+        case TYPE_UNSET:
+            throw new JspTagException("Type attribute not used");
         default:
             log.debug("Unknown info type " + infoType);
             break;
