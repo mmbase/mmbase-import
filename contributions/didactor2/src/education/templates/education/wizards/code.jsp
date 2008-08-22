@@ -5,21 +5,12 @@
   <mm:content postprocessor="none">
     <mm:cloud>
       <mm:import externid="mode">educations</mm:import>
+
       <mm:link page="/education/js/tree.jsp" referids="mode">
         <script type="text/javascript" src="${_}"> <!-- help IE --></script>
       </mm:link>
       <mm:remove from="session" referid="path" />
       <mm:import externid="education_topmenu_course" />
-      <mm:treefile
-          write="false"
-          objectlist="${includePath}"
-          page="/education/wizards/modes/${mode}.jsp"
-          referids="education_topmenu_course?">
-        <mm:param name="expires">0</mm:param>
-        <script type="text/javascript">
-          <jsp:directive.include file="reloadMode.js" />
-        </script>
-      </mm:treefile>
 
       <div id="mode-${mode}">
         <di:include debug="html" page="/education/wizards/modes/${mode}.jsp" />
