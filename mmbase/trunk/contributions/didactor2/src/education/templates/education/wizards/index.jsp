@@ -18,6 +18,9 @@
     </script>
     -->
     <div class="rows" id="rows">
+
+      <di:include debug="html" page="/education/wizards/javascript.jsp" />
+
       <di:include debug="html" page="/education/wizards/navigation.jspx" />
 
       <div class="mainContent">
