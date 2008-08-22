@@ -8,26 +8,30 @@
   <jsp:output omit-xml-declaration="true" />
 
   <div class="footer">
-    <mm:cloud method="asis">
-      <mm:hasrank value="anonymous" inverse="true">
-        <di:ifsetting component="core" setting="showtranslationbox">
-          <di:hasrole role="systemadministrator">
-            <mm:treeinclude page="/translation/render.jsp" objectlist="$includePath" referids="$referids" />
-          </di:hasrole>
-        </di:ifsetting>
-      </mm:hasrank>
-      <di:getsetting component="core" setting="google_analytics">
-        <mm:isnotempty>
-          <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-            <jsp:text> </jsp:text>
-          </script>
-          <script type="text/javascript">
-            _uacct="${_}";
-            urchinTracker();
-          </script>
-        </mm:isnotempty>
-      </di:getsetting>
-    </mm:cloud>
+    <c:catch var="exception">
+      <mm:cloud method="asis">
+        <mm:hasrank value="anonymous" inverse="true">
+          <di:ifsetting component="core" setting="showtranslationbox">
+            <di:hasrole role="systemadministrator">
+              <mm:treeinclude page="/translation/render.jsp" objectlist="$includePath" referids="$referids" />
+            </di:hasrole>
+          </di:ifsetting>
+        </mm:hasrank>
+        <di:getsetting component="core" setting="google_analytics">
+          <mm:isnotempty>
+            <script type="text/javascript">
+              var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+              document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+            </script>
+            <script type="text/javascript">
+              var pageTracker = _gat._getTracker("${_}");
+              pageTracker._trackPageview();
+            </script>
+          </mm:isnotempty>
+        </di:getsetting>
+      </mm:cloud>
+    </c:catch>
+    <jsp:text>${exception}</jsp:text>
   </div>
 </mm:content>
 
