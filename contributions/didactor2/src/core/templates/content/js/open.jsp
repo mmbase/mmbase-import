@@ -229,16 +229,7 @@ function postContent(href, form) {
 
 function openContent(type, number, el) {
     if (currentel != null) {
-       if (currentel.className != null) {
-			var classNames = currentel.className.split(" ");
-	        var newClassNames = new Array();
-	        for (var c in classNames) {
-	            if (classNames[c] != 'active') {
-	                newClassNames.push(classNames[c]);
-	            }
-	        }
-	        currentel.className = newClassNames.join(" ");
-       }
+        $(currentel).removeClass("active");
     }
     if (/^[+-]?\d+$/.test(type)) {
         el = number;
@@ -247,7 +238,7 @@ function openContent(type, number, el) {
     }
 
     if (el != null) {
-        el.className = el.className + " active";
+        $(el).addClass("active");
     }
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);
