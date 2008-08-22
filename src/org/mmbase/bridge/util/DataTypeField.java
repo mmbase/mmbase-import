@@ -21,7 +21,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.1.2.1 2008-08-19 12:29:07 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.1.2.2 2008-08-22 13:07:44 michiel Exp $
  * @since   MMBase-1.8.7
  */
 
@@ -81,7 +81,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     }
 
     public boolean isReadOnly() {
-        return field == null ? true : field.isReadOnly();
+        return field == null ? false : field.isReadOnly();
     }
 
 
