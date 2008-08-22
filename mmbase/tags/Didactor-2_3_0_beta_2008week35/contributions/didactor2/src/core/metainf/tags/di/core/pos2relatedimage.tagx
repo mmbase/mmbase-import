@@ -1,0 +1,64 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag description="" />
+  <mm:node>
+    <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="pos2rel">
+      <mm:related path="pos2rel,images" max="1" fields="pos2rel.pos1,pos2rel.pos2" id="rel">
+        <mm:node element="images">
+          <mm:import id="html"> 
+            <c:choose>
+              <c:when test="${rel.pos2rel.pos1 eq 1}">
+                <mm:image mode="img" styleClass="pos2rel image-right" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 2}">
+                <mm:image mode="img" styleClass="pos2rel image-left" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 3}">
+                <mm:import id="maxwidth" vartype="integer">60</mm:import>
+                <mm:image mode="img" styleClass="pos2rel image-right" template="s(${maxwidth})" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 4}">
+                <mm:import id="maxwidth" vartype="integer">60</mm:import>
+                <mm:image mode="img" styleClass="pos2rel image-left" template="s(${maxwidth})" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 5}">
+                <mm:import id="maxwidth" vartype="integer">180</mm:import>
+                <mm:image mode="img" styleClass="pos2rel image-right" template="s(${maxwidth})" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 6}">
+                <mm:import id="maxwidth" vartype="integer">180</mm:import>
+                <mm:image mode="img" styleClass="pos2rel image-left" template="s(${maxwidth})" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 7}">
+                <mm:image mode="img" styleClass="pos2rel image-fullwidth" />
+              </c:when>
+              <c:when test="${rel.pos2rel.pos1 eq 8}">
+                <mm:image mode="img" styleClass="pos2rel image-fullwidth-clear" />
+              </c:when>
+              <c:otherwise>
+                <mm:image mode="img" styleClass="pos2rel image-fullwidth-clear" />
+              </c:otherwise>
+            </c:choose>
+          </mm:import>
+          <c:choose>         
+            <c:when test="${rel.pos2rel.pos2 eq 1 and (! empty maxwidth) and _node.width gt maxwidth}">
+              <mm:image template="s(800x800&gt;)">
+                <a href="${_}"
+                   onclick="window.open(this.href, '${mm:escape('identifier', _node.title)}', 'width=${dimension.width + 20},height=${dimension.height + 20}'); return false;">
+                  <mm:write escape="none" referid="html" />
+                </a>
+              </mm:image>
+            </c:when>
+            <c:otherwise>
+              <mm:write escape="none" referid="html" />
+            </c:otherwise>
+          </c:choose>
+        </mm:node>
+      </mm:related>
+    </mm:hasrelationmanager>
+  </mm:node>
+</jsp:root>
+  

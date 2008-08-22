@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="disallowedusernames" maintainer="didactor.nl" version="1" extends="object">
+
+  <searchage>1000</searchage>
+
+  <names>
+    <singular xml:lang="en">Disallowed username</singular>
+    <singular xml:lang="nl">Verboden gebuikersnaam</singular>
+    <singular xml:lang="eo">Malpermesita uzulnomo</singular>
+    <plural xml:lang="en">Disallowed usernames</plural>
+    <plural xml:lang="nl">Verboden gebruikersnamen</plural>
+    <plural xml:lang="eo">Malpermesitaj uzulnomoj</plural>
+  </names>
+
+  <fieldlist>
+    <field name="username">
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <unique value="true" />
+        <required value="true" />
+        <minLength value="2" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+  </fieldlist>
+
+</builder>

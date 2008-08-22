@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+  <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+  <!ENTITY extra_steps SYSTEM "extra_steps.xml">
+  <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+  <title xml:lang="nl">Open vraag Editor</title>
+  <title xml:lang="en">Open question Editor</title>
+
+  <action type="create">
+    <object type="openquestions" />
+  </action>
+
+  <action type="load">
+    <relation destination="openanswers" role="related"/>
+
+    <relation destination="feedback" role="related" />
+    &extra_loads;
+  </action>
+
+  <action type="delete" />
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Open vraag invoeren</title>
+    <title xml:lang="en">Enter open question</title>
+    <field name="title"  />
+    <field name="showtitle" />
+    <field name="text" ftype="html" dtminlength="0" />
+    <field name="layout" />
+    <field name="type_of_score" />
+
+
+    <list destination="openanswers" role="related" ordertype="number" orderby="number">
+      <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
+      <title xml:lang="en">Related answers (not mandatory)</title>
+      <item>
+        <field name="text" ftype="line">
+          <prompt xml:lang="nl">Tekst</prompt>
+          <prompt xml:lang="en">Text</prompt>
+          <description xml:lang="nl">De antwoord tekst</description>
+          <description xml:lang="en">The answer text</description>
+        </field>
+      </item>
+
+
+      <action type="create">
+        <relation role="related">
+          <object type="openanswers" />
+        </relation>
+      </action>
+
+      <action type="add">
+        <relation role="related">
+          <object type="openanswers" />
+        </relation>
+      </action>
+
+      <command name="search" nodepath="openanswers" fields="text" age="-1" orderby="number" directions="down">
+        <prompt xml:lang="nl">Zoeken naar Antwoorden</prompt>
+        <prompt xml:lang="en">Search for answers</prompt>
+        <search-filter>
+          <name xml:lang="nl">Tekst bevat</name>
+          <name xml:lang="en">Text contains</name>
+          <search-fields>text</search-fields>
+        </search-filter>
+      </command>
+
+      <command name="insert" />
+    </list>
+    <list role="related" extends="config/feedback/feedback-list.xml" />
+  </form-schema>
+
+  &extra_schemas;
+
+</wizard-schema>

@@ -1,0 +1,40 @@
+<di:html
+    styleClass="assessment"
+    title_key="assessment.mail_to_coach__title"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    css="/assessment/css/base.css"
+    component="assessmment" >
+
+  <div class="rows">
+   <div class="mainContent">
+      <h1><di:translate key="assessment.mail_to_coach___title" /></h1>
+
+      <mm:import externid="list_of_coaches" vartype="list" />
+      <div class="contentBody">
+        <mm:import externid="message" id="body" escape="none"/>
+
+        <c:forEach items="${list_of_coaches}" var="coach">
+          <mm:context>
+            <mm:node number="${coach}" id="coach">
+              <mm:createnode type="emails" id="email" >
+                <mm:node number="$user">
+                  <mm:setfield node="email" name="from"><di:person /> &lt;${_node.email}&gt;</mm:setfield>
+                </mm:node>
+                <mm:setfield name="to"><di:person /> &lt;${coach.email}&gt;</mm:setfield>
+                <mm:setfield name="subject"><di:translate key="assessment.mail_to_coach_letter___subject" /></mm:setfield>
+                <mm:setfield name="body"><mm:write referid="body" escape="text/plain"/></mm:setfield>
+                <mm:function name="startmail" />
+              </mm:createnode>
+            </mm:node>
+          </mm:context>
+        </c:forEach>
+
+        <di:translate key="assessment.mail_to_coach_sent___done_message" arg0="${fn:length(list_of_coaches)}" />
+      </div>
+   </div>
+  </div>
+</di:html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="blockposrel" maintainer="didactor.nl" version="1" extends="xyrel">
+  <searchage>365</searchage>
+  <names>
+    <singular xml:lang="nl">BlokPositieRelatie</singular>
+    <singular xml:lang="en">BlockPositionRelation</singular>
+    <plural xml:lang="nl">BlokPositieRelaties</plural>
+    <plural xml:lang="en">BlockPositionRelations</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">
+      Relatie waarin x, y z positie en hoogte en breedte kan worden
+      opgeslagen. Daarnaast is er nog een units veld waarin het type
+      van de andere velden kan worden opgeslagen (nu alleen pixels of blokken).
+    </description>
+    <description xml:lang="en">
+      Relation in which x, y, z position and width and height can be stored.
+      There's also a unit field, which contains the unit of the previous fields
+      (atm only pixels or blocks are allowed).
+    </description>
+  </descriptions>
+
+  <properties>
+  </properties>
+
+  <fieldlist>
+
+    <field name="width">
+      <descriptions>
+        <description xml:lang="en">Width</description>
+        <description xml:lang="nl">Breedte</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guiname xml:lang="en">Width</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+
+    <field name="height">
+      <descriptions>
+        <description xml:lang="en">Height</description>
+        <description xml:lang="nl">Hoogte</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guiname xml:lang="en">Height</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+
+
+    <field name="unit">
+      <descriptions>
+        <description xml:lang="en">
+          What kind of units is used in the other fields (eg pixels or blocks)
+        </description>
+        <description xml:lang="nl">
+          Het type van de andere velden (bijv pixels of blokken)
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Eenheid</guiname>
+        <guiname xml:lang="en">Units</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="0" />
+        <required value="false" />
+        <enumeration>
+          <!-- just a guess -->
+          <entry value="0" display="pixels" />
+          <entry value="1" display="blocks" />
+        </enumeration>
+      </datatype>
+    </field>
+
+  </fieldlist>
+</builder>

@@ -1,0 +1,51 @@
+<project name="didactor-config" default="config" basedir=".">
+  <!-- We need the 'foreach' and 'if' tasks, therefore we use ant-contrib -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="lib/ant-contrib-1.0b1.jar"/>
+    </classpath>
+  </taskdef>
+
+  <echo message="configuring..."/>
+   <!--
+       my.properties is supposed to be a symlink or copy of the actual
+       property file to be used by default.
+
+       note that any properties set here will override any properties set
+       in build.properties and configure.properties.
+
+       if you need to override this one, use the -propertyfile option to
+       ant
+    -->
+
+  <property file="my.properties"/>
+  <property file="build.properties"/>
+
+
+  <target name="config" description="Configure the didactor instance with the values from the properties file">
+    <tstamp>
+      <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
+    </tstamp>
+    <replace file="${build.webapp.dir}/version.jsp"
+             token="$${war.name}"
+             value="${war.name}"/>
+    <replace file="${build.webapp.dir}/version.jsp"
+             token="$${components}"
+             value="${components}"/>
+    <replace file="${build.webapp.dir}/version.jsp"
+             token="$${war.time}"
+             value="${war.time}"/>
+
+
+    <!-- A dirty hack, if you ask me-->
+    <!--
+    <replace dir="${build.wizards.dir}/data/config"
+             token="$${wizards.pages.text.ftype}"
+             value="${wizards.pages.text.ftype}"
+             summary="true"
+             includes="**/*.xml"
+    />
+    -->
+
+  </target>
+</project>

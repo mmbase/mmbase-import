@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="pages" maintainer="didactor.nl" version="3" extends="learnobjects">
+  <class>nl.didactor.builders.DidactorBuilder</class>
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="nl">Pagina</singular>
+    <singular xml:lang="en">Page</singular>
+    <singular xml:lang="fr">Page</singular>
+    <plural xml:lang="nl">Pagina's</plural>
+    <plural xml:lang="en">Pages</plural>
+    <plural xml:lang="fr">Pages</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Een pagina met cursus-stof</description>
+    <description xml:lang="en">A page with course material</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="text">
+      <descriptions>
+        <description xml:lang="nl">Tekst, met eventueel HTML opmaak</description>
+        <description xml:lang="en">Text, possibly containt HTML layout</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="en">Text</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="65535" enforce="never"/>
+      </datatype>
+    </field>
+
+    <field name="layout">
+      <descriptions>
+        <description xml:lang="nl">Layout</description>
+        <description xml:lang="en">Layout</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Layout</guiname>
+        <guiname xml:lang="en">Layout</guiname>
+      </gui>
+      <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="imagelayout">
+      <descriptions>
+        <description xml:lang="nl">Layout afbeeldingen</description>
+        <description xml:lang="en">Images layout</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Layout afbeeldingen</guiname>
+        <guiname xml:lang="en">Images layout</guiname>
+      </gui>
+      <datatype base="didactor_imagelayout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+  </fieldlist>
+</builder>

@@ -1,0 +1,27 @@
+<mm:node
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+  <!-- hardly a nice mechanism, this. I didn't make it up -->
+  <mm:field name="type">
+    <c:choose>
+      <c:when test="${_ ne 3}">
+        <mm:fieldinfo type="guivalue" />
+      </c:when>
+      <c:otherwise>
+        <c:choose>
+          <!-- WTF -->
+          <c:when test="${_node.name eq 'Persoonlijke map'}">
+            <di:translate key="email.personal" />
+          </c:when>
+          <c:otherwise>
+            <mm:field name="name" />
+          </c:otherwise>
+        </c:choose>
+      </c:otherwise>
+    </c:choose>
+  </mm:field>
+</mm:node>

@@ -1,0 +1,25 @@
+<component 
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+    name="mmbob" templatepath="mmbob" templatebar="education" barposition="100">
+  <scope name="component" referid="component">
+    <setting name="showlocation" type="boolean" default="true"/>
+  </scope>
+  <scope name="providers" referid="provider">
+    <setting ref="showlocation" />
+  </scope>
+  <scope name="educations" referid="education">
+    <setting ref="showlocation" />
+    <setting name="students"     type="boolean" default="true" />
+    <setting name="coaches"      type="boolean" default="false" />
+  </scope>
+  <scope name="classes" referid="class">
+
+  </scope>
+  <!--
+
+  <scope name="people" referid="user">
+  </scope>
+  -->
+</component>

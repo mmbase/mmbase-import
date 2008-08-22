@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="rankingquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.RankingQuestionBuilder</class>
+  <searchage>31</searchage>
+
+  <names>
+    <singular xml:lang="nl">Rangorde Vraag</singular>
+    <singular xml:lang="en">Ranking Question</singular>
+    <plural xml:lang="nl">Rangorde Vragen</plural>
+    <plural xml:lang="nl">Ranking Questions</plural>
+  </names>
+
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="nl">Rangorde vraag, waar de antwoorden in goede volgorde gezet moeten worden</description>
+    <description xml:lang="en">Ranking question, where answers need to be put in correct order</description>
+  </descriptions>
+
+  <properties>
+    <property name="key:new:name">education.createnewrankingquestions</property>
+    <property name="key:new:description">education.createnewrankingquestionsdescription</property>
+  </properties>
+
+</builder>

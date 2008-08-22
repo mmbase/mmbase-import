@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+  <title xml:lang="nl">Audiofragment editor</title>
+  <title xml:lang="en">Audiofragment editor</title>
+
+  <action type="create">
+    <object type="audiotapes">
+      <field name="showtitle">1</field>
+    </object>
+  </action>
+
+  <action type="load">
+    &extra_loads;
+  </action>
+
+  <action type="delete"/>
+
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Invoeren audiofragment</title>
+    <title xml:lang="en">Enter audiofragment</title>
+    <field name="title" dttype="string" dtminlength="2" >
+      <prompt xml:lang="nl">Audiofragment titel</prompt>
+      <prompt xml:lang="en">Title</prompt>
+    </field>
+    <field name="showtitle" />
+
+    <field name="subtitle" dttype="string">
+      <prompt xml:lang="nl">Subtitel</prompt>
+      <prompt xml:lang="en">Subtitle</prompt>
+    </field>
+
+    <field name="intro" ftype="text" rows="4" >
+      <prompt xml:lang="nl">Intro</prompt>
+      <prompt xml:lang="en">Intro</prompt>
+    </field>
+
+
+    <field name="body" ftype="text" rows="8" >
+      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="en">Text</prompt>
+    </field>
+
+    <field name="url" ftype="line" dttype="string" dtminlength="2">
+      <prompt xml:lang="nl">URL audiofragment</prompt>
+      <prompt xml:lang="en">URL audiofragment</prompt>
+      <description xml:lang="nl">Verwijst naar een audio-fragment</description>
+      <description xml:lang="en">URL that points to an audio-fragment</description>
+    </field>
+
+  </form-schema>
+
+  &extra_schemas;
+</wizard-schema>

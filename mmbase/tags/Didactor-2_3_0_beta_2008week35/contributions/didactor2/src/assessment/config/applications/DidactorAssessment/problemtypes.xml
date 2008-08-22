@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<problemtypes exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
+    <node number="17001" owner="system">
+        <name>Unimportant problems</name>
+        <key>problemtype_unimportant</key>
+        <pos>1</pos>
+    </node>
+    <node number="17002" owner="system">
+        <name>Solvable problems</name>
+        <key>problemtype_solvable</key>
+        <pos>2</pos>
+    </node>
+    <node number="17003" owner="system">
+        <name>Not solvable problems</name>
+        <key>problemtype_notsolvable</key>
+        <pos>3</pos>
+    </node>
+</problemtypes>

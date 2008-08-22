@@ -1,0 +1,5 @@
+user.ldap-user.accountenabled=true
+user.ldap-user.NullAuthSP.registered=true
+user.ldap-user.Ldap.registered=true
+user.ldap-user.Ldap.attributes=ldap-user@edu.roczeeland.nl
+

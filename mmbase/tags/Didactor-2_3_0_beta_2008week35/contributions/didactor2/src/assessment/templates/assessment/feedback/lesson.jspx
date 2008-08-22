@@ -1,0 +1,83 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="owner" required="true"/>
+  <mm:import externid="lesson" required="true"/>
+
+  <mm:listnodes type="problemtypes" id="problemtype" orderby="pos">
+
+    <tr>
+      <td colspan="2">
+        <div class="grayBar" style="width:100%;">
+          <mm:relatednodes type="problems" max="1">
+            <di:img src="/assessment/gfx/minus.gif"
+                    title="assessment.show_problems"
+                    onclick="toggle(${problemtype})"
+                    id="toggle_image${problemtype}" />
+          </mm:relatednodes>
+          <jsp:text> </jsp:text>
+          <di:translate key="assessment.${_node.key}" /><!-- wtf, how can this be realy dynamic then -->
+        </div>
+      </td>
+    </tr>
+    <tbody class="toggle_div${_node}">
+      <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
+        <mm:addnode element="people" number="${owner}" />
+        <mm:relatednodes id="problem">
+          <tr>
+            <td colspan="2">
+
+              <di:img src="/assessment/gfx/plus.gif"
+                      title="assessment.show_problem"
+                      onclick="toggle(${_node});"
+                      id="toggle_image${_node})" />
+              <b>&amp;nbsp;<mm:field name="name" /></b>
+            </td>
+          </tr>
+          <mm:listrelationscontainer role="posrel" type="learnblocks">
+            <mm:sortorder field="pos" />
+            <mm:addnode number="${lesson}" />
+            <mm:listrelations>
+              <tr class="toggle_div${problem}">
+                <td>
+                  <di:translate key="assessment.how_much_trouble" />
+                  <mm:field name="pos">
+                    <mm:fieldinfo type="guivalue" />
+                  </mm:field>
+                </td>
+              </tr>
+            </mm:listrelations>
+          </mm:listrelationscontainer>
+          <tr class="toggle_div${problem}" style="display: none;">
+            <td>
+              <mm:related path="related,madetests,related,tests" orderby="madetests.number" directions="down" max="1">
+                <!--
+                    TODO It should only be possible to have one madetest per problem,test combination. However some users have multiple madetests
+                    for this combination. Still have to find out how this is possible.
+                -->
+                <mm:field name="madetests.number" id="madetest_number" write="false" />
+                <mm:node element="tests">
+                  <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                    <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                    <mm:treeinclude
+                        debug="html"
+                        page="$page" objectlist="$includePath" referids="$referids">
+                      <mm:param name="question"><mm:field name="number"/></mm:param>
+                      <mm:param name="testnumber"><mm:write referid="lesson"/></mm:param>
+                      <mm:param name="madetest"><mm:write referid="madetest_number" /></mm:param>
+                    </mm:treeinclude>
+                  </mm:relatednodes>
+                </mm:node>
+              </mm:related>
+            </td>
+          </tr>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </tbody>
+  </mm:listnodes>
+</jsp:root>

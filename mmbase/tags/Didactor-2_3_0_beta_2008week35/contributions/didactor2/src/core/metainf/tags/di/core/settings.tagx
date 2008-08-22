@@ -1,0 +1,132 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:dit="urn:jsptagdir:/WEB-INF/tags/di/core"
+    version="2.0">
+
+  <jsp:directive.tag
+      description="Shows settings for given component and object. Can be used inside di:component or with explicit component attribute."
+      import="nl.didactor.component.Component" />
+
+  <jsp:directive.attribute name="component"  />
+  <jsp:directive.attribute name="number"     />
+  <jsp:directive.attribute name="scope"
+                           required="true" type="java.lang.String" />
+
+  <di:component number="${empty component ? requestScope._component.number : component}">
+    <span class="head">
+      <input type="hidden" name="posted_${_component.number}" />
+      <mm:import id="posted" externid="posted_${_component.number}" />
+
+      <c:if test="${scope ne 'component'}">
+        <mm:node>
+          <mm:listrelationscontainer role="settingrel" type="components">
+            <mm:constraint field="components.number" value="${_component.number}" />
+
+            <mm:notpresent referid="posted">
+              <mm:size write="false">
+                <c:if test="${_ ne 0}">
+                  <mm:import id="HASSETTINGS">yes</mm:import>
+                </c:if>
+              </mm:size>
+            </mm:notpresent>
+
+            <mm:present referid="posted">
+              <mm:import id="chk" externid="chk_${_node.number}" />
+              <mm:present referid="chk">
+                <mm:size write="false">
+                  <c:if test="${_ eq 0}">
+                    <mm:createrelation role="settingrel" source="_node" destination="_component.number" />
+                    <mm:import id="JUSTCHECKED" />
+                  </c:if>
+                  <mm:import id="HASSETTINGS">yes</mm:import>
+                </mm:size>
+              </mm:present>
+              <mm:notpresent referid="chk">
+                <mm:listrelations>
+                  <mm:log>Deleting relations</mm:log>
+                  <mm:deletenode deleterelations="true" />
+                </mm:listrelations>
+              </mm:notpresent>
+            </mm:present>
+
+            <mm:size>
+              <c:choose>
+                <c:when test="${_ eq 0}">
+                  <input type="checkbox" name="chk_${_node.number}" />
+                </c:when>
+                <c:otherwise>
+                  <input type="checkbox" name="chk_${_node.number}" checked="checked" />
+                </c:otherwise>
+              </c:choose>
+            </mm:size>
+          </mm:listrelationscontainer>
+        </mm:node>
+      </c:if>
+
+      <jsp:doBody />
+    </span>
+    <c:if test="${(HASSETTINGS eq 'yes') or (scope eq 'component')}">
+      <c:forEach items="${_component.settings}" var="setting">
+        <mm:context>
+          <c:if test="${mm:contains(setting.value.scope, scope)}">
+            <p class="setting ${scope}" id="setting_${scope}_${number}">
+              ${setting.value.name}:
+              <mm:present referid="posted">
+                <mm:notpresent referid="JUSTCHECKED">
+                  <mm:import id="post" externid="i_${_component.number}_${number}_${setting.value.name}" />
+                  <di:settingvalue  number="${empty number ? _component.number : number}" name="${setting.value.name}" write="false">
+                    <c:if test="${_ ne post}">
+                      <di:setsettingvalue number="${empty number ? _component.number : number}" name="${setting.value.name}" value="${post}" />
+                    </c:if>
+                  </di:settingvalue>
+                </mm:notpresent>
+              </mm:present>
+
+              <di:settingvalue  number="${empty number ? _component.number : number}" name="${setting.value.name}">
+                <c:choose>
+                  <c:when test="${setting.value.type eq 1}">
+                    <input
+                        class="mm_validate mm_dt_eline"
+                        type="text" name="i_${_component.number}_${number}_${setting.value.name}"
+                        value="${_}" />
+                  </c:when>
+                  <c:when test="${setting.value.type eq 2}">
+                    <c:choose>
+                      <c:when test="${_ eq 'on'}">
+                        <input type="checkbox"
+                               name="i_${_component.number}_${number}_${setting.value.name}"
+                               checked="checked" />
+                      </c:when>
+                      <c:otherwise>
+                        <input type="checkbox"
+                               name="i_${_component.number}_${number}_${setting.value.name}"
+                               />
+                      </c:otherwise>
+                    </c:choose>
+                  </c:when>
+                  <c:when test="${setting.value.type eq 3}">
+                    domain
+                  </c:when>
+                  <c:when test="${setting.value.type eq 4}">
+                    <input type="text"
+                           class="mm_validate mm_dt_eline"
+                           name="i_${_component.number}_${number}_${setting.value.name}"
+                           value="${_}" />
+
+                  </c:when>
+                  <c:otherwise>
+                    UNKNOWN
+                  </c:otherwise>
+                </c:choose>
+              </di:settingvalue>
+            </p>
+          </c:if>
+        </mm:context>
+      </c:forEach>
+    </c:if>
+  </di:component>
+
+</jsp:root>

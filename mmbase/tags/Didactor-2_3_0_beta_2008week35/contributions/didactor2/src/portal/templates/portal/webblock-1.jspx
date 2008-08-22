@@ -1,0 +1,44 @@
+<mm:node
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di-portal="urn:jsptagdir:/WEB-INF/tags/di/portal"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <di-portal:rounded styleclass="menu">
+
+    <!--
+        <h1><di:translate key="education.learnenvironmenttitle" /></h1>
+        <h2><mm:field name="name" /></h2>
+    -->
+    <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+    <ul>
+      <mm:relatednodes type="object" role="posrel" orderby="posrel.pos">
+        <mm:nodeinfo type="type">
+          <c:choose>
+            <c:when test="${_ eq 'urls'}">
+              <li><a href="${_node.url}"
+                     title="${_node.description}"><mm:field name="name" /></a></li>
+            </c:when>
+            <c:when test="${_ eq 'news'}">
+              <mm:link referids="_node@article">
+                <mm:param name="col2" value="article" />
+                <mm:param name="col3" value="ignore" />
+                <li><a href="${_}"><mm:field name="title" /></a></li>
+              </mm:link>
+            </c:when>
+            <c:when test="${_ eq 'xmlnews'}">
+              <mm:link referids="_node@article">
+                <mm:param name="col2" value="rich-article" />
+                <mm:param name="col3" value="ignore" />
+                <li><a href="${_}"><mm:field name="title" /></a></li>
+              </mm:link>
+            </c:when>
+          </c:choose>
+        </mm:nodeinfo>
+      </mm:relatednodes>
+    </ul>
+  </di-portal:rounded>
+</mm:node>

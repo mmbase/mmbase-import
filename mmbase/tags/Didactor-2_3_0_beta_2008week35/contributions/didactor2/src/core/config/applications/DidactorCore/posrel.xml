@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<posrel exportsource="mmbase://www.didactor.org/version2.0" timestamp="20050623104506">
+        <!--- Systemadmin role: has all editcontexts -->
+	<node number="542" owner="admin" snumber="391" dnumber="522" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="543" owner="admin" snumber="391" dnumber="523" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="544" owner="admin" snumber="391" dnumber="524" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="545" owner="admin" snumber="391" dnumber="525" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="546" owner="admin" snumber="391" dnumber="526" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="547" owner="admin" snumber="391" dnumber="527" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="548" owner="admin" snumber="391" dnumber="528" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="549" owner="admin" snumber="391" dnumber="529" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="550" owner="admin" snumber="391" dnumber="530" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+	<node number="551" owner="admin" snumber="391" dnumber="531" rtype="posrel" dir="bidirectional">
+           <pos>3</pos>
+	</node>
+
+        <!-- Student role: has no editcontext rights -->
+	<node number="532" owner="admin" snumber="397" dnumber="522" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="533" owner="admin" snumber="397" dnumber="523" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="534" owner="admin" snumber="397" dnumber="524" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="535" owner="admin" snumber="397" dnumber="525" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="536" owner="admin" snumber="397" dnumber="526" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="537" owner="admin" snumber="397" dnumber="527" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="538" owner="admin" snumber="397" dnumber="528" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="539" owner="admin" snumber="397" dnumber="529" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="540" owner="admin" snumber="397" dnumber="530" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+	<node number="541" owner="admin" snumber="397" dnumber="531" rtype="posrel" dir="bidirectional">
+           <pos>0</pos>
+	</node>
+</posrel>

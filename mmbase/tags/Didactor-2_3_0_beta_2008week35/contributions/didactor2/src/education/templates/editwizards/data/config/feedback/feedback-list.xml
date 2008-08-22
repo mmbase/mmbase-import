@@ -1,0 +1,42 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="feedback" role="related" minoccurs="0" maxoccurs="*">
+  <title xml:lang="nl">Bijbehorende feedback</title>
+  <title xml:lang="en">Related feedback</title>
+
+  <item>
+    <title xml:lang="nl">Feedback invoeren</title>
+    <title xml:lang="en">Enter feedback</title>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+      <description xml:lang="nl">Naam van de feedback</description>
+      <description xml:lang="en">Name of the feedback</description>
+    </field>
+    <field wizardname="config/feedback/feedback" ftype="startwizard">
+      <prompt xml:lang="nl">Edit ...</prompt>
+      <prompt xml:lang="en">Edit ...</prompt>
+    </field>
+  </item>
+
+  <command name="startwizard" inline="true" wizardname="config/feedback/feedback" objectnumber="new" />
+
+  <command name="search" nodepath="feedback" fields="name,text" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar feedback</prompt>
+    <prompt xml:lang="en">Search feedback</prompt>
+    <search-filter>
+      <name xml:lang="nl">Titel bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>name</search-fields>
+    </search-filter>
+    <search-filter>
+      <name xml:lang="nl">Feedback tekst bevat</name>
+      <name xml:lang="en">Feedback text contains</name>
+      <search-fields>text</search-fields>
+    </search-filter>
+  </command>
+
+
+  <action type="create">
+    <relation destinationtype="feedback" role="related" />
+  </action>
+</list>

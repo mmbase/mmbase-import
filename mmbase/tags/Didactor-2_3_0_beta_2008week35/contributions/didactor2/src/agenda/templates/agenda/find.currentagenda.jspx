@@ -1,0 +1,67 @@
+<jsp:root version="1.2"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          >
+    <!-- Adding items in the personal scope -->
+    <mm:compare referid="typeof" value="1">
+      <mm:node number="$user">
+        <mm:relatednodes type="agendas" max="1">
+          <mm:node id="currentagenda" />
+        </mm:relatednodes>
+      </mm:node>
+    </mm:compare>
+    
+    <!-- Adding items in the class scope -->
+    <mm:compare referid="typeof" value="2">
+      <mm:node number="$user">
+        <mm:relatednodescontainer type="classes">
+          
+          <!-- if a class is chosen get the correct class for saving the data -->
+          <mm:isnotempty referid="classname">
+            <mm:constraint field="name" referid="classname"/>
+          </mm:isnotempty>
+          
+          <mm:relatednodes id="myclasses">
+            <mm:relatednodes type="agendas" max="1">
+              <mm:node id="currentagenda" />
+            </mm:relatednodes>
+          </mm:relatednodes>
+          
+        </mm:relatednodescontainer>
+      </mm:node>
+    </mm:compare>
+    
+    <!-- Adding items in the workgroup scope -->
+    <mm:compare referid="typeof" value="3">
+      <mm:node number="$user">
+        <mm:relatednodescontainer type="workgroups">
+          
+          <!-- if a workgroup is chosen get the correct workgroup for saving the data -->
+          <mm:isnotempty referid="workgroupname">
+            <mm:constraint field="name" referid="workgroupname"/>
+          </mm:isnotempty>
+          
+          <mm:relatednodes id="myworkgroups">
+            <mm:relatednodes type="agendas" max="1">
+              <mm:node id="currentagenda" />
+            </mm:relatednodes>
+          </mm:relatednodes>
+          
+        </mm:relatednodescontainer>
+      </mm:node>
+    </mm:compare>
+    
+    <!-- Create invitation -->
+    <mm:compare referid="typeof" value="4">
+      <mm:node number="$user">
+        <mm:relatednodes type="agendas" max="1">
+          <mm:node id="currentagenda" />
+        </mm:relatednodes>
+      </mm:node>
+    </mm:compare>
+
+    <mm:notpresent referid="currentagenda">
+      <p>WARNING: No agenda (type ${typeof}) found for user ${user}</p>
+    </mm:notpresent>    
+</jsp:root>
