@@ -37,7 +37,7 @@ import java.util.*;
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LinkMap.java,v 1.3 2007-12-05 20:40:01 michiel Exp $
+ * @version $Id: LinkMap.java,v 1.4 2008-08-23 18:56:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class LinkMap<K, V> extends AbstractMap<K,V> {
@@ -59,7 +59,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
          */
          BOTH,
         /**
-         * Changes are reflected in the first map, but before that, the <em>old</em> value is copied to the second map (unless a mapping is alreayd in that map).
+         * Changes are reflected in the first map, but before that, the <em>old</em> value is copied to the second map (unless a mapping is already in that map).
          * This effectively creates a unmodifiable map, but the wrapped map is modified anyways.
          */
         CONSERVE,

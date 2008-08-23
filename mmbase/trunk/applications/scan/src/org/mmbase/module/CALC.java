@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Calc.java
  * @author Daniel Ockeloen
- * @version $Id: CALC.java,v 1.10 2005-02-09 09:48:48 michiel Exp $
+ * @version $Id: CALC.java,v 1.11 2008-08-23 18:56:59 michiel Exp $
  */
 public class CALC extends ProcessorModule {
     // logging
@@ -31,7 +31,7 @@ public class CALC extends ProcessorModule {
      * @deprecated-now doesn't add any functionality
      */
      public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
+        String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();

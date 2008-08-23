@@ -41,7 +41,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.32 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: QueryConvertor.java,v 1.33 2008-08-23 18:56:31 michiel Exp $
  */
 public class QueryConvertor {
 
@@ -542,9 +542,9 @@ class DBValue extends ParseItem {
         value = value.toLowerCase();
         if (value.startsWith("'")) {
             if (value.indexOf('?') >= 0 || value.indexOf('*') >= 0)
-                return new DBWildcardStringValue(Strip.Chars(value,"' ",Strip.BOTH));
+                return new DBWildcardStringValue(Strip.chars(value, "' ", Strip.BOTH));
             else
-                return new DBStringValue(Strip.Chars(value,"' ",Strip.BOTH));
+                return new DBStringValue(Strip.chars(value, "' ", Strip.BOTH));
         }
         else
             return new DBNumberValue(value);
