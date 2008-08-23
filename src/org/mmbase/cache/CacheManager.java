@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.39 2008-08-20 22:18:08 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.40 2008-08-23 19:00:48 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -257,7 +257,7 @@ public abstract class CacheManager {
                     log.service("Reading " + is.getSystemId());
                     configReader = new DocumentReader(is, Cache.class);
                 } catch (Exception e) {
-                    log.error(e);
+                    log.warn(e.getClass() + " " + e.getMessage());
                     return;
                 }
                 configure(configReader);
