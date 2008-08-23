@@ -40,7 +40,7 @@
 			<forward name="success" path="/editors/taskmanagement/task.jsp" redirect="false" />
 		</action>
 		<action path="/editors/taskmanagement/showTaskAction" type="com.finalist.cmsc.tasks.forms.ShowTaskAction"
-			name="showTaskForm" scope="requewst" unknow="false" validate="false">
+			name="showTaskForm" scope="request" unknow="false" validate="false">
 			<forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="false"/>
 		</action>
 	</action-mappings>
