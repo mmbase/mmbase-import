@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.224 2008-07-28 16:11:32 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.225 2008-08-23 18:58:31 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
@@ -54,7 +54,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Map which stores the current database value for fields when
-     * then change in the node.
+     * they change in the node.
      * it can be used to optimise cacheing
      * @since MMBase-1.8
      */
@@ -103,7 +103,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Pointer to the actual builder to which this node belongs.
-     * This value is initialised through the first call to {@link #getBuilder}
+     * This value is initialised by the first call to {@link #getBuilder}
      */
     private MMObjectBuilder builder = null;
 
@@ -125,6 +125,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     private String newContext = null;
 
+    /**
+     * Just a counter to keep track of the number of instances of MMObjectNode that are produced in
+     * this mmbase
+     */
     private static long seq = 0;
     public long sequence = seq++;
 
