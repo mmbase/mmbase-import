@@ -108,7 +108,7 @@
   </block>
 
   <block name="datatypes"
-         classification="mmbase.tools"
+         classification="mmbase.tools mmbase.examples"
          mimetype="text/html">
     <title xml:lang="en">Data Types</title>
     <title xml:lang="nl">Datatypes</title>
@@ -352,6 +352,15 @@
     </body>
   </block>
 
+
+  <block name="mrtg"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">MRTG</title>
+    <title xml:lang="nl">MRTG</title>
+    <body jsp="mrtg.jspx" />
+  </block>
+
   <block name="entities"
          classification="mmbase.tools"
          mimetype="text/html">
@@ -386,8 +395,8 @@
       can get a classification which determines its position in the admin menu.
     </description>
     <description xml:lang="nl">
-       Hierarchisch overzicht van de beschikbare componenten en blocken. 
-       Een block kan een classificatie meekrijgen die o.a. aangeeft 
+       Hierarchisch overzicht van de beschikbare componenten en blocken.
+       Een block kan een classificatie meekrijgen die o.a. aangeeft
        op welke plek in het admin menu een block getoond moet worden.
     </description>
     <body jsp="components/tree.jspx">
