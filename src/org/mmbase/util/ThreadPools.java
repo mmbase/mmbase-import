@@ -12,23 +12,24 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
+
 /**
  * Generic MMBase Thread Pools
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.17 2008-08-07 18:53:34 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.18 2008-08-23 18:56:31 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
-    private static Map<Future, String> identifiers = 
+    private static Map<Future, String> identifiers =
         Collections.synchronizedMap(new WeakHashMap<Future, String>());
 
     /**
      * There is no way to identify the FutureTask objects returned in
      * the getQueue methods of the executors.  This works around that.
-     * Used by admin pages. 
+     * Used by admin pages.
      * @since MMBase-1.9
      */
     public static String identify(Future r, String s) {
@@ -49,7 +50,7 @@ public abstract class ThreadPools {
      * are short living tasks. This is mainly used by {@link
      * org.mmbase.util.transformers.ChainedCharTransformer} (and only
      * when transforming a Reader).
-     * 
+     *
      * Code performing a similar task could also use this thread pool.
      */
     public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
@@ -76,7 +77,7 @@ public abstract class ThreadPools {
      * All kind of jobs that should happen in a seperate Thread can be
      * executed by this executor. E.g. sending mail could be done by a
      * job of this type.
-     * 
+     *
      */
     public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
 
@@ -143,7 +144,7 @@ public abstract class ThreadPools {
             if (run.size() > 0) {
                 log.info("Interrupted " + run);
             }
-            
+
         }
         {
             List<Runnable> run = jobsExecutor.shutdownNow();

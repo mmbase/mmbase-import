@@ -13,10 +13,10 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Extends and wraps LocalizedString. 
+ * Extends and wraps LocalizedString.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedLocalizedString.java,v 1.1 2006-11-11 12:56:39 michiel Exp $
+ * @version $Id: WrappedLocalizedString.java,v 1.2 2008-08-23 18:56:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class WrappedLocalizedString extends LocalizedString {

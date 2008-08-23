@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.6 2008-08-04 08:40:24 michiel Exp $
+ * @version $Id: ApplicationContextReader.java,v 1.7 2008-08-23 18:56:31 michiel Exp $
  */
 public class ApplicationContextReader {
 
@@ -37,7 +37,7 @@ public class ApplicationContextReader {
      * @since MMBase-1.8.7
      */
     public static Map<String, String> getCachedProperties(String path) {
-        Map<String, String> m =cache.get(path);
+        Map<String, String> m = cache.get(path);
         if (m == null) {
             try {
                 m = getProperties(path);
