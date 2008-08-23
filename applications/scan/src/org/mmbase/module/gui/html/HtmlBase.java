@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.57 2007-08-27 14:12:10 michiel Exp $
+ * @version $Id: HtmlBase.java,v 1.58 2008-08-23 18:56:59 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -118,7 +118,7 @@ public class HtmlBase extends ProcessorModule {
      * Generate a list of values from a command to the processor
      */
     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
+        String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -164,7 +164,7 @@ public class HtmlBase extends ProcessorModule {
             Enumeration f=tagger.Values("FIELDS").elements();
             for (;f.hasMoreElements();) {
 
-                String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+                String fieldname=Strip.doubleQuote((String)f.nextElement(),Strip.BOTH);
                 result=node.getStringValue(fieldname);
 
                 if (result!=null && !result.equals("null")) {
@@ -426,7 +426,7 @@ public class HtmlBase extends ProcessorModule {
                 if (where==null || wherevector.contains(new Integer(node.getIntValue("number")))) {
                     for (Iterator f=tagger.Values("FIELDS").iterator(); f.hasNext();) {
                         // hack hack this is way silly Strip needs to be fixed
-                        tmp=node.getValue(Strip.DoubleQuote((String)f.next(),Strip.BOTH));
+                        tmp=node.getValue(Strip.doubleQuote((String)f.next(),Strip.BOTH));
                         if (tmp!=null && !tmp.equals("null")) {
                             results.addElement(""+tmp);
                         } else {
@@ -966,7 +966,7 @@ public class HtmlBase extends ProcessorModule {
                 node=(MMObjectNode)e.nextElement();
                 for (f=fields.elements();f.hasMoreElements();) {
                     // hack hack this is way silly, StringTagger needs to be fixed
-                    fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+                    fieldname=Strip.doubleQuote((String)f.nextElement(),Strip.BOTH);
                     if (fieldname.indexOf('(')>=0) {
                         result=""+node.getValue(fieldname);
                     } else {
@@ -1155,7 +1155,7 @@ public class HtmlBase extends ProcessorModule {
             Enumeration f=tagger.Values("FIELDS").elements();
             for (;f.hasMoreElements();) {
                 // hack hack this is way silly Strip needs to be fixed
-                String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+                String fieldname=Strip.doubleQuote((String)f.nextElement(),Strip.BOTH);
                 result=node.getStringValue(fieldname);
                 if (result!=null && !result.equals("null")) {
                     results+=" "+result;
@@ -1176,7 +1176,7 @@ public class HtmlBase extends ProcessorModule {
         int posdot,posarc,posunder,pos;
         Enumeration f=fields.elements();
         for (;f.hasMoreElements();) {
-            fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+            fieldname=Strip.doubleQuote((String)f.nextElement(),Strip.BOTH);
             // get the first part (Example : episodes.);
             // we got two styles:
             // episodes.html_body

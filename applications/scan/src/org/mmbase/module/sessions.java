@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.32 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: sessions.java,v 1.33 2008-08-23 18:56:59 michiel Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -486,7 +486,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             return results;
         }
 
-        String line = Strip.DoubleQuote(cmd,Strip.BOTH);
+        String line = Strip.doubleQuote(cmd,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd2=tok.nextToken();

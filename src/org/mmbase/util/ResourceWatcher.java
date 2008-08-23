@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.20 2008-07-11 14:56:42 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.21 2008-08-23 18:56:31 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -69,14 +69,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
      */
-    protected SortedSet<String> resources = new TreeSet<String>();
+    protected final SortedSet<String> resources = new TreeSet<String>();
 
     /**
      * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
      * can't know that any more. Used in {@link #notify(NodeEvent)}
      */
-    protected Map<Integer, String> nodeNumberToResourceName = new HashMap<Integer, String>();
+    protected final Map<Integer, String> nodeNumberToResourceName = new HashMap<Integer, String>();
 
     /**
      * Whether this ResourceWatcher has been started (see {@link #start})
@@ -86,12 +86,12 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * Wrapped FileWatcher for watching the file-resources. ResourceName -> FileWatcher.
      */
-    protected Map<String, FileWatcher> fileWatchers = new HashMap<String, FileWatcher>();
+    protected final Map<String, FileWatcher> fileWatchers = new HashMap<String, FileWatcher>();
 
     /**
      * The resource-loader associated with this ResourceWatcher.
      */
-    protected ResourceLoader resourceLoader;
+    protected final ResourceLoader resourceLoader;
 
 
     /**

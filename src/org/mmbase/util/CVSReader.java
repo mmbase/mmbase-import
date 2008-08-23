@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.15 2008-08-07 18:49:11 michiel Exp $
+ * @version $Id: CVSReader.java,v 1.16 2008-08-23 18:56:31 michiel Exp $
  * @deprecated Not used, no good interface (see MMB-526), wrong name, not worth the hassle to fix this, there
  * must be better CSV readers out there.
  */
@@ -123,14 +123,14 @@ public class CVSReader {
      *         postition in the header
      */
     Hashtable<String, Integer> decodeHeader(String line) {
-        int i=0;
-        Hashtable<String, Integer> results=new Hashtable<String, Integer>();
+        int i = 0;
+        Hashtable<String, Integer> results = new Hashtable<String, Integer>();
         // XXX parsing on /n/r is not needed as a line cannot exist of multiple lines...
-        StringTokenizer tok=new StringTokenizer(line,",\n\r");
+        StringTokenizer tok = new StringTokenizer(line, ",\n\r");
         while (tok.hasMoreTokens()) {
-            String part=tok.nextToken();
-            part = Strip.DoubleQuote(part,Strip.BOTH);
-            results.put(part,i++);
+            String part = tok.nextToken();
+            part = Strip.doubleQuote(part, Strip.BOTH);
+            results.put(part, i++);
         }
         return results;
     }
@@ -143,11 +143,11 @@ public class CVSReader {
     public String loadFile(String filename) {
         try {
             File sfile = new File(filename);
-            FileInputStream scan =new FileInputStream(sfile);
+            FileInputStream scan = new FileInputStream(sfile);
             int filesize = (int)sfile.length();
-            byte[] buffer=new byte[filesize];
-            int len=scan.read(buffer,0,filesize);
-            if (len!=-1) {
+            byte[] buffer = new byte[filesize];
+            int len = scan.read(buffer, 0, filesize);
+            if (len != -1) {
                 // XXX: ideally, we should use the preferred encoding,
                 // but this class cannot access MMBase
                 return new String(buffer);

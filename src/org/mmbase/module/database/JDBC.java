@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.61 2008-08-01 22:32:20 michiel Exp $
+ * @version $Id: JDBC.java,v 1.62 2008-08-23 18:57:57 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -77,7 +77,7 @@ public class JDBC extends ProcessorModule {
      */
     public void init() {
         if (Module.getModule(MMBase.class, false).getDataSource() == null) {
-            
+
             future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
                     public void run() {
                         JDBC.this.checkTime();
@@ -339,7 +339,7 @@ public class JDBC extends ProcessorModule {
      * @javadoc
      */
     public Vector getList(PageInfo sp, StringTagger tagger, String value) {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
+        String line = Strip.doubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();

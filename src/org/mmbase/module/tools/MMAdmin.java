@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.162 2008-07-29 16:50:44 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.163 2008-08-23 18:57:57 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -171,7 +171,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public Vector<String> getList(PageInfo sp, StringTagger tagger, String value) {
-        String line = Strip.DoubleQuote(value, Strip.BOTH);
+        String line = Strip.doubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();

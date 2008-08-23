@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.32 2008-07-11 14:47:58 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.33 2008-08-23 18:56:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -269,7 +269,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * @param locale The locale to be degraded
      * @param originalLocale The original locale (used to find back the original variant after
      * dropping the country)
-     * @return A degraded Locale of <code>null</code> if the locale could not be degraded any further.
+     * @return A degraded Locale or <code>null</code> if the locale could not be degraded any further.
      *
      * @since MMBase-1.8.5
      */

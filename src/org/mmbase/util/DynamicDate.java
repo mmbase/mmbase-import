@@ -16,8 +16,8 @@ import java.util.*;
  * set-methods throw exceptions. There is no public constructor, but a public static {@link #getInstance}.
  *
  * Sadly, the Date object of Sun is implemented using private static methods which use private
- * fields, of the Date object so not everything could be overridden perfectly. So, if e.g. a dynamic
- * date could be an argument of a 'after' or 'before' method, it is better to wrap it with {@link
+ * fields of the Date object, so not everything could be overridden perfectly. So, if e.g. a dynamic
+ * date could be an argument of an 'after' or 'before' method, it is better to wrap it with {@link
  * DynamicDate#eval} first.
  *
  * @author  Michiel Meeuwissen
@@ -51,6 +51,11 @@ public class DynamicDate extends Date {
     }
 
     /**
+     * This call {@link #getInstance}, then {@link #eval} and catches the parse-exception (in which
+     * case it will return -1).
+     * This boils down to that this is a utility method to get a new Date object by String in just
+     * one call.
+     *
      * @since MMBase-1.8.7
      */
     public static Date eval(final String format) {
@@ -87,7 +92,9 @@ public class DynamicDate extends Date {
     }
 
     /**
-     * This produces a normal Date object, and is called everytime when that is needed. Users can call it too, if they want to fixated
+     * This produces a normal Date object, and is called everytime when that is needed. Users can
+     * call it too, if they want to fixate that Date. You can also use {@link #eval(Date)}, which
+     * will work on a normal Date object too.
      */
     protected  Date evalDate() {
         DateParser parser = new DateParser(new java.io.StringReader(date));
@@ -192,6 +199,10 @@ public class DynamicDate extends Date {
         return date + ": " + evalDate().toString();
     }
 
+    /**
+     * Returns an arrays of example Strings that can be parsed by DynamicDate. Most features are
+     * tested here.
+     */
     public static String[] getDemo() {
         return new String[] {
             "0", "10000", "-10000", "+1000", // just numbers a bit after 1970, a bit before

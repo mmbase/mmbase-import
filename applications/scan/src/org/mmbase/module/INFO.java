@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.54 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: INFO.java,v 1.55 2008-08-23 18:56:59 michiel Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -99,7 +99,7 @@ public class INFO extends ProcessorModule {
      * @throws ParseException
      */
      public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
+        String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -1203,13 +1203,13 @@ public class INFO extends ProcessorModule {
         // get base
         String base=tagger.Value("BASE");
         if (base==null) return results;
-           base = Strip.DoubleQuote(base,Strip.BOTH);
+           base = Strip.doubleQuote(base,Strip.BOTH);
 
         // find the start
         Date start=null;
         String val=tagger.Value("START");
         if (val!=null) {
-            val = Strip.DoubleQuote(val,Strip.BOTH);
+            val = Strip.doubleQuote(val,Strip.BOTH);
             start=DateSupport.parsedbmdate(val);
         }
 
@@ -1217,7 +1217,7 @@ public class INFO extends ProcessorModule {
         Date end=null;
         val=tagger.Value("END");
         if (val!=null) {
-            val = Strip.DoubleQuote(val,Strip.BOTH);
+            val = Strip.doubleQuote(val,Strip.BOTH);
             end=DateSupport.parsedbmdate(val);
         }
 
@@ -1225,7 +1225,7 @@ public class INFO extends ProcessorModule {
         boolean startincluded=true;
         val=tagger.Value("STARTINCLUDED");
         if (val!=null) {
-            val = Strip.DoubleQuote(val,Strip.BOTH);
+            val = Strip.doubleQuote(val,Strip.BOTH);
             startincluded=isNotNo(val);
         }
 
@@ -1233,7 +1233,7 @@ public class INFO extends ProcessorModule {
         boolean endincluded=true;
         val=tagger.Value("ENDINCLUDED");
         if (val!=null) {
-            val = Strip.DoubleQuote(val,Strip.BOTH);
+            val = Strip.doubleQuote(val,Strip.BOTH);
             endincluded=isNotNo(val);
         }
 
@@ -1241,7 +1241,7 @@ public class INFO extends ProcessorModule {
         boolean revert=false;
         val=tagger.Value("REVERS");
         if (val!=null) {
-            val = Strip.DoubleQuote(val,Strip.BOTH);
+            val = Strip.doubleQuote(val,Strip.BOTH);
             revert = isYes(val);
         }
 

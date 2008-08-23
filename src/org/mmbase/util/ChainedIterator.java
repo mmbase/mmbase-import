@@ -17,13 +17,13 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.5 2008-06-26 11:26:34 michiel Exp $
+ * @version $Id: ChainedIterator.java,v 1.6 2008-08-23 18:56:31 michiel Exp $
  */
 public class ChainedIterator<E> implements Iterator<E> {
 
-    List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
-    Iterator<Iterator<E>> iteratorIterator = null;
-    Iterator<E> iterator = null;
+    private final List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
+    private Iterator<Iterator<E>> iteratorIterator = null;
+    private Iterator<E> iterator = null;
     public ChainedIterator(Iterator<E>... is) {
         for (Iterator<E> i : is) {
             iterators.add(i);

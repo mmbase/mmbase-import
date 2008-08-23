@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.77 2008-08-01 22:01:32 michiel Exp $
+ * @version $Id: scanparser.java,v 1.78 2008-08-23 18:56:59 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1556,7 +1556,7 @@ public class scanparser extends ProcessorModule {
 
         ll1=System.currentTimeMillis();
         cmd=dodollar(cmd,session,sp);
-        cmd=Strip.Whitespace(cmd,Strip.BOTH);
+        cmd=Strip.whitespace(cmd,Strip.BOTH);
         String oldcmd=cmd;
 
         if (sp.reload) {

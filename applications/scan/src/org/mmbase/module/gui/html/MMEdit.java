@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.13 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: MMEdit.java,v 1.14 2008-08-23 18:56:59 michiel Exp $
  */
 public class MMEdit extends ProcessorModule {
 
@@ -122,7 +122,7 @@ public class MMEdit extends ProcessorModule {
         Vector result = new Vector();
         CommandHandlerInterface handler;
 
-        StringTokenizer tok = new StringTokenizer(Strip.DoubleQuote(command,Strip.BOTH),"-\n\r");
+        StringTokenizer tok = new StringTokenizer(Strip.doubleQuote(command,Strip.BOTH),"-\n\r");
         String token = tok.nextToken();
 
         if (token.startsWith ("DATE")) {
