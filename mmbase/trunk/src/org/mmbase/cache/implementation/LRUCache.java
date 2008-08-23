@@ -17,7 +17,7 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.6 2008-07-28 15:09:52 michiel Exp $
+ * @version $Id: LRUCache.java,v 1.7 2008-08-23 19:01:08 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */
@@ -34,6 +34,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         maxSize = size;
         // caches can typically be accessed/modified by multipible thread, so we need to synchronize
         backing = Collections.synchronizedMap(new LinkedHashMap<K, V>(size, 0.75f, true) {
+                @Override
                 protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
                     return size() > LRUCache.this.maxSize;
                 }
