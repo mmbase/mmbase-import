@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.62 2008-08-23 18:57:57 michiel Exp $
+ * @version $Id: JDBC.java,v 1.63 2008-08-24 08:29:02 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -369,12 +369,14 @@ public class JDBC extends ProcessorModule {
      */
     public Vector listPools(StringTagger tagger) {
         Vector results = new Vector();
-        for (Object element : poolHandler.keySet()) {
-            String name = (String) element;
-            MultiPool pool = poolHandler.get(name);
-            results.addElement(stripSensistive(name));
-            results.addElement("" + pool.getSize());
-            results.addElement("" + pool.getTotalConnectionsCreated());
+        if (poolHandler != null) {
+            for (Object element : poolHandler.keySet()) {
+                String name = (String) element;
+                MultiPool pool = poolHandler.get(name);
+                results.addElement(stripSensistive(name));
+                results.addElement("" + pool.getSize());
+                results.addElement("" + pool.getTotalConnectionsCreated());
+            }
         }
         tagger.setValue("ITEMS", "3");
         return results;
