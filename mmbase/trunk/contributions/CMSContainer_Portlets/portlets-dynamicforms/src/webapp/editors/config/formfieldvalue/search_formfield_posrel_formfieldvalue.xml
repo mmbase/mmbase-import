@@ -6,12 +6,12 @@
    <title xml:lang="zh">表单框值</title>
 
    <item>
-      <field name="value" ftype="data">
+      <field name="value" ftype="line">
          <prompt xml:lang="en">Value</prompt>
          <prompt xml:lang="nl">Waarde</prompt>
          <prompt xml:lang="zh">值</prompt>
       </field>
-      <field name="text" ftype="data">
+      <field name="text" ftype="line">
          <prompt xml:lang="en">Text</prompt>
          <prompt xml:lang="nl">Tekst</prompt>
          <prompt xml:lang="zh">文本</prompt>
@@ -22,8 +22,6 @@
          <prompt xml:lang="zh">标准</prompt>
          <optionlist select="boolean"></optionlist>
       </field>
-
-      <field ftype="startwizard" wizardname="config/formfieldvalue/formfieldvalue" />
    </item>
 
    <command name="search" nodepath="formfieldvalue" age="-1" fields="value" pagelength="20">
@@ -37,15 +35,17 @@
          <search-fields>[value]</search-fields>
       </search-filter>
    </command>
-   <command name="startwizard" inline="true" wizardname="config/formfieldvalue/formfieldvalue" objectnumber="new">
+
+   <command name="insert" objectnumber="new">
       <prompt xml:lang="en">New</prompt>
       <prompt xml:lang="nl">Nieuw</prompt>
       <prompt xml:lang="zh">新建</prompt>
    </command>
 
    <action type="create">
-      <relation destinationtype="formfieldvalue" role="posrel">
+      <relation role="posrel">
          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='formfieldvalue']/../field[@name='pos'])+{$pos}}</field>
+         <object type="formfieldvalue" />
       </relation>
    </action>
 </list>
