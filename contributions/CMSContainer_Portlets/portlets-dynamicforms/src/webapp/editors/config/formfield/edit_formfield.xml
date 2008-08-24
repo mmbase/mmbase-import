@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_formfield">
-   <field name="label" dtrequired="true" ftype="text" rows="3">
+   <field name="label" dtrequired="true" ftype="line">
       <prompt xml:lang="en">Label</prompt>
       <prompt xml:lang="nl">Label</prompt>
       <prompt xml:lang="zh">标签</prompt>
@@ -23,7 +23,7 @@
       <prompt xml:lang="zh">强制的</prompt>
       <optionlist select="boolean"></optionlist>
    </field>
-   <field name="regex" dtrequired="false">
+   <field name="regex" ftype="line" dtrequired="false">
       <prompt xml:lang="en">Regular expression</prompt>
       <prompt xml:lang="nl">Reguliere expressie</prompt>
       <prompt xml:lang="zh">正则表达式</prompt>
@@ -40,25 +40,23 @@
       <prompt xml:lang="zh">列</prompt>
       <description>Deze waarde wordt alleen gebruikt bij textarea's</description>
    </field>
-   <field name="defaultvalue" ftype="text" rows="3">
+   <field name="maxlength" ftype="line" dttype="int" dtmin="-1">
+      <prompt xml:lang="en">Max length</prompt>
+      <prompt xml:lang="nl">Maximum lengte</prompt>
+      <description>The maxlength of the field</description>
+   </field>
+   <field name="defaultvalue" ftype="line">
       <prompt xml:lang="en">Default value</prompt>
       <prompt xml:lang="nl">Standaard waarde</prompt>
       <prompt xml:lang="zh">默认值</prompt>
       <description>De default waarde, deze waarde wordt niet gebruikt bij select velden en radiobuttons.</description>
    </field>
    <field name="sendemail" ftype="enum" dttype="enum" dtrequired="true">
-      <prompt xml:lang="en">Send email</prompt>
+      <prompt xml:lang="en">Send in email</prompt>
       <prompt xml:lang="nl">Mail naar</prompt>
       <prompt xml:lang="zh">发送邮件</prompt>
-      <description>
-         Wanneer hier ja wordt ingevuld krijgt de gebruiker een email op het adres wat hij hier invult.
-      </description>
+      <description>Wanneer hier ja wordt ingevuld krijgt de gebruiker een email op het adres wat hij hier invult.</description>
       <optionlist select="boolean" />
-   </field>
-   <field name="maxlength" ftype="line" dttype="int" dtmin="-1">
-      <prompt xml:lang="en">Max length</prompt>
-      <prompt xml:lang="nl">Maximum lengte</prompt>
-      <description>The maxlength of the field</description>
    </field>
    <list include="config/formfieldvalue/search_formfield_posrel_formfieldvalue.xml" />
 </form-schema>
