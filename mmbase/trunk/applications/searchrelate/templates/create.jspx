@@ -21,7 +21,7 @@
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
           </fmt:message>
           <fmt:message key="create" var="createmessage" />
-          <table  class="create" summary="${summary}">
+          <table  class="create ${query.nodeManager.name}" summary="${summary}">
             <tfoot>
               <tr class="buttons">
                 <td colspan="2">
