@@ -6,12 +6,14 @@
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:content expires="0" type="text/html">
-    <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-      <mm:cloud method="asis">
+  <mm:cloud method="asis">
+    <mm:content expires="0" type="text/html">
+      <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
         <mm:import externid="queryid"  />
+        <mm:import externid="id"  />
         <mm:import externid="context"  />
         <mm:import from="session" externid="${queryid}" id="query" required="true" />
+        <mm:import from="session" externid="mm_related_${id}_extracreate" id="extracreate"   required="false" />
 
         <mm:form name="create"
                  page="/mmbase/searchrelate/create.jspx" commitonclose="false">
@@ -26,6 +28,7 @@
                   <input type="submit" value="${createmessage}" />
                   <input type="hidden"  name="s" value="submitted" />
                   <input type="hidden" name="queryid" value="${queryid}" />
+                  <input type="hidden" name="id"       value="${id}" />
                   <input type="hidden" name="context" value="${context}" />
                   <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
                 </td>
@@ -52,6 +55,11 @@
                   </c:if>
                 </mm:fieldlist>
               </tbody>
+              <mm:log> Using ${extracreate} </mm:log>
+
+              <c:if test="${! empty extracreate}">
+                <mm:include page="${extracreate}" attributes="newnode" />
+              </c:if>
             </mm:createnode>
           </table>
           <mm:import externid="s" />
@@ -72,8 +80,8 @@
             <mm:cancel />
           </mm:present>
         </mm:form>
-      </mm:cloud>
-    </fmt:bundle>
-  </mm:content>
+      </fmt:bundle>
+    </mm:content>
+  </mm:cloud>
 </div>
 
