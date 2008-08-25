@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.12 2008-08-25 17:56:54 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.13 2008-08-25 21:45:19 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -53,7 +53,10 @@ abstract public class AbstractRenderer implements Renderer {
     }
 
     protected void decorateIntro(HttpServletRequest request, Writer w, String extraClass)  throws IOException {
-        w.write("<div id=\"" + request.getAttribute(Framework.COMPONENT_ID_KEY) + "\"");
+        if (request == null) {
+            log.warn("No request found, could not set ID, CLASS", new Exception());
+        }
+        w.write("<div id=\"" + (request == null ? "" : request.getAttribute(Framework.COMPONENT_ID_KEY) )+ "\"");
         w.write(" class=\"");
         if (extraClass != null) {
             w.write(extraClass);
@@ -63,7 +66,7 @@ abstract public class AbstractRenderer implements Renderer {
         w.write(getBlock().getComponent().getName());
         w.write(" b_");
         w.write(getBlock().getName());
-        w.write(" " + request.getAttribute(Framework.COMPONENT_CLASS_KEY));
+        w.write(" " + (request == null ? "" : request.getAttribute(Framework.COMPONENT_CLASS_KEY)));
         w.write("\">");
     }
     protected void decorateOutro(HttpServletRequest request, Writer w) throws IOException {
