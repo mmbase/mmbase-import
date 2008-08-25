@@ -92,7 +92,9 @@ public class BulkUploadUtil {
          }
          else {
             Node node = createNode(manager, binary.getOriginalFileName(), binary.getInputStream(), binary.getLength());
-            nodes.add(node.getNumber());
+            if(node != null) {
+            	nodes.add(node.getNumber());
+            }
          }
       }
       return nodes;
@@ -111,11 +113,15 @@ public class BulkUploadUtil {
 
 
    private static Node createNode(NodeManager manager, String fileName, InputStream in, long length) {
+	   if(length > manager.getField("handle").getMaxLength()) {
+		   return null;
+	   }
       Node node = manager.createNode();
       node.setValue("title", fileName);
       node.setValue("filename", fileName);
       node.setInputStreamValue("handle", in, length);
       node.commit();
+      
       return node;
    }
 
@@ -147,7 +153,9 @@ public class BulkUploadUtil {
             out.close();
             FileInputStream in = new FileInputStream(tempFile);
             Node node = createNode(manager, entry.getName(), in, tempFile.length());
-            nodes.add(node.getNumber());
+            if(node != null) {
+            	nodes.add(node.getNumber());
+            }
             in.close();
             tempFile.delete();
          }
