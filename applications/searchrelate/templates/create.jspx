@@ -58,7 +58,7 @@
               <mm:log> Using ${extracreate} </mm:log>
 
               <c:if test="${! empty extracreate}">
-                <mm:include page="${extracreate}" attributes="newnode" />
+                <mm:include page="${extracreate}" attributes="newnode,context" />
               </c:if>
             </mm:createnode>
           </table>
