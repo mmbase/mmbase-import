@@ -33,6 +33,7 @@
   <jsp:directive.attribute name="xmllang" />
   <jsp:directive.attribute name="tabindex" />
   <jsp:directive.attribute name="onchange" />
+  <jsp:directive.attribute name="onclick" />
 
   <jsp:directive.attribute name="type" />
 
@@ -88,6 +89,9 @@
           </c:if>
           <c:if test="${! empty onchange}">
             <xsl:attribute name="onchange">${onchange}</xsl:attribute>
+          </c:if>
+          <c:if test="${! empty onclick}">
+            <xsl:attribute name="onclick">${onclick}</xsl:attribute>
           </c:if>
           <xsl:apply-templates select="*|text()" />
         </input>
