@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.25 2008-08-14 15:41:26 jelle Exp $
+      @version $Id: relatednodes.tagx,v 1.26 2008-08-25 09:41:27 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -48,7 +48,7 @@
                            description="DEPRECATED, will be removed soon, use item"
                            />
   <jsp:directive.attribute name="precreate"           type="java.lang.String"
-                           description="Jsp to call just before commit of the create node."
+                           description="Jsp to call just before commit of the created node."
                            />
   <jsp:directive.attribute name="createposition"      type="java.lang.String"
 						   description="Position of create link, default is down"
