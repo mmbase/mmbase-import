@@ -24,9 +24,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A {@link Renderer} implementation based on an external connection. 
- * An example of a {@link ConnectionRenderer} is the following one: 
- * 
+ * A {@link Renderer} implementation based on an external connection.
+ * An example of a {@link ConnectionRenderer} is the following one:
+ *
  * <p>
  *    &lt;block name="mmbase_news"<br />
  *          classification="mmbase.about:100"<br />
@@ -45,7 +45,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.5 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.6 2008-08-25 17:56:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -81,12 +81,13 @@ public class ConnectionRenderer extends AbstractRenderer {
     }
 
 
-
+    @Override
     public void render(Parameters blockParameters, Parameters frameworkParameters,
                        Writer w, WindowState state) throws FrameworkException {
 
 
         try {
+            log.info("Rendering with " + blockParameters);
             if (decorate) {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 decorateIntro(request, w, null);
