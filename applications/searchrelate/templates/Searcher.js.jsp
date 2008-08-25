@@ -13,7 +13,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.28 2008-07-15 14:19:41 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.29 2008-08-25 10:10:29 michiel Exp $
  */
 
 
@@ -387,6 +387,12 @@ MMBaseSearcher.prototype.getQueryId = function() {
     return id;
 }
 
+MMBaseSearcher.prototype.getId = function() {
+    var qid = this.getQueryId().substring("mm_related_".length);
+    qid = qid.substring(0, qid.indexOf("_"));
+    return qid;
+}
+
 MMBaseSearcher.prototype.getResultDiv = function() {
     return $(this.div).find("div.searchresult")[0]
 }
@@ -494,7 +500,11 @@ MMBaseSearcher.prototype.dec = function() {
 MMBaseSearcher.prototype.create = function () {
     var rep = this.getResultDiv();
     var url = "${mm:link('/mmbase/searchrelate/create.jspx')}";
-    var params = { queryid: this.getQueryId(), context: this.context };
+    var params = {
+	queryid: this.getQueryId(),
+	id: this.getId(),
+	context: this.context
+    };
 
 
     var self = this;
