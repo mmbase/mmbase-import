@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.7 2008-08-06 12:00:11 michiel Exp $
+ * @version $Id: State.java,v 1.8 2008-08-25 21:45:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -207,15 +207,19 @@ public class State {
         return renderer != null ? getRenderer(renderer) : null;
     }
 
+    protected String getBlockRequestKey() {
+        return "__b" + getId();
+    }
+
     /**
      * Determines what should be rendered now.
      */
     protected Renderer getRenderer(Renderer r) {
-        String blockName = request.getParameter("__b" + getId());
+        String blockName = request.getParameter(getBlockRequestKey());
         log.debug("found block " + blockName + " at parameters");
         Block block = r.getBlock();
         if (blockName == null) {
-            //log.warn("No such block " + blockName, new Exception());
+            log.debug("No such block " + blockName, new Exception());
             return r;
         } else {
             Block toBlock = block.getComponent().getBlock(blockName);
@@ -228,9 +232,8 @@ public class State {
     }
 
     public void setBlock(Map<String, Object> map, Block toBlock) {
-        map.put("__b" + getId(), toBlock.getName());
+        map.put(getBlockRequestKey(), toBlock.getName());
     }
-
 
 
 

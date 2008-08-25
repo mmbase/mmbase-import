@@ -45,7 +45,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.6 2008-08-25 17:56:54 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.7 2008-08-25 21:45:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -75,9 +75,8 @@ public class ConnectionRenderer extends AbstractRenderer {
         decorate = d;
     }
 
-
     public  Parameter[] getParameters() {
-        return new Parameter[] {};
+        return new Parameter[] {Parameter.REQUEST}; // hmm.
     }
 
 
@@ -86,8 +85,11 @@ public class ConnectionRenderer extends AbstractRenderer {
                        Writer w, WindowState state) throws FrameworkException {
 
 
+        if (w == null) throw new NullPointerException();
         try {
-            log.info("Rendering with " + blockParameters);
+            if (log.isDebugEnabled()) {
+                log.debug("Rendering with " + blockParameters);
+            }
             if (decorate) {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 decorateIntro(request, w, null);
@@ -99,6 +101,7 @@ public class ConnectionRenderer extends AbstractRenderer {
             String contentType = connection.getContentType();
             InputStream inputStream = connection.getInputStream();
             if (responseCode == 200) {
+                log.debug("" + xsl);
                 if (xsl == null) {
                     String encoding = GenericResponseWrapper.getEncoding(contentType);
                     BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, encoding));
@@ -118,6 +121,7 @@ public class ConnectionRenderer extends AbstractRenderer {
 
 
             } else {
+                log.debug("" + responseCode);
                 throw new FrameworkException("" + responseCode);
             }
         } catch (java.net.ConnectException ce) {
@@ -128,13 +132,22 @@ public class ConnectionRenderer extends AbstractRenderer {
             throw new FrameworkException(ioe.getMessage(), ioe);
         } catch (javax.xml.transform.TransformerException te) {
             throw new FrameworkException(te.getMessage(), te);
+        } catch (RuntimeException e) {
+            log.debug(e.getMessage(), e);
+            throw e;
+        } catch(FrameworkException fe) {
+            log.debug(fe.getMessage(), fe);
+            throw fe;
         } finally {
             if (decorate) {
+                log.debug("Decorating");
                 try {
                     HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                     decorateOutro(request, w);
                 } catch (Exception e) {
                 }
+            } else {
+                log.debug("no decoration");
             }
         }
 
