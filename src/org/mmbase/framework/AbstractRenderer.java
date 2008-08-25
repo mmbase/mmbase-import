@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Writer;
 import java.io.IOException;
 
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.11 2008-02-23 12:15:54 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.12 2008-08-25 17:56:54 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -58,9 +59,9 @@ abstract public class AbstractRenderer implements Renderer {
             w.write(extraClass);
             w.write(' ');
         }
-        w.write("mm_c_");
+        w.write("mm_c c_");
         w.write(getBlock().getComponent().getName());
-        w.write(" mm_c_b_");
+        w.write(" b_");
         w.write(getBlock().getName());
         w.write(" " + request.getAttribute(Framework.COMPONENT_CLASS_KEY));
         w.write("\">");
@@ -68,5 +69,6 @@ abstract public class AbstractRenderer implements Renderer {
     protected void decorateOutro(HttpServletRequest request, Writer w) throws IOException {
         w.write("</div>");
     }
+    public abstract void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException;
 
 }
