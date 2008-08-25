@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.28 2008-07-10 08:56:27 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.29 2008-08-25 17:56:54 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -191,7 +191,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                      */
                     RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
                     if(response.isCommitted()){
-                        log.debug("** respone committed, including");
+                        log.debug("** response committed, including");
                         rd.include(request, response);
                     }else{
                         log.debug("** respone not committed, forwarding");
