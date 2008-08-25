@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.32 2008-07-15 14:20:04 michiel Exp $
+      @version $Id: relate.tagx,v 1.33 2008-08-25 09:44:02 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -30,6 +30,9 @@
 
   <jsp:directive.attribute name="create"             type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow creation of new nodes. Defaults to 'false'." />
+
+  <jsp:directive.attribute name="extracreate"           type="java.lang.String"
+                           description="Jsp to be included in after the field list in the create jsp." />
 
   <jsp:directive.attribute name="transaction "       type="java.lang.String"
                            description="The name of the mmbase transaction to be used" />
@@ -67,6 +70,7 @@
   <mm:write request="mm_relate_sequence" value="${seq + 1}" />
   <mm:write session="mm_related_${seq}_repository" referid="repository" />
   <mm:write session="mm_related_${seq}_current"    referid="current" />
+  <mm:write session="mm_related_${seq}_extracreate"  referid="extracreate" />
   <c:if test="${seq eq 0}">
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
