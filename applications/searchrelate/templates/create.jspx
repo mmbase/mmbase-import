@@ -6,13 +6,14 @@
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     >
   <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="queryid"  />
+  <mm:import externid="id"  />
+  <mm:import externid="context"  />
+  <mm:import from="session" externid="${queryid}" id="query" required="true" />
+
   <mm:cloud method="asis">
-    <mm:content expires="0" type="text/html">
+    <mm:content expires="0" type="text/html" language="${query.cloud.locale}">
       <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-        <mm:import externid="queryid"  />
-        <mm:import externid="id"  />
-        <mm:import externid="context"  />
-        <mm:import from="session" externid="${queryid}" id="query" required="true" />
         <mm:import from="session" externid="mm_related_${id}_extracreate" id="extracreate"   required="false" />
 
         <mm:form name="create"
