@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.102 2008-08-04 14:16:18 michiel Exp $
+ * @version $Id: Module.java,v 1.103 2008-08-26 22:34:12 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -110,8 +110,12 @@ public abstract class Module extends DescribedFunctionProvider {
         addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
         setState(STATE_START_TIME, startedAt);
-        // also start the maintaince thread that calls all modules 'maintainance' method every x
-        // seconds
+
+        // We used to call the 'maintaince' method of every module
+        // every hour.
+        // I doubt whether this is useful.
+        // We could perhaps just as well remove all this, AFAIK  this
+        // is never actually used.
         Calendar now = Calendar.getInstance();
         future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
                 public void run() {
@@ -120,7 +124,7 @@ public abstract class Module extends DescribedFunctionProvider {
             },
             3600 - (now.get(Calendar.MINUTE) * 60 + now.get(Calendar.SECOND)),  // some effort to run exactly at hour
             3600, TimeUnit.SECONDS);
-        ThreadPools.identify(future, "Maintainance for '" + (name == null ? this.getClass().getName() : name) + "'");
+        ThreadPools.identify(future, "Maintenance for '" + (name == null ? this.getClass().getName() : name) + "'");
     }
     /**
      * @since MMBase-1.8
@@ -325,7 +329,12 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
-     * maintainance call called by the admin module every x seconds.
+     * maintenance call called by the admin module every 3600 seconds.
+     *
+     * @deprecated Method name is not correct english. And btw the complete
+     * method is dubious. It is called once an hour for every
+     * module. But I know of now modules which actually do something useful here,
+     * because an hours is always either too short, or too long.
      */
     public void maintainance() {
     }

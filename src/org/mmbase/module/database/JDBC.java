@@ -26,9 +26,8 @@ import org.mmbase.util.logging.*;
  * The module that provides you access to the loaded JDBC interfaces.
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.63 2008-08-24 08:29:02 michiel Exp $
+ * @version $Id: JDBC.java,v 1.64 2008-08-26 22:34:12 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
