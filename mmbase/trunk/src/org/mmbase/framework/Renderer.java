@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * A Renderer is stateless.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.21 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: Renderer.java,v 1.22 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -47,7 +47,7 @@ public interface Renderer {
         public Renderer getEmpty(final Block block) {
             return new Renderer() {
                 public Type getType() { return Type.this; }
-                public void render(Parameters parameters, Parameters urlparameters, Writer w, RenderHints hints) { };
+                public void render(Parameters parameters, Writer w, RenderHints hints) { };
                 public Parameter[] getParameters() { return Parameter.emptyArray(); };
                 public Block getBlock() { return block ; };
                 public String toString() { return "EMPTY Renderer"; }
@@ -84,7 +84,7 @@ public interface Renderer {
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException;
+    void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException;
 
 
     /**

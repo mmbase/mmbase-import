@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.14 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.15 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -57,8 +57,8 @@ public class ErrorRenderer extends AbstractRenderer {
 
 
     @Override
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
-        log.debug("Error rendering " + blockParameters + " " + frameworkParameters);
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
+        log.debug("Error rendering " + blockParameters);
         switch(getType()) {
         case BODY:
             try {

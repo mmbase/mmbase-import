@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.7 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -61,7 +61,7 @@ public class ResourceRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void render(Parameters blockParameters, Parameters frameworkParameters,
+    public void render(Parameters blockParameters,
                        Writer w, RenderHints hints) throws FrameworkException {
 
 
