@@ -11,9 +11,12 @@
 
  * On ready, the necessary javascript will then be connected to .mm_related a.search
 
+ * Custom events
+ * - mmsrRelate
+ * - mmsrRelaterReady
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.29 2008-08-25 10:10:29 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.30 2008-08-26 12:35:57 michiel Exp $
  */
 
 
@@ -75,6 +78,8 @@ function MMBaseRelater(d) {
 	var fun =  MMBaseRelater.readyFunctions[i];
 	fun(this);
     }
+    var self = this;
+    $(this.div).trigger("mmsrRelaterReady", [self]);
 }
 
 /**
@@ -86,6 +91,9 @@ function MMBaseRelater(d) {
 MMBaseRelater.readyFunctions = [];
 
 MMBaseRelater.ready = function(fun) {
+    if (console != null) {
+	console.log("WARNING using deprecated function. This will be removed soon. Use mmsrRelate event in stead.");
+    }
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
 }
 
@@ -271,6 +279,7 @@ MMBaseRelater.prototype.relate = function(tr) {
     if (this.relateCallBack != null) {
 	this.relateCallBack(tr);
     }
+    $(this.div).trigger("mmsrRelate", [self, tr]);
 }
 
 
