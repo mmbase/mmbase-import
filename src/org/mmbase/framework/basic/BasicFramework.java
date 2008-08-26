@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.28 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.29 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -250,7 +250,7 @@ public class BasicFramework extends Framework {
      * to do that (perhaps we could say, that the render method must process, if that is necessary,
      * and not yet done).
      */
-    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
+    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (request == null) throw new IllegalArgumentException("No request object given");
 
@@ -282,12 +282,14 @@ public class BasicFramework extends Framework {
 
             state.render(actualRenderer);
             setBlockParametersForRender(state, blockParameters);
-            actualRenderer.render(blockParameters, frameworkParameters, w, windowState);
+            RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass());
+            actualRenderer.render(blockParameters, frameworkParameters, w, hints);
         } catch (FrameworkException fe) {
             log.debug(fe);
             URI uri = renderer.getUri();
             Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), (uri != null) ? uri.toString() : null, 500, fe);
-            error.render(blockParameters, frameworkParameters, w, windowState);
+            RenderHints hints = new RenderHints(error, windowState, state.getId(), getComponentClass());
+            error.render(blockParameters, frameworkParameters, w, hints);
         } finally {
             state.endBlock();
         }

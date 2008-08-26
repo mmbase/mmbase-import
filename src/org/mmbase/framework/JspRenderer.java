@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.27 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.28 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -42,6 +42,7 @@ public class JspRenderer extends AbstractRenderer {
         return path.charAt(0) == '/' ? path : JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
+    @Override
     public  Parameter[] getParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
@@ -50,7 +51,8 @@ public class JspRenderer extends AbstractRenderer {
         public int code = 200;
         public String mesg = null;
     }
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException {
+    @Override
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
@@ -83,10 +85,10 @@ public class JspRenderer extends AbstractRenderer {
             log.debug("Status " + status.code);
             if (status.code == 401) {
                 DeniedRenderer denied = new DeniedRenderer(getType(), getBlock());
-                denied.render(blockParameters, frameworkParameters, w, state);
+                denied.render(blockParameters, frameworkParameters, w, hints);
             } else if (status.code != 200) {
                 ErrorRenderer error = new ErrorRenderer(getType(), getBlock(), url, status.code, status.mesg);
-                error.render(blockParameters, frameworkParameters, w, state);
+                error.render(blockParameters, frameworkParameters, w, hints);
             } else {
                 w.write(respw.toString());
             }
@@ -102,6 +104,7 @@ public class JspRenderer extends AbstractRenderer {
         return getPath() + (wrapper == null ? "" : "?" + wrapper);
     }
 
+    @Override
     public java.net.URI getUri() {
         try {
             return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.2 2008-08-01 16:29:07 michiel Exp $
+ * @version $Id: Utils.java,v 1.3 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -31,7 +31,7 @@ public abstract class Utils {
         // this class has no instances
     }
 
-    public static Document renderToXml(Framework fw, Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Renderer.WindowState state,
+    public static Document renderToXml(Framework fw, Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, WindowState state,
                                        Class<?> baseClass) throws FrameworkException {
         boolean validation = true;
         boolean xsd = false;

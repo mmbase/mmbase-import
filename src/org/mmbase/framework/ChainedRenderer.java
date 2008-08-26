@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  * block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.5 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: ChainedRenderer.java,v 1.6 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -39,14 +39,16 @@ public class ChainedRenderer extends AbstractRenderer {
         parameters = params.toArray(Parameter.EMPTY);
     }
 
+    @Override
     public  Parameter[] getParameters() {
         return parameters;
     }
 
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException {
+    @Override
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
         for (Renderer renderer : chain) {
-            renderer.render(blockParameters, frameworkParameters, w, state);
+            renderer.render(blockParameters, frameworkParameters, w, hints);
         }
     }
 

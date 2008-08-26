@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.13 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.14 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -50,19 +50,19 @@ public class ErrorRenderer extends AbstractRenderer {
         url = u;
     }
 
-    public Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
+    @Override
+    public  Parameter[] getParameters() {
+        return new Parameter[] {Parameter.RESPONSE};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
+
+    @Override
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
         log.debug("Error rendering " + blockParameters + " " + frameworkParameters);
         switch(getType()) {
         case BODY:
             try {
-                HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-                HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
-                Locale  locale = blockParameters.get(Parameter.LOCALE);
-                decorateIntro(request, w, "error");
+                decorateIntro(hints, w, "error");
                 w.write("<h1>" + error.status );
                 w.write(": ");
                 CharTransformer escape = new Xml(Xml.ESCAPE);
@@ -71,9 +71,10 @@ public class ErrorRenderer extends AbstractRenderer {
                 w.write(escape.transform(url));
                 w.write("</h1>");
                 w.write("<pre>");
+                HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
                 error.getErrorReport(w, request, escape);
                 w.write("</pre>");
-                decorateOutro(request, w);
+                decorateOutro(hints, w);
             } catch (IOException eio) {
                 throw new FrameworkException(eio.getMessage(), eio);
             }
@@ -121,36 +122,43 @@ public class ErrorRenderer extends AbstractRenderer {
                 }
             }
 
-            msg.append("Headers\n----------\n");
-            // request properties
-            Enumeration en = request.getHeaderNames();
-            while (en.hasMoreElements()) {
-                String name = (String) en.nextElement();
-                msg.append(escape.transform(name + ": "+request.getHeader(name)+"\n"));
-            }
+            if (request != null) {
+                msg.append("Headers\n----------\n");
+                // request properties
+                Enumeration en = request.getHeaderNames();
+                while (en.hasMoreElements()) {
+                    String name = (String) en.nextElement();
+                    msg.append(escape.transform(name + ": "+request.getHeader(name)+"\n"));
+                }
 
-            msg.append("\nAttributes\n----------\n");
-            Enumeration en2 = request.getAttributeNames();
-            while (en2.hasMoreElements()) {
-                String name = (String) en2.nextElement();
-                msg.append(escape.transform(name+": "+request.getAttribute(name)+"\n"));
+                msg.append("\nAttributes\n----------\n");
+                Enumeration en2 = request.getAttributeNames();
+                while (en2.hasMoreElements()) {
+                    String name = (String) en2.nextElement();
+                    msg.append(escape.transform(name+": "+request.getAttribute(name)+"\n"));
+                }
             }
             msg.append("\n");
             msg.append("Misc. properties\n----------\n");
 
-            msg.append("method: ").append(escape.transform(request.getMethod())).append("\n");
-            msg.append("querystring: ").append(escape.transform(request.getQueryString())).append("\n");
-            msg.append("requesturl: ").append(escape.transform(request.getRequestURL().toString())).append("\n");
+            if (request != null) {
+                msg.append("method: ").append(escape.transform(request.getMethod())).append("\n");
+                msg.append("querystring: ").append(escape.transform(request.getQueryString())).append("\n");
+                msg.append("requesturl: ").append(escape.transform(request.getRequestURL().toString())).append("\n");
+            }
+
             msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
             msg.append("status: ").append("" + status).append("\n\n");
 
 
-            msg.append("Parameters\n----------\n");
-            // request parameters
-            en = request.getParameterNames();
-            while (en.hasMoreElements()) {
-                String name = (String) en.nextElement();
-                msg.append(name).append(": ").append(escape.transform(request.getParameter(name))).append("\n");
+            if (request != null) {
+                msg.append("Parameters\n----------\n");
+                // request parameters
+                Enumeration en = request.getParameterNames();
+                while (en.hasMoreElements()) {
+                    String name = (String) en.nextElement();
+                    msg.append(name).append(": ").append(escape.transform(request.getParameter(name))).append("\n");
+                }
             }
             msg.append("\nException\n----------\n\n" + (exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION") + ": ");
 
