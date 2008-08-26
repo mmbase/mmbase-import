@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * file. Based on {@link PatternNodeFunctionProvider} so several parameters can be present.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.12 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.13 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -48,7 +48,7 @@ public class StringRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.REQUEST};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         log.debug("Rendering " + string);
         try {
             HttpServletRequest request = blockParameters.get(Parameter.REQUEST);

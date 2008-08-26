@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.28 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.29 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -52,7 +52,7 @@ public class JspRenderer extends AbstractRenderer {
         public String mesg = null;
     }
     @Override
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
@@ -85,10 +85,10 @@ public class JspRenderer extends AbstractRenderer {
             log.debug("Status " + status.code);
             if (status.code == 401) {
                 DeniedRenderer denied = new DeniedRenderer(getType(), getBlock());
-                denied.render(blockParameters, frameworkParameters, w, hints);
+                denied.render(blockParameters, w, hints);
             } else if (status.code != 200) {
                 ErrorRenderer error = new ErrorRenderer(getType(), getBlock(), url, status.code, status.mesg);
-                error.render(blockParameters, frameworkParameters, w, hints);
+                error.render(blockParameters, w, hints);
             } else {
                 w.write(respw.toString());
             }

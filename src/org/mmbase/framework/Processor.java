@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * rendered, but at most one of them has its Processor executed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.10 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: Processor.java,v 1.11 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
@@ -40,7 +40,7 @@ public interface Processor {
      * Process. In case of e.g. a JSPProcessor, the parameters must also contain
      * the Http Servlet response and request, besided specific parameters for this component.
      */
-    void process(Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
+    void process(Parameters blockParameters) throws FrameworkException;
 
     /**
      * An URI which may identify the implementation of this Renderer.

@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
  * Abstract view implementation which implements getType and the specific parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractProcessor.java,v 1.7 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: AbstractProcessor.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractProcessor implements Processor {
@@ -28,7 +28,7 @@ abstract public class AbstractProcessor implements Processor {
         return new Processor() {
             public Block getBlock() { return b; }
             public Parameter[] getParameters() { return Parameter.emptyArray(); }
-            public void process(Parameters blockParameters, Parameters frameworkParameters) { }
+            public void process(Parameters blockParameters) { }
             public String toString() { return "EMPTY Processor"; }
             public URI getUri() { try {return new URI("mmbase:/processor/empty");} catch (Exception e) { return null;} }
         };

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
- * @version $Id: DeniedRenderer.java,v 1.7 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: DeniedRenderer.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -40,17 +40,18 @@ public class DeniedRenderer extends AbstractRenderer {
         super(t, parent);
     }
 
+    @Override
     public Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
+        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
+    @Override
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
         switch(getType()) {
         case BODY:
             try {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
-                Locale  locale = blockParameters.get(Parameter.LOCALE);
 
                 GenericResponseWrapper respw = new GenericResponseWrapper(response);
                 String url = JspRenderer.JSP_ROOT + "core/401.jspx";
