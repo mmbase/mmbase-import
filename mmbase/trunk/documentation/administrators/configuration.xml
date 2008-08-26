@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.30 2008-07-14 15:16:46 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.31 2008-08-26 11:06:42 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -249,7 +249,7 @@
         <itemizedlist>
         <listitem>
           <para>
-            As mentioned, the location of any configuration file can be as a application context resource.
+            As mentioned, the location of any configuration file can be overriden with  a application context resource.
 					</para>
 				</listitem>
         <listitem>
@@ -431,38 +431,6 @@
         &lt;!-- or use a separate taglib description file  --&gt;
         &lt;!-- &lt;taglib-location&gt;/WEB-INF/mmcommunity-taglib.tld&lt;/taglib-location&gt; --&gt;
     &lt;/taglib&gt;
-
-    &lt;!-- Taglibs not directly related to MMBase --&gt;
-    &lt;!--
-        The 'Open Symphony' cache tags can e.g. cache your page partially. It uses expire-times or can
-        be invalidated programatically.  See http://www.opensymphony.com
-
-    In Tomcat 5 (and using a recent oscache!), this section can be left away (it will detect the jar by itself)
-    --&gt;
-    &lt;taglib&gt;
-        &lt;taglib-uri&gt;oscache&lt;/taglib-uri&gt;
-        &lt;taglib-location&gt;/WEB-INF/lib/oscache.jar&lt;/taglib-location&gt;
-    &lt;/taglib&gt;
-
- &lt;resource-ref&gt;
-        &lt;description&gt;
-            Email module mail resource (JMSendMail). This resource must be
-            configured in the application server. See also config/modules/sendmail.xml.
-        &lt;/description&gt;
-        &lt;res-ref-name&gt;mail/MMBase&lt;/res-ref-name&gt;
-        &lt;res-type&gt;javax.mail.Session&lt;/res-type&gt;
-        &lt;res-auth&gt;Container&lt;/res-auth&gt;
-    &lt;/resource-ref&gt;
-
-    &lt;resource-ref&gt;
-        &lt;description&gt;
-            Datasource for the MMBase Database. This datasource must be
-            configured in the application server. See also config/modules/jdbc.xml
-        &lt;/description&gt;
-        &lt;res-ref-name&gt;jdbc/MMBase&lt;/res-ref-name&gt;
-        &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
-        &lt;res-auth&gt;Container&lt;/res-auth&gt;
-    &lt;/resource-ref&gt;
 
 &lt;/web-app&gt;
 
@@ -657,31 +625,21 @@
       </example></para>
 
     <para>It is also possible to use the 'data-sources' of the application
-    server. The jdbc.xml then looks like this: <example
-        id="datasource_jdbc.xml">
-        <title>An example jdbc.xml, using data-source</title>
-
-        <programlisting id="datasourcejdbc.xml">
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd"&gt;
-&lt;module maintainer="mmbase.org" version="0"&gt;
-    &lt;status&gt;active&lt;/status&gt;
-    &lt;classfile&gt;org.mmbase.module.database.Naming&lt;/classfile&gt;
-    &lt;properties&gt;
-        &lt;property name="context"&gt;java:comp/env&lt;/property&gt;
-        &lt;property name="datasource"&gt;jdbc/MMBase&lt;/property&gt;
-    &lt;/properties&gt;
-&lt;/module&gt;
-
-                    </programlisting>
+    server.  You have to set to properties on mmbaseroot.xml then:
+    <example id="datasource">
+      <title>Datasource properterties</title>
+      <programlisting id="datasourcejdbc.xml">
+        <![CDATA[<
+                 <property name="datasource-context">java:comp/env</property >
+                 <property name="datasource">jdbc/MMBase</property>
+        ]]>
+      </programlisting>
       </example> So using this the configuration of the database is totally
-    left to the application server. <note>
-        <para>If you plan to use a application server datasource with the new
-        storage layer, you can also configure this in mmbaseroot.xml. In that
-        case, you do not need the JDBC module, and can set it to inactive. See
-        the <ulink url="../backenddevelopers/storage/index.html">storage
-        documentation</ulink> for details.</para>
-      </note></para>
+      left to the application server, and jdbc.xml remains unused.
+    </para>
+    <para>
+      See  also the <ulink url="../backenddevelopers/storage/index.html">storage
+    documentation</ulink> for details.</para>
   </section>
 
   <section id="logging">
