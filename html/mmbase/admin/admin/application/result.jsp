@@ -1,7 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@page import="org.mmbase.bridge.*" 
-%><%@page import="java.util.*" 
-%><%@include file="../../settings.jsp" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*"
+%><%@page import="java.util.*"
+%><%@include file="../../settings.jsp"
 %><mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String app = request.getParameter("application"); %>
@@ -49,7 +49,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?application="+app%>' />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return to Application Administration</td>
 </tr>
 
