@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.57 2008-08-08 13:39:52 michiel Exp $
+ * @version $Id: Framework.java,v 1.58 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -166,7 +166,7 @@ public abstract class Framework {
      * @param state the window state in which the content should be rendered
      * @throws FrameworkException when the renderer failed to create content or could not write data to the writer
      */
-    public abstract void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException;
+    public abstract void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException;
 
     /**
      * Processes a block. This method can change or se state information and should be called prior to rendering a component's block.

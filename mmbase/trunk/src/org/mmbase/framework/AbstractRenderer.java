@@ -9,11 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Writer;
 import java.io.IOException;
 
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.13 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.14 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -52,11 +52,8 @@ abstract public class AbstractRenderer implements Renderer {
         return null;
     }
 
-    protected void decorateIntro(HttpServletRequest request, Writer w, String extraClass)  throws IOException {
-        if (request == null) {
-            log.warn("No request found, could not set ID, CLASS", new Exception());
-        }
-        w.write("<div id=\"" + (request == null ? "" : request.getAttribute(Framework.COMPONENT_ID_KEY) )+ "\"");
+    protected void decorateIntro(RenderHints hints, Writer w, String extraClass)  throws IOException {
+        w.write("<div id=\"" + hints.getId() + "\"");
         w.write(" class=\"");
         if (extraClass != null) {
             w.write(extraClass);
@@ -66,12 +63,15 @@ abstract public class AbstractRenderer implements Renderer {
         w.write(getBlock().getComponent().getName());
         w.write(" b_");
         w.write(getBlock().getName());
-        w.write(" " + (request == null ? "" : request.getAttribute(Framework.COMPONENT_CLASS_KEY)));
+        w.write(" " + hints.getStyleClass());
         w.write("\">");
     }
-    protected void decorateOutro(HttpServletRequest request, Writer w) throws IOException {
+    protected void decorateOutro(RenderHints hints, Writer w) throws IOException {
         w.write("</div>");
     }
-    public abstract void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState state) throws FrameworkException;
+    public Parameter[] getParameters() {
+        return new Parameter[] {};
+    }
+    public abstract void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException;
 
 }

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.8 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: State.java,v 1.9 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -82,8 +82,8 @@ public class State {
      * The current window state of rendering. As yet unimplemented.
      * @todo
      */
-    public Renderer.WindowState getWindowState() {
-        return Renderer.WindowState.NORMAL;
+    public WindowState getWindowState() {
+        return WindowState.NORMAL;
     }
 
     /**
