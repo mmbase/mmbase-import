@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.163 2008-08-23 18:57:57 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.164 2008-08-26 22:58:30 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -134,8 +134,18 @@ public class MMAdmin extends ProcessorModule {
             log.info("*** Server started in kiosk mode ***");
         }
         mmb = MMBase.getMMBase();
-
-        new MMAdminProbe(this, mmb);
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    while (!mmb.getState()) {
+                        try {Thread.sleep(2000);} catch (InterruptedException e){ return;}
+                    }
+                    try {
+                        MMAdmin.this.probeCall();
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            });
     }
 
     /**
@@ -634,9 +644,11 @@ public class MMAdmin extends ProcessorModule {
 
 
     /**
-     * @javadoc
+     * Called when MMBase is up.  It'll install the applications
+     * marked as 'autodeploy'.  It will do nothing, besides logging a
+     * warning, if the 'versions' builder could not be found.
      */
-    public void probeCall() throws SearchQueryException {
+    protected void probeCall() throws SearchQueryException {
         Versions ver = (Versions)mmb.getBuilder("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
