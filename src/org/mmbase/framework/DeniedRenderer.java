@@ -21,14 +21,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * {@link Renderer} to be used in case of access denied (status 401). 
+ * {@link Renderer} to be used in case of access denied (status 401).
  * If rendering of a certain block proved to be not allowed for the current user.
  * Requests get dispatched to a block 'core/401.jspx' with a more or less
  * userfriendly message.
  *
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
- * @version $Id: DeniedRenderer.java,v 1.6 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: DeniedRenderer.java,v 1.7 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -44,18 +44,18 @@ public class DeniedRenderer extends AbstractRenderer {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
     }
 
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
         switch(getType()) {
         case BODY:
             try {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
                 Locale  locale = blockParameters.get(Parameter.LOCALE);
-                
-                GenericResponseWrapper respw = new GenericResponseWrapper(response); 
+
+                GenericResponseWrapper respw = new GenericResponseWrapper(response);
                 String url = JspRenderer.JSP_ROOT + "core/401.jspx";
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
-    
+
                 requestDispatcher.include(request, respw);
                 if (log.isDebugEnabled()) {
                     log.debug("Using block.parameters " +  blockParameters.toMap());

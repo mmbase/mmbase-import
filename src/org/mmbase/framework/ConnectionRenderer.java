@@ -12,7 +12,7 @@ package org.mmbase.framework;
 import java.util.*;
 import java.net.*;
 import java.io.*;
-import javax.servlet.http.*;
+
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Source;
@@ -45,7 +45,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.7 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.8 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -75,14 +75,15 @@ public class ConnectionRenderer extends AbstractRenderer {
         decorate = d;
     }
 
+    @Override
     public  Parameter[] getParameters() {
-        return new Parameter[] {Parameter.REQUEST}; // hmm.
+        return new Parameter[] {};
     }
 
 
     @Override
     public void render(Parameters blockParameters, Parameters frameworkParameters,
-                       Writer w, WindowState state) throws FrameworkException {
+                       Writer w, RenderHints hints) throws FrameworkException {
 
 
         if (w == null) throw new NullPointerException();
@@ -91,8 +92,7 @@ public class ConnectionRenderer extends AbstractRenderer {
                 log.debug("Rendering with " + blockParameters);
             }
             if (decorate) {
-                HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-                decorateIntro(request, w, null);
+                decorateIntro(hints, w, null);
             }
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(timeOut);
@@ -142,8 +142,7 @@ public class ConnectionRenderer extends AbstractRenderer {
             if (decorate) {
                 log.debug("Decorating");
                 try {
-                    HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-                    decorateOutro(request, w);
+                    decorateOutro(hints, w);
                 } catch (Exception e) {
                 }
             } else {

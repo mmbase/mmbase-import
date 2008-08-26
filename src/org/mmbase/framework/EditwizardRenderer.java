@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Needs to produce a div, not an url.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.13 2007-08-06 16:56:44 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.14 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends AbstractRenderer {
@@ -48,7 +48,7 @@ public class EditwizardRenderer extends AbstractRenderer {
 
     /**
      */
-    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException {
+    public void render(Parameters blockParameters, Parameters frameworkParameters, Writer w, RenderHints hints) throws FrameworkException {
         try {
             HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.6 2008-08-06 15:48:57 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.7 2008-08-26 06:45:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -42,10 +42,6 @@ public class ResourceRenderer extends AbstractRenderer {
 
     public ResourceRenderer(String t, Block parent) {
         super(t, parent);
-    }
-
-    public  Parameter[] getParameters() {
-        return new Parameter[] {};
     }
 
     public void setResource(String r) {
@@ -64,11 +60,9 @@ public class ResourceRenderer extends AbstractRenderer {
         }
     }
 
-
-
-
+    @Override
     public void render(Parameters blockParameters, Parameters frameworkParameters,
-                       Writer w, WindowState state) throws FrameworkException {
+                       Writer w, RenderHints hints) throws FrameworkException {
 
 
         try {
