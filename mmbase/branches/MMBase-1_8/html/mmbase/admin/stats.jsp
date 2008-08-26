@@ -69,7 +69,7 @@ while (i.hasNext()) {
 #
 # <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
 #
-Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=cache.getName()%>"`
+Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
 Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
 MaxBytes[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 100000000
 Options[<mm:write referid="thisserver" />_<%=cache.getName()%>]:  integer, nopercent
