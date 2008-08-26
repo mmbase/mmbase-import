@@ -4,8 +4,8 @@
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c c_wiki b_page ${requestScope.componentClassName}"
-    id="${requestScope.componentId}">
+    class="mm_c c_wiki b_edit ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}">
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="n" required="true" />
 
@@ -44,15 +44,17 @@
                   </td>
                 </tr>
               </mm:fieldlist>
-              <tr>
-                <td>
-                </td>
-                <td>
-                  <input class="small mm_validate" type="text" name="comments"
-                         size="80"
-                         value="Beschrijf uw verandering hier" />
-                </td>
-              </tr>
+              <mm:hasfield name="version">
+                <tr>
+                  <td>
+                  </td>
+                  <td>
+                    <input class="small mm_validate" type="text" name="comments"
+                           size="80"
+                           value="Beschrijf uw verandering hier" />
+                  </td>
+                </tr>
+              </mm:hasfield>
             </tbody>
           </table>
         </div>
@@ -63,9 +65,7 @@
         <div class="show_node">
           <p>[Hier wordt het object onder de cursor getoond]</p>
         </div>
-        <div class="versions">
-          <mm:include page="versions.jspx" />
-        </div>
+
         <!-- preview is a bit broken, so switched if off.
 
              <div id="preview">
@@ -80,12 +80,13 @@
 
         <div id="relations">
 
-          <ul>
+          <ul class="idrels">
             <c:forTokens items="${mm:managerProperty(type, 'wiki_idrelated')}"  delims="," var="relatedtype" >
               <mm:include page="related.li.jspx" referids="relatedtype@type" />
             </c:forTokens>
           </ul>
         </div>
+
         <div id="commit">
           <mm:import externid="cancel" />
           <mm:present referid="cancel">
@@ -102,7 +103,7 @@
                 <mm:param name="org.mmbase.versioning.comments" referid="comments" />
                 <h1>Committing ${_} for ${transaction.cloudVar}</h1>
                 <mm:commit />
-                <mm:redirect page="/mmbase/examples/wiki/page" referids="o" />
+                <mm:redirect  referids="o" />
               </mm:present>
           </mm:valid>
           <mm:valid inverse="true">
@@ -112,7 +113,8 @@
 
         </div>
         <div id="title">
-          <mm:field name="number" />: <mm:nodeinfo type="gui" /> : v. ${_node.version}
+          <mm:field name="number" />: <mm:nodeinfo type="gui" />
+          <mm:hasfield name="version">: v. ${_node.version}</mm:hasfield>
         </div>
       </mm:node>
     </mm:form>
