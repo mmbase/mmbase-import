@@ -45,7 +45,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.8 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.9 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -82,8 +82,7 @@ public class ConnectionRenderer extends AbstractRenderer {
 
 
     @Override
-    public void render(Parameters blockParameters, Parameters frameworkParameters,
-                       Writer w, RenderHints hints) throws FrameworkException {
+    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
 
 
         if (w == null) throw new NullPointerException();

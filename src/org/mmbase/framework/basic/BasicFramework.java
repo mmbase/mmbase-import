@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.29 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.30 2008-08-26 07:48:38 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -277,19 +277,19 @@ public class BasicFramework extends Framework {
                 state.process(processor);
                 log.service("Processing " + actualRenderer.getBlock() + " " + processor);
                 setBlockParametersForProcess(state, blockParameters);
-                processor.process(blockParameters, frameworkParameters);
+                processor.process(blockParameters);
             }
 
             state.render(actualRenderer);
             setBlockParametersForRender(state, blockParameters);
             RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass());
-            actualRenderer.render(blockParameters, frameworkParameters, w, hints);
+            actualRenderer.render(blockParameters, w, hints);
         } catch (FrameworkException fe) {
             log.debug(fe);
             URI uri = renderer.getUri();
             Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), (uri != null) ? uri.toString() : null, 500, fe);
             RenderHints hints = new RenderHints(error, windowState, state.getId(), getComponentClass());
-            error.render(blockParameters, frameworkParameters, w, hints);
+            error.render(blockParameters, w, hints);
         } finally {
             state.endBlock();
         }
@@ -304,7 +304,7 @@ public class BasicFramework extends Framework {
         State state = State.getState(request);
         state.startBlock(frameworkParameters, null);
         setBlockParametersForProcess(state, blockParameters);
-        processor.process(blockParameters, frameworkParameters);
+        processor.process(blockParameters);
     }
 
     public Node getUserNode(Parameters frameworkParameters) {
