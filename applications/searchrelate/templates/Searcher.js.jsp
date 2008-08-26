@@ -16,7 +16,7 @@
  * - mmsrRelaterReady
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.30 2008-08-26 12:35:57 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.31 2008-08-26 13:52:35 michiel Exp $
  */
 
 
@@ -279,7 +279,7 @@ MMBaseRelater.prototype.relate = function(tr) {
     if (this.relateCallBack != null) {
 	this.relateCallBack(tr);
     }
-    $(this.div).trigger("mmsrRelate", [self, tr]);
+    $(this.div).trigger("mmsrRelate", [tr]);
 }
 
 
