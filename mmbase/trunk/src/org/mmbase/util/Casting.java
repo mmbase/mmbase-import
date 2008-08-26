@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.114 2008-07-16 13:11:02 michiel Exp $
+ * @version $Id: Casting.java,v 1.115 2008-08-26 19:44:46 michiel Exp $
  */
 
 import java.util.*;
@@ -375,6 +375,8 @@ public class Casting {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
             return escape(escaper, new String((byte[])o));
+        } else if (o instanceof Object[]) {
+            return new ListWrapper(Arrays.asList((Object[])o), escaper);
         } else if (o instanceof String) {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
@@ -627,7 +629,18 @@ public class Casting {
      */
     static public int toInt(Object i, int def) {
         int res = def;
-        if (i instanceof Node) {
+        if (i == null) {
+            return def;
+        } else if (i instanceof Number) {
+            long l = ((Number)i).longValue();
+            if (l > Integer.MAX_VALUE) {
+                res = Integer.MAX_VALUE;
+            } else if (l < Integer.MIN_VALUE) {
+                res = Integer.MIN_VALUE;
+            } else {
+                res = (int) l;
+            }
+        } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
@@ -643,15 +656,10 @@ public class Casting {
             } else {
                 res = (int) timeValue;
             }
-        } else if (i instanceof Number) {
-            long l = ((Number)i).longValue();
-            if (l > Integer.MAX_VALUE) {
-                res = Integer.MAX_VALUE;
-            } else if (l < Integer.MIN_VALUE) {
-                res = Integer.MIN_VALUE;
-            } else {
-                res = (int) l;
-            }
+        } else if (i instanceof Object[]) {
+            Object[] array = (Object[]) i;
+            if (array.length == 0) return 0;
+            if (array.length >= 1) return toInt(array[0], def);
         } else if (i != null) {
             try {
                 res = Integer.parseInt("" + i);
@@ -762,6 +770,10 @@ public class Casting {
             if (res !=- 1) res /= 1000;
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
+        } else if (i instanceof Object[]) {
+            Object[] array = (Object[]) i;
+            if (array.length == 0) return 0;
+            if (array.length >= 1) return toLong(array[0], def);
         } else if (i != null) {
             if(i instanceof String){
                 String s = ((String)i).toLowerCase();
@@ -868,6 +880,10 @@ public class Casting {
             if (res != -1) res = res / 1000;
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
+        } else if (i instanceof Object[]) {
+            Object[] array = (Object[]) i;
+            if (array.length == 0) return 0;
+            if (array.length >= 1) return toDouble(array[0], def);
         } else if (i != null) {
             try {
                 res = Double.parseDouble("" + i);
