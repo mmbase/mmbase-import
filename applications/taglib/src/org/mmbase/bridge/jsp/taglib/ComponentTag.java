@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.30 2008-08-06 12:18:54 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.31 2008-08-26 06:46:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -85,7 +85,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             String rt = render.getString(this);
             Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
             String ws = windowState.getString(this);
-            Renderer.WindowState windowStateValue = ws == null || "".equals(ws) ? Renderer.WindowState.NORMAL : Renderer.WindowState.valueOf(ws.toUpperCase());
+            WindowState windowStateValue = ws == null || "".equals(ws) ? WindowState.NORMAL : WindowState.valueOf(ws.toUpperCase());
 
 
             Renderer renderer = block.getRenderer(type);
