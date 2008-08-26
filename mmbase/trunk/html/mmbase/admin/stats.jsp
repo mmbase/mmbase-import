@@ -61,26 +61,26 @@ PageTop[<mm:write referid="thisserver" />_memory]: <h1><mm:write referid="thisse
 
 
 <%
-
+org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
 java.util.Iterator i  = CacheManager.getCaches().iterator();
 while (i.hasNext()) {
    String cacheName = (String) i.next();
    Cache  cache     = CacheManager.getCache(cacheName);
-
+   String id = identifier.transform(cache.getName());
      %>
 #
 # <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
 #
-Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
-Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
-MaxBytes[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 100000000
-Options[<mm:write referid="thisserver" />_<%=cache.getName()%>]:  integer, nopercent
-kilo[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 1000
-Ylegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
-LegendO[<mm:write referid="thisserver" />_<%=cache.getName()%>]: hits :
-LegendI[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests :
-ShortLegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
-PageTop[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
+Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
+Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
+Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, nopercent
+kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
+LegendO[<mm:write referid="thisserver" />_<%=id%>]: hits :
+LegendI[<mm:write referid="thisserver" />_<%=id%>]: requests :
+ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
+PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
 
  <% } %>
 
