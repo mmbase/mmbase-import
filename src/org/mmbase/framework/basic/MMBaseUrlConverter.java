@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.11 2008-08-14 20:27:08 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.12 2008-08-26 19:45:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -178,6 +178,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         if (! processUrl) {
             Parameters blockParameters = block.createParameters();
+            blockParameters.setAutoCasting(true);
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 blockParameters.set(entry.getKey(), entry.getValue());
             }
