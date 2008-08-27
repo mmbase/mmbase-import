@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.37 2008-06-09 10:20:35 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.38 2008-08-27 17:09:16 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
@@ -36,8 +36,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
     protected ComparableDataType(String name, Class<E> classType) {
         super(name, classType);
     }
-    @Override
-    protected void inheritRestrictions(BasicDataType<E> origin) {
+    
+    @Override protected void inheritRestrictions(BasicDataType<E> origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
             ComparableDataType<E> compOrigin = (ComparableDataType<E>) origin;
@@ -174,7 +174,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         return errors;
     }
 
-    public DataType<E> clone(String name) {
+    public ComparableDataType<E> clone(String name) {
         ComparableDataType<E> clone = (ComparableDataType<E>) super.clone(name);
         return clone;
     }

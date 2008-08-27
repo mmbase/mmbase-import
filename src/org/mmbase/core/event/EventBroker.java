@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * that will be called to pass on the event is not part of this interface, as it
  * is specific for the kind of event you want to listen for. This is a contract
  * between the broker implementation and the event listerer interface.<br/>
- * This class dous most of the work of keeping references to all the listeners
+ * This class does most of the work of keeping references to all the listeners
  * and allowing for adding/removing them. Only a fiew type specific actions are
  * delegated to the super class.<br/> The EventListener also provides a method
  * for passing on constraint properties to a event broker. If you want to create
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: EventBroker.java,v 1.5 2008-07-28 13:04:24 michiel Exp $
+ * @version $Id: EventBroker.java,v 1.6 2008-08-27 17:09:40 michiel Exp $
  */
 public abstract class EventBroker {
 

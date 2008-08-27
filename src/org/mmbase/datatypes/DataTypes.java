@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.29 2008-08-14 16:16:02 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.30 2008-08-27 17:09:16 michiel Exp $
  */
 
 public class DataTypes {
@@ -78,16 +78,23 @@ public class DataTypes {
 
     }
 
-
-    private static void readFailedDependencies(List<DependencyException> failed) {
+    /**
+     * Retry to read a datype which previously failed to read. It could succeed now, because other
+     * datatypes, on which it may depend, were defined in the mean time.
+     * @return The number of datatypes which were resolved after all.
+     */
+    private static int readFailedDependencies(List<DependencyException> failed) {
+        int resolved = 0;
         ListIterator<DependencyException> i = failed.listIterator();
         while(i.hasNext()) {
             DependencyException de = i.next();
             if (de.retry()) {
                 log.debug("Resolved " + de.getId() + " after all");
+                resolved++;
                 i.remove();
             }
         }
+        return resolved;
     }
 
     /**
@@ -118,12 +125,8 @@ public class DataTypes {
                 log.error(e.getMessage(), e);
             }
         }
-        int previousFailedSize = -1;
-        while (failed.size() > 0 && failed.size() > previousFailedSize) {
-            previousFailedSize = failed.size();
-            log.debug(failed);
-            readFailedDependencies(failed);
-        }
+        while (readFailedDependencies(failed) > 0);
+
         if (failed.size() > 0) {
             log.error("Failed " + failed);
         }

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.18 2008-08-19 20:36:21 michiel Exp $
+ * @version $Id: AbstractField.java,v 1.19 2008-08-27 17:09:39 michiel Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field {
@@ -219,21 +219,16 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
             getDataType();
     }
 
-    public Object clone() {
+    public AbstractField clone() {
         return clone (null, false);
     }
 
-    public Object clone(String name, boolean copyDataTypeForRewrite) {
-        try {
-            AbstractField clone = (AbstractField)super.clone(name);
-            if (copyDataTypeForRewrite) {
-                clone.dataType = (DataType<Object>) dataType.clone();
-            }
-            return clone;
-        } catch (CloneNotSupportedException cnse) {
-            // should not happen
-            throw new RuntimeException("Cannot clone this Field", cnse);
+    public AbstractField clone(String name, boolean copyDataTypeForRewrite) {
+        AbstractField clone = (AbstractField)super.clone(name);
+        if (copyDataTypeForRewrite) {
+            clone.dataType = (DataType<Object>) dataType.clone();
         }
+        return clone;
     }
 
 }
