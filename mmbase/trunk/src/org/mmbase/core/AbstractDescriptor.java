@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.core;
 
 import java.util.*;
+import org.mmbase.util.PublicCloneable;
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
 
@@ -19,10 +20,10 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.13 2008-08-27 17:09:39 michiel Exp $
  */
 
-abstract public class AbstractDescriptor implements Descriptor, Cloneable {
+abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<AbstractDescriptor> {
 
     protected String key;
     protected LocalizedString description;
@@ -149,20 +150,24 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
         return key;
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public AbstractDescriptor clone()  {
         return clone(getName() + ".clone");
     }
 
-    public Object clone(String name) throws CloneNotSupportedException {
-        AbstractDescriptor clone = (AbstractDescriptor)super.clone();
-        clone.description = (LocalizedString)description.clone();
-        clone.guiName = (LocalizedString)guiName.clone();
-        if (name != null) {
-            clone.key = name;
+    public AbstractDescriptor clone(String name) {
+        try {
+            AbstractDescriptor clone = (AbstractDescriptor)super.clone();
+            clone.description = description.clone();
+            clone.guiName = guiName.clone();
+            if (name != null) {
+                clone.key = name;
             clone.description.setKey(name);
             clone.guiName.setKey(name);
+            }
+            return clone;
+        } catch (CloneNotSupportedException cnse) {
+            throw new RuntimeException(cnse);
         }
-        return clone;
     }
 
 }

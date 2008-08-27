@@ -22,7 +22,7 @@ import java.util.Collection;
 /**
  * @since MMBase-1.8
  */
-public class CoreField extends AbstractField implements Field, Storable, Cloneable {
+public class CoreField extends AbstractField implements Field, Storable {
 
     private static final int NO_POSITION = -1;
 
@@ -94,13 +94,13 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         throw new UnsupportedOperationException("Core fields currently do not support calls to getNodeManager.");
     }
 
-    public Object clone() {
-        return clone (null);
+    public final CoreField clone() {
+        return clone(null);
     }
 
-    public Object clone(String name) {
+    public CoreField clone(String name) {
         hashcodeChanged = true;
-        return super.clone(name, true);
+        return (CoreField) super.clone(name, true);
     }
 
     public void setReadOnly(boolean readOnly) {
