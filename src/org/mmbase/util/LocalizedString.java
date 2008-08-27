@@ -32,10 +32,10 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.33 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.34 2008-08-27 17:07:34 michiel Exp $
  * @since MMBase-1.8
  */
-public class LocalizedString implements java.io.Serializable, Cloneable {
+public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
 
@@ -404,8 +404,8 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         }
     }
 
-
-    public Object clone() {
+    @Override
+    public LocalizedString clone() {
         try {
             LocalizedString clone = (LocalizedString)super.clone();
             if (values != null) {

@@ -15,10 +15,10 @@ import java.util.Map;
  * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
  *
  * @since MMBase-1.8
- * @version $Id: Entry.java,v 1.8 2008-08-27 09:06:45 michiel Exp $
+ * @version $Id: Entry.java,v 1.9 2008-08-27 17:07:34 michiel Exp $
  * @author Michiel Meeuwissen
  */
-public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable, java.io.Serializable {
+public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry<K, V>>, java.io.Serializable {
 
     private final K key; 
     private V value;
@@ -53,7 +53,7 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable, java
         return r;
     }
 
-    public Object clone() {
+    public Entry<K, V> clone() {
         return new Entry<K, V>(key, value); // can do this, because this class is final
     }
 
