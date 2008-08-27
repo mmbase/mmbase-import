@@ -47,7 +47,7 @@ public class AliasNavigationItemManager implements NavigationItemManager {
         }
         else {
             String externalUrl = AliasUtil.getUrlStr(node);
-            if (!StringUtils.isAlpha(externalUrl)) {
+            if (StringUtils.isNotEmpty(externalUrl)) {
                 alias.setUrl(externalUrl);
             }
         }
