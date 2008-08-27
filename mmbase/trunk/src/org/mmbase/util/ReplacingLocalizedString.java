@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.6 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.7 2008-08-27 17:07:34 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
@@ -110,7 +110,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
 
 
     @SuppressWarnings("unchecked")
-    public Object clone() {
+    public ReplacingLocalizedString clone() {
         ReplacingLocalizedString clone = (ReplacingLocalizedString) super.clone();
         clone.replacements = (List)((ArrayList)replacements).clone();
         return clone;
