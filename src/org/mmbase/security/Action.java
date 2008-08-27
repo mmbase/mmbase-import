@@ -17,10 +17,10 @@ import org.mmbase.util.LocalizedString;
  * associated with MMBase nodes. Actions are e.g. provided by
  * {@link org.mmbase.framework.Component}s (and can be added to component XML's).
  *
- * Actions are checked using {@link Authentication#check(Action, Parameters)}.
+ * Actions are checked using {@link Authorization#check(UserContext, Action, Parameters)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.7 2008-06-09 09:52:21 michiel Exp $
+ * @version $Id: Action.java,v 1.8 2008-08-27 07:20:42 michiel Exp $
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
@@ -39,7 +39,7 @@ public class Action implements java.io.Serializable {
      * Every action needs to do a proposal on how to check it. The security implementation may
      * override this. But since components can freely define new actions, which may not be
      * anticipated by  the authorization implementation, the action itself must provide some basic
-     * checker (e.g. an instance of {@link ActionChecker.Rank}.
+     * checker (e.g. an instance of {@link ActionChecker.Rank}).
      */
     public ActionChecker getDefault() {
         return defaultChecker;
@@ -54,7 +54,7 @@ public class Action implements java.io.Serializable {
 
     /**
      * Most 'actions' have a namespace. This is normally identical to the name of the component
-     * with wich there are associated. It can be <code>null</code> though.
+     * with which they are associated. It can be <code>null</code> though.
      */
     public String getNameSpace() {
         return nameSpace;
@@ -69,7 +69,7 @@ public class Action implements java.io.Serializable {
     }
 
     /**
-     * @see Authentication#check(Action, Parameters)
+     * @see Authorization#check(UserContext, Action, Parameters)
      */
     public Parameters createParameters() {
         return new Parameters();
