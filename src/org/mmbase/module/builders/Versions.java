@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.22 2007-12-06 08:03:47 michiel Exp $
+ * @version $Id: Versions.java,v 1.23 2008-08-27 17:29:52 michiel Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
     private static final Logger log = Logging.getLoggerInstance(Versions.class);
 
-    private Hashtable<String, Vector<VersionCacheNode>> cacheVersionHandlers = new Hashtable<String, Vector<VersionCacheNode>>();
+    private Map<String, Vector<VersionCacheNode>> cacheVersionHandlers = new Hashtable<String, Vector<VersionCacheNode>>();
 
     private Map<String, Integer> versionsCache = new Hashtable<String, Integer>();
 
@@ -36,9 +36,12 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     public boolean init() {
         if (!initialized) {
             super.init();
-            startCacheTypes();
-            List<MMObjectNode> versionNodes = getNodes();
-            for (MMObjectNode versionNode : versionNodes) {
+            try {
+                startCacheTypes();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            for (MMObjectNode versionNode : getNodes()) {
                 String name = versionNode.getStringValue("name");
                 String type = versionNode.getStringValue("type");
                 Integer number = versionNode.getNumber();
@@ -127,7 +130,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void startCacheTypes() {
+    public void startCacheTypes() throws org.xml.sax.SAXException, java.io.IOException {
         // is there a CacheVersion file ?
         String cacheversionfile = getInitParameter("cacheversionfile");
 
@@ -136,8 +139,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             parser.setBuilder(this);
             cacheVersionHandlers = parser.getCacheVersions(cacheVersionHandlers);
         }
-        for (Enumeration<String> e = cacheVersionHandlers.keys(); e.hasMoreElements();) {
-            String bname = e.nextElement();
+        for (String bname : cacheVersionHandlers.keySet()) {
             MMObjectBuilder builder = mmb.getBuilder(bname);
             if (builder != null) {
                 builder.addLocalObserver(this);
