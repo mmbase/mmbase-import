@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.39 2008-08-13 07:48:24 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.40 2008-08-27 17:09:16 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -129,7 +129,7 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
 
-    public DataType clone(String name) {
+    public DateTimeDataType clone(String name) {
         DateTimeDataType clone = (DateTimeDataType) super.clone(name);
         clone.weakPattern = true;
         return clone;

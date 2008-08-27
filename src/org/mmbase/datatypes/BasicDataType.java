@@ -40,10 +40,10 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.96 2008-08-21 14:59:52 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.97 2008-08-27 17:09:16 michiel Exp $
  */
 
-public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
+public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
     /**
      * The bundle used by datatype to determine default prompts for error messages when a
      * validation fails.
@@ -593,7 +593,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      *
      * This method is final, override {@link #clone(String)} in stead.
      */
-    public final Object clone() {
+    @Override public final BasicDataType<C> clone() {
         return clone(null);
     }
 
@@ -603,23 +603,17 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Besides super.clone, it calls {@link #inheritProperties(BasicDataType)} and {@link
      * #cloneRestrictions(BasicDataType)}. A clone is not finished. See {@link #isFinished()}.
      */
-    public DataType clone(String name) {
-        try {
-            BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
-            // reset owner if it was set, so this datatype can be changed
-            clone.rewrite(clone.owner);
-            // properly inherit from this datatype (this also clones properties and processor arrays)
-            clone.inheritProperties(this);
-            clone.cloneRestrictions(this);
-            if (log.isTraceEnabled()) {
-                log.trace("Cloned " + this + " -> " + clone);
-            }
-            return clone;
-        } catch (CloneNotSupportedException cnse) {
-            // should not happen
-            log.error("Cannot clone this DataType: " + name);
-            throw new RuntimeException("Cannot clone this DataType: " + name, cnse);
+    @Override public BasicDataType<C> clone(String name) {
+        BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
+        // reset owner if it was set, so this datatype can be changed
+        clone.rewrite(clone.owner);
+        // properly inherit from this datatype (this also clones properties and processor arrays)
+        clone.inheritProperties(this);
+        clone.cloneRestrictions(this);
+        if (log.isTraceEnabled()) {
+            log.trace("Cloned " + this + " -> " + clone);
         }
+        return clone;
     }
 
     public Element toXml() {

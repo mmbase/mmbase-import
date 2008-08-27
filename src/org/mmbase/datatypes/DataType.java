@@ -33,11 +33,11 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.69 2008-07-15 19:41:00 michiel Exp $
+ * @version $Id: DataType.java,v 1.70 2008-08-27 17:09:16 michiel Exp $
  * @param <C> Class this DataType
  */
 
-public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
+public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -50,35 +50,40 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value
-     * must be enforced always, and furthermore, that extensions (based on clone) cannot loosen
-     * it. For example, the absolute maximum for any datatype backed by a integer is
-     * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this restriction is 'absolute'.
+     * restriction must be enforced always, and furthermore, that extensions (based on clone) cannot
+     * loosen it. For example, the absolute maximum for any datatype backed by a integer is
+     * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this
+     * restriction is 'absolute'.
      */
     static final int ENFORCE_ABSOLUTE  = Integer.MAX_VALUE;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced always.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that a
+     * restriction on a value must be enforced always.
      */
     static final int ENFORCE_ALWAYS   = 100000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only if it was changed.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that a
+     * restriction on a value must be enforced only if it was changed.
      */
     static final int ENFORCE_ONCHANGE = 10000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only on creation.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
+     * restriction on a value must be enforced only on creation.
      */
     static final int ENFORCE_ONCREATE = 1000;
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
-     * value must be enforced never, so the restriction serves only as UI indication.
+     * restriction on a value must be enforced never, so the restriction serves only as UI indication.
      */
     static final int ENFORCE_NEVER    = 0;
 
     /**
-     * Returned by {@link #validate(Object, Node, Field)} if no errors: an empty (nonmodifiable) Collection.
+     * Returned by {@link #validate(Object, Node, Field)} if no errors: an empty (nonmodifiable)
+     * Collection containing no error messages.
      */
     public static final Collection<LocalizedString> VALID = Collections.emptyList();
 
@@ -206,7 +211,8 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
      * @param field the field for which the datatype is checked.
      *
-     * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
+     * @return The error message(s) if the value is not compatible. An empty collection ({@link
+     * DataType#VALID})if the value is valid.
      */
     public Collection<LocalizedString> validate(C value, Node node, Field field);
 
@@ -345,7 +351,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * was finished. This means that the cloned datatype can be changed.
      * @return cloned instance
      */
-    public Object clone();
+    public DataType<C> clone();
 
     /**
      * Returns a cloned instance of this datatype, inheriting all validation rules.
@@ -364,14 +370,18 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     public org.w3c.dom.Element toXml();
 
     /**
-     * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one XML, fully describing the DataType).
-     * The implementation of this method is <em>unfinished</em>!
+     * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one
+     * XML, fully describing the DataType).  The implementation of this method is
+     * <em>unfinished</em>!
      * @todo EXPERIMENTAL
      * @param element a 'datatype' element.
      */
     public void toXml(org.w3c.dom.Element element);
 
     /**
+     * Returns a handler for given mimetype for this DataType. The handler can be used to produce UI
+     * for values of this datatype.
+     * @todo EXPERIMENTAL
      * @since MMBase-1.9.1
      */
     public Handler getHandler(String mimeType);
@@ -382,7 +392,8 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
 
 
     /**
-     * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
+     * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType
+     * generally has several restrictions.
      * @param <D> Type of Value describing the restriction
      */
     public interface Restriction<D extends Serializable> extends Serializable {
