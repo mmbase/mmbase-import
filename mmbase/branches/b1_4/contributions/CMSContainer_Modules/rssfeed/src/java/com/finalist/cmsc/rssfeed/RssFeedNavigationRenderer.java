@@ -22,6 +22,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.SearchUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -70,6 +71,8 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          List<String> contentTypesList = rssFeed.getContenttypes();
          int contentChannelNumber = rssFeed.getContentChannel(); 
 
+         int maxAgeInDays = rssFeed.getMax_age_in_days();
+         
          boolean useLifecycle = true;
          int maxNumber = rssFeed.getMaximum();
          if (maxNumber <= 0) maxNumber = -1;
@@ -83,6 +86,10 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
             NodeQuery query = RepositoryUtil.createLinkedContentQuery(contentChannel, contentTypesList,
                   ContentElementUtil.PUBLISHDATE_FIELD, "down", useLifecycle, null, 0, maxNumber, -1, -1, -1);
+            //Add constraint: max age in days
+            if (maxAgeInDays > 0) {
+               SearchUtil.addDayConstraint(query, cloud.getNodeManager(RepositoryUtil.CONTENTELEMENT), ContentElementUtil.PUBLISHDATE_FIELD, "-" + maxAgeInDays);
+            }
             NodeList results = query.getNodeManager().getList(query);
             for (NodeIterator ni = results.nodeIterator(); ni.hasNext();) {
                Node resultNode = ni.nextNode();
