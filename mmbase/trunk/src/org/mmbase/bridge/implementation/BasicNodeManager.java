@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.138 2008-07-03 15:54:35 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.139 2008-08-27 17:35:26 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -521,8 +521,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         MMObjectBuilder builder = getMMObjectBuilder();
-        StringTagger params= new StringTagger("");
-        if (parameters!=null) {
+        StringTagger params = new StringTagger("");
+        if (parameters != null) {
             for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) entries.next();
                 String key=(String) entry.getKey();
