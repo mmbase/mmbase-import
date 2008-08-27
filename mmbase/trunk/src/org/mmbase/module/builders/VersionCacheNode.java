@@ -18,26 +18,28 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.8 2008-06-12 11:25:10 michiel Exp $
+ * @version $Id: VersionCacheNode.java,v 1.9 2008-08-27 17:29:52 michiel Exp $
  */
 class VersionCacheNode {
 
     private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
     private MMObjectNode versionnode;
-    private Vector<VersionCacheWhenNode> whens = new Vector<VersionCacheWhenNode>();
+    private List<VersionCacheWhenNode> whens = new Vector<VersionCacheWhenNode>();
     private MMBase mmb;
 
     public VersionCacheNode(MMBase mmb) {
         this.mmb = mmb;
     }
-
+    /**
+     * @javadoc
+     */
     public void handleChanged(String buildername,int number) {
         // method checks if this really something valid
         // and we should signal a new version
 
         boolean dirty = false;
         for (VersionCacheWhenNode whennode : whens) {
-            Vector<String> types = whennode.getTypes();
+            List<String> types = whennode.getTypes();
 
             // check if im known in the types part
             if (types.contains(buildername)) {
@@ -47,14 +49,14 @@ class VersionCacheNode {
                     dirty = true;
                 } else {
                     // so multiple prepare a multilevel !
-                    Vector<String> nodes = whennode.getNodes();
+                    List<String> nodes = whennode.getNodes();
 
-                    Vector<String> fields = new Vector<String>();
-                    fields.addElement(buildername + ".number");
-                    Vector<String> ordervec = new Vector<String>();
-                    Vector<String> dirvec = new Vector<String>();
+                    List<String> fields = new Vector<String>();
+                    fields.add(buildername + ".number");
+                    List<String> ordervec = new Vector<String>();
+                    List<String> dirvec = new Vector<String>();
 
-                    Vector<MMObjectNode> vec = mmb.getClusterBuilder().searchMultiLevelVector(nodes,fields,"YES",types,buildername+".number=="+number,ordervec,dirvec);
+                    List<MMObjectNode> vec = mmb.getClusterBuilder().searchMultiLevelVector(nodes, fields, "YES", types, buildername + ".number==" + number, ordervec, dirvec);
                     if (log.isDebugEnabled()) log.debug("VEC=" + vec);
                     if (vec != null && vec.size() > 0) {
                         dirty = true;
@@ -76,8 +78,11 @@ class VersionCacheNode {
         this.versionnode = versionnode;
     }
 
+    /**
+     * @javadoc
+     */
     public void addWhen(VersionCacheWhenNode when) {
-        whens.addElement(when);
+        whens.add(when);
     }
 
 }

@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.95 2008-08-13 21:41:41 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.96 2008-08-27 17:29:31 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -321,12 +321,12 @@ public class ClusterBuilder extends VirtualBuilder {
      */
    public Vector<MMObjectNode> searchMultiLevelVector(
         int snode,
-        Vector<String> fields,
+        List<String> fields,
         String pdistinct,
-        Vector<String> tables,
+        List<String> tables,
         String where,
-        Vector<String> orderVec,
-        Vector<String> direction) {
+        List<String> orderVec,
+        List<String> direction) {
        
         List<String> v= new ArrayList<String>();
         v.add("" + snode);
@@ -339,14 +339,13 @@ public class ClusterBuilder extends VirtualBuilder {
      *
      * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
      */
-    public Vector<MMObjectNode> searchMultiLevelVector(
-        Vector<String> snodes,
-        Vector<String> fields,
-        String pdistinct,
-        Vector<String> tables,
-        String where,
-        Vector<String> orderVec,
-        Vector<String> direction) {
+    public Vector<MMObjectNode> searchMultiLevelVector(List<String> snodes,
+                                                       List<String> fields,
+                                                       String pdistinct,
+                                                       List<String> tables,
+                                                       String where,
+                                                       List<String> orderVec,
+                                                       List<String> direction) {
         return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
     }
 
