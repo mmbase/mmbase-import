@@ -24,7 +24,7 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
    }
 
    @Override
-   public NavigationItem loadNavigationItem(Integer key, Node node) {
+   public NavigationItem loadNavigationItem(Node node) {
 
       Newsletter newsletter = MMBaseNodeMapper.copyNode(node, Newsletter.class);
 

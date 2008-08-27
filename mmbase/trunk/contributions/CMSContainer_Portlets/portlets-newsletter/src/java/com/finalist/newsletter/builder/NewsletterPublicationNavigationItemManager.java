@@ -20,7 +20,7 @@ public class NewsletterPublicationNavigationItemManager extends NewsletterNaviga
    }
 
    @Override
-   public NavigationItem loadNavigationItem(Integer key, Node node) {
+   public NavigationItem loadNavigationItem(Node node) {
 
       Publication publication = MMBaseNodeMapper.copyNode(node, Publication.class);
 
