@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @todo   Should be abstract, deprecated?
  */
-public class ProcessorModule extends Module {
+public abstract class ProcessorModule extends Module {
 
     protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
     protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
