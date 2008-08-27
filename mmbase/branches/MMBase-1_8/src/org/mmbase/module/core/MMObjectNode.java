@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.12 2008-06-28 11:57:10 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.13 2008-08-27 11:12:04 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -312,10 +312,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * Commit this node to the storage
      * @param user the user who commits the node.
      *        Used to set security-related information
-     * @return <code>true</code> if succesful
+     * @return <code>true</code> if successful
      * @since MMBase-1.7
      */
     public boolean commit(UserContext user) {
+        if (!isChanged()) {
+           return true;
+        }
+
         boolean success = parent.safeCommit(this);
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
