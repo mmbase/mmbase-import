@@ -273,7 +273,7 @@
 <c:if test="${hasWorkflow}">
     <td width="10" onMouseDown="objClick(this);">
         <c:set var="status" value="waiting"/>
-        <mm:relatednodes type="workflowitem">
+        <mm:relatednodes type="workflowitem" constraints="type='content'">
             <c:set var="status"><mm:field name="status"/></c:set>
         </mm:relatednodes>
         <c:if test="${status == 'waiting'}">
