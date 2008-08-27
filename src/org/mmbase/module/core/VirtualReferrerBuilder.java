@@ -10,13 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 /**
- * VirtualBuilder is a builder which creates 'virtual' nodes.
- * This class is intended to facilitate practical creation of virtual
- * builders by capturing events that migth otherwise lead to unexpected or
- * faulty behavior.
+ * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.6 2006-10-14 14:35:38 nklasens Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.7 2008-08-27 17:33:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
