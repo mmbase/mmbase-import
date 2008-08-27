@@ -47,7 +47,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.166 2008-08-01 16:31:18 michiel Exp $
+ * @version $Id: Wizard.java,v 1.167 2008-08-27 16:56:02 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -1192,7 +1192,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                             Parameters frameworkParams = fw.createParameters();
                             frameworkParams.setIfDefined(Parameter.REQUEST, request);
                             try {
-                                Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, Renderer.WindowState.NORMAL, Wizard.class);
+                                Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, WindowState.NORMAL, Wizard.class);
                                 parent.insertBefore(targetdoc.importNode(doc.getDocumentElement(), true), blockElement);
                             } catch (FrameworkException fwe) {
                                 throw new WizardException(fwe);
