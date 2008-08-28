@@ -9,6 +9,7 @@
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
     <di:script src="/mmbase/jquery/jquery.timer.js" />
     <di:script src="/core/js/utils.js" />
+    <di:script src="/core/js/jquery.query.js" />
     <di:script src="/core/js/Didactor.js" />
 
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
