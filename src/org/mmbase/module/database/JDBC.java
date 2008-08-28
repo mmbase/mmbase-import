@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.64 2008-08-26 22:34:12 michiel Exp $
+ * @version $Id: JDBC.java,v 1.65 2008-08-28 11:46:49 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -369,8 +369,7 @@ public class JDBC extends ProcessorModule {
     public Vector listPools(StringTagger tagger) {
         Vector results = new Vector();
         if (poolHandler != null) {
-            for (Object element : poolHandler.keySet()) {
-                String name = (String) element;
+            for (String name : poolHandler.keySet()) {
                 MultiPool pool = poolHandler.get(name);
                 results.addElement(stripSensistive(name));
                 results.addElement("" + pool.getSize());
@@ -386,8 +385,7 @@ public class JDBC extends ProcessorModule {
      */
     public Vector listConnections(StringTagger tagger) {
         Vector results = new Vector();
-        for (Object element : poolHandler.keySet()) {
-            String name= (String) element;
+        for (String name : poolHandler.keySet()) {
             MultiPool pool = poolHandler.get(name);
             for (Iterator f = pool.getBusyPool(); f.hasNext();) {
                 MultiConnection realcon=(MultiConnection)f.next();
