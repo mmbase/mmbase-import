@@ -33,9 +33,3 @@ function check_passwords(loginId, passwordId) {
 	document.getElementById(passwordId).value.length > 0;
 }
 
-
-function keepalive(url){
-    $.get(url);
-    setTimeout("keepalive('" + url + "');", 1000  * 60 * 2); // keep alive every 2 minutes
-}
-
