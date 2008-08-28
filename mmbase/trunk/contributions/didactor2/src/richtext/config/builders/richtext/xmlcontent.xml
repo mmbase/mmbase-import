@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="xmlcontent" maintainer="mmbase.org" version="0"
+    name="xmlcontent" maintainer="mmbase.org" version="10"
     extends="learnobjects">
   <names>
     <singular xml:lang="nl">Inhoudsobject</singular>
@@ -25,6 +25,7 @@
     <property name="key:new:name">richtext.createnewxmlcontent</property>
     <property name="key:new:description">richtext.createnewxmlcontentdescription</property>
   </properties>
+
 
   <xi:include href="rich.fields.xml" />
 
