@@ -11,7 +11,7 @@
           <div class="menuItem" id="coursemanagement">
             <mm:import from="request" externid="component" />
             <mm:treefile page="/education/wizards/index.jsp"
-                         objectlist="$includePath" referids="$referids,user?" write="false" >
+                         objectlist="$includePath"  write="false" >
               <a href="${_}" class="menubar ${component eq 'education.wizards' ? 'active' : ''}" >
                 <di:translate key="education.coursemanagement" />
               </a>
