@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionsets PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
+<functionsets>
+  <functionset name="xml2pdf" resource="xml2pdf.xml" />
+</functionsets>
+ 
