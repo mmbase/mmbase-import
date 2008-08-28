@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * A Renderer is stateless.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.22 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: Renderer.java,v 1.23 2008-08-28 11:43:56 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
@@ -37,7 +37,9 @@ public interface Renderer {
          */
         HEAD,
        /**
-        * A body typed renderer renders the actual content of a block. It should produce a &lt;div&gt;
+        * A body typed renderer renders the actual content of a block. It should produce, at least
+        * for text/html, a &lt;div&gt; with class 'mm_c c_&lt;name of component&gt; b_&lt; name of
+        * block&gt;
         */
         BODY;
 
