@@ -7,7 +7,10 @@
   <jsp:directive.tag description="Didactor head" />
   <head>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+    <di:script src="/mmbase/jquery/jquery.timer.js" />
     <di:script src="/core/js/utils.js" />
+    <di:script src="/core/js/Didactor.js" />
+
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
 
     <mm:haspage page="/mmbase/style/css/mmxf.css">
@@ -21,14 +24,16 @@
       <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
     </mm:treefile>
 
-    <script type="text/javascript">
-      <mm:treefile id="keepalive" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" write="false">
-        <!--
-            escapeamps="${empty param.escapeamps ?  false : param.escapeamps}" />
-        -->
-        <jsp:text>$(window).ready(function() { focusFirstForm(); keepalive("${_}"); });</jsp:text>
-      </mm:treefile>
-    </script>
+    <meta name="Didactor-Provider" content="${provider}" />
+    <meta name="Didactor-Education" content="${education}" />
+    <meta name="Didactor-PageReporter" content="${di:setting('core', 'pagereporter')}" />
+    <mm:link absolute="context">
+      <meta name="Didactor-URL" content="${_}" />
+    </mm:link>
+    <mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" write="false">
+      <meta name="Didactor-OnlineReporter" content="${_}" />
+    </mm:treefile>
+
     <jsp:doBody />
   </head>
 </jsp:root>
