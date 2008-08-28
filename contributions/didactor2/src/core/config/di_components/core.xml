@@ -64,6 +64,7 @@
     <setting ref="booleansetting" />
     -->
     <setting name="personfields" type="string" default="firstname,suffix,lastname" canbeempty="false" />
+    <setting name="pagereporter" type="boolean" default="true" canbeempty="false" />
     <setting name="personorderfield" type="string" default="lastname" canbeempty="false" />
     <setting name="admin_personfields" type="string" default="firstname,suffix,lastname"  canbeempty="false" />
     <setting name="may_open_future" type="boolean" default="true" />
