@@ -7,7 +7,7 @@
       <mm:import externid="showlogin"><mm:hasrank value="anonymous">yes</mm:hasrank></mm:import>
       <mm:compare referid="showlogin" value="yes">
         <div class="menuItemApplicationMenubar login">
-          <mm:import externid="referrer">
+          <mm:import externid="referrer">s
             <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids" />
           </mm:import>
           <form method="post" action="${mm:link(referrer)}">

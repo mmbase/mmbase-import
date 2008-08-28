@@ -27,8 +27,9 @@
         </jsp:scriptlet>
 
         <div class="educationMenubarNav">
+
           <mm:present referid="education">
-            <mm:node number="$education" notfound="skip">
+            <mm:node number="$education">
               <mm:related path="settingrel,components">
                 <mm:node element="components">
                   <mm:field jspvar="cname" name="name" write="false" vartype="String">
@@ -54,8 +55,9 @@
             <mm:import id="componentname" reset="true">
               <jsp:expression>c.getName()</jsp:expression>
             </mm:import>
+
             <c:catch var="ex">
-              <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+              <mm:treeinclude  page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
                 <mm:param name="name"><jsp:expression>c.getName()</jsp:expression></mm:param>
                 <mm:param name="number"><jsp:expression>c.getNumber()</jsp:expression></mm:param>
                 <mm:param name="type">div</mm:param>
