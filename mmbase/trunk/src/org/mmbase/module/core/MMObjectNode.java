@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.226 2008-08-27 11:11:58 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.227 2008-08-28 11:44:47 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
@@ -468,7 +468,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * This methods check that, and logs a warning if not so.
      * @since MMBase-1.9
      */
-    protected Object checkSerializable(String fieldName, Object fieldValue) {
+    protected final Object checkSerializable(String fieldName, Object fieldValue) {
         if (fieldValue != null && (! (fieldValue instanceof Serializable))) {
             log.warn("Value for " + fieldName + " is not serializable: " + fieldValue.getClass() + " " + fieldValue, new Exception());
         }
