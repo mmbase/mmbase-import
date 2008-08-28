@@ -22,10 +22,11 @@
           <mm:isnotempty>
             <script type="text/javascript"
                     src="${fn:startsWith(pageContext.request.requestURL, 'http://') ? 'http://www' : 'https://ssl'}.google-analytics.com/ga.js"
-                    />
+                    > </script>
             <script type="text/javascript">
-              var pageTracker = _gat._getTracker("${_}");
-              pageTracker._trackPageview();
+              if (typeof(_gat) != "undefined") {
+              var pageTracker = _gat._getTracker("${_}"); pageTracker._trackPageview();
+              }
             </script>
           </mm:isnotempty>
         </di:getsetting>
