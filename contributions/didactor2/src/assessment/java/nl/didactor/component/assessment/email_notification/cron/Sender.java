@@ -7,6 +7,9 @@ import org.mmbase.util.logging.*;
 import nl.didactor.component.assessment.email_notification.model.Email;
 
 
+/**
+ * @javadoc
+ */
 
 public class Sender implements Runnable {
    private static Logger log = Logging.getLoggerInstance(Sender.class);
@@ -24,7 +27,9 @@ public class Sender implements Runnable {
       NodeList nlAdmin = cloud.getList("",
                                        "people",
                                        "people.number",
-                                       "people.username='admin'",
+                                       "people.username='admin'", /// THIS IS HORRIBLE, HORRIBLE. My  admin is not named 'admin',
+                                                                  /// now I have to live with warning in the log.
+                                       // The maker of this should be _punished_.
                                        null, null, null, false);
 
       if(nlAdmin.size() > 0){
@@ -36,7 +41,7 @@ public class Sender implements Runnable {
             log.debug("Admin's email=\"" + sNotificationFrom + "\" for using in Email Feedback");
          }
       } else{
-         log.warn("Can't find admin node to send a Email Notification.  Cannot send assesment emails");
+         log.debug("Can't find admin node to send a Email Notification.  Cannot send assesment emails");
          return;
       }
 
