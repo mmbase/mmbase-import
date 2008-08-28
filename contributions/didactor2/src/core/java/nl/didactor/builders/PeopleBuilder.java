@@ -45,7 +45,7 @@ public class PeopleBuilder extends DidactorBuilder {
 
             List nodelist = getNodes(query);
             if (nodelist.size() == 0) {
-                log.service("No users with the name '" + username + "'", new Exception());
+                log.debug("No users with the name '" + username + "'");
                 return null;
                 // fail silently
             } else if (nodelist.size() > 1) {
