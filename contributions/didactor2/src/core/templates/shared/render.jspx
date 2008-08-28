@@ -18,15 +18,14 @@
     <jsp:attribute name="head">
       <mm:node number="${node}">
         <mm:component name="${name}" block="${block}" render="head" />
-		 
       </mm:node>
     </jsp:attribute>
     <div class="rows">
-	
+
 		<di:include debug="html" page="/shared/navigation.jspx" />
       <div class="mainContent">
         <div class="contentBodywit">
-	
+
           <mm:node number="${node}">
             <mm:component name="${name}" block="${block}" />
           </mm:node>

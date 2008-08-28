@@ -28,7 +28,7 @@
           <mm:import externid="page" />
           <mm:listnodescontainer type="pagestays">
             <mm:constraint field="user" value="$user" />
-            <mm:constraint field="content" value="$content"  />
+            <mm:constraint field="content" operator="${empty content ? 'NULL' : 'EQ'}" value="$content"  />
             <mm:constraint field="page" value="$page"  />
             <mm:listnodes max="1">
               <mm:node id="pagestay" />
@@ -37,7 +37,7 @@
               <mm:createnode type="pagestays" id="pagestay">
                 <mm:setfield name="user">${user}</mm:setfield>
                 <mm:setfield name="content">${content}</mm:setfield>
-                <mm:setfield name="page">${page}</mm:setfield>
+                <mm:setfield name="page"><mm:write referid="page" escape="none" /></mm:setfield>
               </mm:createnode>
             </mm:notpresent>
             <mm:node referid="pagestay">
