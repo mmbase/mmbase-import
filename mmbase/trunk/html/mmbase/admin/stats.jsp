@@ -36,6 +36,9 @@
     %>
 <%= cache.getHits() %>
 <%= cache.getHits() + cache.getMisses() %>
+    <% }  else { %>
+0
+0
     <% } %>
   </mm:compare>
   <mm:compare value="cachefill">
@@ -45,6 +48,9 @@
     %>
 <%= cache.getSize() %>
 <%= cache.getMaxSize() %>
+    <% } else { %>
+0
+0
     <% } %>
   </mm:compare>
   <mm:compare value="mrtgconfig">
