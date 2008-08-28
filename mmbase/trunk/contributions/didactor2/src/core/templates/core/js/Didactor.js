@@ -9,7 +9,9 @@ function Didactor() {
 	self.reportOnline();
 	timer.reset(self.getSetting("Didactor-PageReporter") == "true" ? 5000 : 1000 * 60 * 2);
     });
-    this.content = null;
+    this.content = $.query.get("learnobject");
+    $.query.REMOVE("learnobject");
+
 }
 
 Didactor.prototype.getSetting = function(name) {
@@ -17,10 +19,15 @@ Didactor.prototype.getSetting = function(name) {
 }
 
 Didactor.prototype.reportOnline = function (timer) {
+    console.log(window.location);
+
     var params;
     var thisCheck = new Date();
     if (this.getSetting("Didactor-PageReporter") == "true") {
-	params = {content: this.content, page: this.url, add: thisCheck.getTime() - this.lastCheck.getTime()};
+	params = {page: this.url + $.query.toString(), add: thisCheck.getTime() - this.lastCheck.getTime()};
+	if (this.content != null) {
+	    params.content = this.content;
+	}
     } else {
 	params = {};
     }
