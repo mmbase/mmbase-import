@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.43 2008-04-11 15:32:22 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.44 2008-08-28 11:37:39 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -181,7 +181,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         if (search) {
             String name = prefix(field.getName()) + "_search";
             String fieldid = prefixID(field.getName() + "_search");
-            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+            String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
             buffer.append("<input type=\"checkbox\" name=\"").append(name).append("\" ");
             buffer.append("id=\"").append(fieldid).append("\" ");
             if (searchi != null) {
@@ -195,7 +195,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String name = prefix(field.getName() + "_search");
-        String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+        String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
         if (searchi != null) {
             handler.addParameter(name, "yes");
         }
@@ -220,7 +220,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+        if (tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return null;
         } else {
             return super.whereHtmlInput(field, query);
