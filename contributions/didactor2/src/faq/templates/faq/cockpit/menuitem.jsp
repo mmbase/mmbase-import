@@ -18,7 +18,6 @@
           <div class="menuSeperator"></div>
           <div class="menuItem">
             <mm:treefile page="/faq/frontoffice/index.jsp" objectlist="$includePath" referids="$referids,faq@node">
-              aaaaaaaaaa
               <a title="<mm:write referid="faqname"/>" href="${_}" class="menubar"><mm:write referid="faqname"/></a>
             </mm:treefile>
           </div>
