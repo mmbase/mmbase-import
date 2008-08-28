@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <!-- Application wide configuration.
+	   For specific cases you also can specify these within the function tag. -->
+  <properties>
+    <property name="title">PDF generated from XML</property>
+    <property name="xsl">xhtml2pdf.xsl</property><!-- has to live in MMBase config/xsl -->
+    <property name="xml">test.html</property><!-- an absolute url to a xhtml page -->
+  </properties>
+</util>
