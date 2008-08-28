@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.37 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: IntegerHandler.java,v 1.38 2008-08-28 11:37:39 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -83,7 +83,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     }
 
     protected Object cast(Object value, Node node, Field field) {
-        if (value == null || "".equals(value)) return "";
+        if (value == null || "".equals(value)) return null;
         return  super.cast(value, node, field);
     }
 
