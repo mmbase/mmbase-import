@@ -229,7 +229,10 @@ public class PagePublisher extends Publisher {
                                    }
                                }
                                else {
-                                   findPageNodes(childNode, nodes, publishDate);
+                                   boolean isNavigationType = NavigationUtil.getTreeManagers().containsKey(childNode.getNodeManager().getName());
+                                   if (!isNavigationType) {
+                                      findPageNodes(childNode, nodes, publishDate);
+                                   }
                                }
                            }
                        }
