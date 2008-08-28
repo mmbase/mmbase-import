@@ -5,9 +5,13 @@ function Didactor() {
     this.url            = this.getSetting("Didactor-URL");
     this.lastCheck      = new Date();
     var self = this;
-    $.timer(2000, function(timer) {
+    $.timer(500, function(timer) {
 	self.reportOnline();
 	timer.reset(self.getSetting("Didactor-PageReporter") == "true" ? 5000 : 1000 * 60 * 2);
+	$(window).bind("beforeunload", function() {
+	    self.reportOnline(null, false);
+	});
+
     });
     this.content = $.query.get("learnobject");
     $.query.REMOVE("learnobject");
@@ -18,9 +22,7 @@ Didactor.prototype.getSetting = function(name) {
     return $("html head meta[name='" + name + "']").attr("content");
 }
 
-Didactor.prototype.reportOnline = function (timer) {
-    console.log(window.location);
-
+Didactor.prototype.reportOnline = function (timer, async) {
     var params;
     var thisCheck = new Date();
     if (this.getSetting("Didactor-PageReporter") == "true") {
@@ -32,7 +34,7 @@ Didactor.prototype.reportOnline = function (timer) {
 	params = {};
     }
 
-    $.get(this.onlineReporter, params);
+    $.ajax({async: (async == null ? true : async), url: this.onlineReporter, type: "GET", data: params});
     this.lastCheck = thisCheck;
 }
 
