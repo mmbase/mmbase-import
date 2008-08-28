@@ -50,6 +50,14 @@
         </mm:link>
       </di:has>
 
+      <c:if test="${di:setting('core', 'pagereporter') eq 'true'}">
+        <mm:link page="." referids="e?">
+          <mm:param name="mode">pagereports</mm:param>
+          <a class="education_top_menu ${mode eq 'pagereports' ? 'selected' : ''}"
+             href="${_}"><di:translate key="core.pagereports" /></a>
+        </mm:link>
+      </c:if>
+
 
       <mm:hasnode number="component.pop">
         <mm:node number="component.pop">
@@ -116,7 +124,7 @@
       </mm:hasnode>
 
       <di:include debug="html"
-      page="/education/wizards/menu_items.jspx" />
+                  page="/education/wizards/menu_items.jspx" />
 
       <di:has editcontext="toetsen">
         <mm:link page="." referids="e?">
