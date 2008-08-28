@@ -34,14 +34,8 @@ function check_passwords(loginId, passwordId) {
 }
 
 
-function getUrl(url){
-    var i = new Image();
-    i.src = url;
-    i = null;
-}
-
 function keepalive(url){
-    getUrl(url)
+    $.get(url);
     setTimeout("keepalive('" + url + "');", 1000  * 60 * 2); // keep alive every 2 minutes
 }
 
