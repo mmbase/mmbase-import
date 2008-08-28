@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.15 2008-02-16 22:13:53 nklasens Exp $
+ * @version $Id: DataTypeCollector.java,v 1.16 2008-08-28 11:42:44 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -61,7 +61,6 @@ public final class DataTypeCollector {
     }
 
     /**
-     *  Constructor.
      * @param signature the object used to finish a data type for this collector.
      */
     public DataTypeCollector(Object signature) {
