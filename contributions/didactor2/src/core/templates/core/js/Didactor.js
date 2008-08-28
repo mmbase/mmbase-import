@@ -38,6 +38,7 @@ Didactor.prototype.reportOnline = function (timer, async) {
 }
 
 Didactor.prototype.setContent = function(c) {
+    reportOnline(null, false);
     this.content = c;
 }
 
