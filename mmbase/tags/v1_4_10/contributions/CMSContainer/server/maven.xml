@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
+		xmlns:ant="jelly:ant" xmlns:artifact="artifact">
+
+  <!--==================================================================-->
+  <!-- Deploy tomcat configuration                                      -->
+  <!--==================================================================-->  
+  <goal name="cmsc:patch:tomcat"
+        description="copying the customized configuration for tomcat">
+
+   	<j:if test="${maven.cmsc.tomcat.version == ''}">
+      <ant:fail>Tomcat version required</ant:fail>
+   	</j:if>
+
+    <copy todir="${maven.cmsc.tomcat.dir}" overwrite="true">
+      <fileset dir="${basedir}/src/tomcat${maven.cmsc.tomcat.version}">
+        <excludes name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    
+    <j:if test="${maven.cmsc.tomcat.libraries == 'true'}">
+      <j:forEach var="lib" items="${pom.artifacts}">
+        <j:set var="dep" value="${lib.dependency}"/>     
+        <j:if test="${dep.getProperty('tomcat.common.lib')=='true'}">
+          <ant:copy todir="${maven.cmsc.tomcat.dir}/common/lib" file="${lib.path}"/>
+        </j:if>
+        <j:if test="${dep.getProperty('tomcat.common.endorsed')=='true'}">
+          <ant:copy todir="${maven.cmsc.tomcat.dir}/common/endorsed" file="${lib.path}"/>
+        </j:if>
+      </j:forEach>
+	</j:if>
+    
+  </goal>
+  
+  <!--==================================================================-->
+  <!-- Deploy jonas configuration                                       -->
+  <!--==================================================================-->
+  <goal name="cmsc:patch:jonas"
+        description="copying the customized configuration for jonas">
+
+   	<j:if test="${maven.cmsc.jonas.version == ''}">
+      <ant:fail>Jonas version required</ant:fail>
+   	</j:if>
+
+    <copy todir="${maven.cmsc.jonas.dir}" overwrite="true">
+      <fileset dir="${basedir}/src/jonas${maven.cmsc.jonas.version}">
+        <excludes name="**/CVS/*"/>
+      </fileset>
+    </copy>
+  </goal>
+  
+  <!--==================================================================-->
+  <!-- Deploy jboss configuration                                       -->
+  <!--==================================================================-->
+  <goal name="cmsc:patch:jboss"
+        description="copying the customized configuration for jboss">
+
+   	<j:if test="${maven.cmsc.jboss.version == ''}">
+      <ant:fail>JBoss version required</ant:fail>
+   	</j:if>
+
+    <copy todir="${maven.cmsc.jboss.dir}" overwrite="true">
+      <fileset dir="${basedir}/src/jboss${maven.cmsc.jboss.version}">
+        <excludes name="**/CVS/*"/>
+      </fileset>
+    </copy>
+  </goal>
+
+  <!--==================================================================-->
+  <!-- Deploy Weblogic configuration                                       -->
+  <!--==================================================================-->
+  <goal name="cmsc:patch:weblogic"
+        description="copying the customized configuration for weblogic">
+
+   	<j:if test="${maven.cmsc.weblogic.version == ''}">
+      <ant:fail>Weblogic version required</ant:fail>
+   	</j:if>
+
+    <copy todir="${maven.cmsc.weblogic.dir}" overwrite="true">
+      <fileset dir="${basedir}/src/weblogic${maven.cmsc.weblogic.version}">
+        <excludes name="**/CVS/*"/>
+      </fileset>
+    </copy>
+  </goal>
+
+</project>

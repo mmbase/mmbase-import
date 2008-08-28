@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronjobs exportsource="cmsc file dumper" timestamp="20061204104617">
+	<node number="12945" owner="default">
+		<name>Email Alert</name>
+		<crontime>*/15 * * * *</crontime>
+		<classfile>com.finalist.emailalert.EmailAlertCronJob</classfile>
+		<config></config>
+		<type>2</type>
+	</node>
+</cronjobs>

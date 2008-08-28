@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/playlist" timestamp="20040225000000">
+
+	<node number="33002" owner="admin">
+		<name>Playlist</name>
+		<description>Playlist</description>
+		<wizard>config/playlist/playlist</wizard>
+		<nodepath>playlist</nodepath>
+		<fields>title</fields>
+	</node>
+
+</editwizards>

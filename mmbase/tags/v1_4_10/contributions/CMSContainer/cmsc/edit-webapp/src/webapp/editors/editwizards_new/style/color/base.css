@@ -1,0 +1,45 @@
+body {
+	color: #062A4A;
+	background-color: #FFFFFF;
+}
+
+input,
+textarea,
+select {
+	color: black;
+}
+
+a:link    { color: #18248C; }
+a:visited { color: #00046C; }
+a:hover   { color: #3844AC; }
+a:active  { color: #3844AC; }
+
+.tooltip {
+	background-color: #FFFF88;
+	border-color: #000000;
+}
+
+table.head {
+	background-color: #97b7c8;
+}
+
+tr.headtitle {
+	color: #FFFFFF;
+	background-color: #97b7c8;
+}
+
+tr.headsubtitle {
+	color: #FFFFFF;
+	background-color: #97b7c8;
+}
+
+table.body {
+	color: #FFFFFF;
+	background-color: #FFFFFF;
+}
+
+.pagenav,
+.pagenav-disabled,
+.pagenav-current {
+	color: #000000;
+}

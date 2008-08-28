@@ -1,0 +1,114 @@
+#nav{
+	padding: 0px 0px 0px 23px;
+	margin: 0;
+	border-style: solid;
+	border-color: #5B7278;
+	border-top-width: 1px;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	background: #CCDFE5;
+}
+
+/* Hoofdnavigatie */
+#nav{
+	height: 28px;
+}
+
+#nav li a{
+	color: #617880;
+	font-weight: bold;
+	padding: 0 0 0 7px;
+}
+
+form{
+	margin: 0;
+	padding: 0;
+}
+
+#nav li{
+	float: left;
+	list-style: none;
+	margin: 0;
+	border: 0;
+	padding:4px 0 0 0;
+	height: 24px;
+	width: 120px;
+}
+
+#nav li a, #nav li a:hover, #nav li a.active{
+	
+}
+
+/* Zoekveld en zoekknop */
+#nav #nav06{
+	width: 165px;
+}
+#nav06 input{
+	width: 30px;
+	margin: 0 0 0 3px;
+	border: 0 none;
+	font-size: 0.8em;
+	background: #fff;
+	color: #5B6F76;
+}
+#nav06 #topzoek{
+	border: 1px solid;
+	border-color: #3d3d3d #3d3d3d #999 #999;
+	width: 114px;
+	background: #fff;
+	color: #999;
+	padding: 1px 0px 0px 2px;
+	margin: 1px;
+	height: 14px;
+}
+/* Het plaatje wordt getoond als men javascript heeft aanstaan */
+#nav06 #zoeklink{
+	display: none;
+	float: right;
+	width: 40px;
+	height: 19px;
+}
+#nav06 #zoeklink:hover{
+	
+}
+
+/* Subnavigatie */
+.subnav{
+	position: absolute;
+	margin: 0 0 0 5px;
+	padding: 0;
+	border: solid #7F9198;
+	border-width: 0 1px 1px 1px;
+	display: none;
+	z-index: 4;
+	left: 20px;
+	filter: alpha(opacity=90);
+    opacity: 0.9;
+    -moz-opacity:0.9;
+    background: #fff;
+}
+
+.subnav li{
+	list-style: none;
+	margin: 0;
+	border: 0;
+	padding:4px 0 0 0;
+	height: 24px;
+	width: 120px;
+}
+
+.subnav li a{
+	color: #7F9198;
+	display: block;
+	padding: 0 0 0 7px;
+}
+.subnav li a:hover{
+
+}
+
+#subnav01{margin: 0 0 0 2px;}
+#subnav02{margin: 0 0 0 122px;}
+#subnav03{margin: 0 0 0 283px;}
+#subnav04{margin: 0 0 0 444px;}
+#subnav05{margin: 0 0 0 605px;}

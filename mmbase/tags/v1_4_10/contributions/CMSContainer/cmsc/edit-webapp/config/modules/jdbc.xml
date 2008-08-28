@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+	<status>inactive</status>
+	<class>org.mmbase.module.database.Naming</class>
+	<properties>
+	<!-- 
+		<property name="context">java:comp/env</property>
+		<property name="datasource">jdbc/cmsc</property>
+	 -->
+	</properties>
+</module>

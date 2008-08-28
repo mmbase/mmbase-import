@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="childrel" destination="collectionchannel" minoccurs="0" maxoccurs="*">
+	<title xml:lang="nl">VerzamelRubriek</title>
+	<title xml:lang="en">Content channel</title>
+
+	<item>
+		<field ftype="data" name="pathfragment">
+			<prompt xml:lang="en">URL-fragment</prompt>
+			<prompt xml:lang="nl">URL-fragment</prompt>
+		</field>
+		<field ftype="data" name="name">
+			<prompt xml:lang="en">Name</prompt>
+			<prompt xml:lang="nl">Naam</prompt>
+		</field>
+		<field ftype="startwizard" wizardname="config/collectionchannel/collectionchannel" inline="true" />
+	</item>
+
+	<command name="search" nodepath="collectionchannel" age="-1" fields="pathfragment,name">
+		<prompt xml:lang="en">Search collectionchannel</prompt>
+		<prompt xml:lang="nl">Zoek rubriek</prompt>
+		<search-filter>
+			<name xml:lang="en">URL-fragment contains</name>
+			<name xml:lang="nl">URL-fragment bevat</name>
+			<search-fields>[pathfragment]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Name contains</name>
+			<name xml:lang="nl">Naam bevat</name>
+			<search-fields>[name]</search-fields>
+		</search-filter>
+	</command>
+
+	<command name="startwizard" inline="true" wizardname="config/collectionchannel/collectionchannel"
+		objectnumber="new">
+		<prompt xml:lang="en">New</prompt>
+		<prompt xml:lang="nl">Nieuw</prompt>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="collectionchannel" role="childrel"></relation>
+	</action>
+</list>

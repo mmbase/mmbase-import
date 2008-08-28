@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="taskstatus">
+   <option id="task.status.init">
+      <prompt xml:lang="en">Init</prompt>
+      <prompt xml:lang="nl">Open</prompt>
+   </option>
+   <option id="task.status.notified">
+      <prompt xml:lang="en">Notified</prompt>
+      <prompt xml:lang="nl">In bewerking</prompt>
+   </option>
+   <option id="task.status.done">
+      <prompt xml:lang="en">Done</prompt>
+      <prompt xml:lang="nl">Afgerond</prompt>
+   </option>
+</optionlist>

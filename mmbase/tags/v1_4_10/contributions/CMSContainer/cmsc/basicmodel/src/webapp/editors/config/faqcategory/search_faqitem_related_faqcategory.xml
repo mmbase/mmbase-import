@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="related" destination="faqcategory" minoccurs="0" maxoccurs="*">
+	<title xml:lang="nl">Categorie</title>
+	<title xml:lang="en">Category</title>
+	<title xml:lang="zh">目录</title>
+
+	<item>
+		<field name="name" dtmaxlength="40">
+			<prompt xml:lang="en">Name</prompt>
+			<prompt xml:lang="nl">Naam</prompt>
+			<prompt xml:lang="zh">名称</prompt>
+		</field>
+	</item>
+
+	<command name="search" nodepath="faqcategory" age="-1" fields="name">
+		<prompt xml:lang="en">Search category</prompt>
+		<prompt xml:lang="nl">Zoek categorie</prompt>
+		<prompt xml:lang="zh">查找目录</prompt>
+		<search-filter>
+			<name xml:lang="en">Name contains</name>
+			<name xml:lang="nl">Naam bevat</name>
+			<search-fields>[name]</search-fields>
+		</search-filter>
+	</command>
+
+	<command name="insert" objectnumber="new">
+		<prompt xml:lang="en">New</prompt>
+		<prompt xml:lang="nl">Nieuw</prompt>
+		<prompt xml:lang="zh">新建</prompt>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="faqcategory" role="related">
+			<object type="faqcategory"></object>
+		</relation>
+	</action>
+</list>

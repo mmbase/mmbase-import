@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+
+<module>
+	<status>active</status>
+	<classfile>com.finalist.cmsc.excel2menu.MenuImportModule</classfile>
+	<properties>
+		<property name="inputfile">menu.xls</property>
+
+		<property name="maxLevel">5</property>
+		<property name="createChannels">true</property>
+
+		<property name="site.title">MMBase</property>
+		<property name="site.path">test</property>
+		<property name="site.livepath">test</property>
+		
+		<property name="layout.basic.title">Openings pagina layout</property>
+		<property name="layout.basic.resource">home.jsp</property>
+		<property name="layout.basic.level">0</property>
+		<property name="layout.basic.position.menu">left1</property>
+		
+		<property name="portlet.menu.title">MenuPortlet</property>
+		<property name="portlet.menu.definition">MenuPortlet</property>
+		<property name="portlet.menu.view">menu</property>
+		
+		<property name="view.menu.title">leftmenu</property>
+		<property name="view.menu.resource">leftmenu.jsp</property>
+	</properties>
+</module>

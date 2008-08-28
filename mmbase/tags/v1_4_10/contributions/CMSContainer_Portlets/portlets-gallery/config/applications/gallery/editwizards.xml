@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editwizards exportsource="cmsc file dumper" timestamp="20060704104617">
+	<node number="102230" owner="default">
+		<name>Gallery</name>
+		<description>Gallery</description>
+		<wizard>config/gallery/gallery</wizard>
+		<nodepath>gallery</nodepath>
+		<fields>title</fields>
+	</node>
+</editwizards>
