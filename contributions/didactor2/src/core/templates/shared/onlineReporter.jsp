@@ -5,9 +5,8 @@
   <jsp:directive.page buffer="100kb" />
   <mm:content postprocessor="none" expires="0">
     <mm:cloud rank="didactor user">
-      <jsp:directive.include file="setImports.jsp" />
-
       <mm:isgreaterthan referid="user" value="0">
+
         <mm:node referid="user">
           <mm:field id="oldLastActivity" name="lastactivity" write="false"/>
           <mm:islessthan referid="oldLastActivity" value="2">
@@ -16,6 +15,38 @@
           <mm:setfield name="lastactivity"><mm:time time="now" /></mm:setfield>
           <mm:setfield name="islogged">1</mm:setfield>
         </mm:node>
+
+
+        <!--
+            If the parameter 'add' is present (which is if di:setting("core", "pagereporter") is true.
+            Then also a pagestays objet will be updated (and created if necessary).
+            These objects can be used to generate reports about page stay durations.
+        -->
+        <mm:import externid="add" />
+        <mm:present referid="add">
+          <mm:import externid="content" />
+          <mm:import externid="page" />
+          <mm:listnodescontainer type="pagestays">
+            <mm:constraint field="user" value="$user" />
+            <mm:constraint field="content" value="$content"  />
+            <mm:constraint field="page" value="$page"  />
+            <mm:listnodes max="1">
+              <mm:node id="pagestay" />
+            </mm:listnodes>
+            <mm:notpresent referid="pagestay">
+              <mm:createnode type="pagestays" id="pagestay">
+                <mm:setfield name="user">${user}</mm:setfield>
+                <mm:setfield name="content">${content}</mm:setfield>
+                <mm:setfield name="page">${page}</mm:setfield>
+              </mm:createnode>
+            </mm:notpresent>
+            <mm:node referid="pagestay">
+              <mm:field name="duration" write="false">
+                <mm:setfield name="duration">${_ + add}</mm:setfield>
+              </mm:field>
+            </mm:node>
+          </mm:listnodescontainer>
+        </mm:present>
 
         <mm:present referid="education">
           <mm:present referid="class">
