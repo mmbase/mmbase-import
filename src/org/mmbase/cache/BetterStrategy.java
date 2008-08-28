@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.31 2007-12-07 14:41:59 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.32 2008-08-28 11:46:20 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -357,7 +357,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
-    private boolean checkSteps(NodeEvent event, SearchQuery query){
+    private final boolean checkSteps(NodeEvent event, SearchQuery query) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
@@ -377,7 +377,7 @@ public class BetterStrategy extends ReleaseStrategy {
         return false;
     }
 
-    private void logResult(String comment, SearchQuery query, Event event){
+    private void logResult(String comment, SearchQuery query, Event event) {
         if(log.isDebugEnabled() || nodeEventLog.isDebugEnabled() || relationEventLog.isDebugEnabled()){
             String role = "";
              Logger logger;
