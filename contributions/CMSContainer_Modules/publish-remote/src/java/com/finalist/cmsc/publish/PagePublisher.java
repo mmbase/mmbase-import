@@ -17,6 +17,7 @@ import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.PortletUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
