@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.18 2008-08-20 17:45:31 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.19 2008-08-28 11:43:28 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -82,7 +82,7 @@ public class XMLErrorHandler implements ErrorHandler {
             // I get horrible validation exceptions in the log when doing xinclude in java 5.
             // It does not happen in java 6.
             // If you ask me, the xml parser of java 5 simply sucks. Going to ignore this as an 'error'.
-            log.service(message + " (this probably does not make sense");
+            log.debug(message + " (this probably does not make sense)");
             return;
         }
 
