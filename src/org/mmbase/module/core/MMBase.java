@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.251 2008-08-13 08:11:22 michiel Exp $
+ * @version $Id: MMBase.java,v 1.252 2008-08-28 11:45:17 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -920,11 +920,27 @@ public class MMBase extends ProcessorModule {
      */
     public BuilderReader getBuilderReader(String builderName) {
         try {
-            java.net.URL url = getBuilderLoader().getResource(builderName + ".xml");
-            if (url == null) return null;
-            org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
-            BuilderReader r = new BuilderReader(doc, this);
-            r.setSystemId(url.toString());
+            BuilderReader r = null;
+            String protocol = null;
+            for (java.net.URL url : getBuilderLoader().getResourceList(builderName + ".xml")) {
+                if (! url.openConnection().getDoInput()) continue;
+                if (protocol != null && ! url.getProtocol().equals(protocol)) {
+                    log.service(url + " less important than " + r.getSystemId() + " breaking now");
+                    break;
+                }
+                org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
+                BuilderReader prop = new BuilderReader(doc, this);
+                prop.setSystemId(url.toString());
+                if (r == null) {
+                    r = prop;
+                    protocol = url.getProtocol();
+                } else if (prop.getVersion() > r.getVersion()) {
+                    log.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead");
+                    r = prop;
+                } else {
+                    log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it.");
+                }
+            }
             return r;
         } catch (SAXException se) {
             log.error(se);
