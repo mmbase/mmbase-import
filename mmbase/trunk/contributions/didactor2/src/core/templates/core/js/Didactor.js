@@ -8,10 +8,9 @@ function Didactor() {
     $.timer(500, function(timer) {
 	self.reportOnline();
 	timer.reset(self.getSetting("Didactor-PageReporter") == "true" ? 5000 : 1000 * 60 * 2);
-	$(window).bind("beforeunload", function() {
-	    self.reportOnline(null, false);
-	});
-
+    });
+    $(window).bind("beforeunload", function() {
+	self.reportOnline(null, false);
     });
     this.content = $.query.get("learnobject");
     $.query.REMOVE("learnobject");
