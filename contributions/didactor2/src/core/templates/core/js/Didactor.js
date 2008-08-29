@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.7 2008-08-29 08:14:40 michiel Exp $
+ * @version $Id: Didactor.js,v 1.8 2008-08-29 08:21:28 michiel Exp $
  */
 
 
@@ -32,9 +32,14 @@ function Didactor() {
 	$.query.REMOVE(param);
 	if (this.content != null) break;
     }
+    for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
+	var param = Didactor.ignoredParameters[i];
+	$.query.REMOVE(param);
+    }
 }
 
 Didactor.contentParameters = ["learnobject", "openSub" ];
+Didactor.ignoredParameters = ["referrer" ];
 
 Didactor.prototype.getSetting = function(name) {
     return $("html head meta[name='" + name + "']").attr("content");
