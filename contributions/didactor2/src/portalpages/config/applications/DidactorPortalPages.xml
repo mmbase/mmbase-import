@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorPortalPages" maintainer="didactor.nl" version="5" auto-deploy="true">
+<application name="DidactorPortalPages" maintainer="didactor.nl" version="6" auto-deploy="true">
   <requirements>
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -28,6 +28,7 @@
 
       <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
       <reldef source="pos2rel" target="pos2rel" direction="bidirectional" guisourcename="Pos2Rel" guitargetname="Pos2Rel" builder="pos2rel" />
+      <reldef source="background" target="background" direction="bidirectional" guisourcename="Child" guitargetname="Parent" builder="insrel" />
     </neededreldeflist>
 
     <allowedrelationlist>
@@ -51,6 +52,7 @@
       <relation from="simplexmlcontents"    to="urls"           type="idrel" />
       <relation from="simplexmlcontents"    to="news"           type="idrel" />
       <relation from="simplexmlcontents"    to="xmlcontent"     type="idrel" />
+      <relation from="simplexmlcontents"    to="images"         type="background" />
       <relation from="xmlcontent"           to="simplexmlcontents"  type="idrel" />
     </allowedrelationlist>
 
