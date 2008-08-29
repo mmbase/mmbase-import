@@ -11,12 +11,12 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
 /**
- * ParamHandlers can have the &lt;mm:param&gt; tag as subtag
+ * FrameworkParamHandlers can have the &lt;mm:frameworkparam&gt; ({@link FrameworkParamTag}) tag as subtag
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: FrameworkParamHandler.java,v 1.1 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FrameworkParamHandler.java,v 1.2 2008-08-29 12:39:04 michiel Exp $
  */
 
 public interface FrameworkParamHandler {

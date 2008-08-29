@@ -16,10 +16,10 @@ import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
 /**
- * Adds an extra parameter to the parent URL tag.
+ * Adds an extra parameter to the parent {@link FrameworkParamHandler} tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FrameworkParamTag.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: FrameworkParamTag.java,v 1.3 2008-08-29 12:39:04 michiel Exp $
  * @since MMBase-1.9
  */
 
