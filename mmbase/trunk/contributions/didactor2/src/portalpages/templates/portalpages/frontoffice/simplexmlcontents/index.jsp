@@ -10,9 +10,11 @@
       type="application/xml" postprocessor="none">
     <mm:node number="${param.object}">
 
+      <di:background>
 
-      <di:title field="title" />
-      <di:rich field="body" />
+        <di:title field="title" />
+        <di:rich field="body" />
+      </di:background>
 
     </mm:node>
   </mm:content>
