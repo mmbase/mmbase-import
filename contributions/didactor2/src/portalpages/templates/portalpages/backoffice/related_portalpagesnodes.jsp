@@ -55,6 +55,7 @@
             <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
             <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
             <mm:param name="language">${locale.language}</mm:param>
+            <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
             <a href="${_}" title="edit" target="text">
               <mm:field name="title"/>
             </a>
@@ -90,6 +91,19 @@
         <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
         <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
         <mm:param name="language">${locale.language}</mm:param>
+        <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
+        <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="background">
+          <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
+          <mm:relatednodescontainer id="current" type="images" role="background">
+            <mm:maxnumber value="1" />
+          </mm:relatednodescontainer>
+          <mm:listnodescontainer id="repository" type="images" />
+          <mm:write session="${prefix}current"    referid="current" />
+          <mm:write session="${prefix}repository" referid="repository" />
+          <mm:param name="tools">searchrelate</mm:param>
+          <mm:param name="currentTitle"><di:translate key="portalpages.backgroundimage" /></mm:param>
+        </mm:hasrelationmanager>
+
         <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
       </mm:link>
     </di:leaf>
