@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.116 2008-04-11 14:06:53 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.117 2008-08-29 12:40:29 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -47,6 +47,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     protected Attribute  escapeAmps           = Attribute.NULL;
     protected Attribute  absolute             = Attribute.NULL;
     private   Attribute  encode               = Attribute.NULL;
+    private   Attribute  internal             = Attribute.NULL;
     protected Url        url;
 
     public void setReferids(String r) throws JspTagException {
@@ -80,6 +81,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      */
     protected String getAbsolute() throws JspTagException {
         return absolute.getString(this);
+    }
+
+
+    /**
+     * @since MMBase-1.9
+     */
+    public void setInternal(String i) throws JspTagException {
+        internal = getAttribute(i);
     }
 
     /**
@@ -153,10 +162,20 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
     }
 
+    private Object prevParamHandler;
 
     public int doStartTag() throws JspTagException {
         helper.initTag();
-        initTag(false);
+        boolean i = internal.getBoolean(this, false);
+        log.debug("internal : " +i);
+        initTag(i);
+        prevParamHandler = pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
+        pageContext.setAttribute(ParamHandler.KEY, new ParamHandler() {
+                // putting an object to only wrapp addParameter on the request.
+                public void addParameter(String k, Object v)  throws JspTagException {
+                    UrlTag.this.addParameter(k, v);
+                }
+            }, ParamHandler.SCOPE);
         return EVAL_BODY_BUFFERED;
     }
 
@@ -205,7 +224,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      */
     protected boolean doMakeRelative() {
         if (makeRelative == null) {
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makereltive");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
         return makeRelative.booleanValue();
@@ -256,6 +275,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         if (getId() != null) {
             parameters.getWrapped(true); // dereference, and calculate
         }
+        pageContext.setAttribute(ParamHandler.KEY, prevParamHandler, ParamHandler.SCOPE);
+        prevParamHandler = null;
         initDoEndTag();
         doAfterBodySetValue();
         helper.doEndTag();
