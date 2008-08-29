@@ -400,6 +400,10 @@
     <path>/META-INF/tags/di/core/rich.tagx</path>
   </tag-file>
   <tag-file>
+    <name>kupulink</name>
+    <path>/META-INF/tags/di/core/kupulink.tagx</path>
+  </tag-file>
+  <tag-file>
     <name>title</name>
     <path>/META-INF/tags/di/core/title.tagx</path>
   </tag-file>
