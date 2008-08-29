@@ -54,6 +54,7 @@
                 <li class="weight_100">
                   <mm:link page="index">
                     <mm:frameworkparam name="component">mmexamples</mm:frameworkparam>
+                    <mm:frameworkparam name="category">examples</mm:frameworkparam>
                     <a href="${_}">Examples</a>
                   </mm:link>
                 </li>
