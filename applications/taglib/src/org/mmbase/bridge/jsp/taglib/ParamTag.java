@@ -16,10 +16,10 @@ import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
 /**
- * Adds an extra parameter to the parent URL tag.
+ * Adds an extra parameter to the parent {@link ParamHandler} tag (e.g. an mm:link tag).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.18 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: ParamTag.java,v 1.19 2008-08-29 12:40:29 michiel Exp $
  */
 
 public class ParamTag extends AbstractParamTag implements ParamHandler {
@@ -28,7 +28,14 @@ public class ParamTag extends AbstractParamTag implements ParamHandler {
     private ParamHandler paramHandler;
 
     public int doStartTag() throws JspException {
-        paramHandler = findParentTag(ParamHandler.class, null);
+
+        paramHandler = findParentTag(ParamHandler.class, null, false);
+        if (paramHandler == null) {
+            paramHandler = (ParamHandler) pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
+        }
+        if (paramHandler == null) {
+            throw new JspTagException ("ould not find parent of type org.mmbase.bridge.jsp.taglib.ParamHandler, not could it be found in an attribute " + KEY);
+        }
         return super.doStartTag();
     }
 
