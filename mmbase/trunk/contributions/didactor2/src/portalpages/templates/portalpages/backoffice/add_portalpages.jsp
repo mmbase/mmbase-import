@@ -102,6 +102,7 @@
                            <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
                            <mm:param name="language">${locale.language}</mm:param>
                            <mm:param name="objectnumber">new</mm:param>
+                           <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
                            <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
                          </mm:link>
                        </di:leaf>

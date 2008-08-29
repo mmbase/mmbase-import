@@ -86,7 +86,7 @@
     <di:leaf
         branchPath="${branchPath}${status.last ? '.' : ' '}"
         icon="kupu_icon">
-      <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+      <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back,_node@prefix">
         <mm:param name="templates">/editwizards/data</mm:param>
         <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
         <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
@@ -98,8 +98,8 @@
             <mm:maxnumber value="1" />
           </mm:relatednodescontainer>
           <mm:listnodescontainer id="repository" type="images" />
-          <mm:write session="${prefix}current"    referid="current" />
-          <mm:write session="${prefix}repository" referid="repository" />
+          <mm:write session="${_node}current"    referid="current" />
+          <mm:write session="${_node}repository" referid="repository" />
           <mm:param name="tools">searchrelate</mm:param>
           <mm:param name="currentTitle"><di:translate key="portalpages.backgroundimage" /></mm:param>
         </mm:hasrelationmanager>
