@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorRichText" maintainer="didactor.nl" version="6" auto-deploy="true">
+<application name="DidactorRichText" maintainer="didactor.nl" version="7" auto-deploy="true">
   <requirements>
     <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
     <requires name="Resources"         maintainer="didactor.nl" version="2" />
@@ -27,10 +27,12 @@
     <relation from="xmlcontent"    to="urls"           type="idrel" />
     <relation from="xmlcontent"    to="news"           type="idrel" />
     <relation from="xmlcontent"    to="xmlcontent"     type="idrel" />
-    <relation from="xmlcontent"    to="rich"     type="idrel" />
+    <relation from="xmlcontent"    to="rich"           type="idrel" />
+    <relation from="xmlcontent"    to="learnobjects"   type="idrel" />
 
     <relation from="blocks"     to="news"              type="idrel" />
     <relation from="blocks"     to="xmlcontent"        type="idrel" />
+    <relation from="blocks"     to="learnobjects"      type="idrel" />
 
     <relation from="rich"    to="blocks"         type="idrel" />
     <relation from="rich"    to="images"         type="idrel" />
@@ -38,9 +40,10 @@
     <relation from="rich"    to="urls"           type="idrel" />
     <relation from="rich"    to="news"           type="idrel" />
     <relation from="rich"    to="xmlcontent"     type="idrel" />
-    <relation from="rich"    to="rich"     type="idrel" />
+    <relation from="rich"    to="rich"           type="idrel" />
+    <relation from="rich"    to="learnobjects"   type="idrel" />
 
-    <relation from="rich"    to="images"     type="background" />
+    <relation from="rich"    to="images"         type="background" />
 
     <relation from="xmlnews"    to="blocks"         type="idrel" />
     <relation from="xmlnews"    to="images"         type="idrel" />
