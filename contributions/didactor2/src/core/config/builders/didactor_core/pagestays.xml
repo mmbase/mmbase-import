@@ -20,7 +20,7 @@
       </gui>
       <editor><positions><list>1</list></positions></editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
+        <required value="false" />
       </datatype>
     </field>
 
