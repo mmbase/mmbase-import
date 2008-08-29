@@ -12,3 +12,5 @@ maven -Dmaven.test.skip=true jar:install
 
 If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
 Sadly it is impossible to find out how to configure a timeout setting for that.
+
+The equivalent for 'ant clean' is 'maven all:clean'.
