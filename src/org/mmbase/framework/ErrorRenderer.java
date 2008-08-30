@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.15 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.16 2008-08-30 09:18:16 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -96,16 +96,18 @@ public class ErrorRenderer extends AbstractRenderer {
     public static class Error {
         public int status;
         public final Throwable exception;
+        protected String title = null;
+
         public Error(int s, Throwable e) {
             status = s; exception = e;
         }
-        public Writer getErrorReport(Writer msg, final HttpServletRequest request, CharTransformer escape) throws IOException {
 
-            String ticket = new Date().toString();
+
+        protected LinkedList<Throwable> getStack() {
             Throwable e = exception;
-            Stack stack = new Stack();
+            LinkedList<Throwable> stack = new LinkedList<Throwable>();
             while (e != null) {
-                stack.push(e);
+                stack.addFirst(e);
                 if (e instanceof NotFoundException) {
                     status = HttpServletResponse.SC_NOT_FOUND;
                 }
@@ -121,6 +123,34 @@ public class ErrorRenderer extends AbstractRenderer {
                     e = e.getCause();
                 }
             }
+            return stack;
+        }
+
+        protected String getTitle(Throwable t) {
+            String message = t.getMessage();
+            String title = message;
+            if (title == null) {
+                StackTraceElement el = t.getStackTrace()[0];
+                title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
+            }
+            return title;
+        }
+
+        public String getTitle() {
+            LinkedList<Throwable> stack = getStack();
+            if (stack.isEmpty()) {
+                return "NO EXCEPTION";
+            } else {
+                return getTitle(stack.removeFirst());
+            }
+        }
+
+
+
+        public Writer getErrorReport(Writer msg, final HttpServletRequest request, CharTransformer escape) throws IOException {
+            LinkedList<Throwable> stack = getStack();
+            String ticket = new Date().toString();
+
 
             if (request != null) {
                 msg.append("Headers\n----------\n");
@@ -165,15 +195,10 @@ public class ErrorRenderer extends AbstractRenderer {
 
             while (! stack.isEmpty()) {
 
-                Throwable t = (Throwable) stack.pop();
+                Throwable t = stack.removeFirst();
                 // add stack stacktraces
                 if (t != null) {
                     String message = t.getMessage();
-                    String title = message;
-                    if (title == null) {
-                        StackTraceElement el = t.getStackTrace()[0];
-                        title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
-                    }
                     msg.append(escape.transform(message)).append("\n");
                     msg.append(escape.transform(org.mmbase.util.logging.Logging.stackTrace(t)));
                     if (! stack.isEmpty()) {
