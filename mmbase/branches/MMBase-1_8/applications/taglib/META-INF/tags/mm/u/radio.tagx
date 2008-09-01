@@ -16,6 +16,7 @@
 
   <jsp:directive.attribute name="value"   required="true"  />
   <jsp:directive.attribute name="compare" />
+  <jsp:directive.attribute name="compareset" type="java.util.Collection" />
   <jsp:directive.attribute name="referid" />
 
   <!-- other attribute are simply copied -->
@@ -52,6 +53,9 @@
             <xsl:attribute name="checked">${checked}</xsl:attribute>
           </c:if>
           <c:if test="${empty checked and value eq compare}">
+            <xsl:attribute name="checked">checked</xsl:attribute>
+          </c:if>
+          <c:if test="${empty checked and (! empty compareset) and mm:contains(compareset, value)}">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </c:if>
           <c:if test="${! empty disabled}">
