@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.33 2008-09-01 08:12:40 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.34 2008-09-01 21:05:02 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -234,7 +234,9 @@ public class BasicFramework extends Framework {
             }
 
             state.render(actualRenderer);
+
             setBlockParametersForRender(state, blockParameters);
+
             RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass());
             actualRenderer.render(blockParameters, w, hints);
         } catch (FrameworkException fe) {

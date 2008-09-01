@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * #getFilteredInternalUrl}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.3 2008-09-01 18:36:04 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.4 2008-09-01 21:05:02 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class DirectoryUrlConverter implements UrlConverter {
@@ -90,6 +90,10 @@ public abstract class DirectoryUrlConverter implements UrlConverter {
 
     public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
 
+
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+        State state = State.getState(request);
+
         // First explore
         Block block = getExplicitBlock(frameworkParameters);
         if (block != null) {
@@ -101,14 +105,12 @@ public abstract class DirectoryUrlConverter implements UrlConverter {
             return block;
         }
 
-        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         if (directory == null) throw new RuntimeException("Directory not set");
-
         // dealing with the case when we know that we're in 'nice' mode already.
 
         boolean filteredMode = FrameworkFilter.getPath(request).startsWith(directory);
+
         if (filteredMode) {
-            State state = State.getState(request);
             if (state.isRendering() && state.getDepth() == 0) {
                 Block stateBlock = state.getBlock();
                 if (components == null || components.contains(stateBlock.getComponent())) {
