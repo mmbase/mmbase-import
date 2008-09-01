@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.18 2006-03-28 20:32:40 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.18.2.1 2008-09-01 13:23:02 michiel Exp $
  **/
 
 public class MultiPart {
@@ -37,11 +37,12 @@ public class MultiPart {
         return (ct.startsWith("multipart/"));
     }
 
-    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
-        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY, PageContext.REQUEST_SCOPE);
+
+    public static MMultipartRequest getMultipartRequest(HttpServletRequest request, String encoding) {
+        MMultipartRequest multipartRequest = (MMultipartRequest) request.getAttribute(MULTIPARTREQUEST_KEY);
         if (multipartRequest == null) {
             log.debug("Creating new MultipartRequest");
-            multipartRequest = new MMultipartRequest((HttpServletRequest)pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
+            multipartRequest = new MMultipartRequest(request, encoding);
             log.debug("have it");
 
             if (log.isDebugEnabled()) {
@@ -56,11 +57,16 @@ public class MultiPart {
                     log.debug("not a multipart request");
                 }
             }
-            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
+            request.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest);
         } else {
             log.debug("Found multipart request on pageContext" + multipartRequest);
         }
         return multipartRequest;
+    }
+
+    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
+        return getMultipartRequest((HttpServletRequest) pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
+
     }
 
     static public class MMultipartRequest {
