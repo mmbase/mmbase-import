@@ -12,11 +12,11 @@
  * On ready, the necessary javascript will then be connected to .mm_related a.search
 
  * Custom events
- * - mmsrRelate
- * - mmsrRelaterReady
+ * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr) ) )
+ * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.32 2008-09-01 08:09:37 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.33 2008-09-01 08:58:24 michiel Exp $
  */
 
 
