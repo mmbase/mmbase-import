@@ -11,15 +11,15 @@ package org.mmbase.datatypes;
 import org.mmbase.util.Casting;
 
 /**
- *  * DataType associated with {@link java.lang.Long},  NumberDataType, but provides getMin and getMax as long.
+ * DataType associated with {@link java.lang.Long}, as NumberDataType, but provides getMin and getMax as long.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.10 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.11 2008-09-01 17:39:44 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType<Long> {
-    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+    private static final long serialVersionUID = 1L; 
     /**
      * @param primitive indicate if a primitive type should be used
      */
