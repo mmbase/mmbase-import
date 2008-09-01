@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.9 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: State.java,v 1.10 2008-09-01 21:05:02 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -166,7 +166,7 @@ public class State {
 
     protected void setType(Renderer.Type t) {
         if (t.ordinal() < type.ordinal()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(t + " should not have come after " + type);
         }
         if (t.ordinal() > type.ordinal()) {
             // restart keeping the track.
