@@ -16,7 +16,7 @@
  * - mmsrRelaterReady
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.31 2008-08-26 13:52:35 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.32 2008-09-01 08:09:37 michiel Exp $
  */
 
 
@@ -91,7 +91,7 @@ function MMBaseRelater(d) {
 MMBaseRelater.readyFunctions = [];
 
 MMBaseRelater.ready = function(fun) {
-    if (console != null) {
+    if (typeof(console) != "undefined") {
 	console.log("WARNING using deprecated function. This will be removed soon. Use mmsrRelate event in stead.");
     }
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
