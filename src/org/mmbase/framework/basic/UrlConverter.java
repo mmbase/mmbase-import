@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework.basic;
 import java.util.*;
 
-import org.mmbase.framework.FrameworkException;
+import org.mmbase.framework.*;
 import org.mmbase.util.functions.*;
 
 /**
@@ -18,17 +18,31 @@ import org.mmbase.util.functions.*;
  * You should implement UrlConverter if you want to create and resolve your own
  * user-friendly links within {@link BasicFramework}.
  *
- * You can configure several UrlConverters in 'config/framework.xml'. They will be 
+ * You can configure several UrlConverters in 'config/framework.xml'. They will be
  * chained one after another.
- * 
+ *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.8 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.9 2008-09-01 07:06:12 michiel Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
 
 
+    /**
+     * An URLConverter can add parameters to it's parent Framework. If the parameter is already
+     * defined in the Framework, the framework will of course ignore the one requested to be defined
+     * by this UrlConverter.
+     */
     Parameter[] getParameterDefinition();
+
+
+    /**
+     * The UrlConverter can indicate whether given framework parameters would for it define a
+     * specific block.
+     * @return Explicitely defined block, or <code>null</code> if no block defined according to this UrlConverter.
+     */
+
+    Block getBlock(String path, Parameters urlConvererParameters) throws FrameworkException;
 
     /**
      * See {@link org.mmbase.framework.Framework#getUrl(String, Map, Parameters, boolean)}.
