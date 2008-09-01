@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.17 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.18 2008-09-01 08:12:40 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -117,7 +117,7 @@ public final class BasicUrlConverter implements UrlConverter {
     /**
      * The BasicUrlConverter is unable to explicitely define a block and hence returns  <code>null</code>.
      */
-    public Block getBlock(Parameters frameworkParameters) {
+    public Block getBlock(String path, Parameters frameworkParameters) {
         return null;
     }
 

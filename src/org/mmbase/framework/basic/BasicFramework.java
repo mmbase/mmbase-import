@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.32 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.33 2008-09-01 08:12:40 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -153,7 +153,7 @@ public class BasicFramework extends Framework {
 
 
     public Block getBlock(Parameters frameworkParameters) throws FrameworkException {
-        return urlConverter.getBlock(frameworkParameters);
+        return urlConverter.getBlock(null, frameworkParameters);
     }
 
 
