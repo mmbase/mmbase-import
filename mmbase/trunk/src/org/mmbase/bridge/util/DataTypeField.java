@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.LengthDataType;
 
 
 /**
@@ -21,7 +22,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.7 2008-08-22 13:01:22 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.8 2008-09-01 17:00:52 michiel Exp $
  * @since   MMBase-1.8.7
  */
 
@@ -76,10 +77,21 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         return field == null ? -1 : field.getStoragePosition();
     }
 
-    @Override
-    public int getMaxLength() {
-        return field == null ? Integer.MAX_VALUE : // not stored, so no such restriction
-            field.getMaxLength();
+    @Override public int getMaxLength() {
+        if (field == null) {
+            if (dataType instanceof LengthDataType) {
+                long length = ((LengthDataType)dataType).getMaxLength();
+                if (length > Integer.MAX_VALUE) {
+                    return Integer.MAX_VALUE;
+                } else {
+                    return (int)length;
+                }
+            } else {
+                return Integer.MAX_VALUE;
+            }
+        } else {
+            return field.getMaxLength();
+        }
     }
 
     @Override
