@@ -5,7 +5,6 @@
 .searchable h1 {
   background-color: #eee;
   font-weight: bold;
-  font-size: normal;
   margin-bottom: 0px;
   border: solid 1px #000;
 }
