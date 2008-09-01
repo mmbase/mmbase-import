@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * #getFilteredInternalUrl}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.2 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.3 2008-09-01 18:36:04 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class DirectoryUrlConverter implements UrlConverter {
@@ -93,6 +93,10 @@ public abstract class DirectoryUrlConverter implements UrlConverter {
         // First explore
         Block block = getExplicitBlock(frameworkParameters);
         if (block != null) {
+            if (components != null && ! components.contains(block.getComponent())) {
+                log.debug("Explicit block, but not mine one");
+                return null;
+            }
             if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
             return block;
         }
