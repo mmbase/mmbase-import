@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.44 2008-08-28 11:37:39 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.45 2008-09-01 18:21:44 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -184,7 +184,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
             buffer.append("<input type=\"checkbox\" name=\"").append(name).append("\" ");
             buffer.append("id=\"").append(fieldid).append("\" ");
-            if (searchi != null) {
+            if (! "".equals(searchi)) {
                 buffer.append(" checked=\"checked\"");
             }
             buffer.append(" />");
