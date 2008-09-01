@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.31 2008-08-26 19:45:21 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.32 2008-09-01 07:06:12 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -152,68 +152,15 @@ public class BasicFramework extends Framework {
     }
 
 
-    public Block getBlock(Parameters frameworkParameters) {
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        State state = State.getState(request);
-        log.debug("Getting block for " + frameworkParameters + " -> " + state);
-
-        // BasicFramework always shows only one component
-        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(MMBaseUrlConverter.COMPONENT));
-        boolean explicitComponent = component != null;
-        if (state != null && state.isRendering()) {
-            component = state.getBlock().getComponent();
-        } else {
-            log.debug("No state object found");
-        }
-
-        if (component == null || !component.getName().equals("mynews")) {
-            log.debug("Not currently rendering mynews component");
-            return null;
-        } else {
-            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
-            boolean filteredMode =
-                (state == null && explicitComponent) ||
-                request.getServletPath().startsWith("/magazine");
-
-            log.debug("Using " + component);
-
-            Block block = null;
-            String blockParam = frameworkParameters.get(MMBaseUrlConverter.BLOCK);
-            if (blockParam != null) {
-                block = component.getBlock(blockParam);
-            }
-            /*
-            else {
-                block = component.getBlock(path);
-                if (block == null && path != null && ! "".equals(path)) {
-                    log.debug("No block '" + path + "' found");
-                    return null;
-                }
-
-            }
-            */
-            if (block == null && state != null) {
-                block = state.getRenderer().getBlock();
-            }
-
-            if (block == null) {
-                log.debug("Cannot determin a block for '" + state + "' suppose it a normal link");
-                if (filteredMode) {
-                    return null;
-                } else {
-                    // throw new IllegalArgumentException("not such block '" + + " for component " + block);
-                }
-            }
-            return block;
-        }
-        //return null;
+    public Block getBlock(Parameters frameworkParameters) throws FrameworkException {
+        return urlConverter.getBlock(frameworkParameters);
     }
 
 
     /**
      */
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] { ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+        return new Parameter[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
     }
 
     public Parameters createParameters() {

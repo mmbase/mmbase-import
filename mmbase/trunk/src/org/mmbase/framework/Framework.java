@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.58 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: Framework.java,v 1.59 2008-09-01 07:06:12 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -48,6 +48,19 @@ public abstract class Framework {
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
+
+
+
+    /**
+     * The proposed parameter if the framework can be explicitely requested a (block of a certain) component to render.
+     */
+    public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
+
+    /**
+     * The proposed parameter if the framework can be explicitely requested a block to render.
+     */
+    public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
+
 
 
 
@@ -124,11 +137,18 @@ public abstract class Framework {
 
 
     /**
-     * Returns the block which is specified by framework parameters.
+     * Returns the block which is specified by framework parameters. This is used to explicitely
+     * point to a block, e.g. using mm:frameworkparam in taglib.
+     *
+     * This can be completely explicit, using {@link #COMPONENT} or {@link #COMPONENT} and {@link
+     * #BLOCK}. but it can also be more subtle, like MMBaseUrlConverter which also defined a unique
+     * block with {@link org.mmbase.framework.basic.MMBaseUrlConverter#CATEGORY} (namely the first block of
+     * that category).
+
      * @param frameworkParameters framework parameters
      * @return Block
      */
-    public abstract Block getBlock(Parameters frameworkParameters);
+    public abstract Block getBlock(Parameters frameworkParameters) throws FrameworkException;
 
     /**
      * Returns the block, which is currently rendering, or <code>null</code>

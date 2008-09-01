@@ -11,7 +11,7 @@ package org.mmbase.framework.basic;
 
 import java.util.*;
 
-import org.mmbase.framework.FrameworkException;
+import org.mmbase.framework.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.Parameter;
 
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.7 2008-04-18 13:47:13 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.8 2008-09-01 07:06:12 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -55,6 +55,15 @@ public class ChainedUrlConverter implements UrlConverter {
 
     public Parameter[] getParameterDefinition() {
         return parameterDefinition.toArray(Parameter.EMPTY);
+    }
+
+
+    public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
+        for (UrlConverter uc : uclist) {
+            Block b = uc.getBlock(path, frameworkParameters);
+            if (b != null) return b;
+        }
+        return null;
     }
 
     /**
