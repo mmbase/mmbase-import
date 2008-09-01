@@ -22,10 +22,10 @@ import org.mmbase.util.logging.Logging;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.30 2008-08-12 17:24:12 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.31 2008-09-01 17:39:44 michiel Exp $
  * @since MMBase-1.8
  */
-abstract public class NumberDataType<E extends Number&Comparable<E>> extends ComparableDataType<E> {
+abstract public class NumberDataType<E extends Number & Comparable<E>> extends ComparableDataType<E> {
     private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
 
     private static final long serialVersionUID = 1L;

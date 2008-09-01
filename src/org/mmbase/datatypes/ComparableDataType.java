@@ -21,10 +21,10 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.38 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.39 2008-09-01 17:39:44 michiel Exp $
  * @since MMBase-1.8
  */
-public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
+public abstract class ComparableDataType<E extends java.io.Serializable & Comparable<E>> extends BasicDataType<E> {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
@@ -60,7 +60,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         }
     }
 
-    protected void cloneRestrictions(BasicDataType<E> origin) {
+    @Override protected void cloneRestrictions(BasicDataType<E> origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ComparableDataType) {
             ComparableDataType<E> dataType = (ComparableDataType<E>) origin;
@@ -103,7 +103,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    public  E getDefaultValue(Locale locale, Cloud cloud, Field field) {
+    @Override public  E getDefaultValue(Locale locale, Cloud cloud, Field field) {
         E def = super.getDefaultValue(locale, cloud, field);
         if (! minRestriction.valid(def, null, null)) {
             def = minRestriction.getValue();
@@ -114,7 +114,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
     }
 
 
-    public void toXml(Element parent) {
+    @Override public void toXml(Element parent) {
         super.toXml(parent);
 
         if (minRestriction.getValue() != null) {
@@ -162,24 +162,24 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
         maxRestriction.setValue(value);
     }
 
-    public int getEnforceStrength() {
+    @Override public int getEnforceStrength() {
         int enforceStrength = Math.max(super.getEnforceStrength(), minRestriction.getEnforceStrength());
         return Math.max(enforceStrength, maxRestriction.getEnforceStrength());
     }
 
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = minRestriction.validate(errors, castValue, node, field);
         errors = maxRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
-    public ComparableDataType<E> clone(String name) {
+    @Override public ComparableDataType<E> clone(String name) {
         ComparableDataType<E> clone = (ComparableDataType<E>) super.clone(name);
         return clone;
     }
 
-    protected StringBuilder toStringBuilder() {
+    @Override protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         Object minValue = minRestriction.getValue();
         Object maxValue = maxRestriction.getValue();
@@ -218,7 +218,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
             inclusive = inc;
         }
 
-        protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable minimum;
@@ -246,7 +246,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
-        protected boolean simpleValid(Object v, Node node, Field field) {
+        @Override protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable maximum;
