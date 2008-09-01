@@ -20,135 +20,78 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.12 2008-08-26 19:45:21 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.13 2008-09-01 07:06:12 michiel Exp $
  * @since MMBase-1.9
  */
-public class MMBaseUrlConverter implements UrlConverter {
+public class MMBaseUrlConverter extends DirectoryUrlConverter {
 
     private static final Logger log = Logging.getLoggerInstance(MMBaseUrlConverter.class);
 
-    /**
-     * MMBaseUrlConverter points to a jsp which renders 1 block. This parameter indicates of which component.
-     */
-    public static final Parameter<String> COMPONENT = new Parameter<String>("component", String.class);
 
-    /**
-     * MMBaseUrlConverter points to a jsp which renders 1 block. This parameter indicates its name.
-     */
-    public static final Parameter<String> BLOCK     = new Parameter<String>("block", String.class);
 
     /**
      * MMBaseUrlConverter wants a 'category'.
      */
     public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
 
-
-    private final BasicFramework framework;
-
-    protected String dir = "/mmbase/";
-
     protected String renderJsp = "/mmbase/admin/index.jsp";
 
     public MMBaseUrlConverter(BasicFramework fw) {
-        framework = fw;
+        super(fw);
+        setDirectory("/mmbase/");
     }
 
-    public void setDir(String d) {
-        dir = d;
-    }
 
     public void setRenderJsp(String j) {
         renderJsp = j;
     }
 
-    public Parameter[] getParameterDefinition() {
-        return new Parameter[] {Parameter.REQUEST, CATEGORY, COMPONENT, BLOCK};
+    @Override public Parameter[] getParameterDefinition() {
+        return new Parameter[] {Parameter.REQUEST, CATEGORY, Framework.COMPONENT, Framework.BLOCK};
     }
 
-    protected String getUrl(String path,
-                            Map<String, Object> parameters,
-                            Parameters frameworkParameters, boolean escapeAmps, boolean action) {
+    @Override public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
+        Block block = super.getBlock(path, frameworkParameters);
+        if (block == null) {
+            String categoryName = frameworkParameters.get(CATEGORY);
+            if (categoryName != null) {
+                boolean categoryOk = false;
+                Block.Type[] mmbaseBlocks = ComponentRepository.getInstance().getBlockClassification("mmbase." + categoryName);
+                if (mmbaseBlocks.length == 0) throw new FrameworkException("No such category mmbase." + categoryName);
+                return mmbaseBlocks[0].getBlocks().get(0);
+            }
+            return null;
+        } else {
+            return block;
+        }
+    }
+
+    protected String getNiceUrl(Block block,
+                                Map<String, Object> parameters,
+                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
-            log.debug("path '" + path + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
+            log.debug("block '" + block  + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
         }
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-        State state = State.getState(request);
 
         String category = frameworkParameters.get(CATEGORY);
+        State state = State.getState(request);
+
         if (category == null && state.isRendering()) {
             category = state.getFrameworkParameters().get(CATEGORY);
         }
 
-        // MMBase urls always shows only one block
-        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(COMPONENT));
-        if (component == null) {
-            // if no explicit component specified, suppose current component, if there is one:
-            if (state.isRendering()) {
-                component = state.getBlock().getComponent();
-            } else {
-                log.debug("No rendering state object found, so no current component.");
-                if (category != null) {
-                    log.debug("Found category " + category);
-                    return dir + category;
-                } else {
-                    return null;
-                }
-            }
-        }
+        Component component = block.getComponent();
 
-        assert component != null;
-
-        boolean filteredMode = FrameworkFilter.getPath(request).startsWith(dir);
-
-
-        if (state.isRendering() && (! filteredMode || state.getDepth() > 0)) {
-            log.debug("we are rendering a sub-component, deal with that as if  no mmbaseurlconverter. " + filteredMode);
-            return null;
-        }
-
-
-        Block block;
-        {  // determin the block:
-            String blockParam = frameworkParameters.get(BLOCK);
-            if (blockParam != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("found block " + blockParam + " trying it on " + component);
-                }
-
-                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
-                block = component.getBlock(blockParam);
-                if (block == null) throw new IllegalArgumentException("No block '" + blockParam + "' found in component '" + component + "'");
-            } else {
-                block = component.getBlock(path);
-                if (block != null) {
-                    if (! filteredMode) {
-                        path = null; // used, determin path with block name
-                    }
-                } else {
-                    // no such block
-                    if (path != null && ! "".equals(path)) {
-                        log.debug("No block '" + path + "' found");
-                        return null;
-                    }
-                }
-                if (block == null) {
-                    if(state.isRendering()) {
-                        // current block
-                        block = state.getRenderer().getBlock();
-                    } else {
-                        // default block
-                        block = component.getDefaultBlock();
-                    }
-                }
-            }
-        }
-
-        assert block != null;
+        // @TODO
+        // Stuff happening with map, and processorUrl and things like that, seems to have no place
+        // here.
+        // Refactor it away
 
 
         Map<String, Object> map = new TreeMap<String, Object>();
         if (log.isDebugEnabled()) {
-            log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
+            log.debug("Generating URL to " + block + " State " + state + " category " + category);
         }
         boolean processUrl = frameworkParameters.get(BasicFramework.ACTION) != null;
         if (processUrl) {
@@ -166,8 +109,8 @@ public class MMBaseUrlConverter implements UrlConverter {
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
-                if (k.equals(BLOCK.getName())) continue;
-                if (k.equals(COMPONENT.getName())) continue;
+                if (k.equals(Framework.BLOCK.getName())) continue;
+                if (k.equals(Framework.COMPONENT.getName())) continue;
                 if (k.equals(CATEGORY.getName())) continue;
                 log.debug("putting " + entry);
                 map.put(k, entry.getValue());
@@ -198,7 +141,7 @@ public class MMBaseUrlConverter implements UrlConverter {
         if (state.isRendering() && state.getBlock().equals(block)) {
             page = FrameworkFilter.getPath(request);
         } else {
-            page = dir + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
+            page = directory + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
         }
 
         //path == null || subComponent ?
@@ -207,89 +150,67 @@ public class MMBaseUrlConverter implements UrlConverter {
         return sb;
     }
 
-    public String getUrl(String path,
-                         Map<String, Object> parameters,
-                         Parameters frameworkParameters, boolean escapeAmps) {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
-    }
-    public String getProcessUrl(String path,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
-    }
-    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        if (request == null) return null;
-        if (page == null) throw new IllegalArgumentException();
-        if (page.startsWith(dir)) {
-            //String sp = FrameworkFilter.getPath(request); // I don't remember where this was for.
-            String[] path = page.split("/"); // use to be sp.split("/")
-            if (log.isDebugEnabled()) {
-                log.debug("Going to filter " + Arrays.asList(path));
-            }
-            if (path.length >= 3) {
-                assert path[0].equals("");
-                assert path[1].equals(dir.split("/")[1]);
-                String category = path[2];
-                if (! category.equals("_")) {
-                    boolean categoryOk = false;
-                    Block.Type[] mmbaseBlocks = ComponentRepository.getInstance().getBlockClassification("mmbase");
-                    if (mmbaseBlocks.length > 0) {
-                        for (Block.Type rootType : mmbaseBlocks[0].getSubTypes()) {
-                            categoryOk = rootType.getName().equals(category);
-                            if (categoryOk) break;
-                        }
-                        if (mmbaseBlocks.length > 1) {
-                            log.warn("odd");
-                        }
+    public String getFilteredInternalUrl(List<String> path, Map<String, Object> params, Parameters frameworkParameters) {
+        if (path.size() == 0) {
+            // nothing indicated after /mmbase/, don't know what to do, leaving unfiltered
+            return null;
+        }
+
+        StringBuilder url = new StringBuilder(renderJsp);
+
+        {   // dealing with the category part
+            String category = path.get(0);
+            if (! category.equals("_")) {
+                boolean categoryOk = false;
+                Block.Type[] mmbaseBlocks = ComponentRepository.getInstance().getBlockClassification("mmbase");
+                if (mmbaseBlocks.length > 0) {
+                    for (Block.Type rootType : mmbaseBlocks[0].getSubTypes()) {
+                        categoryOk = rootType.getName().equals(category);
+                        if (categoryOk) break;
                     }
-                    if (! categoryOk) {
-                        log.debug("No such component clasification, ignoring this");
-                        return null;
+                    if (mmbaseBlocks.length > 1) {
+                        log.warn("odd");
                     }
                 }
-
-                StringBuilder url = new StringBuilder(renderJsp);
-                url.append("?category=");
-                url.append(category);
-
-                if (path.length == 3) return url.toString();
-
-                Component comp = ComponentRepository.getInstance().getComponent(path[3]);
-                if (comp == null) {
-                    log.debug("No such component, ignoring this too");
+                if (! categoryOk) {
+                    log.debug("No such component clasification, ignoring this");
                     return null;
                 }
-                url.append("&component=").append(comp.getName());
+            }
 
-                if (path.length == 4) return url.toString();
+            url.append("?category=");
+            url.append(category);
+        }
 
-                Block block = comp.getBlock(path[4]);
+        if (path.size() > 1) {
+            // dealing with the component part
+
+            Component comp = ComponentRepository.getInstance().getComponent(path.get(1));
+            if (comp == null) {
+                log.debug("No such component, ignoring this too");
+                return null;
+            }
+            url.append("&component=").append(comp.getName());
+
+            if (path.size() > 2) {
+                // dealing with the block
+                Block block = comp.getBlock(path.get(2));
                 if (log.isDebugEnabled()) {
                     log.debug("Will try to display " + block);
                 }
                 if (block == null) {
-                    log.debug("No block " + path[4] + " in component " + path[3]);
+                    log.debug("No block " + path.get(2) + " in component " + comp);
                     return null;
 
                 }
                 url.append("&block=").append(block.getName());
-                if (log.isDebugEnabled()) {
-                    log.debug("internal URL " + url);
-                }
-                return url.toString();
-            } else {
-                log.debug("path length " + path.length);
-                return null;
             }
-        } else {
-            log.debug("Leaving unfiltered");
-            return null;
         }
-    }
 
-    public String toString() {
-        return dir;
+        if (log.isDebugEnabled()) {
+            log.debug("internal URL " + url);
+        }
+        return url.toString();
     }
 
 }
