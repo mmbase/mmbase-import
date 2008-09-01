@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.30 2008-08-25 21:45:19 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.31 2008-09-01 21:05:02 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -169,18 +169,18 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 chain.doFilter(request, response);
                 return;
             }
-            Parameters params = fw.createParameters();
-            if (params.containsParameter(Parameter.REQUEST)) {
-                params.set(Parameter.REQUEST, req);
+            Parameters frameworkParameters = fw.createParameters();
+            if (frameworkParameters.containsParameter(Parameter.REQUEST)) {
+                frameworkParameters.set(Parameter.REQUEST, req);
             }
-            if (params.containsParameter(Parameter.RESPONSE)) {
-                params.set(Parameter.RESPONSE, res);
+            if (frameworkParameters.containsParameter(Parameter.RESPONSE)) {
+                frameworkParameters.set(Parameter.RESPONSE, res);
             }
             try {
-                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params);
+                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + params);
+                    log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + frameworkParameters);
                 }
 
                 if (forwardUrl != null && !forwardUrl.equals("")) {

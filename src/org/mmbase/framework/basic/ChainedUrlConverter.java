@@ -11,6 +11,8 @@ package org.mmbase.framework.basic;
 
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.framework.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.Parameter;
@@ -25,13 +27,14 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.8 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.9 2008-09-01 21:05:02 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
 
     private static final Logger log = Logging.getLoggerInstance(ChainedUrlConverter.class);
 
+    public static String URLCONVERTER = "org.mmbase.urlconverter";
     /**
      * List containing the UrlConverters found in the framework configuration.
      */
@@ -73,9 +76,17 @@ public class ChainedUrlConverter implements UrlConverter {
                          Map<String, Object> params,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         for (UrlConverter uc : uclist) {
             String b = uc.getUrl(path, params, frameworkParameters, escapeAmps);
             if (b != null) {
+                UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
+                if (current != null && uc != current) {
+                    log.debug("Explicit block, but not currently rendering is done by other UrlConverter");
+                    return null;
+                } else {
+                    log.debug("No current urlconverter ");
+                }
                 return b;
             }
         }
@@ -104,8 +115,12 @@ public class ChainedUrlConverter implements UrlConverter {
                                         Parameters frameworkParameters) throws FrameworkException {
         for (UrlConverter uc : uclist) {
             String b = uc.getInternalUrl(path, params, frameworkParameters);
-            log.debug("ChainedUrlConverter has: " + b);
-            if (b != null) return b;
+            if (b != null) {
+                log.debug("ChainedUrlConverter has: " + b);
+                HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+                request.setAttribute(URLCONVERTER, uc);
+                return b;
+            }
         }
         return null;
     }
