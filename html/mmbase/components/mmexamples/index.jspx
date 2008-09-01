@@ -43,8 +43,9 @@
       </dt>
       <dd>Shows text in different encodings.</dd>
       <dt>
-        <mm:link page="datatypes">
+        <mm:link>
           <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:frameworkparam name="block">datatypes</mm:frameworkparam>
           <a href="${_}">Datatypes</a>
         </mm:link>
       </dt>
