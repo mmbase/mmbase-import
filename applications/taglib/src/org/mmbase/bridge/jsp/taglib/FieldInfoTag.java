@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97.2.9 2008-08-22 13:08:29 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.10 2008-09-02 11:32:48 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -154,17 +154,28 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
     private Attribute dataType = Attribute.NULL;
+    private DataType  specifiedDataType = null;
     /**
      * @since MMBase-1.8
      */
     public void setDatatype(String d) throws JspTagException {
-        dataType = getAttribute(d);
+        dataType = getAttribute((String) d);
+        specifiedDataType = null;
     }
+    /**
+     * @since MMBase-1.8.7
+     */
+    public void setDatatype(DataType d) throws JspTagException {
+        specifiedDataType = d;
+        dataType = Attribute.NULL;
+    }
+
     /**
      * @since MMBase-1.8
      */
     public DataType getDataType() throws JspTagException {
         if (dataType != Attribute.NULL) {
+            if (specifiedDataType != null) throw new RuntimeException();
             String name = dataType.getString(this);
             DataType dt = null;
             DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(DataTypeTag.KEY, DataTypeTag.SCOPE);
@@ -179,7 +190,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             return dt;
         } else {
-            return null;
+            return specifiedDataType;
         }
     }
 
