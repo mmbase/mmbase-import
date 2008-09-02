@@ -27,6 +27,12 @@
     <param name="component" type="java.lang.String" />
     <param name="block" type="java.lang.String" />
   </function>
+  <function name="defaultblock">
+    <type>singleton</type>
+    <class>org.mmbase.framework.ComponentRepository</class>
+    <method>getDefaultBlock</method>
+    <param name="component" type="java.lang.String" />
+  </function>
   <function name="blockClassification">
     <type>singleton</type>
     <class>org.mmbase.framework.ComponentRepository</class>
