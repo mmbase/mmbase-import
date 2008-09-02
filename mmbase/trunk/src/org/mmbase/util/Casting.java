@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.115 2008-08-26 19:44:46 michiel Exp $
+ * @version $Id: Casting.java,v 1.116 2008-09-02 11:18:34 michiel Exp $
  */
 
 import java.util.*;
@@ -348,6 +348,7 @@ public class Casting {
                                 }
                             case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
                             case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
+                            case org.mmbase.bridge.Field.TYPE_UNKNOWN:  return wrap(super.getValue(fieldName), escaper);
                             default: return escape(escaper, super.getStringValue(fieldName));
                             }
                         } else {
