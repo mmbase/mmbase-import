@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.19 2008-09-01 07:07:00 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.20 2008-09-02 12:19:46 andre Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -95,7 +95,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
 
     public String getFilteredInternalUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
-        StringBuilder result = new StringBuilder("/mmbase/mynews/render.jspx");
+        StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() > 0) {
             // article mode
             String id = path.get(path.size() - 1); // last element in the list identifies the article
@@ -144,9 +144,9 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
                 // node was specified by number. Date spec can be ignored.
                 n = id;
             }
-            result.append("?block=article&n=" + n);
+            result.append("&block=article&n=" + n);
+            return result.toString();
         }
-
         return result.toString();
     }
 
