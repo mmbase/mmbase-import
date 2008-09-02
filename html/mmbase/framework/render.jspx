@@ -8,7 +8,7 @@
   <mm:import externid="component" required="true" />
   <mm:import externid="block"><mm:function set="components" name="defaultblock" referids="component" /></mm:import>
   <head>
-    <title>MMBase Basic Framework - ${request.fw_title}</title>
+    <title>MMBase Basic Framework</title>
     <mm:component name="${component}" block="${block}" render="head" />
   </head>
   <body>
