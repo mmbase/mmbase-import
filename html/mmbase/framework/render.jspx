@@ -6,7 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content type="text/html">
   <mm:import externid="component" required="true" />
-  <mm:import externid="block"     required="true" />
+  <mm:import externid="block"><mm:function set="components" name="defaultblock" referids="component" /></mm:import>
   <head>
     <title>MMBase Basic Framework - ${request.fw_title}</title>
     <mm:component name="${component}" block="${block}" render="head" />
