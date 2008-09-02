@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.40 2008-08-21 16:36:57 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.41 2008-09-02 12:03:33 andre Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -113,6 +113,12 @@ public class ComponentRepository {
         Component component = getComponent(componentName);
         if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
         return component.getBlock(blockName);
+    }
+    
+    public Block getDefaultBlock(String componentName) {
+        Component component = getComponent(componentName);
+        if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
+        return component.getDefaultBlock();
     }
 
     protected boolean resolve() {
