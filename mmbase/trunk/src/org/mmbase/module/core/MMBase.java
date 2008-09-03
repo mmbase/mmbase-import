@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.252 2008-08-28 11:45:17 michiel Exp $
+ * @version $Id: MMBase.java,v 1.253 2008-09-03 17:32:03 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1086,7 +1086,7 @@ public class MMBase extends ProcessorModule {
                     builder.setParentBuilder(getRootBuilder());
                 }
 
-                Hashtable<String,String> descriptions = parser.getDescriptions();
+                Map<String, String> descriptions = parser.getDescriptions();
                 builder.setDescriptions(descriptions);
                 String desc = descriptions.get(locale.getLanguage());
                 // XXX" set description by builder?
