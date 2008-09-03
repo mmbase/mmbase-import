@@ -13,6 +13,8 @@
 
     <plural xml:lang="en">URL</plural>
     <plural xml:lang="nl">URL</plural>
+    <plural xml:lang="bg">Връзки</plural>
+    <plural xml:lang="ro">Legături</plural>
   </names>
 
   <descriptions>
