@@ -12,6 +12,7 @@ package org.mmbase.applications.media;
 import java.io.File;
 import java.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
@@ -24,7 +25,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.22 2007-10-02 13:33:15 michiel Exp $
+ * @version $Id: Format.java,v 1.23 2008-09-03 21:27:20 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -43,10 +44,10 @@ public final class Format {   // final class!!
 
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
 
-        File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
+        String mimeMappingFile = "media/mimemapping.xml";
         readMimeMapping(mimeMappingFile);
-        FileWatcher watcher = new FileWatcher() {
-                public void onChange(File file) {
+        ResourceWatcher watcher = new ResourceWatcher() {
+                public void onChange(String file) {
                     readMimeMapping(file);
                 }
             };
@@ -55,13 +56,13 @@ public final class Format {   // final class!!
 
     }
 
-    static void readMimeMapping(File mimeMappingFile) {
+    static void readMimeMapping(String mimeMappingFile) {
         mimeMapping = new HashMap<String, String>();
 
 
-        if (mimeMappingFile.canRead()) {
-            log.service("Reading " + mimeMappingFile);
-            XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), Format.class);
+        log.service("Reading " + mimeMappingFile);
+        try {
+            DocumentReader reader = new DocumentReader(ResourceLoader.getConfigurationRoot().getDocument(mimeMappingFile, DocumentReader.validate(), Format.class));
 
             for(Element map:reader.getChildElements("mimemapping", "map")) {
                 String format = reader.getElementAttributeValue(map, "format");
@@ -71,8 +72,8 @@ public final class Format {   // final class!!
                 mimeMapping.put(format + "/" + codec,mime);
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
-        } else {
-            log.service("The file " + mimeMappingFile + " can not be read");
+        } catch (Exception e) {
+            log.error(e);
         }
     }
 
@@ -137,7 +138,7 @@ public final class Format {   // final class!!
 
     public static final Format GGP = new Format(70, "3gpp");
 
-    public static final Format FLASH = new Format(80, "swf");
+    public static final Format FLASH = new Format(80, "flv");
 
     public int toInt()    { return number; }
     public String toString() { return id;     }
