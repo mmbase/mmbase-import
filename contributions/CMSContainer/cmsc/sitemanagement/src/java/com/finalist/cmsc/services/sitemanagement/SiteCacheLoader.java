@@ -11,10 +11,13 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.util.*;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.HugeNodeListIterator;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.cache.CachePolicy;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.SortOrder;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
@@ -29,11 +32,25 @@ public class SiteCacheLoader {
 
     /** MMbase logging system */
     private static final Logger log = Logging.getLoggerInstance(SiteCacheLoader.class.getName());
-    
-    public Map<String, PageTree> loadPageTreeMap(Cloud cloud) {
+
+
+    public List<NavigationItemManager> getNavigationManagers() {
+       return NavigationManager.getNavigationManagers();
+    }
+
+    public Cloud getCloud() {
+       return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+    }
+
+    public int getNavrelRelationNumber() {
+       return MMBase.getMMBase().getRelDef().getNumberByName(NavigationUtil.NAVREL);
+    }
+
+    public Map<String, PageTree> loadPageTreeMap() {
+        Cloud cloud = getCloud();
         Map<String, PageTree> newtrees = new HashMap<String, PageTree>();
-        
-        List<NavigationItemManager> navigationManagers = NavigationManager.getNavigationManagers();
+
+        List<NavigationItemManager> navigationManagers = getNavigationManagers();
         for (NavigationItemManager nim : navigationManagers) {
             if (nim.isRoot()) {
                 String nodeType = nim.getTreeManager();
@@ -43,7 +60,7 @@ public class SiteCacheLoader {
         }
 
         Map<Integer,String> itemUrlFragments = new HashMap<Integer, String>();
-        
+
         for (NavigationItemManager nim : navigationManagers) {
             if (!nim.isRoot()) {
                 String nodeType = nim.getTreeManager();
@@ -51,11 +68,11 @@ public class SiteCacheLoader {
                 loadNavigationItems(cloud, nodeType, fragmentField, itemUrlFragments);
             }
         }
-        
+
         loadTreeStructure(newtrees, cloud, itemUrlFragments);
         return newtrees;
     }
-    
+
     @SuppressWarnings("unchecked")
     private void loadTrees(Map<String, PageTree> newtrees, Cloud cloud, String nodeType, String fragmentField) {
         NodeManager sitesManager = cloud.getNodeManager(nodeType);
@@ -77,7 +94,7 @@ public class SiteCacheLoader {
         types.add(manager.getName());
         SearchUtil.addTypeConstraints(q, types);
         q.setCachePolicy(CachePolicy.NEVER);
-        
+
         for (NodeIterator iter = new HugeNodeListIterator(q); iter.hasNext();) {
             Node navNode = iter.nextNode();
             int number = navNode.getNumber();
@@ -85,7 +102,7 @@ public class SiteCacheLoader {
             itemUrlFragments.put(number, urlfragment);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void loadTreeStructure(Map<String, PageTree> newtrees, Cloud cloud, Map<Integer,String> itemUrlFragments) {
        List<Node> unfinishedNodes = new ArrayList<Node>();
@@ -109,7 +126,7 @@ public class SiteCacheLoader {
           int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
           int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
           String fragment = itemUrlFragments.get(destNumber);
-          
+
           boolean parentNotFound = true;
           for (PageTree tree : newtrees.values()) {
              PageTreeNode pageTreeNode = tree.insert(sourceNumber, destNumber, fragment, childIndex);
