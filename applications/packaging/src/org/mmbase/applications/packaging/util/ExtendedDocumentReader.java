@@ -27,20 +27,20 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.6 2008-09-03 21:35:31 michiel Exp $
  */
-public class ExtendedDocumentReader extends XMLBasicReader {
+public class ExtendedDocumentReader extends DocumentReader  {
 
     public ExtendedDocumentReader(String path) {
-        super(path);
+        super(getInputSource(path));
     }
 
     public ExtendedDocumentReader(String path, boolean validating) {
-        super(path, validating);
+        super(getInputSource(path), validating, null);
     }
 
     public ExtendedDocumentReader(String path, Class resolveBase) {
-        super(path, resolveBase);
+        super(getInputSource(path), DocumentReader.validate(), resolveBase);
     }
 
     public ExtendedDocumentReader(InputSource source) {
@@ -57,6 +57,15 @@ public class ExtendedDocumentReader extends XMLBasicReader {
 
     public ExtendedDocumentReader(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);
+    }
+
+
+    protected static InputSource getInputSource(String path) {
+        try {
+            return ResourceLoader.getConfigurationRoot().getInputSource(path);
+        } catch (Exception ioe) {
+            return null;
+        }
     }
 
     public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
