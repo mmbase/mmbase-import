@@ -36,6 +36,21 @@
     %>
 <%= cache.getHits() %>
 <%= cache.getHits() + cache.getMisses() %>
+    <% }  else { %>
+0
+0
+    <% } %>
+  </mm:compare>
+  <mm:compare value="cachefill">
+    <mm:import externid="cachetype" jspvar="type" vartype="string">Nodes</mm:import>
+    <% Cache cache = CacheManager.getCache(type);
+       if (cache != null) {
+    %>
+<%= cache.size() %>
+<%= cache.maxSize() %>
+    <% } else { %>
+0
+0
     <% } %>
   </mm:compare>
   <mm:compare value="mrtgconfig">
@@ -80,6 +95,21 @@ Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
 LegendO[<mm:write referid="thisserver" />_<%=id%>]: hits :
 LegendI[<mm:write referid="thisserver" />_<%=id%>]: requests :
 ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
+PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
+
+<% id = id + "_fill"; %>
+#
+# <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
+#
+Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cachefill&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
+Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: <%= cache.maxSize() %>
+Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
+kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=id%>]: cache useage
+LegendO[<mm:write referid="thisserver" />_<%=id%>]: max size :
+LegendI[<mm:write referid="thisserver" />_<%=id%>]: size :
+ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: # of entries
 PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
 
  <% } %>
