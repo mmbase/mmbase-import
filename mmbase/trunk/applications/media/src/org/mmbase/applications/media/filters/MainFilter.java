@@ -19,7 +19,6 @@ import org.mmbase.util.*;
 import org.w3c.dom.Element;
 
 import java.util.*;
-import java.io.File;
 
 /**
  * This is the main class for the filter process. It maintains list of
@@ -47,11 +46,11 @@ public class MainFilter {
     public static final String FILTER_TAG        = "filter";
     public static final String FILTER_ATT        = "filter";
     public static final String ID_ATT            = "id";
-    public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
+    public static final String CONFIG_FILE       = "media/filters.xml";
 
-    private FileWatcher configWatcher = new FileWatcher(true) {
-        public void onChange(File file) {
-            readConfiguration(file);
+    private ResourceWatcher configWatcher = new ResourceWatcher() {
+        public void onChange(String resource) {
+            readConfiguration(resource);
         }
     };
 
@@ -61,11 +60,7 @@ public class MainFilter {
      * Construct the MainFilter
      */
     private MainFilter() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), CONFIG_FILE);
-        if (! configFile.exists()) {
-            log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
-            return;
-        }
+        String configFile = CONFIG_FILE;
         readConfiguration(configFile);
         configWatcher.add(configFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
@@ -84,54 +79,58 @@ public class MainFilter {
     /**
      * read the MainFilter configuration
      */
-    private synchronized void readConfiguration(File configFile) {
+    private synchronized void readConfiguration(String configFile) {
         if (log.isServiceEnabled()) {
             log.service("Reading " + configFile);
         }
         filters.clear();
-
-        DocumentReader reader = new XMLBasicReader(configFile.toString(), getClass());
-        Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
-
         ChainSorter chainComp = new ChainSorter();
-        // When chaining 'comparators' then they are combined to one comparator
-        // Then only one 'sort' has to be done, which is more efficient.
 
-        for(Element chainElement:reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG)) {
-            String  clazz        = reader.getElementValue(chainElement);
-            String  elementId    = chainElement.getAttribute(ID_ATT);
-            try {
-                Class<?> newclass = Class.forName(clazz);
-                Filter filter = (Filter) newclass.newInstance();
-                if (filter instanceof Sorter) {
-                    chainComp.add((Sorter) filter);
-                } else {
-                    filters.add(filter);
-                }
-                log.service("Added filter " + clazz + "(id=" + elementId + ")");
-                if (elementId != null && ! "".equals(elementId)) {
-                    // find right configuration
-                    // not all filters necessarily have there own configuration
-                    boolean found = false;
+        try {
+            DocumentReader reader = new DocumentReader(ResourceLoader.getConfigurationRoot().getDocument(configFile, DocumentReader.validate(), getClass()));
+            Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
-                    for(Element config:reader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
-                        String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
-                        if (filterAtt.equals(elementId)) {
-                            log.service("Configuring " + elementId);
-                            filter.configure(reader, config);
-                            found = true;
-                            break;
-                        }
+            // When chaining 'comparators' then they are combined to one comparator
+            // Then only one 'sort' has to be done, which is more efficient.
+
+            for(Element chainElement:reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG)) {
+                String  clazz        = reader.getElementValue(chainElement);
+                String  elementId    = chainElement.getAttribute(ID_ATT);
+                try {
+                    Class<?> newclass = Class.forName(clazz);
+                    Filter filter = (Filter) newclass.newInstance();
+                    if (filter instanceof Sorter) {
+                        chainComp.add((Sorter) filter);
+                    } else {
+                        filters.add(filter);
                     }
-                    if (! found) log.debug("No configuration found for filter " + elementId);
+                    log.service("Added filter " + clazz + "(id=" + elementId + ")");
+                    if (elementId != null && ! "".equals(elementId)) {
+                        // find right configuration
+                        // not all filters necessarily have there own configuration
+                        boolean found = false;
+
+                        for(Element config:reader.getChildElements(filterConfigs, FILTERCONFIG_TAG)) {
+                            String filterAtt = reader.getElementAttributeValue(config, FILTER_ATT);
+                            if (filterAtt.equals(elementId)) {
+                                log.service("Configuring " + elementId);
+                                filter.configure(reader, config);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (! found) log.debug("No configuration found for filter " + elementId);
+                    }
+                } catch (ClassNotFoundException ex) {
+                    log.error("Cannot load filter " + clazz + "\n" + ex);
+                } catch (InstantiationException ex1) {
+                    log.error("Cannot load filter " + clazz + "\n" + ex1);
+                } catch (IllegalAccessException ex2) {
+                    log.error("Cannot load filter " + clazz + "\n" + ex2);
                 }
-            } catch (ClassNotFoundException ex) {
-                log.error("Cannot load filter " + clazz + "\n" + ex);
-            } catch (InstantiationException ex1) {
-                log.error("Cannot load filter " + clazz + "\n" + ex1);
-            } catch (IllegalAccessException ex2) {
-                log.error("Cannot load filter " + clazz + "\n" + ex2);
             }
+        } catch (Exception e) {
+            log.warn(e);
         }
         if (chainComp.size() > 0) {
             filters.add(chainComp); // make sure it is at least empty
