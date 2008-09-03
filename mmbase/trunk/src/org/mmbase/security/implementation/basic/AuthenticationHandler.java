@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import org.w3c.dom.Element;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.XMLEntityResolver;
 
 import org.mmbase.security.*;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.13 2007-07-25 06:47:11 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.14 2008-09-03 20:00:10 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
@@ -50,11 +50,11 @@ public class AuthenticationHandler extends Authentication {
     private Map<String, Rank> moduleRanks    = new HashMap<String, Rank>();
 
     protected void load() {
-        XMLBasicReader reader;
+        DocumentReader reader;
         try {
             org.xml.sax.InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             log.debug("using: '" + configResource + "' as config file for authentication");
-            reader = new XMLBasicReader(in, getClass());
+            reader = new DocumentReader(in, getClass());
         } catch (Exception e) {
             throw new SecurityException(e);
         }

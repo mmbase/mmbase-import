@@ -12,6 +12,8 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 
+import org.mmbase.util.xml.DocumentReader;
+
 import java.util.*;
 
 import org.w3c.dom.*;
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.28 2008-07-17 15:58:52 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.29 2008-09-03 20:00:10 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -62,10 +64,7 @@ public class ContextAuthentication extends Authentication {
 
         try {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
-            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
-        } catch(org.xml.sax.SAXException se) {
-            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
-            throw new SecurityException(message, se);
+            document = new DocumentReader(in, this.getClass()).getDocument();
         } catch(java.io.IOException ioe) {
             throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" , ioe);
         }
