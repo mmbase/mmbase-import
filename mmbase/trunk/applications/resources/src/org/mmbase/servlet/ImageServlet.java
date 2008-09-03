@@ -29,7 +29,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.3 2007-08-07 08:11:59 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.4 2008-09-03 17:18:05 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -75,7 +75,7 @@ public class ImageServlet extends HandleServlet {
     protected String getMimeType(Node node) {
         return node.getFunctionValue("mimetype", null).toString();
     }
-    
+
 
     /**
      * Content-Disposition header
@@ -101,8 +101,8 @@ public class ImageServlet extends HandleServlet {
         } else { // 'images', but as you see this is not explicit, so you can also name your image builder otherwise.
             originalNode = node;
         }
-
-        query.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + getFileName(node, originalNode, "mmbase-image")+ "\"");
+        String disposition = getContentDisposition(query, node, "inline");
+        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\"" + getFileName(node, originalNode, "mmbase-image")+ "\"");
         return true;
     }
 
@@ -182,7 +182,7 @@ public class ImageServlet extends HandleServlet {
         nq.addSortOrder(nq.createStepField("number"), SortOrder.ORDER_DESCENDING);
         NodeList result = nm.getList(nq);
         if (result.size() == 0) return null;
-        return result.getNode(0);        
+        return result.getNode(0);
     }
 
 
