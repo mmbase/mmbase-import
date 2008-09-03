@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.31 2008-09-01 21:05:02 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.32 2008-09-03 20:40:11 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -53,6 +53,25 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * The pattern being used to determine to exclude an URL
      */
     private static Pattern excludePattern;
+
+
+    private static long forwarded = 0;
+    private static long included  = 0;
+    private static long chained   = 0;
+    private static long errors    = 0;
+
+    public static long getForwardedRequests() {
+        return forwarded;
+    }
+    public static long getIncludedRequests() {
+        return included;
+    }
+    public static long getChainedRequests() {
+        return chained;
+    }
+    public static long getErrorRequests() {
+        return errors;
+    }
 
     /*
      * Methods that need to be overriden form MMBaseStarter
@@ -134,6 +153,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
         if (mmbase == null) {
             if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
+            chained++;
             chain.doFilter(request, response);
             return;
         }
@@ -157,6 +177,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (log.isDebugEnabled()) log.debug("Processing path: " + path);
             if (path != null) {
                 if (excludePattern != null && excludePattern.matcher(path).find()) {
+                    chained++;
                     chain.doFilter(request, response);  // url is excluded from further actions
                     return;
                 }
@@ -166,6 +187,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             Framework fw =  Framework.getInstance();
             if (fw == null) {
                 log.error("No MMBase framework found");
+                chained++;
                 chain.doFilter(request, response);
                 return;
             }
@@ -192,20 +214,34 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                     RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
                     if(response.isCommitted()){
                         log.debug("** response committed, including");
+                        included++;
                         rd.include(request, response);
                     }else{
                         log.debug("** response not committed, forwarding");
+                        forwarded++;
                         rd.forward(request, response);
                     }
                 } else {
                     if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
+                    chained++;
                     chain.doFilter(request, response);
                 }
             } catch (FrameworkException fe) {
+                errors++;
                 throw new ServletException(fe);
+            } catch (ServletException se) {
+                errors++;
+                throw se;
+            } catch (IOException ioe) {
+                errors++;
+                throw ioe;
+            } catch (RuntimeException re) {
+                errors++;
+                throw re;
             }
         } else {
             if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
+            chained++;
             chain.doFilter(request, response);
         }
     }
