@@ -47,7 +47,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.167 2008-08-27 16:56:02 michiel Exp $
+ * @version $Id: Wizard.java,v 1.168 2008-09-03 10:27:21 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -2972,7 +2972,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
 
         public String getDescription() {
-            return "objectNumber -> Node";
+            return "objectNumber -> DOM Node";
         }
     }
 
