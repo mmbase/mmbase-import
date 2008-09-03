@@ -18,6 +18,9 @@
     <description xml:lang="en">Flash animations</description>
   </descriptions>
 
+  <properties>
+    <property name="Content-Disposition">inline</property>
+  </properties>
 
   <fieldlist>
 
