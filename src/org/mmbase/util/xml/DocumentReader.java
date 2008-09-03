@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.42 2008-09-03 19:09:30 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.43 2008-09-03 19:59:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -78,7 +78,7 @@ public class DocumentReader  {
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on
      */
-    protected static final boolean validate() {
+    public static final boolean validate() {
         Object validate = utilProperties == null ? null : utilProperties.get("validate");
         return validate == null || validate.equals("true");
     }
@@ -599,6 +599,13 @@ public class DocumentReader  {
             }
         }
         return v;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public Document getDocument() {
+        return document;
     }
 
     public static void main(String argv[]) throws Exception {
