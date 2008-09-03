@@ -23,7 +23,8 @@ import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
-import org.mmbase.util.QueryConvertor;
+import org.mmbase.storage.search.legacy.QueryConvertor;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -52,7 +53,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.96 2008-08-27 17:29:31 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.97 2008-09-03 21:56:46 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -327,7 +328,7 @@ public class ClusterBuilder extends VirtualBuilder {
         String where,
         List<String> orderVec,
         List<String> direction) {
-       
+
         List<String> v= new ArrayList<String>();
         v.add("" + snode);
         return searchMultiLevelVector(v, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
@@ -464,7 +465,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
-     * query is a Node-query. 
+     * query is a Node-query.
      * The results are retrieved directly from storage without the MultilevelCache
      * {@link #getClusterNodes(SearchQuery)} which uses the MultilevelCache
      *

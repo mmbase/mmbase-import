@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.58 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: HtmlBase.java,v 1.59 2008-09-03 21:57:05 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -356,7 +356,7 @@ public class HtmlBase extends ProcessorModule {
             query = convertMMNodeSearch2Query(builder, where);
         } else {
             query = new NodeSearchQuery(builder);
-            QueryConvertor.setConstraint(query, where);
+            org.mmbase.storage.search.legacy.QueryConvertor.setConstraint(query, where);
         }
 
         // Wrap in modifiable query, replace fields by just the "number"-field.

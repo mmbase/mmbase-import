@@ -20,7 +20,7 @@ import org.mmbase.storage.*;
 import org.mmbase.storage.util.Index;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.QueryConvertor;
+import org.mmbase.storage.search.legacy.QueryConvertor;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.20 2008-07-03 12:16:33 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.21 2008-09-03 21:56:46 michiel Exp $
  */
 public class StorageConnector {
 
