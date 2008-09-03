@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.101 2008-09-03 16:57:38 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.102 2008-09-03 18:37:54 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -154,7 +154,12 @@ public class BuilderReader extends DocumentReader {
     }
 
     /**
-     * Copy everyting from overrides to doc
+     * Copy everything from overrides to doc. Note that the resulting document will not obey the
+     * correct order of elements, but that does not matter, because the java code in the rest of
+     * this class does not depend on that.
+     * @param doc The receiving builder xml document. This one will be changed.
+     * @param doc The builder xml document that provided overriding information. This one will only
+     * be read.
      * @since MMBase-1.9
      */
     protected void resolveInheritanceByXML(Document doc, Document overrides) {
