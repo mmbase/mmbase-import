@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.24 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: CommunityPrc.java,v 1.25 2008-09-03 21:14:38 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -326,11 +326,11 @@ public class CommunityPrc extends ProcessorModule {
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values as MMObjectNodes
      */
-    public Vector<MMObjectNode> getNodeList(Object context, String command, Map params) {
+    public List<MMObjectNode> getNodeList(Object context, String command, Map params) {
         activate();
         if (command.equals("WHO")) return channelBuilder.getNodeListUsers(params);
         if (command.equals("TEMPORARYRELATIONS")) return getNodeListTemporaryRelations(params);
-        return super.getNodeList(context,command, params);
+        return super.getNodeList(context, command, params);
     }
 
     /**
