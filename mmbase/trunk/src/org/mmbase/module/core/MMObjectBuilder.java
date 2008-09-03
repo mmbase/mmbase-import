@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.430 2008-08-19 20:34:39 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.431 2008-09-03 15:25:17 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -172,14 +172,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Not that the first time the builder is created, this value is what is stored in the TypeDef table.
      * @scope protected
      */
-    public String description="Base Object";
+    public String description = "Base Object";
 
     /**
      * Descriptions of the builder per language
      * Can be set with the &lt;descriptions&gt; tag in the xml builder file.
-     * @scope protected
      */
-    public Hashtable<String,String> descriptions;
+    protected Map<String,String> descriptions;
 
     /**
      * The default search age for this builder.
@@ -213,14 +212,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     String maintainer = "mmbase.org";
 
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
-     * @scope protected
      */
-    Hashtable<String,String> singularNames;
+    protected Map<String,String> singularNames;
 
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
-     * @scope protected
      */
-    Hashtable<String,String> pluralNames;
+    protected Map<String,String> pluralNames;
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
@@ -2134,10 +2131,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Set descriptions of the builder
-     * @param e a <code>Hashtable</code> containing the descriptions
+     * @param e a <code>Map</code> containing the descriptions
      */
-    public void setDescriptions(Hashtable<String,String> e) {
-        this.descriptions = e;
+    public void setDescriptions(Map<String,String> e) {
+        this.descriptions = Collections.unmodifiableMap(e);
         update();
     }
 
@@ -2165,9 +2162,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Get descriptions of the builder
-     * @return  a <code>Hashtable</code> containing the descriptions
+     * @return  a <code>Map</code> containing the descriptions
      */
-    public Hashtable<String,String> getDescriptions() {
+    public Map<String,String> getDescriptions() {
         return descriptions;
     }
 
@@ -2298,30 +2295,30 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Sets a list of singular names (language - value pairs)
      */
-    public void setSingularNames(Hashtable<String,String> names) {
-        singularNames = names;
+    public void setSingularNames(Map<String,String> names) {
+        singularNames = Collections.unmodifiableMap(names);
         update();
     }
 
     /**
      * Gets a list of singular names (language - value pairs)
      */
-    public Hashtable<String,String> getSingularNames() {
+    public Map<String,String> getSingularNames() {
         return singularNames;
     }
 
     /**
      * Sets a list of plural names (language - value pairs)
      */
-    public void setPluralNames(Hashtable<String,String> names) {
-        pluralNames = names;
+    public void setPluralNames(Map<String,String> names) {
+        pluralNames = Collections.unmodifiableMap(names);
         update();
     }
 
     /**
      * Gets a list of plural names (language - value pairs)
      */
-    public Hashtable<String,String> getPluralNames() {
+    public Map<String,String> getPluralNames() {
         return pluralNames;
     }
 
