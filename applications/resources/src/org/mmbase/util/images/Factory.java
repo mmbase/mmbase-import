@@ -41,7 +41,7 @@ public class Factory {
 
     protected static final int maxRequests = 32;
     protected static BlockingQueue<ImageConversionRequest> imageRequestQueue = new ArrayBlockingQueue<ImageConversionRequest>(maxRequests);
-    protected static Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable 
+    protected static Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable
         = new ConcurrentHashMap<ImageConversionReceiver, ImageConversionRequest>(maxRequests);
     protected static ImageConversionRequestProcessor ireqprocessors[];
 
@@ -69,14 +69,14 @@ public class Factory {
 
         ImageConverter imageConverter = loadImageConverter();
         imageInformer = loadImageInformer();
-        log.info("Got " + imageInformer);
+        log.debug("Got " + imageInformer);
 
         imageConverter.init(params);
         imageInformer.init(params);
 
         // Startup parrallel converters
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
-        log.info("Starting " + maxConcurrentRequests + " Converters for " + imageConverter);
+        log.service("Starting " + maxConcurrentRequests + " Converters for " + imageConverter);
         for (int i = 0; i < maxConcurrentRequests; i++) {
             ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
         }
