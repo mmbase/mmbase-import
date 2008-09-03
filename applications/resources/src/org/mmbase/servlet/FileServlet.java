@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * Straight-forward filter which can serve files from one directory (the directory 'files' in the
  * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.6 2007-07-26 14:38:26 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.7 2008-09-03 17:17:35 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -35,7 +35,7 @@ public class FileServlet extends BridgeServlet {
     private static Logger log;
 
     private static File files = null;
-    
+
     private Pattern ignore = Pattern.compile("");
 
     //private static final Properties properties= new Properties();
@@ -48,27 +48,14 @@ public class FileServlet extends BridgeServlet {
         }
         log = Logging.getLoggerInstance(FileServlet.class);
     }
+
     public static void init(HttpServletResponse res) {
         if (files == null) {
             if (log == null) {
                 log = Logging.getLoggerInstance(FileServlet.class);
             }
-            String dataDir = MMBase.getMMBase().getInitParameter("datadir");
-            if (dataDir != null && ! "".equals(dataDir)) {
-                File data;
-                if (dataDir.startsWith(".")) {
-                    data = new File(new File(MMBaseContext.getServletContext().getRealPath("WEB-INF/data/")), dataDir);
-                } else if (dataDir.startsWith("/")) {
-                    data = new File(dataDir);
-                } else {
-                    data = new File(MMBaseContext.getServletContext().getRealPath(dataDir));
-                }
-                files = new File(data, "files");
-            } else {
-                files = new File(MMBaseContext.getServletContext().getRealPath("WEB-INF/data/files"));
-            }
+            files = MMBase.getMMBase().getDataDir();
 
-            
             if (! files.exists()) {
                 if (files.mkdirs()) {
                     log.info("Directory " + files + " was created");
@@ -79,7 +66,7 @@ public class FileServlet extends BridgeServlet {
             log.info("Using datadir " + files);
 
         }
-        
+
     }
 
 
@@ -103,13 +90,13 @@ public class FileServlet extends BridgeServlet {
 
     protected Map<String, Integer> getAssociations() {
         Map<String, Integer> a = super.getAssociations();
-        a.put("files",      50);  
+        a.put("files",      50);
         return a;
     }
 
     public static File getDirectory() {
         return files;
-    }    
+    }
 
     public static File getFile(String pathInfo, ServletResponse res) {
         if (res != null) init((HttpServletResponse) res);
@@ -178,7 +165,7 @@ public class FileServlet extends BridgeServlet {
                 resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pathInfo == null ? "" : pathInfo) + "/");
                 return;
             }
-            result.append("<title>Directory Listing For " + pathInfo + "</title>");            
+            result.append("<title>Directory Listing For " + pathInfo + "</title>");
             result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
             result.append("</head>");
             result.append("<body class='filelisting'>");
@@ -192,7 +179,7 @@ public class FileServlet extends BridgeServlet {
             for (File file : directory.listFiles()) {
                 String name = file.getName() + (file.isDirectory() ? "/" : "");
                 if (ignores(pathInfo + name)) continue;
-                
+
                 result.append("<tr><td class='lastmodified'>" + df.format(new Date(file.lastModified())) + "</td><td class='filename'>");
                 if (canRead(req, file)) {
                     result.append("<a href='" + name + "'>" + name + "</a>");
@@ -218,7 +205,7 @@ public class FileServlet extends BridgeServlet {
             return;
         } else {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Directory listings are not enabled. (see web.xml)");
-            return;            
+            return;
         }
     }
 
