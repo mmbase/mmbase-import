@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.104 2008-09-03 20:56:12 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.105 2008-09-03 21:08:31 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -245,6 +245,9 @@ public class BuilderReader extends DocumentReader {
 
                         if (! url.openConnection().getDoInput()) continue;
                         org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
+                        if (! doc.getDocumentElement().getTagName().equals("builder")) {
+                            continue;
+                        }
                         BuilderReader prop = new BuilderReader(doc, mmbase, thisVersion);
                         int v = prop.getVersion();
                         if (v < thisVersion && v > foundVersion) {
@@ -1149,7 +1152,7 @@ public class BuilderReader extends DocumentReader {
      * @return the version as an integer.
      */
     public int getVersion() {
-        String version = getElementAttributeValue("builder", "version");
+        String version = document.getDocumentElement().getAttribute("version");
         if (version.equals("") && parentBuilder != null) {
            return parentBuilder.getVersion();
         } else {
