@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.List;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Todo: Remove duplicate code for the binary search
  * @deprecated You can use java.util.SortedSet (implementations of that), or Collections.sort(), if duplicate entries are essential (but how should they be sorted then?)
  * @author Rico Jansen
- * @version $Id: SortedVector.java,v 1.2 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: SortedVector.java,v 1.3 2008-09-03 15:13:01 michiel Exp $
  */
 public class SortedVector extends java.util.Vector {
 
@@ -268,7 +269,7 @@ public class SortedVector extends java.util.Vector {
      * otherwise use SortVector(Vector,CompareInterface) to specify
      * the interface
      */
-    public static SortedVector SortVector(Vector<String> vec) {
+    public static SortedVector SortVector(List<String> vec) {
         SortedVector newvec=new SortedVector();
 
         for (String string : vec) {
@@ -282,11 +283,11 @@ public class SortedVector extends java.util.Vector {
      * Sort a Vector and return a SortedVector using the specified compare
      * function.
      */
-    public static SortedVector SortVector(Vector vec,CompareInterface cmpI) {
+    public static SortedVector SortVector(List vec,CompareInterface cmpI) {
         SortedVector newvec=new SortedVector(cmpI);
 
-        for (Enumeration e=vec.elements();e.hasMoreElements();) {
-            newvec.addElement(e.nextElement());
+        for (Object o : vec) {
+            newvec.addElement(o);
         }
         newvec.Sort();
         return newvec;
