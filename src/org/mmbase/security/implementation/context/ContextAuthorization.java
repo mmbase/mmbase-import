@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.46 2007-06-06 11:35:47 nklasens Exp $
+ * @version $Id: ContextAuthorization.java,v 1.47 2008-09-03 20:04:56 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -43,7 +43,7 @@ public class ContextAuthorization extends Authorization {
     private Document 	    document;
     private ContextCache    cache = new ContextCache();
 
-    protected  Cache<String, AllowingContexts> allowingContextsCache 
+    protected  Cache<String, AllowingContexts> allowingContextsCache
         = new Cache<String, AllowingContexts>(200) { // 200 users.
             public String getName()        { return "CS:AllowingContextsCache"; }
             public String getDescription() { return "Links user id to a set of contexts"; }
@@ -67,12 +67,9 @@ public class ContextAuthorization extends Authorization {
             // clear the cache of user default contexts
             userDefaultContexts.clear();
             // reload the security xml document
-            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
+            document = new org.mmbase.util.xml.DocumentReader(in, this.getClass()).getDocument();
             getGlobalAllowedOperations();
             setAllContexts();
-        } catch(org.xml.sax.SAXException se) {
-            String message = "error loading configfile :'" + configResource + "'(" + se + "->"+se.getMessage()+"("+se.getMessage()+"))";
-            throw new SecurityException(message, se);
         } catch(java.io.IOException ioe) {
             throw new SecurityException("error loading configfile :'" + configResource + "'(" + ioe + ")", ioe);
         }
@@ -228,7 +225,7 @@ public class ContextAuthorization extends Authorization {
             Node contextNameNode = nnm.getNamedItem("context");
             list.add(contextNameNode.getNodeValue());
             if (log.isDebugEnabled()) {
-                log.debug("the context: " + contextNameNode.getNodeValue() + " is possible context for node #" + 
+                log.debug("the context: " + contextNameNode.getNodeValue() + " is possible context for node #" +
                           nodeNumber + " by user: "  + user);
             }
         }
@@ -304,7 +301,7 @@ public class ContextAuthorization extends Authorization {
                 if (log.isDebugEnabled()) {
                     log.trace("going to execute the query:" + xpath + " on file : " + configResource);
                 }
-                
+
                 found = (Node) xf.newXPath().evaluate(xpath, document, XPathConstants.NODE);
 
                 if (found == null) {
@@ -381,7 +378,7 @@ public class ContextAuthorization extends Authorization {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");        
+            log.debug("entering userInGroups(recursive) with username: '" + user + "' and look if the user is in the following groups:");
 
             Iterator<String> di = groups.iterator();
             while (di.hasNext()) {
