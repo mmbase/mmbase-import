@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 
 import java.lang.reflect.*;
 
-import org.mmbase.util.xml.ApplicationReader;
+import org.mmbase.util.xml.applicationdata.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.xml.ModuleReader;
 import org.mmbase.util.logging.*;
@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.70 2008-08-08 11:15:12 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.71 2008-09-03 23:23:53 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
