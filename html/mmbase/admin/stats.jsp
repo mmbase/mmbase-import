@@ -1,4 +1,4 @@
-<%@page session="false" import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache,org.mmbase.cache.CacheManager"
+<%@page session="false" import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache,org.mmbase.cache.CacheManager,org.mmbase.framework.FrameworkFilter"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><mm:content type="text/plain" postprocessor="reducespace" expires="10">
 
@@ -53,6 +53,34 @@
 0
     <% } %>
   </mm:compare>
+  <mm:compare value="requests">
+    <mm:import externid="type" jspvar="type" vartype="string" />
+    <%
+    long chained = FrameworkFilter.getChainedRequests();
+    long included = FrameworkFilter.getIncludedRequests();
+    long forwarded = FrameworkFilter.getForwardedRequests();
+    long errors = FrameworkFilter.getErrorRequests();
+    long total = chained + included + forwarded + errors;
+    long value;
+    if (type == null || type.equals("completed")) {
+      value = chained + included + forwarded;
+    } else if (type.equals("chained")) {
+       value = chained;
+    } else if (type.equals("forwarded")) {
+       value = forwarded;
+    } else if (type.equals("included")) {
+       value = included;
+    } else if (type.equals("filtered")) {
+       value = forwarded + included;
+    } else if (type.equals("errors")) {
+       value = errors;
+    } else {
+      throw new IllegalArgumentException("No requests type " + type);
+    }
+    %>
+<%=value%>
+<%=total%>
+  </mm:compare>
   <mm:compare value="mrtgconfig">
 <mm:import id="this"><%=request.getRequestURL()%></mm:import>
 <mm:import id="thisserver"><%= request.getServerName() %><%=request.getContextPath().replaceAll("/", "_") %></mm:import>
@@ -76,6 +104,41 @@ PageTop[<mm:write referid="thisserver" />_memory]: <h1><mm:write referid="thisse
 
 
 <%
+for (String t : new String[] {"chained", "filtered", "errors" }) {
+  String id = "requests_" + t;
+%>
+#
+# <mm:write referid="thisserver" /> REQUESTS <%=t%>
+#
+Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"
+Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=t%> requests
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
+Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, nopercent
+kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
+LegendO[<mm:write referid="thisserver" />_<%=id%>]: <%=t%> requests
+LegendI[<mm:write referid="thisserver" />_<%=id%>]: total requests :
+ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
+PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=t%> requests information</h1>
+
+<% id = id + "_fill"; %>
+#
+#
+Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"
+Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=t%> requests
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]:
+Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
+kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=id%>]: total number of requests
+LegendO[<mm:write referid="thisserver" />_<%=id%>]: <%=t%> requests:
+LegendI[<mm:write referid="thisserver" />_<%=id%>]: total number of requests:
+ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: # of requests
+PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=t%> requests information</h1>
+
+<%
+}
+
+
 org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
 java.util.Iterator i  = CacheManager.getCaches().iterator();
 while (i.hasNext()) {
