@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.253 2008-09-03 17:32:03 michiel Exp $
+ * @version $Id: MMBase.java,v 1.254 2008-09-03 20:57:42 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -925,7 +925,7 @@ public class MMBase extends ProcessorModule {
             for (java.net.URL url : getBuilderLoader().getResourceList(builderName + ".xml")) {
                 if (! url.openConnection().getDoInput()) continue;
                 if (protocol != null && ! url.getProtocol().equals(protocol)) {
-                    log.service(url + " less important than " + r.getSystemId() + " breaking now");
+                    log.debug(url + " less important than " + r.getSystemId() + " breaking now");
                     break;
                 }
                 org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
