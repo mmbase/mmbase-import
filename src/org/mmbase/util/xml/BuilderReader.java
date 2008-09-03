@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -24,8 +25,8 @@ import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
 
-import org.mmbase.util.LocalizedString;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.*;
+
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
@@ -38,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.99 2008-07-28 15:38:13 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.100 2008-09-03 16:31:02 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -134,13 +135,50 @@ public class BuilderReader extends DocumentReader {
     }
 
     /**
-     * @since MMBase-1.8
+     * @since MMBase-1.9
      */
     public BuilderReader(Document doc, MMBase mmb) {
+        this(doc, mmb, Integer.MAX_VALUE);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public BuilderReader(Document doc, MMBase mmb, int maxVersion) {
         super(doc);
         mmbase = mmb;
-        if (getRootElement().getTagName().equals("builder")) {
-            resolveInheritance();
+        if (this.getVersion() < maxVersion) {
+            if (getRootElement().getTagName().equals("builder")) {
+                resolveInheritance();
+            }
+        }
+    }
+
+    /**
+     * Copy everyting from overrides to doc
+     * @since MMBase-1.9
+     */
+    protected void resolveInheritanceByXML(Document doc, Document overrides) {
+        {
+            // copy every attribute from root element
+            Element root = overrides.getDocumentElement();
+            NamedNodeMap nnm = root.getAttributes();
+            for (int i = 0 ; i < nnm.getLength() ; i++) {
+                Node item = nnm.item(i);
+                doc.getDocumentElement().setAttribute(item.getNodeName(), item.getNodeValue());
+            }
+        }
+        {
+            // copy class, searchage
+        }
+        // add fieldlists
+        for(Element fieldList : getChildElements(overrides.getDocumentElement(), "fieldlist")) {
+            Element newFieldList = (Element) doc.importNode(fieldList, true);
+            doc.getDocumentElement().appendChild(newFieldList);
+        }
+        // add functionlists
+        for(Element functionList : getChildElements(overrides.getDocumentElement(), "functionlist")) {
+            Element newFunctionList = (Element) doc.importNode(functionList, true);
+            doc.getDocumentElement().appendChild(newFunctionList);
         }
     }
 
@@ -163,6 +201,43 @@ public class BuilderReader extends DocumentReader {
         if (buildername.equals("")) {
             parentBuilder = null;
             inheritanceResolved = true;
+        } else if (buildername.equals(getName())) {
+            int thisVersion = getVersion();
+            BuilderReader parent = null;
+            int foundVersion = -1;
+            ResourceLoader loader = mmbase.getBuilderLoader();
+            for (String s :  loader.getResourcePaths(Pattern.compile(getName()+ "\\.xml"), true)) {
+                for (java.net.URL url : loader.getResourceList(s)) {
+                    try {
+
+                        if (! url.openConnection().getDoInput()) continue;
+                        org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
+                        BuilderReader prop = new BuilderReader(doc, mmbase, thisVersion);
+                        int v = prop.getVersion();
+                        if (v < thisVersion && v > foundVersion) {
+                            parent = prop;
+                            foundVersion = v;
+                        }
+                    } catch (Exception ioe) {
+                        log.warn(ioe);
+                    }
+                }
+
+            }
+            if (parent == null) {
+                log.warn("Tried to extend builder " + getSystemId() + " from itself, but no other builder resource found (with smaller version)");
+                inheritanceResolved = false;
+            } else {
+                log.info("Inheriting " + document.getDocumentURI() + " from " + parent.document.getDocumentURI());
+                Document inherit = this.document;
+                this.document = (Document) parent.document.cloneNode(true);
+                inherit.getDocumentElement().removeAttribute("extends");
+                resolveInheritanceByXML(document, inherit);
+                return resolveInheritance();
+
+            }
+
+
         } else {
             inheritanceResolved = false;
             if (mmbase != null) {
@@ -970,8 +1045,8 @@ public class BuilderReader extends DocumentReader {
      * @deprecated use getLocalizedDescription()
      * @return the descriptions in a Map, accessible by language
      */
-    public Hashtable<String,String> getDescriptions() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
+    public Map<String,String> getDescriptions() {
+        Map<String,String> results = new HashMap<String,String>();
         for (Element desc : getChildElements("builder.descriptions","description")) {
             String lang = getElementAttributeValue(desc,"xml:lang");
             results.put(lang,getElementValue(desc));
@@ -984,9 +1059,9 @@ public class BuilderReader extends DocumentReader {
      * @deprecated use getLocalizedPluralName()
      * @return the plural names in a Map, accessible by language
      */
-    public Hashtable<String,String> getPluralNames() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
-        for (Element name : getChildElements("builder.names","plural")) {
+    public Map<String,String> getPluralNames() {
+        Map<String,String> results = new HashMap<String, String>();
+        for (Element name : getChildElements("builder.names", "plural")) {
             String lang = getElementAttributeValue(name,"xml:lang");
             results.put(lang,getElementValue(name));
         }
@@ -998,8 +1073,8 @@ public class BuilderReader extends DocumentReader {
      * @deprecated use getLocalizedSingularName()
      * @return the singular names in a Map, accessible by language
      */
-    public Hashtable<String,String> getSingularNames() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
+    public Map<String,String> getSingularNames() {
+        Map<String, String> results = new HashMap<String,String>();
         for (Element name : getChildElements("builder.names","singular")) {
             String lang = getElementAttributeValue(name,"xml:lang");
             results.put(lang,getElementValue(name));
@@ -1027,12 +1102,21 @@ public class BuilderReader extends DocumentReader {
     }
 
     /**
+     * Get the name of the builder that this builder extends
+     * @since MMBase-1.9
+     * @return the name of the parent builder
+     */
+    public String getName() {
+        return getElementAttributeValue("builder", "name");
+    }
+
+    /**
      * Retrieve the (major) version number of this builder
      * @since MMBase-1.8
      * @return the version as an integer.
      */
     public int getVersion() {
-        String version = getElementAttributeValue("builder","version");
+        String version = getElementAttributeValue("builder", "version");
         if (version.equals("") && parentBuilder != null) {
            return parentBuilder.getVersion();
         } else {
