@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.9 2008-07-14 12:30:07 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.10 2008-09-03 17:21:00 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -94,7 +94,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 excludeFormats.add(token);
             }
         }
-        
+
         tmp = params.get("ImageConvert.Method");
         if (tmp != null && ! tmp.equals("")) {
             if (tmp.equals("launcher")) {
@@ -204,7 +204,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             imVersionMajor = Integer.parseInt(m.group(1));
             imVersionMinor = Integer.parseInt(m.group(2));
             imVersionPatch = Integer.parseInt(m.group(3));
-            log.info("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+            log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
         } else {
             log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
                        + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
@@ -262,7 +262,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             log.debug("Conversion is excluded for image format: " + sourceFormat);
             return input;
         }
-        
+
         byte[] pict = null;
         if (commands != null && !commands.isEmpty()) {
             ParseResult parsedCommands = getConvertCommands(commands);
@@ -301,12 +301,12 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setDetermineImageNumber(true);
         ByteArrayInputStream inp = new ByteArrayInputStream(rawimage);
-        
+
         imageInfo.setInput(inp);
         imageInfo.check();
         return (imageInfo.getNumberOfImages() > 1);
     }
-    
+
     /**
      * Translates MMBase color format (without #) to an convert color format (with or without);
      * @param c color to convert
