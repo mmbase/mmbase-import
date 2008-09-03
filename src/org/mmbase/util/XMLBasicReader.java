@@ -26,12 +26,13 @@ import org.xml.sax.*;
  *    It uses dots to lay a path in the XML (XPath uses slashes).</li>
  *  </ul>
  *
- * @deprecated use DocumentReader or DocumentWriter. Some code may need to be moved to DocumentReader
+ * @deprecated-now
+ * @deprecated Use DocumentReader or DocumentWriter.
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.46 2006-01-26 10:21:50 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.47 2008-09-03 21:44:59 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
 
@@ -85,14 +86,14 @@ public class XMLBasicReader extends DocumentReader {
                 try {
                     path = new java.net.URL(path).getPath();
                 } catch (java.net.MalformedURLException mfe) {
-                }                   
+                }
             }
             is = new InputSource(new FileInputStream(path));
             try {
                 is.setSystemId(new File(path).toURL().toExternalForm());
             } catch (java.net.MalformedURLException mfe) {
-            }                   
-            is.setSystemId("file://" + path);            
+            }
+            is.setSystemId("file://" + path);
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
