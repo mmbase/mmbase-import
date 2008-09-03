@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util.xml;
+package org.mmbase.util.xml.applicationdata;
 
 import java.io.*;
 import java.util.*;
@@ -19,16 +19,14 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.xml.applicationdata.ContextDepthDataWriter;
-import org.mmbase.util.xml.applicationdata.FullBackupDataWriter;
 import org.mmbase.util.*;
 
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.8 2008-03-21 14:36:27 nklasens Exp $
+ * @version $Id: ApplicationWriter.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
  */
-public class ApplicationWriter extends DocumentWriter  {
+public class ApplicationWriter extends org.mmbase.util.xml.DocumentWriter  {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationWriter.class);
 
@@ -213,7 +211,7 @@ public class ApplicationWriter extends DocumentWriter  {
             logger.info("save goal : " + goal);
 
             if (type.equals("depth")) {
-                XMLContextDepthReader contextReader = new XMLContextDepthReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
+                ContextDepthDataReader contextReader = new ContextDepthDataReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
                 ContextDepthDataWriter.writeContext(reader, contextReader, targetPath, mmbase, logger);
             } else if (type.equals("full")) {
                 FullBackupDataWriter.writeContext(reader, targetPath, mmbase, logger);
@@ -227,7 +225,7 @@ public class ApplicationWriter extends DocumentWriter  {
             String path = bset.get("path");
             String type = bset.get("type");
             if (type.equals("depth")) {
-                XMLContextDepthReader contextReader = new XMLContextDepthReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
+                ContextDepthDataReader contextReader = new ContextDepthDataReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
                 ContextDepthDataWriter.writeContextXML(contextReader, targetPath + "/" + path);
             }
         }
@@ -280,11 +278,11 @@ public class ApplicationWriter extends DocumentWriter  {
         }
         return true;
     }
-    
+
     public boolean writeBuilderToFile(String filepath, String path) {
         InputStream in = ResourceLoader.getConfigurationRoot().getResourceAsStream(path);
         if (in!=null) {
-           try {                
+           try {
                 FileOutputStream out = new FileOutputStream(filepath);
                 byte[] buf = new byte[1024];
                 int len;

@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.105 2008-09-03 21:08:31 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.106 2008-09-03 23:17:25 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -143,10 +143,10 @@ public class BuilderReader extends DocumentReader {
     /**
      * @since MMBase-1.9
      */
-    public BuilderReader(Document doc, MMBase mmb, int maxVersion) {
+    private BuilderReader(Document doc, MMBase mmb, int maxVersion) {
         super(doc);
         mmbase = mmb;
-        if (this.getVersion() < maxVersion) {
+        if (this.getVersion() <= maxVersion) {
             if (getRootElement().getTagName().equals("builder")) {
                 resolveInheritance();
             }
@@ -248,7 +248,7 @@ public class BuilderReader extends DocumentReader {
                         if (! doc.getDocumentElement().getTagName().equals("builder")) {
                             continue;
                         }
-                        BuilderReader prop = new BuilderReader(doc, mmbase, thisVersion);
+                        BuilderReader prop = new BuilderReader(doc, mmbase, thisVersion - 1);
                         int v = prop.getVersion();
                         if (v < thisVersion && v > foundVersion) {
                             parent = prop;

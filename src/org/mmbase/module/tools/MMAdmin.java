@@ -31,6 +31,7 @@ import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.applicationdata.*;
 import org.mmbase.util.xml.*;
 import org.xml.sax.InputSource;
 
@@ -40,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.164 2008-08-26 22:58:30 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.165 2008-09-03 23:18:01 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
