@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.18 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.19 2008-09-03 19:38:39 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -112,19 +112,28 @@ public abstract class ThreadPools {
         Map<String,String> props = properties.getProperties();
         String max = props.get("jobs.maxsize");
         if (max != null) {
-            log.info("Setting max pool size from " + ((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() + " to " + max);
-            ((ThreadPoolExecutor) jobsExecutor).setMaximumPoolSize(Integer.parseInt(max));
+            int newSize = Integer.parseInt(max);
+            if (((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() !=  newSize) {
+                log.info("Setting max pool size from " + ((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() + " to " + newSize);
+                ((ThreadPoolExecutor) jobsExecutor).setMaximumPoolSize(newSize);
+            }
         }
         String core = props.get("jobs.coresize");
         if (core != null) {
-            log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + core);
-            ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(Integer.parseInt(core));
+            int newSize = Integer.parseInt(core);
+            if (((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() != newSize) {
+                log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + newSize);
+                ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(newSize);
+            }
         }
 
         String schedSize = props.get("scheduler.coresize");
         if (schedSize != null) {
-            log.info("Setting scheduler pool size from " + ((ThreadPoolExecutor) scheduler).getCorePoolSize() + " to " + schedSize);
-            ((ThreadPoolExecutor) scheduler).setCorePoolSize(Integer.parseInt(schedSize));
+            int newSize = Integer.parseInt(schedSize);
+            if (((ThreadPoolExecutor) scheduler).getCorePoolSize() != newSize) {
+                log.info("Setting scheduler pool size from " + ((ThreadPoolExecutor) scheduler).getCorePoolSize() + " to " + schedSize);
+                ((ThreadPoolExecutor) scheduler).setCorePoolSize(newSize);
+            }
         }
     }
 
