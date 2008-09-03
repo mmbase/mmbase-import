@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.100 2008-09-03 16:31:02 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.101 2008-09-03 16:57:38 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -167,19 +167,48 @@ public class BuilderReader extends DocumentReader {
                 doc.getDocumentElement().setAttribute(item.getNodeName(), item.getNodeValue());
             }
         }
-        {
-            // copy class, searchage
+
+        for (String name : new String[] {"class", "searchage", "status"}) { // these must entirely
+                                                                            // replace the tag if present
+            Element overrideEl = getElementByPath(overrides.getDocumentElement(), name);
+            if (overrideEl != null) {
+                Element newEl = (Element) doc.importNode(overrideEl, true);
+                Element docEl = getElementByPath(doc.getDocumentElement(), name);
+                if (docEl != null) {
+                    doc.getDocumentElement().replaceChild(docEl, newEl);
+                } else {
+                    document.appendChild(newEl);
+                }
+            }
         }
-        // add fieldlists
-        for(Element fieldList : getChildElements(overrides.getDocumentElement(), "fieldlist")) {
-            Element newFieldList = (Element) doc.importNode(fieldList, true);
-            doc.getDocumentElement().appendChild(newFieldList);
+
+        for (String list : new String[] {"names", "descriptions", "properties"}) {
+            // if these are found, simply all sub-elements must be added.
+
+            List<Element> elementList = getChildElements(doc.getDocumentElement(), list);
+            Element element;
+            if (elementList.size() == 0) {
+                element = document.createElement(list);
+                document.appendChild(element);
+            } else {
+                element = elementList.get(elementList.size() - 1);
+            }
+            for (Element e : getChildElements(overrides.getDocumentElement(), list + ".*")) {
+                Element newE = (Element) doc.importNode(e, true);
+                element.appendChild(newE);
+
+            }
         }
-        // add functionlists
-        for(Element functionList : getChildElements(overrides.getDocumentElement(), "functionlist")) {
-            Element newFunctionList = (Element) doc.importNode(functionList, true);
-            doc.getDocumentElement().appendChild(newFunctionList);
+
+        for (String list : new String[] {"fieldlist", "functionlist", "indexlist"}) {
+            // if these are found, they simply must be added too.
+
+            for(Element el : getChildElements(overrides.getDocumentElement(), list)) {
+                Element newEl = (Element) doc.importNode(el, true);
+                doc.getDocumentElement().appendChild(newEl);
+            }
         }
+
     }
 
     /**
