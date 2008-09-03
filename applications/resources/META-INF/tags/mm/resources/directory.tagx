@@ -16,6 +16,7 @@
     static final Pattern IMAGES = Pattern.compile("\\A.*\\.(png|gif|jpeg|jpeg)\\z");
   </jsp:declaration>
   <jsp:scriptlet>
+    if (application.getRealPath(dir) != null) {
       File list = new File(application.getRealPath(dir));
       File[] fs = list.listFiles(new FileFilter() {public boolean accept(File file) { return ! file.isDirectory() &amp;&amp; file.canRead() &amp;&amp; IMAGES.matcher(file.getName()).matches(); }} );
       List&lt;File&gt; files = new ArrayList(fs == null ? Collections.EMPTY_LIST : Arrays.asList(fs));
@@ -26,6 +27,7 @@
         files.subList(max, files.size()).clear();
       }
       jspContext.setAttribute("files", files);
+      }
   </jsp:scriptlet>
   <c:forEach items="${files}" var="file">
     <mm:context>
