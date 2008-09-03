@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.102 2008-09-03 18:37:54 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.103 2008-09-03 19:10:39 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -135,7 +135,7 @@ public class BuilderReader extends DocumentReader {
     }
 
     /**
-     * @since MMBase-1.9
+     * @since MMBase-1.8
      */
     public BuilderReader(Document doc, MMBase mmb) {
         this(doc, mmb, Integer.MAX_VALUE);
@@ -158,23 +158,22 @@ public class BuilderReader extends DocumentReader {
      * correct order of elements, but that does not matter, because the java code in the rest of
      * this class does not depend on that.
      * @param doc The receiving builder xml document. This one will be changed.
-     * @param doc The builder xml document that provided overriding information. This one will only
+     * @param overrides The builder xml document that provided overriding information. This one will only
      * be read.
      * @since MMBase-1.9
      */
-    protected void resolveInheritanceByXML(Document doc, Document overrides) {
+    protected static void resolveInheritanceByXML(Document doc, Document overrides) {
         {
             // copy every attribute from root element
-            Element root = overrides.getDocumentElement();
-            NamedNodeMap nnm = root.getAttributes();
+            NamedNodeMap nnm = overrides.getDocumentElement().getAttributes();
             for (int i = 0 ; i < nnm.getLength() ; i++) {
                 Node item = nnm.item(i);
                 doc.getDocumentElement().setAttribute(item.getNodeName(), item.getNodeValue());
             }
         }
 
-        for (String name : new String[] {"class", "searchage", "status"}) { // these must entirely
-                                                                            // replace the tag if present
+        for (String name : new String[] {"class", "searchage", "status"}) {
+            // these must entirely replace the tag if present
             Element overrideEl = getElementByPath(overrides.getDocumentElement(), name);
             if (overrideEl != null) {
                 Element newEl = (Element) doc.importNode(overrideEl, true);
@@ -182,7 +181,7 @@ public class BuilderReader extends DocumentReader {
                 if (docEl != null) {
                     doc.getDocumentElement().replaceChild(docEl, newEl);
                 } else {
-                    document.appendChild(newEl);
+                    doc.appendChild(newEl);
                 }
             }
         }
@@ -193,8 +192,8 @@ public class BuilderReader extends DocumentReader {
             List<Element> elementList = getChildElements(doc.getDocumentElement(), list);
             Element element;
             if (elementList.size() == 0) {
-                element = document.createElement(list);
-                document.appendChild(element);
+                element = doc.createElement(list);
+                doc.appendChild(element);
             } else {
                 element = elementList.get(elementList.size() - 1);
             }
