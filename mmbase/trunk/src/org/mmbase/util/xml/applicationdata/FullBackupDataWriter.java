@@ -17,14 +17,13 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * This is used to export a full backup, by writing all nodes to XML.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.8 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: FullBackupDataWriter.java,v 1.9 2008-09-03 23:17:25 michiel Exp $
  */
 public class FullBackupDataWriter {
 

@@ -21,9 +21,9 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.applicationdata.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.xml.ApplicationReader;
 import org.xml.sax.InputSource;
 
 
@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.15 2008-07-29 09:17:46 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.16 2008-09-03 23:18:01 michiel Exp $
  */
 class ApplicationInstaller {
 
@@ -204,7 +204,7 @@ class ApplicationInstaller {
         List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
             for (Map<String, String> bh : dataSources) {
-                XMLNodeReader nodeReader = getNodeReader(bh, appName);
+                NodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
                     continue;
                 }
@@ -221,7 +221,7 @@ class ApplicationInstaller {
         }
     }
 
-    private void installDatasource(MMObjectBuilder syncbul, XMLNodeReader nodeReader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
+    private void installDatasource(MMObjectBuilder syncbul, NodeReader nodeReader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodeReader.getExportSource();
         int timestamp = nodeReader.getTimeStamp();
 
@@ -433,7 +433,7 @@ class ApplicationInstaller {
         if (syncbul != null) {
             List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
             for (Map<String, String> bh : ds) {
-                XMLRelationNodeReader nodereader = getRelationNodeReader(appname, bh);
+                RelationNodeReader nodereader = getRelationNodeReader(appname, bh);
                 if (nodereader == null) {
                     continue;
                 }
@@ -448,7 +448,7 @@ class ApplicationInstaller {
         return result.isSuccess();
     }
 
-    private void installRelationSource(MMObjectBuilder syncbul, InsRel insRel, XMLRelationNodeReader nodereader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
+    private void installRelationSource(MMObjectBuilder syncbul, InsRel insRel, RelationNodeReader nodereader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodereader.getExportSource();
         int timestamp = nodereader.getTimeStamp();
 
@@ -572,8 +572,8 @@ class ApplicationInstaller {
         }
     }
 
-    private XMLNodeReader getNodeReader(Map<String,String> bh, String appName) {
-        XMLNodeReader nodeReader = null;
+    private NodeReader getNodeReader(Map<String,String> bh, String appName) {
+        NodeReader nodeReader = null;
 
         String path = bh.get("path");
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
@@ -584,13 +584,13 @@ class ApplicationInstaller {
             log.info("No datasource resource " + path);
         }
         if (is != null) {
-            nodeReader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
+            nodeReader = new NodeReader(is, applicationLoader.getChildResourceLoader(appName));
         }
         return nodeReader;
     }
 
-    private XMLRelationNodeReader getRelationNodeReader(String appname, Map<String,String> bh) {
-        XMLRelationNodeReader nodereader = null;
+    private RelationNodeReader getRelationNodeReader(String appname, Map<String,String> bh) {
+        RelationNodeReader nodereader = null;
 
         String path = bh.get("path");
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
@@ -601,7 +601,7 @@ class ApplicationInstaller {
             log.info("No relationsource resource " + path);
         }
         if (is != null) {
-            nodereader = new XMLRelationNodeReader(is, applicationLoader.getChildResourceLoader(appname));
+            nodereader = new RelationNodeReader(is, applicationLoader.getChildResourceLoader(appname));
         }
         return nodereader;
     }
