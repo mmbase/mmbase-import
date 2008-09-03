@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.41 2008-09-03 16:30:15 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.42 2008-09-03 19:09:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -499,7 +499,7 @@ public class DocumentReader  {
      * @param path Dot-separated list of tags describing path from root element to requested element
      * @return Leaf element of the path
      */
-    public Element getElementByPath(Element e, String path) {
+    public static Element getElementByPath(Element e, String path) {
         StringTokenizer st = new StringTokenizer(path,".");
         if (!st.hasMoreTokens()) {
             // faulty path
@@ -513,8 +513,8 @@ public class DocumentReader  {
                 return null;
             } else if (!e.getLocalName().equals(root)) {
                 // path should start with document root element
-                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getLocalName()+"): incorrect xml file" +
-                          "("+getSystemId()+")");
+                log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + e.getLocalName() + "): incorrect xml file" +
+                          "(" + e.getOwnerDocument().getDocumentURI() + ")");
                 return null;
             }
             OUTER:
@@ -538,7 +538,7 @@ public class DocumentReader  {
      * @param path Path to the element
      * @return Text value of element
      */
-    public String getElementValue(String path) {
+    public  String getElementValue(String path) {
         return getElementValue(getElementByPath(path));
     }
 
@@ -546,7 +546,7 @@ public class DocumentReader  {
      * @param e Element
      * @return Text value of element
      */
-    public String getElementValue(Element e) {
+    public static String getElementValue(Element e) {
         if (e == null) {
             return "";
         } else {
@@ -566,8 +566,8 @@ public class DocumentReader  {
      * @param e Element
      * @return a <code>List</code> of child elements
      */
-    public List<Element> getChildElements(Element e) {
-        return getChildElements(e,"*");
+    public static List<Element> getChildElements(Element e) {
+        return getChildElements(e, "*");
     }
 
     /**
@@ -575,8 +575,8 @@ public class DocumentReader  {
      * @param tag tag to match ("*" means all tags")
      * @return a <code>List</code> of child elements with the given tag
      */
-    public List<Element> getChildElements(String path,String tag) {
-        return getChildElements(getElementByPath(path),tag);
+    public List<Element> getChildElements(String path, String tag) {
+        return getChildElements(getElementByPath(path), tag);
     }
 
     /**
@@ -584,7 +584,7 @@ public class DocumentReader  {
      * @param tag tag to match ("*" means all tags")
      * @return a <code>List</code> of child elements with the given tag
      */
-    public List<Element> getChildElements(Element e, String tag) {
+    public static List<Element> getChildElements(Element e, String tag) {
         List<Element> v = new ArrayList<Element>();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
