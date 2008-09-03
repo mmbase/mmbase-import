@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.103 2008-09-03 19:10:39 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.104 2008-09-03 20:56:12 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -174,7 +174,7 @@ public class BuilderReader extends DocumentReader {
 
         for (String name : new String[] {"class", "searchage", "status"}) {
             // these must entirely replace the tag if present
-            Element overrideEl = getElementByPath(overrides.getDocumentElement(), name);
+            Element overrideEl = getElementByPath(overrides.getDocumentElement(), "builder." + name);
             if (overrideEl != null) {
                 Element newEl = (Element) doc.importNode(overrideEl, true);
                 Element docEl = getElementByPath(doc.getDocumentElement(), name);
