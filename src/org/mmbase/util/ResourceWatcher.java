@@ -21,12 +21,12 @@ import org.mmbase.bridge.*;
 
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
- *  to is added or changed, it's onChange will be triggered, if not a 'more important' wil was
+ *  to is added or changed, it's onChange will be triggered, if not a 'more important' one was
  *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.21 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.22 2008-09-03 21:46:33 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
