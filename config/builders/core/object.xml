@@ -40,6 +40,17 @@
 
   <properties>
     <property name="max-nodes-from-query">10000</property>
+
+    <!--
+        The content disposition property indicates how the 'Content-Disposition' header which could
+        be returned by URL representing this object, could (should) be filled.
+
+        Possible values are 'attachment' and 'inline'.
+        See:  http://www.ietf.org/rfc/rfc2183.txt
+
+        The point is that for images, but e.g. also flash animations, this could be set to 'inline'.
+    -->
+    <property name="Content-Disposition">attachment</property>
   </properties>
 
   <fieldlist>
