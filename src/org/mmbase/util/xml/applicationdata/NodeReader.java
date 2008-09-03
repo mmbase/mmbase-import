@@ -8,11 +8,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.xml.applicationdata;
 
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.Logger;
@@ -24,13 +25,12 @@ import org.xml.sax.InputSource;
 /**
  * This class reads a node from an exported application.
  * @application Applications
- * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.49 2008-09-03 21:46:13 michiel Exp $
+ * @version $Id: NodeReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
  */
-public class XMLNodeReader extends DocumentReader {
-    private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
+public class NodeReader extends DocumentReader {
+    private static final Logger log = Logging.getLoggerInstance(NodeReader.class);
 
     private ResourceLoader path;
 
@@ -39,7 +39,7 @@ public class XMLNodeReader extends DocumentReader {
     /**
      * @since MMBase-1.8
      */
-    public XMLNodeReader(InputSource is, ResourceLoader path) {
+    public NodeReader(InputSource is, ResourceLoader path) {
         super(is, false);
         this.path = path;
     }

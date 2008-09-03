@@ -7,10 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.xml.applicationdata;
 
 import java.util.*;
 
+import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
@@ -23,20 +24,19 @@ import org.xml.sax.InputSource;
 /**
  * This class reads a relation node from an exported application.
  * @application Applications
- * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.30 2008-09-03 21:46:13 michiel Exp $
+ * @version $Id: RelationNodeReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
  */
-public class XMLRelationNodeReader extends XMLNodeReader {
+public class RelationNodeReader extends NodeReader {
 
 
-   private static final Logger log = Logging.getLoggerInstance(XMLRelationNodeReader.class);
+   private static final Logger log = Logging.getLoggerInstance(RelationNodeReader.class);
 
     /**
      * @since MMBase-1.8
      */
-    public XMLRelationNodeReader(InputSource is, ResourceLoader path) {
+    public RelationNodeReader(InputSource is, ResourceLoader path) {
         super(is, path);
     }
 

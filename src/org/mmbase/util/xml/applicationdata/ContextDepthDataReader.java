@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util;
+package org.mmbase.util.xml.applicationdata;
 
 import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
@@ -20,22 +20,20 @@ import org.w3c.dom.*;
  * This class can be used to easily retrive these parameters.
  *
  * @application Applications
- * @move org.mmbase.util.xml
- * @rename ContextDepthReader
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.12 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: ContextDepthDataReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
  */
-public class XMLContextDepthReader {
+public class ContextDepthDataReader {
 
-    private static final Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class);
+    private static final Logger log = Logging.getLoggerInstance(ContextDepthDataReader.class);
 
     final Document document;
 
     /**
      * Creates the Context Depth Reader
      */
-    public XMLContextDepthReader(Document doc) {
+    public ContextDepthDataReader(Document doc) {
         document = doc;
     }
 

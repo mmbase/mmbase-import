@@ -14,9 +14,7 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.XMLContextDepthReader;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * This class is used to write (export) a selection of nodes to xml format.
@@ -30,14 +28,10 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.5 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.6 2008-09-03 23:17:25 michiel Exp $
  */
 public class ContextDepthDataWriter  {
-
-    /**
-     * Logging instance
-     */
-    private static Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class);
 
     /**
      * Writes an application's nodes, according to that application's contexts, to a path.
@@ -45,7 +39,7 @@ public class ContextDepthDataWriter  {
      * both datanodes and relation nodes.
      * @param app A <code>ApplicationReader</code> initialised to read the application's description (xml) file
      *		This object is used to retrieve what builder and relations are needed, and in which files data should be stored.
-     * @param capp A <code>XMLContextDepthReader</code> initialised to read the application's context file
+     * @param capp A <code>ContextDepthDataReader</code> initialised to read the application's context file
      *		This object is used to retrieve information regarding search depth and starting nodes for
      *		the search tree whoch determines what nodes are part of this application.
      * @param targetpath The path where to save the application
@@ -55,7 +49,7 @@ public class ContextDepthDataWriter  {
      *		Failure of the export itself is not detected, though may be visible in the messages returned.
      * @throws IOException if one or more files could not be written
      */
-    public static boolean writeContext(ApplicationReader app, XMLContextDepthReader capp,String targetpath,
+    public static boolean writeContext(ApplicationReader app, ContextDepthDataReader capp,String targetpath,
                                        MMBase mmb, Logger logger) {
         // First determine the startnodes, following the specs in the current context reader.
         int startnode=getStartNode(capp,mmb);
@@ -302,11 +296,11 @@ public class ContextDepthDataWriter  {
     /**
      * Retrieves the number of the startnode referenced by the context configuration file..
      * Returns always only one node (should be changed?)
-     * @param capp XMLContextDepthReader object for retrieving data from the context
+     * @param capp ContextDepthDataReader object for retrieving data from the context
      * @param mmb reference to the MMBase object, used for retrieving aliases and builders
      * @return An <code>integer</code>, the number of the startnode if succesful, -1 otherwise.
      */
-    static int getStartNode(XMLContextDepthReader capp, MMBase mmb) {
+    static int getStartNode(ContextDepthDataReader capp, MMBase mmb) {
         // first check for an alias
         String alias=capp.getStartAlias();
         if (alias!=null) {
@@ -382,11 +376,11 @@ public class ContextDepthDataWriter  {
 
     /**
      * Writes the context file, based on what was supplied by the application
-     * @param capp XMLContextDepthReader providing original context data
+     * @param capp ContextDepthDataReader providing original context data
      * @param filename Name of the xml file to save.
      * @return always true
      */
-    public static boolean writeContextXML(XMLContextDepthReader capp,String filename) {
+    public static boolean writeContextXML(ContextDepthDataReader capp,String filename) {
         String body="<contextdepth>\n";
         String alias=capp.getStartAlias();
         if (alias!=null) {

@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.util.xml;
+package org.mmbase.util.xml.applicationdata;
 
 import java.util.*;
 import org.w3c.dom.*;
@@ -18,9 +18,9 @@ import org.mmbase.util.XMLEntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.5 2008-07-11 14:50:46 michiel Exp $
+ * @version $Id: ApplicationReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
  */
-public class ApplicationReader extends DocumentReader {
+public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
 
     /** Public ID of the Application DTD version 1.0 */
     public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";
