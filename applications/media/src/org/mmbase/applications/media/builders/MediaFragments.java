@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.46 2007-07-10 11:23:11 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.47 2008-09-03 21:26:59 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -443,7 +443,7 @@ public class MediaFragments extends MMObjectBuilder {
     public String replace(PageInfo sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
-            
+
             log.debug("scan - "+token);
             if (token.equals("GETURL")) {
                 Integer number=null, userSpeed=null, userChannels=null;
@@ -451,21 +451,21 @@ public class MediaFragments extends MMObjectBuilder {
                 if (command.hasMoreTokens()) userSpeed=new Integer(command.nextToken());
                 if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
                 if (number!=null) {
-            MMObjectNode media = getNode(number.intValue());
-            if(!media.getBuilder().isExtensionOf(mmb.getBuilder("mediafragments"))) {
-                log.error("Number "+number+" is not a media/audio/video fragment "+media);
-                return "Number "+number+" is not a media/audio/video fragment "+media;
-            }
-            Map<String, Object> info = new HashMap<String, Object>();
-            if(userSpeed!=null) {
-                info.put("speed",""+userSpeed);
-            }
-            if(userChannels!=null) {
-                info.put("channels",""+userChannels);
-            }
+                    MMObjectNode media = getNode(number.intValue());
+                    if(!media.getBuilder().isExtensionOf(mmb.getBuilder("mediafragments"))) {
+                        log.error("Number "+number+" is not a media/audio/video fragment "+media);
+                        return "Number "+number+" is not a media/audio/video fragment "+media;
+                    }
+                    Map<String, Object> info = new HashMap<String, Object>();
+                    if(userSpeed!=null) {
+                        info.put("speed",""+userSpeed);
+                    }
+                    if(userChannels!=null) {
+                        info.put("channels",""+userChannels);
+                    }
                     return getURL(media, info);
                 } else {
-            log.error("No mediafragment specified");
+                    log.error("No mediafragment specified");
                     return null;
                 }
             }
