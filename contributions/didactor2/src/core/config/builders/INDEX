@@ -1,8 +1,6 @@
 ./resources/attachments.xml
-./resources/icaches.xml
-./resources/images.xml
-./resources/posrel.xml
 ./resources/urls.xml
+./resources/images.xml
 ./didactor_core/pagestays.xml
 ./didactor_core/authrel.xml
 ./didactor_core/classes.xml
@@ -21,6 +19,7 @@
 ./didactor_component/components.xml
 ./didactor_component/settingrel.xml
 ./didactor_component/settings.xml
+./didactor_resources/flashobjects.xml
 ./didactor_resources/audiotapes.xml
 ./didactor_resources/descriptionrel.xml
 ./didactor_resources/mmevents.xml
