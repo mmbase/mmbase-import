@@ -142,7 +142,7 @@ public abstract class ProcessorModule extends Module {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector<MMObjectNode> getNodeList(Object context, String command, Map<String,Object> params) {
+    public List<MMObjectNode> getNodeList(Object context, String command, Map<String,Object> params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
@@ -164,7 +164,7 @@ public abstract class ProcessorModule extends Module {
         if (context instanceof PageInfo) {
             sp = (PageInfo)context;
         }
-        Vector<String> v = getList(sp, tagger, command);
+        List<String> v = getList(sp, tagger, command);
         int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector<String> fieldlist = tagger.Values("FIELDS");
@@ -187,7 +187,7 @@ public abstract class ProcessorModule extends Module {
     /**
      * @javadoc
      **/
-    public Vector<String>  getList(PageInfo sp,StringTagger params, String command) {
+    public List<String>  getList(PageInfo sp,StringTagger params, String command) {
         throw new UnsupportedOperationException("Module " + this.getClass().getName() + " does not implement LIST");
     }
 
