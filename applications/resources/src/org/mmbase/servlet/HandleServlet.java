@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.1 2007-09-25 12:29:54 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.2 2008-09-03 17:18:05 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -131,17 +131,25 @@ public class HandleServlet extends BridgeServlet {
     }
 
     /**
+     * @since MMBase-1.9
+     */
+    protected String getContentDisposition(QueryParts query, Node node, String def) {
+        String fileNamePart = query.getFileName();
+        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
+            return "inline";
+        } else {
+            String cd = node.getNodeManager().getProperty("Content-Disposition");
+            return cd == null ? def : cd;
+        }
+    }
+
+
+    /**
      * Sets the content disposition header.
      * @return true on success
      */
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws IOException {
-        String disposition;
-        String fileNamePart = query.getFileName();
-        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
-            disposition = "inline";
-        } else {
-            disposition = "attachment";
-        }
+        String disposition = getContentDisposition(query, node, "attachment");
         query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + getFileName(node, null, "mmbase-attachment")+ "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;

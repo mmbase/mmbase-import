@@ -107,6 +107,8 @@
     <property name="MaxArea">1000000</property>
 
     <property name="wiki_inlinecreate">true</property> <!-- indicate to wiki's that this typically can be created 'inline' -->
+
+    <property name="Content-Disposition">inline</property>
   </properties>
 
   <fieldlist>

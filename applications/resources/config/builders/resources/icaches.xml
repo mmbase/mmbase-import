@@ -43,6 +43,8 @@
     -->
     <property name="LegacyCKey">false</property>
     <property name="FixLegacyCKey">true</property>
+
+    <property name="Content-Disposition">inline</property>
   </properties>
 
 
