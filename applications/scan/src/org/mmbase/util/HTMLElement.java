@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
+
 
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.util.logging.Logger;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @application SCAN
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.10 2008-08-01 22:01:32 michiel Exp $
+* @version $Id: HTMLElement.java,v 1.11 2008-09-03 15:23:39 michiel Exp $
 *
 */
 public abstract class HTMLElement {
@@ -52,7 +51,7 @@ public abstract class HTMLElement {
     /**
     * contains the Vector with the items returned by the ProcessorInteface.getList(value) if the PROC tag is present
     */
-    protected Vector valuesList = null;
+    protected List valuesList = null;
 
     /**
     * added to the SIZE= tag
