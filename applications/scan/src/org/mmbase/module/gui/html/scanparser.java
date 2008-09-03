@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.78 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: scanparser.java,v 1.79 2008-09-03 15:23:39 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -83,7 +83,7 @@ public class scanparser extends ProcessorModule {
      public String getMimeType(String ext) {
          return getMimeTypeFile("dummy."+ext);
      }
- 
+
      public String getMimeTypeFile(String fileName) {
          ServletContext sx = MMBaseContext.getServletContext();
          String mimeType = sx.getMimeType(fileName);
@@ -171,9 +171,9 @@ public class scanparser extends ProcessorModule {
         return dst.toString();
     }
 
-    public Vector reverse(Vector input,int num) {
+    public Vector reverse(List input,int num) {
         Vector results=new Vector();
-        for (Enumeration e=input.elements();e.hasMoreElements();) {
+        for (Enumeration e = Collections.enumeration(input);e.hasMoreElements();) {
             for (int i=0;i<num;i++) {
                 String val=(String)e.nextElement();
                 results.insertElementAt(val,i);
@@ -1550,7 +1550,7 @@ public class scanparser extends ProcessorModule {
         String str,key=null;
         StringTagger tagger=null;
         Object obj;
-        Vector t,cmds,result;
+        List t,cmds,result;
         int numitems=1,maxitems=-1,curitem=0,offset=0;
         int maxtotal=-1;
 
@@ -1716,15 +1716,15 @@ public class scanparser extends ProcessorModule {
                     }
                     offset*=numitems;
                     for (int j=offset;j<maxitems;j+=numitems) {
-                        t.removeAllElements();
+                        t.clear();
                         for (int i=0;i<numitems;i++) {
                             try {
-                                obj=result.elementAt(j+i);
+                                obj=result.get(j+i);
                                 if (obj==null) obj="NULL";
                             } catch (ArrayIndexOutOfBoundsException r) {
                                 obj="No Such Element";
                             }
-                            t.addElement(obj);
+                            t.add(obj);
                         }
                         rtn.append(processtemplate(t,template,curitem+(offset/numitems),jsize/numitems,curitem,numitems));
                         //rtn.append(processtemplate(t,template,curitem+(offset/numitems),maxtotal,curitem));
@@ -1816,15 +1816,15 @@ public class scanparser extends ProcessorModule {
                     }
 
                     for (int j=offset;j<maxitems;j+=numitems) {
-                        t.removeAllElements();
+                        t.clear();
                         for (int i=0;i<numitems;i++) {
                             try {
-                                obj=result.elementAt(j+i);
+                                obj=result.get(j+i);
                                 if (obj==null) obj="NULL";
                             } catch (ArrayIndexOutOfBoundsException r) {
                                 obj="No Such Element";
                             }
-                            t.addElement(obj);
+                            t.add(obj);
                         }
                         rtn.append(processtemplate(t,template,curitem+(offset/numitems),jsize/numitems,curitem,numitems));
                         //rtn.append(processtemplate(t,template,curitem+(offset/numitems),maxtotal,curitem));
@@ -1862,7 +1862,7 @@ public class scanparser extends ProcessorModule {
         return rtn.toString();
     }
 
-    private String processtemplate(Vector v,String template, int pos, int last, int rpos, int numitems) {
+    private String processtemplate(List v,String template, int pos, int last, int rpos, int numitems) {
         int precmd=0,postcmd=0,prepostcmd=0,index;
         StringBuffer dst=new StringBuffer();
         String cmd="$ITEM";
@@ -1880,7 +1880,7 @@ public class scanparser extends ProcessorModule {
                 } catch (Exception g) {}
                 index--;
                 try {
-                    dst.append((v.elementAt(index)).toString());
+                    dst.append((v.get(index)).toString());
                 } catch (ArrayIndexOutOfBoundsException e) {}
             } catch (NumberFormatException e) {
                 //index=1;
@@ -2050,17 +2050,17 @@ public class scanparser extends ProcessorModule {
      * @param numberofitems - integer with the amount of items.
      * @return a Vector with sorted items.
      */
-    Vector doMAlphaSort(Vector input,String sortonnumbers,int numberofitems) {
+    Vector doMAlphaSort(List input,String sortonnumbers,int numberofitems) {
 
         //SortedVector output = new SortedVector(new RowVectorCompare(sortonnumber));
         if (log.isDebugEnabled()) log.debug("doMAlphaSort: Sorting using MultiColCompare("+sortonnumbers+ ")");
         SortedVector output = new SortedVector(new MultiColCompare(sortonnumbers));
         // first create vectors with numberofitems per vector
-        Enumeration einput=input.elements();
+        Enumeration einput = Collections.enumeration(input);
         while (einput.hasMoreElements()) {
             Vector row=new Vector();
             for (int i=0;i<numberofitems;i++) {
-                row.addElement(einput.nextElement());
+                row.add(einput.nextElement());
             }
             output.addSorted(row);
         }
@@ -2070,7 +2070,7 @@ public class scanparser extends ProcessorModule {
             Vector row=(Vector)eoutput.nextElement();
             Enumeration erow=row.elements();
             while (erow.hasMoreElements()) {
-                result.addElement(erow.nextElement());
+                result.add(erow.nextElement());
             }
         }
         return result;

@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementTextArea.java,v 1.6 2004-09-29 14:29:25 pierre Exp $
+ * @version $Id: HTMLElementTextArea.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
  */
 public class HTMLElementTextArea  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementText
@@ -43,7 +43,7 @@ public class HTMLElementTextArea  extends HTMLElement {
         if (moreValues) {
             if (valuesList != null) {
                 String val = null;
-                Enumeration e = valuesList.elements();
+                Enumeration e = Collections.enumeration(valuesList);
                 if (e.hasMoreElements()) {
                     val = (String) e.nextElement();
                 }
