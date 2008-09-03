@@ -13,10 +13,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
- * @application Tools
+ * The URL builder provides nice gui indications for objects with an 'url' field. Also it provides
+ * the 'url' function wich also resolves urls which start with '/'.
+
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.4 2008-02-03 17:33:58 nklasens Exp $
+ * @author Michciel Meeuwissen
+ * @version $Id: Urls.java,v 1.5 2008-09-03 17:19:53 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
@@ -44,9 +46,11 @@ public class Urls extends MMObjectBuilder {
     }
 
 
+    @Override
     public String getDefaultUrl(int src) {
         MMObjectNode node = getNode(src);
         return node.getStringValue("url");
     }
+
 
 }
