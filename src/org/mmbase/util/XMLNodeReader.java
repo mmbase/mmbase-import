@@ -11,9 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
-import java.util.Locale;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
@@ -29,7 +27,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.48 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.49 2008-09-03 21:46:13 michiel Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -95,8 +93,8 @@ public class XMLNodeReader extends DocumentReader {
         return -1;
     }
 
-    public Vector<MMObjectNode> getNodes(MMBase mmbase) {
-        Vector<MMObjectNode> nodes = new Vector<MMObjectNode>();
+    public List<MMObjectNode> getNodes(MMBase mmbase) {
+        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
         Node n1 = document.getDocumentElement();
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());

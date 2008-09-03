@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
@@ -26,7 +26,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.29 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.30 2008-09-03 21:46:13 michiel Exp $
  */
 public class XMLRelationNodeReader extends XMLNodeReader {
 
@@ -40,8 +40,8 @@ public class XMLRelationNodeReader extends XMLNodeReader {
         super(is, path);
     }
 
-   public Vector<MMObjectNode> getNodes(MMBase mmbase) {
-      Vector<MMObjectNode> nodes = new Vector<MMObjectNode>();
+    @Override public List<MMObjectNode> getNodes(MMBase mmbase) {
+      List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
       Node n1 = document.getFirstChild();
       if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
          n1 = n1.getNextSibling();
