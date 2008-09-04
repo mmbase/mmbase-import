@@ -50,6 +50,7 @@
     </head>
     <body jsp="index.jspx">
       <param name="source" />
+      <param name="reference" />
     </body>
   </block>
 
