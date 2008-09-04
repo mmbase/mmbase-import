@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.4 2008-08-08 16:01:17 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.5 2008-09-04 09:49:14 michiel Exp $
  */
 public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -36,9 +36,13 @@ public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConve
         return new Parameter[] {};
     }
 
+    public Block getBlock(String path, Parameters frameworkParameters) {
+        return null;
+    }
+
     protected String getUrl(String path,
                              Map<String, Object> parameters,
-                             Parameters frameworkParameters, boolean escapeAmps, boolean action) {
+                             Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("" + path + parameters + frameworkParameters);
         }
@@ -79,12 +83,12 @@ public class DidactorUrlConverter implements org.mmbase.framework.basic.UrlConve
 
     public String getUrl(String path,
                          Map<String, Object> parameters,
-                         Parameters frameworkParameters, boolean escapeAmps) {
+                         Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
     public String getProcessUrl(String path,
                                 Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) {
+                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
 
