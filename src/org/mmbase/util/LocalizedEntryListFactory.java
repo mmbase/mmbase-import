@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.53 2008-08-28 11:41:36 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.54 2008-09-04 11:49:20 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -646,7 +646,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")";
     }
 
-    private static class Bundle implements Serializable, PublicCloneable {
+    private static class Bundle<D> implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
         private String      resource;
@@ -684,7 +684,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         /**
          * Collection of Map.Entry's
          */
-        Collection get(Locale loc) throws MissingResourceException {
+        Collection<Map.Entry<D, String>> get(Locale loc) throws MissingResourceException {
             try {
                 return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
             } catch (IllegalArgumentException iae) {
