@@ -16,10 +16,10 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of nodes, based on a Collection of Nodes
+ * A list of {@link org.mmbase.Relation}s, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.6 2007-02-16 20:07:24 michiel Exp $
+ * @version $Id: CollectionRelationList.java,v 1.7 2008-09-04 06:54:27 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
@@ -27,15 +27,15 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
     private static final Logger log = Logging.getLoggerInstance(CollectionRelationList.class);
 
 
-    public CollectionRelationList(Collection c, NodeManager nodeManager) {
+    public CollectionRelationList(Collection<? extends Node> c, NodeManager nodeManager) {
         super(c, nodeManager);
     }
 
 
-    public CollectionRelationList(Collection c, Cloud cloud) {
+    public CollectionRelationList(Collection<? extends Node> c, Cloud cloud) {
         super(c, cloud);
     }
-   
+
     public Relation getRelation(int index) {
         return get(index);
     }
@@ -43,7 +43,7 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
     public CollectionRelationList subList(int fromIndex, int toIndex)  {
         return subRelationList(fromIndex, toIndex);
     }
-    
+
     public CollectionRelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new CollectionRelationList(subList(fromIndex, toIndex), nodeManager);
