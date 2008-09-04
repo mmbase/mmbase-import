@@ -21,13 +21,30 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.67 2008-03-18 10:56:40 michiel Exp $
+ * @version $Id: Cloud.java,v 1.68 2008-09-04 12:29:28 michiel Exp $
  */
 public interface Cloud {
 
+    /**
+     * This property can contain hints on how to deal with XML fields. Things like 'xml', 'plain',
+     * 'wiki'.
+     */
     public static final String PROP_XMLMODE     = "org.mmbase.xml-mode";
 
+
+    /**
+     * The cloud itself may have been stored in a user's 'session', using this the key stored in
+     * this property.
+     */
     public static final String PROP_SESSIONNAME = "org.mmbase.cloud.sessionname";
+
+
+    /**
+     * With the Cloud a ServletRequest can be associated and stored in the 'property.
+     *
+     * @since MMBase-1.9
+     */
+    public static final String PROP_REQUEST     = "request";
 
 
     /**
