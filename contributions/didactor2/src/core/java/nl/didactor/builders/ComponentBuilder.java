@@ -9,7 +9,7 @@ import org.mmbase.module.database.MultiConnection;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.xml.ApplicationReader;
+import org.mmbase.util.xml.applicationdata.ApplicationReader;
 import org.mmbase.util.xml.BuilderReader;
 
 import java.util.*;
@@ -24,7 +24,7 @@ import nl.didactor.component.BasicComponent;
 /**
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ComponentBuilder.java,v 1.14 2008-08-07 16:33:49 michiel Exp $
+ * @version $Id: ComponentBuilder.java,v 1.15 2008-09-04 09:49:14 michiel Exp $
  */
 public class ComponentBuilder extends DidactorBuilder {
 
