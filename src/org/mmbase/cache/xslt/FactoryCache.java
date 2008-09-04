@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.cache.xslt;
 
 import org.mmbase.cache.Cache;
-import org.mmbase.util.xml.URIResolver;
+import javax.xml.transform.URIResolver;
 
 import javax.xml.transform.TransformerFactory;
 
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.11 2008-02-20 17:14:00 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.12 2008-09-04 05:56:22 michiel Exp $
  */
 public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
@@ -102,10 +102,10 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
     public TransformerFactory getFactory(File cwd) {
         try {
-            TransformerFactory tf = get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
+            TransformerFactory tf = get(new org.mmbase.util.xml.URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
             if (tf == null) {
                 // try again, but now construct URIResolver first.
-                return getFactory(new URIResolver(new URL("file://" + cwd)));
+                return getFactory(new org.mmbase.util.xml.URIResolver(new URL("file://" + cwd)));
             } else {
                 return tf;
             }
@@ -115,10 +115,10 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
     }
 
     public TransformerFactory getFactory(URL cwd) {
-        TransformerFactory tf =  get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
+        TransformerFactory tf =  get(new org.mmbase.util.xml.URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
         if (tf == null) {
             // try again, but now construct URIResolver first.
-            return getFactory(new URIResolver(cwd));
+            return getFactory(new org.mmbase.util.xml.URIResolver(cwd));
         } else {
             return tf;
         }

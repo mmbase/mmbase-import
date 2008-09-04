@@ -20,7 +20,7 @@ import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -57,11 +57,11 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUNDLE_1_0, DTD_BUNDLE_1_0, DiskProvider.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_BUNDLE_1_0, DTD_BUNDLE_1_0, DiskProvider.class);
     }
 
 

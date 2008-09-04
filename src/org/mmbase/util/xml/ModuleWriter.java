@@ -13,13 +13,13 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.mmbase.module.Module;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.9 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ModuleWriter.java,v 1.10 2008-09-04 05:56:23 michiel Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
 
@@ -35,7 +35,7 @@ public class ModuleWriter extends DocumentWriter  {
      */
     public ModuleWriter(Module module) throws DOMException {
         super("module", ModuleReader.PUBLIC_ID_MODULE,
-                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
+                        EntityResolver.DOMAIN + EntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
         this.module = module;
         getMessageRetriever("org.mmbase.util.xml.resources.modulewriter");
     }

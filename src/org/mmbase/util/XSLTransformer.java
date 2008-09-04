@@ -23,9 +23,9 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.xml.Generator;
 
 
+
 import org.mmbase.cache.xslt.*;
 
-import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.40 2008-08-07 18:53:07 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.41 2008-09-04 05:56:23 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -142,13 +142,13 @@ public class XSLTransformer {
         URIResolver uri;
         if (considerDir) {
             try {
-                uri = new URIResolver(new URL(xslFile, "."));
+                uri = new org.mmbase.util.xml.URIResolver(new URL(xslFile, "."));
             } catch (java.net.MalformedURLException mfe) {
                 // oddd..
                 throw new TransformerException(mfe.getMessage(), mfe);
             }
         } else {
-            uri = new URIResolver();
+            uri = new org.mmbase.util.xml.URIResolver();
         }
         Templates cachedXslt = cache.getTemplates(xsl, uri);
         if (log.isDebugEnabled()) {
@@ -193,14 +193,14 @@ public class XSLTransformer {
         if (! validation) {
             log.service("disabled validation");
         }
-        XMLEntityResolver resolver = new XMLEntityResolver(validation);
+        org.xml.sax.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver(validation);
         dfactory.setNamespaceAware(true);
         if (params != null && Boolean.FALSE.equals(params.get(NS_AWARE))) {
             dfactory.setNamespaceAware(false);
         }
         DocumentBuilder db = dfactory.newDocumentBuilder();
 
-        XMLErrorHandler handler = new XMLErrorHandler();
+        org.xml.sax.ErrorHandler handler = new org.mmbase.util.xml.ErrorHandler();
         db.setErrorHandler(handler);
         db.setEntityResolver(resolver);
         org.w3c.dom.Document xmlDoc = db.parse(xmlFile);

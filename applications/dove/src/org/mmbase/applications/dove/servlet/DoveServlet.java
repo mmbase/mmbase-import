@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.applications.dove.servlet;
 
@@ -31,10 +31,10 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.13 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: DoveServlet.java,v 1.14 2008-09-04 05:59:05 michiel Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
-    
+
     private static final Logger log =  Logging.getLoggerInstance(DoveServlet.class);
 
     /**
@@ -43,16 +43,15 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
      * @param req the HTTP Request object
      * @param res the HTTP Response object
      */
-    public void doGet(HttpServletRequest req, HttpServletResponse res)
-    throws IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         PrintWriter out = res.getWriter();
-        
+
         res.setContentType("text/html");
         out.println("<html><head><title>Dove</title></head>");
         out.println("<body><h1>Dove RPC Router</h1>");
         out.println("<p>The Dove servlet is active. use HTTP Post to send RPC commands.</p></body></html>");
     }
-    
+
     /**
      * Handles a request using the POST method.
      * Retrieves the value of the 'xml' parameter, and parses the body of that
@@ -73,8 +72,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
      * @param req the HTTP Request object
      * @param res the HTTP Response object
      */
-    public void doPost(HttpServletRequest req, HttpServletResponse res)
-    throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String error="unknown error";
         String errortype="unknown";
         boolean pretty="yes".equals(req.getParameter("pretty"));
@@ -82,7 +80,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
         try {
             DoveErrorHandler errorhandler = new DoveErrorHandler();
             DocumentBuilder db = DocumentReader.getDocumentBuilder(false,errorhandler, null);
-            
+
             // Right now we read content from parameters
             // Maybe we want the xml to be directly in the body?
             // Depends on how the editors will post.
@@ -107,7 +105,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
                     } else {
                         res.setContentType("text/xml");
                     }
-                    
+
                     BufferedWriter out=new BufferedWriter( new OutputStreamWriter(res.getOutputStream()));
                     String content = XMLWriter.write(doc,pretty);
                     if (log.isDebugEnabled()){log.debug("sending : " + content);}
@@ -134,25 +132,25 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
         out.println("<response><error type=\"" + errortype + "\">" + error + "</error></response>");
         out.flush();
     }
-    
+
     /**
      * Dove Error handler for catching and storing parsing exceptions.
      * The Error handler catches all exceptions and stores their descriptions.
      * These can then be retrieved by the Dove servlet, so it can generate an
      * error response.
      */
-    public class DoveErrorHandler implements ErrorHandler {
-        
+    public class DoveErrorHandler implements org.xml.sax.ErrorHandler {
+
         /**
          * The errors that occurred during the parse.
          */
         public String parsingerrors="";
-        
+
         /**
          * Indicates whether any errors occurred.
          */
         public boolean erroroccurred=false;
-        
+
         /**
          * Logs an error and adds it to the list of parsing errors.
          * @param ex the parsing exception describing the error
@@ -163,7 +161,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             log.error(s);
             parsingerrors=parsingerrors+s+"\n";
         }
-        
+
         /**
          * Logs a warning.
          * Warnings are not added to the list of parsing errors.
@@ -172,7 +170,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
         public void warning(SAXParseException ex) {
             log.warn(getErrorString(ex));
         }
-        
+
         /**
          * Logs a fatal error.
          * Fatal errors are not added to the list of parsing errors, they
@@ -183,7 +181,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             log.error("[Fatal Error] "+ getErrorString(ex));
             throw ex;
         }
-        
+
         /**
          * Returns a string describing the error.
          * @param ex the parsing exception describing the error
@@ -201,5 +199,5 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             ex.getMessage();
         }
     }
-    
+
 }

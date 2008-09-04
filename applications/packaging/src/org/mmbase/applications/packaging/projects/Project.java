@@ -15,7 +15,7 @@ import java.util.Iterator;
 import org.mmbase.applications.packaging.ProjectManager;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -49,10 +49,10 @@ public class Project {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_1_0, "DTD_PACKAGING_1_0", Project.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_1_0, "DTD_PACKAGING_1_0", Project.class);
     }
 
     /**

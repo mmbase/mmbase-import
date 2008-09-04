@@ -12,8 +12,6 @@ package org.mmbase.util.xml;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.*;
@@ -21,9 +19,6 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.mmbase.util.XMLEntityResolver;
-import org.mmbase.util.XMLErrorHandler;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -40,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.43 2008-09-03 19:59:42 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.44 2008-09-04 05:56:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -63,10 +58,10 @@ public class DocumentReader  {
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, DocumentReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, DocumentReader.class);
     }
 
     protected Document document;
@@ -142,8 +137,8 @@ public class DocumentReader  {
         }
         try {
             systemId = source.getSystemId();
-            XMLEntityResolver resolver = null;
-            if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
+            org.xml.sax.EntityResolver resolver = null;
+            if (resolveBase != null) resolver = new EntityResolver(validating, resolveBase);
             DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log != null && log.isDebugEnabled()) {
@@ -176,10 +171,10 @@ public class DocumentReader  {
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use a default resolver
      * @return a DocumentBuilder instance, or null if none could be created
      */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
         DocumentBuilder db;
-        if (handler == null) handler = new XMLErrorHandler();
-        if (resolver == null) resolver = new XMLEntityResolver(validating);
+        if (handler == null) handler = new ErrorHandler();
+        if (resolver == null) resolver = new EntityResolver(validating);
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
@@ -241,7 +236,7 @@ public class DocumentReader  {
     /**
      * See {@link #getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
         return getDocumentBuilder(validating, false, handler, resolver);
     }
 
@@ -256,7 +251,7 @@ public class DocumentReader  {
      * @return a DocumentBuilder instance, or null if none could be created
      * @since MMBase-1.8.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
         validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;

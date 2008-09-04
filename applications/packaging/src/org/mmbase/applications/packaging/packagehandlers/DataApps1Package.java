@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -65,12 +65,12 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATASET_1_0, DTD_DATASET_1_0, DataApps1Package.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_OBJECTSET_1_0, DTD_OBJECTSET_1_0, DataApps1Package.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_RELATIONSET_1_0, DTD_RELATIONSET_1_0, DataApps1Package.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_DATASET_1_0, DTD_DATASET_1_0, DataApps1Package.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_OBJECTSET_1_0, DTD_OBJECTSET_1_0, DataApps1Package.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_RELATIONSET_1_0, DTD_RELATIONSET_1_0, DataApps1Package.class);
     }
 
 

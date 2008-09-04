@@ -25,7 +25,7 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -51,10 +51,10 @@ public class PackageManager {
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGEHANDLERS_1_0, DTD_PACKAGEHANDLERS_1_0, PackageManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGEHANDLERS_1_0, DTD_PACKAGEHANDLERS_1_0, PackageManager.class);
     }
     /**
     * init(), starts the package manager mostly start the

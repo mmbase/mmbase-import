@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.59 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: Framework.java,v 1.60 2008-09-04 05:56:23 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -46,7 +46,7 @@ public abstract class Framework {
     public static final String XSD = "framework.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
     static {
-        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
 
 
