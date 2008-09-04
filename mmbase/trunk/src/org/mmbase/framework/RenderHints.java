@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * implementation some instructions about how to render excactly, since it may vary a bit in that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RenderHints.java,v 1.1 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: RenderHints.java,v 1.2 2008-09-04 21:20:02 michiel Exp $
  * @since MMBase-1.9
  */
 public class RenderHints {
@@ -34,17 +34,31 @@ public class RenderHints {
         this.clazz = clazz;
     }
 
-
+    /**
+     * The renderer where these hints are hinting for.
+     */
     public Renderer getRenderer() {
         return renderer;
     }
+    /**
+     * The window state is a hint on how big a part the rendering can take of the available
+     * area. Thins like {@link WindowState#MAXIMIZED} or {@link WindowState#NORMAL}.
+     */
     public WindowState getWindowState() {
         return state;
     }
 
+    /**
+     * A string which can identify the returned rendition in the current request. This can e.g. be
+     * used to fill an 'id' attribute of the outermost produced XML tag.
+     */
     public String getId() {
         return id;
     }
+
+    /**
+     * The framework may request to add a class for styling to the outermost produced XML tag.
+     */
     public String getStyleClass() {
         return clazz;
     }

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.16 2008-08-28 11:43:56 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.17 2008-09-04 21:20:01 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -55,7 +55,7 @@ abstract public class AbstractRenderer implements Renderer {
     /**
      * This utility method, which of course must be used in conjuction with {@link #decorateOutro}
      * can be used in concretizations of this class, for easy production of the div which is
-     * requested by the contract of a ({@link Renderer.BODY}) renderer for text/html.
+     * requested by the contract of a ({@link Renderer.Type#BODY}) renderer for text/html.
      */
     protected void decorateIntro(RenderHints hints, Writer w, String extraClass)  throws IOException {
         w.write("<div id=\"" + hints.getId() + "\"");
@@ -75,7 +75,7 @@ abstract public class AbstractRenderer implements Renderer {
         w.write("</div>");
     }
     /**
-     * @iniheritDoc
+     * @inheritDoc
      *
      * On default, a renderer has no parameters of itself
      */

@@ -9,11 +9,14 @@ package org.mmbase.core.event;
 
 
 /**
- * a simple broker for AllEventListener. Primarily created for the
- * CluserManager, which has to propagate all local events int the mmbase cluster.
+ * A simple broker for AllEventListener. Primarily created for {@link
+ * org.mmbase.clustering.ClusterManager}, which has to propagate all local events to the mmbase
+ * cluster.
+ *
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: AllEventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: AllEventBroker.java,v 1.4 2008-09-04 21:21:41 michiel Exp $
+ * @see  AllEventListener
  *
  */
 public class AllEventBroker extends AbstractEventBroker {

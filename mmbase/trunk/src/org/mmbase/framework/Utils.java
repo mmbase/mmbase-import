@@ -20,8 +20,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.4 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: Utils.java,v 1.5 2008-09-04 21:20:02 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -31,6 +33,10 @@ public abstract class Utils {
         // this class has no instances
     }
 
+    /**
+     * Renders a {@link Renderer} into a new {@link Document}. This assumes that the renderer
+     * indeed produces XML. This is e.g. used to include blocks into editwizard task XML's.
+     */
     public static Document renderToXml(Framework fw, Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, WindowState state,
                                        Class<?> baseClass) throws FrameworkException {
         boolean validation = true;
