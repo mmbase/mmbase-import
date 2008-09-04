@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import org.mmbase.util.logging.Logger;
@@ -27,10 +31,11 @@ public class Conversion {
 
    private static final Logger log = Logging.getLoggerInstance(Conversion.class.getName());
    
-   private static final String IMPORT_FILE = "import.xml"; 
+   private static final String IMPORT_FILE = "/WEB-INF/dataconversion/import.xml"; 
    private Properties properties;       
    private DataSource dataSource;   
    private String node;
+   private ServletContext context;
    
    private String table_log = "[Import data from table %s]";
    private String sefRelation_log = "[Import self relation of table %s]";
@@ -41,8 +46,9 @@ public class Conversion {
    public Conversion( ) {
 
    }
-   public Conversion(Properties properties) {
+   public Conversion(Properties properties, ServletContext context) {
       this.properties = properties;
+      this.context = context;
       if(properties.getProperty("node") != null) {
          node = properties.getProperty("node");
       }
@@ -56,8 +62,10 @@ public class Conversion {
       Document dom = null; 
       long beginTime = System.currentTimeMillis();
       try {
+    	  
+    	  
          log.info(" ###############################  begin  import ######################");
-         dom = XMLParser.parseXMLToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream(IMPORT_FILE));       
+         dom = XMLParser.parseXMLToDOM(context.getResourceAsStream(IMPORT_FILE));       
         // XMLParser.DTDValidator(dom);
          Element element = (Element)dom.getElementsByTagName("import").item(0);
          NodeList list = element.getChildNodes();         
@@ -219,8 +227,9 @@ public class Conversion {
       properties.setProperty("maxWait", "500");
       properties.setProperty("username", "root");
       properties.setProperty("password", "root");
-      
-      Conversion conversion = new Conversion(properties);
-      conversion.converseAll();
+   
+ // FP: Disabled to get it working with servlet context
+ //     Conversion conversion = new Conversion(properties);
+ //     conversion.converseAll();
    }
 }
