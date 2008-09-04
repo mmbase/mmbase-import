@@ -92,12 +92,18 @@
       </patternset>
       <mapper type="glob" from="templates/*" to="${mmbase.templates.path}*" />
     </unzip>
+    <!--
+        Installing the configuration is not generally a good idea.
+        Configuraion is something where user would be advicable, and just dumping files does not really help.
+        Especially if files can be overriden the ones installed by this can be in the way.
+
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/WEB-INF/">
       <patternset>
         <include name="config/**"/>
       </patternset>
       <mapper type="glob" from="config/*" to="config/*" />
     </unzip>
+    -->
     <unzip src="${download.dir}/${prefix}${name}-${version}.mmbase-module" dest="${dest}/WEB-INF/lib">
       <patternset>
         <include name="lib/**"/>
