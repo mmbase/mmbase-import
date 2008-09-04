@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.117 2008-08-29 12:40:29 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.118 2008-09-04 15:03:48 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -159,6 +159,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             //parameters.getWrapped(); // dereference this Why? That would break mm:param's.
             getContextProvider().getContextContainer().register(getId(), url);
         }
+        prevParamHandler = pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
+        pageContext.setAttribute(ParamHandler.KEY, new ParamHandler() {
+                // putting an object to only wrapp addParameter on the request.
+                public void addParameter(String k, Object v)  throws JspTagException {
+                    UrlTag.this.addParameter(k, v);
+                }
+            }, ParamHandler.SCOPE);
 
     }
 
@@ -169,13 +176,6 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         boolean i = internal.getBoolean(this, false);
         log.debug("internal : " +i);
         initTag(i);
-        prevParamHandler = pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
-        pageContext.setAttribute(ParamHandler.KEY, new ParamHandler() {
-                // putting an object to only wrapp addParameter on the request.
-                public void addParameter(String k, Object v)  throws JspTagException {
-                    UrlTag.this.addParameter(k, v);
-                }
-            }, ParamHandler.SCOPE);
         return EVAL_BODY_BUFFERED;
     }
 
