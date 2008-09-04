@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.108 2008-08-18 17:34:32 michiel Exp $
+ * @version $Id: Queries.java,v 1.109 2008-09-04 20:57:55 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1282,7 +1282,7 @@ abstract public class Queries {
 
      * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      * @since MMBase-1.8.6
-     * @returns Newly created node(s)
+     * @return Newly created node(s)
      * @throws NullPointerException if q or n is <code>null</code>
      */
     public static NodeList addToResult(Query q, Node n) {
@@ -1437,7 +1437,7 @@ abstract public class Queries {
 
 
     /**
-     * As {@link #createAgeConstraint(Query, Step, int int)}, but NodeQuery's have an exceptional
+     * As {@link #createAgeConstraint(Query, Step, int int, int)}, but NodeQuery's have an exceptional
      * step, which can be taken as the default.
      * @since MMBase-1.9
      */
@@ -1448,7 +1448,7 @@ abstract public class Queries {
      * Create a constraint for the query which limits to results to nodes of a certain age, based on
      * its number and the 'daymarkers' table.
      * @param minAge Minimal age in days (or -1 if it does not matter)
-     * @param minAge Maximila age in days (or -1 if it does not matter)
+     * @param maxAge Maximal age in days (or -1 if it does not matter)
      * @return a new Constraint or <code>null</code>
      * @since MMBase-1.9
      */
