@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * first in the enumeration.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.4 2008-07-28 16:12:35 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.5 2008-09-04 16:31:02 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
@@ -37,18 +37,18 @@ public class WeekdaysDataType extends IntegerDataType {
         setMax(7, true);
     }
 
-    public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    public Iterator<Map.Entry<Integer, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         final Calendar cal = Calendar.getInstance(locale);
-        final SortedMap<Object, Object> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
+        final SortedMap<Object, String> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
                                                                           SortedBundle.getConstantsProvider(Calendar.class), Integer.class, null);
 
-        return new Iterator() {
+        return new Iterator<Map.Entry<Integer, String>>() {
             int i = 0;
             int day = cal.getFirstDayOfWeek();
             public boolean hasNext() {
                 return i < 7;
             }
-            public Object next() {
+            public Map.Entry<Integer, String> next() {
                 Entry res  = new Entry(day, bundle.get(day));
                 i++;
                 day++;
