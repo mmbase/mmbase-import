@@ -11,9 +11,9 @@ package org.mmbase.util;
 
 /**
  *
- * @deprecatde Use org.mmbase.util.xml.ErrorHandler
+ * @deprecated Use org.mmbase.util.xml.ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.20 2008-09-03 23:41:47 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.21 2008-09-04 21:20:59 michiel Exp $
  */
 
 public class XMLErrorHandler extends org.mmbase.util.xml.ErrorHandler {
