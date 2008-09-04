@@ -43,8 +43,7 @@
         specifies the 'box' where the shout is in. E.g. we could couple 'shouts' to people, and it
         serves a simple inbox. But you could also wanto to talk _about_ another object.</description>
       </descriptions>
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-
+      <datatype base="shoutbox_references" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="title">
