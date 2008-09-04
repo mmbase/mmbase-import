@@ -31,12 +31,17 @@
 
   <div class="problems">
 
-    <!-- show the learnblocks -->
+    <!--
+         show the learnblocks
+    -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
       <mm:relatednodescontainer path="posrel,learnblocks">
         <mm:sortorder field="posrel.pos" />
         <mm:relatednodes id="learnBlock"  varStatus="status">
+          <!--
+               If a relation learnBlock -classrel->user exists, then that means that this lesson is marekd 'closed' (by this module)
+          -->
           <mm:relation to="${user}" role="classrel" notfound="null">
             <c:if test="${empty _node and empty firstopenlesson}">
               <mm:node node="learnBlock" id="firstopenlesson" />
@@ -52,8 +57,9 @@
     </mm:node>
 
 
-    <!-- now the problems, divided per type.
-         they can be edited by the user
+    <!--
+         Now the problems, divided per type.
+         They can be edited by the user
     -->
     <mm:listnodes orderby="pos" type="problemtypes">
       <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
