@@ -16,10 +16,10 @@ import org.mmbase.security.Action;
  * A component is a piece of pluggable functionality that typically has dependencies on other
  * components.
  *
- * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}.
+ * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}s.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.21 2008-08-14 20:19:26 michiel Exp $
+ * @version $Id: Component.java,v 1.22 2008-09-04 21:20:02 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -52,7 +52,12 @@ public interface Component {
     Collection<VirtualComponent> getUnsatisfiedDependencies();
 
     /**
-     * Used during bootstrapping. See also {@link #getUnsatisfiedDependencies()}
+     * Used during bootstrapping. Marks an unsatisfied dependency as satisfied. Moves object from
+     * the result of {@link #getUnsatisfiedDependencies} to {@link #getDependencies}.
+     *
+     * @param unsatified The VirtualComponent object that used to be unsatisfied
+     * @param satisfied  The object representing the same component, but now as an actual Component.
+     *
      */
     void resolve(VirtualComponent unsatified, Component satisfied);
 

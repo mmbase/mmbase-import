@@ -53,7 +53,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.97 2008-09-03 21:56:46 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.98 2008-09-04 21:19:41 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -353,7 +353,7 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Return all the objects that match the searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -367,7 +367,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields the fieldnames on which you want to sort.
@@ -390,7 +390,7 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Return all the objects that match the searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -404,7 +404,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields the fieldnames on which you want to sort.
@@ -550,7 +550,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes <code>null</code> or a list of numbers
@@ -570,7 +570,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
@@ -598,7 +598,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes <code>null</code> or a list of numbers
@@ -618,7 +618,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.

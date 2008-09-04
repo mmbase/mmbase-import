@@ -40,7 +40,7 @@ public abstract class ProcessorModule extends Module {
         super(name);
     }
     /**
-     * {@inheritDoc}
+     * @javadoc
      **/
     public MMObjectBuilder getListBuilder(String command, Map<String,Object> params) {
         return new VirtualBuilder(null);
@@ -192,21 +192,21 @@ public abstract class ProcessorModule extends Module {
     }
 
     /**
-     * {@inheritDoc}
+     * @javadoc
      */
     public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
         return false;
     }
 
     /**
-     * {@inheritDoc}
+     * @javadoc
      **/
     public String replace (PageInfo sp, String command) {
         return "This module doesn't implement this processor call";
     }
 
     /**
-     * {@inheritDoc}
+     * @javadoc
      * who the hell uses this (daniel)
      **/
     public String replace (PageInfo sp, StringTagger command) {
@@ -214,9 +214,9 @@ public abstract class ProcessorModule extends Module {
     }
 
     /**
-     * {@inheritDoc}
+     * @javadoc
      */
-    public boolean cacheCheck(PageInfo sp, String cmd) {
+    private boolean cacheCheck(PageInfo sp, String cmd) {
         return false;
     }
 
