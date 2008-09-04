@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.162 2008-08-14 16:01:14 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.163 2008-09-04 12:31:41 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -515,7 +515,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         pageContext.setAttribute(KEY, cloud, SCOPE);
 
         if (cloud.getCloudContext() instanceof LocalContext) {
-            cloud.setProperty("request", request);
+            cloud.setProperty(Cloud.PROP_REQUEST, request);
         }
         cloud.setProperty(LocaleTag.TZ_KEY, getTimeZone());
 
