@@ -32,7 +32,9 @@
               <di:leaf icon="learnblock"
                        branchPath=". ">
                 <mm:link referid="listjsp">
-                  <mm:param name="wizard"><mm:property name="wizard" nodemanager="${type}" /></mm:param>
+                  <mm:param name="wizard">
+                    <mm:property name="wizard" nodemanager="${type}" write="true"><mm:isempty>config/${type}/${type}</mm:isempty></mm:property>
+                  </mm:param>
                   <mm:param name="nodepath">${type}</mm:param>
                   <mm:param name="search">yes</mm:param>
                   <mm:param name="orderby"><mm:property name="orderby" nodemanager="${type}" /></mm:param>
@@ -66,6 +68,10 @@
           </mm:hasnode>
 
           <di:blocks classification="didactor.metadata" />
+
+          <mm:hasnode number="component.faq">
+            <di:include  page="/faq/backoffice/add_faq.jsp" />
+          </mm:hasnode>
 
           <!--
 
