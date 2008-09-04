@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * implicitely {@link #convert}ed when necessary.
  *
  * @since MMBase-1.8
- * @version $Id: AbstractCollectionNodeList.java,v 1.7 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: AbstractCollectionNodeList.java,v 1.8 2008-09-04 09:34:51 michiel Exp $
  * @author Nico Klasens
  */
 
@@ -34,13 +34,13 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
     protected final NodeManager nodeManager;
     protected final List wrappedCollection;
 
-    public AbstractCollectionNodeList(Collection<Node> c, NodeManager nodeManager) {
+    public AbstractCollectionNodeList(Collection<? extends Node> c, NodeManager nodeManager) {
         this.nodeManager = nodeManager;
         this.cloud = nodeManager.getCloud();
         this.wrappedCollection = convertedList(c, cloud);
     }
 
-    public AbstractCollectionNodeList(Collection<Node> c, Cloud cloud) {
+    public AbstractCollectionNodeList(Collection<? extends Node> c, Cloud cloud) {
         this.nodeManager = null;
         this.cloud = cloud;
         this.wrappedCollection = convertedList(c, cloud);
@@ -77,7 +77,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
         return wrappedCollection;
     }
 
-    private static List<Node> convertedList(Collection<Node> c, Cloud cloud) {
+    private static List convertedList(Collection c, Cloud cloud) {
         if (c instanceof List) {
             return (List<Node>) c;
         } else {
