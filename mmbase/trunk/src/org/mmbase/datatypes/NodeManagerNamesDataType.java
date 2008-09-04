@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * nodemanager will be used as the actual node manager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeManagerNamesDataType.java,v 1.1 2008-07-28 16:13:17 michiel Exp $
+ * @version $Id: NodeManagerNamesDataType.java,v 1.2 2008-09-04 12:19:35 michiel Exp $
  * @since MMBase-1.9
  */
 public class NodeManagerNamesDataType extends StringDataType {
@@ -29,6 +29,10 @@ public class NodeManagerNamesDataType extends StringDataType {
     private static final Logger log = Logging.getLoggerInstance(NodeManagerNamesDataType.class);
 
     private static final long serialVersionUID = 1L;
+
+    public NodeManagerNamesDataType(String name) {
+        super(name);
+    }
 
 
     /*
@@ -39,7 +43,7 @@ public class NodeManagerNamesDataType extends StringDataType {
     }
     */
 
-    public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
+    @Override public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue != null) {
             for (String def : defaultValue.split("\\s*,\\s*")) {
                 log.info("Considereing " + def);
@@ -49,13 +53,9 @@ public class NodeManagerNamesDataType extends StringDataType {
         return null;
     }
 
-    public NodeManagerNamesDataType(String name) {
-        super(name);
-    }
-
-    public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    @Override public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         if (node == null && cloud == null) return null; // we don't know..
-        return new Iterator() {
+        return new Iterator<Map.Entry<String, String>>() {
             List<NodeManager> list = node == null ? cloud.getNodeManagers() : node.getCloud().getNodeManagers();
             Iterator<NodeManager> iterator = list.iterator();
             public boolean hasNext() {
