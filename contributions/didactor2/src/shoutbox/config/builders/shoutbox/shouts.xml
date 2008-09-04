@@ -12,17 +12,17 @@
 
   <searchage>0</searchage>
   <names>
-    <singular xml:lang="en">Annotation</singular>
-    <singular xml:lang="nl">Aantekening</singular>
+    <singular xml:lang="en">Message</singular>
+    <singular xml:lang="nl">Bericht</singular>
 
-    <plural xml:lang="en">Annotations</plural>
-    <plural xml:lang="nl">Aantekeningen</plural>
+    <plural xml:lang="en">Messages</plural>
+    <plural xml:lang="nl">Berichten</plural>
   </names>
 
   <fieldlist>
 
-    <field name="from" type="system">
-	  <gui>
+    <field name="from" state="system">
+      <gui>
         <guiname xml:lang="en">From</guiname>
         <guiname xml:lang="nl">Van</guiname>
       </gui>
@@ -30,6 +30,21 @@
       <datatype base="user" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
       </datatype>
+    </field>
+
+
+    <field name="reference">
+      <gui>
+        <guiname xml:lang="en">Refers</guiname>
+        <guiname xml:lang="nl">Behandelt</guiname>
+      </gui>
+      <descriptions>
+        <description xml:lang="en">A node where this shout is about. This normally only further
+        specifies the 'box' where the shout is in. E.g. we could couple 'shouts' to people, and it
+        serves a simple inbox. But you could also wanto to talk _about_ another object.</description>
+      </descriptions>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
     </field>
 
     <field name="title">
@@ -52,6 +67,7 @@
         <maxLength value="65000" />
       </datatype>
     </field>
+
   </fieldlist>
 
 </builder>
