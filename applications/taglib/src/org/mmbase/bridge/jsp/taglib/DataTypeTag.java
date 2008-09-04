@@ -14,8 +14,8 @@ import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 
-import org.mmbase.util.XMLEntityResolver;
-import org.mmbase.util.XMLErrorHandler;
+import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.xml.ErrorHandler;
 
 import java.io.StringReader;
 
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.4 2008-08-19 11:46:31 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.5 2008-09-04 12:31:07 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -101,8 +101,8 @@ public class DataTypeTag extends CloudReferrerTag {
         if (body != null) buf.append(body);
         buf.append("</datatype>");
         try {
-            XMLErrorHandler errorHandler = new XMLErrorHandler(false, XMLErrorHandler.WARNING);
-            XMLEntityResolver resolver = new XMLEntityResolver(true, DataTypeReader.class);
+            org.xml.sax.ErrorHandler errorHandler = new ErrorHandler(false, ErrorHandler.WARNING);
+            org.xml.sax.EntityResolver resolver = new EntityResolver(true, DataTypeReader.class);
             DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, true,
                                                                                              errorHandler, resolver);
             Element element = dbuilder.parse(new InputSource(new StringReader(buf.toString()))).getDocumentElement();
