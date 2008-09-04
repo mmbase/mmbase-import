@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * This processor can be used as a 'set' processor on keyword fields. It maintains then a count on
- * all keywords. These counts are aquirable via the static method {@link getKeyWords} (and via a
+ * all keywords. These counts are aquirable via the static method {@link #getKeywords} (and via a
  * function 'keywords' on the 'utils' set). Two properties can be set on this
  * processor. The first one is the 'repository' which is a key with with to store the Map with the
  * counts. This ensures that you can use this processor for different 'clouds' of keywords. The
@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  >]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: KeywordsProcessor.java,v 1.2 2008-07-23 04:59:14 michiel Exp $
+ * @version $Id: KeywordsProcessor.java,v 1.3 2008-09-04 21:22:09 michiel Exp $
  * @since MMBase-1.9
  */
 
