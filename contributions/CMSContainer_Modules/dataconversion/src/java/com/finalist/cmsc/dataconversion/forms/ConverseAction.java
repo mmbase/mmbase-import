@@ -23,7 +23,7 @@ public class ConverseAction extends MMBaseFormlessAction {
       Properties properties = new Properties();
       copyProperties(properties,request);
       request.setAttribute("uuid",properties.getProperty("uuid"));
-      ConversionThread starter = new ConversionThread(properties);
+      ConversionThread starter = new ConversionThread(properties, getServlet().getServletContext());
       starter.start();
       
       return mapping.findForward(SUCCESS);
