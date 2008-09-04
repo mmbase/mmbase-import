@@ -19,23 +19,24 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent {@link ParamHandler} tag (e.g. an mm:link tag).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.19 2008-08-29 12:40:29 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.20 2008-09-04 15:02:58 michiel Exp $
  */
 
 public class ParamTag extends AbstractParamTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
 
     private ParamHandler paramHandler;
+    private Object prev;
 
     public int doStartTag() throws JspException {
-
-        paramHandler = findParentTag(ParamHandler.class, null, false);
+        paramHandler = (ParamHandler) pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
         if (paramHandler == null) {
-            paramHandler = (ParamHandler) pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
+            paramHandler = findParentTag(ParamHandler.class, null);
+            prev = null;
+        } else {
+            prev = paramHandler;
         }
-        if (paramHandler == null) {
-            throw new JspTagException ("ould not find parent of type org.mmbase.bridge.jsp.taglib.ParamHandler, not could it be found in an attribute " + KEY);
-        }
+        pageContext.setAttribute(ParamHandler.KEY, this, ParamHandler.SCOPE);
         return super.doStartTag();
     }
 
@@ -58,7 +59,9 @@ public class ParamTag extends AbstractParamTag implements ParamHandler {
 
     public int doEndTag() throws JspTagException {
         int r = super.doEndTag();
+        pageContext.setAttribute(ParamHandler.KEY, prev, ParamHandler.SCOPE);
         paramHandler = null;
+        prev = null;
         return r;
 
     }
