@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.33 2008-09-01 08:58:24 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.34 2008-09-04 14:43:32 michiel Exp $
  */
 
 
@@ -91,7 +91,7 @@ function MMBaseRelater(d) {
 MMBaseRelater.readyFunctions = [];
 
 MMBaseRelater.ready = function(fun) {
-    if (typeof(console) != "undefined") {
+    if (console != undefined) {
 	console.log("WARNING using deprecated function. This will be removed soon. Use mmsrRelate event in stead.");
     }
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
