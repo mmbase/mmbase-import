@@ -18,11 +18,16 @@ import org.mmbase.datatypes.LengthDataType;
 
 
 /**
- * Wraps a DataType object into a (virtual) Field object, with a Virtual NodeManager with only one field
- * (itself). This also associates a Cloud object with the DataType.
+ * Wraps a DataType object into a (virtual) Field object. It can be instantiated with {@link
+ * #DataTypeField(Cloud, DataType)} to have a 'virtual field with a Virtual NodeManager with only one field
+ * (itself). The constructor {@link DataTypeField(Field, DataType)}, produces a new field object,
+ * that is very similar to the one wrapped, only with a different {@link DataType}.
+ *
+ * This also a way to associate a Cloud object with a DataType (it is actually possible to see that
+ * as the essence of being a {@link org.mmbase.bridge.Field}).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.8 2008-09-01 17:00:52 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.9 2008-09-04 06:54:27 michiel Exp $
  * @since   MMBase-1.8.7
  */
 

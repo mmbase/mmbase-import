@@ -17,6 +17,16 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * An AbstractCollectionNodeList implements a {@link org.mmbase.bridge BridgeList} of {@link
+ * org.mmbase.bridge.Node}s, based on a collection of objects of perhaps other type, which are
+ * implicitely {@link #convert}ed when necessary.
+ *
+ * @since MMBase-1.8
+ * @version $Id: AbstractCollectionNodeList.java,v 1.7 2008-09-04 06:54:27 michiel Exp $
+ * @author Nico Klasens
+ */
+
 public abstract class AbstractCollectionNodeList<E extends Node> extends AbstractBridgeList<E> {
     private static final Logger log = Logging.getLoggerInstance(AbstractCollectionNodeList.class);
 
