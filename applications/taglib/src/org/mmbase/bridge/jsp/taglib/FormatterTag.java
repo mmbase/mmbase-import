@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.78 2008-03-17 16:55:14 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.79 2008-09-04 12:31:07 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -120,8 +120,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
             documentBuilderNS = dfactory.newDocumentBuilder();
-            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.XMLErrorHandler();
-            org.xml.sax.EntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
+            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.xml.ErrorHandler();
+            org.xml.sax.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver();
             documentBuilder.setErrorHandler(handler);
             documentBuilder.setEntityResolver(resolver);
             documentBuilderNS.setErrorHandler(handler);
