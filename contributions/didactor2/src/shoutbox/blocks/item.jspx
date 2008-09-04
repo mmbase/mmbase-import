@@ -10,32 +10,18 @@
 	<mm:import externid="icondir"/>
 	<mm:import externid="new"/>
 	<fieldset>
-	<legend>Bericht</legend>
-		<ul>
-			<li>
-				<mm:field name="from">
-					<label><mm:fieldinfo type="guiname"/>:</label>
-					<span>
-						<mm:fieldinfo type="guivalue"/>
-					</span>
-				</mm:field>
-			</li>
-			<li>
-				<mm:field name="title">
-					<label><mm:fieldinfo type="guiname"/>:</label>
-					<mm:fieldinfo type="${empty new ? 'value' : 'input'}"/>
-					<mm:fieldinfo type="errors"/>
-				</mm:field>
-				<jsp:text> </jsp:text>
-			</li>
-			<li>
-				<mm:field name="body">
-					<label><mm:fieldinfo type="guiname"/>:</label>
-					<mm:fieldinfo type="${empty new ? 'value' : 'input'}"/>
-					<mm:fieldinfo type="errors"/>
-				</mm:field>
-			</li>
-		</ul>
+    <legend><mm:nodeinfo type="guinodemanager" /></legend>
+    <ul>
+      <mm:fieldlist type="edit" varStatus="status">
+        <li>
+          <label><mm:fieldinfo type="guiname"/>:</label>
+          <span>
+            <mm:fieldinfo type="${empty new ? 'guivalue' : 'input'}"/>
+            <mm:fieldinfo type="errors"/>
+          </span>
+        </li>
+      </mm:fieldlist>
+    </ul>
 		<mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}"/>
 	</fieldset>
 </jsp:root>
