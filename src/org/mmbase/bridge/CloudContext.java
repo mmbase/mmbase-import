@@ -19,7 +19,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.35 2008-08-08 11:30:58 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.36 2008-09-04 20:57:55 michiel Exp $
  */
 public interface CloudContext {
 
@@ -204,7 +204,7 @@ public interface CloudContext {
     public CloudContext assertUp();
 
     /**
-     * The String which could be used to acquire this cloud context using {@link ContextProvider.getCloudContext(String)}.
+     * The String which could be used to acquire this cloud context using {@link ContextProvider#getCloudContext(String)}.
      * @since MMBase-1.9
      */
     public String getUri();

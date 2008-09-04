@@ -15,7 +15,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.14 2008-08-01 19:21:04 michiel Exp $
+ * @version $Id: Event.java,v 1.15 2008-09-04 20:59:06 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -30,7 +30,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     /**
      * Every event originates from a certain machine, which is identified by a String.
-     * If this equals {@link MMBaseContext.getMachineName()} then this is a local event.
+     * If this equals {@link MMBaseContext#getMachineName()} then this is a local event.
      */
     public String getMachine() {
         return machine;
@@ -50,7 +50,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     /**
      * @param machine The machine name. If <code>null</code> the local machine name is extracted from MMBase, using
-     *                {@link MMBase#getMachineName()}
+     *                {@link MMBaseContext#getMachineName()}
      */
     public Event(String machine, int type) {
         this.machine =  machine == null ?
