@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.19 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: MultiPart.java,v 1.20 2008-09-04 14:31:08 michiel Exp $
  **/
 
 public class MultiPart {
@@ -37,30 +37,37 @@ public class MultiPart {
         return (ct.startsWith("multipart/"));
     }
 
-    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
-        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY, PageContext.REQUEST_SCOPE);
+    /**
+     * @since MMBase-1.8.7
+     */
+    public static MMultipartRequest getMultipartRequest(HttpServletRequest request, String encoding) {
+        MMultipartRequest multipartRequest = (MMultipartRequest) request.getAttribute(MULTIPARTREQUEST_KEY);
         if (multipartRequest == null) {
             log.debug("Creating new MultipartRequest");
-            multipartRequest = new MMultipartRequest((HttpServletRequest)pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
+            multipartRequest = new MMultipartRequest(request, encoding);
             log.debug("have it");
 
             if (log.isDebugEnabled()) {
                 if (multipartRequest != null) {
-                    Iterator<String> paramNames = multipartRequest.getParameterNames();
-                    StringBuffer params = new StringBuffer();
-                    while (paramNames.hasNext()) {
-                        params.append(paramNames.next()).append(",");
+                    StringBuilder params = new StringBuilder();
+                    for (String paramName : (Collection<String>) multipartRequest.getParameterNames()) {
+                        params.append(paramName).append(",");
                     }
                     log.debug("multipart parameters: " + params);
                 } else {
                     log.debug("not a multipart request");
                 }
             }
-            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
+            request.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest);
         } else {
             log.debug("Found multipart request on pageContext" + multipartRequest);
         }
         return multipartRequest;
+    }
+
+    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
+        return getMultipartRequest((HttpServletRequest) pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
+
     }
 
     static public class MMultipartRequest {
@@ -208,8 +215,8 @@ public class MultiPart {
             }
         }
 
-        public Iterator<String> getParameterNames() {
-            return parametersMap.keySet().iterator();
+        public Collection<String> getParameterNames() {
+            return parametersMap.keySet();
         }
     }
 
