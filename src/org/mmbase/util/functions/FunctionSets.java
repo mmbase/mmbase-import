@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.33 2008-07-28 16:22:33 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.34 2008-09-04 05:56:23 michiel Exp $
  */
 public class FunctionSets {
 
@@ -51,8 +51,8 @@ public class FunctionSets {
     private static final Map<String, FunctionSet> functionSets = new HashMap<String, FunctionSet>();
 
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSETS_1_0, DTD_FUNCTIONSETS_1_0, FunctionSets.class);
+        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
+        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSETS_1_0, DTD_FUNCTIONSETS_1_0, FunctionSets.class);
     }
 
     /**

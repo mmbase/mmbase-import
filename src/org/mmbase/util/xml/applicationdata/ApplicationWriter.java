@@ -19,12 +19,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
+import org.mmbase.util.ResourceLoader;
 
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id: ApplicationWriter.java,v 1.2 2008-09-04 05:56:23 michiel Exp $
  */
 public class ApplicationWriter extends org.mmbase.util.xml.DocumentWriter  {
 
@@ -42,7 +43,7 @@ public class ApplicationWriter extends org.mmbase.util.xml.DocumentWriter  {
      */
     public ApplicationWriter(ApplicationReader reader, MMBase mmbase) throws DOMException {
         super("application", ApplicationReader.PUBLIC_ID_APPLICATION,
-                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ApplicationReader.DTD_APPLICATION);
+                        EntityResolver.DOMAIN + EntityResolver.DTD_SUBPATH + ApplicationReader.DTD_APPLICATION);
         this.reader = reader;
         this.mmbase = mmbase;
         getMessageRetriever("org.mmbase.util.xml.resources.applicationwriter");

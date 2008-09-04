@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -58,9 +58,9 @@ public class Model {
      * Description of the Method
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0,
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0,
                 "DTD_PACKAGING_CLOUD_MODEL_1_0", Model.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, "DTD_BUILDER_1_1", Model.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, "DTD_BUILDER_1_1", Model.class);
     }
 
     public Model(String modelfilename) {

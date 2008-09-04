@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.27 2008-07-28 15:09:31 michiel Exp $
+ * @version $Id: EventManager.java,v 1.28 2008-09-04 05:56:22 michiel Exp $
  */
 public class EventManager {
 
@@ -39,7 +39,7 @@ public class EventManager {
 
 
     static {
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
+        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_EVENTMANAGER, DTD_EVENTMANAGER, EventManager.class);
     }
 
     /**

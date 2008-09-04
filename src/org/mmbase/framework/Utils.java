@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.3 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id: Utils.java,v 1.4 2008-09-04 05:56:23 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -41,7 +41,7 @@ public abstract class Utils {
             log.debug("Parsing " + w.toString() + " of " +  renderer + " of " + renderer.getBlock());
         }
         InputSource source = new InputSource(new StringReader(w.toString()));
-        XMLEntityResolver resolver = new XMLEntityResolver(true, baseClass);
+        EntityResolver resolver = new org.mmbase.util.xml.EntityResolver(true, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
                                                                                          null/* default error handler */, resolver);
         if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");

@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 import org.mmbase.applications.packaging.ProviderManager;
 import org.mmbase.applications.packaging.projects.Target;
 import org.mmbase.applications.packaging.projects.packageStep;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
@@ -37,7 +37,7 @@ public class JavaJarCreator extends BasicCreator implements CreatorInterface {
      *  Description of the Method
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_JAVA_JAR_1_0, "DTD_PACKAGING_JAVA_JAR_1_0", JavaJarCreator.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_JAVA_JAR_1_0, "DTD_PACKAGING_JAVA_JAR_1_0", JavaJarCreator.class);
     }
 
 

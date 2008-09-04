@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.19 2008-08-21 15:40:19 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.20 2008-09-04 05:56:23 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -41,7 +41,7 @@ public class ClassAuthentication {
 
     private static int MAX_DEPTH = 10;
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
+        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
     private static List<Login> authenticatedClasses = null;
 
@@ -79,8 +79,8 @@ public class ClassAuthentication {
                 if (! con.getDoInput()) continue;
                 InputSource in = new InputSource(con.getInputStream());
                 Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
-                                                                      new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
-                                                                      new XMLEntityResolver(true, ClassAuthentication.class) // validate
+                                                                      new org.mmbase.util.xml.ErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
+                                                                      new org.mmbase.util.xml.EntityResolver(true, ClassAuthentication.class) // validate
                                                                       ).parse(in);
 
                 NodeList authenticates = document.getElementsByTagName("authenticate");

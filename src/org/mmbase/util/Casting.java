@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.116 2008-09-02 11:18:34 michiel Exp $
+ * @version $Id: Casting.java,v 1.117 2008-09-04 05:56:23 michiel Exp $
  */
 
 import java.util.*;
@@ -987,7 +987,7 @@ public class Casting {
             dfactory.setValidating(false);
             dfactory.setNamespaceAware(true);
             DOCUMENTBUILDER = dfactory.newDocumentBuilder();
-            DOCUMENTBUILDER.setEntityResolver(new XMLEntityResolver(false));
+            DOCUMENTBUILDER.setEntityResolver(new org.mmbase.util.xml.EntityResolver(false));
         } catch (ParserConfigurationException pce) {
             log.error("[sax parser]: " + pce.toString(), pce);
         } catch (Exception e) {
@@ -1010,7 +1010,7 @@ public class Casting {
         }
         try {
             Document doc;
-            final XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+            final org.mmbase.util.xml.ErrorHandler errorHandler = new org.mmbase.util.xml.ErrorHandler(false, org.mmbase.util.xml.ErrorHandler.NEVER);
             assert DOCUMENTBUILDER != null;
             synchronized(DOCUMENTBUILDER) {
                 // dont log errors, and try to process as much as possible...

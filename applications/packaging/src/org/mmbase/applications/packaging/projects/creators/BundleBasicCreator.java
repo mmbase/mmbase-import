@@ -23,7 +23,7 @@ import org.mmbase.applications.packaging.projects.IncludedPackage;
 import org.mmbase.applications.packaging.projects.Target;
 import org.mmbase.applications.packaging.projects.packageStep;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.NamedNodeMap;
@@ -41,7 +41,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
     public static final String PUBLIC_ID_PACKAGING_BUNDLE_BASIC_1_0 = "-//MMBase//DTD packaging_bundle_basic config 1.0//EN";
 
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_BUNDLE_BASIC_1_0, "DTD_PACKAGING_BUNDLE_BASIC_1_0", BundleBasicCreator.class);    }
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_BUNDLE_BASIC_1_0, "DTD_PACKAGING_BUNDLE_BASIC_1_0", BundleBasicCreator.class);    }
 
     public BundleBasicCreator() {
     	cl=BundleBasicCreator.class;
