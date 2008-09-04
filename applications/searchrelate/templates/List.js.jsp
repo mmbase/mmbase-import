@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.23 2008-08-21 08:58:33 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.24 2008-09-04 15:26:12 michiel Exp $
  */
 
 
@@ -148,9 +148,13 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
-	params.item   = this.item;
+	if (this.item != undefined) {
+	    params.item   = this.item;
+	}
 	params.mm_list_sequence  = List.seq++;
-	params.source = this.source;
+	if (this.source != undefined) {
+	    params.source = this.source;
+	}
 	params.createpos = this.parentNode.list.createpos;
 
 	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
