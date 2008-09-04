@@ -6,6 +6,10 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="images" maintainer="mmbase.org" version="1000" extends="images">
 
+  <properties>
+    <property name="wizard">config/image/image</property>
+    <property name="orderby">title</property>
+  </properties>
 
   <fieldlist>
 
