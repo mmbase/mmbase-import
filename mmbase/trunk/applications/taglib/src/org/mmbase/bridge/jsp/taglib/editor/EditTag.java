@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.25 2008-03-31 13:10:47 michiel Exp $
+ * @version $Id: EditTag.java,v 1.26 2008-09-04 12:31:07 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -60,7 +60,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     static {
         try {
-            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
+            org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
                 public void onChange(String resource) {
                     edittagTypes.clear();

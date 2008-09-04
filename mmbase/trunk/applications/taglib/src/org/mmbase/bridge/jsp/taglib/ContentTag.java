@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.66 2007-09-25 12:39:51 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.67 2008-09-04 12:31:07 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -69,7 +69,7 @@ public class ContentTag extends LocaleTag  {
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class);
-            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
+            org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
                     public void onChange(String resource) {
                         defaultEscapers.clear();
