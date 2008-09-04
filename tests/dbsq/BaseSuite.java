@@ -4,14 +4,14 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BaseSuite extends org.mmbase.tests.MMBaseTest {
-    
+
     public BaseSuite(String testName) {
         super(testName);
     }
-    
+
     // Takes mmbase.config value as arg.
     public static void main(java.lang.String[] args) {
         if (args.length == 1) {
@@ -20,17 +20,17 @@ public class BaseSuite extends org.mmbase.tests.MMBaseTest {
         junit.textui.TestRunner.run(suite());
         System.exit(0);
     }
-    
+
     /**
      * Sets up before each test.
      */
     public void setUp() throws Exception {}
-    
+
     /**
      * Tears down after each test.
      */
     public void tearDown() throws Exception {}
-    
+
     public static Test suite() {
         try {
             startMMBase();
@@ -40,8 +40,7 @@ public class BaseSuite extends org.mmbase.tests.MMBaseTest {
         suite.addTest(org.mmbase.module.core.CoreSuite.suite());
         suite.addTest(org.mmbase.storage.search.implementation.ImplementationSuite.suite());
         suite.addTest(org.mmbase.storage.search.legacy.LegacySuite.suite());
-        suite.addTest(org.mmbase.util.UtilSuite.suite());
         return suite;
     }
-    
+
 }
