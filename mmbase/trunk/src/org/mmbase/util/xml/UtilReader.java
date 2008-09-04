@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.37 2008-08-02 15:15:25 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.38 2008-09-04 05:56:23 michiel Exp $
  */
 public class UtilReader {
 
@@ -57,10 +57,10 @@ public class UtilReader {
 
     /**
      * Register the Public Ids for DTDs used by UtilReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
     private static final Map<String, UtilReader> utilReaders = new HashMap<String, UtilReader>();     // file-name -> utilreader

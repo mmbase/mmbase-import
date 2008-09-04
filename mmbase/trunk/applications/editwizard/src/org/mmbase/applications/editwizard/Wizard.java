@@ -20,9 +20,7 @@ import org.mmbase.applications.dove.*;
 import org.mmbase.util.*;
 import org.mmbase.framework.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.URIResolver;
-import org.mmbase.util.xml.DocumentSerializable;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.*;
 import org.mmbase.util.functions.*;
 
 import java.util.regex.*;
@@ -47,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.168 2008-09-03 10:27:21 michiel Exp $
+ * @version $Id: Wizard.java,v 1.169 2008-09-04 05:58:11 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -60,8 +58,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
 
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0, DTD_EDITWIZARD_1_0, Wizard.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0_FAULT, DTD_EDITWIZARD_1_0, Wizard.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0, DTD_EDITWIZARD_1_0, Wizard.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0_FAULT, DTD_EDITWIZARD_1_0, Wizard.class);
     }
 
     // File -> Document (resolved includes/shortcuts)

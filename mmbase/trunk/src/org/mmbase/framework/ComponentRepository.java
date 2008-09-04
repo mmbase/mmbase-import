@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.41 2008-09-02 12:03:33 andre Exp $
+ * @version $Id: ComponentRepository.java,v 1.42 2008-09-04 05:56:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -38,8 +38,8 @@ public class ComponentRepository {
     private static final Set<String> RECOGNIZED_NAMESPACES = new HashSet<String>();
 
     static {
-        XMLEntityResolver.registerSystemID(NAMESPACE_COMPONENT + ".xsd", XSD_COMPONENT, ComponentRepository.class);
-        XMLEntityResolver.registerSystemID(NAMESPACE_BLOCKTYPES + ".xsd", XSD_BLOCKTYPES, ComponentRepository.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE_COMPONENT + ".xsd", XSD_COMPONENT, ComponentRepository.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE_BLOCKTYPES + ".xsd", XSD_BLOCKTYPES, ComponentRepository.class);
         RECOGNIZED_NAMESPACES.addAll(Arrays.asList(NAMESPACE_COMPONENT, NAMESPACE_BLOCKTYPES));
     }
 
@@ -114,7 +114,7 @@ public class ComponentRepository {
         if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
         return component.getBlock(blockName);
     }
-    
+
     public Block getDefaultBlock(String componentName) {
         Component component = getComponent(componentName);
         if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");

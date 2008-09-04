@@ -14,14 +14,14 @@ import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 
 import org.mmbase.datatypes.*;
-import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.23 2008-08-19 20:37:19 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.24 2008-09-04 05:56:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -41,11 +41,11 @@ public class DataTypeReader {
 
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     static  {
-        XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
-        XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
+        EntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
+        EntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
 
     /**

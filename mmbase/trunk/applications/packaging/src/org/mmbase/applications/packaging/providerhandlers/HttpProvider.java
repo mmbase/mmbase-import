@@ -26,7 +26,7 @@ import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.util.Encode;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -61,10 +61,10 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_SHAREDPACKAGES_1_0, DTD_SHAREDPACKAGES_1_0, HttpProvider.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_SHAREDPACKAGES_1_0, DTD_SHAREDPACKAGES_1_0, HttpProvider.class);
     }
 
 

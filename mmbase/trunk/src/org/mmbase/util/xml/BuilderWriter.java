@@ -17,7 +17,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 import org.w3c.dom.*;
 
@@ -33,7 +33,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.26 2007-02-11 20:05:50 nklasens Exp $
+ * @version $Id: BuilderWriter.java,v 1.27 2008-09-04 05:56:23 michiel Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -55,7 +55,7 @@ public class BuilderWriter extends DocumentWriter  {
      */
     public BuilderWriter(MMObjectBuilder builder) throws DOMException {
         super("builder", BuilderReader.PUBLIC_ID_BUILDER,
-                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + BuilderReader.DTD_BUILDER);
+                        EntityResolver.DOMAIN + EntityResolver.DTD_SUBPATH + BuilderReader.DTD_BUILDER);
         this.builder=builder;
         getMessageRetriever("org.mmbase.util.xml.resources.builderwriter");
     }

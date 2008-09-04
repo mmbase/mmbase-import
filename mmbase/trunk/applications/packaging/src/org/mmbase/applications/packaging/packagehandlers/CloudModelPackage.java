@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.corebuilders.TypeRel;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -46,10 +46,10 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_CLOUDMODEL_1_0, DTD_CLOUDMODEL_1_0, CloudModelPackage.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_CLOUDMODEL_1_0, DTD_CLOUDMODEL_1_0, CloudModelPackage.class);
     }
 
 

@@ -27,7 +27,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.6 2008-09-03 21:35:31 michiel Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.7 2008-09-04 06:01:05 michiel Exp $
  */
 public class ExtendedDocumentReader extends DocumentReader  {
 
@@ -73,6 +73,6 @@ public class ExtendedDocumentReader extends DocumentReader  {
     }
 
     public static DocumentBuilder getDocumentBuilder(Class<ExtendedDocumentReader> refer) {
-        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
+        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new org.mmbase.util.xml.EntityResolver(DocumentReader.validate(), refer));
     }
 }

@@ -11,14 +11,14 @@ package org.mmbase.util.xml.applicationdata;
 
 import java.util.*;
 import org.w3c.dom.*;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 /**
  * @javadoc
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id: ApplicationReader.java,v 1.2 2008-09-04 05:56:23 michiel Exp $
  */
 public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
 
@@ -45,11 +45,11 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
      */
     public static void registerPublicIDs() {
         // various builder dtd versions
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0, DTD_APPLICATION_1_0, ApplicationReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_1, DTD_APPLICATION_1_1, ApplicationReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0, DTD_APPLICATION_1_0, ApplicationReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_1, DTD_APPLICATION_1_1, ApplicationReader.class);
 
         // legacy public IDs (wrong, don't use these)
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0_FAULT, DTD_APPLICATION_1_0, ApplicationReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0_FAULT, DTD_APPLICATION_1_0, ApplicationReader.class);
     }
 
     private Element root;

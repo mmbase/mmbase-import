@@ -12,7 +12,7 @@ package org.mmbase.security.implementation.basic;
 
 import org.w3c.dom.Element;
 import org.mmbase.util.xml.DocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.14 2008-09-03 20:00:10 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.15 2008-09-04 05:56:23 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
@@ -43,7 +43,7 @@ public class AuthenticationHandler extends Authentication {
 
 
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
     }
 
     private Map<String, LoginModule> modules = new HashMap<String, LoginModule>();

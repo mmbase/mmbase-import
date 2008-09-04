@@ -26,7 +26,7 @@ import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -95,11 +95,11 @@ public class BasicPackage implements PackageInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGEDEPENDS_1_0, DTD_PACKAGEDEPENDS_1_0, ShareManager.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGEDEPENDS_1_0, DTD_PACKAGEDEPENDS_1_0, ShareManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
     }
 
 

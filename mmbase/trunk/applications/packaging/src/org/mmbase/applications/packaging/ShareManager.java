@@ -23,7 +23,7 @@ import org.mmbase.applications.packaging.sharehandlers.ShareGroup;
 import org.mmbase.applications.packaging.sharehandlers.ShareInfo;
 import org.mmbase.applications.packaging.sharehandlers.ShareUser;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -59,10 +59,10 @@ public class ShareManager {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_SHARING_1_0, "DTD_SHARING_1_0", ShareManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_SHARING_1_0, "DTD_SHARING_1_0", ShareManager.class);
     }
 
 

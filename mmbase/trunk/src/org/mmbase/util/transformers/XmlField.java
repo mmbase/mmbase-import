@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.62 2008-06-17 10:00:45 michiel Exp $
+ * @version $Id: XmlField.java,v 1.63 2008-09-04 05:56:23 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -896,7 +896,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
 
             // in order to find the dtd.....
-            org.mmbase.util.XMLEntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
+            org.mmbase.util.xml.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver();
             documentBuilder.setEntityResolver(resolver);
 
             // in order to log our xml-errors

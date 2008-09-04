@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.34 2008-09-01 21:05:02 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.35 2008-09-04 05:56:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -46,7 +46,7 @@ public class BasicFramework extends Framework {
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/basicframework";
 
     static {
-        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
 
 

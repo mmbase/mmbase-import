@@ -23,7 +23,7 @@ import org.mmbase.applications.packaging.providerhandlers.PackageDiscovery;
 import org.mmbase.applications.packaging.providerhandlers.ProviderFileWriter;
 import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -59,12 +59,12 @@ public class ProviderManager {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PROVIDERHANDLERS_1_0, DTD_PROVIDERHANDLERS_1_0, ProviderManager.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PROVIDERS_1_0, DTD_PROVIDERS_1_0, ProviderManager.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_SHAREAUTOCONFIG_1_0, DTD_SHAREAUTOCONFIG_1_0, ProviderManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PROVIDERHANDLERS_1_0, DTD_PROVIDERHANDLERS_1_0, ProviderManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PROVIDERS_1_0, DTD_PROVIDERS_1_0, ProviderManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_SHAREAUTOCONFIG_1_0, DTD_SHAREAUTOCONFIG_1_0, ProviderManager.class);
     }
 
 

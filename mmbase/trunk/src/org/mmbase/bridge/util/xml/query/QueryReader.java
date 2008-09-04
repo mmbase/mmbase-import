@@ -23,7 +23,7 @@ import org.mmbase.util.*;
  * This class contains static methods related to creating a Query object using a (fragment of an) XML.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.19 2008-08-19 20:33:53 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.20 2008-09-04 05:56:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class QueryReader {
@@ -36,10 +36,10 @@ public abstract class QueryReader {
 
     /**
      * Register the namespace and XSD used by QueryReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerSystemIDs() {
-        XMLEntityResolver.registerSystemID(NAMESPACE_SEARCHQUERY_1_0 + ".xsd",  XSD_SEARCHQUERY_1_0, QueryReader.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(NAMESPACE_SEARCHQUERY_1_0 + ".xsd",  XSD_SEARCHQUERY_1_0, QueryReader.class);
     }
 
     /**

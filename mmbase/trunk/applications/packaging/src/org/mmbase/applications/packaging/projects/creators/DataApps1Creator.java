@@ -27,7 +27,7 @@ import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.VirtualBuilder;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.NamedNodeMap;
@@ -56,7 +56,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
      *  Description of the Method
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_DATA_APPS1_1_0, "DTD_PACKAGING_DATA_APPS1_1_0", DataApps1Creator.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_DATA_APPS1_1_0, "DTD_PACKAGING_DATA_APPS1_1_0", DataApps1Creator.class);
     }
 
 

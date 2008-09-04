@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.30 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.31 2008-09-04 05:56:22 michiel Exp $
  */
 
 public class DataTypes {
@@ -114,7 +114,9 @@ public class DataTypes {
                     log.service("Reading " + u);
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
                     dataTypesSource.setSystemId(u.toExternalForm());
-                    DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
+                    DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true,
+                                                                           new org.mmbase.util.xml.ErrorHandler(),
+                                                                           new org.mmbase.util.xml.EntityResolver(true, DataTypeReader.class));
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     failed.addAll(DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector));

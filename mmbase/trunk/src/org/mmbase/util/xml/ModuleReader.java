@@ -15,14 +15,14 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import org.mmbase.util.LocalizedString;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 
 /**
  * @javadoc
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.8 2007-06-19 14:00:54 michiel Exp $
+ * @version $Id: ModuleReader.java,v 1.9 2008-09-04 05:56:23 michiel Exp $
  */
 public class ModuleReader extends DocumentReader {
 
@@ -44,22 +44,22 @@ public class ModuleReader extends DocumentReader {
 
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      */
     public static void registerSystemIDs() {
-        XMLEntityResolver.registerSystemID(NAMESPACE_MODULE_2_0 + ".xsd", XSD_MODULE_2_0, ModuleReader.class);
+        EntityResolver.registerSystemID(NAMESPACE_MODULE_2_0 + ".xsd", XSD_MODULE_2_0, ModuleReader.class);
     }
 
     /**
      * Register the Public Ids for DTDs used by ModuleReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by EntityResolver.
      * @since MMBase-1.7
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0, DTD_MODULE_1_0, ModuleReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0, DTD_MODULE_1_0, ModuleReader.class);
         // legacy public IDs (wrong, don't use these)
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT, DTD_MODULE_1_0, ModuleReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT2, DTD_MODULE_1_0, ModuleReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT, DTD_MODULE_1_0, ModuleReader.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_MODULE_1_0_FAULT2, DTD_MODULE_1_0, ModuleReader.class);
     }
 
     public ModuleReader(InputSource is) {

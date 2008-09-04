@@ -19,7 +19,7 @@ import java.util.*;
 import org.mmbase.applications.packaging.projects.Project;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.xml.EntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -55,8 +55,8 @@ public class ProjectManager {
     public static final String PUBLIC_ID_CREATORS_1_0 = "-//MMBase//DTD creators config 1.0//EN";
 
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_PROJECTS_1_0, "DTD_PROJECTS_1_0", ProjectManager.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_CREATORS_1_0, "DTD_CREATORS_1_0", ProjectManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_PROJECTS_1_0, "DTD_PROJECTS_1_0", ProjectManager.class);
+        EntityResolver.registerPublicID(PUBLIC_ID_CREATORS_1_0, "DTD_CREATORS_1_0", ProjectManager.class);
     }
 
 

@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.254 2008-09-03 20:57:42 michiel Exp $
+ * @version $Id: MMBase.java,v 1.255 2008-09-04 05:56:23 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -315,7 +315,7 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             encoding = tmp;
         }
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         // default locale has to be known before initializing datatypes:
         DataTypes.initialize();
@@ -342,7 +342,7 @@ public class MMBase extends ProcessorModule {
             host = localHost;
         }
 
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         String machineNameParam = getInitParameter("MACHINENAME");
         if (machineNameParam != null) {
@@ -379,7 +379,7 @@ public class MMBase extends ProcessorModule {
         }
         log.service("MMBase machine name used for clustering: '" + machineName + "'");
         Logging.setMachineName(machineName);
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         log.service("Initializing  storage");
         initializeStorage();
@@ -404,7 +404,7 @@ public class MMBase extends ProcessorModule {
         }
 
         log.service("Initializing  builders:");
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
 
         initBuilders();
 
@@ -434,7 +434,7 @@ public class MMBase extends ProcessorModule {
             return;
         }
 
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(false);
         // try to load security...
         try {
             mmbaseCop = new MMBaseCop();
@@ -444,7 +444,7 @@ public class MMBase extends ProcessorModule {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
-        org.mmbase.util.XMLEntityResolver.clearMMEntities(true);
+        org.mmbase.util.xml.EntityResolver.clearMMEntities(true);
         typeRel.readCache();
 
         // signal that MMBase is up and running
