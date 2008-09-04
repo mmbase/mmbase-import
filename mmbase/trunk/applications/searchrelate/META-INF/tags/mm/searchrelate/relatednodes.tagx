@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.26 2008-08-25 09:41:27 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.27 2008-09-04 13:07:53 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -107,17 +107,17 @@
         <input type="hidden" name="seq"   value="${seq}" />
         <input type="hidden" name="source"   value="${_node}" />
         <input type="hidden" name="icondir"   value="${icondir}" />
-	    <input type="hidden" name="createpos"   value="${createpos}" />
+        <input type="hidden" name="createpos"   value="${createpos}" />
       </div>
-	  <c:if test="${createpos eq 'top'}">
-      <mm:link page="/mmbase/searchrelate/list/create.jspx"
-               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
-        <a href="${_}" class="create">
-          <mm-sr:button alt="+" type="create" icondir="${icondir}" />
-        </a>
-      </mm:link>
+      <c:if test="${createpos eq 'top'}">
+        <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+          <a href="${_}" class="create">
+            <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+          </a>
+        </mm:link>
       <span class="status">...</span>
-	 </c:if>
+      </c:if>
       <ol>
         <mm:node id="source" />
         <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q">
@@ -132,15 +132,15 @@
         </mm:relatednodescontainer>
         <mm:write session="mm_list_query_${seq}" referid="q" />
       </ol>
-	  <c:if test="${createpos eq 'bottom'}">
-      <mm:link page="/mmbase/searchrelate/list/create.jspx"
-               referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
-        <a href="${_}" class="create">
-          <mm-sr:button alt="+" type="create" icondir="${icondir}" />
-        </a>
-      </mm:link>
-      <span class="status">...</span>
-	 </c:if>
+      <c:if test="${createpos eq 'bottom'}">
+        <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+          <a href="${_}" class="create">
+            <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+          </a>
+        </mm:link>
+        <span class="status">...</span>
+      </c:if>
     </div>
   </fmt:bundle>
 </jsp:root>
