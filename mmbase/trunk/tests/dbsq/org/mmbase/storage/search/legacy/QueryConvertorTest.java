@@ -1,4 +1,4 @@
-package org.mmbase.util;
+package org.mmbase.storage.search.legacy;
 
 import junit.framework.*;
 import java.util.*;
@@ -12,7 +12,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  */
 public class QueryConvertorTest extends TestCase {
 
