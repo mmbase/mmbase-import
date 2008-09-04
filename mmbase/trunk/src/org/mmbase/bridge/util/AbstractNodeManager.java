@@ -24,7 +24,7 @@ import org.mmbase.util.functions.Function;
  * org.mmbase.bridge.implementation.VirtualNodeManager}).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.10 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.11 2008-09-04 09:34:51 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -73,11 +73,11 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
     public NodeList createNodeList() {
-        return new CollectionNodeList(Collections.emptyList(), this);
+        return new CollectionNodeList(BridgeCollections.EMPTY_NODELIST, this);
     }
 
     public RelationList createRelationList() {
-        return new CollectionRelationList(Collections.emptyList(), this);
+        return new CollectionRelationList(BridgeCollections.EMPTY_RELATIONLIST, this);
     }
 
     public boolean mayCreateNode() {
