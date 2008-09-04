@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="alias/target/classes" path="alias/src/java"/>
+	<classpathentry kind="src" path="dataconversion/src/java"/>
 	<classpathentry kind="src" output="openofficeintegration/target/classes" path="openofficeintegration/src/java"/>
 	<classpathentry kind="src" output="community/target/classes" path="community/src/java"/>
 	<classpathentry kind="src" output="directreaction/target/classes" path="directreaction/src/java"/>
@@ -176,5 +177,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-struts-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
