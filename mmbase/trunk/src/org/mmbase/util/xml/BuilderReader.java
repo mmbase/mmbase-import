@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.107 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.108 2008-09-04 16:02:21 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -197,10 +197,11 @@ public class BuilderReader extends DocumentReader {
             } else {
                 element = elementList.get(elementList.size() - 1);
             }
-            for (Element e : getChildElements(overrides.getDocumentElement(), list + ".*")) {
-                Element newE = (Element) doc.importNode(e, true);
-                element.appendChild(newE);
-
+            for (Element overridesList : getChildElements(overrides.getDocumentElement(), list)) {
+                for (Element e : getChildElements(overridesList, "*")) {
+                    Element newE = (Element) doc.importNode(e, true);
+                    element.appendChild(newE);
+                }
             }
         }
 
@@ -1040,10 +1041,10 @@ public class BuilderReader extends DocumentReader {
                 results.putAll(parentparams);
             }
         }
-        for (Element p : getChildElements("builder.properties","property")) {
-            String name = getElementAttributeValue(p,"name");
+        for (Element p : getChildElements("builder.properties", "property")) {
+            String name = getElementAttributeValue(p, "name");
             String value = getElementValue(p);
-            results.put(name,value);
+            results.put(name, value);
         }
         return results;
     }
