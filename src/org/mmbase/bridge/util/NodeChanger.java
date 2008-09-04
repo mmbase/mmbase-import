@@ -14,10 +14,13 @@ import java.util.*;
 import org.mmbase.bridge.*;
 
 /**
- * Wraps another Node, and adds 'isChangedByThis'.
+ * Wraps another Node, and adds '{@link #isChangedByThis}'.
+ *
+ * Before commiting the node, you may want to check if <em>you</em> changed to node, and not some
+ * other thread. In that case you can first wrap your Node in a NodeChanger object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeChanger.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: NodeChanger.java,v 1.4 2008-09-04 06:54:27 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -63,11 +66,10 @@ public class NodeChanger extends NodeWrapper {
     public void setDateValue(String fieldName, Date value) { change(fieldName); super.setDateValue(fieldName, value); }
     @Override
     public void setListValue(String fieldName, List value) { change(fieldName); super.setListValue(fieldName, value); }
+
     /**
-     * The isChanged method reflects the isChanged status of the underlying core node.isChanged. Before
-     * commiting the node, you may want to check if _you_ changed to node, and not some other
-     * thread. In that case you can first wrap your Node in a NodeChanger object.
-     *
+     * The {@link #isChanged} method reflects the isChanged status of the underlying core node.isChanged,
+     * this one does that too, but only return true, if this instance performed this change.
      */
     public boolean isChangedByThis() {
         return originalValues != null && super.isChanged();

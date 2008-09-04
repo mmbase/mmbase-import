@@ -21,10 +21,10 @@ import org.mmbase.util.functions.Function;
 /**
  * Abstract implementation of NodeManager, to minimalize the implementation of a virtual one. Must
  * methods throw UnsupportOperationException (like in {@link
- * org.mmbase.bridge.implementation.VirtualNodeManager}.
+ * org.mmbase.bridge.implementation.VirtualNodeManager}).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.9 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.10 2008-09-04 06:54:27 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -97,7 +97,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) { return BridgeCollections.EMPTY_RELATIONMANAGERLIST; }
 
-    public String getInfo(String command) { return getInfo(command, null,null);} 
+    public String getInfo(String command) { return getInfo(command, null,null);}
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){ throw new UnsupportedOperationException();}
 
@@ -150,8 +150,8 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public NodeManager getParent() {
         return null;
     }
-    
-    
+
+
     public String getProperty(String name) {
         return null;
     }
