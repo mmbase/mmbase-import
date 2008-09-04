@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.34 2008-08-13 07:47:48 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.35 2008-09-04 11:49:20 michiel Exp $
  */
 public class SortedBundle {
 
@@ -46,10 +46,10 @@ public class SortedBundle {
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final HashMap<String,Object> NO_CONSTANTSPROVIDER = null;
+    public static final HashMap<String, Object> NO_CONSTANTSPROVIDER = null;
 
     // cache of maps.
-    private static final Cache<String,SortedMap<Object,Object>> knownResources = new Cache<String,SortedMap<Object,Object>>(100) {
+    private static final Cache<String, SortedMap<?, String>> knownResources = new Cache<String, SortedMap<?, String>>(100) {
             public String getName() {
                 return "ConstantBundles";
             }
@@ -135,9 +135,9 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap<Object,Object> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
+    public static <C> SortedMap<C, String> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
-        SortedMap<Object,Object> m = knownResources.get(resourceKey);
+        SortedMap<C, String> m = (SortedMap<C, String>) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
 
         if (m == null) { // find and make the resource
@@ -151,13 +151,13 @@ public class SortedBundle {
                 throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
             }
 
-            m = new TreeMap<Object, Object>(comparator);
+            m = new TreeMap<C, String>(comparator);
 
             Enumeration<String> keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
                 String bundleKey = keys.nextElement();
-                Object value = bundle.getObject(bundleKey);
-                Object key = castKey(bundleKey, value, constantsProvider, wrapper, locale);
+                String value = bundle.getString(bundleKey);
+                C key = (C) castKey(bundleKey, value, constantsProvider, wrapper, locale);
                 if (key == null) continue;
                 m.put(key, value);
             }
