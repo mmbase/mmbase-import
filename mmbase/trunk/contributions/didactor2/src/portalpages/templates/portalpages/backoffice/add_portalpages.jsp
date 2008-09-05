@@ -37,19 +37,20 @@
       </mm:link>
     </di:leaf>
     <div id="portal_root">
-      <di:leaf
-          icon="new_education"
-          branchPath=".."
-          >
-        <mm:link referid="wizardjsp" referids="containernode@origin,referrer">
-          <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
-          <mm:param name="objectnumber">new</mm:param>
-          <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td> <!-- WTF WTF -->
-        </mm:link>
-      </di:leaf>
       <mm:listnodes type="portalpagescontainers">
+        <di:leaf
+            icon="new_education"
+            branchPath=".."
+            >
+          <mm:link referid="wizardjsp" referids="_node@origin,referrer">
+            <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
+            <mm:param name="objectnumber">new</mm:param>
+            <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td> <!-- WTF WTF -->
+          </mm:link>
+        </di:leaf>
         <mm:relatednodescontainer type="portalpagesnodes" searchdirs="destination" >
           <mm:sortorder field="number" direction="up" />
+
           <mm:relatednodes varStatus="status">
             <di:leaf
                 click="portal_node_${_node}"
