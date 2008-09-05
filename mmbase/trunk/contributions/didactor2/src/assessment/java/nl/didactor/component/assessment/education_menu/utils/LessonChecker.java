@@ -8,44 +8,51 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @version $Id: LessonChecker.java,v 1.2 2007-07-26 09:09:36 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.3 2008-09-05 09:59:15 michiel Exp $
  */
 
 public class LessonChecker {
 
 
    private static final Logger log = Logging.getLoggerInstance(LessonChecker.class);
-    
+
    /**
     * Checks that learnblocks are blocked for this particular user.
     * It is advised to call this method only once during the education menu building
     * The goal is performance improving.
     *
-    * @param nodeEducation Node
-    * @param nodeUser Node
+    * @param education Node
+    * @param user Node
     * @return Set
     */
-    
-    public static Set<Node> getBlockedLearnblocksForThisUser(Node nodeEducation, Node nodeUser) {
+
+    public static Set<Node> getBlockedLearnblocksForThisUser(Node education, Node user) {
        Set<Node> resultSet = new HashSet<Node>();
-       Cloud cloud = nodeEducation.getCloud();
-       
-       NodeList relatedLearnBlocks = cloud.getList("" + nodeEducation.getNumber(),
-                                             "educations,posrel,learnblocks",
-                                             "learnblocks.number",
-                                             null,
-                                             "posrel.pos",
-                                             null, null, true);
-       
+       Cloud cloud = education.getCloud();
+
+       // Check whether this education indeeds needs 'assessment'.
+
+       Node assessment = cloud.getNode(nl.didactor.component.Component.getComponent("assessment").getNumber());
+       if (! education.getRelatedNodes("components", "settingrel", "destination").contains(assessment)) {
+           return resultSet;
+       }
+
+       NodeList relatedLearnBlocks = cloud.getList("" + education.getNumber(),
+                                                   "educations,posrel,learnblocks",
+                                                   "learnblocks.number",
+                                                   null,
+                                                   "posrel.pos",
+                                                   null, null, true);
+
        int counter = 0;
        boolean statusBlocked = false;
        boolean firstHasFeedback = false;
-       
+
        for (NodeIterator it = relatedLearnBlocks.nodeIterator(); it.hasNext(); ) {
            Node clusterNode = it.nextNode();
            Node learnBlock = cloud.getNode(clusterNode.getIntValue("learnblocks.number"));
-           
-           
+
+
            if (statusBlocked) {
                //It means the rest of learnblocks is closed.
                previousOneHasGotNoFeedbackRelated(learnBlock);
@@ -54,17 +61,17 @@ public class LessonChecker {
                NodeList classRels = cloud.getList("" + learnBlock.getNumber(),
                                                   "learnblocks,classrel,people",
                                                   "classrel.number",
-                                                  "people.number='" + nodeUser.getNumber() + "'",
+                                                  "people.number='" + user.getNumber() + "'",
                                                   null,
                                                   null, null, true);
-               
-               
+
+
                if (classRels.size() == 0) {
                    //blocked
                    statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
                } else {
                    if (cloud.getNode(classRels.getNode(0).getIntValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
-                       feedbackRelated(learnBlock);                       
+                       feedbackRelated(learnBlock);
                        if (counter == 0) {
                            firstHasFeedback = true;
                        }
@@ -74,16 +81,16 @@ public class LessonChecker {
                    }
                }
            }
-           
+
            counter++;
        }
-       
+
        return resultSet;
     }
-    
-    
-    
-    
+
+
+
+
 
     private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<Node> resultSet, int counter, boolean statusBlocked, boolean firstHasFeedback){
       if(counter == 0) {
@@ -91,7 +98,7 @@ public class LessonChecker {
       } else {
           statusBlocked = true;
       }
-      
+
       if (counter == 1) {
           if (!firstHasFeedback) {
               //The first learnblock has got no feedback
@@ -99,9 +106,9 @@ public class LessonChecker {
               resultSet.add(nodeLearnBlock);
           }
       }
-      
+
       log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got no feedback related.");
-      
+
       return statusBlocked;
    }
 
