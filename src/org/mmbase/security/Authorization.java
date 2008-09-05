@@ -17,12 +17,12 @@ import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Constraint;
 
 /**
- * The abstract implementation of the Authorization. To make your own implementation of
- * authorization, you have to extend this class, and implement the abstract methods.
+ * The abstract implementation of user authorization in MMBase. To make your own authorization
+ * implementation, you have to extend this class, and implement the abstract methods.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.29 2008-01-21 17:28:15 michiel Exp $
+ * @version $Id: Authorization.java,v 1.30 2008-09-05 16:08:07 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
