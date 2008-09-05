@@ -27,7 +27,7 @@ import javax.management.*;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.40 2008-08-23 19:00:48 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.41 2008-09-05 13:56:55 michiel Exp $
  */
 public abstract class CacheManager {
 
@@ -96,29 +96,36 @@ public abstract class CacheManager {
      * @param cache A cache.
      * @return The previous cache of the same type (stored under the same name)
      */
-    public static <K,V> Cache<K,V> putCache(Cache<K,V> cache, boolean mbean) {
+    public static <K,V> Cache<K,V> putCache(final Cache<K,V> cache) {
         Cache old = caches.put(cache.getName(), cache);
         try {
             configure(configReader, cache.getName());
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
         }
-        if (mbean) {
-            ObjectName name = getObjectName(cache);
-            try {
-                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                mbs.registerMBean(cache, name);
-            } catch (JMException jmo) {
-                log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
-            } catch (Throwable t) {
-                log.error("" + name + " " + t.getClass() + " " + t.getMessage());
-            }
+        Runnable run = new Runnable() {
+                public void run() {
+                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+                    ObjectName name = getObjectName(cache);
+                    try {
+                        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                        mbs.registerMBean(cache, name);
+                    } catch (JMException jmo) {
+                        log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
+                    } catch (Throwable t) {
+                        log.error("" + name + " " + t.getClass() + " " + t.getMessage());
+                    }
+                }
+            };
+        if (org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp()) {
+            run.run();
+        } else {
+            ThreadPools.jobsExecutor.execute(run);
         }
+
         return old;
     }
-    public static <K,V> Cache<K,V> putCache(Cache<K,V> cache) {
-        return putCache(cache, true);
-    }
+
 
     /**
      * @since MMBase-1.9
