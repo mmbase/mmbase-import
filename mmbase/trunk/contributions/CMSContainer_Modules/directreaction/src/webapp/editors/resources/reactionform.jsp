@@ -1,20 +1,20 @@
 <html:hidden property="contenttypes" value="reaction" />
 <table border="0">
    <tr>
-      <td style="width: 150px"><fmt:message key="reactionform.name" /></td>
-      <td><html:text style="width: 250px" property="name"/></td>
+      <td style="width: 105px"><fmt:message key="reactionform.name" /></td>
+      <td><html:text style="width: 200px" property="name"/></td>
    </tr>
    <tr>
-      <td style="width: 150px"><fmt:message key="reactionform.email" /></td>
-      <td><html:text style="width: 250px" property="email"/></td>
+      <td style="width: 105px"><fmt:message key="reactionform.email" /></td>
+      <td><html:text style="width: 200px" property="email"/></td>
    </tr>
    <tr>
-      <td style="width: 150px"><fmt:message key="reactionform.title" /></td>
-      <td><html:text style="width: 250px" property="title"/></td>
+      <td style="width: 105px"><fmt:message key="reactionform.title" /></td>
+      <td><html:text style="width: 200px" property="title"/></td>
    </tr>
    <tr>
-      <td style="width: 150px"><fmt:message key="reactionform.body" /></td>
-      <td><html:text style="width: 250px" property="body"/></td>
+      <td style="width: 105px"><fmt:message key="reactionform.body" /></td>
+      <td><html:text style="width: 200px" property="body"/></td>
    </tr>
    <tr>
       <td></td>
