@@ -65,6 +65,7 @@ function postUpdate(originalRequest) {
 </div>
 </div>
 <div class="editor" style="height:500px">
+<div class="body">
 <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
    <html:hidden property="method" value="list"/>
    <input type="hidden" name="id" id="id" value=""/>
@@ -81,19 +82,18 @@ function postUpdate(originalRequest) {
    </mm:notpresent>
    <table border="0" style="padding-left:10px;">
       <tr>
-         <td style="width: 80px"><fmt:message key="newsletter.term.name" /></td>
+         <td style="width: 110px"><fmt:message key="newsletter.term.name" /></td>
          <td><html:text size="20" property="name"/></td>
       </tr>
       <tr>
       <td></td>
       <td>
-         <input type="submit" name="submitButton" onclick="setOffset(0);" 
-               value="<fmt:message key="newsletter.term.search" />"/>   
+         <input type="submit" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="newsletter.term.search" />"/>   
      </td>
    </tr>
    </table>
-
 </html:form>
+</div>
 <div class="ruler_green"><div><fmt:message key="newsletter.term.search.result" /></div></div>
 <div class="body">
 <mm:notpresent referid="newsletterId" >

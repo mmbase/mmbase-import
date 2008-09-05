@@ -25,7 +25,7 @@
    </edit:ui-tabs>
 
    <div class="editor">
-      <div style="padding-left:10px;">
+      <div class="body">
       <p>
          <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=false&forward=newslettermanage" title="<fmt:message key='site.newsletterpublication.new.blank'/>">
             <fmt:message key="site.newsletterpublication.new.blank"/>
@@ -36,8 +36,7 @@
             <fmt:message key="site.newsletterpublication.new.withcontent"/>
          </a>
       </p>
-      </div>
-      <div style="padding-left:10px;">
+      
          <html:form action="editors/newsletter/NewsletterPublicationManagement.do">
             <input type="hidden" name="method" value="searchPublication"/>
             <%@include file="report_publication_search.jsp"%>

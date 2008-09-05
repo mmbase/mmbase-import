@@ -69,10 +69,7 @@
 
 			<div class="editor">
 
-				<div style="padding-left:10px;">
-					<p>
-						&nbsp;
-					<p>
+				<div class="body">
 						<html:form
 							action="/editors/community/SearchConditionalUser.do?method=listGroupMembers&&groupName=${groupName}" method="post">
 						<c:if test="${not empty option}">
