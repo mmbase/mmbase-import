@@ -15,9 +15,9 @@
            branchOffset="1"
            branchPath="${branchPath}"
            branch="${b}">
+
     <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
-      <mm:param name="templates">/editwizards/data</mm:param>
-      <mm:param name="javascript">/editwizards/javascript</mm:param>
+
       <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
       <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
       <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
