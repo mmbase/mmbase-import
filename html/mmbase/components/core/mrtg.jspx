@@ -9,7 +9,7 @@
       id="${requestScope['org.mmbase.componentId']}">
     <h2>MRTG</h2>
     <p>
-      <a href="http://oss.oetiker.ch/mrtg/">MRTG</a> is a tool to generate statitics. It can quite easily be used to monitor MMBase Caches.
+      <a href="http://oss.oetiker.ch/mrtg/">MRTG</a> is a tool to generate statistics. It can quite easily be used to monitor MMBase Caches.
     </p>
     <p>
       <mm:link page="/mmbase/admin/stats.jsp">
@@ -31,5 +31,8 @@
         <a href="${_}">This link can e.g. be used to monitory node cache useage.</a>
       </mm:link>
     </p>
+    <h2>JMX</h2>
+    <p>Information about the MMBase caches is also available via <a href="http://java.sun.com/javase/technologies/core/mntr-mgmt/javamanagement/">Java Managment Extensions</a>.</p>
+    <p>JMX information can e.g. be accessed using the <a href="http://java.sun.com/developer/technicalArticles/J2SE/jconsole.html">jconsole</a> tool.</p>
   </div>
 </mm:cloud>
