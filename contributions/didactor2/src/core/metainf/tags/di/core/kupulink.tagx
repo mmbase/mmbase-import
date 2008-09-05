@@ -23,6 +23,7 @@
 
     <c:choose>
       <c:when test="${node eq 'new'}">
+        <mm:import externid="kupulink_seq" from="request" vartype="int">0</mm:import>
         <!-- determin the type it is going to have
              we need to know that to know whether background image links must be produced.
         -->
@@ -32,6 +33,7 @@
         <mm:haspage page="$wizardxml" inverse="true">
           <mm:import id="wizardxml" reset="true">${templates}/${wizard}.xml</mm:import>
         </mm:haspage>
+
         <mm:haspage page="$wizardxml">
           <mm:formatter id="sourcemanager" write="false">
             <mm:include cite="true" page="${wizardxml}"/>
@@ -42,6 +44,8 @@
             </mm:xslt>
           </mm:formatter>
         </mm:haspage>
+        <mm:import id="node" reset="true">${kupulink_seq}</mm:import>
+        <mm:write request="kupulink_seq" value="${kupulink_seq + 1}" />
       </c:when>
       <c:otherwise>
         <mm:node id="sourcemanager" referid="node" />
@@ -61,6 +65,7 @@
       <mm:param name="currentTitle"><di:translate key="rich.backgroundimage" /></mm:param>
       <mm:param name="tools">searchrelate</mm:param>
     </mm:hasrelationmanager>
+
     <mm:write value="${pageScope['org.mmbase.richtext.kupulink']}" escape="none">
       <jsp:doBody />
     </mm:write>

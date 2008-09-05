@@ -3,7 +3,6 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
 
@@ -97,13 +96,13 @@
                         icon="kupu_icon"
                         branchPath="..${status.last ? '.' : ' '} "
                         >
-                      <di-t:kupulink
+                      <di:kupulink
                           referrer="${referrer}"
                           node="new"
                           wizard="config/portalpages/simplexmlcontents"
                           >
                         <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
-                      </di-t:kupulink>
+                      </di:kupulink>
                     </di:leaf>
                   </c:when>
                   <c:otherwise>
