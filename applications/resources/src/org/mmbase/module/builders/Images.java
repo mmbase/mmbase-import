@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.9 2008-07-14 12:30:08 nklasens Exp $
+ * @version $Id: Images.java,v 1.10 2008-09-05 16:39:00 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -236,6 +236,7 @@ public class Images extends AbstractImages {
      * @since MMBase-1.6
      */
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters args) {
+        log.debug("gui for image");
         int num = node.getNumber();
         if (num < 0) {   // image servlet cannot handle uncommited images..
             return "...";
@@ -325,6 +326,17 @@ public class Images extends AbstractImages {
                 title = " title=\"" + getMimeType(node) + "\"";
             }
         }
+        if(addFileName(node, image)) {
+            StringBuilder buf = new StringBuilder(image);
+            buf.append('/');
+            image = getFileName(node, buf).toString();
+        }
+        if(addFileName(node, imageThumb)) {
+            StringBuilder buf = new StringBuilder(imageThumb);
+            buf.append('/');
+            imageThumb = getFileName(node, buf).toString();
+        }
+
 
         return
             "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\"><img src=\"" + imageThumb + "\" " +
