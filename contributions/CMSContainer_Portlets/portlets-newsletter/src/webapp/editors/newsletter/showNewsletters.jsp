@@ -79,15 +79,15 @@
       <div class="editor">
          <div class="body">
             <html:form method="POST" action="/editors/newsletter/NewsletterStatistic">
-               <table style="width: 600px">
+               <table >
                   <tr>
-                     <td> <fmt:message key="newsletterlog.newsletter" /> </td>
-                     <td>
-                        <html:select property="newsletters" styleId="newsletters" style="width:150px">
+                     <td width="110px"> <fmt:message key="newsletterlog.newsletter" /> </td>
+                     <td width="150px">
+                        <html:select property="newsletters" styleId="newsletters">
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
-                     <td>&nbsp;</td>
+                     <td width="50px">&nbsp;</td>
                      <td>&nbsp;</td>
                   </tr>
                   <tr>
@@ -154,9 +154,9 @@
                   </tr>
                   <tr>
                      <td>
-                         <input type="submit" onclick="javascript:submits()" style="text-decoration:none"
+                         <input type="submit" onClick="javascript:submits()" style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.submit" />" />
-                        <input type="submit" onclick="javascript:resets()"  style="text-decoration:none"
+                        <input type="submit" onClick="javascript:resets()"  style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.reset" />" />
                      </td>
                      <td colspan="3">&nbsp;</td>

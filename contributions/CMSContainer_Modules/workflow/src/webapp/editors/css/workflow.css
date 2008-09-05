@@ -7,19 +7,17 @@ table.centerData td {
 }
 
 a.sortup {
-   text-decoration: none;
    background: url( ../gfx/icons/sort_up.gif ) no-repeat right !important;
    padding-right: 20px;
 }
 
 a.sortdown {
-   text-decoration: none;
    background: url( ../gfx/icons/sort_down.gif ) no-repeat right !important;
    padding-right: 20px;
 }
 
 a {
-   text-decoration: none;
+   text-decoration: underline;
 }
 
 .tip {

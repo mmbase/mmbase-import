@@ -19,12 +19,12 @@
             <input type="hidden" name="action" value="listSubscribers"/>
             <table>
                <tr>
-                  <td style="width:100px;"><fmt:message key="subscriptiondetail.fullname"/></td>
-                  <td><input type="text" name="name" value="${param.name}" style="width: 200px"/></td>
+                  <td style="width:110px;"><fmt:message key="subscriptiondetail.fullname"/></td>
+                  <td><input type="text" name="name" value="${param.name}" style="width: 150px"/></td>
                </tr>
                <tr>
                   <td><fmt:message key="subscriptiondetail.emailaddress"/></td>
-                  <td><input type="text" name="email" value="${param.email}" style="width: 200px"/></td>
+                  <td><input type="text" name="email" value="${param.email}" style="width: 150px"/></td>
                </tr>
                <tr>
                   <td></td>

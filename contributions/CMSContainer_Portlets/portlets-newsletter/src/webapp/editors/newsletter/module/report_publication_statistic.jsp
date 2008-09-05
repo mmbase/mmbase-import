@@ -23,8 +23,7 @@
    </edit:ui-tabs>
 
    <div class="editor">
-      <br/>
-      <div  class="body" style="padding-left:10px;">
+      <div  class="body">
          <html:form action="editors/newsletter/NewsletterPublicationStatisticSearch.do">
             <input type="hidden" name="method" value="searchPublicationStatistic"/>
             <%@include file="report_publication_search.jsp"%>

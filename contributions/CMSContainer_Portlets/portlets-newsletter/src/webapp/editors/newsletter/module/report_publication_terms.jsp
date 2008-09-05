@@ -26,19 +26,20 @@
 
    <div class="editor">
       <div style="padding-left:10px;">
-      <p>
-         <a class="addemail" href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
-            <fmt:message key="newsletter.publication.search.linkterm"/>
-         </a>
-      </p>
+      
       </div>
 
-      <div style="padding-left:10px;">
+      <div class="body">
+         <div style="padding-left:10px">
+            <a class="addemail" href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
+               <fmt:message key="newsletter.publication.search.linkterm"/>
+            </a>
+         </div>
          <form method="post" action="NewsletterTermSearch.do?newsletterId=${requestScope.newsletterId}">
             <table width="50%" border="0" cellspacing="0" cellpadding="0">
                <tr>
-                  <td><fmt:message key="newsletter.publication.search.link.name"/></td>
-                  <td><input type="text" name="name" size="30"/></td>
+                  <td width="110px"><fmt:message key="newsletter.publication.search.link.name"/></td>
+                  <td width="150px"><input type="text" name="name" size="30" width="150px"/></td>
                   <td>
                      <input type="submit" value="Search"/>
                      <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>

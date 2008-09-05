@@ -20,7 +20,7 @@
          <input type="hidden" name="newsletterId" value="${param.newsletterId}"/>
          <table>
             <tr>
-               <td style="width: 100px"><fmt:message key="subscriptiondetail.fullname"/></td>
+               <td style="width: 110px"><fmt:message key="subscriptiondetail.fullname"/></td>
                <td><input type="text" name="name" value="${param.name}" style="width: 200px"/></td>
             </tr>
             <tr>
