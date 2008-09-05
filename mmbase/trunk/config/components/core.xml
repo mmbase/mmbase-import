@@ -356,8 +356,8 @@
   <block name="mrtg"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="en">MRTG</title>
-    <title xml:lang="nl">MRTG</title>
+    <title xml:lang="en">Monitoring</title>
+    <title xml:lang="nl">Monitoring</title>
     <body jsp="mrtg.jspx" />
   </block>
 
