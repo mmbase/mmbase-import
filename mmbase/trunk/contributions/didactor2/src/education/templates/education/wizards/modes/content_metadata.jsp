@@ -8,7 +8,7 @@
   <div
       xmlns="http://www.w3.org/1999/xhtml"
       class="content_metadata">
-    <mm:cloud method="delegate" authenticate="asis">
+    <mm:cloud rank="basic user">
       <jsp:directive.include file="../mode.include.jsp" />
       <di:has editcontext="contentelementen">
         <a href="javascript:clickNode('content_metadata_0')">
