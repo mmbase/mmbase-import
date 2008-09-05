@@ -110,7 +110,7 @@ for (String t : new String[] {"chained", "filtered", "errors" }) {
 #
 # <mm:write referid="thisserver" /> REQUESTS <%=t%>
 #
-Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"
+Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"`
 Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=t%> requests
 MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
 Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, nopercent
@@ -119,20 +119,6 @@ Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
 LegendO[<mm:write referid="thisserver" />_<%=id%>]: <%=t%> requests
 LegendI[<mm:write referid="thisserver" />_<%=id%>]: total requests :
 ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
-PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=t%> requests information</h1>
-
-<% id = id + "_fill"; %>
-#
-#
-Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"
-Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=t%> requests
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]:
-Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
-kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
-Ylegend[<mm:write referid="thisserver" />_<%=id%>]: total number of requests
-LegendO[<mm:write referid="thisserver" />_<%=id%>]: <%=t%> requests:
-LegendI[<mm:write referid="thisserver" />_<%=id%>]: total number of requests:
-ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: # of requests
 PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=t%> requests information</h1>
 
 <%
@@ -166,7 +152,7 @@ PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thiss
 #
 Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cachefill&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
 Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: <%=cache.getMaxSize() %>
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
 Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
 kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
 Ylegend[<mm:write referid="thisserver" />_<%=id%>]: cache useage
