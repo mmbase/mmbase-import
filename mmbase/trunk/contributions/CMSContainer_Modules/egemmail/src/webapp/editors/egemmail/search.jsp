@@ -39,26 +39,46 @@
 <mm:cloud>
 	<div class="editor">
 		<div class="body">
-            <html:form action="/editors/egemmail/EgemSearchAction">
-                <label><fmt:message key="egemmail.field.title" />:</label>
-				<html:text property="title"/><br/>
-				<label><fmt:message key="egemmail.field.keywords" />:</label>
-				<html:text property="keywords"/><br/>
-				<label><fmt:message key="egemmail.field.author" />:</label>
- 				<html:select property="author">
-					<html:option value=""><fmt:message key="egemmail.all_users" /></html:option>
- 					<mm:listnodes type="user" orderby="username">
-						<c:set var="username"><mm:field name="username"/></c:set>
-						<c:if test="${username != 'anonymous'}">
-                     <mm:field name="username" id="useraccount" write="false"/>
-                     <html:option value="${useraccount}"> <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /> </html:option>
-	 					</c:if>
-					</mm:listnodes>
-				</html:select><br/>
+            <html:form action="/editors/egemmail/EgemSearchAction">            
+               
 				<html:checkbox property="limitToLastWeek"><fmt:message key="egemmail.field.lastWeek" /></html:checkbox><br/>
 				<html:checkbox property="selectResults"><fmt:message key="egemmail.field.selectResults" /></html:checkbox><br/>
 				<br/>
-				<html:submit><fmt:message key="egemmail.button.search" /></html:submit>
+                <table border="0">
+   <tr>
+      <td style="width: 105px"><fmt:message key="egemmail.field.title" />:</td>
+      <td><html:text style="width: 200px" property="title"/></td>
+   </tr>
+   <tr>
+      <td style="width: 105px"><fmt:message key="egemmail.field.keywords" />:</td>
+      <td><html:text style="width: 200px" property="keywords"/></td>
+   </tr>
+   <tr>
+      <td style="width: 105px"><fmt:message key="egemmail.field.author" />:</td>
+      <td>
+     <html:select property="author">
+					<html:option value=""><fmt:message key="egemmail.all_users" /></html:option> 
+                    
+                    <mm:listnodes type="user" orderby="username">
+						<c:set var="username"><mm:field name="username"/></c:set>
+					 <c:if test="${username != 'anonymous'}">
+                     <mm:field name="username" id="userFullname" write="false"/>
+                     <html:option value="${userFullname}"> 
+                     <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /> 
+                     </html:option>
+	 					</c:if>
+					</mm:listnodes>					
+	</html:select>
+        </td>
+   </tr>   
+   <tr>
+      <td></td>
+      <td><html:submit><fmt:message key="egemmail.button.search" /></html:submit></td>
+   </tr>
+</table>
+               
+
+
 			</html:form>
 
             <mm:present referid="results">
