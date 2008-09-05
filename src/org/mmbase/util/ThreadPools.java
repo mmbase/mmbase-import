@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.19 2008-09-03 19:38:39 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.20 2008-09-05 14:33:27 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -55,13 +55,16 @@ public abstract class ThreadPools {
      */
     public static final ExecutorService filterExecutor = Executors.newCachedThreadPool();
 
+    private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
 
-    private static Thread newThread(Runnable r, String id) {
-        Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r, id) {
+    private static Thread newThread(Runnable r, final String id) {
+        boolean isUp = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
+        Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r,
+                              isUp ? org.mmbase.module.core.MMBaseContext.getMachineName() + ":" + id : id) {
                 /**
                  * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
                  */
-                public void run() {
+                @Override public void run() {
                     try {
                         super.run();
                     } catch (Throwable t) {
@@ -70,9 +73,13 @@ public abstract class ThreadPools {
                 }
             };
         t.setDaemon(true);
+        if (! isUp) nameLess.add(t);
         return t;
     }
 
+
+
+    private static long jobsSeq = 0;
     /**
      * All kind of jobs that should happen in a seperate Thread can be
      * executed by this executor. E.g. sending mail could be done by a
@@ -82,10 +89,24 @@ public abstract class ThreadPools {
     public static final ExecutorService jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                return ThreadPools.newThread(r, "JOBTHREAD");
+                return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
             }
         });
 
+    static {
+        jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+                    for (Thread t : nameLess) {
+                        t.setName(org.mmbase.module.core.MMBaseContext.getMachineName() + ":" + t.getName());
+                    }
+                    nameLess = null;
+                }
+            });
+    }
+
+
+    private static long schedSeq = 0;
     /**
      * This executor is for repeating tasks. E.g. every running
      * {@link org.mmbase.module.Module}  has a  {@link
@@ -96,7 +117,7 @@ public abstract class ThreadPools {
      */
     public static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
             public Thread newThread(Runnable r) {
-                return ThreadPools.newThread(r, "SCHEDULERTHREAD");
+                return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
             }
         });
 
