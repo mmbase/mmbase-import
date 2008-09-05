@@ -124,6 +124,15 @@
     </field>
 
 
+    <field name="filesize" state="system">
+      <gui>
+        <guiname xml:lang="en">File size</guiname>
+        <guiname xml:lang="nl">Bestandsgrootte</guiname>
+      </gui>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+    </field>
+
+
   </fieldlist>
   <functionlist>
     <function name="gui">
