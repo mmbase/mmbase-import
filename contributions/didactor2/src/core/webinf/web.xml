@@ -42,6 +42,8 @@
     </init-param>
   </filter>
 
+
+
   <filter-mapping>
     <filter-name>Didactor Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -102,6 +104,20 @@
     <load-on-startup>3</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>files</servlet-name>
+    <servlet-class>org.mmbase.servlet.FileServlet</servlet-class>
+    <init-param>
+      <param-name>listings</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ignore</param-name>
+      <param-value>.*/CVS/.*|.*/\.svn/.*|.*~$|^\.\#.*|.*/tomcat-users.xml$</param-value>
+    </init-param>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+
 
   <servlet-mapping>
     <servlet-name>version</servlet-name>
@@ -113,20 +129,17 @@
     <servlet-name>images</servlet-name>
     <url-pattern>/images/*</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>images</servlet-name>
-    <url-pattern>/img.db</url-pattern>
-  </servlet-mapping>
-
   <!-- mapping for attachment requests -->
   <servlet-mapping>
     <servlet-name>attachments</servlet-name>
     <url-pattern>/attachments/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>attachments</servlet-name>
-    <url-pattern>/attachment.db/*</url-pattern>
+    <servlet-name>files</servlet-name>
+    <url-pattern>/files/*</url-pattern>
   </servlet-mapping>
+
+
 
   <!-- Mime mappings for Apache Axis -->
   <mime-mapping>
