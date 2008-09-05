@@ -69,7 +69,7 @@
     <setting name="admin_personfields" type="string" default="firstname,suffix,lastname"  canbeempty="false" />
     <setting name="may_open_future" type="boolean" default="true" />
     <setting name="new_learnobjects" type="string" default="learnblocks,pages,flashpages,htmlpages,xmlcontent,tests" />
-    <setting name="metacontentobjects" type="string" default="images,attachments,audiotapes,videotapes,urls" />
+    <setting name="metacontentobjects" type="string" default="images,attachments,urls,flashobjects" />
 
   </scope>
   <scope name="classes" referid="class">
