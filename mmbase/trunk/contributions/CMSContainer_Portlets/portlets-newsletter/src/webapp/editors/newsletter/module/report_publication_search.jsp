@@ -1,10 +1,10 @@
 <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0">
    <tr>
-      <td width="5%"><fmt:message key="newsletter.publication.search.title"/></td>
-      <td width="10%"><html:text property="title" size="30"/></td>
-      <td width="10%" align="center"><fmt:message key="newsletter.publication.search.fromperiod"/>:</td>
-      <td width="75%">
+      <td width="110px"><fmt:message key="newsletter.publication.search.title"/></td>
+      <td width="150px"><html:text property="title" size="30"/></td>
+      <td width="100px" align="center"><fmt:message key="newsletter.publication.search.fromperiod"/>:</td>
+      <td>
          <html:select property="period">
             <html:option value="0" key="newsletter.publication.search.period.all" bundle="newsletter"/>
             <html:option value="1" key="newsletter.publication.search.period.lastday" bundle="newsletter"/>

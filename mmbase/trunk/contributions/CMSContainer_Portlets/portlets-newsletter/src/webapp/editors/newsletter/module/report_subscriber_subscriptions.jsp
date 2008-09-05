@@ -21,8 +21,8 @@
                <input type="hidden" name="subsriberId" value="${requestScope.subsriberId}"/>
                <table border="0">
                   <tr>
-                     <td style="width: 100px"><fmt:message key="newspubform.title"/></td>
-                     <td><input type="text" name="title" value="${param.title}" style="width: 200px"/></td>
+                     <td style="width: 110px"><fmt:message key="newspubform.title"/></td>
+                     <td><input type="text" name="title" value="${param.title}" style="width: 150px"/></td>
                   </tr>
                   <tr>
                      <td></td>

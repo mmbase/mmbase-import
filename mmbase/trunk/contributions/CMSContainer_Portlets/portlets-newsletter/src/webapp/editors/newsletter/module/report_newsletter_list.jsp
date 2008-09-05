@@ -18,11 +18,11 @@
          <input type="hidden" name="action" value="newsletterOverview"/>
          <table border="0">
             <tr>
-               <td style="width:100px;"><fmt:message key="newspubform.title"/></td>
-               <td><input type="text" name="title" value="${param.title}" style="width: 200px"/></td>
+               <td style="width:110px;"><fmt:message key="newspubform.title"/></td>
+               <td><input type="text" name="title" value="${param.title}" style="width: 150px"/></td>
             </tr>
             <tr>
-               <td style="width:100px;"></td>
+               <td></td>
                <td><input type="submit" name="submitButton" value="<fmt:message key='newspubform.submit'/>"/></td>
             </tr>
          </table>

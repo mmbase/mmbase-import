@@ -16,44 +16,44 @@
       <edit:ui-tab key="newsletter.publication.tabs.statistics">
          NewsletterPublicationStatisticSearch.do?newsletterId=${requestScope.newsletterId}
       </edit:ui-tab>
-       <edit:ui-tab key="newsletter.publication.tabs.subscribers" active="true">
+      <edit:ui-tab key="newsletter.publication.tabs.subscribers" active="true">
          #
       </edit:ui-tab>
-       <edit:ui-tab key="newsletter.publication.tabs.terms">
+      <edit:ui-tab key="newsletter.publication.tabs.terms">
          NewsletterTermSearch.do?newsletterId=${requestScope.newsletterId}
       </edit:ui-tab>
    </edit:ui-tabs>
 
    <div class="editor">
-      <div style="padding-left:10px;">
-      <p>
-         <c:url var="newsubscriberlink" value="/editors/community/SearchConditionalUser.do">
-            <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
-            <c:param name="method" value="searchCandidateSubscriber"/>
-         </c:url>
-         <a class="addemail" href="${newsubscriberlink}" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
-            <fmt:message key="newsletter.publication.link.newsubscriber"/>
-         </a>
-      </p>
-      <p>
-         <c:url var="newuserlink" value="/editors/community/userAddInitAction.do">
-            <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
-            <c:param name="forward" value="newslettersubscription"/>
-         </c:url>
-         <a class="addemail" href="${newuserlink}" title="<fmt:message key='newsletter.publication.link.newuser'/>">
-            <fmt:message key="newsletter.publication.link.newuser"/>
-         </a>
-      </p>
-      </div>
+      <div class="body">
+         <div style="padding-left:10px">
+               <c:url var="newsubscriberlink" value="/editors/community/SearchConditionalUser.do">
+                  <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
+                  <c:param name="method" value="searchCandidateSubscriber"/>
+               </c:url>
+               <c:url var="newuserlink" value="/editors/community/userAddInitAction.do">
+                  <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
+                  <c:param name="forward" value="newslettersubscription"/>
+               </c:url>
+               <p>
+                  <a class="addemail" href="${newsubscriberlink}" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
+                     <fmt:message key="newsletter.publication.link.newsubscriber"/>
+                  </a>
+               </p>
+               <p>
+                  <a class="addemail" href="${newuserlink}" title="<fmt:message key='newsletter.publication.link.newuser'/>">
+                     <fmt:message key="newsletter.publication.link.newuser"/>
+                  </a>
+               </p>
+         </div>
 
-      <div style="padding-left:10px;">
          <html:form action="editors/newsletter/NewsletterPublicationSubscriberSearch.do">
             <input type="hidden" name="method" value="subScriberSearch"/>
             <input type="hidden" name="newsletterId" value="${requestScope.newsletterId}"/>
-            <table width="50%" border="0" cellspacing="0" cellpadding="0">
+            <table border="0" cellspacing="0" cellpadding="0">
                <tr>
-                  <td width="25%"><fmt:message key="newsletter.publication.result.fullname"/></td>
-                  <td width="75%">
+                  <td width="110px"><fmt:message key="newsletter.publication.result.fullname"/></td>
+                  <td>
                      <html:text property="fullname" size="30"/>
                   </td>
                </tr>

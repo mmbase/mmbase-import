@@ -1,20 +1,20 @@
 <html:hidden property="contenttypes" value="newsletterpublication" />
 <table border="0">
    <tr>
-      <td style="width: 150px"><fmt:message key="newspubform.title" /></td>
-      <td><html:text style="width: 250px" property="title"/></td>
+      <td style="width: 110px"><fmt:message key="newspubform.title" /></td>
+      <td><html:text style="width: 150px" property="title"/></td>
    </tr>
    <tr>
       <td><fmt:message key="newspubform.description" /></td>
-      <td><html:text style="width: 250px" property="description"/></td>
+      <td><html:text style="width: 150px" property="description"/></td>
    </tr>
    <tr>
       <td><fmt:message key="newspubform.subject" /></td>
-      <td><html:text style="width: 250px" property="subject"/></td>
+      <td><html:text style="width: 150px" property="subject"/></td>
    </tr>
    <tr>
       <td><fmt:message key="newspubform.intro" /></td>
-      <td><html:text style="width: 250px" property="intro"/></td>
+      <td><html:text style="width: 150px" property="intro"/></td>
    </tr>
    <tr>
       <td></td>

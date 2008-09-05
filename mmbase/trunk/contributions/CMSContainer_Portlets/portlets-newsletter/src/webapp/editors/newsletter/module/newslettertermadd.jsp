@@ -21,9 +21,7 @@
 </cmscedit:head>
    <body>
       <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-
-<mm:import externid="action">search</mm:import><%-- either: search of select --%>
-
+      <mm:import externid="action">search</mm:import><%-- either: search of select --%>
       <div class="tabs">
          <div class="tab_active">
             <div class="body">
@@ -34,36 +32,35 @@
          </div>
       </div>
 
-     <div class="editor" style="height:500px;padding-left:10px;">
-         <div style="height:20px"></div>
-         <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
-			<html:hidden property="method" value="add"/>
-         <html:hidden property="offset" value="0"/>
-         <table border="0" >
-
-            <tr>
-               <td><fmt:message key="newsletter.term.name" /></td>
-               <td><html:text style="width: 250px" property="name"/>
-               <logic:messagesPresent message="true">
-                 <html:messages id="msg" message="true" bundle="newsletter">
-                   <bean:write name="msg"/> <br/>
-                </html:messages>
-               </logic:messagesPresent>
-               </td>
-            </tr>
-             <tr>
-               <td> </td>
-             <td>
-                <input type="button" name="submitButton" onclick="add();" 
+     <div class="editor">
+         <div class="body">
+            <html:form action="/editors/newsletter/module/NewsletterTermAction" method="post">
+               <html:hidden property="method" value="add"/>
+               <html:hidden property="offset" value="0"/>
+               <table border="0" >
+                  <tr>
+                     <td width="110px"><fmt:message key="newsletter.term.name" /></td>
+                     <td><html:text style="width: 150px" property="name"/>
+                     <logic:messagesPresent message="true">
+                        <html:messages id="msg" message="true" bundle="newsletter">
+                           <bean:write name="msg"/> <br/>
+                        </html:messages>
+                     </logic:messagesPresent>
+                     </td>
+                  </tr>
+                   <tr>
+                     <td> </td>
+                     <td>
+                     <input type="submit" name="submitButton" onclick="add();" 
                      value="<fmt:message key="newsletter.term.action.save" />"/><c:forEach var="space" begin="1" end="10" step="1">&nbsp; </c:forEach>
-                     <input type="button" name="submitButton" onclick="cancel();" 
-                  value="<fmt:message key="newsletter.term.action.cancel" />"/>
-             </td>
-          </tr>
-         </table>
-
-         </html:form>
-	</div>
+                     <input type="submit" name="submitButton" onclick="cancel();" 
+                     value="<fmt:message key="newsletter.term.action.cancel" />"/>
+                     </td>
+                </tr>
+               </table>
+            </html:form>
+         </div>
+      </div>
 
 </mm:cloud>
    </body>
