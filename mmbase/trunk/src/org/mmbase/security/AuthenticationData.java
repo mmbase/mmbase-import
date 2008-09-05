@@ -12,10 +12,11 @@ import org.mmbase.util.functions.*;
 import org.mmbase.bridge.Node;
 
 /**
- * This interface represents information about the authentication implementation.
+ * This interface represents information about the authentication implementation. It is the return
+ * type of {@link org.mmbase.bridge.CloudContext#getAuthentication}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.11 2008-07-17 15:58:52 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.12 2008-09-05 16:08:07 michiel Exp $
  * @since MMBase-1.8
  */
 public interface AuthenticationData {

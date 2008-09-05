@@ -18,13 +18,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- *  This class is a abstract implementation of the Authentication.
+ *  This class is an abstract implementation of user authentication in MMBase.
  *
  *  To make your own implementation of authentication, you have to extend this class.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.43 2008-07-17 15:58:52 michiel Exp $
+ * @version $Id: Authentication.java,v 1.44 2008-09-05 16:08:07 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
