@@ -111,9 +111,9 @@ if [ 1 == $showtests ] ; then
     if [ -f latest/tests-results.log ] ; then
 	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then
 	    echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
-	    (echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
+	    (echo "Failures on build ${version}" ; echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
                 cat latest/tests-results.log  | grep -P  '(^Tests run:|^[0-9]+\)|^\tat org\.mmbase|FAILURES|========================|OK)' ) | \
-		mutt -s "Test cases failures on build ${version}" ${MAILADDRESS}
+		mutt -s "Test cases failures" ${MAILADDRESS}
 	fi
     fi
 fi
