@@ -131,8 +131,8 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     *           legend style
     * @return html - code for displaying legend
     */
-   private static String getLegend(Node image, String style) {
-      StringBuffer legend = new StringBuffer();
+   protected String getLegend(Node image, String style) {
+      StringBuilder legend = new StringBuilder();
 
       try {
          String descr = image.getStringValue("description");
@@ -199,7 +199,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     * @return if this image should popup, imgHtml surrounded by popup code else
     *         unmodified imgHtml
     */
-   private String addPopup(Node image, String imgHtml, Dimension dimension) {
+   protected String addPopup(Node image, String imgHtml, Dimension dimension) {
       log.debug("This image should popup is " + popup);
 
       HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
@@ -208,7 +208,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
       int popupWidth = dimension.getWidth() + 20;
       int popupHeight = (dimension.getHeight() + 20);
 
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       sb.append("<a href=\"#\" onclick=\"javascript:handle = window.open('");
       sb.append(req.getContextPath() + "/" + IMAGE_POPUP_URL);
       sb.append("?nodenumber=" + image.getNumber() + "' , '");
