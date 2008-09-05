@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.62 2008-08-13 08:11:38 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.63 2008-09-05 13:58:09 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -155,7 +155,7 @@ public class MMBaseContext {
      * @since MMBase-1.8
      */
     public static Thread startThread(Runnable task, String name) {
-        DaemonThread kicker = new DaemonThread(task, name);
+        DaemonThread kicker = new DaemonThread(task, getMachineName() + ":" + name);
         kicker.start();
         return kicker;
     }
@@ -166,7 +166,7 @@ public class MMBaseContext {
      * @since MMBase-1.8
      */
     public static Thread startThread(DaemonTask task, String name) {
-        DaemonThread kicker = new DaemonThread(name);
+        DaemonThread kicker = new DaemonThread(getMachineName() + ":" + name);
         kicker.setTask(task);
         kicker.start();
         return kicker;
