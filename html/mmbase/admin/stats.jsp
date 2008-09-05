@@ -43,7 +43,9 @@
   </mm:compare>
   <mm:compare value="cachefill">
     <mm:import externid="cachetype" jspvar="type" vartype="string">Nodes</mm:import>
-    <% Cache cache = CacheManager.getCache(type);
+    <%
+    if (type.equals("Editwizard nodes")) type = "nodes";
+    Cache cache = CacheManager.getCache(type);
        if (cache != null) {
     %>
 <%= cache.size() %>
@@ -81,7 +83,10 @@ java.util.Iterator i  = CacheManager.getCaches().iterator();
 while (i.hasNext()) {
    String cacheName = (String) i.next();
    Cache  cache     = CacheManager.getCache(cacheName);
-   String id = identifier.transform(cache.getName());
+   String id = cache.getName();
+   if (id.equals("nodes")) id = "Editwizard nodes";
+   id = identifier.transform(id);
+
      %>
 #
 # <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
@@ -103,7 +108,7 @@ PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thiss
 #
 Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cachefill&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
 Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: <%= cache.maxSize() %>
+MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 10000000
 Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
 kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
 Ylegend[<mm:write referid="thisserver" />_<%=id%>]: cache useage
