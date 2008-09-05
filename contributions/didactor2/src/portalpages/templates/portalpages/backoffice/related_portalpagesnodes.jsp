@@ -50,16 +50,14 @@
         <di:leaf
             branchPath="${branchPath} ${status.last ? '.' : ' '}"
             icon="kupu_icon">
-          <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
-            <mm:param name="templates">/editwizards/data</mm:param>
-            <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
-            <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
-            <mm:param name="language">${locale.language}</mm:param>
-            <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
+          <di:kupulink
+              node="${_node}"
+              referrer="${referrer}"
+              wizard="config/portalpages/simplexmlcontents">
             <a href="${_}" title="edit" target="text">
               <mm:field name="title"/>
             </a>
-          </mm:link>
+          </di:kupulink>
         </di:leaf>
       </mm:relatednodes>
     </div>
@@ -86,26 +84,12 @@
     <di:leaf
         branchPath="${branchPath}${status.last ? '.' : ' '}"
         icon="kupu_icon">
-      <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back,_node@prefix">
-        <mm:param name="templates">/editwizards/data</mm:param>
-        <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
-        <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
-        <mm:param name="language">${locale.language}</mm:param>
-        <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
-        <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="background">
-          <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
-          <mm:relatednodescontainer id="current" type="images" role="background">
-            <mm:maxnumber value="1" />
-          </mm:relatednodescontainer>
-          <mm:listnodescontainer id="repository" type="images" />
-          <mm:write session="${_node}current"    referid="current" />
-          <mm:write session="${_node}repository" referid="repository" />
-          <mm:param name="tools">searchrelate</mm:param>
-          <mm:param name="currentTitle"><di:translate key="portalpages.backgroundimage" /></mm:param>
-        </mm:hasrelationmanager>
-
-        <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
-      </mm:link>
+      <di:kupulink
+          referrer="${referrer}"
+          wizard="config/portalpages/simplexmlcontents"
+          node="${_node}">
+          <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
+      </di:kupulink>
     </di:leaf>
   </mm:relatednodes>
 </jsp:root>
