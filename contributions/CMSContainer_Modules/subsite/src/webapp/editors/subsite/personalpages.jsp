@@ -47,7 +47,7 @@
       <div class="tab_active">
          <div class="body">
             <div>
-               <a href="#" onclick="selectTab('basic');"><fmt:message key="site.personal.personalpages" /></a>
+               <a href="#" onClick="selectTab('basic');"><fmt:message key="site.personal.personalpages" /></a>
             </div>
          </div>
       </div>
@@ -55,6 +55,8 @@
 </div>
 
 <div class="editor">
+<div class="body">
+<p><%@include file="personalpages_newbuttons.jsp" %> </p>
 <html:form action="/editors/subsite/SubSiteAction" method="post">
 	<html:hidden property="action" value="${action}"/>
 	<html:hidden property="search" value="true"/>
@@ -64,8 +66,11 @@
 	<mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
 	
 	<table>
+    <tr>
+    
+    </tr>
 	   <tr>
-         <td><fmt:message key="subsite.name" />:</td>
+         <td style="width:105px"><fmt:message key="subsite.name" />:</td>
          <td>
             <cmsc:select var="subsite" onchange="document.forms[0].submit();">
             <mm:listnodes type="subsite" orderby="title">
@@ -77,20 +82,24 @@
       </tr>
 	
 	   <tr>
-	      <td><fmt:message key="subsitedelete.subtitle" /></td>
+	      <td style="width:105px"><fmt:message key="subsitedelete.subtitle" /></td>
 	      <td colspan="3"><html:text property="title" style="width:200px"/></td>
-	      <td>
-	      <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="site.personal.search" />"/>
-	      </td>
+	      
 	      <td style="width:20px">
 	      </td>
-         <td>
-			<%@include file="personalpages_newbuttons.jsp" %>          
-         </td>
+         
 	   </tr>
+       <tr>
+       <td></td>
+       <td>
+	      <input type="submit" class="button" name="submitButton" onClick="setOffset(0);" value="<fmt:message key="site.personal.search" />"/>
+	      </td>
+       </tr>
 	</table>
 </html:form>
 </div>
+</div>
+
 
 
 <div class="editor">
@@ -113,9 +122,9 @@
 <thead>
     <tr>
         <th></th>
-        <th><a href="#" class="headerlink" onclick="orderBy('title');" ><fmt:message key="pp.title" /></a></th>
-        <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" ><fmt:message key="pp.publishdate" /></th>
+        <th><a href="#" class="headerlink" onClick="orderBy('title');" ><fmt:message key="pp.title" /></a></th>
         <th><a href="#" class="headerlink" onclick="orderBy('creationdate');" ><fmt:message key="pp.creationdate" /></th>
+        <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" ><fmt:message key="pp.publishdate" /></th>
     </tr>
 </thead>
 <tbody class="hover">
@@ -131,10 +140,7 @@
 		       title="<fmt:message key="pp.content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
 		                                                       title="<fmt:message key="pp.content.edit" />"
 		                                                       alt="<fmt:message key="pp.content.edit" />"/></a>
-		   <a href="../subsite/SubSiteDelete.do?number=${nodenumber}"
-		       title="<fmt:message key="pp.content.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
-		                                                       title="<fmt:message key="pp.content.delete" />"
-		                                                       alt="<fmt:message key="pp.content.delete" />"/></a>
+		  
 <%
 	   int remoteNumber = Publish.getRemoteNumber(ppNode);
       String appPath = "/content/" + remoteNumber;
@@ -149,6 +155,10 @@
                                                              title="<fmt:message key="pp.content.preview" />"
                                                              alt="<fmt:message key="pp.content.preview" />"/></a>
          </c:if>
+          <a href="../subsite/SubSiteDelete.do?number=${nodenumber}"
+		       title="<fmt:message key="pp.content.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
+		                                                       title="<fmt:message key="pp.content.delete" />"
+		                                                       alt="<fmt:message key="pp.content.delete" />"/></a>
 		   <% request.removeAttribute("appPath"); %>              
 		   </mm:field>
 		   </td>
@@ -160,12 +170,13 @@
 		   <a href="../subsite/PersonalPageElements.do?personalpage=<mm:field name="number" />">Edit Articles</a>
 		   </td>
          --%>
-		   <td>
-		      <mm:field name="publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
-		   </td>
+		   
 		   <td>
             <mm:field name="creationdate"><cmsc:dateformat displaytime="true"/></mm:field>
          </td>
+         <td>
+		      <mm:field name="publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
+		   </td>
 		   
 		   </tr>
 	   </mm:node>
