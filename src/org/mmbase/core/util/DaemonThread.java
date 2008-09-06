@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Defines a daemon thread that runs in the threadgroup belonging to this MMBase context.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DaemonThread.java,v 1.3 2008-07-09 16:02:05 michiel Exp $
+ * @version $Id: DaemonThread.java,v 1.4 2008-09-06 14:33:53 michiel Exp $
  * @deprecated  This class copies functionality present in e.g. java.util.concurrent.ScheduledThreadPoolExecutor
 
  */
@@ -61,7 +61,7 @@ public class DaemonThread extends Thread implements DaemonTask  {
      * @param name the name of the thread
      */
     public DaemonThread(Runnable target, String name) {
-        super(MMBaseContext.getThreadGroup(), target, name);
+        super(MMBaseContext.getThreadGroup(), target, MMBaseContext.getMachineName() + ":" + name);
         this.target = target;
         setDaemon(true);
     }
