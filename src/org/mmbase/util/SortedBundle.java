@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.36 2008-09-05 13:57:09 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.37 2008-09-06 14:05:59 michiel Exp $
  */
 public class SortedBundle {
 
@@ -59,7 +59,10 @@ public class SortedBundle {
         };
 
     static {
-        org.mmbase.cache.CacheManager.putCache(knownResources);
+        try {
+            org.mmbase.cache.CacheManager.putCache(knownResources);
+        } catch (Throwable t) {
+        }
     }
 
     /**
