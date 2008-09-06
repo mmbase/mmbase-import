@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.122 2008-08-20 17:02:47 michiel Exp $
+ * @version $Id: Lucene.java,v 1.123 2008-09-06 14:39:14 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -709,7 +709,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                        }
                        try {
                            if (initialWaitTime > 0) {
-                               log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                               log.service("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
                                Thread.sleep(initialWaitTime);
                            }
                        } catch (InterruptedException ie) {
@@ -1169,7 +1169,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         private BlockingQueue<Scheduler.Assignment> indexAssignments = new DelayQueue<Scheduler.Assignment>();
 
         Scheduler() {
-            super("Lucene.Scheduler");
+            super(MMBaseContext.getThreadGroup(), null, MMBaseContext.getMachineName() + ":Lucene.Scheduler");
             setDaemon(true);
             start();
         }
