@@ -52,8 +52,8 @@
       <description>De default waarde, deze waarde wordt niet gebruikt bij select velden en radiobuttons.</description>
    </field>
    <field name="sendemail" ftype="enum" dttype="enum" dtrequired="true">
-      <prompt xml:lang="en">Send in email</prompt>
-      <prompt xml:lang="nl">Mail naar</prompt>
+      <prompt xml:lang="en">Is sender e-mail address</prompt>
+      <prompt xml:lang="nl">Is afzender e-mail adres</prompt>
       <prompt xml:lang="zh">发送邮件</prompt>
       <description>Wanneer hier ja wordt ingevuld krijgt de gebruiker een email op het adres wat hij hier invult.</description>
       <optionlist select="boolean" />
