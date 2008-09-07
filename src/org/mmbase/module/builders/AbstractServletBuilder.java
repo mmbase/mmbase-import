@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.54 2008-07-29 08:38:53 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.55 2008-09-07 10:03:55 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -443,91 +443,107 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     {
         // you can of course even implement it anonymously.
         addFunction(new NodeFunction<String>("servletpath",
-                                         new Parameter[] {
-                                             new Parameter<String>("session",  String.class), // For read-protection
-                                             new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-                                             new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-                                             new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
-                                             Parameter.REQUEST,
-                                             Parameter.CLOUD
-                                         },
-                                         ReturnType.STRING) {
-                {
-                    setDescription("Returns the path associated with this builder or node.");
-                }
-
-                protected StringBuilder getServletPath(Parameters a) {
-                    StringBuilder servlet = new StringBuilder();
-                    // third argument, the servlet context, can use a relative path here, as an argument
-                    String context             = (String) a.get("context");
-
-                    if (context == null) {
-                        // no path to context-root specified explitiely, try to determin:
-                        HttpServletRequest request = a.get(Parameter.REQUEST);
-                        if (request == null) {
-                            // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
-                            servlet.append(AbstractServletBuilder.this.getServletPath()); // use 'absolute' path (starting with /)
-                        } else {
-                            servlet.append(AbstractServletBuilder.this.getServletPath(request.getContextPath()));
+                                             new Parameter[] {
+                                                 new Parameter<String>("session",  String.class), // For read-protection
+                                                 new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+                                                 new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+                                                 new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                                 Parameter.REQUEST,
+                                                 Parameter.CLOUD
+                                             },
+                                             ReturnType.STRING) {
+                        {
+                            setDescription("Returns the path associated with this builder or node.");
                         }
-                    } else {
-                        // explicitely specified the path!
-                        servlet.append(AbstractServletBuilder.this.getServletPath(context));
-                    }
-                    return servlet;
-                }
 
-                public String getFunctionValue(Node node, Parameters a) {
-                    // verify if the object is stored externally (in which case
-                    // its url has been filled in)
-                    // if so, return the url of the external source
-                    if (AbstractServletBuilder.this.externalUrlField != null ) {
-                        String url = node.getStringValue(externalUrlField);
-                        if (url != null && !url.equals("")) {
-                           return url;
-                        }
-                    }
-                    StringBuilder servlet = getServletPath(a);
+                        protected StringBuilder getServletPath(Parameters a) {
+                            StringBuilder servlet = new StringBuilder();
+                            // third argument, the servlet context, can use a relative path here, as an argument
+                            String context             = (String) a.get("context");
 
-                    String session = getSession(a, node.getNumber());
-                    String argument = (String) a.get("argument");
-                    // argument representint the node-number
-
-                    if (argument == null) {
-                        String fieldName   = (String) a.get("field");
-                        if (fieldName == null || "".equals(fieldName)) {
-                            argument = node.getStringValue("number");
-                        } else {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Getting 'field' '" + fieldName + "'");
+                            if (context == null) {
+                                // no path to context-root specified explitiely, try to determin:
+                                HttpServletRequest request = a.get(Parameter.REQUEST);
+                                if (request == null) {
+                                    // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
+                                    servlet.append(AbstractServletBuilder.this.getServletPath()); // use 'absolute' path (starting with /)
+                                } else {
+                                    servlet.append(AbstractServletBuilder.this.getServletPath(request.getContextPath()));
+                                }
+                            } else {
+                                // explicitely specified the path!
+                                servlet.append(AbstractServletBuilder.this.getServletPath(context));
                             }
-                            argument = node.getStringValue(fieldName);
+                            return servlet;
                         }
-                    }
+
+                        public String getFunctionValue(Node node, Parameters a) {
+                            // verify if the object is stored externally (in which case
+                            // its url has been filled in)
+                            // if so, return the url of the external source
+                            if (AbstractServletBuilder.this.externalUrlField != null ) {
+                                String url = node.getStringValue(externalUrlField);
+                                if (url != null && !url.equals("")) {
+                                    return url;
+                                }
+                            }
+                            StringBuilder servlet = getServletPath(a);
+
+                            String session = getSession(a, node.getNumber());
+                            String argument = (String) a.get("argument");
+                            // argument representint the node-number
+
+                            if (argument == null) {
+                                String fieldName   = (String) a.get("field");
+                                if (fieldName == null || "".equals(fieldName)) {
+                                    argument = node.getStringValue("number");
+                                } else {
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("Getting 'field' '" + fieldName + "'");
+                                    }
+                                    argument = node.getStringValue(fieldName);
+                                }
+                            }
+                            MMObjectNode mmnode = node.getNumber() > 0 ?
+                                AbstractServletBuilder.this.getNode(node.getNumber()) :
+                                new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
+                            boolean addFileName = addFileName(mmnode, servlet.toString());
+
+                            log.debug("Using session " + session);
+
+                            if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
+                                servlet.append("session=" + session + "+");
+                            }
+
+                            if (! addFileName) {
+                                return servlet.append(argument).toString();
+                            } else {
+                                servlet.append(argument).append('/');
+                                getFileName(mmnode, servlet);
+                                return servlet.toString();
+                            }
+                        }
+
+                        public String getFunctionValue(Parameters a) {
+                            return getServletPath(a).toString();
+                        }
+                    });
+
+        addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
+                public String getFunctionValue(Node node, Parameters a) {
+                    String sp = node.getFunctionValue("servletpath", a).toString();
                     MMObjectNode mmnode = node.getNumber() > 0 ?
                         AbstractServletBuilder.this.getNode(node.getNumber()) :
                         new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
-                    boolean addFileName = addFileName(mmnode, servlet.toString());
-
-                    log.debug("Using session " + session);
-
-                    if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
-                        servlet.append("session=" + session + "+");
+                    if(addFileName(mmnode, sp)) {
+                        StringBuilder buf = new StringBuilder(sp);
+                        buf.append('/');
+                        sp = getFileName(mmnode, buf).toString();
                     }
-
-                    if (! addFileName) {
-                        return servlet.append(argument).toString();
-                    } else {
-                        servlet.append(argument).append('/');
-                        getFileName(mmnode, servlet);
-                        return servlet.toString();
-                    }
-                }
-
-                public String getFunctionValue(Parameters a) {
-                    return getServletPath(a).toString();
+                    return sp;
                 }
             });
+
 
     }
 
@@ -544,43 +560,43 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                                          new Parameter<String>("absolute", String.class, "false")
                                      },
                                      ReturnType.STRING) {
-                {
-                    setDescription("Returns an URL for an icon for this blob");
-                }
-                public String getFunctionValue(Node n, Parameters parameters) {
-                    String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
-                    ResourceLoader webRoot = ResourceLoader.getWebRoot();
-                    HttpServletRequest request = parameters.get(Parameter.REQUEST);
-                    String absolute = parameters.getString("absolute");
-                    String root;
-                    if (request != null) {
-                        root = request.getContextPath();
-                    } else {
-                        root = MMBaseContext.getHtmlRootUrlPath();
-                    }
-
-                    if ("true".equals(absolute) && request != null) {
-                        int port = request.getServerPort();
-                        root = request.getScheme() + "://" + request.getServerName() + (port == 80 ? "" : ":" + port) + root;
-                    }
-                    String iconRoot = (String) parameters.get("iconroot");
-                    if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
-
-                    if (! iconRoot.endsWith("/")) iconRoot = iconRoot + '/';
-
-                    String resource = iconRoot + mimeType + ".gif";
-                    try {
-                        if (! webRoot.getResource(resource).openConnection().getDoInput()) {
-                            resource = iconRoot + "application/octet-stream.gif";
+                        {
+                            setDescription("Returns an URL for an icon for this blob");
                         }
-                    } catch (java.io.IOException ioe) {
-                        log.warn(ioe.getMessage(), ioe);
-                        resource = iconRoot + "application/octet-stream.gif";
-                    }
-                    return root + resource;
-                }
+                        public String getFunctionValue(Node n, Parameters parameters) {
+                            String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
+                            ResourceLoader webRoot = ResourceLoader.getWebRoot();
+                            HttpServletRequest request = parameters.get(Parameter.REQUEST);
+                            String absolute = parameters.getString("absolute");
+                            String root;
+                            if (request != null) {
+                                root = request.getContextPath();
+                            } else {
+                                root = MMBaseContext.getHtmlRootUrlPath();
+                            }
 
-            });
+                            if ("true".equals(absolute) && request != null) {
+                                int port = request.getServerPort();
+                                root = request.getScheme() + "://" + request.getServerName() + (port == 80 ? "" : ":" + port) + root;
+                            }
+                            String iconRoot = (String) parameters.get("iconroot");
+                            if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
+
+                            if (! iconRoot.endsWith("/")) iconRoot = iconRoot + '/';
+
+                            String resource = iconRoot + mimeType + ".gif";
+                            try {
+                                if (! webRoot.getResource(resource).openConnection().getDoInput()) {
+                                    resource = iconRoot + "application/octet-stream.gif";
+                                }
+                            } catch (java.io.IOException ioe) {
+                                log.warn(ioe.getMessage(), ioe);
+                                resource = iconRoot + "application/octet-stream.gif";
+                            }
+                            return root + resource;
+                        }
+
+                    });
     }
 
 
