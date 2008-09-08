@@ -807,11 +807,10 @@ div.editor input[type="submit"]
    background-repeat: no-repeat;
    padding-right:15px;
    border: none;
-   font-size: 11px;
 	font-weight: bold;
-   text-align: right;
    text-decoration: underline;
 	cursor: pointer;
+   display: inline-block;
 }
 
 div.editor div.body
@@ -900,7 +899,7 @@ div.editor div.body ul.shortcuts li
 	color: #313728;
 	white-space: nowrap;
 	vertical-align: middle;
-	text-decoration: underline;
+	text-decoration: none;
 	margin: 0px 2px 0px 0px;
 }
 

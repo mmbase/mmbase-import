@@ -1,11 +1,11 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="globals.jsp" %>
-<%@page import="com.finalist.cmsc.repository.ContentElementUtil,
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp" 
+%><%@page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
-                 java.util.ArrayList"%>
-<%@ page import="com.finalist.cmsc.security.UserRole" %>
-<%@ page import="com.finalist.cmsc.security.SecurityUtil" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+                 java.util.ArrayList"
+%><%@ page import="com.finalist.cmsc.security.UserRole" 
+%><%@ page import="com.finalist.cmsc.security.SecurityUtil" 
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="search.title">
@@ -93,13 +93,13 @@
 
          <table>
             <tr>
-               <td><fmt:message key="searchform.title" /></td>
+               <td style="width:105px"><fmt:message key="searchform.title" /></td>
                <td colspan="3"><html:text property="title" style="width:200px"/></td>
             </tr>
             <tr>
                <td><fmt:message key="searchform.keywords" /></td>
-               <td colspan="3"><html:text property="keywords" style="width:200px"/></td>
-               <td><fmt:message key="searchform.contenttype" /></td>
+               <td  style="width:210px"><html:text property="keywords" style="width:200px"/></td>
+               <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
                <td>
                   <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
                      <html:option value="contentelement">&lt;<fmt:message key="searchform.contenttypes.all" />&gt;</html:option>
@@ -289,6 +289,7 @@
                   </td>
                </tr>
                <tr>
+                  <td></td>
                   <td>
                      <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
                   </td>
