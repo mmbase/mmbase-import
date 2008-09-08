@@ -31,6 +31,7 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -60,6 +61,7 @@
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="0" />
         <required value="true" />
+        <minInclusive value="0" />
         <setprocessor>
           <class name="org.mmbase.datatypes.processors.DelayedSetter">
             <param name="delay">10</param>
