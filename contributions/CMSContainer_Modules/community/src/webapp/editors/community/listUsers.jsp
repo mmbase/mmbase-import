@@ -1,6 +1,8 @@
-<%@include file="globals.jsp"%>
+<%@include file="globals.jsp"
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp"/>
-
 <mm:content type="text/html" encoding="UTF-8" expires="0">
    <cmscedit:head title="reactions.title">
       <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
@@ -25,8 +27,8 @@
       </edit:ui-tab>
    </edit:ui-tabs>
 
-   <div class="editor">
-      <div style="padding-left:10px;">
+   <div class="editor"> 
+      <div class="body" style="padding-left:10px;">
          <p>
             <a href="userAddInitAction.do"
                style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message
@@ -54,3 +56,4 @@
    </div>
    </body>
 </mm:content>
+</html>

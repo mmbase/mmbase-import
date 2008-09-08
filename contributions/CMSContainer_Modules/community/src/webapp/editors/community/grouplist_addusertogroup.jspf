@@ -1,4 +1,3 @@
-
 <edit:ui-table items="${groupForShow}" var="group" size="${totalCount}"
 	requestURI="/editors/community/AddUserToGroupInit.do">
 	<edit:ui-tcolumn title="">

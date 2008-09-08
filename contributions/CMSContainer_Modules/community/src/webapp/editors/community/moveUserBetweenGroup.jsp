@@ -4,6 +4,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
 %>
 <fmt:setBundle basename="cmsc-community" scope="request" />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <cmscedit:head title="reactions.title">
 <script type="text/javascript">
    function addToGroup(){
@@ -44,7 +46,7 @@
 
 </script>
 </cmscedit:head>
-   
+<body>  
 <div class="tabs">
    <div class="tab">
       <div class="body">
@@ -76,30 +78,30 @@
 </div>
 
 <div class="editor">
-   <div style="padding-left:10px;">
+   <div class="body" style="padding-left:10px;">
       <p></p>
       <html:form action="/editors/community/SearchConditionalUser.do?groupName=${groupName}" method="post">
     
       <table border="0">
          <tbody >
             <tr> 
-               <td style="width:150px"><fmt:message key="community.search.fullname"/></td>
+               <td style="width:100px"><fmt:message key="community.search.fullname"/></td>
                <td><html:text style="width: 250px" property="fullName"/></td>
             </tr>
             <tr>
-               <td style="width:150px"><fmt:message key="community.search.username"/></td>
+               <td style="width:100px"><fmt:message key="community.search.username"/></td>
                <td><html:text style="width: 250px" property="userName" /></td>
             </tr>
             <tr>
-               <td style="width:150px"><fmt:message key="community.search.emailAddress"/></td>
+               <td style="width:100px"><fmt:message key="community.search.emailAddress"/></td>
                <td><html:text style="width: 250px" property="emailAddr" /></td>
             </tr>
             <tr>
-               <td style="width:150px"><fmt:message key="community.search.groups"/></td>
+               <td style="width:100px"><fmt:message key="community.search.groups"/></td>
                <td><html:text style="width: 250px" property="groups" /></td>
             </tr>
             <tr>
-               <td style="width:150px"></td>
+               <td style="width:100px"></td>
                <td><input type="submit" value="Search" name="submitButton"/></td>
             </tr>
          </tbody>
@@ -140,3 +142,5 @@
       </form>
    </div>
 </div>
+</body>
+</html>

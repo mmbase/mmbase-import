@@ -1,11 +1,11 @@
-<%@include file="globals.jsp" 
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp" 
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" 
+%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
 %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
-%>
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" 
-%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
-%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <cmscedit:head title="reactions.title">
 <script type="text/javascript">
@@ -37,23 +37,18 @@
    </edit:ui-tabs>
 
    <div class="editor">
-      <div style="padding-left:10px;">
-      <p></p>
+      <div class="body" style="padding-left:10px;">
          <html:form action="editors/community/AddUserToGroupInit.do" method="post">
             <table border="0">
                <tbody>
-                  <tr>&nbsp;</tr>
                   <tr>
-                     <td style="width:150px"><fmt:message key="community.search.groupname"/></td>
-                     <td><html:text style="width: 250px" property="group"/></td>
-                  </tr>
-                  <tr>&nbsp;</tr>
-                  <tr>
-                     <td style="width:150px">&nbsp;</td>
+                     <td style="width:105px"><fmt:message key="community.search.groupname"/></td>
+                     <td style="width:150px"><html:text style="width: 200px" property="group"/></td>
                      <td><input type="submit" name="submitButton" value="<fmt:message key="community.search.submit"/>"> </td>
                   </tr>
                </tbody>
             </table>
+            <p>&nbsp;</p>
          </html:form>
       </div>
    </div>
@@ -70,3 +65,4 @@
 </div>
 </body>
 </mm:content>
+</html>
