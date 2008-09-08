@@ -237,6 +237,7 @@ div.side_block_gray div.search_form_options .button,
 div.side_block_green div.search_form_options .button
 {
 	margin-bottom: 2px;
+   text-decoration: underline;
 }
 
 
@@ -247,7 +248,7 @@ div.side_block ul.shortcuts,
 div.side_block_gray ul.shortcuts,
 div.side_block_green ul.shortcuts
 {
-   	display: inline;
+   display: inline;
 	clear: left;
 	float: left;
 	list-style-position: outside;
