@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.8 2008-06-09 10:18:40 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.9 2008-09-08 08:51:44 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -305,6 +305,9 @@ s     */
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
         Object cast = Casting.toType(classType, cloud, preCast);
+        if (log.isDebugEnabled()) {
+            log.debug("Casted " + preCast.getClass() + " " + preCast + " to " + cast + " to " + classType + " " + getClass());
+        }
         return cast;
     }
 
@@ -430,7 +433,8 @@ s     */
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
 
-        description.toXml("description", XMLNS, parent, "description");
+        guiName.toXml("name", XMLNS, parent, "name");
+        description.toXml("description", XMLNS, parent, "name,description");
 
         {
             Element classElement = getElement(parent, "class",    "description,class");
@@ -456,32 +460,20 @@ s     */
 
 
 
-        xmlValue(getElement(parent, "default",  "description,class,property,default"), defaultValue);
+        xmlValue(getElement(parent, "default",  "name,description,class,property,default"), defaultValue);
 
-        addRestriction(parent, "unique",   "description,class,property,default,unique", uniqueRestriction);
-        addRestriction(parent, "required",   "description,class,property,default,unique,required", requiredRestriction);
-        getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
+        addRestriction(parent, "unique",   "name,description,class,property,default,unique", uniqueRestriction);
+        addRestriction(parent, "required",   "name,description,class,property,default,unique,required", requiredRestriction);
+        getElement(parent, "enumeration", "name,description,class,property,default,unique,required,enumeration");
         /// set this here...
 
-        /**
-           End up in the wrong place, and not needed for javascript, so commented out for the moment.
 
         if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
-            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
-            Element element;
-            if (nl.getLength() == 0) {
-                element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
-                Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
-                clazz.setAttribute("name", getCommitProcessor().getClass().getName());
-                DocumentReader.appendChild(parent, element, "description,class,property");
-                element.appendChild(clazz);
-            } else {
-                element = (Element) nl.item(0);
-            }
-
-            //element.setAttribute("value", Casting.toString(defaultValue));
+            Element commitProcessor = getElement(parent, "commitprocessor", "name,description,class,property,default,unique,required,enumeration,commitprocessor");
+            Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
+            clazz.setAttribute("name", getCommitProcessor().getClass().getName());
+            commitProcessor.appendChild(clazz);
         }
-        */
 
     }
 
