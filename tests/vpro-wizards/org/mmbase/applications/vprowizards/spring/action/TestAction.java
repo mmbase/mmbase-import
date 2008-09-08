@@ -45,7 +45,7 @@ public class TestAction extends Action {
 		this.name = name;
 	}
 
-	public void process(Map<String, Node> nodeMap, ResultContainer resultContainer) {
+	public void process(ResultContainer resultContainer) {
 		this.resultContainer = resultContainer;
 		if(isError()){
 			resultContainer.getGlobalErrors().add(new GlobalError(getName(), resultContainer.getLocale()));
