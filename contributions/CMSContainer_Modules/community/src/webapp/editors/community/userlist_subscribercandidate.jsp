@@ -1,8 +1,10 @@
 <%@include file="globals.jsp" 
 %><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
 %><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
-%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
 <cmscedit:head title="reactions.title">
    <script type="text/javascript">
       function addToSubscribe(){
@@ -53,4 +55,5 @@
       </div>
    </div>
 </body>
+</html>
 </mm:content>

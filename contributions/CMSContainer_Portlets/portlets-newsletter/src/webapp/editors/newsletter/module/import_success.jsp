@@ -1,11 +1,10 @@
-<%@include file="globals.jsp" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
-
+<%@include file="globals.jsp"
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
+%><%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"
+%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"
+%><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
