@@ -19,7 +19,7 @@ import org.mmbase.security.Action;
  * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}s.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.22 2008-09-04 21:20:02 michiel Exp $
+ * @version $Id: Component.java,v 1.23 2008-09-08 19:50:47 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -99,7 +99,7 @@ public interface Component {
     /**
      * The baseName of the resource bundle associated with i18n messages for this component.
      * See {@link java.util.ResourceBundle#getBundle(String, Locale)}. The framework should decorate
-     * the request with this like fmt:bundle before rendinger a block.
+     * the request with this like fmt:bundle would do before rendinger a block.
      */
     String getBundle();
 
