@@ -1,7 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@include file="globals.jsp"%>
-<%!
-/*
+%><%@include file="globals.jsp"
+%><%!/*
 * Comparator to order mmbase nodes on status. Sorting is not done on alphabetical order but on the value of status where 
 * status "init" has position 1; status "notified" position 2 and status "done" position 3.
 */
@@ -29,8 +28,7 @@ static public class StatusComparator implements Comparator {
 		}
 	}
 }
-%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="tasks.title" />
@@ -62,69 +60,62 @@ static public class StatusComparator implements Comparator {
                   <table>
                      <thead>
                         <tr>
-                           <th><fmt:message key="task.created" /></th>
-                           <th><fmt:message key="task.deadline" /></th>
-                           <th><fmt:message key="task.title" /></th>
-                           <th><fmt:message key="task.contenttitle" /></th>
-                           <th><fmt:message key="task.nodetype" /></th>
-                           <th><fmt:message key="task.description" /></th>
-                           <th><fmt:message key="task.status" /></th>
+                          <th><fmt:message key="task.created" /></th>                                                                                 
+                          <th><fmt:message key="task.deadline" /></th>
+                          <th><fmt:message key="task.title" /></th>
+                          <th><fmt:message key="task.status" /></th>
+                          <th><fmt:message key="task.contenttitle" /></th>
+                          <th><fmt:message key="task.nodetype" /></th>
+                          <th><fmt:message key="task.description" /></th>
                         </tr>
                      </thead>
                      <tbody class="hover">
                         <mm:relatednodes comparator="StatusComparator">
                            <c:set var="taskid"><mm:field name="number"/></c:set>
                            <tr <mm:even inverse="true">class="swap"</mm:even>>
-                              <td><mm:field name="creationdate" id="created"><mm:time time="${created}" format="d/M/yyyy HH:mm" /></mm:field></td>
-                              <td><mm:field name="deadline" id="deadl"><mm:time time="${deadl}" format="d/M/yyyy HH:mm"/></mm:field></td>
-                              <td><mm:field name="title"/></td>
-                              <c:set var="elementtitel"><mm:field name="title"/></c:set>
-                              <c:set var="elementnumber"/>
-                              <c:set var="elementtype"/>
-                              <mm:relatednodescontainer type="contentelement" role="taskrel" searchdirs="destination">
-                                 <mm:maxnumber value="1" />
-                                    <mm:relatednodes>
-                                       <c:set var="elementtitel"><mm:field name="title"/></c:set>
-                                       <c:set var="elementnumber"><mm:field name="number"/></c:set>
-                                       <c:set var="elementtype"><mm:field name="number"><mm:isnotempty><mm:nodeinfo type="guitype"/></mm:isnotempty></mm:field></c:set>
-                                    </mm:relatednodes>
-                              </mm:relatednodescontainer>
-                              <td>
-                              <c:choose>
-                                 <c:when test="${empty elementnumber}">
-                                    <fmt:message key="task.noelement"/>
+                             <td><mm:field name="creationdate" id="created"><mm:time time="${created}" format="d/M/yyyy HH:mm" /></mm:field></td>
+                             <td><mm:field name="deadline" id="deadl"><mm:time time="${deadl}" format="d/M/yyyy HH:mm"/></mm:field></td>
+                          	 <td><mm:field name="title"/></td>
+                             <c:set var="elementtitel"><mm:field name="title"/></c:set>
+                             <c:set var="elementnumber"/>
+                             <c:set var="elementtype"/>
+                                <mm:relatednodescontainer type="contentelement" role="taskrel" searchdirs="destination">
+                                <mm:maxnumber value="1" />
+                                <mm:relatednodes>
+                                   <c:set var="elementtitel"><mm:field name="title"/></c:set>
+                                   <c:set var="elementnumber"><mm:field name="number"/></c:set>
+                                   <c:set var="elementtype"><mm:field name="number"><mm:isnotempty><mm:nodeinfo type="guitype"/></mm:isnotempty></mm:field></c:set>
+                                </mm:relatednodes>
+                             </mm:relatednodescontainer>
+                             <c:set var="status"><mm:field name="status" /></c:set>
+                             <td><fmt:message key="${status}" /></td>
+                             <td><c:choose>
+                             	<c:when test="${empty elementnumber}">
+                             		<fmt:message key="task.noelement"/>
                                  </c:when>
                                  <c:otherwise>
-                                    <mm:hasrank minvalue="basic user">
-                                       <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTasklist" write="false" />
-                                       <a href="<mm:url page="../WizardInitAction.do">
-                                          <mm:param name="objectnumber" value="${elementnumber}"/>
-                                          <mm:param name="returnurl" value="${returnTasklist}"/>
-                                          </mm:url>" target="rightpane">
-                                          <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/>
-                                          </a> ${elementtitel}
-                                    </mm:hasrank>
+                                 <mm:hasrank minvalue="basic user">
+	                                 <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTasklist" write="false" />
+                                     <a href="<mm:url page="../WizardInitAction.do">
+									 <mm:param name="objectnumber" value="${elementnumber}"/>
+				       				 <mm:param name="returnurl" value="${returnTasklist}"/>
+								   	 </mm:url>" target="rightpane"><img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/></a> ${elementtitel}
+								 </mm:hasrank>
                                  </c:otherwise>
-                              </c:choose>
-                              </td>
-                              <td>${elementtype}</td>
-                              <td>
-                              <mm:hasrank minvalue="basic user">
-                                 <mm:field name="number" jspvar="number" write="false"/>
+                             </c:choose></td>
+                             <td>${elementtype}</td>
+                             <td>
+                             <mm:hasrank minvalue="basic user">
+                             	<mm:field name="number" jspvar="number" write="false"/>
                                  <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTaskedit" write="false" />
                                  <a href="<mm:url page="/editors/WizardInitAction.do">
-                                    <mm:param name="objectnumber" value="${number}"/>
-                                    <mm:param name="contenttype" value="task"/>
-                                    <mm:param name="returnurl" value="${returnTaskedit}"/>
-                                    </mm:url>" target="rightpane">
-                                    <img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/>
-                                 </a>
-                                 <mm:field name="description" />
-                              </mm:hasrank>
-                              </td>
-                              <c:set var="status"><mm:field name="status" /></c:set>
-                              <td><fmt:message key="${status}" /></td>
-                           </tr>
+  											 <mm:param name="objectnumber" value="${number}"/>
+	 										 <mm:param name="contenttype" value="task"/>
+						       				 <mm:param name="returnurl" value="${returnTaskedit}"/>
+										   	 </mm:url>" target="rightpane"><img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a> <mm:field name="description" />
+							 </mm:hasrank>
+                             </td>
+                          </tr>
                         </mm:relatednodes>
                      </tbody>
                   </table>

@@ -1,7 +1,7 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="globals.jsp"%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
-<%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@include file="globals.jsp"
+%><mm:content type="text/html" encoding="UTF-8" expires="0"
+><%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>
 <html:html xhtml="true">
 <cmscedit:head title="dashboard.title">
    <script type="text/javascript">
@@ -58,9 +58,9 @@
          <thead>
             <tr>
                <th style="width: 80px;"></th>
-               <th style="width: 150px;"><fmt:message key="dashboard.repository.date" /></th>
                <th style="width: 68px;"><fmt:message key="dashboard.repository.element" /></th>
                <th><fmt:message key="dashboard.repository.title" /></th>
+               <th style="width: 150px;"><fmt:message key="dashboard.repository.date" /></th>
                <th><fmt:message key="dashboard.repository.number" /></th>
             </tr>
          </thead>
@@ -79,9 +79,9 @@
 					<a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="gfx/icons/versioning.png" title="<fmt:message key="dashboard.content.icon.versioning.title" />" alt="<fmt:message key="dashboard.content.icon.versioning.title" />"/></a>
 					</mm:haspage>
 				</td>
-                  <td onMouseDown="objClick(this);"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
                   <td onMouseDown="objClick(this);"><mm:nodeinfo type="guitype"/></td>
                   <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
+                  <td onMouseDown="objClick(this);"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
                   <td onMouseDown="objClick(this);"><mm:field name="number"/></td>
                </tr>
             </mm:listnodes>

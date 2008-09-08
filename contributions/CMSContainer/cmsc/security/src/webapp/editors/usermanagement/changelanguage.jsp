@@ -1,6 +1,6 @@
-<%@page language="java" contentType="text/html;charset=utf-8" %>
-<%@include file="globals.jsp"  %>
-<c:choose>
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp"
+%><c:choose>
 <c:when test="${done}">
 <script>
 	top.document.location = "../index.jsp";
@@ -36,7 +36,7 @@
 	<html:form action="/editors/usermanagement/ChangeLanguageAction">
 	   <table class="formcontent">
 	      <tr>
-	         <td class="fieldname" nowrap width="150"><fmt:message key="changelanguage.language" /></td>
+	         <td class="fieldname" nowrap width="100"><fmt:message key="changelanguage.language" /></td>
 		      <td class="fieldname">
 		      	<html:select property="language">
 		      		<option value="en" <c:if test="${language == 'en'}">selected</c:if>><fmt:message key="changelanguage.english" /></option>
