@@ -33,15 +33,11 @@
     	<property name="actionClasses">
 			<list>
 				<value>org.mmbase.applications.vprowizards.spring.action.CreateNodeAction</value>
-				<!-- 
-				to be created
 				<value>org.mmbase.applications.vprowizards.spring.action.UpdateNodeAction</value>
 				<value>org.mmbase.applications.vprowizards.spring.action.DeleteNodeAction</value>
 				<value>org.mmbase.applications.vprowizards.spring.action.CreateRelationAction</value>
-				<value>org.mmbase.applications.vprowizards.spring.action.SortAction</value>
-				<value>org.mmbase.applications.vprowizards.spring.action.CreateRelationAction</value>
-				<value>org.mmbase.applications.vprowizards.spring.action.CheckboxRelationAction</value>
-				 -->
+				<value>org.mmbase.applications.vprowizards.spring.action.SortRelationAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.ToggelRelationAction</value>
 			</list>
 		</property>
     </bean>

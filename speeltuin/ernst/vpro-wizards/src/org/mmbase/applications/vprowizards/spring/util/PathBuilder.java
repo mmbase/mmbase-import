@@ -51,7 +51,7 @@ public class PathBuilder {
 	 * @return
 	 */
 	public String getStep(int index) {
-		if (index < steps.length) {
+		if (index < steps.length && index >= 0) {
 			return steps[index];
 		} else {
 			throw new IndexOutOfBoundsException(String.format("there are only %s steps, so index %s is illegal",

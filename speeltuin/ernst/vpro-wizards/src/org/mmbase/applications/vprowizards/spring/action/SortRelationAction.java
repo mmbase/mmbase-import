@@ -11,6 +11,7 @@ import org.mmbase.applications.vprowizards.spring.util.PathBuilder;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.bridge.util.Queries;
@@ -57,10 +58,10 @@ public class SortRelationAction extends AbstractRelationAction {
 	protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
 		//preconditions
 		if (!DIRECTION_UP.equals(direction) && !DIRECTION_DOWN.equals(direction)){
-			addFieldErrorTypeValue("direction", direction);
+			addGlobalError("error.property.illegal.sortdirection", new String[]{direction, this.getClass().getName(), DIRECTION_UP, DIRECTION_DOWN});
 		}
 		if(!relationManager.hasField(sortField)){
-			addFieldError("sortField", "error.field.nonexistant", new String[]{"sortField", relationManager.getName()});
+			addGlobalError("error.property.illegal.sortfield", new String[]{sortField, this.getClass().getName(), role});
 		}
 		
 		if(!hasErrors()){
@@ -85,7 +86,9 @@ public class SortRelationAction extends AbstractRelationAction {
 						new String[]{role, "" + sourceNode.getNumber(), "" + destinationNode.getNumber()});
 				return null;
 			}else{
-				return transaction.getNode(nl.getNode(0).getStringValue(pathBuilder.getStep(1) + ".number")); 
+				Node result = transaction.getRelation(nl.getNode(0).getStringValue(pathBuilder.getStep(1) + ".number"));
+				log.debug("node found for RelationSortAction: "+result);
+				return result; 
 			}
 		}
 		return null;
@@ -109,6 +112,7 @@ public class SortRelationAction extends AbstractRelationAction {
 		
 		PathBuilder pb = createPathBuilder();
 		
+		boolean relationFound = false;
 		for (int i = 0; i < nl.size(); i++) {
 			//String thisDestinationNodeNumber = nl.getNode(i).getNodeValue(pb.getStep(2)).getStringValue("number");
 			
@@ -116,38 +120,57 @@ public class SortRelationAction extends AbstractRelationAction {
 //				log.debug(i + ": number: " + thisNodeNumber + "  posrel: "
 //						+ nl.getNode(i).getStringValue(action.getRole() + ".pos"));
 //			}
-			
+//			log.debug(String.format("testing [%s] with [%s]",nl.getNode(i).getNodeValue(pb.getStep(1)).getNumber(), getNode().getNumber()));
 			if (getNode().getNumber() == nl.getNode(i).getNodeValue(pb.getStep(1)).getNumber()) {
-				log.debug("relation node found at position "+i+" with sort field value: "+nl.getNode(i).getIntValue(pb.getStep(1) + "." + sortField));
+				relationFound = true;
+				log.debug("relation node found at list position "+i+" with sort field value: "+nl.getNode(i).getIntValue(pb.getStep(1) + "." + sortField));
 				// node found. now find the relation node node that we are going to
 				// have to swap places with
 				Node nodeToSwapWith = null;
+				int nodeToSwapIndex = -1;
 				
 //				Node relationNode = nl.getNode(i).getNodeValue(pb.getStep(1));
 
 				if (direction.equals(
 						DIRECTION_UP)) {
 					if (i > 0) {
+						log.debug("direction is up and list index is "+i);
 						nodeToSwapWith = nl.getNode(i - 1).getNodeValue(pb.getStep(1));
+						nodeToSwapIndex = i-1;
+//						log.debug("step to extract from virtual node: "+pb.getStep(1));
+//						log.debug("node to swap(nl): "+nl.getNode(i - 1));
+//						log.debug("node to swap: "+nodeToSwapWith);
 					} else {
 						log.error("you want to go up, but you are at the top of the list. Abort!");
 						return;
 					}
 				} else if (direction.equals(
 						DIRECTION_DOWN)) {
-					if (i < nl.size()) {
+					if (i < ( nl.size() - 1 )) {
+						log.debug("direction is down and list index is "+i+" and list size = "+nl.size());
 						nodeToSwapWith = nl.getNode(i + 1).getNodeValue(pb.getStep(1));
+						nodeToSwapIndex = i + 1;
 					} else {
 						log.error("you want to go down, but you are at the end of the list. Abort!");
 						return;
 					}
+				}else{
+					log.fatal(String.format("attribute 'direction has illegal value [%s], while this value should have been checked. Bug!", direction));
 				}
 
 				// this should not happen
-				if (nodeToSwapWith == null) {
-					log.error("other node is null! can not beeee");
+				if (nodeToSwapIndex == -1) {
+					log.fatal("Next or preveaus relation node to swap position with is not found. this is a BUG!");
 					return;
 				}
+				
+				nodeToSwapWith = transaction.getRelation(nl.getNode(nodeToSwapIndex).getStringValue(pb.getStep(1) + ".number"));
+				log.debug(String.format(
+						"Swap relation found at list position %s with sort field value %s",
+						nodeToSwapIndex, 
+						nodeToSwapWith.getIntValue(sortField)));
+				
+				log.debug(String.format("node number is %s and swap node number is %s", getNode().getNumber(), nodeToSwapWith.getNumber()));
 
 				// now let the two nodes swap position
 				int p1 = getNode().getIntValue(sortField);
@@ -155,13 +178,19 @@ public class SortRelationAction extends AbstractRelationAction {
 
 				getNode().setIntValue(sortField, p2);
 				nodeToSwapWith.setIntValue(sortField, p1);
-
-				// create cache flush hint
+				
+				// a cacheflush hint needs to be created for this action.
 				doSetCachflushHint();
 
 				// we can stop iterating
 				return;
 			}
+			
+		}
+		if(!relationFound){
+			log.fatal(String.format(
+					"relation node with number %s not found in nodelist [%s]. This is a BUG!", 
+					getNode().getNumber(), nl));
 		}
 	}
 		
@@ -242,7 +271,7 @@ public class SortRelationAction extends AbstractRelationAction {
 	
 	/**
 	 * creates a list of of virtual nodes nodes that exist between the 
-	 * source node and destination node type, with te given relation role.
+	 * source node and destination node type, with the given relation role.
 	 * @param transaction
 	 * @return a virtual node list containing the sortfield values.
 	 */
@@ -255,9 +284,9 @@ public class SortRelationAction extends AbstractRelationAction {
 		NodeList nl = transaction.getList(
 				"" + sourceNode.getNumber(), 
 				pb.getPath(), 
-				pb.getStep(1) + sortField, 
+				pb.getStep(1) + "." + sortField, 
 				null, 
-				pb.getStep(1) + sortField, 
+				pb.getStep(1) + "." + sortField, 
 				"up", 
 				null,
 				false);

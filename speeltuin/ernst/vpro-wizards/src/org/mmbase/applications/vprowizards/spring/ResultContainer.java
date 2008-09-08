@@ -13,6 +13,8 @@ import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 
@@ -32,15 +34,17 @@ public class ResultContainer {
     private List<CacheFlushHint> cacheFlushHints = new ArrayList<CacheFlushHint>();
     private Transaction transaction = null;
     private Locale locale;
+    private static final Logger log = Logging.getLoggerInstance(ResultContainer.class);
 
 	HttpServletRequest request;
 	HttpServletResponse response;
 	private Map<String,Node>idMap = new HashMap<String, Node>();
 
 
-	public ResultContainer(HttpServletRequest request, HttpServletResponse response, Cloud transaction, Locale locale) {
+	public ResultContainer(HttpServletRequest request, HttpServletResponse response, Transaction transaction, Locale locale) {
 		this.request = request;
 		this.response = response;
+		this.transaction = transaction;
 		this.locale = locale;
 	}
 
@@ -60,11 +64,26 @@ public class ResultContainer {
 		this.newObjects.add(newObject);
 
 	}
+	
+	public void addGlobalError(GlobalError e){
+		if(log.isDebugEnabled()){
+			log.debug("adding global error: "+e);
+		}
+		globalErrors.add(e);
+	}
+	
+	public void addFieldError(FieldError e){
+		if(log.isDebugEnabled()){
+			log.debug("adding field error: "+e);
+		}
+		fieldErrors.add(e);
+	}
+	
 
-	public boolean containsFieldErrors() {
+	public boolean hasFieldErrors() {
 		return !fieldErrors.isEmpty();
 	}
-	public boolean containsGlobalErrors() {
+	public boolean hasGlobalErrors() {
 		return !globalErrors.isEmpty();
 	}
 

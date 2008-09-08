@@ -44,7 +44,7 @@ public class BasicCommandFactory implements CommandFactory {
 	public void setActionClasses(List<Class<? extends Action>> actionClasses) {
 		for(Class<? extends Action> clazz: actionClasses){
 			this.actionClasses.add(clazz);
-			log.info("Action class "+clazz+" added.");
+			log.debug("Action class "+clazz+" added.");
 		}
 	}
 	

@@ -10,12 +10,16 @@ import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Ernst Bunders
  *
  */
 public abstract class AbstractRelationAction extends AbstractNodeAction {
+	
+	private static final Logger log = Logging.getLoggerInstance(AbstractRelationAction.class);
 
 	protected Node sourceNode = null;
 	protected Node destinationNode = null;
@@ -32,9 +36,10 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 			addGlobalError("error.property.required", new String[] { "role", this.getClass().getName() });
 			return null;
 		} else {
+			try{
 			relationManager = transaction.getRelationManager(role);
-			if (relationManager != null) {
 				if (resolveSourceAndDestination(transaction, idMap)) {
+					log.debug("source and destination successfully resolved");
 					// create the relation node.
 					if (mayCreate(relationManager)
 							&& checkTypeRel(relationManager, sourceNode, destinationNode)) {
@@ -45,7 +50,8 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 						return null;
 					}
 				}
-			} else {
+			} catch(NotFoundException e) {
+				log.error("relation manager "+ role+" does not exist");
 				addGlobalError("error.illegal.relationmanager", new String[] { "role" });
 				return null;
 			}
@@ -79,11 +85,14 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 	protected final Node resolveNode(String refNotFoundErrorKey, String nodeRef, String nodenr,
 			Map<String, Node> idMap, Transaction transaction) {
 		Node result = null;
-		if (nodenr == null) {
-			if (nodeRef == null) {
+		if (StringUtils.isBlank(nodenr)) {
+			if (StringUtils.isBlank(nodeRef)) {
+				log.debug("nodenr is empty and noderef is empty too. this stinks!");
 				addGlobalError(refNotFoundErrorKey);
 			} else {
+				log.debug(String.format("trying to find node with id %s in the idmap", nodeRef));
 				if (idMap.get(nodeRef) == null) {
+					log.warn(String.format("oops, could not find node in idMap with id %s", nodeRef));
 					addGlobalError("error.node.notfound.idmap", new String[] { nodeRef });
 				} else {
 					result = idMap.get(nodeRef);
@@ -94,6 +103,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 			try {
 				result = transaction.getNode(nodenr);
 			} catch (NotFoundException e) {
+				log.warn(String.format("could not find node with number %s", nodenr));
 				addGlobalError("error.node.notfound", new String[] { nodenr });
 			}
 		}
