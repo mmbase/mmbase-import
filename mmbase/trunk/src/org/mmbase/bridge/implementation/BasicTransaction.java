@@ -19,11 +19,11 @@ import org.mmbase.util.logging.*;
 
 /**
  * The basic implementation for a Transaction cLoud.
- * A Transaction cloud is a cloud which buffers allc hanegs made to nodes -
- * which means that chanegs are committed only if you commit the transaction itself.
+ * A Transaction cloud is a cloud which buffers all changes made to nodes -
+ * which means that changes are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.41 2008-07-07 13:25:15 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.42 2008-09-08 14:13:21 ernst Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
