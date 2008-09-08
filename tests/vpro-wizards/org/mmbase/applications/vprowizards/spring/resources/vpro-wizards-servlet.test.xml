@@ -28,13 +28,21 @@
 	 -->
 
     <bean id="referrerResolver" class="org.mmbase.applications.vprowizards.spring.ReferrerResolver">
-        <property name="errorPage"><value>/mmbase/vpro-wizards/system/error.jsp</value></property>
+        <property name="errorPage"><value>error-html</value></property>
     </bean>
     
-    <bean id="test" class="org.mmbase.applications.vprowizards.spring.BasicCommandFactory">
+    <bean id="basicCommandFactory" class="org.mmbase.applications.vprowizards.spring.BasicCommandFactory">
     	<property name="actionClasses">
     		<list>
 				<value>org.mmbase.applications.vprowizards.spring.action.TestAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.CreateNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.UpdateNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.DeleteNodeAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.CreateRelationAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.SortRelationAction</value>
+				<!-- 
+				<value>org.mmbase.applications.vprowizards.spring.action.ToggelRelationAction</value>
+				 -->
 			</list>
 		</property>
     </bean>
@@ -44,7 +52,7 @@
     <bean id="wizardController" class="org.mmbase.applications.vprowizards.spring.WizardController">
         <property name="cloudFactory"><ref local="dummyFactory"/></property>
         <property name="viewResolver"><ref local="referrerResolver"/></property>
-        <property name="commandFactory"><ref local="test"/></property>
+        <property name="commandFactory"><ref local="basicCommandFactory"/></property>
     </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
