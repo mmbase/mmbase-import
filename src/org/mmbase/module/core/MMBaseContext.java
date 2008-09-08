@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.66 2008-09-08 07:27:14 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.67 2008-09-08 16:37:50 ernst Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -167,7 +167,7 @@ public class MMBaseContext {
      * @deprecated   Use {@link org.mmbase.util.ThreadPools.scheduler}.
      * @since MMBase-1.8
      */
-    public static DaenonThread startThread(DaemonTask task, String name) {
+    public static DaemonThread startThread(DaemonTask task, String name) {
         DaemonThread kicker = new DaemonThread(name);
         kicker.setTask(task);
         kicker.start();
