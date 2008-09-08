@@ -32,7 +32,7 @@
 <html:form action="/editors/usermanagement/ChangePasswordAction">
    <table class="formcontent">
       <tr>
-         <td class="fieldname" nowrap width="150"><fmt:message key="changepassword.current" /></td>
+         <td class="fieldname" nowrap width="100"><fmt:message key="changepassword.current" /></td>
 	      <td class="fieldname">
 	         <html:password property="password1" size='15' maxlength='15'/>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="password1"/></span>
