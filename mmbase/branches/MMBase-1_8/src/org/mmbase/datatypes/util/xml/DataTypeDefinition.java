@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55.2.4 2008-02-04 10:33:03 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.5 2008-09-08 08:51:44 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -160,12 +160,15 @@ public class DataTypeDefinition {
         getImplementation(dataTypeElement, id);
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
+        LocalizedString name = dataType.getLocalizedGUIName();
+        DataTypeXml.getLocalizedDescription("name", dataTypeElement, name, dataType.getName());
+
         configureConditions(dataTypeElement, id);
 
         return this;
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
