@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.42 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.43 2008-09-08 19:50:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -70,7 +70,7 @@ public class ComponentRepository {
     private ComponentRepository() { }
 
     /**
-     * Converts a comma seperated list of blocks to an array of {@link Block.Type}.s. Possible
+     * Converts a comma seperated list of blocks to an array of {@link Block.Type}s. Possible
      * 'weights' per block are ignored.
      */
     public Block.Type[] getBlockClassification(String id) {
@@ -79,8 +79,6 @@ public class ComponentRepository {
         } else {
             return Block.Type.getClassification(id, false);
         }
-
-
     }
 
     /**
@@ -93,11 +91,15 @@ public class ComponentRepository {
     /**
      * The components which could not be instantiated or configured, due to some
      * misconfiguration.
+     * @todo failed collection seems to be unused, so this wil always return an empty set.
      */
     public Collection<Component> getFailedComponents() {
         return Collections.unmodifiableCollection(failed);
     }
 
+    /**
+     * An (unmodifiable) map representing the complete repository
+     */
     public Map<String, Component> toMap()  {
         return Collections.unmodifiableMap(rep);
     }
@@ -108,19 +110,35 @@ public class ComponentRepository {
     public Component getComponent(String name) {
         return rep.get(name);
     }
-
+    /**
+     * Returns a certain block for a certain component. Much like {@link
+     * #getComponent(String)}.{@link Component#getBlock(String)}.
+     * @throws IllegalArgumentException if no component with given name.
+     * @return a Block or <code>null</code> if given component has no such block.
+     */
     public Block getBlock(String componentName, String blockName) {
         Component component = getComponent(componentName);
         if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
         return component.getBlock(blockName);
     }
 
+    /**
+     * Returns a default block for a certain component. Much like {@link
+     * #getComponent(String)}.{@link Component#getDefaultBlock()}.
+     * @throws IllegalArgumentException if no component with given name.
+     */
     public Block getDefaultBlock(String componentName) {
         Component component = getComponent(componentName);
         if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
         return component.getDefaultBlock();
     }
 
+    /** 
+     * Tries to resolve unsatisified dependencies, in all components, by calling {@link
+     * Component#resolve(VirtualComponent, Component)} on all {@link
+     * Component#getUnsatisfiedDependencies} of all components.
+     * @return <code>true</code> if no unsatisfied dependencies remain.
+     */
     protected boolean resolve() {
         int unsatisfied = 0;
         for (Component comp : getComponents()) {
