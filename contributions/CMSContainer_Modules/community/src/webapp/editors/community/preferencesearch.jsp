@@ -47,11 +47,9 @@
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 
    <mm:import externid="action">search</mm:import><%-- either: search of select --%>
-
    <edit:ui-singletab key="community.preference.title" action="${actionUrl}?method=list&reload=true"/>
-
-      <div class="editor" style="height:500px">
-         <div style="padding-left:10px;">
+      <div class="editor">
+         <div class="body">
             <html:form action="/editors/community/PreferenceAction" method="post">
                <html:hidden property="method" value="list"/>
                <html:hidden property="order"/>
