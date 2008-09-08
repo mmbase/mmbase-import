@@ -90,12 +90,22 @@ public class XMLUtil {
    
    public static String getSelfRelSourceRelationType(Element element) {
       Element ele = getSelfRelateChildNodes(element);
-      return ele.getAttribute("sourcerelationtype");
+      if(ele != null) {
+    	  return ele.getAttribute("sourcerelationtype");
+      }
+      else {
+    	  return null;
+      }
    }
    
    public static String getSelfRelDesRelationType(Element element) {
       Element ele = getSelfRelateChildNodes(element);
-      return ele.getAttribute("destinationrelationtype");
+      if(ele != null) {
+    	  return ele.getAttribute("destinationrelationtype");
+      }
+      else {
+    	  return null;
+      }
    }
    
    public static String[] getAllTableNames(Document dom) {
