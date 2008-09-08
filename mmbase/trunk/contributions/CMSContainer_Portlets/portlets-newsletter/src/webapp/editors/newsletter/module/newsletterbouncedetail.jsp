@@ -1,5 +1,5 @@
-<%@include file="globals.jsp"%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@include file="globals.jsp"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>

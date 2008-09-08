@@ -1,7 +1,8 @@
 <%@include file="globals.jsp" 
 %><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
-%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+%><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html>
    <cmscedit:head title="index.title">
       <script src="../repository/search.js" type="text/javascript"></script>
