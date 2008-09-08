@@ -1,5 +1,1 @@
-<a href="../subsite/PersonalPageCreate.do?parentpage=${subsite}">
-  <img src="../gfx/icons/new.png" width="16" height="16" 
-    title="<fmt:message key="site.personal.new.page" />" alt="<fmt:message key="site.personal.new.page" />"/>
-  <fmt:message key="site.personal.new.page" />
-</a>
+<p><a href="../subsite/PersonalPageCreate.do?parentpage=${subsite}" style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="site.personal.new.page" /></a></p>
