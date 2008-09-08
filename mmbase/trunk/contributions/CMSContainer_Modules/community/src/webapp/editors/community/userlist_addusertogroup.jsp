@@ -1,5 +1,7 @@
-<%@include file="globals.jsp"%>
-
+<%@include file="globals.jsp"
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 	<cmscedit:head title="reactions.title">
 		<script type="text/javascript"
@@ -68,8 +70,7 @@
 			</edit:ui-tabs>
 
 			<div class="editor">
-
-				<div class="body">
+				<div class="body" style="padding-left:10px;">
 						<html:form
 							action="/editors/community/SearchConditionalUser.do?method=listGroupMembers&&groupName=${groupName}" method="post">
 						<c:if test="${not empty option}">
@@ -121,3 +122,4 @@
 		</mm:cloud>
 	</body>
 </mm:content>
+</html>
