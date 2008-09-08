@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.35.2.4 2007-09-20 13:23:06 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.35.2.5 2008-09-08 09:01:10 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -231,9 +231,9 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
-        addRestriction(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
-        addRestriction(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
-        addRestriction(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
+        addRestriction(parent, "minLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
+        addRestriction(parent, "maxLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
+        addRestriction(parent, "pattern",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
     }
 
     protected Collection validateCastValueOrNull(Collection errors, Object castValue, Object value,  Node node, Field field) {

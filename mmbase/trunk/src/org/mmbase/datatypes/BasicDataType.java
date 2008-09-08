@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.97 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.98 2008-09-08 08:56:56 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -660,10 +660,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
 
-        description.toXml("description", XMLNS, parent, "description");
+        guiName.toXml("name", XMLNS, parent, "name");
+        description.toXml("description", XMLNS, parent, "name,description");
 
         {
-            Element classElement = getElement(parent, "class",    "description,class");
+            Element classElement = getElement(parent, "class",    "name,description,class");
             classElement.setAttribute("name", getClass().getName());
 
             StringBuilder extend = new StringBuilder();
@@ -684,11 +685,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
 
 
-        xmlValue(getElement(parent, "default",  "description,class,property,default"), defaultValue);
+        xmlValue(getElement(parent, "default",  "name,description,class,property,default"), defaultValue);
 
-        addRestriction(parent, "unique",   "description,class,property,default,unique", uniqueRestriction);
-        addRestriction(parent, "required",   "description,class,property,default,unique,required", requiredRestriction);
-        getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
+        addRestriction(parent, "unique",   "name,description,class,property,default,unique", uniqueRestriction);
+        addRestriction(parent, "required",   "name.description,class,property,default,unique,required", requiredRestriction);
+        getElement(parent, "enumeration", "name,description,class,property,default,unique,required,enumeration");
         /// set this here...
 
         /**

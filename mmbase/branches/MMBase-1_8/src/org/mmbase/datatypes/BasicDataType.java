@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.9 2008-09-08 08:51:44 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.10 2008-09-08 09:01:10 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -437,7 +437,7 @@ s     */
         description.toXml("description", XMLNS, parent, "name,description");
 
         {
-            Element classElement = getElement(parent, "class",    "description,class");
+            Element classElement = getElement(parent, "class",    "name,description,class");
             classElement.setAttribute("name", getClass().getName());
 
             StringBuffer extend = new StringBuffer();

@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.21.2.4 2008-06-09 10:18:40 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.21.2.5 2008-09-08 09:01:10 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -120,17 +120,17 @@ public abstract class ComparableDataType extends BasicDataType {
 
         if (minRestriction.getValue() != null) {
             if (minRestriction.isInclusive()) {
-                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
 
             } else {
-                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
             }
         }
         if (maxRestriction.getValue() != null) {
             if (maxRestriction.isInclusive()) {
-                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             } else {
-                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             }
         }
 

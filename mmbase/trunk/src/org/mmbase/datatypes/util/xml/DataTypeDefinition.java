@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.67 2008-08-11 15:43:48 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.68 2008-09-08 08:56:56 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -155,6 +155,8 @@ public class DataTypeDefinition {
         getImplementation(dataTypeElement, id);
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
+        LocalizedString name = dataType.getLocalizedGUIName();
+        DataTypeXml.getLocalizedDescription("name", dataTypeElement, name, dataType.getName());
         configureConditions(dataTypeElement);
         configureHandlers(dataTypeElement);
         return this;
