@@ -12,5 +12,5 @@ import org.mmbase.bridge.Node;
  *
  */
 public abstract class Action {
-	public abstract void process(Map<String,Node> nodeMap, ResultContainer resultContainer);
+	public abstract void process(ResultContainer resultContainer);
 }

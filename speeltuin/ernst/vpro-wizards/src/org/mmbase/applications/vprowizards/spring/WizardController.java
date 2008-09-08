@@ -39,6 +39,8 @@ public class WizardController implements Controller {
 	public WizardController(){
 		setLocale(new Locale("nl-NL"));
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -47,7 +49,7 @@ public class WizardController implements Controller {
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		
 		// TODO: this should not happen this way
 		request.setCharacterEncoding("UTF-8");
 
@@ -61,16 +63,13 @@ public class WizardController implements Controller {
 
 		// process all the actions.
 		ResultContainer resultContainer = new ResultContainer(request, response, transaction, locale);
-		command.processActions(request, response, nodeMap, resultContainer);
+		command.processActions(request, response, resultContainer);
 
-		if (resultContainer.containsGlobalErrors()) {
-			if (log.isDebugEnabled()) {
-				log.debug("Errors found, redirecting to error page.");
-			}
+		if (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()) {
+			log.debug("Errors found, transaction not committed.");
+			
 		} else {
-			if (log.isDebugEnabled()) {
-				log.debug("No errors found. Commit the transaction and put the cache flush hints on the request.");
-			}
+			log.debug("No errors found. Commit the transaction and put the cache flush hints on the request.");
 			transaction.commit();
 
 			// create the request type cache flush hint

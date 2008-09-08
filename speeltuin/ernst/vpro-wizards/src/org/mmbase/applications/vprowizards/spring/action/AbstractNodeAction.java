@@ -14,6 +14,7 @@ import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -39,7 +40,6 @@ public abstract class AbstractNodeAction extends Action {
 	private Node node;
 
 	private boolean nodeChanged = false;
-	
 
 	private ResultContainer resultContainer;
 
@@ -59,37 +59,41 @@ public abstract class AbstractNodeAction extends Action {
 	 * When the id is set on this action, the node is added to the idmap.
 	 */
 	@Override
-	public final void process(Map<String, Node> nodeMap, ResultContainer resultContainer) {
+	public final void process(ResultContainer resultContainer) {
 		this.resultContainer = resultContainer;
-		
-		//get the node
-		node = createNode(resultContainer.getTransaction(), nodeMap, resultContainer.getRequest());
-		
+
+		// get the node
+		node = createNode(resultContainer.getTransaction(), resultContainer.getIdMap(), resultContainer.getRequest());
+
 		if (hasErrors()) {
 			return;
 		}
-		
+
 		if (node == null && isNodeNullIllegal()) {
 			throw new IllegalStateException(
-					"No node has been provided, and no error has been set. Either of these should happen");
+					"No node has been provided, and no error has been set. Either of these should happen*");
 		}
-		
-		//now check if no illegal fields are set for this node type
-		if(node != null){
+
+		// now check if no illegal fields are set for this node type
+		if (node != null) {
 			checkBasicFields();
 		}
-			
-		//no error and no overridden 'proceed' flag? Set the values and 
-		//call the post processing callback method.
-		if (!hasErrors() &&  shouldProcess(node)) {
-			if(node!= null){
+
+		// no error and no overridden 'proceed' flag? Set the values and
+		// call the post processing callback method.
+		if (!hasErrors() && shouldProcess(node)) {
+			if (node != null) {
+				log.debug("setting the field values on the node");
 				setBasicFields();
+				if (node.getNodeManager().hasField("handle")) {
+					setHandlerField();
+				}
 			}
-			
-			if (resultContainer.containsFieldErrors()) {
+
+			if (resultContainer.hasFieldErrors()) {
 				return;
 			}
-			
+
 			if (node != null) {
 				if (getId() != null) {
 					resultContainer.getIdMap().put(getId(), node);
@@ -97,16 +101,17 @@ public abstract class AbstractNodeAction extends Action {
 				}
 				processNode(resultContainer.getTransaction());
 			}
-			
-			//even with a null node it can be necessary to create a cache flush hint
-			//for instance when a node was deleted.
+
+			// even with a null node it can be necessary to create a cache flush hint
+			// for instance when a node was deleted.
 			createCacheFlushHints();
 		}
 	}
 
 	/**
-	 * This template method determines if it is an error when the node is null.
-	 * Override this for concrete actions that actually don't need a node always.
+	 * This template method determines if it is an error when the node is null. Override this for concrete actions that
+	 * actually don't need a node always.
+	 * 
 	 * @return true by default.
 	 */
 	protected boolean isNodeNullIllegal() {
@@ -129,9 +134,13 @@ public abstract class AbstractNodeAction extends Action {
 	 * Check if all the fields set for this node action actually exist in the nodemanager.
 	 */
 	private void checkBasicFields() {
-		for(String fieldName: fields.keySet()){
-			if(!node.getNodeManager().hasField(fieldName)){
-				addFieldError(fieldName, "error.field.nonexistant", new String[]{fieldName, node.getNodeManager().getName()});
+		for (String field : fields.keySet()) {
+			if (!node.getNodeManager().hasField(field)) {
+				log.warn(String.format(
+						"You try to set field '%s' on a node of type '%s', but the nodetype does not have this field",
+						field, node.getNodeManager().getName()));
+				addGlobalError("error.field.unknown", new String[] { field, this.getClass().getName(),
+						node.getNodeManager().getName() });
 			}
 		}
 	}
@@ -151,7 +160,7 @@ public abstract class AbstractNodeAction extends Action {
 	 * @param request
 	 * 
 	 */
-	abstract protected Node createNode(Transaction transaction, Map<String,Node> idMap, HttpServletRequest request);
+	abstract protected Node createNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request);
 
 	/**
 	 * This template method is called after the values that have been injected in this action in the fields and
@@ -161,16 +170,17 @@ public abstract class AbstractNodeAction extends Action {
 	 * @param node
 	 * @param resultContainer
 	 */
-	protected void processNode(Transaction transaction) {};
+	protected void processNode(Transaction transaction) {
+	};
 
-	protected final Locale getLocale(){
+	protected final Locale getLocale() {
 		return resultContainer.getLocale();
 	}
-	
+
 	/**
 	 * @return the node that is created for this node action.
 	 */
-	protected final Node getNode(){
+	protected final Node getNode() {
 		return node;
 	}
 
@@ -185,66 +195,68 @@ public abstract class AbstractNodeAction extends Action {
 		return nodeChanged;
 	}
 
-	
 	/**
 	 * Creates a field error for this action
+	 * 
 	 * @param field
 	 * @param key
 	 * @param placeholderValues
 	 */
 	protected final void addFieldError(String field, String key, String[] placeholderValues) {
-		resultContainer.getFieldErrors().add(new FieldError(field, key, placeholderValues, getLocale()));
+		resultContainer.addFieldError(new FieldError(field, key, placeholderValues, getLocale()));
 	}
-	
+
 	/**
 	 * Create a field error for this action, using a key without place holder values
+	 * 
 	 * @param field
 	 * @param key
 	 */
 	protected final void addFieldError(String field, String key) {
-		resultContainer.getFieldErrors().add(new FieldError(field, key, getLocale()));
+		resultContainer.addFieldError(new FieldError(field, key, getLocale()));
 	}
-	
-	
-	
+
 	/**
-	 * Creates a field error for this action, where there is some sort of error when setting the field.
-	 * This version does not take the (offending) field value but the error message.
-	 * This method uses it's own error message key.
+	 * Creates a field error for this action, where there is some sort of error when setting the field. This version
+	 * does not take the (offending) field value but the error message. This method uses it's own error message key.
+	 * 
 	 * @param field
 	 * @param message
 	 */
 	protected final void addFieldErrorTypeMessage(String field, String message) {
-		resultContainer.getFieldErrors().add(new FieldError(field, "error.field.message",new String[]{field, message}, getLocale()));
+		resultContainer.addFieldError(new FieldError(field, "error.field.message", new String[] { field, message },
+				getLocale()));
 	}
-	
+
 	/**
-	 * Creates a field error for this action, where the value set on some field is
-	 * invalid.
-	 * This method uses it's own error message key. 
+	 * Creates a field error for this action, where the value set on some field is invalid. This method uses it's own
+	 * error message key.
+	 * 
 	 * @param field
 	 * @param value
 	 */
 	protected final void addFieldErrorTypeValue(String field, String value) {
-		resultContainer.getFieldErrors().add(new FieldError(field, "error.field.value",new String[]{field, value}, getLocale()));
+		resultContainer.addFieldError(new FieldError(field, "error.field.value", new String[] { field, value },
+				getLocale()));
 	}
 
-	
 	/**
 	 * Creates a global error for this action.
+	 * 
 	 * @param key
 	 * @param placeholderValues
 	 */
 	protected final void addGlobalError(String key, String[] placeholderValues) {
-		resultContainer.getGlobalErrors().add(new GlobalError(key, placeholderValues, getLocale()));
+		resultContainer.addGlobalError(new GlobalError(key, placeholderValues, getLocale()));
 	}
-	
+
 	/**
 	 * Creates a global error for this action.
+	 * 
 	 * @param key
 	 */
 	protected final void addGlobalError(String key) {
-		resultContainer.getGlobalErrors().add(new GlobalError(key, getLocale()));
+		resultContainer.addGlobalError(new GlobalError(key, getLocale()));
 	}
 
 	protected final void addCachFlushHint(CacheFlushHint hint) {
@@ -265,20 +277,33 @@ public abstract class AbstractNodeAction extends Action {
 	 */
 	private final void setBasicFields() {
 		NodeManager nm = node.getNodeManager();
+		if (fields.isEmpty()) {
+			log.debug("** no fields set for this createnode action");
+		}
 		for (String field : fields.keySet()) {
-			if (!nm.hasField(field)) {
-				addGlobalError("error.field.unknown", new String[] { field, this.getClass().getName(), nm.getName() });
+
+			// the existence of fields is already checked in 'checkFields()' so we don't have
+			// to set errors when non existent fields are set
+			if (nm.hasField(field)) {
+				if (!node.getStringValue(field).equals(fields.get(field))) {
+					setChanged();
+					log.debug(String.format("setting value '%s' on field '%s' of node of type '%s'", fields.get(field),
+							field, node.getNodeManager().getName()));
+					node.setStringValue(field, fields.get(field));
+				} else {
+					log.debug(String.format(
+							"not setting value '%s' on field '%s' of node of type '%s': value is same as current",
+							fields.get(field), field, node.getNodeManager().getName()));
+
+				}
 			}
-			if (!node.getStringValue(field).equals(fields.get(field))) {
-				setChanged();
-			}
-			node.setStringValue(field, fields.get(field));
 		}
 
 		for (String field : dateFields.keySet()) {
 			try {
 				if (!nm.hasField(field)) {
-					addGlobalError("error.field.unknown", new String[] { field, this.getClass().getName(), nm.getName() });
+					addGlobalError("error.field.unknown",
+							new String[] { field, this.getClass().getName(), nm.getName() });
 				}
 				if (dateFields.get(field).getDateInSeconds() != node.getIntValue(field)) {
 					node.setDateValue(field, dateFields.get(field).getParsedDate());
@@ -368,107 +393,118 @@ public abstract class AbstractNodeAction extends Action {
 	 * these are the setter methods for the data binding.
 	 */
 
+	public Map<String, DateTime> getDateFields() {
+		return dateFields;
+	}
+
 	public void setDateFields(Map<String, DateTime> dateFields) {
 		this.dateFields = dateFields;
+	}
+
+	public Map<String, String> getFields() {
+		return fields;
 	}
 
 	public void setFields(Map<String, String> fields) {
 		this.fields = fields;
 	}
 
-	public void setFile(MultipartFile file) {
-		this.file = file;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public MultipartFile getFile() {
 		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 
 	public String getId() {
 		return id;
 	}
-	
+
+	public void setId(String id) {
+		log.info("** id is set to " + id);
+		this.id = id;
+	}
+
 	/**
-	 * Check if a relation is possible from the given source to the given destination with
-	 * the given relation manager.
+	 * Check if a relation is possible from the given source to the given destination with the given relation manager.
+	 * 
 	 * @param relationManager
 	 * @return
 	 */
 	protected final boolean checkTypeRel(RelationManager relationManager, Node sourceNode, Node destinationNode) {
-		String constraints = String.format(
-				"snumber=%s AND dnumber=%s and rnumber=%s", 
-				"" + sourceNode.getNodeManager().getNumber(), 
-				"" + destinationNode.getNodeManager().getNumber(),
-				"" + relationManager.getNumber());
-		NodeList nl = relationManager.getList(constraints, null, null);
-		if(nl.size() == 0){
-			addGlobalError(
-					"error.create.relation.typerel", 
-					new String[]{sourceNode.getNodeManager().getName(), destinationNode.getNodeManager().getName(), relationManager.getName()});
-			addGlobalError("error.create.relation");
+		NodeManager typerelManager = relationManager.getCloud().getNodeManager("typerel");
+		String constraints = String.format("snumber=%s AND dnumber=%s AND rnumber=%s", ""
+				+ sourceNode.getNodeManager().getNumber(), "" + destinationNode.getNodeManager().getNumber(), ""
+				+ relationManager.getNumber());
+		NodeList nl = typerelManager.getList(constraints, null, null);
+		if (nl.size() == 0) {
+			log.warn(String.format("could not find typerel record with these constraints: '%s', where snumber type is %s"
+					+ " and dnumber type is %s and rnumber type is %s",
+					constraints, sourceNode.getNodeManager().getName(), 
+					destinationNode.getNodeManager().getName(), 
+					relationManager.getName()));
+			addGlobalError("error.create.relation.typerel", new String[] { sourceNode.getNodeManager().getName(),
+					destinationNode.getNodeManager().getName(), relationManager.getName() });
 			return false;
 		}
 		return true;
 	}
-	
 
 	/**
-	 * can the current owner create a node of this type?
-	 * set global error when fail.
+	 * can the current owner create a node of this type? set global error when fail.
+	 * 
 	 * @param nodeManager
 	 * @return true when allowed.
 	 */
 	protected final boolean mayWrite(NodeManager nodeManager) {
-		if(nodeManager == null){
+		if (nodeManager == null) {
 			throw new NullPointerException("argument nodeManager is null");
 		}
-		boolean mayWrite= nodeManager.mayWrite();
-		if(!mayWrite){
-			addGlobalError("error.authorization.write", new String[]{nodeManager.getName()});
+		boolean mayWrite = nodeManager.mayWrite();
+		if (!mayWrite) {
+			addGlobalError("error.authorization.write", new String[] { nodeManager.getName() });
 		}
 		return mayWrite;
 	}
-	
+
 	/**
-	 * can the current owner create a node of this type?
-	 * set global error when fail.
+	 * can the current owner create a node of this type? set global error when fail.
+	 * 
 	 * @param nodeManager
 	 * @return true when allowed.
 	 */
 	protected final boolean mayCreate(NodeManager nodeManager) {
-		if(nodeManager == null){
+		if (nodeManager == null) {
 			throw new NullPointerException("argument nodeManager is null");
 		}
 		boolean mayCreate = nodeManager.mayCreateNode();
-		if(!mayCreate){
-			addGlobalError("error.authorization.create", new String[]{nodeManager.getName()});
+		if (!mayCreate) {
+			addGlobalError("error.authorization.create", new String[] { nodeManager.getName() });
 		}
 		return mayCreate;
 	}
-	
+
 	/**
-	 * can the current owner delete this node?
-	 * set global error when fail.
+	 * can the current owner delete this node? set global error when fail.
+	 * 
 	 * @param nodeManager
 	 * @return true when allowed.
 	 */
 	protected final boolean mayDelete(Node node) {
-		if(node == null){
+		if (node == null) {
 			throw new NullPointerException("argument node is null");
 		}
 		boolean mayDelete = node.mayDelete();
-		if(!mayDelete){
-			addGlobalError("error.authorization.delete", new String[]{node.getNumber()+"", node.getNodeManager().getName()});
+		if (!mayDelete) {
+			addGlobalError("error.authorization.delete", new String[] { node.getNumber() + "",
+					node.getNodeManager().getName() });
 		}
 		return mayDelete;
 	}
-	
-	protected final boolean hasErrors(){
-		return (resultContainer.getGlobalErrors().size() == 0 && resultContainer.getFieldErrors().size() == 0);
+
+	protected final boolean hasErrors() {
+		return (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors());
 	}
 
 	@Override

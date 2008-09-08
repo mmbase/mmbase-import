@@ -29,7 +29,7 @@ public class DeleteNodeAction extends Action {
 	}
 
 	@Override
-	public void process(Map<String, Node> nodeMap, ResultContainer resultContainer) {
+	public void process(ResultContainer resultContainer) {
 		if(StringUtils.isBlank(nodenr)){
 			resultContainer.getGlobalErrors().add(
 					new GlobalError(
