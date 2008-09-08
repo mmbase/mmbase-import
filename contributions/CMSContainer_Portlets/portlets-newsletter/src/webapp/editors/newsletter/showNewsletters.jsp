@@ -1,21 +1,12 @@
-<%@ page language="java" pageEncoding="utf-8"
-%>
-<%@page import="org.apache.struts.Globals"
-%>
-<%@include file="globals.jsp"
-%>
-<%@taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"
-%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
-%>
-<%@taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"
-%>
-<%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" 
-%>
-<fmt:setBundle basename="newsletter" scope="request"/>
-
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@page import="org.apache.struts.Globals"
+%><%@include file="globals.jsp"
+%><%@taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"
+%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
+%><%@taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"
+%><%@taglib prefix="edit" tagdir="/WEB-INF/tags/edit" 
+%><fmt:setBundle basename="newsletter" scope="request"/>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
    <head>
@@ -77,23 +68,23 @@
       </div>
 
       <div class="editor">
-         <div class="body">
+         <div class="body"  style="padding-left:10px;">
             <html:form method="POST" action="/editors/newsletter/NewsletterStatistic">
-               <table >
+               <table style="width: 600px">
                   <tr>
-                     <td width="110px"> <fmt:message key="newsletterlog.newsletter" /> </td>
-                     <td width="150px">
-                        <html:select property="newsletters" styleId="newsletters">
+                     <td style="width:80px"> <fmt:message key="newsletterlog.newsletter" /> </td>
+                     <td style="width:100px">
+                        <html:select property="newsletters" styleId="newsletters" style="width:160px">
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
-                     <td width="50px">&nbsp;</td>
-                     <td>&nbsp;</td>
+                     <td style="width:20px">&nbsp;</td>
+                     <td style="width:150px">&nbsp;</td>
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td>
-                        <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:125px" />
+                        <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:150px" />
                         <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_b" class="img">
                            
                         </input>
@@ -108,7 +99,7 @@
                      </td>
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td>
-                        <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:125px" />
+                        <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:150px" />
                         <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_be" class="img">
                            
                         </input>
@@ -153,13 +144,14 @@
                      <td colspan="2">&nbsp;</td>
                   </tr>
                   <tr>
+                     <td>&nbsp;</td>
                      <td>
-                         <input type="submit" onClick="javascript:submits()" style="text-decoration:none"
+                         <input type="submit" onclick="javascript:submits()" style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.submit" />" />
-                        <input type="submit" onClick="javascript:resets()"  style="text-decoration:none"
+                        <input type="submit" onclick="javascript:resets()"  style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.reset" />" />
                      </td>
-                     <td colspan="3">&nbsp;</td>
+                     <td colspan="2">&nbsp;</td>
                   </tr>
                </table>
             </html:form>
