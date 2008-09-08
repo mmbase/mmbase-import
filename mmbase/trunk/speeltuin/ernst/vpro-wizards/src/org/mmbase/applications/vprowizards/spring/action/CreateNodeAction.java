@@ -11,6 +11,9 @@ import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.datatypes.NodeManagerNamesDataType;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This action will create a node of the type that you set in the field
@@ -20,8 +23,8 @@ import org.mmbase.bridge.Transaction;
  * 
  */
 public class CreateNodeAction extends AbstractNodeAction {
-
-	private String nodeType;
+	private static final Logger log = Logging.getLoggerInstance(CreateNodeAction.class);
+ 	private String nodeType;
 
 	public final void setNodeType(String nodemanger) {
 		this.nodeType = nodemanger;
@@ -45,6 +48,7 @@ public class CreateNodeAction extends AbstractNodeAction {
 			return null;
 		} else {
 			if(mayCreate(nodeManager)){
+				log.info(String.format("Creating new node of type '%s'", nodeManager.getName()));
 				return nodeManager.createNode();
 			}
 			return null;
@@ -58,12 +62,19 @@ public class CreateNodeAction extends AbstractNodeAction {
 	 * @return the node manager used to create a new node with
 	 */
 	protected NodeManager resolveNodemanager(Transaction transaction) {
+		if(transaction == null){
+			throw new IllegalStateException("transaction should not be null!");
+		}
 		if (StringUtils.isBlank(nodeType)) {
+			log.debug("Can not create node manager instance: name field is empty");
 			addGlobalError("error.property.required", new String[] { "nodemanager", CreateNodeAction.class.getName() });
 			return null;
 		} else if (transaction.hasNodeManager(nodeType)) {
-			return transaction.getNodeManager(nodeType);
+			NodeManager nodeManager = transaction.getNodeManager(nodeType);
+			log.debug(String.format("Returning node manager of type '%s'", nodeManager.getName()));
+			return nodeManager;
 		} else {
+			log.debug(String.format("Node manager of type '%s' does not exist: can not get instance.", nodeType));
 			addGlobalError("error.illegal.nodemanager", new String[] { nodeType });
 			return null;
 		}

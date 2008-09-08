@@ -34,8 +34,7 @@ public interface Command {
 	 * @param transaction an mmbase transaction in which all datamanipulation is done
 	 * @param request
 	 * @param response
-	 * @param nodeMap a map where all the processed nodes that have an 'id' attribute set should be added to.
 	 * @return
 	 */
-	public void processActions(HttpServletRequest request, HttpServletResponse response, Map<String, Node> nodeMap, ResultContainer resultContainer);
+	public void processActions(HttpServletRequest request, HttpServletResponse response, ResultContainer resultContainer);
 }

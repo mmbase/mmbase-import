@@ -39,14 +39,15 @@ public class BasicCommand implements Command {
 	 * @see org.mmbase.applications.vprowizard.spring.Command#processActions(org.mmbase.bridge.Transaction, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map, org.mmbase.applications.vprowizard.spring.ResultContainer)
 	 */
 	public void processActions(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Node> nodeMap, ResultContainer resultContainer) {
+			HttpServletResponse response, ResultContainer resultContainer) {
 		//we only iterate over the actions until there is an error
 		actions:
 		for(String actionMapping :  actions.keySet()){
 			Map<String, Action> mappedActions = actions.get(actionMapping);
+			log.service(String.format("%s actions found for mapping '%s'", ""+mappedActions.size(), actionMapping));
 			for (Action action: mappedActions.values()){
-				action.process(nodeMap, resultContainer);
-				if(resultContainer.containsGlobalErrors() || resultContainer.containsFieldErrors()){
+				action.process(resultContainer);
+				if(resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()){
 					 break actions;
 				}
 			}
@@ -54,7 +55,7 @@ public class BasicCommand implements Command {
 	}
 
 	public void addAction(String mappingName, Class<? extends Action> actionClass) {
-		log.info("mapping action class '"+actionClass.toString()+"' to '"+mappingName+"'");
+		log.debug("mapping action class '"+actionClass.toString()+"' to '"+mappingName+"'");
 		actions.put(mappingName, MapUtils.lazyMap(new HashMap<String, Action>(), new MyFactory(actionClass)));
 	}
 	

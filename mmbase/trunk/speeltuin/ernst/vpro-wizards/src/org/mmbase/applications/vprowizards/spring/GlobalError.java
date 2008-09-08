@@ -9,8 +9,8 @@ public class GlobalError {
 	
 
 	/**
-	 * Indien er tijdens het verwerken van de acties een fout optreedt worden fielderror gegooit. Deze geven aan welke
-	 * velden niet verwerkt konden worden.
+	 * This is the type of error that is created when something went wrong, and the transaction can not be committed in the end.
+	 * A global error is a kind of error that will return an error page, in stead of the referrer page.
 	 * 
 	 * @author Ernst Bunders
 	 */
@@ -41,6 +41,10 @@ public class GlobalError {
 
 	public String getMessageKey() {
 		return messageKey;
+	}
+	
+	public String[] getProperties(){
+		return properties;
 	}
 
 	/**

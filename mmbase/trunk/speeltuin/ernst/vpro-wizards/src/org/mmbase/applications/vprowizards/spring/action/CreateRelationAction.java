@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import nl.vpro.redactie.ResultContainer;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.applications.vprowizards.spring.FieldError;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.PathBuilder;
 import org.mmbase.bridge.Node;
@@ -53,11 +54,11 @@ public class CreateRelationAction extends AbstractRelationAction {
 	protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
 		//preconditions
 		if(!SORT_POSITION_BEGIN.equals(sortPosition) && !SORT_POSITION_END.equals(sortPosition)){
-			addFieldErrorTypeValue("sortPosition", sortPosition);
+			addGlobalError("error.field.value", new String[]{"sortPosition", sortPosition} );
 		}
 		if(!StringUtils.isBlank(sortField)){
 			if(!relationManager.hasField(sortField)){
-				addFieldError("sortField", "error.field.nonexistant", new String[]{"sortField", relationManager.getName()});
+				addGlobalError("error.field.unknown", new String[]{"sortField", this.getClass().getName(), relationManager.getName()});
 			}
 		}
 		
