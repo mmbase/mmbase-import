@@ -34,6 +34,7 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
         <maxLength value="255" />
       </datatype>
     </field>
@@ -96,6 +97,7 @@
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="0" />
+        <minInclusive value="0" />
       </datatype>
     </field>
 

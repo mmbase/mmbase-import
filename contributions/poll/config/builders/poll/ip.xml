@@ -21,6 +21,7 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
         <maxLength value="255" />
       </datatype>
     </field>
