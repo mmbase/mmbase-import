@@ -1,17 +1,17 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="globals.jsp" %>
-<%@page import="com.finalist.cmsc.repository.ContentElementUtil,
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp" 
+%><%@page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
-                 java.util.ArrayList"%>
-<%@page import="org.mmbase.bridge.Cloud" %>
-<%@page import="org.mmbase.bridge.Node" %>
-<%@page import="org.mmbase.bridge.NodeList" %>
-<%@page import="org.mmbase.bridge.util.SearchUtil" %>
-<%@page import="org.mmbase.remotepublishing.*" %>
-<%@page import="com.finalist.cmsc.subsite.util.SubSiteUtil" %>
-<%@page import="com.finalist.cmsc.services.publish.Publish"%>
-<%@page import="org.mmbase.bridge.BridgeException"%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+                 java.util.ArrayList"
+%><%@page import="org.mmbase.bridge.Cloud" 
+%><%@page import="org.mmbase.bridge.Node" 
+%><%@page import="org.mmbase.bridge.NodeList" 
+%><%@page import="org.mmbase.bridge.util.SearchUtil" 
+%><%@page import="org.mmbase.remotepublishing.*" 
+%><%@page import="com.finalist.cmsc.subsite.util.SubSiteUtil" 
+%><%@page import="com.finalist.cmsc.services.publish.Publish"
+%><%@page import="org.mmbase.bridge.BridgeException"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="site.personal.personalpages">
