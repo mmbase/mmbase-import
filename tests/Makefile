@@ -1,7 +1,7 @@
-
+#export JAVA_HOME=/opt/jdk15
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:.
 
-.PHONY: all bridge rmmci dbsq util
+.PHONY: all bridge rmmci dbsq util clustering
 all:
 	$(ant) run.all
 bridge:
@@ -12,3 +12,5 @@ dbsq:
 	$(ant) run.dbsq
 util:
 	$(ant) run.util
+clustering:
+	$(ant) run.clustering
