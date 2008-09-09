@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.tests;
-import junit.framework.TestCase;
+import junit.framework.*;
 
 import java.io.File;
 import java.sql.*;
@@ -55,6 +55,19 @@ public abstract class MMBaseTest extends TestCase {
         System.out.println("--------------------------------------------------------------------------------");
         System.out.println("Starting test");
     }
+
+    static public void shutdownMMBase() {
+        MMBase.getMMBase().shutdown();
+    }
+    static public Test SHUTDOWN = new Test() {
+                public int countTestCases() {
+                    return 0;
+                }
+                public void run(TestResult tr) {
+                    System.out.println("Shutting down");
+                    MMBaseTest.shutdownMMBase();
+                }
+            };
 
     static public void startDatabase() {
         // first try if it is running already
