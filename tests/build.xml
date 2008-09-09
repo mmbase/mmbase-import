@@ -450,6 +450,7 @@ Build-compiler: ${build.compiler}
             classpathref="run.rmmci.client">
           <arg value="org.mmbase.tests.Clustering" />
         </java>
+        <!-- how to decently shutdown the running mmbase's ?-->
         <antcall target="stop.database" inheritRefs="true"/>
       </sequential>
     </parallel>
