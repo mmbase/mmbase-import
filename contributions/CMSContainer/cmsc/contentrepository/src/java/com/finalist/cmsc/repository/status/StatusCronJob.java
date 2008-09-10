@@ -5,15 +5,9 @@ import java.util.Date;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.applications.crontab.CronEntry;
+import org.mmbase.applications.crontab.AbstractCronJob;
 import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.core.MMBase;
@@ -26,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
 
-public class StatusCronJob implements CronJob {
+public class StatusCronJob extends AbstractCronJob implements CronJob {
 
    private static final String STATUS_EXPIRED = "expired";
 
@@ -63,18 +57,21 @@ public class StatusCronJob implements CronJob {
    private static final Logger log = Logging.getLoggerInstance(StatusCronJob.class.getName());
 
 
-   public void init(CronEntry cronEntry) {
+   @Override
+   public void init() {
       Calendar calendar = Calendar.getInstance();
       calendar.set(9999, 11, 31, 12, 59, 59);
       maximumEndDate = calendar.getTimeInMillis();
    }
 
 
+   @Override
    public void stop() {
       // nothing
    }
 
 
+   @Override
    public void run() {
 
       long startTime = System.currentTimeMillis();

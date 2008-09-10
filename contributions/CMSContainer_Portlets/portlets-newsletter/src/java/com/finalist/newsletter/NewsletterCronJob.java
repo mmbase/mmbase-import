@@ -1,23 +1,14 @@
 package com.finalist.newsletter;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.text.*;
+import java.util.*;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.mmbase.applications.crontab.CronEntry;
+import org.mmbase.applications.crontab.AbstractCronJob;
 import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -28,7 +19,7 @@ import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
-public class NewsletterCronJob implements CronJob {
+public class NewsletterCronJob extends AbstractCronJob implements CronJob {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterCronJob.class.getName());
 
@@ -51,8 +42,8 @@ public class NewsletterCronJob implements CronJob {
             if (scheduleExpression != null) {
                createPublication(newslettersToPublish, newsletter, scheduleExpression,
                      lastCreatedDateTime);
-            } 
-         } 
+            }
+         }
       }
       return (newslettersToPublish);
    }
@@ -65,7 +56,7 @@ public class NewsletterCronJob implements CronJob {
          newslettersToPublish.add(newsletter);
       }
    }
-   
+
    private boolean isPublish(String[] expressions,Date lastCreatedDateTime) {
       boolean isPublish = false;
       DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -77,19 +68,19 @@ public class NewsletterCronJob implements CronJob {
       }
       Date now = new Date();
       Calendar calender = Calendar.getInstance();
-      //expressions[0] value: 1 once 
-      if(expressions[0].equals("1")) { 
+      //expressions[0] value: 1 once
+      if(expressions[0].equals("1")) {
          String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
          try {
             Date startDate = df.parse(startDatetime);
             if(now.after(startDate) && (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime))) {
                isPublish = true;
             }
-         } 
+         }
          catch (ParseException e) {
             log.debug("--> Parse date Exception");
          }
-      }//expressions[0] : 2 daily 
+      }//expressions[0] : 2 daily
       else if (expressions[0].equals("2")) {
          String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
 
@@ -120,18 +111,18 @@ public class NewsletterCronJob implements CronJob {
                   }
                }
             }
-         } 
+         }
          catch (ParseException e) {
             log.debug("--> Parse date Exception");
          }
-      }//expressions[0] : 3 weekly 
+      }//expressions[0] : 3 weekly
       else if(expressions[0].equals("3")) {
          Calendar startTime = getStartCalendar(expressions);
          char[] weeks = expressions[4].toCharArray();
-       
-         for(int j = 0 ; j < weeks.length; j++) {
 
-            String week = String.valueOf(weeks[j]);
+         for (char week2 : weeks) {
+
+            String week = String.valueOf(week2);
             if((calender.get(Calendar.DAY_OF_WEEK) != 1 && calender.get(Calendar.DAY_OF_WEEK) == (Integer.parseInt(week)+1)) || (calender.get(Calendar.DAY_OF_WEEK) == 1 && Integer.parseInt(week) == 7)) {
                if(calender.after(startTime)) {
                   try {
@@ -144,13 +135,13 @@ public class NewsletterCronJob implements CronJob {
                         Date beCreate = DateUtils.addWeeks(lastCreatedDateTime, interval);
                         if(DateUtils.isSameDay(new Date(),beCreate )) {
                            isPublish = true;
-                           break; 
+                           break;
                         }
                      }
                   }
                   catch (NumberFormatException e) {
                      log.debug("-->NumberFormatException "+e.getMessage());
-                  } 
+                  }
                }
             }
          }
@@ -160,8 +151,8 @@ public class NewsletterCronJob implements CronJob {
          if(expressions[3].equals("0")) {
             String dayOfMonth = expressions[4];
             char[] months = expressions[5].toCharArray();
-            for(int j = 0 ; j < months.length ; j++) {
-               String month = String.valueOf(months[j]);
+            for (char month2 : months) {
+               String month = String.valueOf(month2);
                if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("b") && calender.get(Calendar.MONTH) == 11) || (month.equals("a") && calender.get(Calendar.MONTH) == 10)) {
                   if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dayOfMonth)) {
                      if(calender.after(startTime)) {
@@ -172,7 +163,7 @@ public class NewsletterCronJob implements CronJob {
                            else {
                               if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
                                  isPublish = true;
-                                 break; 
+                                 break;
                               }
                            }
                      }
@@ -183,10 +174,10 @@ public class NewsletterCronJob implements CronJob {
          else if(expressions[3].equals("1")) {
             String weekOfMonth = expressions[4];
             String week = expressions[5];
-            
+
             char[] months = expressions[6].toCharArray();
-            for(int j = 0 ; j < months.length ; j++) {
-               String month = String.valueOf(months[j]);
+            for (char month2 : months) {
+               String month = String.valueOf(month2);
                if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("a") && calender.get(Calendar.MONTH) == 10) || (month.equals("b") && calender.get(Calendar.MONTH) == 11)) {
                   if(calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(weekOfMonth)) {
                      if(calender.get(Calendar.DAY_OF_WEEK)!= 1 && calender.get(Calendar.DAY_OF_WEEK)== (Integer.parseInt(week)+1)) {
@@ -198,7 +189,7 @@ public class NewsletterCronJob implements CronJob {
                               else {
                                  if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
                                     isPublish = true;
-                                    break; 
+                                    break;
                                  }
                               }
                         }
@@ -231,14 +222,16 @@ public class NewsletterCronJob implements CronJob {
       return isPublish;
    }
 
-   public void init(CronEntry arg0) {
+   @Override
+   public void init() {
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       BounceChecker checker = new BounceChecker(newsletterService);
       if (!checker.isRunning()) {
          checker.start();
       }
    }
-   
+
+   @Override
    public void run() {
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
@@ -253,9 +246,10 @@ public class NewsletterCronJob implements CronJob {
       }
    }
 
+   @Override
    public void stop() {
       log.info("Stopping Newsletter CronJob");
    }
-   
-   
+
+
 }

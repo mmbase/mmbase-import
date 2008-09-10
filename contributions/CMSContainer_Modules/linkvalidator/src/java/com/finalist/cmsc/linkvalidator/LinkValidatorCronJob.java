@@ -8,7 +8,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.mmbase.applications.crontab.CronEntry;
+import org.mmbase.applications.crontab.AbstractCronJob;
 import org.mmbase.applications.crontab.CronJob;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.HugeNodeListIterator;
@@ -16,26 +16,17 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-public class LinkValidatorCronJob implements CronJob {
+public class LinkValidatorCronJob extends AbstractCronJob implements CronJob {
 
     private static final String URL_MANAGER = "urls";
     private static final String URL_FIELD = "url";
     private static final String VALID_FIELD = "valid";
-    
+
    private static final int TIMEOUT = 15000;
    private static final Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
 
 
-   public void init(CronEntry cronEntry) {
-      // empty
-   }
-
-
-   public void stop() {
-      // empty
-   }
-
-
+   @Override
    public void run() {
       checkExternalLinks();
    }
