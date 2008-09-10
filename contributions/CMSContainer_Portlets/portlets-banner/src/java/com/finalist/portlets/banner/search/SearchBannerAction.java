@@ -5,9 +5,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +15,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
@@ -47,7 +43,7 @@ public class SearchBannerAction extends MMBaseAction {
 
       BannerForm bannerForm = (BannerForm) form;
       log.debug("Searching on remote cloud? " + bannerForm.isRemote());
-      Cloud cloud = getCloud(bannerForm.isRemote());
+      Cloud cloud = getCloudForAnonymousUpdate(bannerForm.isRemote());
 
       int count = 0;
       int offset = 0;
@@ -153,17 +149,6 @@ public class SearchBannerAction extends MMBaseAction {
       NodeQuery query = createAttachmentsByBannerQuery(banner, "up", 0, 1);
       NodeList attachments = query.getNodeManager().getList(query);
       return attachments != null && attachments.size() > 0;
-   }
-
-
-   private Cloud getCloud(boolean isRemote) {
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
-      log.debug("Using remote cloud?: " + isRemote);
-      if (isRemote) {
-         return Publish.getRemoteCloud(cloud);
-      }
-      return cloud;
    }
 
    private void addConstraint(Query query, NodeManager manager, Step step, String fieldName, String value) {

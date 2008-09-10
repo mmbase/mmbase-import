@@ -5,9 +5,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.RelationStep;
@@ -15,7 +12,7 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.navigation.ServerUtil;
 
 public class ReactionAction extends SearchAction {
 
@@ -54,18 +51,10 @@ public class ReactionAction extends SearchAction {
 
    @Override
    public Cloud getCloud() {
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
-
       /* The DirectReactions should use the staging cloud if we are
        *  running in single-war-file mode.
        */
-      try{
-    	    Cloud remoteCloud = Publish.getRemoteCloud(cloud);
-          return remoteCloud;	//In case there is a live.server
-      } catch(NoClassDefFoundError e){
-    	  return cloud;			//In case there is only a staging (single) server
-      }
+      return getCloudForAnonymousUpdate(ServerUtil.isLive());
    }
 
 
