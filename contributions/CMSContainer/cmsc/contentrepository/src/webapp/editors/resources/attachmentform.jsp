@@ -1,16 +1,16 @@
 <html:hidden property="contenttypes" value="attachments" />
 <table border="0">
    <tr>
-      <td style="width: 150px"><fmt:message key="attachmentform.title" /></td>
-      <td><html:text style="width: 250px" property="title"/></td>
+      <td style="width: 105px"><fmt:message key="attachmentform.title" /></td>
+      <td><html:text style="width: 200px" property="title"/></td>
    </tr>
    <tr>
       <td><fmt:message key="attachmentform.description" /></td>
-      <td><html:text style="width: 250px" property="description"/></td>
+      <td><html:text style="width: 200px" property="description"/></td>
    </tr>
    <tr>
       <td><fmt:message key="attachmentform.filename" /></td>
-      <td><html:text style="width: 250px" property="filename"/></td>
+      <td><html:text style="width: 200px" property="filename"/></td>
    </tr>
    <tr>
       <td></td>
