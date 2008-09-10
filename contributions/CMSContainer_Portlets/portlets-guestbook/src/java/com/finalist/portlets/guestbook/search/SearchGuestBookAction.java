@@ -5,9 +5,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +15,6 @@ import org.mmbase.storage.search.*;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.resources.forms.QueryStringComposer;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
@@ -45,7 +41,7 @@ public class SearchGuestBookAction extends MMBaseAction {
       List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
       QueryStringComposer queryStringComposer = new QueryStringComposer();
       GuestBookForm guestBookForm = (GuestBookForm) form;
-      Cloud cloud = getCloud(guestBookForm.isRemote());
+      Cloud cloud = getCloudForAnonymousUpdate(guestBookForm.isRemote());
       int count = 0;
       int offset = 0;
       if (guestBookForm.getOffset() != null && guestBookForm.getOffset().matches("\\d+")) {
@@ -133,17 +129,6 @@ public class SearchGuestBookAction extends MMBaseAction {
       query.setMaxNumber(maxNumber);
       log.debug("query: " + query.toSql());
       return query;
-   }
-
-
-   private Cloud getCloud(boolean isRemote) {
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
-      log.debug("Using remote cloud?: " + isRemote);
-      if (isRemote) {
-         return Publish.getRemoteCloud(cloud);
-      }
-      return cloud;
    }
 
 

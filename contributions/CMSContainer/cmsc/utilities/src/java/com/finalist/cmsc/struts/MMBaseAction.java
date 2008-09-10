@@ -21,6 +21,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.security.Rank;
 import org.mmbase.util.Encode;
 
+import com.finalist.cmsc.services.publish.Publish;
+
 public abstract class MMBaseAction extends Action {
 
    public static final String SUCCESS = "success";
@@ -240,6 +242,16 @@ public abstract class MMBaseAction extends Action {
             session.removeAttribute(name);
          }
       }
+   }
+
+
+
+   public static final Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
    }
 
 }

@@ -5,16 +5,12 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
@@ -37,7 +33,7 @@ public class SearchBannerInitAction extends MMBaseAction {
          HttpServletResponse response, Cloud cld) throws Exception {
 
       BannerForm bannerForm = (BannerForm) form;
-      Cloud cloud = getCloud(bannerForm.isRemote());
+      Cloud cloud = getCloudForAnonymousUpdate(bannerForm.isRemote());
 
       NodeManager manager = cloud.getNodeManager("customer");
       NodeQuery query = manager.createQuery();
@@ -56,18 +52,6 @@ public class SearchBannerInitAction extends MMBaseAction {
    public String getRequiredRankStr() {
       return null;
    }
-
-
-   private Cloud getCloud(boolean isRemote) {
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
-      log.debug("Using remote cloud?: " + isRemote);
-      if (isRemote) {
-         return Publish.getRemoteCloud(cloud);
-      }
-      return cloud;
-   }
-
 
    private List<Map<String, Object>> populateCustomersRows(NodeList nodes) {
       List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
