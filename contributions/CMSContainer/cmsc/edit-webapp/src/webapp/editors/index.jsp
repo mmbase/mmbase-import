@@ -8,7 +8,7 @@
    <mm:listnodes type="user" constraints="username='${username}'">
       <mm:field name="language" id="language" write="false"/>
       <c:if test="${empty language}">
-         <c:set var="language" value="<%=request.getHeader ( "Accept-Language" )%>"/>
+         <c:set var='language' value='<%=request.getHeader ( "Accept-Language" )%>'/>
          <c:if test="${fn:length(language) > 2}">
             <c:set var="language" value="${fn:substring(language,0,2)}"/>
          </c:if>
