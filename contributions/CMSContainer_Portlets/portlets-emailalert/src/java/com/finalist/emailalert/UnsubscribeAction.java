@@ -3,6 +3,8 @@ package com.finalist.emailalert;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
@@ -11,7 +13,7 @@ import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class UnsubscribeAction extends Action {
@@ -25,7 +27,7 @@ public class UnsubscribeAction extends Action {
       String pageNumber = httpServletRequest.getParameter("p");
       String emailAddress = httpServletRequest.getParameter("s");
       String returnUrl = null;
-      Cloud cloud = MMBaseAction.getCloudForAnonymousUpdate(false);
+      Cloud cloud = getCloudForAnonymousUpdate(false);
       if (emailAddress != null && pageNumber != null) {
          Node subscriberNode = null;
          try {
@@ -60,6 +62,14 @@ public class UnsubscribeAction extends Action {
       returnUrl = HttpUtil.getWebappUri(httpServletRequest) + returnUrl;
       httpServletResponse.sendRedirect(httpServletResponse.encodeRedirectURL(returnUrl));
       return null;
+   }
+
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
    }
 
 
