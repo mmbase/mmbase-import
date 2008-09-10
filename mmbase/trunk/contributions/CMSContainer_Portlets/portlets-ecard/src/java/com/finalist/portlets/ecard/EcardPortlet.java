@@ -15,9 +15,6 @@ import java.util.*;
 import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 
@@ -104,8 +101,7 @@ public class EcardPortlet extends ContentChannelPortlet {
       }
 
       if (errorMessages.size() == 0) {
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloudForAnonymousUpdate();
 
          NodeManager ecardManager = cloud.getNodeManager("ecard");
          Node ecard = ecardManager.createNode();
@@ -257,8 +253,7 @@ public class EcardPortlet extends ContentChannelPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }
