@@ -1,19 +1,11 @@
 package com.finalist.cmsc.workflow.forms;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
@@ -72,13 +64,13 @@ public class PageWorkflowPublishAction extends MMBaseAction {
 		ResourceBundle rbundle = ResourceBundle.getBundle("cmsc-workflow");
 
 		List<Node> workitemList = pageNode.getRelatedNodes("workflowitem");
-		Iterator itor = workitemList.iterator();
+		Iterator<Node> itor = workitemList.iterator();
 		Node workitemNode = null;
 
 		response.setCharacterEncoding("utf-8");
 
 		if (itor.hasNext()) {
-			workitemNode = (Node) itor.next();
+			workitemNode = itor.next();
 			List<Node> workflowErrors = performWorkflowAction(tmpAction,
 					workitemNode);
 			if (workflowErrors != null && workflowErrors.size() > 0) {
@@ -87,11 +79,13 @@ public class PageWorkflowPublishAction extends MMBaseAction {
 								+ rbundle.getString("publish.failednode"));
 			}
 			String tmpActionValue;
-			if (tmpAction.equals("accept"))
-				tmpActionValue = rbundle.getString("workflow.tab.approved");
-			else
-				tmpActionValue = rbundle.getString("workflow.tab." + tmpAction
+			if (tmpAction.equals("accept")) {
+            tmpActionValue = rbundle.getString("workflow.tab.approved");
+         }
+         else {
+            tmpActionValue = rbundle.getString("workflow.tab." + tmpAction
 						+ "ed");
+         }
 			response.getWriter().print(
 					rbundle.getString("workflow.status.page") + tmpActionValue);
 		} else {
