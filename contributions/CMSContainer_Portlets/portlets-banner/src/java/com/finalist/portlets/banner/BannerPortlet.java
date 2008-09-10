@@ -21,9 +21,6 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,8 +76,7 @@ public class BannerPortlet extends ContentChannelPortlet {
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
       String position = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
 
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
+      Cloud cloud = getCloudForAnonymousUpdate();
       // get the node list from the request
       List<ContentElement> elements = (List<ContentElement>) request.getAttribute(ELEMENTS);
       if (elements != null) {
@@ -118,8 +114,7 @@ public class BannerPortlet extends ContentChannelPortlet {
       String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
 
-      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = cloudProvider.getCloud();
+      Cloud cloud = getCloudForAnonymousUpdate();
 
       String bannerId = request.getParameter("elementId");
       if (StringUtils.isNotBlank(bannerId)) {

@@ -7,9 +7,6 @@ import java.util.Map;
 import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
@@ -57,8 +54,7 @@ public class EmailAlertPortlet extends ContentPortlet {
                errorMessages.put(SUBSCRIBEPAGE, "view.error.nopage");
             }
             if (errorMessages.size() == 0) {
-               CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-               Cloud cloud = cloudProvider.getCloud();
+               Cloud cloud = getCloudForAnonymousUpdate();
                Node emailAlert = cloud.getNode(contentElement);
                // check if the emailaddress already exists, otherwise create it
                Node subscriberNode = SearchUtil.findNode(cloud, SUBSCRIBER, EMAILADDRESS, emailAddress);
@@ -176,8 +172,7 @@ public class EmailAlertPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }

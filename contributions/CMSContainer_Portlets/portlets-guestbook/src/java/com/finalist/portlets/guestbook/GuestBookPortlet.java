@@ -22,8 +22,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.apache.commons.lang.StringUtils;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -110,8 +108,7 @@ public class GuestBookPortlet extends ContentPortlet {
                 request.getPortletSession().setAttribute(ELEMENT_ID, contentelement);
             }
             else {
-                CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-                Cloud cloud = cloudProvider.getCloud();
+                Cloud cloud = getCloudForAnonymousUpdate();
                 Node element = cloud.getNode(contentelement);
 
                 NodeManager messageMgr = cloud.getNodeManager("guestmessage");
@@ -149,8 +146,7 @@ public class GuestBookPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
             String deleteNumber = request.getParameter("deleteNumber");
-            CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-            Cloud cloud = cloudProvider.getCloud();
+            Cloud cloud = getCloud();
             Node element = cloud.getNode(deleteNumber);
             element.delete(true);
         }

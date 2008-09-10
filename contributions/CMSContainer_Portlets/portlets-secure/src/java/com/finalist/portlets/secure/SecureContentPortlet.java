@@ -12,7 +12,6 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import org.apache.commons.lang.StringUtils;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
 import com.finalist.cmsc.services.community.Community;
@@ -52,7 +51,7 @@ public class SecureContentPortlet extends AbstractContentPortlet {
 
 
 	private boolean isSecure(String elementId) {
-		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+	   Cloud cloud = getCloudForAnonymousUpdate();
 		Node node = cloud.getNode(elementId);
 		return(node.getNodeManager().hasField("secure") && node.getBooleanValue("secure"));
 	}

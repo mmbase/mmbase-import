@@ -17,9 +17,6 @@ import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.portlet.*;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -60,7 +57,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
    @Override
    @SuppressWarnings("unchecked")
-   public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processView(ActionRequest request, ActionResponse response) {
       Map<String, String> errorMessages = new Hashtable<String, String>();
       Map<String, Object> parameterMap = new HashMap<String, Object>();
       DataSource attachment = processUserRequest(request, errorMessages, parameterMap);
@@ -75,8 +72,7 @@ public class ResponseFormPortlet extends ContentPortlet {
             StringBuffer data = new StringBuffer();
             Map<String, Object> formfields = new HashMap<String, Object>();
 
-            CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-            Cloud cloud = cloudProvider.getCloud();
+            Cloud cloud = getCloudForAnonymousUpdate();
             Node responseForm = cloud.getNode(contentelement);
             NodeList formfieldList = SearchUtil.findRelatedOrderedNodeList(responseForm, "formfield", "posrel",
                   "posrel.pos");
@@ -394,8 +390,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }

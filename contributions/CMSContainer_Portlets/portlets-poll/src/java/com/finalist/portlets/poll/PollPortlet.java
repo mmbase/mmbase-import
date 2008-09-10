@@ -13,9 +13,6 @@ import java.io.IOException;
 
 import javax.portlet.*;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
@@ -37,8 +34,7 @@ public class PollPortlet extends ContentPortlet {
          String contentelement = preferences.getValue(CONTENTELEMENT, null);
 
          if (contentelement != null) {
-            CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-            Cloud cloud = cloudProvider.getCloud();
+            Cloud cloud = getCloudForAnonymousUpdate();
 
             String pollChoiceNumber = request.getParameter("pollChoiceNumber");
             if (pollChoiceNumber != null) {
@@ -75,8 +71,7 @@ public class PollPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }

@@ -17,6 +17,8 @@ import java.util.*;
 import javax.portlet.*;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
+import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
@@ -66,7 +68,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
    private final DateFormat metaDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#processEditDefaults(javax.portlet.ActionRequest,
     *      javax.portlet.ActionResponse)
     */
    @Override
@@ -97,7 +99,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
    }
 
    /**
-    * @see net.sf.mmapps.commons.portlets.CmscPortlet#processEdit(javax.portlet.ActionRequest,
+    * @see com.finalist.cmsc.portlets.CmscPortlet#processEdit(javax.portlet.ActionRequest,
     *      javax.portlet.ActionResponse)
     */
    @Override
@@ -183,6 +185,12 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
 
    protected Cloud getCloud() {
       Cloud cloud = CloudUtil.getCloudFromThread();
+      return cloud;
+   }
+
+   protected Cloud getCloudForAnonymousUpdate() {
+      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = cloudProvider.getCloud();
       return cloud;
    }
 
