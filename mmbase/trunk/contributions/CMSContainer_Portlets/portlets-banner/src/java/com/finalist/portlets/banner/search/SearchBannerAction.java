@@ -5,6 +5,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +17,7 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
@@ -93,6 +96,14 @@ public class SearchBannerAction extends MMBaseAction {
       }
 
       return mapping.findForward(action);
+   }
+
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
    }
 
 

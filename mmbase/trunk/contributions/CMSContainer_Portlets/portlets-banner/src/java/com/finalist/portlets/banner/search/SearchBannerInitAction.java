@@ -5,12 +5,15 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
@@ -47,6 +50,13 @@ public class SearchBannerInitAction extends MMBaseAction {
       return mapping.findForward("success");
    }
 
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
+   }
 
    @Override
    public String getRequiredRankStr() {

@@ -3,13 +3,15 @@ package com.finalist.emailalert;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class ConfirmAction extends Action {
@@ -23,7 +25,7 @@ public class ConfirmAction extends Action {
 
       String emailAddress = httpServletRequest.getParameter("s");
       String returnUrl = null;
-      Cloud cloud = MMBaseAction.getCloudForAnonymousUpdate(false);
+      Cloud cloud = getCloudForAnonymousUpdate(false);
       if (emailAddress != null) {
          Node subscriberNode = null;
          try {
@@ -50,6 +52,13 @@ public class ConfirmAction extends Action {
       return null;
    }
 
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
+   }
 
    private String getConfirmationLink(Cloud cloud) {
       String link = null;
