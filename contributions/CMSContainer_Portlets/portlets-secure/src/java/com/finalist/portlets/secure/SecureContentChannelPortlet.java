@@ -4,8 +4,6 @@ import java.util.*;
 
 import javax.portlet.RenderRequest;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
@@ -29,7 +27,7 @@ public class SecureContentChannelPortlet extends ContentChannelPortlet {
 			return super.getContentElements(req, contenttypes, channel, offset, orderby, direction, archive, elementsPerPage, year, month, day,	useLifecycleBool);
 		}
 		else {
-			Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+		   Cloud cloud = getCloudForAnonymousUpdate();
 			if (channel != null) {
 				Node chan = cloud.getNode(channel);
 				return getContentElements(chan, contenttypes, orderby, direction, useLifecycleBool, archive, offset, elementsPerPage, year, month, day, NOT_SECURE_PARAMETER_MAP);

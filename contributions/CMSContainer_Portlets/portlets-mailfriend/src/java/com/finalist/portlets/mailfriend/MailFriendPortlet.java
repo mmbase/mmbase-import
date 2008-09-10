@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.portlet.*;
 import org.apache.commons.lang.StringUtils;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
 
@@ -68,8 +66,7 @@ public class MailFriendPortlet extends ContentPortlet {
             }
 
             if (errorMessages.size() == 0) {
-               CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-               Cloud cloud = cloudProvider.getCloud();
+               Cloud cloud = getCloudForAnonymousUpdate();
                Node mailfriend = cloud.getNode(contentelement);
                boolean sent = sendEmail(cloud, toname, toemail, fromname, fromemail, mailfriend, request, articleNumber);
                if (!sent) {
@@ -176,8 +173,7 @@ public class MailFriendPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }

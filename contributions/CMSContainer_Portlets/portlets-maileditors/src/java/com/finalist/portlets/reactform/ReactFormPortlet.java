@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.portlet.*;
 import org.apache.commons.lang.StringUtils;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
 
@@ -62,8 +60,7 @@ public class ReactFormPortlet extends ContentPortlet {
             }
 
             if (errorMessages.size() == 0) {
-               CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-               Cloud cloud = cloudProvider.getCloud();
+               Cloud cloud = getCloudForAnonymousUpdate();
                Node reactform = cloud.getNode(contentelement);
                Node articleNode = cloud.getNode(Integer.parseInt(articleNumber));
                String subject = articleNode.getStringValue("title");
@@ -156,8 +153,7 @@ public class ReactFormPortlet extends ContentPortlet {
       }
       else if (action.equals("delete")) {
          String deleteNumber = request.getParameter("deleteNumber");
-         CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-         Cloud cloud = cloudProvider.getCloud();
+         Cloud cloud = getCloud();
          Node element = cloud.getNode(deleteNumber);
          element.delete(true);
       }
