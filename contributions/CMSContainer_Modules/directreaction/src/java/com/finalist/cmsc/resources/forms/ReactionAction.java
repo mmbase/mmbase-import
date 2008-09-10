@@ -5,6 +5,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.RelationStep;
@@ -13,6 +15,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.services.publish.Publish;
 
 public class ReactionAction extends SearchAction {
 
@@ -57,6 +60,13 @@ public class ReactionAction extends SearchAction {
       return getCloudForAnonymousUpdate(ServerUtil.isLive());
    }
 
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
+   }
 
    @Override
    public String getRequiredRankStr() {

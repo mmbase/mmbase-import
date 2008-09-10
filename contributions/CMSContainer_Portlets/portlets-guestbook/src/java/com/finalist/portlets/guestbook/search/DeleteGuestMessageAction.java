@@ -3,6 +3,8 @@ package com.finalist.portlets.guestbook.search;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
@@ -10,6 +12,7 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentAction;
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm;
+import com.finalist.cmsc.services.publish.Publish;
 
 public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
 
@@ -33,6 +36,15 @@ public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
       return new ActionForward(returnurl);
 
    }
+
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
+   }
+
 
    @Override
    public String getRequiredRankStr() {
