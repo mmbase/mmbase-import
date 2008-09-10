@@ -5,7 +5,7 @@
 <table id="results" border="0" cellpadding="0" cellspacing="0">
   
   <mm:listnodescontainer type="$ntype">
-  <mm:size id="totsize" write="false" />    <%-- total # of this nodetype --%>
+  <mm:size id="total" write="false" />    <%-- total # of this nodetype --%>
   <mm:sortorder field="number" direction="DOWN" />
   <mm:ageconstraint minage="0" maxage="$days" />
   
@@ -23,7 +23,7 @@
   <mm:offset value="$offset" />
   
   <caption>
-    <mm:write referid="size" /> out of <mm:write referid="totsize" /> of type
+    <mm:write referid="size" /> out of <mm:write referid="total" /> of type
     <strong><mm:nodeinfo nodetype="$ntype" type="guitype" /></strong> (<mm:write referid="ntype" />)
   </caption>
   <tr>
@@ -70,35 +70,43 @@
       <mm:compare referid="size" value="0">
         <div class="message">
           <h3>No nodes found</h3>
-          <mm:compare referid="totsize" value="0"><p>There are no nodes of this type.</p></mm:compare>
-          <mm:compare referid="totsize" value="0" inverse="true"><p>Try other search criteria, adjust 'Days old' for example.</p></mm:compare>
+          <mm:compare referid="total" value="0"><p>There are no nodes of this type.</p></mm:compare>
+          <mm:compare referid="total" value="0" inverse="true"><p>Try other search criteria, adjust 'Days old' for example.</p></mm:compare>
         </div>
       </mm:compare>
-      
-      <%-- paging, pass all search field values --%>
-      <mm:url id="search_str" referids="nr?,rkind?,dir?,days,ntype,search" write="false">
-        <mm:fieldlist nodetype="$ntype" type="search">
-          <mm:fieldinfo type="reusesearchinput" />
-        </mm:fieldlist>
-      </mm:url>
-      <p>
-      <mm:compare referid="size" value="0" inverse="true">
-        <mm:previousbatches maxtotal="20" indexoffset="1">
-          <mm:first><mm:index><mm:compare value="1" inverse="true">&laquo;&laquo;&nbsp;</mm:compare></mm:index></mm:first>
-          <a href="<mm:url referid="search_str" referids="_@offset" />"><mm:index /></a> |
-        </mm:previousbatches>
-        <mm:index offset="1" />
-        <mm:nextbatches maxtotal="20" indexoffset="1">
-          <mm:first>|</mm:first>
-          <a href="<mm:url referid="search_str" referids="_@offset" />"><mm:index /></a>
-          <mm:last>
-            <mm:write><mm:islessthan value="$[+ $totsize - $max]">&nbsp;&raquo;&raquo;</mm:islessthan></mm:write>
-          </mm:last>
-          <mm:last inverse="true">|</mm:last>
-        </mm:nextbatches>
-      </mm:compare>
+     
+      <p class="pager">
+		<mm:url id="search_str" referids="ntype,search,days,nr?,rkind?,dir?" write="false">
+		  <mm:fieldlist nodetype="$ntype" type="search">
+			<mm:fieldinfo type="reusesearchinput" />
+		  </mm:fieldlist>
+		</mm:url>
+        
+        <c:if test="${offset != 0}">
+          <strong><a href="<mm:url referid="search_str">
+            <mm:param name="offset">${(offset - max)}</mm:param>
+          </mm:url>">&laquo;&laquo;</a></strong>
+        </c:if>
+        
+        <c:forEach var="index" begin="0" end="${(size / max)}">
+          <c:choose>
+            <c:when test="${(index * max) == offset}">
+              <strong>${(index + 1)}</strong>
+            </c:when>
+            <c:otherwise>
+              <a href="<mm:url referid="search_str">
+                <mm:param name="offset">${(index * max)}</mm:param>
+              </mm:url>">${(index + 1)}</a>
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
+        
+        <c:if test="${(size - offset) > max}">
+          <strong><a href="<mm:url referid="search_str">
+            <mm:param name="offset">${(max + offset)}</mm:param>
+          </mm:url>">&raquo;&raquo;</a></strong>
+        </c:if>
       </p>
-      <%-- /paging --%>
       
     </td>
   </tr>
