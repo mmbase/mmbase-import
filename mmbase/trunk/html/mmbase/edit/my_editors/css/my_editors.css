@@ -414,6 +414,7 @@ textarea
 #results p { text-align: center; }
 #results h3 { text-align: center; }
 .batches { border-top: 1px solid #c8cfd9; }
+.batches p { word-spacing: 0.5em; }
 .even { background: #E6E9DD; }
 .odd { background: #fff; }
 tr.odd:hover { background-color: #e0f0e0; }
