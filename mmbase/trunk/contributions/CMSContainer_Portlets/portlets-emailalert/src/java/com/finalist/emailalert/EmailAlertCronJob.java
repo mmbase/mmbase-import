@@ -1,26 +1,23 @@
 package com.finalist.emailalert;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-import org.mmbase.applications.crontab.CronEntry;
+
+import org.mmbase.applications.crontab.AbstractCronJob;
 import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.search.PageInfo;
 import com.finalist.cmsc.services.search.Search;
 
-public class EmailAlertCronJob implements CronJob {
+public class EmailAlertCronJob extends AbstractCronJob implements CronJob {
 
    private static final Logger log = Logging.getLoggerInstance(EmailAlertCronJob.class.getName());
    private static final String PAGINAURL = "#URL#";
@@ -30,16 +27,7 @@ public class EmailAlertCronJob implements CronJob {
    private static final String ENDTEMPLATE = "#EIND#";
 
 
-   public void init(CronEntry cronEntry) {
-      // empty
-   }
-
-
-   public void stop() {
-      // empty
-   }
-
-
+   @Override
    public void run() {
       sendEmailAlerts();
    }
