@@ -5,4 +5,5 @@
             <field name="description"/>
             <field name="resource"/>
             <field name="media"/>
+            <field name="overwriteable"/>
    </action>
