@@ -19,22 +19,22 @@
 
 
 <div class="editor">
-   <div class="body" style="padding-left:10px;">
+   <div class="body">
      <p><a href="${pageContext.request.contextPath }/editors/community/groupInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="community.search.newGroup"/></a><p>
       <html:form action="/editors/community/searchConditionalGroupAction.do" method="post">
             <table border="0">
                <tbody>
                   
                   <tr>
-                     <td style="width:105px"><fmt:message key="community.search.groupname"/></td>
-                     <td><html:text style="width: 250px" property="groupname"/></td>
+                     <td style="width:116px"><fmt:message key="community.search.groupname"/></td>
+                     <td><html:text style="width: 200px" property="groupname"/></td>
                   </tr>
                   <tr>
-			            <td style="width:105px"><fmt:message key="community.search.member"/></td>
-			            <td><input type="text" style="width:250px" value="" name="member"></td>
+			            <td style="width:116px"><fmt:message key="community.search.member"/></td>
+			            <td><input type="text" style="width:200px" value="" name="member"></td>
                   </tr>
                   <tr>
-                     <td style="width:105px">&nbsp;</td>
+                     <td style="width:116px">&nbsp;</td>
                      <td><input type="submit" name="submit" value="<fmt:message key="community.search.searchbatton"/>"> </td>
                   </tr>
                </tbody>
