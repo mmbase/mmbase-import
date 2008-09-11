@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class SearchUtil {
 
@@ -306,7 +306,7 @@ public class SearchUtil {
       try { 
         net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
         Analyzer analyzer = si.getAnalyzer();
-        IndexReader ir = IndexReader.open(si.getIndex());
+        
         QueryParser qp = new QueryParser("indexed.text", analyzer);
         qp.setDefaultOperator(QueryParser.AND_OPERATOR);
         org.apache.lucene.search.Query result = null;
@@ -321,9 +321,11 @@ public class SearchUtil {
         int quarterOfAnHour = 60*15;
         BooleanQuery constructedQuery = new BooleanQuery();
         constructedQuery.add(result, BooleanClause.Occur.MUST);
-      
+        
+        IndexReader ir = IndexReader.open(si.getIndex());
         IndexSearcher searcher = new IndexSearcher(ir); 
         Hits hits = searcher.search(constructedQuery);
+
         TreeSet includedEvents = new TreeSet();
       
         for (int i = 0; i < hits.length(); i++) {
@@ -377,12 +379,15 @@ public class SearchUtil {
                 }
              }
          }
-      
-          if(searcher!=null) { searcher.close(); }
-          if(ir!=null) { ir.close(); }
+        
+        //Close resources when they are not needed anymore.
+        if(searcher!=null) { searcher.close(); }
+        if(ir!=null) { ir.close(); }
+        
         }
       } catch (Exception e) { 
         log.error("lucene index " + index + " throws error on query " + sQuery); 
+        log.error(e); //Also log the specific error
       } 
       return hsetNodes;
    }
