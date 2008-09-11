@@ -25,7 +25,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 	public ActionForward show(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		
+		PagingUtils.initStatusHolder(request);
 		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
 		List<Newsletter> newsletters = newsletterService.getAllNewsletter(false);
 
@@ -115,10 +115,10 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 
 	}
 	private List<StatisticResult> addPagingCondition(HttpServletRequest request,List<StatisticResult> records){
-		PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
+		PagingStatusHolder holder = PagingUtils.getStatusHolder();
 		List<StatisticResult> recordsForShow = new ArrayList<StatisticResult>();
 		recordsForShow.clear();
-		int totalCount = records.size();
+		int totalCount = records.size();    
 		request.setAttribute("totalCount", totalCount);
 		for(int i=holder.getOffset();i<holder.getPageSize()+holder.getOffset()&&i<totalCount;i++){
 			recordsForShow.add(records.get(i));

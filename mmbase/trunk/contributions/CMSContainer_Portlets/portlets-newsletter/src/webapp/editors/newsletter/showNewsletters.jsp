@@ -13,14 +13,15 @@
       <title>newsletters</title>
       <link rel="icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon" />
       <link rel="shortcut icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon" />
+      <link href="<c:url value='/editors/css/main.css'/>"type="text/css" rel="stylesheet" />
       <link href="<c:url value='/editors/newsletter/styles/newsletter.css'/>" type="text/css" rel="stylesheet" />
-
+      
       <!-- calendar stylesheet -->
       <link rel="stylesheet" type="text/css" media="all"
          href="<c:url value='/editors/newsletter/styles/calendar-win2k-cold-1.css'/>"
          title="win2k-cold-1" />
 
-      <!-- main calendar program -->
+      <!-- main calendar program --> 
       <script type="text/javascript" src="<c:url value='/editors/newsletter/js/calendar.js'/>"></script>
 
 
@@ -68,18 +69,19 @@
       </div>
 
       <div class="editor">
-         <div class="body"  style="padding-left:10px;">
+         <div class="body">
             <html:form method="POST" action="/editors/newsletter/NewsletterStatistic">
-               <table style="width: 600px">
+               <table border="0">
+                  <tbody>
                   <tr>
-                     <td style="width:80px"> <fmt:message key="newsletterlog.newsletter" /> </td>
-                     <td style="width:100px">
-                        <html:select property="newsletters" styleId="newsletters" style="width:160px">
+                     <td style="width:13%"> <fmt:message key="newsletterlog.newsletter" /> </td>
+                     <td style="width:20%">
+                        <html:select property="newsletters" styleId="newsletters" style="width:150px">
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
-                     <td style="width:20px">&nbsp;</td>
-                     <td style="width:150px">&nbsp;</td>
+                     <td style="width:5%">&nbsp;</td>
+                     <td style="width:62%">&nbsp;</td>
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
@@ -146,13 +148,14 @@
                   <tr>
                      <td>&nbsp;</td>
                      <td>
-                         <input type="submit" onclick="javascript:submits()" style="text-decoration:none"
+                         <input type="submit" onclick="javascript:submits()" 
                            value="<fmt:message key="newsletterlog.submit" />" />
-                        <input type="submit" onclick="javascript:resets()"  style="text-decoration:none"
+                        <input type="submit" onclick="javascript:resets()"  
                            value="<fmt:message key="newsletterlog.reset" />" />
                      </td>
                      <td colspan="2">&nbsp;</td>
                   </tr>
+                  </tbody>
                </table>
             </html:form>
          </div>
