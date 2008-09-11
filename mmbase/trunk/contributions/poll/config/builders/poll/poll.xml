@@ -6,16 +6,16 @@
     name="poll" maintainer="mmbase.org" version="1" extends="object">
   <searchage>9999</searchage>
   <names>
-    <singular xml:lang="en">poll</singular>
+    <singular xml:lang="en">Poll</singular>
     <singular xml:lang="nl">Peiling</singular>
-    <singular xml:lang="eo">enketo</singular>
-    <plural xml:lang="en">polls</plural>
+    <singular xml:lang="eo">Enketo</singular>
+    <plural xml:lang="en">Polls</plural>
     <plural xml:lang="nl">Opiniepeilingen</plural>
-    <plural xml:lang="eo">enketoj</plural>
+    <plural xml:lang="eo">Enketoj</plural>
   </names>
   <descriptions>
     <description xml:lang="en">Generic poll, works together with answer</description>
-    <description xml:lang="nl">Generieke poll, werkt samen met answer</description>
+    <description xml:lang="nl">Generieke poll of opiniepeiling, werkt samen met answer</description>
     <description xml:lang="eo">Ĝenerala enketo, kunu kun 'answer'</description>
   </descriptions>
   
@@ -85,6 +85,9 @@
       <descriptions>
         <description xml:lang="en">This is an automatic field, which will be updated every 10 minues
         if the crontab module is active. Otherwise it is ignored. Use the 'total' function.</description>
+        <description xml:lang="nl">Dit is een autamtisch veld dat iedere 10 minuten wordt bijgehouden
+        als de crontab module actief is. Zo niet, dan dien je het veld met de 'total' function bij 
+        te houden.</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Total answers</guiname>

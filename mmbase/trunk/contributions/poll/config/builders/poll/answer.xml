@@ -5,13 +5,13 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="answer" maintainer="mmbase.org" version="1" extends="object">
   <names>
-    <singular xml:lang="en">answer</singular>
-    <singular xml:lang="nl">answer</singular>
-    <singular xml:lang="eo">respondo</singular>
+    <singular xml:lang="en">Pollanswer</singular>
+    <singular xml:lang="nl">Poll-antwoord</singular>
+    <singular xml:lang="eo">Respondo</singular>
     
-    <plural xml:lang="en">answers</plural>
-    <plural xml:lang="nl">answers</plural>
-    <plural xml:lang="eo">respondoj</plural>
+    <plural xml:lang="en">Pollanswers</plural>
+    <plural xml:lang="nl">Poll-antwoorden</plural>
+    <plural xml:lang="eo">Respondoj</plural>
   </names>
   <descriptions>
     <description xml:lang="en">The answers to be used in combination with poll</description>
