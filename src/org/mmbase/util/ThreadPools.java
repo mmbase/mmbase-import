@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.20 2008-09-05 14:33:27 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.21 2008-09-11 15:38:59 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -67,6 +67,8 @@ public abstract class ThreadPools {
                 @Override public void run() {
                     try {
                         super.run();
+                    } catch (InterruptedException ie) {
+
                     } catch (Throwable t) {
                         log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
                     }
@@ -120,6 +122,9 @@ public abstract class ThreadPools {
                 return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
             }
         });
+    static {
+        scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+    }
 
 
 
