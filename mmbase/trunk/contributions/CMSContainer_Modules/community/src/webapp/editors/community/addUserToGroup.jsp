@@ -37,7 +37,7 @@
    </edit:ui-tabs>
 
    <div class="editor">
-      <div class="body" style="padding-left:10px;">
+      <div class="body" >
          <html:form action="editors/community/AddUserToGroupInit.do" method="post">
             <table border="0">
                <tbody>
