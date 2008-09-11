@@ -70,14 +70,14 @@
 			</edit:ui-tabs>
 
 			<div class="editor">
-				<div class="body" style="padding-left:10px;">
+				<div class="body">
 						<html:form
 							action="/editors/community/SearchConditionalUser.do?method=listGroupMembers&&groupName=${groupName}" method="post">
 						<c:if test="${not empty option}">
 						    <input type="hidden" id="option" name="option" value="select"/>
 						</c:if>
 							<%@include file="search_user_form_table.jspf"%>
-						</html:form>
+						</html:form>   
 				</div>
 			</div>
 

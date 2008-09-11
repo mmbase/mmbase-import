@@ -28,7 +28,7 @@
    </edit:ui-tabs>
 
    <div class="editor"> 
-      <div class="body" style="padding-left:10px;">
+      <div class="body">
          <p>
             <a href="userAddInitAction.do"
                style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message
