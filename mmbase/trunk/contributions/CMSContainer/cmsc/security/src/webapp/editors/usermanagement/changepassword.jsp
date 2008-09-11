@@ -32,23 +32,23 @@
 <html:form action="/editors/usermanagement/ChangePasswordAction">
    <table class="formcontent">
       <tr>
-         <td class="fieldname" nowrap width="102px"><fmt:message key="changepassword.current" /></td>
+         <td class="fieldname" nowrap width="105px"><fmt:message key="changepassword.current" /></td>
 	      <td class="fieldname">
-	         <html:password property="password1" size='15' maxlength='15'/>
+	         <html:password property="password1" size='15' maxlength='15' style="width:200px"/>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="password1"/></span>
 	      </td>
 	   </tr>
 	   <tr>
          <td class="fieldname" nowrap><fmt:message key="changepassword.new" /></td>
 	      <td class="fieldname">
-	         <html:password property="newpassword" size='15' maxlength='15'/>
+	         <html:password property="newpassword" size='15' maxlength='15'  style="width:200px"/>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="newpassword"/></span>
 	      </td>
 	   </tr>
       <tr>
    	   <td class="fieldname" nowrap><fmt:message key="changepassword.confirm" /></td>
 	      <td class="fieldname">
-	         <html:password property="confirmnewpassword" size='15' maxlength='15'/>
+	         <html:password property="confirmnewpassword" size='15' maxlength='15'  style="width:200px"/>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="confirmnewpassword"/></span>
          </td>
 	   </tr>
