@@ -184,7 +184,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
          // loop through pages
          // if override only take the sheets of the last page
          for (int count = pagesToRoot.size()-1; count >= 0; count--) {
-            getStylesheetForPage(pagesToRoot, count, stylesheets);
+//            getStylesheetForPage(pagesToRoot, count, stylesheets);
 
             if (!stylesheets.isEmpty()) {
                return stylesheets;
@@ -193,25 +193,55 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
       }
       else {
          // loop through pages
-         for (int count = 0; count < pagesToRoot.size(); count++) {
-            getStylesheetForPage(pagesToRoot, count, stylesheets);
-         }
-         
-      }
+    	  if (pagesToRoot.size() >= 2) {
+				for (int count = 0; count < pagesToRoot.size() - 1; count++) {
+					getStylesheetForPage(pagesToRoot, count, stylesheets, true);
+				}
+				Page curPage = pagesToRoot.get(pagesToRoot.size() - 1);
+
+				List<Integer> curStyleSheets = curPage.getStylesheet();
+				if (curStyleSheets.size() > 0) {
+					addStyleSheetToList(stylesheets, curStyleSheets, true);
+				} else {
+					Page parentPage = pagesToRoot.get(pagesToRoot.size() - 2);
+					List<Integer> parentStyleSheets = parentPage
+							.getStylesheet();
+					addStyleSheetToList(stylesheets, parentStyleSheets, false);
+				}
+			} else if (pagesToRoot.size() == 1) {
+				List<Integer> wholeStyleSheets = pagesToRoot.get(0)
+						.getStylesheet();
+				addStyleSheetToList(stylesheets, wholeStyleSheets, true);
+			}
+		}
      
       return stylesheets;
    }
 
 
+	private void addStyleSheetToList(List<Stylesheet> stylesheets,
+			List<Integer> curStyleSheets, boolean needCheckOverwriteable) {
+		for (Integer tmpStyleSheet : curStyleSheets) {
+			Stylesheet stylesheet = siteModelManager
+					.getStylesheet(tmpStyleSheet);
+			if (needCheckOverwriteable || stylesheet.isOverwriteable()) {
+				stylesheets.add(stylesheet);
+			}
+		}
+	}
+
+
    protected void getStylesheetForPage(List<Page> pagesToRoot, int count,
-         List<Stylesheet> stylesheets) {
+         List<Stylesheet> stylesheets, boolean overrideType) {
       Page page = pagesToRoot.get(count);
 
       List<Integer> stylesheetNumbers = page.getStylesheet();
       for (int j = 0; j < stylesheetNumbers.size(); j++) {
          Integer stylesheetNumber = stylesheetNumbers.get(j);
          Stylesheet stylesheet = siteModelManager.getStylesheet(stylesheetNumber.intValue());
-         stylesheets.add(stylesheet);
+         if(stylesheet.isOverwriteable()== overrideType || "all".equals(overrideType)){
+        	 stylesheets.add(stylesheet);
+         }
       }
    }
 

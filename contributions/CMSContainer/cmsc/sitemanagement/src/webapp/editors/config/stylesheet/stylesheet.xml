@@ -11,6 +11,7 @@
    <lists>
       <optionlist include="config/option_lists/all_optionlists.xml"/>
       <optionlist include="config/option_lists/media.xml"/>
+	  <optionlist include="config/option_lists/boolean.xml"/>
    </lists>
 
    <steps>

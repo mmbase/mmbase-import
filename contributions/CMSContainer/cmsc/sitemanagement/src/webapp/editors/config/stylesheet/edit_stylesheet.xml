@@ -21,4 +21,9 @@
 		<prompt xml:lang="nl">Media</prompt>
 		<optionlist select="media" />
 	</field>
+	<field name="overwriteable" ftype="enum" dtrequired="true">
+		<prompt xml:lang="en">Overwriteable</prompt>
+		<prompt xml:lang="nl">Overwriteable</prompt>
+		<optionlist select="boolean" />
+	</field>
 </form-schema>
