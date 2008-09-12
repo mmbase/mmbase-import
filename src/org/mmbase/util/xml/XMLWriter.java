@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.util.xml;
 
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  **/
 public class XMLWriter {
     private static Logger log = Logging.getLoggerInstance(XMLWriter.class);
-    
+
     /**
      * defaulting version of {@link #write(Node, Writer, boolean, boolean)}. (Not ommitting xml declaration).
      */
@@ -68,6 +68,23 @@ public class XMLWriter {
      */
     public static String write(Node node, boolean indent) {
         return write(node, indent, false);
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static String write(Node node) {
+        return write(node, false);
+    }
+    /**
+     * @since MMBase-1.9
+     */
+    public static String write(java.util.Collection<? extends Node> c) {
+        StringBuilder b = new StringBuilder();
+        for (Node n : c) {
+            b.append(write(n));
+        }
+        return b.toString();
     }
     /**
      * static method to serialize a node to a string
