@@ -64,27 +64,29 @@ public class HtmlContainer {
 	private void loadLayouts(ArrayList<Layout> layouts, File layoutPathFile,
 			File configPathFile) {
 		for (File layoutFile : layoutPathFile.listFiles()) {
-			String html = loadFile(layoutFile);
-			File configFile = new File(configPathFile, layoutFile.getName()
-					.substring(0, layoutFile.getName().indexOf("."))
-					+ ".properties");
-			if (configFile == null) {
-				System.out.println("No config file found for the layout: "
-						+ layoutFile
-						+ " \nUsage: HtmlContainer <directory/zipfile>");
-				System.exit(1);
+			if(layoutFile.getName().endsWith(".html")) {
+				String html = loadFile(layoutFile);
+				File configFile = new File(configPathFile, layoutFile.getName()
+						.substring(0, layoutFile.getName().indexOf("."))
+						+ ".properties");
+				if (configFile == null) {
+					System.out.println("No config file found for the layout: "
+							+ layoutFile
+							+ " \nUsage: HtmlContainer <directory/zipfile>");
+					System.exit(1);
+				}
+				Properties properties = new Properties();
+				try {
+					properties.load(new FileInputStream(configFile));
+				} catch (IOException e) {
+					System.out
+							.println("Problem loading config file for the layout: "
+									+ layoutFile
+									+ " \nUsage: HtmlContainer <directory/zipfile>");
+					System.exit(1);
+				}
+				layouts.add(new Layout(layoutFile.getName(), html, properties));
 			}
-			Properties properties = new Properties();
-			try {
-				properties.load(new FileInputStream(configFile));
-			} catch (IOException e) {
-				System.out
-						.println("Problem loading config file for the layout: "
-								+ layoutFile
-								+ " \nUsage: HtmlContainer <directory/zipfile>");
-				System.exit(1);
-			}
-			layouts.add(new Layout(layoutFile.getName(), html, properties));
 		}
 
 	}
