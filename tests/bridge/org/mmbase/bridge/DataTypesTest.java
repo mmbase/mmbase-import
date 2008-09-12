@@ -72,9 +72,13 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
-                              new Object[] {new Integer(-100), "-1", new Integer(100), "-100", new Float(10.0), "1234", "1234.4", "1e7",  null},
-                              new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"
-                              }},
+                              new Object[] {new Integer(-100), "-1", new Integer(100), "-100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
+                              new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"}
+                },
+                new Object[] {"duration",
+                              new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
+                              new Object[] {new Long(Long.MAX_VALUE), "1e50",  "asdfe", "-100", new Integer(-100) }
+                },
                 new Object[] {"range",
                               new Object[] {new Integer(5), "1", "6.0", new Float(2.0), null},
                               new Object[] {"-1", "11", "xyz", new Integer(0), new Integer(10)}},
@@ -100,7 +104,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"2", "4", new Integer(6), null},
                               new Object[] {"1", "21", new Integer(10)}},
                 new Object[] {"float",
-                              new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20", null},
+                              new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20", null, ""},
                               new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                               }},
                 new Object[] {"handle",
