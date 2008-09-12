@@ -16,6 +16,7 @@ public class Sender implements Runnable {
 
    private String sNotificationFrom = null;
 
+
    public Sender() {
    }
 
@@ -33,16 +34,16 @@ public class Sender implements Runnable {
                                        null, null, null, false);
 
       if(nlAdmin.size() > 0){
-         String sNotificationFrom = cloud.getNode(nlAdmin.getNode(0).getStringValue("people.number")).getStringValue("email");
-         if("".equals(sNotificationFrom)){
-            log.warn("Admin's email is empty. Cannot send assesment emails");
-            return;
-         } else{
-            log.debug("Admin's email=\"" + sNotificationFrom + "\" for using in Email Feedback");
-         }
+          sNotificationFrom = cloud.getNode(nlAdmin.getNode(0).getStringValue("people.number")).getStringValue("email");
+          if("".equals(sNotificationFrom)){
+              log.warn("Admin's email is empty. Cannot send assesment emails");
+              return;
+          } else{
+              log.debug("Admin's email=\"" + sNotificationFrom + "\" for using in Email Feedback");
+          }
       } else{
-         log.debug("Can't find admin node to send a Email Notification.  Cannot send assesment emails");
-         return;
+          log.debug("Can't find admin node to send a Email Notification.  Cannot send assesment emails");
+          return;
       }
 
 
@@ -309,5 +310,9 @@ public class Sender implements Runnable {
       // send the email node (Didactor way)
       emailNode.setValue("type", "1");
    }
+
+    public boolean equals(Object o) {
+        return o instanceof Sender;
+    }
 
 }
