@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Formats a long with hour:minutes:seconds. Ready for setting and getting, and also casting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Duration.java,v 1.4 2008-08-08 19:08:46 michiel Exp $
+ * @version $Id: Duration.java,v 1.5 2008-09-12 11:09:15 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -41,12 +41,16 @@ public class Duration {
 
         @Override
         protected Number castString(Object preCast, Cloud cloud) throws CastException {
+            if (preCast == null || "".equals(preCast)) return null;
             if (preCast instanceof String) {
-                if (! DURATION_PATTERN.matcher((String) preCast).matches()) {
-                    throw new CastException("Not a duration: " + preCast);
+                String s = (String) preCast;
+                if (! DURATION_PATTERN.matcher(s).matches()) {
+                    if (! StringDataType.DOUBLE_PATTERN.matcher(s).matches()) {
+                        throw new CastException("Not a duration: " + s);
+                    }
                 }
             }
-            Long l =  SetString.getLong(Casting.toString(preCast));
+            Double l =  SetString.getDouble(Casting.toString(preCast)); // this makes it e.g. possible to report that 1e50 is too big for a
             return l;
         }
         protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
@@ -121,10 +125,18 @@ public class Duration {
     public static class SetString implements Processor {
         private static final long serialVersionUID = 1L;
         public static long getLong(String s) {
+            return (long) getDouble(s).doubleValue();
+        }
+        public static Double getDouble(String s) {
+            if (s == null || "".equals(s)) return null;
+            if (StringDataType.DOUBLE_PATTERN.matcher(s).matches()) {
+                log.debug("A valid double");
+                return Casting.toDouble(s);
+            }
             String[] fields = s.split(":");
             long factor = 1; // seconds
             int index = fields.length - 1;
-            long l = (long) (Double.parseDouble(fields[index]) + 0.5)  * factor;
+            double l = Double.parseDouble(fields[index])  * factor;
             if (index == 0) return l;
             factor *= 60;  // minutes
             index--;
@@ -136,13 +148,14 @@ public class Duration {
             if (index == 0) return l;
             factor *= 24;// days
             index--;
-            return l;
+            return l + 0.5; // +0.5 makes rounding correct
         }
         public Object process(Node node, Field field, Object value) {
             if (value instanceof Long) {
                 return value;
             } else {
                 String s = Casting.toString(value);
+                if ("".equals(s)) return null;
                 return getLong(s);
             }
 
