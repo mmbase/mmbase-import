@@ -1,0 +1,24 @@
+div#top_img {
+	border: 1px solid black;
+	height: 100px;
+	width:800px;
+	background-image: url(../img/header_background.jpg);
+}
+
+div#menu, div#breadcrumb, div#footer {
+	border: 1px solid black;
+	height: 20px;
+	width:800px;
+	clear:both;
+}
+
+div#column2 {
+	width:400px;
+	float:left;
+}
+
+div#column1, div#column3 {
+	width:200px;
+	float:left;
+}
+
