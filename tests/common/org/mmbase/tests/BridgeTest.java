@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.tests;
+import junit.framework.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.util.logging.Logger;
@@ -105,6 +106,19 @@ public abstract class BridgeTest extends MMBaseTest {
         return c;
 
     }
+
+    static public Test SHUTDOWN = new BridgeTest() {
+            public int countTestCases() {
+                return 0;
+            }
+            public void run(TestResult tr) {
+                System.out.println("Shutting down (bridge)");
+                if (!getCloud().shutdown()) {
+                    System.out.println("NOT ALLOWED!");
+
+                }
+            }
+        };
 
     protected void ensureDeployed(Cloud cloud, String uri) {
         while(true) {
