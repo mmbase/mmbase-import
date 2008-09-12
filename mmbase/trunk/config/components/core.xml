@@ -19,6 +19,10 @@
     <description xml:lang="en">Whether the source code of templates may be seen</description>
   </action>
 
+  <action name="shutdown" rank="administrator">
+    <description xml:lang="en">Whether you may shutdown MMBase</description>
+  </action>
+
 
   <!-- about etc. -->
   <block name="welcome"
