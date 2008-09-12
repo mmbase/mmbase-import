@@ -6,6 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
 
+
   <description xml:lang="nl">MMBase crontab</description>
   <description xml:lang="en">MMBase crontab</description>
 
@@ -13,6 +14,8 @@
       classification="mmbase.admin"
       name="crontab"
       mimetype="text/html" >
+    <title xml:lang="en">Crontab scheduling</title>
+    <title xml:lang="nl">Crontab-tijdschema</title>
     <description xml:lang="en">Administrates the mmbase crontab</description>
     <body jsp="index.jspx">
       <param name="kick" />
