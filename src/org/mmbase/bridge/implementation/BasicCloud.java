@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.189 2008-09-12 16:40:51 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.190 2008-09-12 23:56:12 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -1126,14 +1126,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return this;
     }
 
-    public boolean shutdown() {
+    public void shutdown() {
         Action action = ActionRepository.getInstance().get("core", "shutdown");
+        if (action == null) {
+            throw new java.lang.SecurityException("No 'shutdown' action found");
+        }
         Parameters params = action.createParameters();
         if (BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action, params)) {
             BasicCloudContext.mmb.shutdown();
-            return true;
         } else {
-            return false;
+            throw new java.lang.SecurityException("You (' " + userContext + "') are now allowed to shutdown mmbase (" + action + ")");
         }
     }
 }
