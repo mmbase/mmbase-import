@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: CastingTest.java,v 1.1 2008-07-23 17:15:48 michiel Exp $
+ * @verion $Id: CastingTest.java,v 1.2 2008-09-12 13:10:43 michiel Exp $
  */
 public class CastingTest extends TestCase {
 
@@ -37,6 +37,9 @@ public class CastingTest extends TestCase {
     public void testInt() {
         assertEquals(1, Casting.toInt("1"));
         assertEquals(-1, Casting.toInt("asdfasdf"));
+        assertEquals(-5, Casting.toInt("asdfasdf", -5));
+        assertEquals(-5, Casting.toInt(null, -5));
+
         assertEquals(5, Casting.toInt("5.3"));
         assertEquals(5, Casting.toInt("5.6"));
         assertEquals(100, Casting.toInt("1e2"));
@@ -46,7 +49,23 @@ public class CastingTest extends TestCase {
         assertEquals(15, Casting.toInt("15", 8));
     }
     public void testInteger() {
-        assertEquals(-1, (Object) Casting.toInteger(null));
+        assertEquals(new Integer(10), (Object) Casting.toInteger("10"));
+        assertEquals(new Integer(10), (Object) Casting.toInteger("1e1"));
+        assertEquals(new Integer(-1), (Object) Casting.toInteger(null));
+    }
+
+    public void testLong() {
+        assertEquals(new Long(10), (Object) Casting.toLong("10"));
+        assertEquals(new Long(10), (Object) Casting.toLong("1e1"));
+        assertEquals(new Long(-1), (Object) Casting.toLong(null));
+    }
+
+    public void testFloat() {
+        assertEquals(new Float(-1.0), (Object) Casting.toFloat(null));
+    }
+
+    public void testDouble() {
+        assertEquals(new Double(-1.0), (Object) Casting.toDouble(null));
     }
 
 
