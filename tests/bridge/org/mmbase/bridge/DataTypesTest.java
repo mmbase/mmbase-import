@@ -76,9 +76,10 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"}
                 },
                 new Object[] {"duration",
-                              new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7",  null, ""},
-                              new Object[] {new Long(Long.MAX_VALUE), "1e50",  "asdfe", "-100", new Integer(-100) }
-                },
+                              new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7",  null, "", "10:10:10", new Long(Long.MAX_VALUE)},
+                              new Object[] { "1e50",  "asdfe", "-100", new Integer(-100) }
+                }
+                ,
                 new Object[] {"range",
                               new Object[] {new Integer(5), "1", "6.0", new Float(2.0), null},
                               new Object[] {"-1", "11", "xyz", new Integer(0), new Integer(10)}},
@@ -194,6 +195,7 @@ public class DataTypesTest extends BridgeTest {
         assertTrue(err.toString(), err.length() == 0);
 
     }
+
 
     public void testEnumeration() {
         Cloud cloud = getCloud();
@@ -470,6 +472,14 @@ public class DataTypesTest extends BridgeTest {
 
         assertTrue(field.getDataType().validate("1,5").size() > 0);
 
+
+    }
+    public void testDuration() {
+        Node node = getNewNode();
+        node.setStringValue("duration", "30:20:10");
+        node.commit();
+
+        assertEquals(10 + 20 * 60 + 30 * 60 * 60, node.getLongValue("duration"));
 
     }
 
