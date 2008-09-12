@@ -176,7 +176,7 @@
        for(int i = 0; i < urls.size(); i++) {
   %>
       <mm:context>
-          <mm:import  id="del" externid="<%="delete" + i%>" />
+          <mm:import  id="del" externid='<%="delete" + i%>' />
           <mm:present referid="del">
             <%
               URL u = (URL) urls.get(i);
