@@ -80,6 +80,11 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] { "1e50",  "asdfe", "-100", new Integer(-100) }
                 }
                 ,
+                new Object[] {"duration_required",
+                              new Object[] { new Integer(100), "100", new Float(10.0), "1234", "1234.4", "1e7", "10:10:10", new Long(Long.MAX_VALUE)},
+                              new Object[] { "1e50",  "asdfe", "-100", new Integer(-100), null, "" }
+                }
+                ,
                 new Object[] {"range",
                               new Object[] {new Integer(5), "1", "6.0", new Float(2.0), null},
                               new Object[] {"-1", "11", "xyz", new Integer(0), new Integer(10)}},
@@ -330,10 +335,17 @@ public class DataTypesTest extends BridgeTest {
                     if(field.getName().equals("handle") && validValues[j] != null) {
                         assertFalse("Checksum is null", newNode.isNull("checksum"));
                     }
-                    if (validValues[j] != null &&
-                        ! (field.getDataType() instanceof NodeDataType && validValues[j].equals(new Integer(-1))) // -1 casts to null for node-fields.
-                        ) {
+                    if (field.getDataType().isRequired() ||
+                        (
+                         validValues[j] != null &&
+                         (! (validValues[j].equals("") && field.getDataType() instanceof NumberDataType)) && // "" for numbers may be interpreted as null
+                         ! (field.getDataType() instanceof NodeDataType && validValues[j].equals(new Integer(-1))) // -1 casts to null for node-fields.
+                         )
+                         ) {
                         assertFalse("field " + field.getName() + " was null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
+                    } else {
+
+                        assertTrue("field " + field.getName() + " was not null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
                     }
                     if (! field.getDataType().isRequired()) {
                         // so, it must be possible to set field back to null.
