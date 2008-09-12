@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.44 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.45 2008-09-12 14:28:34 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -485,7 +485,7 @@ public class DocumentReader  {
         if (document == null) {
             log.error("Document is not defined, cannot get " + path);
         }
-        return getElementByPath(document.getDocumentElement(),path);
+        return getElementByPath(document.getDocumentElement(), path);
     }
 
     /**
@@ -518,8 +518,9 @@ public class DocumentReader  {
                 NodeList nl = e.getChildNodes();
                 for(int i = 0; i < nl.getLength(); i++) {
                     if (! (nl.item(i) instanceof Element)) continue;
-                    e = (Element)nl.item(i);
-                    if (e.getLocalName().equals(tag)) continue OUTER;
+                    e = (Element) nl.item(i);
+                    String tagName = e.getLocalName();
+                    if (tagName == null || tagName.equals(tag) || "*".equals(tag)) continue OUTER;
                 }
                 // Handle error!
                 return null;
@@ -582,10 +583,11 @@ public class DocumentReader  {
     public static List<Element> getChildElements(Element e, String tag) {
         List<Element> v = new ArrayList<Element>();
         boolean ignoretag = tag.equals("*");
-        if (e!=null) {
+        if (e != null) {
             NodeList nl = e.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
+                if (n.getLocalName() == null) continue;
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
