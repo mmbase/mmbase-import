@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <div
-    class="mm_c mm_c_crontab mm_c_b_admin ${requestScope.componentClassName}"
+    class="mm_c c_crontab b_admin ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
