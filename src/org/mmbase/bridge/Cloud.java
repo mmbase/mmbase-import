@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.68 2008-09-04 12:29:28 michiel Exp $
+ * @version $Id: Cloud.java,v 1.69 2008-09-12 16:40:51 michiel Exp $
  */
 public interface Cloud {
 
@@ -696,5 +696,12 @@ public interface Cloud {
     public StringList getPossibleContexts();
 
     //public Cloud getNonTransactionalCloud();
+
+
+    /**
+     * Shutdown MMBase, if you are allowed to do so.
+     * @since MMBase-1.9
+     */
+    public boolean shutdown();
 
 }

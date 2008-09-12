@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.188 2008-08-07 09:46:26 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.189 2008-09-12 16:40:51 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -1124,5 +1124,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     public Cloud getNonTransactionalCloud() {
         return this;
+    }
+
+    public boolean shutdown() {
+        Action action = ActionRepository.getInstance().get("core", "shutdown");
+        Parameters params = action.createParameters();
+        if (BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action, params)) {
+            BasicCloudContext.mmb.shutdown();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
