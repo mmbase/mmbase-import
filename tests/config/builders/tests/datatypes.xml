@@ -112,6 +112,10 @@
       </db>
     </field>
 
+    <field name="duration">
+      <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
     <field name="range">
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
