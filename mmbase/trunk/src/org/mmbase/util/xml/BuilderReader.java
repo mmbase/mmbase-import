@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.108 2008-09-04 16:02:21 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.109 2008-09-12 14:28:34 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -177,11 +177,11 @@ public class BuilderReader extends DocumentReader {
             Element overrideEl = getElementByPath(overrides.getDocumentElement(), "builder." + name);
             if (overrideEl != null) {
                 Element newEl = (Element) doc.importNode(overrideEl, true);
-                Element docEl = getElementByPath(doc.getDocumentElement(), name);
+                Element docEl = getElementByPath(doc.getDocumentElement(), "builder." + name);
                 if (docEl != null) {
-                    doc.getDocumentElement().replaceChild(docEl, newEl);
+                    doc.getDocumentElement().replaceChild(newEl, docEl);
                 } else {
-                    doc.appendChild(newEl);
+                    doc.getDocumentElement().appendChild(newEl);
                 }
             }
         }
@@ -193,7 +193,7 @@ public class BuilderReader extends DocumentReader {
             Element element;
             if (elementList.size() == 0) {
                 element = doc.createElement(list);
-                doc.appendChild(element);
+                doc.getDocumentElement().appendChild(element);
             } else {
                 element = elementList.get(elementList.size() - 1);
             }
@@ -270,6 +270,7 @@ public class BuilderReader extends DocumentReader {
                 this.document = (Document) parent.document.cloneNode(true);
                 inherit.getDocumentElement().removeAttribute("extends");
                 resolveInheritanceByXML(document, inherit);
+                inheritanceResolved = false;
                 return resolveInheritance();
 
             }
