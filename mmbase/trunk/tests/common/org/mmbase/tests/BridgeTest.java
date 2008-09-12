@@ -1,10 +1,10 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+See http://www.MMBase.org/licensemichiel@sepio:~/mmbase/head/example-webapp/target/example/WEB-INF/config$ ls
+datatypes.xml  functions  security
 
 */
 package org.mmbase.tests;
@@ -113,10 +113,7 @@ public abstract class BridgeTest extends MMBaseTest {
             }
             public void run(TestResult tr) {
                 System.out.println("Shutting down (bridge)");
-                if (!getCloud().shutdown()) {
-                    System.out.println("NOT ALLOWED!");
-
-                }
+                getCloud().shutdown();
             }
         };
 
