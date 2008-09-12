@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+
 import java.net.URL;
+import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -21,7 +23,7 @@ import junit.framework.TestCase;
  * </ul>
  *
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.5 2008-09-12 13:10:43 michiel Exp $
+ * @verion $Id: ResourceLoaderTest.java,v 1.6 2008-09-12 13:33:47 michiel Exp $
  */
 public class ResourceLoaderTest extends TestCase {
 
@@ -52,4 +54,12 @@ public class ResourceLoaderTest extends TestCase {
         assertNotNull("did not find properties.xml", url);
         assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
+
+    public void testBuilders() throws java.io.IOException {
+        Set<String> xmls = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourcePaths(ResourceLoader.XML_PATTERN, true);
+        assertTrue("" + xmls + " did not contain  properties.xml", xmls.contains("properties.xml"));
+        assertTrue("" + xmls + " did not contain  core/object.xml", xmls.contains("core/object.xml"));
+
+    }
+
 }
