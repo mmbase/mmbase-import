@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.67 2008-09-08 16:37:50 ernst Exp $
+ * @version $Id: MMBaseContext.java,v 1.68 2008-09-12 13:06:17 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -139,13 +139,15 @@ public class MMBaseContext {
      * Returns the MMBase thread group.
      * @since MMBase-1.8
      */
-    public synchronized static ThreadGroup getThreadGroup() {
-        if (threadGroup == null) {
-            String groupName = org.mmbase.Version.get();// + "" + new Date();
-            log.service("Creating threadGroup: " + groupName);
-            threadGroup = new ThreadGroup(groupName);
+    public static ThreadGroup getThreadGroup() {
+        synchronized (org.mmbase.Version.class) {
+            if (threadGroup == null) {
+                String groupName = org.mmbase.Version.get();// + "" + new Date();
+                log.service("Creating threadGroup: " + groupName);
+                threadGroup = new ThreadGroup(groupName);
+            }
+            return threadGroup;
         }
-        return threadGroup;
     }
 
     /**
