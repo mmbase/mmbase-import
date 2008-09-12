@@ -57,11 +57,15 @@
       </datatype>
     </field>
     <field name="ptype">
-      <!-- I have no idea what a ptype is -->
+      <!-- I have no idea what a ptype is
+           Probably the 'type' of the value. But what the possible values can be is still unclear.
+           I'd suggest that the values could be datatypes, but that certainly is not what it used to mean a long time ago.
+      -->
       <gui>
         <guiname xml:lang="en">Ptype</guiname>
         <guiname xml:lang="nl">P-type</guiname>
       </gui>
+      <editor><positions><input>-1</input><list>-1</list><search>-1</search></positions></editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="16" />
       </datatype>
