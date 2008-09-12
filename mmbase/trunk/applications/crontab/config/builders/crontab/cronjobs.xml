@@ -51,6 +51,7 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="*/5 * * * *" />
         <maxLength value="127" />
       </datatype>
     </field>
