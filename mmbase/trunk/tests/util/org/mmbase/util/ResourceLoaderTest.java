@@ -15,13 +15,13 @@ import junit.framework.TestCase;
 
 /**
  * Test the working of the ResourceLoader.
- * 
+ *
  * <ul>
  * <li>tests if the resource loader can run when mmbase is not started</li>
  * </ul>
- * 
+ *
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.4 2005-06-03 07:15:33 michiel Exp $
+ * @verion $Id: ResourceLoaderTest.java,v 1.5 2008-09-12 13:10:43 michiel Exp $
  */
 public class ResourceLoaderTest extends TestCase {
 
@@ -39,6 +39,17 @@ public class ResourceLoaderTest extends TestCase {
     public void testGetMMBaseRootModule() throws java.io.IOException {
         URL url = ResourceLoader.getConfigurationRoot().getResource("modules/mmbaseroot.xml");
         assertNotNull("did not find mmbaseroot.xml", url);
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+    }
+
+    public void testGetPropertiesBuilder() throws java.io.IOException {
+        URL url = ResourceLoader.getConfigurationRoot().getResource("builders/properties.xml");
+        assertNotNull("did not find properties.xml", url);
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+    }
+    public void testGetPropertiesBuilder2() throws java.io.IOException {
+        URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("properties.xml");
+        assertNotNull("did not find properties.xml", url);
         assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 }
