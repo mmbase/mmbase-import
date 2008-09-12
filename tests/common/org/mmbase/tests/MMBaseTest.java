@@ -57,7 +57,12 @@ public abstract class MMBaseTest extends TestCase {
     }
 
     static public void shutdownMMBase() {
-        MMBase.getMMBase().shutdown();
+        if (System.getProperty("nostartmmbase") == null) {
+            try {
+                MMBase.getMMBase().shutdown();
+            } catch (java.lang.NoClassDefFoundError mcdfe) {
+            }
+        }
     }
     static public Test SHUTDOWN = new Test() {
                 public int countTestCases() {
