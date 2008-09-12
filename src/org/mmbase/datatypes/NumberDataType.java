@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.31 2008-09-01 17:39:44 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.32 2008-09-12 09:21:37 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number & Comparable<E>> extends ComparableDataType<E> {
@@ -38,7 +38,7 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
 
 
     protected Number castString(Object preCast, Cloud cloud) throws CastException {
-        if (preCast == null) return null;
+        if (preCast == null || "".equals(preCast)) return null;
         if (preCast instanceof String) {
             Locale l = cloud != null ? cloud.getLocale() : Locale.getDefault();
             NumberFormat nf = NumberFormat.getNumberInstance(l);
