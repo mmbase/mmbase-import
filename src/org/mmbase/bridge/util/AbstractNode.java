@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.22 2007-10-17 12:48:14 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.23 2008-09-12 11:15:26 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -81,23 +81,39 @@ public abstract class AbstractNode implements Node {
         if (value == null) {
             setValueWithoutProcess(fieldName, value);
         } else {
-            value = field.getDataType().cast(value, this, field);
-            switch(field.getDataType().getBaseType()) {
+            DataType dt = field.getDataType();
+            value = dt.cast(value, this, field);
+            if (value == null && dt instanceof org.mmbase.datatypes.NumberDataType) {
+                // null would otherwise be converted to -1, which makes little sense.
+                // but must happen because set<Numeric>Value methods cannot accept null.
+                setValueWithoutProcess(fieldName, value);
+                return;
+            }
+            switch(dt.getBaseType()) {
             case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+            case Field.TYPE_INTEGER:
+                setIntValue(fieldName, Casting.toInt(value));
+                break;
             case Field.TYPE_BINARY:    {
                 long length = getSize(fieldName);
-                setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
+                setInputStreamValue(fieldName, Casting.toInputStream(value), length);
+                break;
             }
-            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+            case Field.TYPE_FLOAT:
+                setFloatValue(fieldName, Casting.toFloat(value));
+                break;
+            case Field.TYPE_DOUBLE:
+                setDoubleValue(fieldName, Casting.toDouble(value));
+                break;
+            case Field.TYPE_LONG:
+                setLongValue(fieldName, Casting.toLong(value));
+                break;
             case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
             case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, getCloud())); break;
             case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
             case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
-            default:                 setObjectValue(fieldName, value);
+                default:                 setObjectValue(fieldName, value);
             }
         }
     }
