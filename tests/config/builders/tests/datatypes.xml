@@ -115,6 +115,12 @@
     <field name="duration">
       <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
+    <field name="duration_required">
+      <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <required value="true" />
+      </datatype>
+    </field>
 
     <field name="range">
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
