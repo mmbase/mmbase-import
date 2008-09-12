@@ -351,7 +351,7 @@ public class DataTypesTest extends BridgeTest {
                         assertTrue(newNode.isNull("checksum"));
                     }
                 } catch (Throwable t) {
-                    AssertionFailedError fail = new AssertionFailedError("During field " + field + " of " + newNode);
+                    AssertionFailedError fail = new AssertionFailedError("During field " + field + " of " + newNode + " value: '" + validValues[j] + "'");
                     fail.initCause(t);
                     throw fail;
                 }
