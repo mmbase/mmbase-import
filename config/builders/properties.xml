@@ -18,7 +18,7 @@
   <status>inactive</status>
 
   <class>Properties</class>
-  <searchage>0</searchage>
+  <searchage>-1</searchage>
   <names>
     <singular xml:lang="en">Property</singular>
     <singular xml:lang="nl">Eigenschap</singular>
