@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.68 2008-09-12 13:06:17 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.69 2008-09-12 13:08:58 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -40,8 +40,7 @@ public class MMBaseContext {
     private static String htmlRootUrlPath = "/";
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
-    private static ThreadGroup threadGroup;
-
+    private static final ThreadGroup threadGroup =  new ThreadGroup(org.mmbase.Version.get());// + "" + new Date();
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
      * check the servlet configuration for context parameters mmbase.outputfile
@@ -140,14 +139,7 @@ public class MMBaseContext {
      * @since MMBase-1.8
      */
     public static ThreadGroup getThreadGroup() {
-        synchronized (org.mmbase.Version.class) {
-            if (threadGroup == null) {
-                String groupName = org.mmbase.Version.get();// + "" + new Date();
-                log.service("Creating threadGroup: " + groupName);
-                threadGroup = new ThreadGroup(groupName);
-            }
-            return threadGroup;
-        }
+        return threadGroup;
     }
 
     /**
