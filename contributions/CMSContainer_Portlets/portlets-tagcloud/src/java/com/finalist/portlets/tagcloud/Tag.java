@@ -20,4 +20,7 @@ public class Tag {
 	public String getName() {
 		return name;
 	}
+	public void setCount(int count) {
+		this.count = count;
+	}
 }

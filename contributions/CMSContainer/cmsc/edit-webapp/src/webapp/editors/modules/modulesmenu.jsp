@@ -72,6 +72,13 @@
                            </a>
                         </li>
                      </mm:haspage>
+                     <mm:haspage page="/editors/modules/tagcloud">
+                        <li style="background-image: url('../gfx/icons/tagcloud.png');">
+                           <a href="<mm:url page="/editors/modules/tagcloud/list.jsp"/>" target="rightpane">
+                              <fmt:message key="modules.tagcloud" />
+                           </a>
+                        </li>
+                     </mm:haspage>                     
                      <mm:haspage page="/editors/egemmail">
 								<li class="egem"> <a href="../egemmail/EgemSearchInitAction.do" target="rightpane">
 									<fmt:message key="modules.egemmail.export" />
