@@ -5,6 +5,6 @@
 </div>
 <div class="editor dashboard">
 	<iframe src="publish/queue.jsp" frameborder="0" scrolling="no"></iframe>
-	<iframe src="publish/published.jsp" frameborder="0" scrolling="no"></iframe>
-	<iframe src="publish/failed.jsp" frameborder="0" scrolling="no"></iframe>
+	<iframe src="publish/published.jsp" frameborder="0" scrolling="no" name="published"></iframe>
+	<iframe src="publish/failed.jsp" frameborder="0" scrolling="no" name="failed"></iframe>
 </div>
