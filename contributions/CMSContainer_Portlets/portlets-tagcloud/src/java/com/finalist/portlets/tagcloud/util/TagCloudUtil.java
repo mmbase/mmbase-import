@@ -31,10 +31,12 @@ public class TagCloudUtil {
 
 	public static final String ORDERBY_NAME = "name";
 
-	private static final String SQL_SELECT_TAGS = "SELECT tag.name,tag.description,COUNT(contentelement.number) AS cnt "
+	private static final String SQL_SELECT_TAGS = "SELECT tag.name,tag.description FROM mm_tag tag";
+
+	private static final String SQL_SELECT_TAGS_COUNT = "SELECT tag.name,COUNT(contentelement.number) AS cnt "
 			+ "FROM mm_tag tag,mm_insrel insrel,mm_contentelement contentelement "
 			+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) "
-			+ "GROUP BY tag.name,tag.description ORDER BY cnt DESC";
+			+ "GROUP BY tag.name,tag.description";
 
 	private static final String SQL_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.name,tag.description "
 			+ "FROM mm_tag tag,mm_insrel insrel "
@@ -99,16 +101,26 @@ public class TagCloudUtil {
 			if (max != null) {
 				st.setMaxRows(max);
 			}
-			String sql = SQL_SELECT_TAGS;
-			ResultSet rs = st.executeQuery(sql);
+			ResultSet rs = st.executeQuery(SQL_SELECT_TAGS);
 			while (rs.next()) {
 				tags.add(new Tag(rs.getString("tag.name"), rs
-						.getString("tag.description"), rs.getInt("cnt")));
+						.getString("tag.description"), 0));
 			}
 
-			if (ORDERBY_NAME.equals(orderby)) {
-				Collections.sort(tags, new TagNameComperator());
+			ResultSet rsCount = st.executeQuery(SQL_SELECT_TAGS_COUNT);
+			while (rsCount.next()) {
+				
+				String name = rsCount.getString("tag.name");
+				int count = rsCount.getInt("cnt");
+
+				for(Tag tag:tags) {
+					if(tag.getName().equals(name)) {
+						tag.setCount(tag.getCount()+count);
+					}
+				}
 			}
+
+			Collections.sort(tags, new TagNameComperator(orderby));
 		} catch (SQLException e) {
 			log.error("Failed to execute " + SQL_SELECT_TAGS, e);
 		}
