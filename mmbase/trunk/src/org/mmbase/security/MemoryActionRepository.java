@@ -10,15 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 import java.util.*;
 
+import org.mmbase.util.ChainedIterator;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is the most simple way to store 'actions', namely simply in memory. Config files may fill
+ * This is the most simple way to store 'actions', namely straightforwardly in memory. Config files may fill
  * this repository on startup.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.8 2008-08-20 17:07:17 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.9 2008-09-16 16:36:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
@@ -29,10 +30,10 @@ public class MemoryActionRepository extends ActionRepository {
     public MemoryActionRepository() {
     }
 
-    public void load() {
+    @Override public void load() {
     }
 
-    public void add(Action a) {
+    @Override public void add(Action a) {
         log.debug("Adding " + a + " to " + this);
         Map<String, Action> map = store.get(a.getNameSpace());
         if (map == null) {
@@ -41,7 +42,7 @@ public class MemoryActionRepository extends ActionRepository {
         }
         map.put(a.getName(), a);
     }
-    public Map<String, Action> get(String nameSpace) {
+    @Override public Map<String, Action> get(String nameSpace) {
         Map<String, Action> map = store.get(nameSpace);
         if (map == null) {
             return Collections.emptyMap();
@@ -50,12 +51,26 @@ public class MemoryActionRepository extends ActionRepository {
         }
     }
 
-    public Action get(String nameSpace, String name) {
-        return get(nameSpace).get(name);
-    }
-
-    public Collection<Map<String, Action>> getActions() {
-        return store.values();
+    @Override public Collection<Action> getActions() {
+        return new AbstractCollection<Action>() {
+            int size = -1;
+            public int size() {
+                if (size == -1) {
+                    size = 0;
+                    for (Map<String, Action> ns : store.values()) {
+                        size += ns.size();
+                    }
+                }
+                return size;
+            }
+            public Iterator<Action> iterator() {
+                ChainedIterator<Action> i = new ChainedIterator<Action>();
+                for (Map<String, Action> ns : store.values()) {
+                    i.addIterator(ns.values().iterator());
+                }
+                return i;
+            }
+        };
     }
 
 }
