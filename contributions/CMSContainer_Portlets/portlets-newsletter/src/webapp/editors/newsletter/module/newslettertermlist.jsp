@@ -14,6 +14,10 @@
 <script src="../newsletter.js" type="text/javascript"></script>
 <script type="text/javascript">
 function update(number) {
+   if($("name_"+number).value == ""){
+      alert('<fmt:message key="newsletter.term.mandatory" />');
+      return;
+   }
    var myAjax = new Ajax.Request(
     '${actionUrl}',
     {   parameters:"method=modify&id="+number+"&name="+$("name_"+number).value,
