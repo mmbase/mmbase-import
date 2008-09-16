@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.256 2008-09-05 14:18:55 michiel Exp $
+ * @version $Id: MMBase.java,v 1.257 2008-09-16 16:43:58 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -923,7 +923,12 @@ public class MMBase extends ProcessorModule {
             BuilderReader r = null;
             String protocol = null;
             for (java.net.URL url : getBuilderLoader().getResourceList(builderName + ".xml")) {
-                if (! url.openConnection().getDoInput()) continue;
+                if (! url.openConnection().getDoInput()) {
+                    log.debug("Cannot read " + url);
+                    continue;
+                } else {
+                    log.debug("Can read " + url);
+                }
                 if (protocol != null && ! url.getProtocol().equals(protocol)) {
                     log.debug(url + " less important than " + r.getSystemId() + " breaking now");
                     break;
@@ -940,6 +945,9 @@ public class MMBase extends ProcessorModule {
                 } else {
                     log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it.");
                 }
+            }
+            if (r != null) {
+                log.debug("Found " + r.getSystemId());
             }
             return r;
         } catch (SAXException se) {
@@ -977,7 +985,7 @@ public class MMBase extends ProcessorModule {
     public String getBuilderPath(String builderName, String path) {
         Set<String> builders = getBuilderLoader().getResourcePaths(java.util.regex.Pattern.compile(path + ResourceLoader.XML_PATTERN.pattern()), true /*recursive*/);
         if (log.isDebugEnabled()) {
-            log.debug("Found builder " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
+            log.debug("Found builders " + builders + " from " +  getBuilderLoader()  + " searching for " + builderName);
         }
         String xml = builderName + ".xml";
         for (String builderXml : builders) {
@@ -1035,6 +1043,7 @@ public class MMBase extends ProcessorModule {
             loading.add(builderName);
             BuilderReader parser = getBuilderReader(ipath + builderName);
             if (parser == null) {
+                log.warn("Not found " + ipath + builderName);
                 loading.remove(builderName);
                 return null;
             }
