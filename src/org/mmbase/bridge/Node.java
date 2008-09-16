@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.76 2008-02-16 22:13:53 nklasens Exp $
+ * @version $Id: Node.java,v 1.77 2008-09-16 16:43:32 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -904,6 +904,6 @@ public interface Node extends Comparable<Node> {
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
-    public FieldValue getFunctionValue(String functionName, List parameters);
+    public FieldValue getFunctionValue(String functionName, List<?> parameters);
 
 }
