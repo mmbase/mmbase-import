@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.23 2008-09-12 11:15:26 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.24 2008-09-16 16:43:32 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -732,17 +732,21 @@ public abstract class AbstractNode implements Node {
 
     protected FieldValue createFunctionValue(final Object result) {
         return new AbstractFieldValue(this, getCloud()) {
-            @Override
-            public Object get() {
+            @Override public Object get() {
                 return result;
             }
         };
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
+    public FieldValue getFunctionValue(String functionName, List<?> parameters) {
         Function function = getFunction(functionName);
-        Parameters params = function.createParameters();
-        params.setAll(parameters);
+        Parameters params;
+        if (parameters instanceof Parameters) {
+            params = (Parameters) parameters;
+        } else {
+            params = function.createParameters();
+            params.setAll(parameters);
+        }
         return createFunctionValue(function.getFunctionValue(params));
     }
 
@@ -756,8 +760,7 @@ public abstract class AbstractNode implements Node {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctions() + ")");
         }
         return new WrappedFunction(function) {
-                @Override
-                public final Object getFunctionValue(Parameters params) {
+                @Override public final Object getFunctionValue(Parameters params) {
                     if (params == null) params = createParameters();
                     params.setIfDefined(Parameter.NODE, AbstractNode.this);
                     params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
