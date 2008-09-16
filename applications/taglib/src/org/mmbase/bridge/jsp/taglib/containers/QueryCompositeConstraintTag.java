@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.6.2.1 2008-08-18 14:37:52 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.6.2.2 2008-09-16 11:20:53 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -76,18 +76,38 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
                 newConstraint = query.createConstraint(newConstraint, op, constraint);
             }
         }
-        if (newConstraint != null) {
-            // if there is a OR or an AND tag, add
-            // the constraint to that tag,
-            // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
-            if (cons != null) {
-                cons.addChildConstraint(newConstraint);
-            } else {
-                newConstraint = Queries.addConstraint(query, newConstraint);
+
+        boolean not = inverse.getBoolean(this, false);
+        if (newConstraint == null) {
+            // Nothing added. Very interesting, what must happen now?
+            switch(op) {
+            case CompositeConstraint.LOGICAL_OR:
+                if (not) {
+                    return null;
+                } else {
+                    newConstraint = Queries.createMakeEmptyConstraint(query);
+                    break;
+                }
+            case CompositeConstraint.LOGICAL_AND:
+                if (not) {
+                    newConstraint = Queries.createMakeEmptyConstraint(query);
+                    not = false;
+                    break;
+                } else {
+                    return null;
+                }
             }
         }
-        if (inverse.getBoolean(this, false)) {
+        // if there is a OR or an AND tag, add
+        // the constraint to that tag,
+        // otherwise add it direct to the query
+        QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+        if (cons != null) {
+            cons.addChildConstraint(newConstraint);
+        } else {
+            newConstraint = Queries.addConstraint(query, newConstraint);
+        }
+        if (not) {
             query.setInverse(newConstraint, true);
         }
         return newConstraint;
