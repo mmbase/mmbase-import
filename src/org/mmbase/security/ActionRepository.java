@@ -12,11 +12,13 @@ import java.util.*;
 
 /**
  * The defined 'actions' are maintained by the 'action' repository. The security implementation can
- * decide how to persist actions and how to connect rights to it.
+ * decide how to persist actions and how to connect rights to it. Every action is identified by two
+ * string; a <em>namespace</em> (which may be <code>null</code>and its name. Namespaces are likely to correspond with {@link
+ * org.mmbase.framework.Component}s.
  *
  * @see Action
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.8 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: ActionRepository.java,v 1.9 2008-09-16 16:36:59 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
@@ -31,13 +33,29 @@ public abstract class ActionRepository extends Configurable {
         }
     }
 
+
+    /**
+     * Adds the action to the repository using {@link Action#getNameSpace()} and {@link
+     * Action#getName()}.
+     */
     public abstract void add(Action a);
 
+
+    /**
+     * All actions of a certain namespace.
+     */
     public abstract Map<String, Action> get(String nameSpace);
 
-    public Action get(String nameSpace, String name) {
+    /**
+     * Shortcut for {@link #get(String)}.{@link java.util.Map#get}.
+     */
+    public final Action get(String nameSpace, String name) {
         return get(nameSpace).get(name);
     }
 
-    public abstract Collection<Map<String, Action>> getActions();
+    /**
+     * All actions managed by this repository
+     */
+    public abstract Collection<Action> getActions();
+
 }
