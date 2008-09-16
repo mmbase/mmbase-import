@@ -1,7 +1,35 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@page isErrorPage="true"
+%><%@page import="java.io.*,java.text.*,java.util.*"
+%><%
+   String contextPath = request.getContextPath();
+   long ticket = System.currentTimeMillis();
+   StringWriter wr = new StringWriter();
+   PrintWriter pw = new PrintWriter(wr);
 
-<%
-   String contextPath = request.getContextPath(); 
+   exception.printStackTrace(new PrintWriter(wr));
+   
+   String msg = "EXCEPTION:" + "\n";
+   msg += "   requesturl: " + request.getRequestURL() + "\n";
+   msg += "   querystring: " + request.getQueryString() + "\n";
+   msg += "   method: " + request.getMethod() + "\n";
+   msg += "   user: " + request.getRemoteUser()  + "\n";
+   msg += wr.toString();
+%>
+<%!
+   /** the date + time long format */
+   private static final SimpleDateFormat DATE_TIME_FORMAT =
+      new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+   
+   /**
+    * Creates String.from given long according to dd-MM-yyyy HH:mm:ss
+    * @param date the date to format
+    * @return Datestring
+    */
+   public static String getDateTimeString(long date) {
+      return DATE_TIME_FORMAT.format(new Date(date));
+   }
 %>
 
 <html>
@@ -20,6 +48,17 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<link rel="stylesheet" type="text/css" href="<%=contextPath%>/natmm/hoofdsite/themas/main.css"/>
 	<link rel="stylesheet" type="text/css" href="<%=contextPath%>/natmm/hoofdsite/themas/default.css" />
+   <script type="text/javascript">
+      function showError() {
+         var errorDisplay = document.getElementById('errordiv').style.display;
+         if (errorDisplay =='none') {
+            document.getElementById('errordiv').style.display='block';
+         }
+         else {
+            document.getElementById('errordiv').style.display='none';
+         }
+      }
+</script>
 </head>
 <body style="margin:0;">
 <div style="position:relative; width:100%;">
@@ -82,7 +121,16 @@ Als bovenstaande tips niet helpen zouden wij het erg op prijs stellen als je de 
 Alvast bedankt.<br />
 &nbsp;<br />
 
-</div>      
+<p>
+   <a href="javascript:showError();"><b>Toon technische informatie</b></a><br/>
+</p>
+<div id="errordiv" style="display:none">
+<pre>
+<%= getDateTimeString(ticket) %>
+<%= msg %>
+</pre>
+
+</div>
 </table>
 </div>
 </td>
