@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.109 2008-09-04 20:57:55 michiel Exp $
+ * @version $Id: Queries.java,v 1.110 2008-09-16 11:20:18 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1475,6 +1475,18 @@ abstract public class Queries {
             // both unspecified
             return null;
         }
+    }
+
+    /**
+     * Creates a constraint that would make the result of the query q empty.
+     * Currently implemented by comparing the number field of the first step to a negative integer,
+     * but this may be done otherwise.
+     *
+     * @since MMBase-1.8.7
+     */
+    public static Constraint createMakeEmptyConstraint(Query q) {
+        StepField sf = q.createStepField((Step) q.getSteps().get(0), "number");
+        return q.createConstraint(sf, new Integer(-1));
     }
 
     public static void main(String[] argv) {
