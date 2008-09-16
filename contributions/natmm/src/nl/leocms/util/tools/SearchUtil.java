@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class SearchUtil {
 
@@ -386,8 +386,8 @@ public class SearchUtil {
         
         }
       } catch (Exception e) { 
-        log.error("lucene index " + index + " throws error on query " + sQuery); 
-        log.error(e); //Also log the specific error
+        log.error("lucene index " + index + " throws error on query " + sQuery + " - " + e); 
+        //Also log the specific error
       } 
       return hsetNodes;
    }
