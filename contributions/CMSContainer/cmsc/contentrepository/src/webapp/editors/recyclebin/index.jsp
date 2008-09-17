@@ -7,6 +7,11 @@
 <cmscedit:head title="recyclebin.title">
   <script src="recyclebin.js" type="text/javascript"></script>
 </cmscedit:head>
+<mm:import externid="direction" jspvar="direction">up</mm:import>
+<mm:import externid="sortBy" jspvar="sortBy">title</mm:import>
+<c:set var="direction">
+   <c:out value="${direction =='up'?'down':'up' }"/>
+</c:set>
 <body onload="refreshChannels();">
     <div class="tabs">
         <div class="tab_active">
@@ -53,7 +58,7 @@
                      <div class="body">   
                         <mm:node number="$parentchannel">
                            <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
-                              <mm:sortorder field="contentelement.title" direction="up" />
+                              <mm:sortorder field="contentelement.${sortBy}" direction="${direction}" />
             
                               <c:set var="listSize"><mm:size/></c:set>
                               <c:set var="resultsPerPage" value="50"/>
@@ -66,11 +71,11 @@
                                        <thead>
                                           <tr>
                                              <th style="width: 56px;"></th>
-                                             <th style="width: 68px;"><fmt:message key="locate.typecolumn" /></th>
-                                             <th><fmt:message key="locate.titlecolumn" /></th>
-                                             <th style="width: 50px;"><fmt:message key="locate.authorcolumn" /></th>
-                                             <th style="width: 120px;"><fmt:message key="locate.lastmodifiedcolumn" /></th>
-                                             <th style="width: 60px;"><fmt:message key="locate.numbercolumn" /></th>
+                                             <th style="width: 68px;"><a href="?sortBy=otype&direction=${direction}" class="headerlink"><fmt:message key="locate.typecolumn" /></a></th>
+                                             <th><a href="?sortBy=title&direction=${direction}" class="headerlink"><fmt:message key="locate.titlecolumn" /></a></th>
+                                             <th style="width: 50px;"><a href="?sortBy=creator&direction=${direction}" class="headerlink"><fmt:message key="locate.authorcolumn" /></a></th>
+                                             <th style="width: 120px;"><a href="?sortBy=lastmodifieddate&direction=${direction}" class="headerlink"><fmt:message key="locate.lastmodifiedcolumn" /></a></th>
+                                             <th style="width: 60px;"><a href="?sortBy=number&direction=${direction}" class="headerlink"><fmt:message key="locate.numbercolumn" /></a></th>
                                           </tr>
                                        </thead>
                                        <tbody class="hover">
