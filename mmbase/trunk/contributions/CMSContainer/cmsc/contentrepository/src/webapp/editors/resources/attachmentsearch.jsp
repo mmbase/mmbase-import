@@ -69,8 +69,8 @@
             <tr class="listheader">
                <th> </th>
                <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
-               <th><fmt:message key="attachmentsearch.filenamecolumn" /></th>
-               <th><fmt:message key="attachmentsearch.mimetypecolumn" /></th>
+               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('filename');"><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
+               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('mimetype');"><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
             </tr>
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
