@@ -61,8 +61,8 @@
 					<th></th>
 					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
 						key="urlsearch.namecolumn" /></a></th>
-					<th><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
-                    <th><fmt:message key="urlsearch.validcolumn" /></th>
+					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
+                    <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('valid');"><fmt:message key="urlsearch.validcolumn" /></a></th>
 				</tr>
 				<tbody class="hover">
 					<c:set var="useSwapStyle">true</c:set>
