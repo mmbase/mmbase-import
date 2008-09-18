@@ -14,11 +14,12 @@ public class GetTagsTag extends SimpleTagSupport {
 	private String var;
 	private Integer max;
 	private String orderby = TagCloudUtil.ORDERBY_COUNT;
+	private String direction;
 
 	public void doTag() throws JspException, IOException {
 		super.doTag();
 		
-		List<Tag> tags = TagCloudUtil.getTags(max, orderby);
+		List<Tag> tags = TagCloudUtil.getTags(max, orderby, direction);
 		getJspContext().setAttribute(var, tags);
 	}
 	
@@ -37,5 +38,8 @@ public class GetTagsTag extends SimpleTagSupport {
 		this.var = var;
 	}
 
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
 	
 }
