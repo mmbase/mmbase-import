@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.32 2008-07-11 14:49:36 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.33 2008-09-18 09:48:29 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -56,7 +56,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             log.warn("Tried to execute node-function on null!");
             return null;
         }
-        List<?> args = new ArrayList();
+        List<String> args = new ArrayList<String>();
         String functionName = getFunctionNameAndFillArgs(function, args);
         if (log.isDebugEnabled()) {
             log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
@@ -65,14 +65,14 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         return node.getFunctionValue(functionName, args);
     }
 
-    public static String getFunctionNameAndFillArgs(String function, java.util.List args) {
+    public static String getFunctionNameAndFillArgs(String function, java.util.List<String> args) {
         String functionName = function;
         int pos1 = function.indexOf('(');
         if (pos1 != -1) {
             int pos2 = function.lastIndexOf(')');
             if (pos2 != -1) {
                 functionName = function.substring(0, pos1);
-                java.util.List args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
+                java.util.List<String> args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
                 args.addAll(args2);
             }
         }
