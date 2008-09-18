@@ -7,9 +7,11 @@ import com.finalist.portlets.tagcloud.Tag;
 public class TagNameComperator implements Comparator {
 
 	private String orderby;
+	private String direction;
 	
-	public TagNameComperator(String orderby) {
+	public TagNameComperator(String orderby, String direction) {
 		this.orderby = orderby;
+		this.direction = direction;
 	}
 
 	public int compare(Object arg0, Object arg1) {
@@ -18,11 +20,18 @@ public class TagNameComperator implements Comparator {
 			throw new IllegalArgumentException("This comperator only works with tags");
 		}
 		else {
+			
+			Tag t0 = (direction != null && direction.equalsIgnoreCase("down"))?(Tag)arg1:(Tag)arg0;
+			Tag t1 = (direction != null && direction.equalsIgnoreCase("down"))?(Tag)arg0:(Tag)arg1;
+			
 			if(orderby.equals("name")) {
-				return ((Tag)arg0).getName().compareTo(((Tag)arg1).getName());
+				return t0.getName().compareToIgnoreCase(t1.getName());
+			}
+			if(orderby.equals("description")) {
+				return t0.getDescription().compareToIgnoreCase(t1.getDescription());
 			}
 			else {
-				return ((Tag)arg0).getCount() - ((Tag)arg1).getCount();
+				return t0.getCount() - t1.getCount();
 			}
 		}
 	}

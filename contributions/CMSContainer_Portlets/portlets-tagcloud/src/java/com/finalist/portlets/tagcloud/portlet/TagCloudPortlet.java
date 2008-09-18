@@ -24,7 +24,7 @@ public class TagCloudPortlet extends AbstractContentPortlet {
 		Integer max = (maxString == null) ? null : Integer.parseInt(maxString);
 		String orderBy = preferences.getValue("orderBy", null);
 
-		List<Tag> tags = TagCloudUtil.getTags(max, orderBy);
+		List<Tag> tags = TagCloudUtil.getTags(max, orderBy, "up");
 		req.setAttribute("tags", tags);
 		super.doView(req, res);
 	}
