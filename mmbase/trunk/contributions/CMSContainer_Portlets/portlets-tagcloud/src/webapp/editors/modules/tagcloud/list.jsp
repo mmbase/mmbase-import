@@ -3,14 +3,20 @@
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 
 	<c:if test="${param.action == 'delete'}">
-		<mm:listnodes type="tag" constraints="name = '${param.tag}'">
-			<c:set var="number"><mm:field name="number"/></c:set>
-		</mm:listnodes>
-		<c:if test="${!empty number}">
-			<mm:deletenode number="${number}" deleterelations="true"/>
-		</c:if>
+		<mm:deletenode number="${param.number}" deleterelations="true"/>
 	</c:if>
-
+	<c:if test="${param.action == 'save'}">
+		<mm:node number="${param.number}">
+			<mm:setfield name="name">${param.name}</mm:setfield>
+			<mm:setfield name="description">${param.description}</mm:setfield>
+		</mm:node>
+	</c:if>
+	<c:if test="${param.action == 'merge'}">
+		<mm:listnodes type="insrel" constraints="dnumber = ${param.target2}">
+			<mm:setfield name="dnumber">${param.target1}</mm:setfield>
+		</mm:listnodes>
+		<mm:deletenode number="${param.target2}" deleterelations="true"/>
+	</c:if>
 	
 	<html:html xhtml="true">
 	<cmscedit:head title="tagcloud.title">
@@ -26,6 +32,36 @@
 		
 		      document.location=href;
 		   }
+		   
+		   var oldOrderBy = '${param.orderby}';
+		   var oldDirection = '${param.direction}';
+		   function orderBy(order) {
+	   		  document.location='list.jsp?orderby='+order+((oldOrderBy == order && oldDirection != 'down')?'&direction=down':'');
+		   }
+		   
+		   var mergeTarget1;
+		   function merge(target) {
+		   		if(mergeTarget1 == undefined) {
+		   			mergeTarget1 = target;
+		   			document.getElementById('img_'+target).src = '../../gfx/icons/merge_selected.png';
+		   		}
+		   		else if(mergeTarget1 == target) {
+		   			document.getElementById('img_'+mergeTarget1).src = '../../gfx/icons/merge.png';
+		   			mergeTarget1 = undefined;
+		   		}
+		   		else if(confirm('<fmt:message key="tagdetail.merge.confirm" />')) {
+		   			document.getElementById('merge_orderBy').value = oldOrderBy;
+		   			document.getElementById('merge_direction').value = oldDirection;
+		   			document.getElementById('merge_target1').value = mergeTarget1;
+		   			document.getElementById('merge_target2').value = target;
+		   			document.getElementById('merge_form').submit();
+		   		}
+		   		else {
+		   			document.getElementById('img_'+mergeTarget1).src = '../../gfx/icons/merge.png';
+		   			mergeTarget1 = undefined;
+		   		}
+		   	}
+		   		
 	   </script>
 	</cmscedit:head>
 	<body>
@@ -47,27 +83,37 @@
 	<thead>
 	    <tr>
 			<th></th>
-	        <th><fmt:message key="taglist.tag"/></th>
-	        <th><fmt:message key="taglist.description"/></th>
-	        <th><fmt:message key="taglist.count"/></th>
+	        <th><a href="javascript:orderBy('name')"><fmt:message key="taglist.tag"/></a></th>
+	        <th><a href="javascript:orderBy('description')"><fmt:message key="taglist.description"/></a></th>
+	        <th><a href="javascript:orderBy('count')"><fmt:message key="taglist.count"/></a></th>
 	    </tr>
 	</thead>
 	<tbody class="hover">
+		<form id="merge_form">
+			<input type="hidden" name="action" value="merge"/>
+			<input type="hidden" id="merge_orderBy" name="orderby"/>
+			<input type="hidden" id="merge_direction" name="direction"/>
+			<input type="hidden" id="merge_target1" name="target1"/>
+			<input type="hidden" id="merge_target2" name="target2"/>
+		</form>
 	
-		<cmsc-tc:getTags var="tags" orderby="name"/>
+		<cmsc-tc:getTags var="tags" orderby="${param.orderby}" direction="${param.direction}"/>
 		<c:forEach var="tag" items="${tags}" varStatus="status">
-			<tr <c:if test="${status.count%2==1}">class="swap"</c:if>  href="detail.jsp?tag=${tag.name}">
-				<td width="20">
-					<a href="?action=delete&tag=${tag.name}" onclick="return confirm('<fmt:message key="tagcloud.delete.confirm" />')"><img src="../../gfx/icons/delete.png" width="16" height="16"
+			<tr <c:if test="${status.count%2==1}">class="swap"</c:if>  href="detail.jsp?number=${tag.number}">
+				<td width="40">
+					<a href="javascript:merge('${tag.number}');"><img id="img_${tag.number}" src="../../gfx/icons/merge.png" width="16" height="16"
+                                         title="<fmt:message key="tagdetail.merge" />"
+                                         alt="<fmt:message key="tagdetail.merge" />"/></a>
+					<a href="?action=delete&number=${tag.number}&orderby=${param.orderby}&direction=${param.direction}" onclick="return confirm('<fmt:message key="tagcloud.delete.confirm" />')"><img src="../../gfx/icons/delete.png" width="16" height="16"
                                                          title="<fmt:message key="tagcloud.delete" />"
                                                          alt="<fmt:message key="tagcloud.delete" />"/></a>
 				</td>
-				<td onMouseDown="objClick(this);">
+				<td onMouseDown="objClick(this);" style="text-transform: capitalize">
                     ${tag.name}</td>
 				<td onMouseDown="objClick(this);">
 				    <c:set var="description" value="${tag.description}"/>
-				    <c:if test="${fn:length(description) > 50}">
-				        <c:set var="description">${fn:substring(description,0,49)}...</c:set>
+				    <c:if test="${fn:length(description) > 90}">
+				        <c:set var="description">${fn:substring(description,0,89)}...</c:set>
 				    </c:if>
 			        ${description}
 				</td>				

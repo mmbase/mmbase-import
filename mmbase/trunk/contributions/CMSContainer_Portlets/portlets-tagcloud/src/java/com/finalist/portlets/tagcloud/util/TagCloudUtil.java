@@ -20,6 +20,7 @@ import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.portlets.tagcloud.Tag;
 
 public class TagCloudUtil {
@@ -31,18 +32,54 @@ public class TagCloudUtil {
 
 	public static final String ORDERBY_NAME = "name";
 
-	private static final String SQL_SELECT_TAGS = "SELECT tag.name,tag.description FROM mm_tag tag";
+	private static final String SQL_STAGING_SELECT_TAGS = "SELECT tag.name,tag.description,tag.number FROM mm_tag tag";
+	private static final String SQL_LIVE_SELECT_TAGS = "SELECT tag.name,tag.description,tag.number FROM live_tag tag";
+/*
 
-	private static final String SQL_SELECT_TAGS_COUNT = "SELECT tag.name,COUNT(contentelement.number) AS cnt "
-			+ "FROM mm_tag tag,mm_insrel insrel,mm_contentelement contentelement "
-			+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) "
-			+ "GROUP BY tag.name,tag.description";
+ */
+	private static final String SQL_STAGING_SELECT_TAGS_COUNT = "  SELECT tag.number,COUNT(insrel.number) AS cnt " 
+		+ "FROM mm_tag tag,mm_insrel insrel "
+		+ "WHERE (tag.number=insrel.dnumber) "
+		+ "GROUP BY tag.number";
+	private static final String SQL_LIVE_SELECT_TAGS_COUNT = "SELECT tag.number,COUNT(contentelement.number) AS cnt "
+		+ "FROM live_tag tag,live_insrel insrel,live_contentelement contentelement "
+		+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) "
+		+ "GROUP BY tag.name";
 
-	private static final String SQL_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.name,tag.description "
-			+ "FROM mm_tag tag,mm_insrel insrel "
-			+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) "
-			+ "ORDER BY tag.name";
+	private static final String SQL_STAGING_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.name,tag.description "
+		+ "FROM mm_tag tag,mm_insrel insrel "
+		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) "
+		+ "ORDER BY tag.name";
+	private static final String SQL_LIVE_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.name,tag.description "
+		+ "FROM live_tag tag,live_insrel insrel "
+		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) "
+		+ "ORDER BY tag.name";
 
+	private static final String SQL_STAGING_SELECT_CHANNEL_RELATED_TAGS = "	 SELECT tag.name,tag.description,COUNT(contentelement.number) AS cnt "+ 
+		"FROM mm_tag tag,mm_insrel insrel,mm_contentelement contentelement, mm_contentrel contentrel "+ 
+		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER "+  
+		"GROUP BY tag.name,tag.description";
+
+	private static final String SQL_LIVE_SELECT_CHANNEL_RELATED_TAGS = "	 SELECT tag.name,tag.description,COUNT(contentelement.number) AS cnt "+ 
+		"FROM live_tag tag,live_insrel insrel,live_contentelement contentelement, live_contentrel contentrel "+ 
+		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER "+  
+		"GROUP BY tag.name,tag.description";
+
+	
+	private static final String SQL_STAGING_SELECT_TAG_RELATED_TAGS = "SELECT target_tag.name,target_tag.description,COUNT(contentelement.number) AS cnt "+  
+		"FROM mm_tag source_tag,mm_insrel source_insrel,mm_contentelement contentelement, mm_insrel target_insrel, mm_tag target_tag   "+
+		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
+		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME'  "+
+		"GROUP BY target_tag.name,target_tag.description ";
+ 
+	private static final String SQL_LIVE_SELECT_TAG_RELATED_TAGS = "SELECT target_tag.name,target_tag.description,COUNT(contentelement.number) AS cnt "+  
+		"FROM live_tag source_tag,live_insrel source_insrel,live_contentelement contentelement, live_insrel target_insrel, live_tag target_tag   "+
+		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
+		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME'  "+
+		"GROUP BY target_tag.name,target_tag.description ";
+ 
 	private static Connection getConnection() {
 		Connection connection = null;
 		MMBase mmbase = MMBase.getMMBase();
@@ -92,37 +129,47 @@ public class TagCloudUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Tag> getTags(Integer max, String orderby) {
+	public static List<Tag> getTags(Integer max, String orderby, String direction) {
 
 		List<Tag> tags = new ArrayList<Tag>();
+		Connection con = getConnection();
 		try {
-			Connection con = getConnection();
 			Statement st = con.createStatement();
 			if (max != null) {
 				st.setMaxRows(max);
 			}
-			ResultSet rs = st.executeQuery(SQL_SELECT_TAGS);
+			String sqlSelect = ServerUtil.isLive()?SQL_LIVE_SELECT_TAGS:SQL_STAGING_SELECT_TAGS;
+			ResultSet rs = st.executeQuery(sqlSelect);
 			while (rs.next()) {
-				tags.add(new Tag(rs.getString("tag.name"), rs
-						.getString("tag.description"), 0));
+				Tag tag = new Tag(rs.getString("tag.name"), rs.getString("tag.description"), 0);
+				tag.setNumber(rs.getInt("tag.number"));
+				tags.add(tag);
 			}
 
-			ResultSet rsCount = st.executeQuery(SQL_SELECT_TAGS_COUNT);
+			String sqlSelectCount = ServerUtil.isLive()?SQL_LIVE_SELECT_TAGS_COUNT:SQL_STAGING_SELECT_TAGS_COUNT;
+			ResultSet rsCount = st.executeQuery(sqlSelectCount);
 			while (rsCount.next()) {
 				
-				String name = rsCount.getString("tag.name");
+				int number = rsCount.getInt("tag.number");
 				int count = rsCount.getInt("cnt");
 
 				for(Tag tag:tags) {
-					if(tag.getName().equals(name)) {
+					if(tag.getNumber() == number) {
 						tag.setCount(tag.getCount()+count);
 					}
 				}
 			}
 
-			Collections.sort(tags, new TagNameComperator(orderby));
+			Collections.sort(tags, new TagNameComperator(orderby, direction));
 		} catch (SQLException e) {
-			log.error("Failed to execute " + SQL_SELECT_TAGS, e);
+			log.error("Failed to execute", e);
+		}
+		finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.warn("Failed to get connection " + e.getMessage(), e);
+			}
 		}
 		return tags;
 	}
@@ -131,18 +178,82 @@ public class TagCloudUtil {
 	public static List<Tag> getRelatedTags(Integer related) {
 
 		List<Tag> tags = new ArrayList<Tag>();
+		Connection con = getConnection();
 		try {
-			Connection con = getConnection();
 			Statement st = con.createStatement();
-			String sql = SQL_SELECT_CONTENT_RELATED_TAGS.replaceAll(
-					"CONTENTELEMENT_NUMBER", "" + related);
+			String sql = ServerUtil.isLive()?SQL_LIVE_SELECT_CONTENT_RELATED_TAGS:SQL_STAGING_SELECT_CONTENT_RELATED_TAGS;
+			sql = sql.replaceAll("CONTENTELEMENT_NUMBER", "" + related);
 			ResultSet rs = st.executeQuery(sql);
 			while (rs.next()) {
 				tags.add(new Tag(rs.getString("tag.name"), rs
 						.getString("tag.description"), 1));
 			}
 		} catch (SQLException e) {
-			log.error("Failed to execute " + SQL_SELECT_TAGS, e);
+			log.error("Failed to execute", e);
+		}
+		finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.warn("Failed to get connection " + e.getMessage(), e);
+			}
+		}
+		return tags;
+	}
+
+	public static List<Tag> getChannelRelatedTags(Integer channel) {
+
+		List<Tag> tags = new ArrayList<Tag>();
+		Connection con = getConnection();
+		try {
+			Statement st = con.createStatement();
+			String sql = ServerUtil.isLive()?SQL_LIVE_SELECT_CHANNEL_RELATED_TAGS:SQL_STAGING_SELECT_CHANNEL_RELATED_TAGS;
+			sql = sql.replaceAll("CONTENTCHANNEL_NUMBER", "" + channel);
+			ResultSet rs = st.executeQuery(sql);
+			while (rs.next()) {
+				tags.add(new Tag(rs.getString("tag.name"), 
+						rs.getString("tag.description"), 
+						rs.getInt("cnt")));
+			}
+		} catch (SQLException e) {
+			log.error("Failed to execute", e);
+		}
+		finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.warn("Failed to get connection " + e.getMessage(), e);
+			}
+		}
+		return tags;
+	}
+
+	public static List<Tag> getTagRelatedTags(String tag) {
+
+		List<Tag> tags = new ArrayList<Tag>();
+		Connection con = getConnection();
+		try {
+			Statement st = con.createStatement();
+			String sql = ServerUtil.isLive()?SQL_LIVE_SELECT_TAG_RELATED_TAGS:SQL_STAGING_SELECT_TAG_RELATED_TAGS;
+			sql = sql.replaceAll("TAG_NAME", tag.toLowerCase());
+			ResultSet rs = st.executeQuery(sql);
+			while (rs.next()) {
+				String name=rs.getString("target_tag.name");
+				if(!name.equalsIgnoreCase(tag)) {
+					tags.add(new Tag(name, 
+							rs.getString("target_tag.description"), 
+							rs.getInt("cnt")));
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Failed to execute", e);
+		}
+		finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.warn("Failed to get connection " + e.getMessage(), e);
+			}
 		}
 		return tags;
 	}

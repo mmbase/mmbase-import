@@ -29,7 +29,13 @@
 			<description>order can be "count" (default) or "name", even if ordered on name, tags with the most results are still returned</description>
 			<name>orderby</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>the direction to sort in either 'up'(default) or 'down'</description>
+			<name>direction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
