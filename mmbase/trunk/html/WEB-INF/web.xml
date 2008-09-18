@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to use EL (Expression Language)
 
-  $Id: web.xml,v 1.36 2007-06-28 18:35:39 michiel Exp $
+  $Id: web.xml,v 1.37 2008-09-18 09:58:24 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -105,7 +105,7 @@
       MMBase.  If your web-app is in an application server with other application, it is good that
       the initialization of mmbase does not stall the initialization of the complete application
       server. Faster applications can already start serving content, without having to wait for the rest.
-      
+
       If however your application is 'alone' in the application server and is even load-balanced
       over several servers, then you do want that the application stalls the server, so that the
       load-balancer (with AJP) can see that this one is not actually running (the 503 status code
@@ -114,6 +114,21 @@
   <context-param>
     <param-name>stall-server</param-name>
     <param-value>false</param-value>
+  </context-param>
+
+
+  <!--
+       Whether URL's generated to images must include a filename.
+       Possible values are: 'yes' (from filename field, or from title), 'no', or '' (only if the 'filename' field is present, and filled).
+  -->
+  <context-param>
+    <param-name>mmbase.servlet.images.addfilename</param-name>
+    <param-value>yes</param-value>
+  </context-param>
+  <!-- some for attachments -->
+  <context-param>
+    <param-name>mmbase.servlet.attachments.addfilename</param-name>
+    <param-value>yes</param-value>
   </context-param>
 
 
@@ -220,7 +235,7 @@
     <extension>mmbase-module</extension>
     <mime-type>application/java-archive</mime-type>
   </mime-mapping>
-  
+
   <welcome-file-list>
     <welcome-file>index.jspx</welcome-file>
     <welcome-file>index.jsp</welcome-file>
