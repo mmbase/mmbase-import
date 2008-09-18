@@ -1,4 +1,4 @@
-<table border="0" style="padding-left:10px;">
+<table border="0">
          <edit:ui-table items="${results}" var="result" size="${totalCount}" requestURI="/editors/community/searchConditionalGroupAction.do">
          <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do">
                <c:param name="groupName" value="${result.groupName}"/>
