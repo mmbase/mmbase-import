@@ -78,12 +78,11 @@
 </div>
 
 <div class="editor">
-   <div class="body" style="padding-left:10px;">
+   <div class="body">
       <p></p>
       <html:form action="/editors/community/SearchConditionalUser.do?groupName=${groupName}" method="post">
-    
       <table border="0">
-         <tbody >
+         <tbody > 
             <tr> 
                <td style="width:100px"><fmt:message key="community.search.fullname"/></td>
                <td><html:text style="width: 250px" property="fullName"/></td>
