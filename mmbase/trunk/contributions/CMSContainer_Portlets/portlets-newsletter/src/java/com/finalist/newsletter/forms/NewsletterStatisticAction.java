@@ -51,6 +51,9 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 		NewsLetterLogSearchForm searchForm = (NewsLetterLogSearchForm) form;
 		StatisticResult result = new StatisticResult();
 		request.setAttribute("searchForm", searchForm);
+		PagingUtils.initStatusHolder(request);
+		PagingStatusHolder holder = PagingUtils.getStatusHolder();
+		
 
 		boolean isAll = Integer.parseInt(searchForm.getNewsletters()) == 0;
 		boolean isDetail = searchForm.getDetailOrSum().equals("2");
@@ -64,23 +67,25 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			List<StatisticResult> records = service.statisticAllByPeriod(
 					startDate, endDate);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", addPagingCondition(request,records));
+			request.setAttribute("records", addPagingCondition(request,records,holder));
 		} else if (isAll && !hasDate && isDetail) {
 			List<StatisticResult> records = service.statisticAll();
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", addPagingCondition(request,records));
+			request.setAttribute("records", addPagingCondition(request,records,holder));
 		} else if (!isAll && !hasDate && isDetail) {
 			List<StatisticResult> records = service
 					.statisticByNewsletter(newsletterId);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", addPagingCondition(request,records));
+			request.setAttribute("records", addPagingCondition(request,records,holder));
 		} else if (!isAll && hasDate && !isDetail) {
 			result = service.statisticByNewsletterPeriod(newsletterId,
 					startDate, endDate);
+			request.setAttribute("newsletterName", transToNewsName(request, newsletterService, newsletterId));
 			request.setAttribute("result", result);
 		} else if (!isAll && !hasDate && !isDetail) {
 			result = service.StatisticSummaryByNewsletter(newsletterId);
 			request.setAttribute("result", result);
+			request.setAttribute("newsletterName", transToNewsName(request, newsletterService, newsletterId));
 		} else if (isAll && !hasDate && !isDetail) {
 			result = service.statisticSummery();
 			request.setAttribute("result", result);
@@ -92,9 +97,15 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 					.StatisticDetailByNewsletterPeriod(newsletterId, startDate,
 							endDate);
 			transferShowingFromDB(records, newsletterService);
-			request.setAttribute("records", addPagingCondition(request,records));
+			request.setAttribute("records", addPagingCondition(request,records,holder));
 		}
 		return mapping.findForward("result");
+	}
+
+	private String transToNewsName(HttpServletRequest request,
+			NewsletterService newsletterService, int newsletterId) {
+		return newsletterService.getNewsletterName(newsletterId);
+		
 	}
 
 	private void addBlankNewsletter(List<Newsletter> newsletters) {
@@ -114,10 +125,9 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 		}
 
 	}
-	private List<StatisticResult> addPagingCondition(HttpServletRequest request,List<StatisticResult> records){
-		PagingStatusHolder holder = PagingUtils.getStatusHolder();
+	private List<StatisticResult> addPagingCondition(HttpServletRequest request,List<StatisticResult> records ,PagingStatusHolder holder){
+		
 		List<StatisticResult> recordsForShow = new ArrayList<StatisticResult>();
-		recordsForShow.clear();
 		int totalCount = records.size();    
 		request.setAttribute("totalCount", totalCount);
 		for(int i=holder.getOffset();i<holder.getPageSize()+holder.getOffset()&&i<totalCount;i++){
