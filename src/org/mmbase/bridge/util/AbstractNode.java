@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.24 2008-09-16 16:43:32 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.25 2008-09-18 09:47:48 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -740,13 +740,11 @@ public abstract class AbstractNode implements Node {
 
     public FieldValue getFunctionValue(String functionName, List<?> parameters) {
         Function function = getFunction(functionName);
-        Parameters params;
-        if (parameters instanceof Parameters) {
-            params = (Parameters) parameters;
-        } else {
-            params = function.createParameters();
-            params.setAll(parameters);
-        }
+        Parameters params = function.createParameters();
+        // Always create a new parameters object, which makes it possible to use a Parameters object
+        // not created with createParameters too.
+
+        params.setAll(parameters);
         return createFunctionValue(function.getFunctionValue(params));
     }
 
