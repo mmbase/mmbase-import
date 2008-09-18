@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.77 2008-09-16 16:43:32 michiel Exp $
+ * @version $Id: Node.java,v 1.78 2008-09-18 09:49:18 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -242,7 +242,7 @@ public interface Node extends Comparable<Node> {
      * // not yet working
      * @since MMBase-1.8
      */
-    public void setListValue(String fieldName, List value);
+    public void setListValue(String fieldName, List<?> value);
 
     /**
      * Whether the value for the specified field is <code>null</code>. This avoids acquiring the
@@ -441,7 +441,7 @@ public interface Node extends Comparable<Node> {
      * not yet working
      * @since MMBase-1.8
      */
-    public List getListValue(String fieldName);
+    public List<?> getListValue(String fieldName);
 
 
     /**
