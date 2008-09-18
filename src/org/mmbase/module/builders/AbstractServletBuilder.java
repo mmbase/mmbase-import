@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.56 2008-09-18 10:24:35 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.57 2008-09-18 10:41:24 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -477,7 +477,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             return servlet;
                         }
 
-                        public String getFunctionValue(Node node, Parameters a) {
+                        @Override public String getFunctionValue(Node node, Parameters a) {
                             // verify if the object is stored externally (in which case
                             // its url has been filled in)
                             // if so, return the url of the external source
@@ -524,14 +524,17 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                         }
 
-                        public String getFunctionValue(Parameters a) {
+                        @Override public String getFunctionValue(Parameters a) {
                             return getServletPath(a).toString();
                         }
                     });
 
         addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
-                public String getFunctionValue(Node node, Parameters a) {
-                    return  node.getFunctionValue("servletpath", a).toString();
+                @Override public String getFunctionValue(Node node, Parameters a) {
+                    Function spFunction = node.getFunction("servletpath");
+                    Parameters p = spFunction.createParameters();
+                    p.setAll(a);
+                    return  node.getFunctionValue("servletpath", p).toString();
                 }
             });
 
