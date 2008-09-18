@@ -19,6 +19,16 @@
     <param-value>false</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>mmbase.servlet.images.addfilename</param-name>
+    <param-value>yes</param-value>
+  </context-param>
+  <!-- some for attachments -->
+  <context-param>
+    <param-name>mmbase.servlet.attachments.addfilename</param-name>
+    <param-value>yes</param-value>
+  </context-param>
+
   <filter>
     <filter-name>Didactor Filter</filter-name>
     <display-name>Didactor</display-name>
