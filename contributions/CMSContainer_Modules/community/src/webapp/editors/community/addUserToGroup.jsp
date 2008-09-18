@@ -44,7 +44,7 @@
                   <tr>
                      <td style="width:105px"><fmt:message key="community.search.groupname"/></td>
                      <td style="width:150px"><html:text style="width: 200px" property="group"/></td>
-                     <td><input type="submit" name="submitButton" value="<fmt:message key="community.search.submit"/>"> </td>
+                     <td><input type="submit" name="submitButton" value="<fmt:message key="community.search.searchbatton"/>"> </td>
                   </tr>
                </tbody>
             </table>
