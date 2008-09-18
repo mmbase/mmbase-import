@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.44 2008-08-20 21:57:11 michiel Exp $
+ * @version $Id: Parameters.java,v 1.45 2008-09-18 10:40:46 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -460,6 +460,16 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     public Parameters setAllIfDefinied(Parameters params) {
         for (Parameter param : params.getDefinition()) {
             setIfDefined(param, params.get(param));
+        }
+        return this;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public Parameters setAll(Parameters params) {
+        for (Parameter param : params.getDefinition()) {
+            set(param, params.get(param));
         }
         return this;
     }
