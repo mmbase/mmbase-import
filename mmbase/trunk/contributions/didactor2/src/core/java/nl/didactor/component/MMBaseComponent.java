@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The didactor component wrapping an mmbase component.
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseComponent.java,v 1.5 2008-08-21 09:42:34 michiel Exp $
+ * @version $Id: MMBaseComponent.java,v 1.6 2008-09-18 10:54:32 michiel Exp $
  */
 
 public class MMBaseComponent extends nl.didactor.component.Component {
@@ -94,7 +94,9 @@ public class MMBaseComponent extends nl.didactor.component.Component {
                 }
             }
         }
-        log.info("Found " + scopes);
+        if (log.isDebugEnabled()) {
+            log.debug("Found " + scopes);
+        }
         return scopes;
     }
 
