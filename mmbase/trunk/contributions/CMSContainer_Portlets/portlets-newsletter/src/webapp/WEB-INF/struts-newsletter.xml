@@ -190,7 +190,7 @@
 		</action>
 		<action path="/editors/newsletter/NewsletterStatistic"
 			type="com.finalist.newsletter.forms.NewsletterStatisticAction"
-			name="recordSearchForm"
+			name="recordSearchForm" scope="request"
 			input="/editors/newsletter/ShowNewsletters.do" validate="true"
 			parameter="search">
 			<forward name="result" path="/editors/newsletter/showNewsletters.jsp" redirect="false" />
