@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.55 2008-09-07 10:03:55 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.56 2008-09-18 10:24:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -515,13 +515,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                                 servlet.append("session=" + session + "+");
                             }
 
-                            if (! addFileName) {
-                                return servlet.append(argument).toString();
-                            } else {
-                                servlet.append(argument).append('/');
+                            servlet.append(argument);
+                            if (addFileName) {
+                                servlet.append('/');
                                 getFileName(mmnode, servlet);
-                                return servlet.toString();
                             }
+                            return servlet.toString();
+
                         }
 
                         public String getFunctionValue(Parameters a) {
@@ -531,16 +531,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
         addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
                 public String getFunctionValue(Node node, Parameters a) {
-                    String sp = node.getFunctionValue("servletpath", a).toString();
-                    MMObjectNode mmnode = node.getNumber() > 0 ?
-                        AbstractServletBuilder.this.getNode(node.getNumber()) :
-                        new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
-                    if(addFileName(mmnode, sp)) {
-                        StringBuilder buf = new StringBuilder(sp);
-                        buf.append('/');
-                        sp = getFileName(mmnode, buf).toString();
-                    }
-                    return sp;
+                    return  node.getFunctionValue("servletpath", a).toString();
                 }
             });
 
