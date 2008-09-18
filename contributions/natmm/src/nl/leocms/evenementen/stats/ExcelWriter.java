@@ -76,11 +76,12 @@ public class ExcelWriter {
       WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.getTempDir() + fileName));
 
       NodeList nl = ev.getSortedList(cloud, sParentEvent);
-      NodeList nls = cloud.getList(sParentEvent,"evenement,partrel,evenement1,posrel,inschrijvingen","evenement1.number,evenement1.begindatum",null,"evenement1.begindatum","UP",null,true);
-      boolean bOneDateWithoutSubscriptions = (nl.size()!= nls.size());
+//     ** Don't use very database intensive code that is not needed, if-statement will always be executed.
+//      NodeList nls = cloud.getList(sParentEvent,"evenement,partrel,evenement1,posrel,inschrijvingen","evenement1.number,evenement1.begindatum",null,"evenement1.begindatum","UP",null,true);
+//      boolean bOneDateWithoutSubscriptions = (nl.size()!= nls.size());
       int j = 0;
-      if(bOneDateWithoutSubscriptions) {
-         String sThisEvenementNumber = (String)nl.getNode(0).getStringValue("evenement1.number");
+//      if(bOneDateWithoutSubscriptions) {
+//         String sThisEvenementNumber = (String)nl.getNode(0).getStringValue("evenement1.number");
          HtmlCleaner hc = new HtmlCleaner();
          String sSheetTitle = HtmlCleaner.stripText(nParentNode.getStringValue("titel"));
          if (sSheetTitle.length()>28) {
@@ -88,7 +89,7 @@ public class ExcelWriter {
          }
          createEventDatesSheet(cloud,hc,nParentNode,workbook,j,sSheetTitle, null);
          j++;
-      }
+//      } ** //End of database intensive code.
       for (int i = 0; i < nl.size(); i++){
          Node event = cloud.getNode(nl.getNode(i).getStringValue("evenement.number"));
          if(event.getRelatedNodes("inschrijvingen").size()!=0) {
