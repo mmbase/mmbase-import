@@ -634,13 +634,13 @@ if(actionId.indexOf("print")==-1) {
    <!--1--><td style="padding-top:3px;"><input type="text" name="titel" tabindex="1" value="<%= titelId %>" style="width:130px;" onkeypress="return event.keyCode!=13"></td>
    <!--2--><td style="padding-top:3px;"><input type="text" name="natuurgebieden" tabindex="2" value="<%= natuurgebiedenId %>" style="width:130px;"></td>
    <!--3--><td colspan="4"><input type=hidden name="_hiddenDate" >
-       <input type="text" name="beginDy" maxlength="2" tabindex="6" value="<%= beginDyId %>" style="width:40px;text-align:right;">
-       -<input type="text" name="beginMnth" maxlength="2" tabindex="7" value="<%= beginMnthId %>" style="width:40px;text-align:right;">
-       -<input type="text" name="beginYr" maxlength="4" tabindex="8" value="<%= beginYrId %>" style="width:40px;text-align:right;">
+       <input type="text" name="beginDy" maxlength="2" tabindex="3" value="<%= beginDyId %>" style="width:40px;text-align:right;">
+       -<input type="text" name="beginMnth" maxlength="2" tabindex="4" value="<%= beginMnthId %>" style="width:40px;text-align:right;">
+       -<input type="text" name="beginYr" maxlength="4" tabindex="5" value="<%= beginYrId %>" style="width:40px;text-align:right;">
        <a href="javascript:popUpCalendar('begin')" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0' alt='Selecteer begindatum'></a>
-       <input type="text" name="endDy" maxlength="2" tabindex="9" value="<%= endDyId %>" style="width:40px;text-align:right;">
-        -<input type="text" name="endMnth" maxlength="2" tabindex="10" value="<%= endMnthId %>" style="width:40px;text-align:right;">
-        -<input type="text" name="endYr" maxlength="4" tabindex="11" value="<%= endYrId %>" style="width:40px;text-align:right;">
+       <input type="text" name="endDy" maxlength="2" tabindex="6" value="<%= endDyId %>" style="width:40px;text-align:right;">
+        -<input type="text" name="endMnth" maxlength="2" tabindex="7" value="<%= endMnthId %>" style="width:40px;text-align:right;">
+        -<input type="text" name="endYr" maxlength="4" tabindex="8" value="<%= endYrId %>" style="width:40px;text-align:right;">
        <a href="javascript:popUpCalendar('end')" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0' alt='Selecteer einddatum'></a></td>
    </tr>
 
@@ -657,11 +657,11 @@ if(actionId.indexOf("print")==-1) {
    <tr>
          <td></td>
    <!-- Aanmelder -->
-         <td style="padding-top:3px;"><input type="text" name="aanmelder_naam" tabindex="3" value="<%= aanmelderNaamId %>" style="width:130px;"></td>
+         <td style="padding-top:3px;"><input type="text" name="aanmelder_naam" tabindex="9" value="<%= aanmelderNaamId %>" style="width:130px;"></td>
    <!-- Postcode aanmelder -->
-         <td style="padding-top:3px;"><input type="text" name="aanmelder_postcode" tabindex="4" value="<%= aanmelderPostcodeId %>" style="width:100px;" MAXLENGTH="6"></td>
+         <td style="padding-top:3px;"><input type="text" name="aanmelder_postcode" tabindex="10" value="<%= aanmelderPostcodeId %>" style="width:100px;" MAXLENGTH="6"></td>
    <!-- Aanmeldingsnummer -->
-         <td colspan="4"style="padding-top:3px;"><input type="text" name="aanmelder_nummer" tabindex="5" value="<%= aanmelderNummerId %>" style="width:100px;"></td>
+         <td colspan="4"style="padding-top:3px;"><input type="text" name="aanmelder_nummer" tabindex=11" value="<%= aanmelderNummerId %>" style="width:100px;"></td>
    
    <% if(soortId.equals("activiteiten")) out.print("<script>disableExtraSearch();</script>"); %>
 
