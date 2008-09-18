@@ -186,7 +186,7 @@
                         <td>&nbsp;</td>
                         <td onMouseDown="objClick(this);"> 
                            <c:if test="${requestScope.result.name=='newsletter.summary.bydate'}" >
-                              <fmt:message key="newsletterlog.summary.statistic" />
+                              ${requestScope.newsletterName}
                            </c:if>
                            <c:if test="${requestScope.result.name=='newsletter.summary.all'}" >
                               <fmt:message key="newsletterlog.summary.statistic" />
@@ -195,7 +195,7 @@
                               <fmt:message key="newsletterlog.summary.statistic" />
                            </c:if>
                            <c:if test="${requestScope.result.name=='newsletter.summary'}" >
-                              <fmt:message key="newsletterlog.summary.statistic" />
+                              ${requestScope.newsletterName}
                            </c:if>
                         </td>
                         <td onMouseDown="objClick(this);"> ${requestScope.result.removed} </td>
