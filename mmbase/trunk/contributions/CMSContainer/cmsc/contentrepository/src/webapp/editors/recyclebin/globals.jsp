@@ -1,2 +1,2 @@
-<%@include file="../globals.jsp" %>
-<fmt:setBundle basename="cmsc-repository" scope="request" />
+<%@include file="../globals.jsp" 
+%><fmt:setBundle basename="cmsc-repository" scope="request" />
