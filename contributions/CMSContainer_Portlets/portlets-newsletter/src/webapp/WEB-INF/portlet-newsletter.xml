@@ -26,6 +26,14 @@
          <portlet-mode>EDIT_DEFAULTS</portlet-mode>
          <portlet-mode>DELETE</portlet-mode>
       </supports>
+      <supports>
+         <mime-type>text/plain</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>EDIT</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
       <supported-locale>en</supported-locale>
       <supported-locale>nl</supported-locale>
       <resource-bundle>portlets-newslettercontent</resource-bundle>
