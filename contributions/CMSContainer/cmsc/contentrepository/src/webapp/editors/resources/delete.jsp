@@ -1,6 +1,6 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="globals.jsp" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp" 
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="Delete">
@@ -10,20 +10,24 @@
 </cmscedit:head>
 
 <mm:import externid="objectnumber" required="true"/>
+<mm:import externid="object_type" jspvar="object_type"  required="true"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
-
 	<mm:node referid="objectnumber">
 	<mm:nodeinfo type="type" jspvar="nodeType" write="false" />
 	<cmscedit:sideblock title="secondarydelete.${nodeType}.title" titleClass="side_block_green">
 	<p><c:choose> 
 			<c:when test="${nodeType eq 'images'}">
-			    <c:set var="object_type" value="images" scope="request"/>
+			    <c:set var="object_type" scope="request">
+                <c:out value="${(object_type != '' && object_type == 'imagesupload')?'imagesupload':'images' }"/>
+             </c:set>
 			    <fmt:message key="secondarydelete.field.title" />: <b><mm:field name="title"/></b><br/>
 				<fmt:message key="secondarydelete.field.filename" />: <b><mm:field name="filename"/></b>
 			</c:when>
 			<c:when test="${nodeType eq 'attachments'}">
-			    <c:set var="object_type" value="attachments" scope="request"/>
+         	<c:set var="object_type" scope="request">
+                <c:out value="${(object_type != '' && object_type == 'attachmentsupload')?'attachmentsupload':'attachments' }"/>
+             </c:set>
 			    <fmt:message key="secondarydelete.field.title" />: <b><mm:field name="title"/></b><br/>
 				<fmt:message key="secondarydelete.field.filename" />: <b><mm:field name="filename"/></b>
 			</c:when>
