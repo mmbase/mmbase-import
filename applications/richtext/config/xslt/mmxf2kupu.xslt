@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.14 2007-04-06 12:21:07 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.15 2008-09-19 16:04:32 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -12,11 +12,12 @@
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
     xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="node o mmxf html"
     version = "1.0"
     >
   <xsl:import href="2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
-  
+
   <xsl:output method="xml"
     omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
 
@@ -50,7 +51,7 @@
         <xsl:apply-templates select="o:field[@format='xml'][1]/mmxf:mmxf" />
       </xsl:when>
       <xsl:otherwise><!-- should present _something_, FF may hang otherwise -->
-        <body>
+        <body  xmlns="http://www.w3.org/1999/xhtml">
           <xsl:text>&#xA;</xsl:text>
           <xsl:apply-templates />
           <xsl:text>&#xA;</xsl:text>
@@ -149,7 +150,7 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="mmxf:em" mode="gecko">    
+  <xsl:template match="mmxf:em" mode="gecko">
     <xsl:if test=". != ''">
       <xsl:element name="i">
         <xsl:copy-of select="@*" />
@@ -158,7 +159,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="mmxf:strong" mode="gecko">    
+  <xsl:template match="mmxf:strong" mode="gecko">
     <xsl:if test=". != ''">
       <xsl:element name="b">
         <xsl:copy-of select="@*" />
@@ -167,7 +168,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="mmxf:em|mmxf:strong" mode="msie">    
+  <xsl:template match="mmxf:em|mmxf:strong" mode="msie">
     <xsl:if test=". != ''">
       <xsl:element name="{name()}">
         <xsl:copy-of select="@*" />
@@ -255,6 +256,34 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
+  <xsl:template match="o:object[@type = 'flashobjects']" mode="inline">
+    <xsl:param name="relation" />
+    <xsl:param name="position" />
+    <xsl:param name="last" />
+    <xsl:variable name="url"><xsl:value-of select="$formatter_requestcontext" />/mmbase/kupu/mmbase/icons/flash.png?o=<xsl:value-of select="o:field[@name='number']" /></xsl:variable>
+    <img>
+      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
+      <xsl:attribute name="height">
+        <xsl:choose>
+          <xsl:when test="o:field[@name='height'] != ''">
+            <xsl:value-of select="o:field[@name='height']" />
+          </xsl:when>
+          <xsl:otherwise>100</xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:attribute name="width">
+        <xsl:choose>
+          <xsl:when test="o:field[@name='width'] != ''">
+            <xsl:value-of select="o:field[@name='width']" />
+          </xsl:when>
+          <xsl:otherwise>100</xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="$url" /></xsl:attribute>
+    </img>
+    <xsl:if test="$position != $last">,</xsl:if>
+  </xsl:template>
+
 
   <xsl:template match="o:object[@type='segments']" mode="inline_body">
     <xsl:param name="relation" />
@@ -293,7 +322,7 @@
   </xsl:template>
 
 
-  <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'urls' and @type != 'blocks']" mode="url" priority="1">
+  <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'urls' and @type != 'blocks' and @type != 'flashobjects']" mode="url" priority="1">
     <xsl:text>mmbase://</xsl:text><xsl:value-of select="@type" /><xsl:text>/</xsl:text><xsl:value-of select="@id" />
   </xsl:template>
 
