@@ -10,17 +10,16 @@
 package com.finalist.cmsc.services.community.person;
 
 import java.util.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.HibernateService;
@@ -219,8 +218,10 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 		updatePerson(person);
 		String userId = xperson.getAuthentication().getUserId();
 		List<Preference> preferences = xperson.getPreferences();
-		for (Preference preference : preferences) {
-			preferenceService.createPreference(preference, userId);
+		if (preferences.size()>0) {
+			for (Preference preference : preferences) {
+				preferenceService.createPreference(preference, userId);
+			}
 		}
 	}
 
@@ -381,5 +382,62 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 			persons = q.list();
 		}
 		return persons;
+}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	private void updateRelationRecord(Person oldDataPerson, PersonExportImportVO importPerson) {
+		Session session=getSession();
+		Authentication activedAuthentication = importPerson.getAuthentication();
+		Authentication dbAuthentication=(Authentication) session.load(Authentication.class,oldDataPerson.getId());
+		converPersonPropertis(importPerson, oldDataPerson);
+		converAuthenticationPropertis(activedAuthentication, dbAuthentication);
+		parsePreferences(importPerson, session, activedAuthentication,dbAuthentication);
+	}
+
+	private void parsePreferences(PersonExportImportVO importPerson,Session session, Authentication activedAuthentication,
+			Authentication dbAuthentication) {
+		List<Preference> importPreferences=importPerson.getPreferences();
+		List<Preference> dbPreferences=preferenceService.getListPreferencesByUserId(activedAuthentication.getUserId());
+		Map<Long,Preference> util=new HashMap();
+		for(Preference iPreference:importPreferences){
+			iPreference.setAuthenticationId(dbAuthentication.getId());
+			util.put(iPreference.getId(), iPreference);	
+		}
+		for (Preference dbPreference : dbPreferences) {
+			Preference activePreference=util.get(dbPreference.getId());
+			if (null!=activePreference) {
+				converPreferencePropertis(activePreference, dbPreference);	
+				util.remove(dbPreference.getId());
+			} 
+		}
+	   for (Map.Entry<Long,Preference> entry : util.entrySet()) {
+			session.save(entry.getValue());
+		}
+	}	
+
+	private void converPreferencePropertis(Preference iPreference,Preference dbPreference) {
+		dbPreference.setAuthenticationId(iPreference.getAuthenticationId());
+		dbPreference.setKey(iPreference.getKey());
+		dbPreference.setModule(iPreference.getModule());
+		dbPreference.setValue(iPreference.getValue());
+	}
+
+	private void converAuthenticationPropertis(	Authentication activedAuthentication,Authentication dbAuthentication) {
+		dbAuthentication.setAuthorities(activedAuthentication.getAuthorities());
+		dbAuthentication.setEnabled(activedAuthentication.isEnabled());
+		dbAuthentication.setPassword(activedAuthentication.getPassword());
+		dbAuthentication.setUserId(activedAuthentication.getUserId());
+	}
+	
+	@Transactional
+	public void addRelationRecord(String level, PersonExportImportVO importPerson) {
+		Person p = getPersonByUserId(importPerson.getAuthentication().getUserId());
+		if(null!=p&&"over".equals(level)){
+			updateRelationRecord(p,importPerson);			
+		}
+		if(null==p){
+		    // only add new users
+			creatRelationRecord(importPerson);
+		}
 	}
 }

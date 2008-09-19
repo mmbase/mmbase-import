@@ -81,33 +81,17 @@ public class ReferenceImportExportAction extends DispatchAction {
 		}
 		for (PersonExportImportVO importPerson : xpersons) {
 			Authentication authentication=importPerson.getAuthentication();
-			if(null == authentication||null==authentication.getUserId()){
+			if(null == authentication||null==authentication.getUserId()||StringUtils.isWhitespace(authentication.getPassword())){
 				continue;
 			}
-			Person p = personService.getPersonByUserId(importPerson.getAuthentication().getUserId());
-			if(null!=p&&"over".equals(level)){
-				deleteRecord(p);
-				addNewRecord(importPerson);
-		    }
-			if(null==p){
-                // only add new users
-				addNewRecord(importPerson);
-		    }
+			personService.addRelationRecord(level, importPerson);
 		}
 	}
 
 	private void batchCleanRecord() throws Exception {
 		personService.batchClean();
 	}
-
-	private void deleteRecord(Person dataPerson) {
-		Long id = dataPerson.getAuthenticationId();
-		personService.deleteRelationRecord(id);
-	}
-
-	private void addNewRecord(PersonExportImportVO xperson) {
-		personService.creatRelationRecord(xperson);
-	}
+	
 	private XStream getXStream() {
 		XStream xstream = new XStream(new DomDriver());
 		xstream.alias("community-export", CommunityExport.class);
