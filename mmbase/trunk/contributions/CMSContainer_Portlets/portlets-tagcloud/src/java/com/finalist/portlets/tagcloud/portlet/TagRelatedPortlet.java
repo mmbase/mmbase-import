@@ -53,6 +53,7 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 				if (tag == null) {
 					tag = getTagFromRequestParameters(req, window);
 				}
+				tag = tag.replaceAll("0x8", " ");
 				List<Tag> tags = TagCloudUtil.getTagRelatedTags(tag);
 				req.setAttribute("tags", tags);
 			}
