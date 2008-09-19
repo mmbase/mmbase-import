@@ -12,8 +12,6 @@ package com.finalist.cmsc.services.community.person;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
 import com.finalist.cmsc.services.community.preferences.Preference;
@@ -83,4 +81,5 @@ public interface PersonService {
    public int getAssociatedPersonsNum(Map<String,String> map);
    
    public List<Person> getPersonsByAuthenticationIds(Set<Integer> authenticationIds, String name, String email);
+   public void addRelationRecord(String level, PersonExportImportVO importPerson);
 }
