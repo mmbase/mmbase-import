@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
-import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.services.NewsletterPublicationService;
@@ -126,6 +125,7 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 			Publication publication = publication1;
 			result.put("id", publication.getId());
 			result.put("title", publication.getTitle());
+			result.put("subject", publication.getSubject());
 			result.put("sendtime", publication.getPublishdate());
 			result.put("subscriptions", publication.getSubscriptions());
 			result.put("sendsuccessful", publication.getSubscriptions() - publication.getBounced());

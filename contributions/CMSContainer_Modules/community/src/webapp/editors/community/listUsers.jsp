@@ -30,7 +30,11 @@
    <div class="editor"> 
       <div class="body">
          <p>
-            <a href="userAddInitAction.do"
+         <c:url var="addUserUrl" value="userAddInitAction.do">
+            <c:param name="forward" value="addCommunityUser"/>
+            <c:param name="path" value="${forwardPath}"/>
+         </c:url>
+            <a href="${addUserUrl}"
                style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message
                   key="view.new.user"/>
             </a>

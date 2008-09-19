@@ -53,12 +53,14 @@ public class SearchConditionalUserAction extends DispatchAction {
       int totalCount = personService.getAssociatedPersonsNum(map);
 
       setSharedAttributes(request, persons, totalCount);
+      String forwardPath = (String) actionMapping.findForward("newUserLinkBack").getPath();
+      request.setAttribute("forwardPath", forwardPath);
 
       return actionMapping.findForward("success");
    }
 
 
-   public ActionForward listGroupMembers(ActionMapping actionMapping,
+	public ActionForward listGroupMembers(ActionMapping actionMapping,
 			ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 		SearchForm searchform = (SearchForm) actionForm;
@@ -80,27 +82,27 @@ public class SearchConditionalUserAction extends DispatchAction {
 		return actionMapping.findForward("group");
 	}
 
-private void chooseOption(HttpServletRequest request, String option, Map<String, String> map, String groupName, String[] authIds) {
-	//String option = searchform.getOption();
-	if (null != authIds&&"remove".equals(option)) {
-		removeAuthorityFromUser(groupName, authIds);
-	}
-	setPagingInformation(request);
-	map.put("group", groupName);
-	map.put("strict", "strict");
-	if ("select".equals(option)) {
-		request.setAttribute("option", option);
-		Authority authority=authorityService.findAuthorityByName(groupName);
-		Set<Authentication> authentications=authority.getAuthentications();
-		Set<String> userNames=new HashSet<String>();
-		for(Iterator iter = authentications.iterator(); iter.hasNext();){
-			Authentication authentication=(Authentication) iter.next();
-			userNames.add(authentication.getUserId());
+	private void chooseOption(HttpServletRequest request, String option, Map<String, String> map, String groupName, String[] authIds) {
+		//String option = searchform.getOption();
+		if (null != authIds&&"remove".equals(option)) {
+			removeAuthorityFromUser(groupName, authIds);
 		}
-		String TransFormNames=StringUtils.join(userNames,"','");
-		map.put("strict", TransFormNames);
+		setPagingInformation(request);
+		map.put("group", groupName);
+		map.put("strict", "strict");
+		if ("select".equals(option)) {
+			request.setAttribute("option", option);
+			Authority authority=authorityService.findAuthorityByName(groupName);
+			Set<Authentication> authentications=authority.getAuthentications();
+			Set<String> userNames=new HashSet<String>();
+			for(Iterator iter = authentications.iterator(); iter.hasNext();){
+				Authentication authentication=(Authentication) iter.next();
+				userNames.add(authentication.getUserId());
+			}
+			String TransFormNames=StringUtils.join(userNames,"','");
+			map.put("strict", TransFormNames);
+		}
 	}
-}
    
 	public ActionForward searchCandidateSubscriber(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
