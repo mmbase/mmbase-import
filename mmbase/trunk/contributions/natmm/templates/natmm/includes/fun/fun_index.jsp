@@ -5,7 +5,6 @@
 <mm:import id="nodotline" />
 <%@include file="../../includes/image_vars.jsp" %>
 <%@include file="../../includes/page_intro.jsp" %>
-<div style="margin:7px 0px 7px 0x">Maak een keuze uit de volgende categorie&euml;n:</div>
 <%@include file="../../includes/dossier_form.jsp" %>
 <br>
 <jsp:include page="../includes/shorty.jsp">
