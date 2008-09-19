@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
-import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
@@ -62,7 +61,9 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 		}
 		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
-
+		String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath()+"?newsletterId="+ newsletterId;
+		request.setAttribute("forwardPath", forwardPath);
+		
 		return mapping.findForward("success");
 	}
 
@@ -86,7 +87,8 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
 		request.setAttribute("resultCount", resultCount);
 		request.setAttribute("newsletterId", newsletterId);
-
+		String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath()+"?newsletterId="+ newsletterId;
+		request.setAttribute("forwardPath", forwardPath);
 		return mapping.findForward("success");
 	}
 

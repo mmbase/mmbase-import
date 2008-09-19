@@ -26,10 +26,6 @@
       </edit:ui-tabs>
 
    <div class="editor">
-      <div style="padding-left:10px;">
-      
-      </div>
-
       <div class="body">
          <div style="padding-left:10px">
             <a class="addemail" href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">

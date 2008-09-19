@@ -31,4 +31,6 @@ public interface NewsletterPublicationService {
 	public Set<Publication> getPublicationByNewsletter(int id);
 
 	public List<Publication> searchPublication(int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging);
+	
+	public List<Publication> searchPublication(String title, String subject, String description, String intro, boolean paging);
 }

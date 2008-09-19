@@ -28,5 +28,7 @@ public interface NewsletterPublicationCAO {
 	public void renamePublicationTitle(int publicationId);
 
 	public List<Publication> getPublicationsByNewsletterAndPeriod(int id, String title, String subject, Date startDate, Date endDate, boolean paging);
+	
+	public List<Publication> getPublications(String title, String subject, String description, String intro, boolean paging);
 
 }

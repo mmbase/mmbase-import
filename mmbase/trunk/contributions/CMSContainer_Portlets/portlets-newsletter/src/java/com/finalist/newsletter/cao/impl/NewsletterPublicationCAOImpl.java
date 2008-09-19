@@ -10,6 +10,8 @@ import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.util.POConvertUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -200,5 +202,35 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
       return convertPublicationsToMap(nodeQuery.getList());
    }
+
+	public List<Publication> getPublications(String title, String subject,
+			String description, String intro, boolean paging) {
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+		NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
+		NodeQuery query = cloud.createNodeQuery();
+		Step step = query.addStep(publicationManager);
+		query.setNodeStep(step);
+		if (StringUtils.isNotBlank(title)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("title"), title);
+		}
+		if (StringUtils.isNotBlank(subject)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("subject"), subject);
+		}
+		if (StringUtils.isNotBlank(description)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("description"), description);
+		}
+		if (StringUtils.isNotBlank(intro)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("intro"), intro);
+		}
+		if (paging) {
+			query.setMaxNumber(pagingHolder.getPageSize());
+			query.setOffset(pagingHolder.getOffset());
+		}
+		if (pagingHolder != null) {		
+			Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+		}
+		NodeList list = query.getList();
+		return MMBaseNodeMapper.convertList(list, Publication.class);
+	}
 
 }

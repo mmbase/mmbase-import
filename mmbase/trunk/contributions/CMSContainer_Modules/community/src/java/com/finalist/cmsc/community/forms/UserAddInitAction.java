@@ -53,18 +53,19 @@ public class UserAddInitAction extends AbstractCommunityAction {
 		if (temp.length==2) {
 			String option = temp[1];
 			request.setAttribute("option",option);
-		}			
+		}
 		request.setAttribute("groupName",groupNmae);
 	}
 
 	private void setNewsletterForward(HttpServletRequest request) {
 		if (StringUtils.isNotBlank(request.getParameter("forward"))) {
-			request.getSession().setAttribute("newsletterId", request.getParameter("newsletterId"));
-			request.getSession().setAttribute("forward", request.getParameter("forward"));
-         //community preference return back
-         if(request.getParameter("path") != null) {
-            request.getSession().setAttribute("path", request.getParameter("path"));
-         }
+			request.getSession().setAttribute("forward",
+					request.getParameter("forward"));
+			// community preference return back
+			if (request.getParameter("path") != null) {
+				request.getSession().setAttribute("path",
+						request.getParameter("path"));
+			}
 		}
 	}
 
