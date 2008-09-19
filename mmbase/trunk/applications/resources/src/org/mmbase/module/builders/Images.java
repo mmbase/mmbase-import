@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.10 2008-09-05 16:39:00 michiel Exp $
+ * @version $Id: Images.java,v 1.11 2008-09-19 16:02:41 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -137,8 +137,7 @@ public class Images extends AbstractImages {
                 }
                 return getCachedNode(node, (String) args.get(0));
             } catch (Exception e) {
-                log.error(e.getMessage());
-                log.error(Logging.stackTrace(e));
+                log.error(e.getMessage(), e);
                 return null;
             }
         } else if ("height".equals(function)) {
