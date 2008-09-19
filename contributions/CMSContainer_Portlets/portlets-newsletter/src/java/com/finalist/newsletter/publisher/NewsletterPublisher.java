@@ -253,13 +253,14 @@ public class NewsletterPublisher {
          properties.putAll(session.getProperties());
 
 
-
+/*
          session = Session.getInstance(properties,
                new javax.mail.Authenticator() {
                   protected PasswordAuthentication getPasswordAuthentication() {
                      return new PasswordAuthentication("dguo@cpier.pku.edu.cn", "lgs9000");
                   }
                });
+               */
       }
       catch (NamingException e) {
          log.fatal("Configured dataSource '" + datasource + "' of context '" + context + "' is not a Session ");
