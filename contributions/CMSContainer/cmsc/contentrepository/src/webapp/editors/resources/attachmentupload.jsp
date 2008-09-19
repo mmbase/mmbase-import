@@ -1,7 +1,7 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="globals.jsp" %>
-<%@page import="com.finalist.util.http.BulkUploadUtil"%>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp" 
+%><%@page import="com.finalist.util.http.BulkUploadUtil"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="attachments.upload.title">
@@ -135,7 +135,14 @@
 		                                 </mm:url>">
 	                	    </c:otherwise>
                 	    </c:choose>
-                              <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
+                       <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
+                    
+	                      <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                             <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                             <mm:param name="object_type" value="attachmentsupload" />
+                             </mm:url>">
+	                     <img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
+	                  
                         <a href="javascript:showInfo(<mm:field name="number" />)">
                               <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/></a>
                        </td>
