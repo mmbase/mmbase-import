@@ -8,6 +8,7 @@
       <mm:size id="number_of_dossiers">
          <mm:isgreaterthan value="1">
             <mm:first>
+               <div style="margin:7px 0px 7px 0x">Maak een keuze uit de volgende categorie&euml;n:</div>
                <form method="get" name="dossiers" id="dossiers">
                	<select name="d" id="dossier" onChange="this.form.submit()">
             </mm:first>
