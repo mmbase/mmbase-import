@@ -55,7 +55,6 @@
          name="communityUserForm" scope="session" unknown="false" validate="true" input="/editors/community/user.jsp">
          <set-property property="cancellable" value="true"/>
          <forward name="success" path="/editors/community/SearchConditionalUser.do" redirect="true" />
-         <forward name="newslettersubscribers" path="/editors/newsletter/NewsletterPublicationSubscriberSearch.do"/>
          <forward name="newslettersubscription" path="/editors/newsletter/NewsletterSubscriptionAddRelAction.do"/>
 		 <forward name="group" path="/editors/community/SearchConditionalUser.do?method=listGroupMembers" redirect="false" />
       </action>
@@ -69,6 +68,7 @@
          <forward name="group" path="/editors/community/userlist_addusertogroup.jsp" redirect="false" />
          <forward name="success" path="/editors/community/listUsers.jsp" redirect="false" />
          <forward name="listcandidate" path="/editors/community/userlist_subscribercandidate.jsp" redirect="false" />
+         <forward name="newUserLinkBack" path="/editors/community/SearchConditionalUser.do"/>
       </action>
      <action path="/editors/community/AddUserToGroupInit" type="com.finalist.cmsc.community.forms.AddUserToGroupInitAction"
          unknown="false" validate="false" name="searchForm">

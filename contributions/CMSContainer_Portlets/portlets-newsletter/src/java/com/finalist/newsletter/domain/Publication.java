@@ -12,6 +12,8 @@ public class Publication {
 	private String url;
 	private String subject;
 	private String lastmodifier;
+	private String description;
+	private String intro;
 	private Date lastmodifieddate;
 	private Date publishdate;
 	private int subscriptions;
@@ -111,6 +113,14 @@ public class Publication {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+	
+	public String getIntro() {
+		return intro;
+	}
+
+	public void setIntro(String intro) {
+		this.intro = intro;
+	}
 
 	public String getLastmodifier() {
 		return lastmodifier;
@@ -122,6 +132,14 @@ public class Publication {
 
 	public Date getLastmodifieddate() {
 		return lastmodifieddate;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setLastmodifieddate(Date lastmodifieddate) {

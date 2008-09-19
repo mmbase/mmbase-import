@@ -39,10 +39,13 @@
             <edit:ui-tcolumn title="" width="5%">
                <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"/></a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="newsletter.publication.result.publication" sort="title" width="15%">
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="15%">
                <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletterpublication.edit'/>">
                   ${result.title}
                </a>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.subject" sort="subject" width="15%">
+               ${result.subject}
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="newsletter.publication.result.sentat" sort="publishdate" width="15%">
                ${result.sendtime}
@@ -53,7 +56,7 @@
             <edit:ui-tcolumn titlekey="newsletter.publication.result.sentsuccess" width="15%">
                ${result.sendsuccessful}
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="newsletter.publication.result.bounced" sort="bounced" width="35%">
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.bounced" sort="bounced" width="20%">
                ${result.bounced}
             </edit:ui-tcolumn>
          </edit:ui-table>

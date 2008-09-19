@@ -1,14 +1,12 @@
 package com.finalist.newsletter.forms;
 
-import com.finalist.cmsc.resources.forms.SearchForm;
+import org.apache.struts.action.ActionForm;
 
-@SuppressWarnings("serial")
-public class NewletterPublicationForm extends SearchForm {
-	
-	private String title;
+public class NewsletterPublicationForm extends ActionForm {
+	private String title ;
 	private String description;
-	private String intro;
 	private String subject;
+	private String intro;
 	
 	public String getTitle() {
 		return title;
@@ -22,18 +20,16 @@ public class NewletterPublicationForm extends SearchForm {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getIntro() {
-		return intro;
-	}
-	public void setIntro(String intro) {
-		this.intro = intro;
-	}
 	public String getSubject() {
 		return subject;
 	}
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+	public String getIntro() {
+		return intro;
+	}
+	public void setIntro(String intro) {
+		this.intro = intro;
+	}
 }
-

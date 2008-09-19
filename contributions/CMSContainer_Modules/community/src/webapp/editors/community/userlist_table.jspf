@@ -11,7 +11,13 @@
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.fullname" sort="person.firstName,person.lastName">
    <c:if test="${not hiddenOperation}">
-      <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}&&group=${groupName},${option}">${person.fullname}</a>
+      <c:url var="editUserUrl" value="userAddInitAction.do">
+         <c:param name="forward" value="addCommunityUser"/>
+         <c:param name="path" value="${forwardPath}"/>
+         <c:param name="authid" value="${person.authId}"/>
+         <c:param name="group" value="${groupName},${option}"/>
+      </c:url>
+      <a href="${editUserUrl}">${person.fullname}</a>
    </c:if>
    <c:if test="${hiddenOperation}">
       ${person.fullname}

@@ -147,4 +147,9 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 		return publicationCAO.getPublicationsByNewsletterAndPeriod(newsletterId, title, subject, startTime, endTime, paging);
 	}
 
+	public List<Publication> searchPublication(String title, String subject,
+			String description, String intro, boolean paging) {
+		return publicationCAO.getPublications(title, subject, description, intro, paging);
+	}
+
 }
