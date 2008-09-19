@@ -215,7 +215,7 @@
              <list>5</list>
           </positions>
         </editor>
-        <datatype base="filesize_deprecated" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+        <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
      </field>
     <field name="width" state="system">
       <descriptions>
