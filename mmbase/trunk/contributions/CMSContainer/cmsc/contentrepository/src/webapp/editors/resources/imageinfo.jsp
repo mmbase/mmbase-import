@@ -1,7 +1,7 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="globals.jsp" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@include file="globals.jsp" %>
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <cmscedit:head title="imageinfo.title" />
 <body>
@@ -22,10 +22,14 @@
 					<div style="float:left">
                      <mm:field name="width" jspvar="width" write="false"/>
                      <c:choose>
-                        <c:when test="${width gt 430}"><mm:image template="s(430)" jspvar="imageSource" write="false"/></c:when>
-                        <c:otherwise><mm:image jspvar="imageSource" write="false"/></c:otherwise>
+                        <c:when test="${width gt 430}"><mm:image template="s(430)" jspvar="imageSource" write="false"/>
+									<a href="<mm:image jspvar="imageSourceOriginal" />" title='<mm:field name="description" /> - (<fmt:message key="imageinfo.fullsize"/>)'><img src="${imageSource}" alt="<mm:field name="description" /> - (<fmt:message key="imageinfo.fullsize"/>)" /></a>
+								</c:when>
+                        <c:otherwise><mm:image jspvar="imageSource" write="false"/>
+									<img src="${imageSource}" alt="<fmt:message key="imageinfo.originalsize"/> - <mm:field name="description" />" />
+								</c:otherwise>
                      </c:choose>
-                     <img src="${imageSource}" alt="<mm:field name="description" />" /><br/>
+                     <br/>
 			        </div>
 			        <div style="float:left; padding:5px;">
 			            <h1><mm:field name="filename"/></h1>
