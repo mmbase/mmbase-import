@@ -49,7 +49,7 @@
 		   			document.getElementById('img_'+mergeTarget1).src = '../../gfx/icons/merge.png';
 		   			mergeTarget1 = undefined;
 		   		}
-		   		else if(confirm('<fmt:message key="tagdetail.merge.confirm" />')) {
+		   		else if(confirm('<fmt:message key="tagcloud.merge.confirm" />')) {
 		   			document.getElementById('merge_orderBy').value = oldOrderBy;
 		   			document.getElementById('merge_direction').value = oldDirection;
 		   			document.getElementById('merge_target1').value = mergeTarget1;
@@ -102,8 +102,8 @@
 			<tr <c:if test="${status.count%2==1}">class="swap"</c:if>  href="detail.jsp?number=${tag.number}">
 				<td width="40">
 					<a href="javascript:merge('${tag.number}');"><img id="img_${tag.number}" src="../../gfx/icons/merge.png" width="16" height="16"
-                                         title="<fmt:message key="tagdetail.merge" />"
-                                         alt="<fmt:message key="tagdetail.merge" />"/></a>
+                                         title="<fmt:message key="tagcloud.merge" />"
+                                         alt="<fmt:message key="tagcloud.merge" />"/></a>
 					<a href="?action=delete&number=${tag.number}&orderby=${param.orderby}&direction=${param.direction}" onclick="return confirm('<fmt:message key="tagcloud.delete.confirm" />')"><img src="../../gfx/icons/delete.png" width="16" height="16"
                                                          title="<fmt:message key="tagcloud.delete" />"
                                                          alt="<fmt:message key="tagcloud.delete" />"/></a>

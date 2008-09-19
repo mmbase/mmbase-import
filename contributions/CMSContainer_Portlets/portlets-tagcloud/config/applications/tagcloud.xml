@@ -15,12 +15,12 @@
    </allowedrelationlist>
 
    <datasourcelist>
-   <!-- A testdata/back up skelet is generated. If the testdata is not available, it will still work. -->
-      
-      <datasource builder="editwizards" path="tagcloud/editwizards.xml" />
+        <datasource builder="portletdefinition" path="tagcloud/portletdefinition.xml" />
+        <datasource builder="view" path="tagcloud/view.xml" />
    </datasourcelist>
 
    <relationsourcelist>
+      <relationsource builder="allowrel" path="tagcloud/allowrel.xml"/> 
    </relationsourcelist>
 
    <contextsourcelist>
