@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -81,7 +83,7 @@ public class ReferenceImportExportAction extends DispatchAction {
 		}
 		for (PersonExportImportVO importPerson : xpersons) {
 			Authentication authentication=importPerson.getAuthentication();
-			if(null == authentication||null==authentication.getUserId()||StringUtils.isWhitespace(authentication.getPassword())){
+			if(null == authentication||StringUtils.isWhitespace(authentication.getUserId())||StringUtils.isWhitespace(authentication.getPassword())){
 				continue;
 			}
 			personService.addRelationRecord(level, importPerson);
@@ -113,6 +115,4 @@ public class ReferenceImportExportAction extends DispatchAction {
 	public static Log getLog() {
 		return log;
 	}
-
-	
 }
