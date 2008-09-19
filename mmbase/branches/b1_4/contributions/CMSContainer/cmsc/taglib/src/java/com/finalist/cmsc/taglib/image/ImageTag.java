@@ -163,7 +163,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
 
    /** Finds the alt attribute to use */
-   private String findAltAttribute(Node node) {
+   protected String findAltAttribute(Node node) {
       // only use description if this option is selected
       // this an ugly quick fix for nijmegen because of the upcoming deathline
       // make a better to pick which field to use in the alt
