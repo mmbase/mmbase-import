@@ -8,9 +8,9 @@ public class CacheInfo {
 	private long secondsRemain;
 	private long cacheSeconds;
 	/**
-	    * CacheInfoBean
-	    * @param bean and time
-	    */
+      * CacheInfoBean
+      * @param bean and time
+      */
 	public CacheInfo(Object obj, long cacheSeconds) {
 		this.obj = obj;
 		this.secondsRemain = cacheSeconds;
