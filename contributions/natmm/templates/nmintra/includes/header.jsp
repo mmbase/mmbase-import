@@ -2,8 +2,9 @@
 <%@include file="../includes/getresponse.jsp" %>
 <html>
   <head>
+      <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 		<link rel="stylesheet" type="text/css" href="css/main.css">
-	  <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
+      <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
     %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node

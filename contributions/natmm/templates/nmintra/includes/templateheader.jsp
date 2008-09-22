@@ -1,6 +1,5 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
-<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %>
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %>
 <mm:import jspvar="ID" externid="id">-1</mm:import>
 <mm:import jspvar="rubriekId" externid="r">-1</mm:import>
 <mm:import jspvar="paginaID" externid="p">-1</mm:import>
