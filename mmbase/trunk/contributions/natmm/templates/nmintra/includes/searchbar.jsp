@@ -92,9 +92,9 @@ function startPhone() {
    </td>
    <td style="padding-right:10px;width:251px;">
    <% // *************************************** phone box ******************************* %>
+   <form name="phoneform" action="<%= ph.createPaginaUrl("wieiswie",request.getContextPath()) %>" onSubmit="return startPhone();">
    <table border=0 cellspacing="0" cellpadding="0" align="right">
-   	  <form name="phoneform" action="<%= ph.createPaginaUrl("wieiswie",request.getContextPath()) %>" onSubmit="return startPhone();">
-   	  <tr>
+    	  <tr>
    	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
    	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
    			%>" style="text-align:left;width:166px;" onClick="if(this.value=='<%= nameEntry %>') { this.value=''; }" /></td>
@@ -102,8 +102,8 @@ function startPhone() {
    	  <td><img src="media/spacer.gif" width="1" height="1"><br>
    			<input type="submit" name="phone" value="Zoek"  style="text-align:center;font-weight:bold;"></td>
    	  </tr>
-   	  </form>
    </table>
+   </form>
    </td>
 </tr>
 <tr>
