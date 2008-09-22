@@ -338,6 +338,7 @@ Build-compiler: ${build.compiler}
         <java
             classname="org.mmbase.tests.MMBaseTest"
             fork="true"
+            timeout="300000"
             classpathref="run.classpath.rmmci"
             >
           <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -351,6 +352,7 @@ Build-compiler: ${build.compiler}
       <java
           classname="${ui.class}"
           fork="true"
+          timeout="300000"
           classpathref="run.rmmci.client"
           >
         <arg value="org.mmbase.bridge.AllTests" />
@@ -367,6 +369,7 @@ Build-compiler: ${build.compiler}
     <java
         classname="${ui.class}"
         fork="true"
+        timeout="300000"
         classpathref="run.classpath"
         >
       <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
@@ -382,6 +385,7 @@ Build-compiler: ${build.compiler}
     <java
         classname="${ui.class}"
         fork="true"
+        timeout="300000"
         classpathref="run.classpath"
         >
       <arg value="BaseSuite" />
@@ -395,6 +399,7 @@ Build-compiler: ${build.compiler}
     <java
         classname="${ui.class}"
         fork="true"
+        timeout="300000"
         classpathref="run.classpath">
       <arg value="org.mmbase.util.UtilTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
@@ -412,6 +417,7 @@ Build-compiler: ${build.compiler}
         <java
             classname="org.mmbase.tests.MMBaseTest"
             fork="true"
+            timeout="300000"
             classpathref="run.classpath.clustering"
             >
           <jvmarg value="-Dnostartdb=" />
@@ -429,6 +435,7 @@ Build-compiler: ${build.compiler}
           <java
               classname="org.mmbase.tests.MMBaseTest"
               fork="true"
+              timeout="300000"
               classpathref="run.classpath.clustering"
               >
             <jvmarg value="-Dnostartdb=" />
