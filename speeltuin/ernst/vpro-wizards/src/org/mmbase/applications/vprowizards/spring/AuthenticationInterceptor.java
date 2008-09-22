@@ -26,10 +26,10 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		if(log.isDebugEnabled()){
-			log.debug("redirecting to "+request.getContextPath() +  loginPage);
+			log.debug("not logged in. Throw AuthenticationException");
 		}
-		response.sendRedirect(request.getContextPath() + loginPage);
-		return false;
+//		response.sendRedirect(request.getContextPath() + loginPage);
+		throw new AuthenticationException();
 	}
 
 	/**
