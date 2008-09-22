@@ -19,7 +19,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.13 2008-07-17 17:22:43 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.14 2008-09-22 16:17:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -183,5 +183,22 @@ public class FunctionsTest extends BridgeTest {
         } else {
             System.out.println("Functionsets can only be used on local cloud");
         }
+    }
+
+    public void testNonExistingFunctionOnClusterNode() { //MMB-1208
+        Cloud cloud = getCloud();
+        NodeList nl = cloud.getList("", "object", "",
+                                    "", "", "",
+                                    "", false);
+        Node n = nl.get(0);
+        assertTrue(n instanceof org.mmbase.bridge.implementation.VirtualNode);
+        try {
+            n.getValue("nonexistingfunction(object.number)");
+            fail("Using non existing function should raise an exeption"); // this fails!
+        } catch (Exception e) {
+            // The exception should also be clear
+            assertTrue(e.getMessage().equals("")); // think something up for this
+        }
+
     }
 }
