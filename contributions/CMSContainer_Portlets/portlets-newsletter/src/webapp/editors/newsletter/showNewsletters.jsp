@@ -76,8 +76,8 @@
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
-                     <td style="width:5%">&nbsp;</td>
-                     <td style="width:62%">&nbsp;</td>
+                     <td style="width:10%">&nbsp;</td>
+                     <td style="width:57%">&nbsp;</td>
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
