@@ -26,7 +26,7 @@
 <div class="inputBlock">
     <div class="fieldName">${fieldname}</div>
     <div class="fieldValue">
-        <select onchange="disableRelated();" name="${modifier}${action}Actions[${actionnr}].fields[${field}]" id="field_${nodetype}_${field}">
+        <select onchange="disableRelated();" name="actions[${modifier}${action}][${actionnr}].fields[${field}]" id="field_${nodetype}_${field}">
             <c:if test="${modifier == 'create' && empty fieldvalue}">
                 <option value="" >-- kies een optie --</option>
             </c:if>

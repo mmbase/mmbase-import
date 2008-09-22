@@ -3,4 +3,4 @@
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
 
 <%@ include file="fieldinit.tagf" %>
-<input type="hidden" name="${modifier}${action}Actions[${actionnr}].fields[${field}]" value="${fieldvalue}" id="field_${nodetype}_${field}">
+<input type="hidden" name="actions[${modifier}${action}][${actionnr}].fields[${field}]" value="${fieldvalue}" id="field_${nodetype}_${field}">

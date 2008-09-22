@@ -30,7 +30,7 @@
 
     <%--do the body, and catch an exception if there is one. --%>
     <c:set var="body">
-        <util:try setMessageAs="m" setExceptionAs="ex" stacktrace="true">
+        <util:try setMessageAs="m" setExceptionAs="ex" stacktrace="false">
             <jsp:attribute name="catchit">
                 <div class="error">Er gaat iets fout bij het afdrukken van een veld. reden: ${m}</div>
             </jsp:attribute>
@@ -46,12 +46,12 @@
 
         <%--set the default fields for this action in the form--%>
         <c:if test="${modifier == 'create'}">
-            <input type="hidden" name="${modifier}${action}Actions[].id" value="new"/>
-            <input type="hidden" name="${modifier}${action}Actions[].type" value="${nodetype}"/>
+            <input type="hidden" name="actions[${modifier}${action}][].id" value="new"/>
+            <input type="hidden" name="actions[${modifier}${action}][].type" value="${nodetype}"/>
         </c:if>
         <%--if --%>
         <c:if test="${modifier == 'update'}">
-            <input type="hidden" name="${modifier}${action}Actions[${nodenr}].number" value="${nodenr}"/>
+            <input type="hidden" name="actions[${modifier}${action}][${nodenr}].number" value="${nodenr}"/>
         </c:if>
 
         <c:out value="${body}" escapeXml="false"/>

@@ -79,11 +79,11 @@
             <mm:maxnumber value="${numberofitems}"/>
             <mm:offset value="${param.offset}" />
 
-                <c:if test="${not empty searchfields}">
-                    <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
-                        <mm:fieldinfo type="usesearchinput" />
-                    </mm:fieldlist>
-                </c:if>
+            <c:if test="${not empty searchfields}">
+                <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
+                    <mm:fieldinfo type="usesearchinput" />
+                </mm:fieldlist>
+            </c:if>
 
             <%@ include file="paging.tagf" %>
                 <table cellspacing="0" cellpadding="0" border="0" class="list">

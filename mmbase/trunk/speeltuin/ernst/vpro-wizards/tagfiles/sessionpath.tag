@@ -3,6 +3,7 @@
 <c:forEach var="entry" items="${__path}" >
     <c:set var="name" value="${entry.name}" />
     <c:set var="url" value="${entry.url}" />
+    <c:set var="session" value="${entry.key}" />
     <c:choose>
         <c:when test="${not empty url}">
             <script type="text/javascript">

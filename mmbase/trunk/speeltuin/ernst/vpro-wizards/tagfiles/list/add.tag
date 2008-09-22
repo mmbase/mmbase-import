@@ -40,5 +40,5 @@
         <c:otherwise>
         nieuw(e) ${wizardfile}</c:otherwise>
     </c:choose>
-     <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" /></a>
+     <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0" /></a>
 </div>

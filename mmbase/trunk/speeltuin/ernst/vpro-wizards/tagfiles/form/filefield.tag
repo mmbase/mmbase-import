@@ -28,7 +28,7 @@
                     </c:otherwise>
                 </c:choose>
             </c:if>
-            <input type="file" name="${modifier}${action}Actions[${actionnr}].file" value="" onchange="disableRelated();" class="file" id="field_${nodetype}_${field}">
+            <input type="file" name="actions[${modifier}${action}][${actionnr}].file" value="" onchange="disableRelated();" class="file" id="field_${nodetype}_${field}">
         </div>
     </div>
 </mm:cloud>

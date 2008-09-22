@@ -1,7 +1,7 @@
 <%--
     This tag shows search input fields and a search button. it also alows you to set
     min and max age for objects to find.
-    you can use the extrafields fragment attribute to add some custom fields
+    you can use the extrafields fragment attribute to add some custom fields 
     (outside the fields of the type you are searching for). For
     this you should use the list:field tag.
     These custom fields are not handled by default, but can be used together with the
@@ -10,11 +10,16 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
+<%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
 
-<%@ attribute name="fields" required="true" %>
+<%@ attribute name="fields" description="the fields you want to show search input elements for."  %>
 <%@ attribute name="extrafields" fragment="true" %>
 <%@ attribute name="defaultminage" description="Defaults to zero days."%>
 <%@ attribute name="defaultmaxage" description="Defaults to seven days."  %>
+
+<c:if test="${empty fields && empty extrafields}">
+    <util:throw message="searchfiels tag: You have to set either the 'fields' or the 'extrafields' attributes (or both)."/>
+</c:if>
 
 
 <%-- default searchall checkbox laten zien --%>
@@ -43,15 +48,17 @@
     <form id="searchfieldform">
         <%--add the extra fields if there are any--%>
         <jsp:invoke fragment="extrafields"/>
-
+        
         <%--the input for the searchfields--%>
-        <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
-            <div class="inputBlock">
-                <div class="fieldName"><mm:fieldinfo type="guiname" /></div>
-                <div class="fieldValue"><mm:fieldinfo type="searchinput" options="date" /></div>
-            </div>
-        </mm:fieldlist>
-
+        <c:if test="${not empty fields}">
+            <mm:fieldlist nodetype="${searchtype}" fields="${searchfields}">
+                <div class="inputBlock">
+                    <div class="fieldName"><mm:fieldinfo type="guiname" /></div>
+                    <div class="fieldValue"><mm:fieldinfo type="searchinput" options="date" /></div>
+                </div>
+            </mm:fieldlist>
+        </c:if>
+        
         <%-- add the extra params--%>
         <c:forEach var="p" items="${___params}" >
             <input type="hidden" name="${p.key}" value="${p.value}" />

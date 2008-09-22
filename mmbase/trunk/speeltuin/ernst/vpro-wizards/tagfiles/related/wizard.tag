@@ -31,7 +31,7 @@
 <util:addParam name="editnodenr" parameter="editnodenr"/>
 --%>
 
-<mm:content type="text/html"  expires="0" encoding="utf-8" language="nl">
+<mm:content type="text/html"  expires="0" encoding="utf-8" >
     <c:set var="relationrole" scope="request" value="${relationrole}" />
 
   <%-- set the current url in the referrer cookie--%>
@@ -66,57 +66,44 @@
     <html>
         <head>
             <title>${title}</title>
-            <script language="javascript">
-                var contextPath = '${pageContext.request.contextPath}';
-            </script>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.css">
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.css">
 
-            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/fckeditor.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/javascript.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/clock.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/FCKeditor/fckeditor.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/jquery/jquery.js"></script>
             <jsp:invoke fragment="header"/>
         </head>
         <body class="related">
-            <mm:cloud jspvar="cloud" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
+            <mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/edit/login.jsp" >
+                <c:set var="requestcloud" scope="request" value="${cloud}"/>
                 <util:header/>
-            </mm:cloud>
 
-
-            <c:if test="${showback}">
-                <div class="terug">
-                    <a href="${back}">
-                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
-                        terug
-                    </a>
+                <c:if test="${showback}">
+                    <div class="terug">
+                        <a href="${back}">
+                            <img src="${pageContext.request.contextPath}/edit/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
+                            terug
+                        </a>
+                    </div>
+                </c:if>
+    
+                <%--do the body, and catch an exception if there is one--%>
+                <div class="relatedview">
+                    <jsp:doBody/>
                 </div>
-            </c:if>
-
-            <%--do the body, and catch an exception if there is one--%>
-            <div class="relatedview">
-            <%--
-                <util:try setMessageAs="m" setExceptionAs="ex" stacktrace="false">
-                    <jsp:attribute name="catchit">
-                        <div class="error">Error: ${m}</div>
-                    </jsp:attribute>
-                    <jsp:body>
-                        <jsp:doBody/>
-                    </jsp:body>
-                </util:try>
-            --%>
-            <jsp:doBody/>
-            </div>
-
-            <script type="text/javascript">
-                //dummy implementation of this function. it is used in the form page, so the
-                //field tags extept it.
-                function disableRelated(){ }
-            </script>
-            <!--[if lt IE 7]>
-                <script defer type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/pngfix.js"></script>
-            <![endif]-->
+    
+                <script type="text/javascript">
+                    //dummy implementation of this function. it is used in the form page, so the
+                    //field tags extept it.
+                    function disableRelated(){ }
+                </script>
+                <!--[if lt IE 7]>
+                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/pngfix.js"></script>
+                <![endif]-->
+            </mm:cloud>
         </body>
     </html>
 </mm:content>

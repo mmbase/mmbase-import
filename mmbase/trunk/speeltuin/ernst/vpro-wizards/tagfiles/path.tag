@@ -9,13 +9,13 @@
 <%@ attribute name="reset" type="java.lang.Boolean" description="when this is true, the list with session path elements is cleard." %>
 
 <c:if test="${empty url}">
-    <c:set var="url" >${pageContext.request.contextPath}${pageContext.request.servletPath}<c:if test="${not empty pageContext.request.queryString}">?</c:if>${pageContext.request.queryString}</c:set>
+    <c:set var="url" >${pageContext.request.servletPath}<c:if test="${not empty pageContext.request.queryString}">?</c:if>${pageContext.request.queryString}</c:set>
 </c:if>
 
 <%--
 <%@ attribute name="globalurl" %>
 --%>
-<%@ attribute name="session" description="write this path element to a map in the session. value is 'same' to write the same url to the session map, or an url to overwrite 'url'"  %>
+<%@ attribute name="session" description="write this path element to a map in the session."  %>
 
 
 <c:set var="_name" >
@@ -45,9 +45,7 @@
         String name = (String)jspContext.getAttribute("_name");
         String url = (String)jspContext.getAttribute("url");
         String key = (String)jspContext.getAttribute("session");
-        if((url == null || "".equals(url)) && !"same".equals(key)){
-           url = key;
-        }
+       
         //check if it is there yet.
         int addAt = -1;
         for(int i = 0; i < list.size(); i++){
@@ -59,12 +57,10 @@
         Map map = new HashMap();
         map.put("name", name);
         map.put("key", key);
-        if(url != null && !"".equals(url)){
-            map.put("url",url);
-        }
+        map.put("url",url);
         if(addAt > -1){
             //replace the entry, and remove everything after it.
-            while(list.size() >addAt){
+            while(list.size() > addAt){
                 list.remove(addAt);
             }
         }
