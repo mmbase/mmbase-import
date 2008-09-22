@@ -7,5 +7,6 @@
     <property name="basename">mmbasetests</property>
     <property name="language">zh</property>
     <property name="encoding">UTF-8</property>
+    <property name="development">true</property>
   </properties>
 </module>
