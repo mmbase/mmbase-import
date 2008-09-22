@@ -77,7 +77,7 @@ function fillIframe(div, left) {
 
   var agt = navigator.userAgent.toLowerCase();
   var is_ie = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
-  var is_webkit = (agt.indexOf('webkit'));
+  var is_webkit = (agt.indexOf('webkit') != -1);
   if (is_ie || is_webkit)
     iframe.src = '<cmsc:staticurl page='/editors/empty.html' />';
 
