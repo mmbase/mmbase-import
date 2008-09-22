@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.78 2008-09-18 09:49:18 michiel Exp $
+ * @version $Id: Node.java,v 1.79 2008-09-22 17:00:13 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -273,6 +273,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      */
     public Object getValue(String fieldName);
 
@@ -281,6 +283,8 @@ public interface Node extends Comparable<Node> {
      * @param fieldName name of the field
      * @return object value
      * @since MMBase-1.7
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      */
     public Object getObjectValue(String fieldName);
 
@@ -291,6 +295,8 @@ public interface Node extends Comparable<Node> {
      * @param fieldName name of field
      * @return value without processing
      * @since MMBase-1.8
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      */
     public Object getValueWithoutProcess(String fieldName);
 
@@ -306,6 +312,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      */
     public boolean getBooleanValue(String fieldName);
 
@@ -333,6 +342,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      * @see Cloud#getList(String, String, String, String, String, String, String, boolean)
      */
     public Node getNodeValue(String fieldName);
@@ -349,6 +361,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      */
     public int getIntValue(String fieldName);
 
@@ -377,6 +392,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      */
     public long getLongValue(String fieldName);
 
@@ -391,6 +409,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      */
     public double getDoubleValue(String fieldName);
 
@@ -402,6 +423,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+
      */
     public byte[] getByteValue(String fieldName);
 
@@ -412,6 +436,8 @@ public interface Node extends Comparable<Node> {
      * stored in memory.
      * @param fieldName  the name of the field
      * @return value of field as a input stream
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      * @since MMBase-1.8
      */
     public InputStream getInputStreamValue(String fieldName);
@@ -425,6 +451,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      */
     public String getStringValue(String fieldName);
 
@@ -432,12 +460,16 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
      * @since MMBase-1.8
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      */
     public Date getDateValue(String fieldName);
 
     /**
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
      * not yet working
      * @since MMBase-1.8
      */
@@ -450,7 +482,8 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.6
      * @param fieldName  the name of the field whose value to return
      * @return           the value of the specified field
-     * @throws NotFoundException is the field does not exist
+     * @throws NotFoundException is the field does not exist and MMBase 'in development'
+     * (i.e. strict mode)
      */
     public FieldValue getFieldValue(String fieldName) throws NotFoundException;
 
@@ -555,7 +588,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the value cannot be converted to xml.
+     * @throws  IllegalArgumentException if the value cannot be converted to xml, or the field does
+     * not exist.
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) throws IllegalArgumentException;
