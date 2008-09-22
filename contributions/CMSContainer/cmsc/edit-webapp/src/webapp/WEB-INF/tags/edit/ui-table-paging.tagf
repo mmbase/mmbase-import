@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<c:set var="pagessize" value="${ cmsc:ceil(size/pagesize)}"/>
 
 <fmt:bundle basename="cmsc">
 <fmt:message key="pages.message" var="error"/>
@@ -12,14 +13,14 @@
    <fmt:param>${size}</fmt:param>
 </fmt:message>
 
+   <script src="../repository/search.js" type="text/javascript"></script>
 <script type="text/javascript">
-
-   function gotopage(targetfield) {
-
+   function gotopage(targetfield) {//
       var inputValue = document.getElementById(targetfield).value;
       var re = new RegExp("^[1-9][0-9]*$");
-      if (re.test(inputValue) && inputValue <= Math.ceil(${pagessize})) {
-         setOffset(inputValue - 1);
+      if (re.test(inputValue) && inputValue <= Math.ceil(${pagessize}) ) {
+		var target = "<%=request.getContextPath()%>${link}&page="+(inputValue-1);
+		document.location.href=target;
       }
       else {
          alert("${error}");
@@ -28,7 +29,7 @@
 
    function enterto(event, targetfield) {
       if (event.keyCode == 13) {
-         gotopage(targetfield)
+         gotopage(targetfield);
       }
    }
 </script>
@@ -87,6 +88,7 @@
             </a>
          </c:if>
          <c:if test="${pages>13}">
+		 
             <input type="text" name="targetpage" id="${targetfield}" size="4"
                    onKeyPress="enterto(event,'${targetfield}')"/>
 
