@@ -36,7 +36,7 @@ public class NamePasswordCloudFactory implements CloudFactory {
 		return LocalContext.getCloudContext().getCloud("een", "twee", credentials );
 	}
 
-	public Transaction getTransaction(HttpServletRequest request) {
+	public Transaction createTransaction(HttpServletRequest request) {
 		//TODO: what is the parameter for?
 		return getCloud().getTransaction("transaction");
 	}
