@@ -24,12 +24,14 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
-public abstract class AbstractActionTest extends BridgeTest {
+public abstract class AbstractActionTest extends BridgeTest  {
 	
 	private static final String DUMMY_LOCAL_URL = "www.disco.com/hallo";
 	private static final Logger log = Logging.getLoggerInstance(AbstractActionTest.class);
 	protected boolean setReferrer = true;
+	private MyCloudFactory myCloudFactory = new MyCloudFactory();
 
 	public AbstractActionTest(String name) {
 		super(name);
@@ -78,7 +80,7 @@ public abstract class AbstractActionTest extends BridgeTest {
 		BeanFactory f = new XmlBeanFactory(new ClassPathResource(
 				"org/mmbase/applications/vprowizards/spring/resources/vpro-wizards-servlet.test.xml"));
 		WizardController wizardController = (WizardController) f.getBean("wizardController");
-		wizardController.setCloudFactory(getCloudFactory());
+		wizardController.setCloudFactory(myCloudFactory);
 		return wizardController;
 	}
 	
@@ -127,31 +129,55 @@ public abstract class AbstractActionTest extends BridgeTest {
 		return null;
 	}
 	
-	protected CloudFactory getCloudFactory(){
-		assertNotNull("can not create cloud factory, for cloud is null", getCloud());
-		MyCloudFactory myCloudFactory = new MyCloudFactory(getCloud());
-		return myCloudFactory;
+	
+	/**
+	 * 
+	 * @param request
+	 * @param globalErrorKey
+	 * @return true when there is exactly one global error with matching key, and zero field errors, and the the request is redirected to the error page
+	 * @throws Exception any exception that might occur.
+	 */
+	protected void checkRequestCreatesGlobalError(HttpServletRequest request, String globalErrorKey) throws Exception{
+		WizardController wc = createWizardController();
+		
+			ModelAndView mandv = wc.handleRequest(request, null);
+			Map<String,Object> model = (Map<String, Object>) mandv.getModel();
+			
+			assertEquals(0, getFieldErrors(model).size());
+			assertEquals(1, getGlobalErrors(model).size());
+			assertEquals(globalErrorKey, getGlobalErrors(model).get(0).getMessageKey());
+			
+			assertTrue("ModelAndView instance not of expected type", ModelAndView.class.isAssignableFrom(mandv.getClass()));
+			//the error page is set in the xml bean configuration. check that first if below assertion fails.
+			assertEquals( "error-html", mandv.getViewName());
 	}
 	
-	static class MyCloudFactory implements CloudFactory{
-
-		private Cloud cloud;
-		
-		public MyCloudFactory(Cloud c){
-			if(c == null){
-				throw new NullPointerException("oops, cloud argument is null");
-			}
-			cloud = c;
-		}
-		
-		public Transaction getTransaction(HttpServletRequest request) {
-			Transaction transaction = cloud.getTransaction("test transaction");
-			if(transaction == null){
-				throw new IllegalStateException("hey, transaction is null!");
-			}
-			return transaction;
-		}
-		
+	protected void checkNoErrors(ModelAndView mandv){
+		Map<String,Object> model = (Map<String, Object>) mandv.getModel();
+		assertEquals(0, getFieldErrors(model).size());
+		assertEquals(0, getFieldErrors(model).size());
 	}
+	
+	
+	public final class MyCloudFactory implements CloudFactory{
+		public Transaction createTransaction(HttpServletRequest request) {
+			return (Transaction) getTransaction();
+		}
+    }
+	
+	public static class StaticCloudFactory implements CloudFactory{
+		private Transaction t;
+		
+		public StaticCloudFactory(Transaction t) {
+			this.t = t;
+		}
+		public Transaction createTransaction(HttpServletRequest request) {
+			log.debug(">> static cloud factory producing transaction: "+t);
+			return t;
+		}
+	}
+	
+	
+		
 	
 }

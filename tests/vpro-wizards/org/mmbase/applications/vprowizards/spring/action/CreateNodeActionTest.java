@@ -34,17 +34,8 @@ public class CreateNodeActionTest extends AbstractActionTest {
 	@SuppressWarnings("unchecked")
 	public void test_no_nodemanager_should_couse_global_error(){
 		HttpServletRequest req = createRequest("actions[createNode][1].id=testId");
-		assertEquals(1, req.getParameterMap().size());
-		
-		WizardController wc = createWizardController();
-		assertNotNull("transaction is null!", wc.getCloudFactory().getTransaction(req));
 		try {
-			ModelAndView mandv = wc.handleRequest(req, null);
-			Map<String,Object> model = (Map<String, Object>) mandv.getModel();
-			
-			assertEquals(1, getGlobalErrors(model).size());
-			assertEquals(0, getFieldErrors(model).size());
-			assertEquals("error.property.required", getGlobalErrors(model).get(0).getMessageKey());
+			checkRequestCreatesGlobalError(req, "error.property.required");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			fail(e.getMessage());
@@ -54,15 +45,8 @@ public class CreateNodeActionTest extends AbstractActionTest {
 	public void test_no_referrer_header_should_couse_global_error(){
 		setReferrer = false;
 		HttpServletRequest req = createRequest("actions[createNode][1].nodeType=mags");
-		//create an error by means of an invalid createNodeAction
-		
-		WizardController wc = createWizardController();
 		try {
-			ModelAndView mandv = wc.handleRequest(req, null);
-			Map<String,Object> model = (Map<String, Object>) mandv.getModel();
-			assertEquals(1, getGlobalErrors(model).size());
-			assertEquals("error.no.referrer.header", getGlobalErrors(model).get(0).getMessageKey());
-			
+			checkRequestCreatesGlobalError(req, "error.no.referrer.header");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			fail(e.getMessage());
@@ -76,16 +60,8 @@ public class CreateNodeActionTest extends AbstractActionTest {
 		HttpServletRequest req = createRequest("actions[createNode][1].nodeType=nonexistant");
 		assertEquals(1, req.getParameterMap().size());
 		
-		WizardController wc = createWizardController();
-		assertNotNull("transaction is null!", wc.getCloudFactory().getTransaction(req));
-		
 		try {
-			ModelAndView mandv = wc.handleRequest(req, null);
-			Map<String,Object> model = (Map<String, Object>) mandv.getModel();
-			
-			assertEquals(1, getGlobalErrors(model).size());
-			assertEquals(0, getFieldErrors(model).size());
-			assertEquals("error.illegal.nodemanager", getGlobalErrors(model).get(0).getMessageKey());
+			checkRequestCreatesGlobalError(req, "error.illegal.nodemanager");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			fail(e.getMessage());
@@ -93,15 +69,15 @@ public class CreateNodeActionTest extends AbstractActionTest {
 	}
 	
 	public void test_global_error_should_couse_redirect_to_errorpage(){
+		//TODO:  this is not really a create node action, it should not be here
 		HttpServletRequest req = createRequest("actions[createNode][1].id=fail");
 		//create an error by means of an invalid createNodeAction
 		
 		WizardController wc = createWizardController();
-		((ReferrerResolver) wc.getViewResolver()).setErrorPage("test-errorpage");
 		try {
 			ModelAndView mandv = wc.handleRequest(req, null);
 			assertTrue("ModelAndView instance not of expected type", ModelAndView.class.isAssignableFrom(mandv.getClass()));
-			assertEquals( "test-errorpage", mandv.getViewName());
+			assertEquals( "error-html", mandv.getViewName());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			fail(e.getMessage());
@@ -109,6 +85,7 @@ public class CreateNodeActionTest extends AbstractActionTest {
 	}
 	
 	public void test_legal_nodemanager_should_return_to_referrer(){
+		//TODO:  this is not really a create node action, it should not be here
 		MockHttpServletRequest req = createRequest(
 				"actions[createNode][1].nodeType=mags" +
 				"&actions[createNode][1].fields[title]=sometitle" +
@@ -141,7 +118,7 @@ public class CreateNodeActionTest extends AbstractActionTest {
 		assertEquals(3, req.getParameterMap().size());
 		
 		WizardController wc = createWizardController();
-		assertNotNull("transaction is null!", wc.getCloudFactory().getTransaction(req));
+		assertNotNull("transaction is null!", wc.getCloudFactory().createTransaction(req));
 		
 		try {
 			ModelAndView mandv = wc.handleRequest(req, null);
@@ -150,8 +127,7 @@ public class CreateNodeActionTest extends AbstractActionTest {
 			View view = mandv.getView();
 			assertTrue(RedirectView.class.isAssignableFrom(view.getClass()));
 			
-			assertEquals(0, getGlobalErrors(model).size());
-			assertEquals(0, getFieldErrors(model).size());
+			checkNoErrors(mandv);
 
 			//fetch the node we just created
 			Node node = getLastNodeOfType("mags");
