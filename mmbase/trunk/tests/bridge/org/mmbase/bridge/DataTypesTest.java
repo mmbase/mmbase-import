@@ -69,8 +69,9 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
                               new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
                 new Object[] {"required_legacy",
-                              new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
-                              new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
+                              new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789", ""},
+                              new Object[] {null}}
+                ,
                 new Object[] {"languages",
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
@@ -275,7 +276,7 @@ public class DataTypesTest extends BridgeTest {
 
     protected Object getDefaultValue(Field field) {
        Object defaultValue = field.getDataType().getDefaultValue();
-       if (defaultValue == null && false) { // && field.isNotNull(),, cannot be checked through bridge. The 'datatypes' builder only has nullable fields.
+       if (defaultValue == null && field.isRequired()) {
            defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
        }
        return defaultValue;
