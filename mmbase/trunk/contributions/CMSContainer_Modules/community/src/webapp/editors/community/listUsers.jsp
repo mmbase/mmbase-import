@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp"/>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-   <cmscedit:head title="reactions.title">
+   <cmscedit:head title="community.title">
       <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
       <script type="text/javascript" src="js/formcheck.js"></script>
       <script type="text/javascript">
