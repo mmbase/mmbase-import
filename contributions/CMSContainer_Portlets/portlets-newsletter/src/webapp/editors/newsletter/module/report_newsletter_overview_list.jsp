@@ -43,7 +43,7 @@
 <script type="text/javascript">
       function exportsubscription() {
       var subscriptions = document.getElementsByName('ids');
-      var hasSelection = false;
+      var hasSelection = null ;
       for (var i = 0; i < subscriptions.length; i ++) {
          if (subscriptions[i].checked) {
             hasSelection = true;
@@ -52,7 +52,7 @@
       }
 
       if (hasSelection) {
-         document.forms['operationform'].action = 'SubscriptionImportExportAction.do';
+         document.forms['operationform'].attributes['action'].value = 'SubscriptionImportExportAction.do';
          document.getElementById('action').value = 'export';
          document.forms['operationform'].submit();
       }
