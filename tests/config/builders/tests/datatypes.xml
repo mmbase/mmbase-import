@@ -101,7 +101,7 @@
         <description>Required by db notnull</description>
       </descriptions>
       <db>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
