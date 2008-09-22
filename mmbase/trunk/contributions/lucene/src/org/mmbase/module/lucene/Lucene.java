@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.123 2008-09-06 14:39:14 michiel Exp $
+ * @version $Id: Lucene.java,v 1.124 2008-09-22 11:59:38 pierre Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -71,6 +71,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     public static final String NAMESPACE_LUCENE = NAMESPACE_LUCENE_1_0;
 
+    protected MMBase mmbase;
 
     /**
      * Parameter constants for Lucene functions.
@@ -654,17 +655,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected void init(final boolean initialWait) {
         super.init();
+        // Force init of MMBase
+        mmbase = MMBase.getMMBase();
 
 
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
-                    // Force init of MMBase
-                    MMBase mmbase = MMBase.getMMBase();
-
                     String databaseName = "";
                     String binaryFileBasePath = "";
                     //try to get the index path from the strorage configuration
-                   try {
+                    try {
                         DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                         String binaries = dsmf.getBinaryFileBasePath().toString();
                         if (binaries != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
