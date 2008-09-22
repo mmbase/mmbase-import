@@ -17,20 +17,20 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.NewsletterBounce;
 import com.finalist.newsletter.util.NewsletterBounceUtil;
 
-public class NewsletterBounceAction  extends DispatchAction{
+public class NewsletterBounceAction  extends DispatchAction {
 
-   public ActionForward list(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)
+   public ActionForward list (ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       int pageSize = 12;
       int offset = 0;
-      if(StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
+      if (StringUtils.isNotEmpty(PropertiesUtil.getProperty("repository.search.results.per.page"))) {
          pageSize = Integer.parseInt(PropertiesUtil.getProperty("repository.search.results.per.page"));
       }
       String strOffset  = request.getParameter("offset");
-      if(StringUtils.isNotEmpty(strOffset)) {
+      if (StringUtils.isNotEmpty(strOffset)) {
          offset = Integer.parseInt(strOffset);
       }
-      List<NewsletterBounce> bounces =  NewsletterBounceUtil.getBounceRecord(offset*pageSize, pageSize);
+      List < NewsletterBounce > bounces =  NewsletterBounceUtil.getBounceRecord(offset * pageSize, pageSize);
       int count = NewsletterBounceUtil.getTotalCount();
       request.setAttribute("resultList", bounces);
       request.setAttribute("resultCount", count);
@@ -38,7 +38,7 @@ public class NewsletterBounceAction  extends DispatchAction{
       return mapping.findForward("success");
    }
     
-    public ActionForward getItem(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response)
+    public ActionForward getItem(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
     throws Exception {
        String number  = request.getParameter("objectnumber");       
        NewsletterBounce bounce = NewsletterBounceUtil.getNewsletterBounce(Integer.parseInt(number));
