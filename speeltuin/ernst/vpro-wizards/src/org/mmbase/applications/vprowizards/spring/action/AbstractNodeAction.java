@@ -8,13 +8,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.FactoryUtils;
+import org.apache.commons.collections15.MapUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.mmbase.applications.vprowizards.spring.FieldError;
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -32,7 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 public abstract class AbstractNodeAction extends Action {
 
 	private Map<String, String> fields = new HashMap<String, String>();
-	private Map<String, DateTime> dateFields = new HashMap<String, DateTime>();
+//	private Map<String, DateTime> dateFields = new HashMap<String, DateTime>();
+	private Map<String, DateTime> dateFields = 
+		MapUtils.lazyMap(new HashMap<String, DateTime>(), FactoryUtils.instantiateFactory(DateTime.class));
 	private String id = null;
 	private MultipartFile file = null;
 	private static org.mmbase.util.logging.Logger log = Logging.getLoggerInstance(AbstractNodeAction.class);
@@ -129,25 +133,6 @@ public abstract class AbstractNodeAction extends Action {
 	protected boolean shouldProcess(Node node) {
 		return true;
 	}
-
-	/**
-	 * Check if all the fields set for this node action actually exist in the nodemanager.
-	 */
-	private void checkBasicFields() {
-		for (String field : fields.keySet()) {
-			if (!node.getNodeManager().hasField(field)) {
-				log.warn(String.format(
-						"You try to set field '%s' on a node of type '%s', but the nodetype does not have this field",
-						field, node.getNodeManager().getName()));
-				addGlobalError("error.field.unknown", new String[] { field, this.getClass().getName(),
-						node.getNodeManager().getName() });
-			}
-		}
-	}
-
-	/*
-	 * these are the template methods
-	 */
 
 	/**
 	 * This template method is called to obtain the node for this action. it is the responsibility of the implementation
@@ -269,6 +254,21 @@ public abstract class AbstractNodeAction extends Action {
 	 * 
 	 */
 	protected abstract void createCacheFlushHints();
+
+	/**
+	 * Check if all the fields set for this node action actually exist in the nodemanager.
+	 */
+	private void checkBasicFields() {
+		for (String field : fields.keySet()) {
+			if (!node.getNodeManager().hasField(field)) {
+				log.warn(String.format(
+						"You try to set field '%s' on a node of type '%s', but the nodetype does not have this field",
+						field, node.getNodeManager().getName()));
+				addGlobalError("error.field.unknown", new String[] { field, this.getClass().getName(),
+						node.getNodeManager().getName() });
+			}
+		}
+	}
 
 	/**
 	 * Set the fields, dateFields and file on the given node. Errors are created when fields are not part of the present

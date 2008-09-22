@@ -30,6 +30,11 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 	protected String role;
 	protected RelationManager relationManager;
 
+	/**
+	 * This template method implementation handles all the preconditions for relation actions. When
+	 * these are met, a new template method is called, {@link this#doCreateNode(Transaction, Map, HttpServletRequest)}
+	 * When you create specific relation actions, you extend this class and implement that method.
+	 */
 	@Override
 	protected final Node createNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
 		if (StringUtils.isBlank(role)) {
@@ -60,7 +65,7 @@ public abstract class AbstractRelationAction extends AbstractNodeAction {
 	}
 	
 	/**
-	 * This callback method should be implemented by concrete implementations of 
+	 * This template method should be implemented by concrete implementations of 
 	 * this class. It is called by {@link AbstractRelationAction#createNode(Transaction, Map, HttpServletRequest)} after all
 	 * the preliminary checks. 
 	 * @param transaction

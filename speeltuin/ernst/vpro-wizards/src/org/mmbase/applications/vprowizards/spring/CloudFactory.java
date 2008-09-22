@@ -10,7 +10,7 @@ public interface CloudFactory {
 	 * @param request
 	 * @return an mmbase transaction object.
 	 */
-	public Transaction getTransaction( HttpServletRequest request);
+	public Transaction createTransaction( HttpServletRequest request);
 }
 
 
