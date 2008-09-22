@@ -43,19 +43,19 @@
 
 
     <c:if test="${not empty referSource}">
-        <input type="hidden" name="createRelationActions[${relationid}].referSource" value="${referSource}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].referSource" value="${referSource}" />
     </c:if>
     <c:if test="${not empty source}">
-        <input type="hidden" name="createRelationActions[${relationid}].source" value="${source}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].source" value="${source}" />
     </c:if>
     <c:if test="${not empty referDestination}">
-        <input type="hidden" name="createRelationActions[${relationid}].referDestination" value="${referDestination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].referDestination" value="${referDestination}" />
     </c:if>
     <c:if test="${not empty destination}">
-        <input type="hidden" name="createRelationActions[${relationid}].destination" value="${destination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].destination" value="${destination}" />
     </c:if>
     <c:if test="${not empty role}">
-        <input type="hidden" name="createRelationActions[${relationid}].role" value="${role}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />
     </c:if>
 
     <%-- do the body--%>

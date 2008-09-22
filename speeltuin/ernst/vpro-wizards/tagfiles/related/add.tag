@@ -24,15 +24,15 @@
 <div class="addFields">
     <div id="addclosed" <c:if test="${param.create eq true}"> style="display:none;"</c:if>>
         <a href="javascript:hideshow('addclosed','addopen')" class="header">
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_closed.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/edit/system/img/fold_closed.png" class="icon fold" border="0"/>
             nieuw
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0"/></a>
+            <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0"/></a>
     </div>
     <div id="addopen" <c:if test="${param.create ne true}"> style="display:none;"</c:if>>
         <a href="javascript:hideshow('addopen','addclosed')" class="header">
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_open.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/edit/system/img/fold_open.png" class="icon fold" border="0"/>
             nieuw
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" />
+            <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0" />
         </a>
 
         <jsp:doBody var="body"/>
@@ -46,8 +46,8 @@
             <c:if test="${not empty flushname}">
                 <input type="hidden" name="flushname" value="${flushname}" />
             </c:if>
-            <input type="hidden" name="createNodeActions[].id" value="new"/>
-            <input type="hidden" name="createNodeActions[].type" value="${nodetype}"/>
+            <input type="hidden" name="actions[createNode][].id" value="new"/>
+            <input type="hidden" name="actions[createNode][].type" value="${nodetype}"/>
             <%--
             <jsp:doBody/>
             --%>

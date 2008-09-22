@@ -65,10 +65,6 @@
         into the request.
     --%>
     <c:if test="${not empty parentnodenr}">
-        <%--check on parent and relation role--%>
-        <c:if test="${empty relationrole}">
-            <c:set var="relationrole" value="related" />
-        </c:if>
 
         <%--derive the parent node type--%>
         <mm:cloud >

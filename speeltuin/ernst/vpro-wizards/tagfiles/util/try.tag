@@ -9,7 +9,7 @@
 <%@ attribute name="setExceptionAs" required="true" type="java.lang.String" rtexprvalue="false"%>
 <%@ attribute name="setMessageAs" required="true" type="java.lang.String" rtexprvalue="false"%>
 <%@ attribute name="catchit" fragment="true" required="true" %>
-<%@ attribute name="stacktrace" description="should a stacktrace be send to stdout? [true|false]"  %>
+<%@ attribute name="stacktrace" description="should a stacktrace be send to stdout? [true|false] defaults to false"  %>
 
 <%@ variable name-from-attribute="setExceptionAs"  alias="exception" scope="NESTED"%>
 <%@ variable name-from-attribute="setMessageAs"  variable-class="java.lang.String" alias="message" scope="NESTED"%>
@@ -28,8 +28,7 @@
     <c:if test="${not empty setMessageAs}">
         <c:set var="message"><%=e.getMessage()%></c:set>
     </c:if>
-
-    <c:if test="${'true' eq stacktrace}"> <%e.printStackTrace();%> </c:if>
+    <c:if test="${'true' == stacktrace}"> <%e.printStackTrace();%> </c:if>
     <jsp:invoke fragment="catchit"/>
 <%
     }
