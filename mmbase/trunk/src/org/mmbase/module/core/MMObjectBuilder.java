@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.431 2008-09-03 15:25:17 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.432 2008-09-22 17:18:29 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1718,7 +1718,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             return function.getFunctionValueWithList(parameters);
         } else {
             // fallback
-            return executeFunction(node, functionName, parameters);
+            Object fv = executeFunction(node, functionName, parameters);
+            if (fv == null && MMBase.getMMBase().inDevelopment()) {
+                throw new IllegalArgumentException("You cannot use non-existing function '" + functionName + "' of node '" + getNumber() + "'");
+            } else {
+                return null;
+            }
         }
     }
 
@@ -1759,13 +1764,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         return new NodeFunction<Object>(name, parameters, returnType) {
-                public Object getFunctionValue(Node node, Parameters parameters) {
-                    return MMObjectBuilder.this.executeFunction(getCoreNode(MMObjectBuilder.this, node),
-                                                                name,
-                                                                parameters.subList(0, parameters.size() - 1) // removes the node-argument, some legacy impl. get confused
-                                                                );
-                }
-            };
+            @Override public Object getFunctionValue(Node node, Parameters parameters) {
+                return MMObjectBuilder.this.executeFunction(getCoreNode(MMObjectBuilder.this, node),
+                                                            name,
+                                                            parameters.subList(0, parameters.size() - 1) // removes the node-argument, some legacy impl. get confused
+                                                            );
+            }
+        };
     }
 
     /**
