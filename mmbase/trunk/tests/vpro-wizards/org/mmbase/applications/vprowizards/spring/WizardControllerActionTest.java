@@ -69,7 +69,7 @@ public class WizardControllerActionTest extends TestCase {
 		assertEquals(commandFactory.getClass(), BasicCommandFactory.class);
 
 		BasicCommandFactory basicCommandFactory = (BasicCommandFactory) commandFactory;
-		assertEquals(6, basicCommandFactory.getActionClasses().size());
+		assertEquals(7, basicCommandFactory.getActionClasses().size());
 		assertEquals(TestAction.class, basicCommandFactory.getActionClasses().get(0));
 	}
 

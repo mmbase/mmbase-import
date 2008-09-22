@@ -2,9 +2,10 @@ package org.mmbase.applications.vprowizards.spring.action;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Relation;
 
-public class AbstractRelationTest extends AbstractActionTest {
+public class AbstractRelationActionTest extends AbstractActionTest {
 	protected Node sourceNode = null;
 	protected Node destinationNode = null;
 	protected Node destinationNode2 = null;
@@ -43,5 +44,19 @@ public class AbstractRelationTest extends AbstractActionTest {
 		r.setIntValue("pos", position);
 		r.commit();
 		return r;
+	}
+	
+	/**
+	 * find relations between the sourcenode and one of the destination nodes, if present.
+	 * the role is posrel.
+	 * @param destinationNode
+	 * @return
+	 */
+	protected NodeList findRelation(Node destinationNode){
+		Cloud c = getCloud();
+		//create a new node instance, because it turns out node instances seem to become 'stale' after a transaction.
+		Node sn = c.getNode(sourceNode.getNumber());
+		return sn.getRelatedNodes(c.getNodeManager("news"), "posrel", null);
+		
 	}
 }

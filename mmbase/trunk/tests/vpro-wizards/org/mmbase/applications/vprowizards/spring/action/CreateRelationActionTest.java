@@ -15,26 +15,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.servlet.ModelAndView;
 
-public class CreateRelationActionTest extends AbstractRelationTest {
+public class CreateRelationActionTest extends AbstractRelationActionTest {
 
 
 	private static final Logger log = Logging.getLoggerInstance(CreateRelationActionTest.class);
-
-	public void init() {
-		// create the source and relation node for this test.
-		// using the mynews application we will create a posrel between
-		// mags and news. Let's create a mags and a news object.
-		log.service("initializing source and destination nodes for the create relation tests");
-		Cloud cloud = getCloud();
-		Node sourceNode = cloud.getNodeManager("mags").createNode();
-		sourceNode.setStringValue("title", "testmags");
-		sourceNode.commit();
-
-		Node destinationNode = cloud.getNodeManager("news").createNode();
-		destinationNode.setStringValue("title", "testnews");
-		destinationNode.commit();
-
-	}
 
 	/**
 	 * deletes all relation nodes of type posrel between sourcenode and destinationnode

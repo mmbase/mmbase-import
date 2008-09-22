@@ -33,7 +33,7 @@ import org.mmbase.util.functions.Parameters;
  */
 public class DummyCloudFactory implements CloudFactory {
 
-	public Transaction getTransaction(HttpServletRequest request) {
+	public Transaction createTransaction(HttpServletRequest request) {
 		return new Transaction() {
 
 			public void cancel() {
