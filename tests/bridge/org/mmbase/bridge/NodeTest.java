@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.Iterator;
+import java.util.regex.Pattern;
 import org.mmbase.tests.*;
 import org.mmbase.security.AuthenticationData;
 
@@ -363,12 +364,20 @@ public abstract class NodeTest extends BridgeTest {
         }
     }
 
+    private static final Pattern NO_FIELD = Pattern.compile("(?i).*field.*nonexistingfield.*");
     public void testNonExistingField() {
         try {
             node.getStringValue("nonexistingfield");
             fail("Getting non existing field should throw a (clear) exception");
-        } catch (RuntimeException e) {
-            assertTrue(java.util.regex.Pattern.compile(".*field.*nonexistingfield.*").matcher(e.getMessage()).matches());
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage() + " does not match " + NO_FIELD, NO_FIELD.matcher(e.getMessage()).matches());
+        }
+
+        try {
+            node.getFieldValue("nonexistingfield");
+            fail("Getting non existing field should throw a (clear) exception");
+        } catch (NotFoundException e) {
+            assertTrue(e.getMessage() + " does not match " + NO_FIELD, NO_FIELD.matcher(e.getMessage()).matches());
         }
     }
 
