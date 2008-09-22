@@ -68,6 +68,9 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"required_stringlength",
                               new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
                               new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
+                new Object[] {"required_legacy",
+                              new Object[] {"aaa", "0123456789",  "123456789\n", "\n123456789"},
+                              new Object[] {null, "",  "bbbbbbbbbbb", "123456789\n\n"}},
                 new Object[] {"languages",
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
@@ -493,6 +496,11 @@ public class DataTypesTest extends BridgeTest {
 
         assertEquals(10 + 20 * 60 + 30 * 60 * 60, node.getLongValue("duration"));
 
+    }
+    // http://www.mmbase.org/jira/browse/MMB-1504
+    public void testRequiredLegacy() {
+        Node node = getNewNode();
+        assertTrue(node.getNodeManager().getField("required_legacy").isRequired());
     }
 
 }
