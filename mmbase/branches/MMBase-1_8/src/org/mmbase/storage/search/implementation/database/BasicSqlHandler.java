@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.10 2008-08-13 09:01:25 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.11 2008-09-22 14:05:10 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -814,6 +814,9 @@ public class BasicSqlHandler implements SqlHandler {
                 if (fieldConstraint instanceof FieldValueDateConstraint) {
                     int part = ((FieldValueDateConstraint)fieldConstraint).getPart();
                     appendDateField(sb, step, fieldName, multipleSteps, part);
+                    if (part > -1) { 
+                      fieldType = Field.TYPE_INTEGER;
+                    }
                 } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
