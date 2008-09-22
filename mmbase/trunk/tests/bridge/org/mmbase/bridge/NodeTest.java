@@ -363,5 +363,14 @@ public abstract class NodeTest extends BridgeTest {
         }
     }
 
+    public void testNonExistingField() {
+        try {
+            node.getStringValue("nonexistingfield");
+            fail("Getting non existing field should throw a (clear) exception");
+        } catch (RuntimeException e) {
+            assertTrue(java.util.regex.Pattern.compile(".*field.*nonexistingfield.*").matcher(e.getMessage()).matches());
+        }
+    }
+
 
 }
