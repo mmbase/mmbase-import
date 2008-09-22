@@ -324,7 +324,6 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          }
          else {
         	 String exceptNames=conditions.get("strict").toString();
-             String groupName = conditions.get("group").toString();
              strb.append(" and authentication.userId not in ('" + exceptNames + "')");
 			}
 		}

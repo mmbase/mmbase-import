@@ -12,9 +12,7 @@ package com.finalist.cmsc.services.community.person;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
-import com.finalist.cmsc.services.community.preferences.Preference;
 /**
  * This service encapsulates the management of people and groups.
  *
