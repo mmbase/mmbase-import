@@ -1,12 +1,12 @@
-<%@page import="org.mmbase.util.logging.Logger" %>
-<%@include file="/taglibs.jsp" %>
-<mm:cloud jspvar="cloud">
-<%@include file="includes/templateheader.jsp" %>
-<%@include file="includes/cacheparams.jsp" %>
+<%@page import="org.mmbase.util.logging.Logger" 
+%><%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <mm:log jspvar="log">
-<%@include file="includes/header.jsp" %>
-<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/header.jsp" 
+%><%@include file="includes/calendar.jsp" %>
 <td><%@include file="includes/pagetitle.jsp" %></td>
   <td><% 
       String rightBarTitle = "Zoek een activiteit";
