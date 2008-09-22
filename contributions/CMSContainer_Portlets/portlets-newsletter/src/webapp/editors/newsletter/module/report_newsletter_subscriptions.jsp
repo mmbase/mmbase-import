@@ -42,6 +42,7 @@
       <div class="body">
          <form method="POST" name="operationform" action="SubscriptionImportExportAction.do">
             <input type="hidden" name="action" value="export"/>
+            <input type="hidden" name="type" id="action" value="person"/>
             <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">
                <edit:ui-tcolumn title="" width="5%">
                   <input type="checkbox" name="ids" value="${result.id}"/>
