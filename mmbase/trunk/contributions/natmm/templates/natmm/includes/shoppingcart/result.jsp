@@ -94,8 +94,8 @@ if(isValidAnswer) {
 
   if(products!=null) { 
       %><%@include file="getbasket.jsp" %><%
-      responseText += productsStr;
-      responseTextToCustomer += productsStr;
+      responseText += productsStr.toString();
+      responseTextToCustomer += productsStr.toString();
       responseTextToCustomer += "<br><br>Met vriendelijke groet,\n<br>Natuurmonumenten Webwinkel<br>\n" +
       "<br>\nVragen over uw bestelling? Bel gratis naar 0800 023 16 66 (ma t/m do 9-21 uur en vr van 9-17 uur).<br>\n";
   }
