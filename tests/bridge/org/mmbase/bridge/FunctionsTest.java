@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import org.mmbase.util.functions.*;
 import org.mmbase.tests.*;
 import org.mmbase.bridge.util.CollectionNodeList;
@@ -19,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.14 2008-09-22 16:17:19 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.15 2008-09-22 17:15:20 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -185,19 +186,55 @@ public class FunctionsTest extends BridgeTest {
         }
     }
 
+    private static final Pattern NO_FUNCTION = Pattern.compile("(?i).*function.*nonexistingfunction.*");
+
+    public void testNonExistingFunctionOnRealNode() {
+        Cloud cloud = getCloud();
+        NodeList nl = cloud.getNodeManager("object").getList(null);
+        Node n = nl.get(0);
+
+        assertTrue(n.getNumber() > 0);
+
+
+        try {
+            n.getFunction("nonexistingfunction");
+            fail("Getting non-existing function should throw exception");
+        } catch (NotFoundException e) {
+            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
+        }
+
+
+        try {
+            n.getValue("nonexistingfunction()");
+            fail("Using non existing function should raise an exeption"); // this fails!
+        } catch (IllegalArgumentException e) {
+            // The exception should also be clear
+            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
+        }
+
+    }
+
+
     public void testNonExistingFunctionOnClusterNode() { //MMB-1208
         Cloud cloud = getCloud();
         NodeList nl = cloud.getList("", "object", "",
                                     "", "", "",
                                     "", false);
         Node n = nl.get(0);
-        assertTrue(n instanceof org.mmbase.bridge.implementation.VirtualNode);
+        assertTrue(n.getNumber() < 0);
         try {
             n.getValue("nonexistingfunction(object.number)");
             fail("Using non existing function should raise an exeption"); // this fails!
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             // The exception should also be clear
-            assertTrue(e.getMessage().equals("")); // think something up for this
+            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
+        }
+        try {
+            n.getValue("object.nonexistingfunction()");
+            fail("Using non existing function should raise an exeption"); // this fails!
+        } catch (IllegalArgumentException e) {
+            // The exception should also be clear
+            assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
         }
 
     }
