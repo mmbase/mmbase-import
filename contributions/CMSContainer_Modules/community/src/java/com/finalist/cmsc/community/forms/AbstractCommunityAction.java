@@ -28,38 +28,38 @@ import com.finalist.cmsc.services.community.security.AuthorityService;
  */
 public class AbstractCommunityAction extends ActionSupport {
 
-	protected static final String SUCCESS = "success";
+   protected static final String SUCCESS = "success";
 
    protected static final String CANCEL = "cancel";
 
-	protected AuthenticationService getAuthenticationService() {
-		WebApplicationContext ctx = getWebApplicationContext();
-		return (AuthenticationService) ctx.getBean("authenticationService");
-	}
+   protected AuthenticationService getAuthenticationService() {
+      WebApplicationContext ctx = getWebApplicationContext();
+      return (AuthenticationService) ctx.getBean("authenticationService");
+   }
 
-	protected AuthorityService getAuthorityService() {
-		WebApplicationContext ctx = getWebApplicationContext();
-		return (AuthorityService) ctx.getBean("authorityService");
-	}
+   protected AuthorityService getAuthorityService() {
+      WebApplicationContext ctx = getWebApplicationContext();
+      return (AuthorityService) ctx.getBean("authorityService");
+   }
 
-	protected PersonService getPersonService() {
-		WebApplicationContext ctx = getWebApplicationContext();
-		return (PersonService) ctx.getBean("personService");
-	}
+   protected PersonService getPersonService() {
+      WebApplicationContext ctx = getWebApplicationContext();
+      return (PersonService) ctx.getBean("personService");
+   }
 
-	protected PreferenceService getPreferenceService() {
-		WebApplicationContext ctx = getWebApplicationContext();
-		return (PreferenceService) ctx.getBean("preferenceService");
-	}
+   protected PreferenceService getPreferenceService() {
+      WebApplicationContext ctx = getWebApplicationContext();
+      return (PreferenceService) ctx.getBean("preferenceService");
+   }
 
-	protected void removeFromSession(HttpServletRequest request, ActionForm form) {
-		HttpSession session = request.getSession();
-		for (Enumeration<String> iter = session.getAttributeNames(); iter.hasMoreElements();) {
-			String name = iter.nextElement();
-			Object value = session.getAttribute(name);
-			if (form == value) { // same reference
-				session.removeAttribute(name);
-			}
-		}
-	}
+   protected void removeFromSession(HttpServletRequest request, ActionForm form) {
+      HttpSession session = request.getSession();
+      for (Enumeration < String > iter = session.getAttributeNames(); iter.hasMoreElements();) {
+         String name = iter.nextElement();
+         Object value = session.getAttribute(name);
+         if (form == value) { // same reference
+            session.removeAttribute(name);
+         }
+      }
+   }
 }
