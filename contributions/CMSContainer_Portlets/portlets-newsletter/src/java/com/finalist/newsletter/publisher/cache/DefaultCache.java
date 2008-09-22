@@ -22,7 +22,7 @@ public class DefaultCache implements ICache{
 		TimerTask task = new CacheFreshTask(this);
 		timer = new Timer("Cache_Timer", true);		
         //flush when every second
-		timer.scheduleAtFixedRate(task, 1000, FreshTimerIntervalSeconds * 1000);		 
+		timer.scheduleAtFixedRate(task, 1000, FreshTimerIntervalSeconds * 1000);	   
 	} 
 	
      //	implement the interface	
@@ -31,23 +31,23 @@ public class DefaultCache implements ICache{
 		this.time=time;			
 	}
 
-	public void add(Object key, Object value) {		 
+	public void add(Object key, Object value) {	   
 		add(key, value,time);		
 	}
 
-	public void add(Object key, Object value, long slidingExpiration) {		 
+	public void add(Object key, Object value, long slidingExpiration) {	   
 		if(slidingExpiration!=0){			
 			CacheInfo ci=new CacheInfo(value, slidingExpiration);			
 			datas.put((String) key, ci);
 		}
 	}
 
-	public boolean contains(Object key) {		 
+	public boolean contains(Object key) {	   
 		if(datas.containsKey(key))return true;
 		return false;
 	}
 
-	public Object get(Object key) {		 
+	public Object get(Object key) {	   
 		if(datas.containsKey(key)){
 			CacheInfo ci=datas.get(key);			
 			//cahce'life will refresh when it's invoke ;)
@@ -57,7 +57,7 @@ public class DefaultCache implements ICache{
 		return null;
 	}
 
-	public void remove(Object key) {		 
+	public void remove(Object key) {	   
 		datas.remove(key); 
 	}
 
