@@ -32,17 +32,19 @@ public class AllTests {
         TestSuite suite= new TestSuite("Vpro Wizard Tests");
 
         //utility tests
-//        suite.addTestSuite(ErrorTest.class);
-//        suite.addTestSuite(PathBuilderTest.class);
+        suite.addTestSuite(ErrorTest.class);
+        suite.addTestSuite(PathBuilderTest.class);
         
         //general spring component tests
-//        suite.addTestSuite(WizardControllerActionTest.class);
+        suite.addTestSuite(WizardControllerActionTest.class);
         
         //action tests
-//        suite.addTestSuite(CreateNodeActionTest.class);
-//        suite.addTestSuite(CreateRelationActionTest.class);
+        suite.addTestSuite(CreateNodeActionTest.class);
+        suite.addTestSuite(UpdateNodeActionTest.class);
+        suite.addTestSuite(CreateRelationActionTest.class);
         suite.addTestSuite(SortRelationActionTest.class);
-        //suite.addTestSuite(ToggleRelationTest.class);
+        suite.addTestSuite(ToggleRelationActionTest.class);
+        suite.addTestSuite(DeleteNodeActionTest.class);
         return suite;
     }
 }

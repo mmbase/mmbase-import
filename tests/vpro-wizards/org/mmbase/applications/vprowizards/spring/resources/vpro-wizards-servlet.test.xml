@@ -40,6 +40,7 @@
 				<value>org.mmbase.applications.vprowizards.spring.action.DeleteNodeAction</value>
 				<value>org.mmbase.applications.vprowizards.spring.action.CreateRelationAction</value>
 				<value>org.mmbase.applications.vprowizards.spring.action.SortRelationAction</value>
+				<value>org.mmbase.applications.vprowizards.spring.action.ToggleRelationAction</value>
 				<!-- 
 				<value>org.mmbase.applications.vprowizards.spring.action.ToggelRelationAction</value>
 				 -->
