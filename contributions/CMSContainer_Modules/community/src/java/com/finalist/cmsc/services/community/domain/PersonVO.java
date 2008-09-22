@@ -2,8 +2,6 @@ package com.finalist.cmsc.services.community.domain;
 
 import org.apache.struts.action.ActionForm;
 
-import com.finalist.cmsc.struts.PagerForm;
-
 public class PersonVO extends ActionForm{
 	private String fullname;
 	private String username;

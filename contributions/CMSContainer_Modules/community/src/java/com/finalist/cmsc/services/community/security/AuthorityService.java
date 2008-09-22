@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.services.community.security;
 
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

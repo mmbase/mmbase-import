@@ -1,9 +1,6 @@
 package com.finalist.cmsc.services.community.domain;
 
 import java.util.List;
-
-import javax.persistence.Column;
-
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.preferences.Preference;
 import com.finalist.cmsc.services.community.security.Authentication;
