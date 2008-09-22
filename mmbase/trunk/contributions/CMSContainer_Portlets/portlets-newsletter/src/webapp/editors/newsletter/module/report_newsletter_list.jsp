@@ -34,7 +34,8 @@
    <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletteroverview.title"/>&nbsp;</div></div>
       <div class="body">
       <form method="POST" name="operationform" action="SubscriptionManagement.do">
-         <input type="hidden" name="action" id="action"/>
+         <input type="hidden" name="action" />
+          <input type="hidden" name="type" value="newsletter"/>
          <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">
             <edit:ui-tcolumn title="" width="5%">
                <input type="checkbox" name="ids" value="${result.id}"/>
@@ -75,8 +76,8 @@
       }
 
       if (hasSelection) {
-         document.forms['operationform'].action = 'SubscriptionImportExportAction.do';
-         document.getElementById('action').value = 'export';
+         document.forms['operationform'].attributes['action'].value = 'SubscriptionImportExportAction.do';
+         document.forms['operationform'].elements('action').value = 'export';
          document.forms['operationform'].submit();
       }
       else {
