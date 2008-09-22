@@ -63,6 +63,7 @@ public class SortRelationAction extends AbstractRelationAction {
 		if(!relationManager.hasField(sortField)){
 			addGlobalError("error.property.illegal.sortfield", new String[]{sortField, this.getClass().getName(), role});
 		}
+		log.debug(String.format("preconditions met for action %s. errors found: %s", this.getClass().getName(), hasErrors()));
 		
 		if(!hasErrors()){
 			PathBuilder pathBuilder = createPathBuilder();
@@ -85,11 +86,11 @@ public class SortRelationAction extends AbstractRelationAction {
 				addGlobalError("error.relation.notfound", 
 						new String[]{role, "" + sourceNode.getNumber(), "" + destinationNode.getNumber()});
 				return null;
-			}else{
-				Node result = transaction.getRelation(nl.getNode(0).getStringValue(pathBuilder.getStep(1) + ".number"));
-				log.debug("node found for RelationSortAction: "+result);
-				return result; 
 			}
+			Node result = transaction.getNode(nl.getNode(0).getStringValue(pathBuilder.getStep(1) + ".number"));
+			log.debug("node found for SortRelationAction: " + result);
+			return result; 
+			
 		}
 		return null;
 	}
@@ -171,13 +172,16 @@ public class SortRelationAction extends AbstractRelationAction {
 						nodeToSwapWith.getIntValue(sortField)));
 				
 				log.debug(String.format("node number is %s and swap node number is %s", getNode().getNumber(), nodeToSwapWith.getNumber()));
+				log.debug(String.format("node pos is %s and swap pos is %s", getNode().getStringValue("pos"), nodeToSwapWith.getStringValue("pos")));
 
 				// now let the two nodes swap position
 				int p1 = getNode().getIntValue(sortField);
 				int p2 = nodeToSwapWith.getIntValue(sortField);
 
+				log.debug("swapping the position values");
 				getNode().setIntValue(sortField, p2);
 				nodeToSwapWith.setIntValue(sortField, p1);
+				log.debug(String.format("after: node pos is %s and swap pos is %s", getNode().getStringValue("pos"), nodeToSwapWith.getStringValue("pos")));
 				
 				// a cacheflush hint needs to be created for this action.
 				doSetCachflushHint();
@@ -257,7 +261,6 @@ public class SortRelationAction extends AbstractRelationAction {
 				if(oldValue != lowest){
 					log.debug("setting node "+relationNode.getNumber()+" to value "+lowest);
 					relationNode.setIntValue(sortField, lowest);
-					relationNode.commit();
 				}else{
 					log.debug("node "+relationNode.getNumber()+" has the right pos value: "+lowest+". skip it");
 					

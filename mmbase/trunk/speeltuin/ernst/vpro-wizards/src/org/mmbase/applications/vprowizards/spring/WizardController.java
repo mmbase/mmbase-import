@@ -37,7 +37,7 @@ public class WizardController implements Controller {
 	private Locale locale;
 	
 	public WizardController(){
-		setLocale(new Locale("nl-NL"));
+		setLocale(new Locale("nl-NL"));/*default*/
 	}
 	
 	
@@ -54,8 +54,14 @@ public class WizardController implements Controller {
 		request.setCharacterEncoding("UTF-8");
 
 		Command command = commandFactory.getNewInstance();
-		Transaction transaction = cloudFactory.getTransaction(request);
+		Transaction transaction = cloudFactory.createTransaction(request);
 		Map<String, Node> nodeMap = new HashMap<String, Node>();
+		
+		if(log.isDebugEnabled()){
+			log.debug("*********************************");
+			log.debug("Processing new request with transaction ["+transaction.getName()+"]");
+			log.debug("*********************************");
+		}
 
 		// do the data binding
 		ServletRequestDataBinder binder = new ServletRequestDataBinder(command);
@@ -67,10 +73,12 @@ public class WizardController implements Controller {
 
 		if (resultContainer.hasGlobalErrors() || resultContainer.hasFieldErrors()) {
 			log.debug("Errors found, transaction not committed.");
+			transaction.cancel();
 			
 		} else {
-			log.debug("No errors found. Commit the transaction and put the cache flush hints on the request.");
-			transaction.commit();
+			log.debug("No errors found. Commit transaction ["+transaction.getName()+"] and put the cache flush hints on the request.");
+			boolean result = resultContainer.getTransaction().commit();
+			
 
 			// create the request type cache flush hint
 			// TODO: maybe this type of cache flush hint is totally useless. do

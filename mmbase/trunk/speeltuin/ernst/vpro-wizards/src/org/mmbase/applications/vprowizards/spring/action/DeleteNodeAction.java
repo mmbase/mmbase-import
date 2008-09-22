@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -31,6 +32,8 @@ public class DeleteNodeAction extends Action {
 	@Override
 	public void process(ResultContainer resultContainer) {
 		if(StringUtils.isBlank(nodenr)){
+			//this can't really happen, becouse the only way of instantiating a delete node action, is by setting
+			//this property. there are no others!
 			resultContainer.getGlobalErrors().add(
 					new GlobalError(
 							"error.property.required", 
@@ -40,7 +43,11 @@ public class DeleteNodeAction extends Action {
 			);
 		}else{
 			log.debug("deleting node with number "+nodenr);
-			resultContainer.getTransaction().getNode(nodenr).delete(true);
+			try{
+				resultContainer.getTransaction().getNode(nodenr).delete(true);
+			}catch (NotFoundException e){
+				resultContainer.addGlobalError(new GlobalError("error.node.notfound", new String[]{""+nodenr}, resultContainer.getLocale()));
+			}
 		}
 	}
 

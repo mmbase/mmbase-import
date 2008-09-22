@@ -20,12 +20,11 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * De wizardservice geeft deze container als resultaat terug.
- * Het bevat een lijstje met errors (als deze zijn opgetreden),
- * en het geeft aan welk object nieuw is aangemaakt (zodat mogelijke
- * een pagina geopend kan worden met dat nieuwe object).
+ * this class acts as a wrapper for everything that needs to be passed to all
+ * the actions that need execution for a request. 
  *
  * @author Rob Vermeulen (VPRO)
+ * @author Ernst Bunders
  */
 public class ResultContainer {
 	private List<FieldError> fieldErrors = new ArrayList<FieldError>();

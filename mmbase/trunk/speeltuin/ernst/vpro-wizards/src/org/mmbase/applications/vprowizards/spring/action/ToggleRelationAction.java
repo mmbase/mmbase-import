@@ -11,7 +11,11 @@ import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -28,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  */
 public class ToggleRelationAction extends CreateRelationAction {
+	private static final Logger log = Logging.getLoggerInstance(ToggleRelationAction.class);
+	
 	private String relate;
 	private boolean isNodeCreated = false;
 	private List<Integer> nodesDelted = new ArrayList<Integer>();
@@ -36,6 +42,11 @@ public class ToggleRelationAction extends CreateRelationAction {
 		return relate;
 	}
 
+	/**
+	 * when this is set to 'true' and the relation does not exist yet, the relation is created.
+	 * Otherwise the relation is deleted if it exists.
+	 * @param relate
+	 */
 	public void setRelate(String relate) {
 		this.relate = relate;
 	}
@@ -43,29 +54,38 @@ public class ToggleRelationAction extends CreateRelationAction {
 	@Override
 	protected Node doCreateNode(Transaction transaction, Map<String, Node> idMap, HttpServletRequest request) {
 		// if relate is not empty and there is not a relation between source and destination yet, create it.
-		NodeList nl = sourceNode.getNodeManager()
-				.getRelatedNodes(destinationNode.getNodeManager(), role, "destination");
-		if (nl.size() > 0) {
+//		NodeList nl = sourceNode.getRelatedNodes(destinationNode.getNodeManager(), role, null);
+		RelationList rl = sourceNode.getRelations(role, destinationNode.getNodeManager(), "destination");
+		if (rl.size() > 0) {
 			// we have a relation
+			log.debug("relation already exist");
 			if (!StringUtils.isBlank(relate) && "true".equals(relate.toLowerCase())) {
 				// and we must relate: do nothing
+				log.debug("create is true: we do nothing");
 			} else {
 				// we must undo the relation
-				for (int i = 0; i < nl.size(); i++) {
-					nodesDelted.add(nl.getNode(i).getNumber());
-					nl.getNode(i).delete();
+				log.debug("create is false: we delete the node");
+				for (int i = 0; i < rl.size(); i++) {
+					nodesDelted.add(rl.getRelation(i).getNumber());
+					rl.getRelation(i).delete(true);
 				}
 			}
 
 		} else {
 			// we don't have relation yet
+			log.debug("relation doesn't exist yet");
 			if (!StringUtils.isBlank(relate) && "true".equals(relate.toLowerCase())) {
 				// we must create a relation
-				super.doCreateNode(transaction, idMap, request);
+				log.debug("create is true: we must create the relation");
+				Node newRelation = super.doCreateNode(transaction, idMap, request);
 				if (!hasErrors()) {
 					isNodeCreated = true;
+					return newRelation;
+				}else{
+					log.warn("error creating the relation");
 				}
 			} else {
+				log.debug("create is false, do nothing");
 				// and we don't have to create: do nothing
 			}
 		}
