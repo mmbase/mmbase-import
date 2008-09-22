@@ -16,7 +16,7 @@ int directions = 1; // down
       </mm:notpresent>
    </mm:compare>
 </mm:nodeinfo>
-<mm:related path="<%= articlePath %>" fields="artikel.number" constraints="<%= articleConstraint %>">
+<mm:related path="<%= articlePath %>" fields="artikel.number" constraints="<%= articleConstraint %>" searchdir="destination">
    <mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false">
    <mm:field name="<%= orderby %>" jspvar="key" vartype="Long" write="false">
       <%
