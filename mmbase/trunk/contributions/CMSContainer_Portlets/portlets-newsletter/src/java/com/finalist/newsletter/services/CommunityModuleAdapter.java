@@ -37,13 +37,13 @@ public class CommunityModuleAdapter {
       return person;
    }
 
-   public static boolean isUserLogin(){
+   public static boolean isUserLogin() {
       return null != getCurrentUser();
    }
 
-   public static int getCurrentUserId(){
+   public static int getCurrentUserId() {
       Person person = getCurrentUser();
-      if(null==person){
+      if (null == person) {
          return -1;
       }
 

@@ -15,7 +15,7 @@ import com.finalist.newsletter.services.NewsletterService;
  *
  * @author Mark Guo &lt;mark.guo@finalist.cn&gt;
  */
-public class BounceChecker extends Thread{
+public class BounceChecker extends Thread {
    private Logger log = Logging.getLoggerInstance(BounceChecker.class.getName());
 
    private static int LISTENINGPORT = 25;
@@ -23,7 +23,7 @@ public class BounceChecker extends Thread{
    private static boolean stop = false;
    private NewsletterService newsletterService;
 
-   public BounceChecker(NewsletterService newsletterService){
+   public BounceChecker (NewsletterService newsletterService) {
       this.newsletterService = newsletterService;
    }
    public void run() {

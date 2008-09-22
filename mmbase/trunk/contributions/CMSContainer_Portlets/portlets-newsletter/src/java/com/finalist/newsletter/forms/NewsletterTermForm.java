@@ -2,6 +2,11 @@ package com.finalist.newsletter.forms;
 
 import org.apache.struts.action.ActionForm;
 
+/**
+  *
+  *   newsletter term form
+  *
+  */
 public class NewsletterTermForm extends ActionForm {
 
    /**
@@ -40,12 +45,12 @@ public class NewsletterTermForm extends ActionForm {
       this.number = number;
       
    }
-   public void reset(){
+   public void reset() {
       name = null;
    }
-   public void clear(){
+   public void clear() {
       name = null;
-      offset = null;;
+      offset = null;
       number = null;
    }
 }

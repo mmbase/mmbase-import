@@ -8,7 +8,7 @@ public class NewsletterBounce {
    
    private int newsletterId;
    
-   private String userName ;
+   private String userName;
    
    private String newsLetterTitle;
    

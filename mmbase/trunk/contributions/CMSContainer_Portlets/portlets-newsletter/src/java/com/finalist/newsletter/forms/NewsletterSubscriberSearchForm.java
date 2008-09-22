@@ -3,12 +3,12 @@ package com.finalist.newsletter.forms;
 import org.apache.struts.action.ActionForm;
 
 public class NewsletterSubscriberSearchForm extends ActionForm {
-	private String fullname = null;
-	private String username = null;
-	private String email = null;
+   private String fullname = null;
+   private String username = null;
+   private String email = null;
 	private String term = null;
-	
-	public String getFullname() {
+   
+   public String getFullname() {
 		return fullname;
 	}
 	public void setFullname(String fullname) {

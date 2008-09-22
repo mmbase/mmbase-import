@@ -27,7 +27,7 @@ public class ReceiveThread extends Thread {
    private NewsletterService newsletterService;
    private  String[] params;
 
-   SMTPSTATUS status = SMTPSTATUS.INIT;
+   private SMTPSTATUS status = SMTPSTATUS.INIT;
    public ReceiveThread() {
    }
    public ReceiveThread(Socket socket) {
@@ -113,8 +113,8 @@ public class ReceiveThread extends Thread {
 
          String username = recepient[0];
          if (username.startsWith("bounce-")) {
-            params = username.replace("bounce-","").split("=");
-            newsletterService.processBouncesOfPublication(params[0],params[1]);
+            params = username.replace("bounce-", "").split("=");
+            newsletterService.processBouncesOfPublication(params[0], params[1]);
          }
          writer.write("250 Yeah, OK. Bring on the data!\r\n");
          writer.flush();
@@ -135,14 +135,14 @@ public class ReceiveThread extends Thread {
                try {
                   Thread.sleep(50);
                } catch (InterruptedException e) {
-                  log.warn("Failed to read ",e);
+                  log.warn("Failed to read ", e);
                }
             }
             data.append((char) c);
             System.arraycopy(last5chars, 1, last5chars, 0, last5chars.length - 1);
             last5chars[last5chars.length - 1] = (char) c;
          }
-         if(params != null) {
+         if (params != null) {
             newsletterService.processBouncesOfPublication(params[0], params[1], data.toString());
          }
          // ignore data for bounce message.
@@ -160,7 +160,7 @@ public class ReceiveThread extends Thread {
    private boolean verifyEndSymbol(char[] last5chars) {
 
       boolean isreading;
-      char[] endchars = {'\r', '\n','.', '\r', '\n'};
+      char[] endchars = {'\r', '\n', '.', '\r', '\n'};
       isreading = false;
       for (int i = 0; i < last5chars.length; i++) {
          if (last5chars[i] != endchars[i]) {
