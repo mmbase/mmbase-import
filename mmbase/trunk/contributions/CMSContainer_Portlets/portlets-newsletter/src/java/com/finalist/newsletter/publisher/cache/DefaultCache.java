@@ -1,13 +1,13 @@
 package com.finalist.newsletter.publisher.cache;
 
-
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
+/**
+ * @author nikko yin
+ */
 public class DefaultCache implements ICache{
 
 	private static final int FreshTimerIntervalSeconds = 1;    
@@ -30,23 +30,35 @@ public class DefaultCache implements ICache{
       this();	
 		this.time=time;			
 	}
-
+	/**
+	 * add
+	 * @param bean and value
+	 */
 	public void add(Object key, Object value) {	   
 		add(key, value,time);		
 	}
-
+	/**
+	 * add
+	 * @param bean , value and slidingExpiration
+	 */
 	public void add(Object key, Object value, long slidingExpiration) {	   
 		if(slidingExpiration!=0){			
 			CacheInfo ci=new CacheInfo(value, slidingExpiration);			
 			datas.put((String) key, ci);
 		}
 	}
-
+	/**
+	 * contains
+	 * @param key
+	 */
 	public boolean contains(Object key) {	   
 		if(datas.containsKey(key))return true;
 		return false;
 	}
-
+	/**
+	 * get
+	 * @param key
+	 */
 	public Object get(Object key) {	   
 		if(datas.containsKey(key)){
 			CacheInfo ci=datas.get(key);			
@@ -56,22 +68,37 @@ public class DefaultCache implements ICache{
 		}
 		return null;
 	}
-
+	/**
+	 * remove
+	 * @param key
+	 */
 	public void remove(Object key) {	   
 		datas.remove(key); 
 	}
-
+	/**
+	 * removeAll
+	 * @param null
+	 */
 	public void removeAll() {
 	}
-
+	/**
+	 * getTime
+	 * @param null
+	 */
 	public long getTime() {
 		return time;
 	}
-
+	/**
+	 * setTime
+	 * @param time
+	 */
 	public void setTime(long time) {
 		this.time = time;
 	}
-	
+	/**
+	 * getDatas
+	 * @param null
+	 */
 	public Map<String, CacheInfo> getDatas() {
 		return datas;
 	}
