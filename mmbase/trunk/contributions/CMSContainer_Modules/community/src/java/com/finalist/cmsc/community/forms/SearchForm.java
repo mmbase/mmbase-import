@@ -2,8 +2,6 @@ package com.finalist.cmsc.community.forms;
 
 import org.apache.struts.action.ActionForm;
 
-import com.finalist.cmsc.struts.PagerForm;
-
 public class SearchForm extends ActionForm {
 
 	private String fullName;
