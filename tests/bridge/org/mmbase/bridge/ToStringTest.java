@@ -33,7 +33,7 @@ public class ToStringTest extends BridgeTest {
                                     "", "", "",
                                     "", false);
         for (Node n : nl) {
-            assertTrue(n instanceof org.mmbase.bridge.implementation.VirtualNode);
+            assertTrue(n.getNumber() < 0); // silly way to test for viruality
             assertFalse("".equals(n.toString())); //MMB-333
         }
     }
