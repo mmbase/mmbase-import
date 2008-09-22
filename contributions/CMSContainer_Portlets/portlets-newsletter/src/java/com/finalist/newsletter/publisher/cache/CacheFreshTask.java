@@ -8,18 +8,13 @@ import java.util.TimerTask;
  */
 public class CacheFreshTask extends TimerTask{
    private DefaultCache cache;
-   /**
-    * FreshTask
-    * @param DefaultCache
-    * @return 
-    */
+   
+   // FreshTask   
       public CacheFreshTask(DefaultCache cache) {
           this.cache = cache;
       }
-      /**
-       * Start Thread
-       * 
-       */
+      
+      // Start Thread
       public void run() {
           synchronized (cache.getDatas()) {
               Iterator<Map.Entry<String, CacheInfo>> iterator

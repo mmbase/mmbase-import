@@ -30,16 +30,14 @@ public class DefaultCache implements ICache{
       this();	
 		this.time=time;			
 	}
-	/**
-	 * add
-	 * @param bean and value
-	 */
+	
+	//* add
 	public void add(Object key, Object value) {	   
 		add(key, value,time);		
 	}
 	/**
 	 * add
-	 * @param bean , value and slidingExpiration
+	 * @param Object , Object and long
 	 */
 	public void add(Object key, Object value, long slidingExpiration) {	   
 		if(slidingExpiration!=0){			
@@ -47,17 +45,15 @@ public class DefaultCache implements ICache{
 			datas.put((String) key, ci);
 		}
 	}
-	/**
-	 * contains
-	 * @param key
-	 */
+
+	// contains
 	public boolean contains(Object key) {	   
 		if(datas.containsKey(key))return true;
 		return false;
 	}
 	/**
 	 * get
-	 * @param key
+	 * @param Object
 	 */
 	public Object get(Object key) {	   
 		if(datas.containsKey(key)){
@@ -70,7 +66,7 @@ public class DefaultCache implements ICache{
 	}
 	/**
 	 * remove
-	 * @param key
+	 * @param Object
 	 */
 	public void remove(Object key) {	   
 		datas.remove(key); 

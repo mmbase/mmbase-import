@@ -11,8 +11,8 @@ public class CacheFactory {
    private static final Log logger = LogFactory.getLog(CacheFactory.class);
    /**
     * get caches'cahe
-    * @param caches
-    * @return 
+    * @param Class
+    * @return ICache
     */
   
    public static ICache getCacheInstance(Class caches) {
