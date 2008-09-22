@@ -96,6 +96,15 @@
       </db>
     </field>
 
+    <field name="required_legacy">
+      <descriptions>
+        <description>Required by db notnull</description>
+      </descriptions>
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
     <field name="languages">
       <descriptions>
         <description>Example of String enumeration</description>
