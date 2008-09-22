@@ -3,6 +3,7 @@
 <%@ tag body-content="empty"  %>
 <%@ attribute name="nodenr" required="true"  %>
 <%@ attribute name="headerwidth"  %>
+<%@ attribute name="gui" description="wanneer dit 'true' is, wordt de gui functie aangeroepen op het veld. Default is 'false'"   %>
 
 <%--default value--%>
 <c:if test="${empty headerwidth}">
@@ -12,12 +13,22 @@
 <mm:cloud method="asis">
     <mm:node number="${nodenr}" id="n">
         <mm:fieldlist type="all" >
-             <mm:fieldinfo type="guiname">
-                <c:if test="${_ != 'Object' && _ != 'Type'}">
+             <mm:fieldinfo type="name">
+                <c:if test="${_ != 'number' && _ != 'otype' && _ != 'snumber' && _ != 'dnumber' && _ != 'rnumber' && _ != 'owner' && _ != 'dir'}">
                     <div style="float: left; width: ${headerwidth}px; clear:left">
-                        <b>${_}</b>
+                        <b><mm:field name="${_}" ><mm:fieldinfo type="guiname"/></mm:field></b>
                     </div>
-                    <div style="float:left"><mm:fieldinfo type="value"/></div>
+                    <div style="float:left">
+                        <c:choose>
+                            <c:when test="${gui == 'true'}">
+                                <mm:functioncontainer name="gui" >
+                                    <mm:param name="field" value="${_}" />
+                                    <mm:function />
+                                </mm:functioncontainer>
+                            </c:when>
+                            <c:otherwise> <mm:fieldinfo type="value"/> </c:otherwise>
+                        </c:choose>
+                    </div>
                 </c:if>
             </mm:fieldinfo>
         </mm:fieldlist>

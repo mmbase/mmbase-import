@@ -89,8 +89,8 @@
                                 <input type="hidden" name="nodenr" value="${_nodenr}" />
                                 --%>
 
-                                <input type="hidden" name="updateNodeActions[${_nodenr}].type" value="${nodetype}"/>
-                                <input type="hidden" name="updateNodeActions[${_nodenr}].number" value="${_nodenr}"/>
+                                <input type="hidden" name="actions[updateNode][${_nodenr}].type" value="${nodetype}"/>
+                                <input type="hidden" name="actions[updateNode][${_nodenr}].number" value="${_nodenr}"/>
 
                                 <%--toon de velden die geedit kunnen worden--%>
                                 <%--
@@ -136,33 +136,37 @@
                                     <c:if test="${sortable == true}">
                                         <c:set var="urlup">
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="posrelSortActions[${_relationnr}].number" value="${_nodenr}" />
-                                                <mm:param name="posrelSortActions[${_relationnr}].containerNode" value="${nodenr}" />
-                                                <mm:param name="posrelSortActions[${_relationnr}].direction" value="up" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].destinationNodeNumber" value="${_nodenr}" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].sourceNodeNumber" value="${nodenr}" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].direction" value="up" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].role" value="posrel" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].sortField" value="pos" />
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
                                         <c:set var="urldown">
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="posrelSortActions[${_relationnr}].number" value="${_nodenr}" />
-                                                <mm:param name="posrelSortActions[${_relationnr}].containerNode" value="${nodenr}" />
-                                                <mm:param name="posrelSortActions[${_relationnr}].direction" value="down" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].destinationNodeNumber" value="${_nodenr}" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].sourceNodeNumber" value="${nodenr}" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].direction" value="down" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].role" value="posrel" />
+                                                <mm:param name="actions[sortRelation][${_relationnr}].sortField" value="pos" />
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
                                         <%--arrow down--%>
                                         <mm:last inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=up${params}" class="movedown" onclick="return checkSearch(this);"> --%>
+                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=up${params}" class="movedown" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:last>
 
                                         <%--arrow up--%>
                                         <mm:first inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=down${params}" class="moveup" onclick="return checkSearch(this);"> --%>
+                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=down${params}" class="moveup" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urlup}" class="moveup" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:first>
                                     </c:if>
@@ -174,29 +178,66 @@
                                     <c:if test="${delete && not empty maydelete}">
                                         <c:set var="url" >
                                             <mm:url page="/wizard/post">
-                                                <mm:param name="deleteNodeActions[1].number" value="${_relationnr}"/>
+                                                <mm:param name="actions[deleteNode][1].number" value="${_relationnr}"/>
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
-                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
+                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/edit/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
                                     </c:if>
                                     <c:remove var="maydelete"/>
+                                    <%--edit button--%>
+                                    <%--
+                                    <c:if test="${edit}">
+                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                    </c:if>
+                                    <c:if test="${not empty param.openwizard}">
+                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                    </c:if>
+                                    --%>
+                                    
                                     <%--edit button--%>
                                     <c:if test="${edit}">
                                         <c:choose>
                                             <c:when test="${not empty param.openwizard}">
                                                 <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit">
-                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
                                                 </a>
                                             </c:when>
                                             <c:otherwise>
                                                 <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit">
-                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
                                                 </a>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:if>
+                                    
                                 </div>
+
+                                <%--
+                                <c:choose>
+                                    <c:when test="${nodetype eq 'images'}">
+                                        <util:image nodenr="${_nodenr}" urlvar="url"/>
+                                        <util:image nodenr="${_nodenr}" template="+s(40)+part(0x0x40x40)+s(!40x!40)" urlvar="previewurl"/>
+                                        <a target="image" href="${url}">
+                                            <img src="${previewurl}" class="image" border="0"/>
+                                        </a>
+                                    </c:when>
+
+                                    <c:when test="${nodetype eq 'attachments'}">
+                                        <mm:node element="${nodetype}">
+                                            <c:set var="number" ><mm:field name="number" /></c:set>
+                                            <util:attachment nodenr="${number}" urlvar="url"/>
+                                            <a href="${url}"><mm:field name="title" /></a>
+                                        </mm:node>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <mm:node element="${nodetype}">
+                                            <mm:field name="gui()"/>
+                                        </mm:node>
+                                    </c:otherwise>
+                                </c:choose>
+                                --%>
 
                                 <%--
                                     show the gui value for this node.

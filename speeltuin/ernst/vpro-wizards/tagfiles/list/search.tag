@@ -51,18 +51,18 @@
     <c:if test="${collapsed == false}"><c:set var="_style" >display:none</c:set></c:if>
     <div id="searchclosed" style="${_style}">
         <a href="javascript:hideshow('searchclosed','searchopen')" class="header">
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_closed.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/edit/system/img/fold_closed.png" class="icon fold" border="0"/>
             zoeken
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/search.png" class="icon" border="0" alt=""></a>
+            <img src="${pageContext.request.contextPath}/edit/system/img/search.png" class="icon" border="0" alt=""></a>
     </div>
 
     <c:remove var="_style"/>
     <c:if test="${collapsed == true}"><c:set var="_style" >display:none</c:set></c:if>
     <div id="searchopen" style="${_style}" >
         <a href="javascript:hideshow('searchopen','searchclosed')" class="header">
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/fold_open.png" class="icon fold" border="0"/>
+            <img src="${pageContext.request.contextPath}/edit/system/img/fold_open.png" class="icon fold" border="0"/>
             zoeken
-            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/search.png" class="icon" border="0"/>
+            <img src="${pageContext.request.contextPath}/edit/system/img/search.png" class="icon" border="0"/>
         </a>
         <jsp:doBody/>
     </div>

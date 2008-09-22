@@ -21,7 +21,7 @@
 --%>
 <%@ include file="fieldinit.tagf" %>
 
-<c:set var="_action" value="${modifier}${action}Actions[${actionnr}].dateFields[${field}]" />
+<c:set var="_action" value="actions[${modifier}${action}][${actionnr}].dateFields[${field}]" />
 
 <c:if test="${empty timeFormat}"><c:set var="timeFormat" value="HH:mm" /></c:if>
 <c:if test="${empty dateFormat}"><c:set var="dateFormat" value="dd-MM-yyyy" /></c:if>
@@ -55,11 +55,6 @@
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <%--
-                    why?
-                    <input type="hidden" onchange="disableRelated();" name="${_action}.date" id="date_${field}" value="${_date}" >
-                    <input type="hidden" onchange="disablebRelated();" name="${_action}.time" id="time_${field}" value="${_time}">
-                    --%>
 
                     <%--show the date / time without a form field--%>
                     <c:choose>
@@ -84,7 +79,7 @@
                             <c:if test="${fn:contains(type, 'time')}">
                                 <input type="hidden" name="${_action}.time" value="${_time}">
                                 <input type="hidden" name="${_action}.timeFormat" value="${timeFormat}" />
-                            </c:if>
+                            </c:if>                        
                         </c:when>
                         <c:otherwise>
                             <%-- when edit is false, and create is false or _action is not of type create, this field is read only --%>

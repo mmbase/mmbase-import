@@ -14,7 +14,7 @@
 <div class="inputBlock">
     <div class="fieldName">${fieldname}</div>
     <div class="fieldValue">
-        <c:set var="_action" value="${modifier}${action}Actions[${actionnr}].fields[${field}]" />
+        <c:set var="_action" value="actions[${modifier}${action}][${actionnr}].fields[${field}]" />
         <textarea onkeydown="disableRelated();" class="${size}" id="field_${nodetype}_${field}" name="${_action}">${fieldvalue}</textarea>
     </div>
 </div>

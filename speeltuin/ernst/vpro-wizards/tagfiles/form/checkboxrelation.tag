@@ -58,7 +58,7 @@
             </mm:cloud>
         </c:otherwise>
     </c:choose>
-    <c:set var="_action" value="${modifier}${action}Actions[${relationid}]"/>
+    <c:set var="_action" value="actions[${modifier}${action}][${relationid}]"/>
 
 <%--do the form--%>
 <div class="inputBlock">
