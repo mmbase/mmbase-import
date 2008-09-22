@@ -13,7 +13,9 @@ public class CacheFactory {
 
    /**
     * get caches'cahe
-    * @param caches f
+    * 
+    * @param caches
+    *           f
     * @return ICache
     */
 
@@ -33,6 +35,7 @@ public class CacheFactory {
 
    /**
     * get time
+    * 
     * @param null
     * @return ICache
     */
@@ -42,6 +45,7 @@ public class CacheFactory {
 
    /**
     * getDefaultCache
+    * 
     * @param time
     * @return ICache
     */
