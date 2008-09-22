@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.109 2008-09-12 14:28:34 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.110 2008-09-22 15:57:07 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -1016,6 +1016,10 @@ public class BuilderReader extends DocumentReader {
 
         // default for notnull is value of required
         def.setNotNull("true".equals(fieldNotNull) || ("".equals(fieldNotNull) && dataType.isRequired()));
+
+        if (def.isNotNull() && ! "false".equalsIgnoreCase(fieldRequired)) { // If not null, it _must_ be required, unless explicitely not so (MMB-1504)
+            dataType.setRequired(true);
+        }
 
         // set unique property, but only if given
         if ("implied".equalsIgnoreCase(fieldUnique)) {
