@@ -44,7 +44,7 @@ public class PreferenceAction extends DispatchAction {
          throws Exception {
       PreferenceForm preferenceForm = (PreferenceForm) form;
       preferenceForm.clear();
-      List<String> userIds = preferenceService.getAllUserIds();
+      List < String > userIds = preferenceService.getAllUserIds();
       request.setAttribute("users", userIds);
       return mapping.findForward(FORWARD_INIT);
    }
@@ -76,18 +76,18 @@ public class PreferenceAction extends DispatchAction {
 
       PreferenceForm preferenceForm = (PreferenceForm) form;
       Object isAdd = request.getAttribute("isAddSuccess");
-      if(isAdd != null && isAdd.equals("true")){
+      if (isAdd != null && isAdd.equals("true")) {
          preferenceForm.clear();
       }
       String reload = request.getParameter("reload");
-      if(StringUtils.isNotEmpty(reload) && reload.equals("true")) {
+      if (StringUtils.isNotEmpty(reload) && reload.equals("true")) {
          preferenceForm.clear();
       }
       PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
 
       PagingUtils.initStatusHolder(request);
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
       
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
@@ -95,7 +95,7 @@ public class PreferenceAction extends DispatchAction {
       /*pagingHolder.getSort();
       pagingHolder.getDir();*/
       
-      List<PreferenceVO> preferences = preferenceService.getPreferences(preference, offset,
+      List < PreferenceVO > preferences = preferenceService.getPreferences(preference, offset,
             pagesize, preferenceForm.getOrder(), preferenceForm.getDirection());
       int totalCount = preferenceService.getTotalCount(preference);
       if (preferences == null || preferences.size() == 0) {
@@ -108,7 +108,7 @@ public class PreferenceAction extends DispatchAction {
       request.setAttribute("results", preferences);
       request.setAttribute("isList", "true");
       request.setAttribute("page", pagingHolder.getPage());
-      request.setAttribute("forward", mapping.findForward("list").getPath()+"/page="+pagingHolder.getPage());
+      request.setAttribute("forward", mapping.findForward("list").getPath() + "/page=" + pagingHolder.getPage());
       return mapping.findForward(FORWARD_SUCCESS);
    }
 }
