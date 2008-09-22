@@ -7,33 +7,25 @@ public class CacheInfo {
 	private Object obj;
 	private long secondsRemain;
 	private long cacheSeconds;
-	/**
-      * CacheInfoBean
-      * @param bean and time
-      */
+    
+	// construct CacheInfoBean      
 	public CacheInfo(Object obj, long cacheSeconds) {
 		this.obj = obj;
 		this.secondsRemain = cacheSeconds;
 		this.cacheSeconds = cacheSeconds;
 	}
-	/**
-	* getObjInfoBean
-	* @param null
-	*/
+
+	// getObjInfoBean
 	public Object getObj() {
 		return obj;
 	}
-	/**
-	* getSecondsRemain
-	* @param null
-	*/
+	
+	//getSecondsRemain
 	public long getSecondsRemain() {
 		return secondsRemain;
 	}
-	/**
-	* getTotalSeconds
-	* @param null
-	*/
+
+	// getTotalSeconds
 	public long getTotalSeconds() {
 		return cacheSeconds;
 	}
