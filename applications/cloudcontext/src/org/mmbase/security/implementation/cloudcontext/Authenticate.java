@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.22 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.23 2008-09-23 16:29:25 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -66,6 +66,7 @@ public class Authenticate extends Authentication {
      */
     @Override
     protected void load() throws SecurityException {
+        attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
         Users users = Users.getBuilder();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
@@ -107,7 +108,7 @@ public class Authenticate extends Authentication {
      * {@inheritDoc}
      */
     @Override
-    public UserContext login(String s, Map<String, Object> map, Object aobj[]) throws SecurityException  {
+    public UserContext login(String s, Map<String, ?> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
