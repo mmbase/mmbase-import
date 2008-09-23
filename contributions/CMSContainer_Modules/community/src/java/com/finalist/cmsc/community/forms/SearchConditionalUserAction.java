@@ -24,6 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Search users according to some conditions.
+ * @author Eva
+ * @author 
+ *
+ */
 public class SearchConditionalUserAction extends DispatchAction {
 
    private PersonService personService;
@@ -58,6 +64,15 @@ public class SearchConditionalUserAction extends DispatchAction {
       return actionMapping.findForward("success");
    }
 
+   /**
+    * Search groups according to some search conditions.
+    * @param actionMapping
+    * @param actionForm
+    * @param request
+    * @param httpServletResponse
+    * @return
+    * @throws Exception
+    */
    public ActionForward listGroupMembers(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
       SearchForm searchform = (SearchForm) actionForm;

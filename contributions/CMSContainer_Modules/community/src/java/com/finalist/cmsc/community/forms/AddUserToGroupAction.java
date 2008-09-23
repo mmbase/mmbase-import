@@ -7,6 +7,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+/**
+ * Put users into selected group(s).
+ * @author Eva
+ *
+ */
 public class AddUserToGroupAction extends AbstractCommunityAction {
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
          HttpServletResponse response) throws Exception {

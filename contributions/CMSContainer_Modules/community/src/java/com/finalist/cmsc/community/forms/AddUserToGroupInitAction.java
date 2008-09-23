@@ -15,6 +15,13 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.Authority;
 
+/**
+ * Get users from checkbox.
+ * Show all groups when there is no search conditions.
+ * Otherwise show the groups according to the search conditions.
+ * 
+ * @author Eva
+ */
 public class AddUserToGroupInitAction extends AbstractCommunityAction {
    @Override
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
