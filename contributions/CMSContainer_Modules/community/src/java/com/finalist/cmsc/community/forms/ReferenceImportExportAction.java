@@ -23,10 +23,22 @@ import com.finalist.cmsc.services.community.security.Authentication;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+/**
+ * @author nikko
+ *
+ */
 public class ReferenceImportExportAction extends DispatchAction {
    private static Log log = LogFactory.getLog(ReferenceImportExportAction.class);
    private PersonService personService;
 
+   /**
+    * @param mapping do nothing 
+    * @param form do nothing 
+    * @param request do nothing 
+    * @param response setContentType
+    * @return ActionForward do nothing 
+    * @throws IOException toXML
+    */
    public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response) throws IOException {
       log.debug("Export Susbscriptions");
@@ -44,6 +56,14 @@ public class ReferenceImportExportAction extends DispatchAction {
       return mapping.findForward(null);
    }
 
+   /**
+    * @param mapping goto jsp
+    * @param form get paramate
+    * @param request save massages
+    * @param response do nothing
+    * @return ActionForward chose jsp
+    * @throws IOException about treating XML
+    */
    public ActionForward importsubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response) throws IOException {
       ReferenceImportUploadForm myForm = (ReferenceImportUploadForm) form;
@@ -101,16 +121,16 @@ public class ReferenceImportExportAction extends DispatchAction {
       return xstream;
    }
 
-   public static void setLog(Log log) {
+   private static void setLog(Log log) {
       ReferenceImportExportAction.log = log;
    }
 
-   public void setPersonService(PersonService personService) {
+   private void setPersonService(PersonService personService) {
       this.personService = personService;
 
    }
 
-   public static Log getLog() {
+   private static Log getLog() {
       return log;
    }
 }
