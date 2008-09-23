@@ -2,15 +2,17 @@ package org.mmbase.bridge.tests;
 
 import org.mmbase.bridge.*;
 import java.io.*;
+import java.util.*;
+import org.mmbase.util.images.*;
 
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.Parameters;
 
 /**
  * JUnit tests for convertimage-interface implementation.
- * 
+ *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.5 2005-05-29 11:20:04 nico Exp $
+ * @version $Id: ConvertImageTest.java,v 1.6 2008-09-23 07:58:54 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -23,14 +25,14 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         assertTrue("MMBase failed to determine mime-type properly (magicfile problem?)", node.getStringValue("itype").equals("jpeg"));
         //node.delete();
     }
-    
+
     /**
      * test if an image can be converted using the getIntValue
      */
     public void testGetInvalueCachedImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
-        node.getIntValue("cache(s(30x30))");
+        node.getIntValue("cache(s(30x30))"); // does this actually convert something, I think not.
     }
 
     /**
@@ -46,13 +48,44 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         f.getFunctionValue(p);
     }
 
+    protected Map<String, String> breakImaging() {
+        Map<String, String> originalParameters = Factory.getParameters();
+        Factory.shutdown();
+        Map<String, String> brokenParameters = new HashMap<String, String>();
+        brokenParameters.putAll(originalParameters);
+        brokenParameters.put("ImageConvert.ConverterCommand", "nonexistingbinary");
+        Factory.init(brokenParameters);
+        return originalParameters;
+    }
+    protected void restoreImaging(Map<String, String> parameters) {
+        Factory.shutdown();
+        Factory.init(parameters);
+    }
+
+    public void testFailAnImage() {
+        Map<String, String> originalParameters = breakImaging();
+
+        Cloud cloud = getCloud();
+        Node node = cloud.getNode("jpeg.test.image");
+        Function f = node.getFunction("cache");
+        Parameters p = f.createParameters();
+        p.set("template","s(31x31)");
+        Object icache = f.getFunctionValue(p);
+
+        restoreImaging(originalParameters);
+
+
+    }
+    private static Cloud cloud;
     /**
      * Sets up before each test.
      */
     public void setUp() throws Exception {
-        startMMBase();
-        startLogging();
-        Cloud cloud = getCloud();
+        if (cloud == null) {
+            startMMBase();
+            startLogging();
+            cloud = getCloud();
+        }
         NodeManager nodeManager = cloud.getNodeManager("images");
         Node jpegNode = nodeManager.createNode();
         jpegNode.setStringValue("title", JPG_IMAGE_NAME);
@@ -73,7 +106,7 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
     }
     /**
      * read the test image from the file system and return it a byte[]
-     * 
+     *
      * @return the byte[] containing the image
      */
     private byte[] getTextImageBytes(String name) {
