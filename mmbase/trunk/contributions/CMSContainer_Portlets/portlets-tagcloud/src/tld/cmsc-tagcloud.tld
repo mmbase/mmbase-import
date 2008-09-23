@@ -56,4 +56,34 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<description>Get a list of nodesnumbers of a list of tags</description>
+		<name>getRelatedContent</name>
+		<tag-class>com.finalist.portlets.tagcloud.taglib.GetRelatedContentTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>The jsp variable to write the tags.</description>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>a channel to exclude</description>
+			<name>channel</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>an element to exclude</description>
+			<name>element</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>a list tags of tags to use as starting point</description>
+			<name>tags</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

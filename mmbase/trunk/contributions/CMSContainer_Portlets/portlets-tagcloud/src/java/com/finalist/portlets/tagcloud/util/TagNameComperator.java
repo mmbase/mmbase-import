@@ -24,7 +24,7 @@ public class TagNameComperator implements Comparator {
 			Tag t0 = (direction != null && direction.equalsIgnoreCase("down"))?(Tag)arg1:(Tag)arg0;
 			Tag t1 = (direction != null && direction.equalsIgnoreCase("down"))?(Tag)arg0:(Tag)arg1;
 			
-			if(orderby.equals("name")) {
+			if(orderby == null || orderby.equals("name")) {
 				return t0.getName().compareToIgnoreCase(t1.getName());
 			}
 			if(orderby.equals("description")) {

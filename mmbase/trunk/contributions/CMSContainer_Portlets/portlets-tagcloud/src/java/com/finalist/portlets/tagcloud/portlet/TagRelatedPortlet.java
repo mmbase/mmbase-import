@@ -15,7 +15,6 @@ import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.pluto.core.impl.PortletRequestImpl;
-import org.apache.struts.taglib.TagUtils;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
@@ -39,23 +38,26 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 		String elementId = getRelatedElementId(req, window);
 
 		if (elementId != null) {
-			List<Tag> tags = TagCloudUtil.getRelatedTags(Integer
-					.parseInt(elementId));
+			List<Tag> tags = TagCloudUtil.getRelatedTags(Integer.parseInt(elementId));
+			req.setAttribute("elementId", elementId);
 			req.setAttribute("tags", tags);
 		} else {
 			String channelId = getIdFromScreen(req, window, "contentchannel");
 			if (channelId != null) {
-				List<Tag> tags = TagCloudUtil
-						.getChannelRelatedTags(new Integer(channelId));
+				List<Tag> tags = TagCloudUtil.getChannelRelatedTags(new Integer(channelId));
+				req.setAttribute("channelId", channelId);
 				req.setAttribute("tags", tags);
 			} else {
 				String tag = getIdFromScreen(req, window, "tag");
 				if (tag == null) {
 					tag = getTagFromRequestParameters(req, window);
 				}
-				tag = tag.replaceAll("0x8", " ");
-				List<Tag> tags = TagCloudUtil.getTagRelatedTags(tag);
-				req.setAttribute("tags", tags);
+				if(tag != null) {
+					tag = tag.replaceAll("0x8", " ");
+					List<Tag> tags = TagCloudUtil.getTagRelatedTags(tag);
+					req.setAttribute("tag", tag);
+					req.setAttribute("tags", tags);
+				}
 			}
 		}
 		super.doView(req, res);
