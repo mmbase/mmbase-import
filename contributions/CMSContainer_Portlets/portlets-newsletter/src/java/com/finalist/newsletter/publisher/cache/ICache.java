@@ -9,14 +9,14 @@ public interface ICache {
 
    /**
     * @param key used to find value
-    * @param value store the infobean
+    * @param value store the infoBean
     */
    public void add(Object key, Object value);
 
    /**
     * @param key used to find value
-    * @param value store the infobean
-    * @param slidingExpiration the life of infobean
+    * @param value store the infoBean
+    * @param slidingExpiration the life of infoBean
     */
    public void add(Object key, Object value, long slidingExpiration);
 
@@ -26,7 +26,7 @@ public interface ICache {
    public void remove(Object key);
 
    /**
-    * remove all exited infobean in the cache
+    * remove all exited infoBean in the cache
     */
    public void removeAll();
 
