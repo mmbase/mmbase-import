@@ -243,8 +243,10 @@ public class NewsletterPublisher {
          session = (javax.mail.Session) envCtx.lookup(datasource);
 
          Properties properties = new Properties();
-
-                  String[] sender = StringUtils.split(senderEmail, "@");
+         if(senderEmail == null || senderEmail.indexOf("@") < 1){
+            senderEmail = "admin@finalist.com";
+         }  
+         String[] sender = StringUtils.split(senderEmail, "@");
 
          String verpFrom = String.format("%s-%s@%s", sender[0], toEmail.replaceAll("@", "="), sender[1]);
          properties.put("mail.smtp.from", verpFrom);
