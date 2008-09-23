@@ -14,144 +14,137 @@ import com.finalist.newsletter.util.DateUtil;
 
 public class StatisticServiceImpl implements StatisticService {
 
-	NewsLetterStatisticCAO statisticCAO;
+   NewsLetterStatisticCAO statisticCAO;
 
-	NewsletterCAO newsletterCAO;
+   NewsletterCAO newsletterCAO;
 
-	public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
+   public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
 
-		this.statisticCAO = statisticCAO;
-	}
+      this.statisticCAO = statisticCAO;
+   }
 
-	public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
+   public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
 
-		this.newsletterCAO = newsletterCAO;
-	}
+      this.newsletterCAO = newsletterCAO;
+   }
 
-	public List<StatisticResult> statisticAll() {
+   public List<StatisticResult> statisticAll() {
 
-		List<StatisticResult> list = statisticCAO.getAllRecords();
-		return list;
-	}
+      List<StatisticResult> list = statisticCAO.getAllRecords();
+      return list;
+   }
 
-	public List<StatisticResult> statisticAllByPeriod(String start, String end)
-			throws ServiceException {
+   public List<StatisticResult> statisticAllByPeriod(String start, String end)
+         throws ServiceException {
 
-		Date startDate;
-		Date endDate;
-		startDate = DateUtil.parser(start);
-		endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
-				startDate, endDate);
-		return list;
-	}
+      Date startDate;
+      Date endDate;
+      startDate = DateUtil.parser(start);
+      endDate = DateUtil.parser(end);
+      List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
+            startDate, endDate);
+      return list;
+   }
 
-	public List<StatisticResult> statisticByNewsletter(int newsletterId) {
+   public List<StatisticResult> statisticByNewsletter(int newsletterId) {
 
-		List<StatisticResult> list = statisticCAO.getRecordsByNewsletter(newsletterId);
-		return list;
-	}
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletter(newsletterId);
+      return list;
+   }
 
-	public StatisticResult statisticByNewsletterPeriod(int newsletterId,
-			String start, String end) throws ServiceException {
+   public StatisticResult statisticByNewsletterPeriod(int newsletterId,
+         String start, String end) throws ServiceException {
 
-		Date startDate;
-		Date endDate;
-		startDate = DateUtil.parser(start);
-		endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
-		StatisticResult result = new StatisticResult();
-		for (StatisticResult r : list) {
-			result.setPost(result.getPost() + r.getPost());
-			result.setSubscribe(result.getSubscribe() + r.getSubscribe());
-			result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
-			result.setRemoved(result.getRemoved() + r.getRemoved());
-			result.setBounches(result.getBounches() + r.getBounches());
-		}
-		result.setName("newsletter.summary.bydate");
-		return result;
-	}
+      Date startDate;
+      Date endDate;
+      startDate = DateUtil.parser(start);
+      endDate = DateUtil.parser(end);
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
+      StatisticResult result = new StatisticResult();
+      for (StatisticResult r : list) {
+         result.setPost(result.getPost() + r.getPost());
+         result.setSubscribe(result.getSubscribe() + r.getSubscribe());
+         result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
+         result.setRemoved(result.getRemoved() + r.getRemoved());
+         result.setBounches(result.getBounches() + r.getBounches());
+      }
+      result.setName("newsletter.summary.bydate");
+      return result;
+   }
 
-	public StatisticResult statisticSummery() {
+   public StatisticResult statisticSummery() {
 
-		List<StatisticResult> list = statisticCAO.getAllRecords();
-		StatisticResult result = new StatisticResult();
-		for (StatisticResult r : list) {
-			result.setPost(result.getPost() + r.getPost());
-			result.setSubscribe(result.getSubscribe() + r.getSubscribe());
-			result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
-			result.setRemoved(result.getRemoved() + r.getRemoved());
-			result.setBounches(result.getBounches() + r.getBounches());
-		}
-		result.setName("newsletter.summary.all");
-		return result;
-	}
+      List<StatisticResult> list = statisticCAO.getAllRecords();
+      StatisticResult result = new StatisticResult();
+      for (StatisticResult r : list) {
+         result.setPost(result.getPost() + r.getPost());
+         result.setSubscribe(result.getSubscribe() + r.getSubscribe());
+         result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
+         result.setRemoved(result.getRemoved() + r.getRemoved());
+         result.setBounches(result.getBounches() + r.getBounches());
+      }
+      result.setName("newsletter.summary.all");
+      return result;
+   }
 
-	public StatisticResult statisticSummeryPeriod(String start, String end)
-			throws ServiceException {
+   public StatisticResult statisticSummeryPeriod(String start, String end)
+         throws ServiceException {
 
-		Date startDate;
-		Date endDate;
-		startDate = DateUtil.parser(start);
-		endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
-				startDate, endDate);
-		StatisticResult result = new StatisticResult();
-		for (StatisticResult r : list) {
-			result.setPost(result.getPost() + r.getPost());
-			result.setSubscribe(result.getSubscribe() + r.getSubscribe());
-			result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
-			result.setRemoved(result.getRemoved() + r.getRemoved());
-			result.setBounches(result.getBounches() + r.getBounches());
-		}
-		result.setName("newsletter.summary.all.bydate");
-		return result;
-	}
+      Date startDate;
+      Date endDate;
+      startDate = DateUtil.parser(start);
+      endDate = DateUtil.parser(end);
+      List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
+            startDate, endDate);
+      StatisticResult result = new StatisticResult();
+      for (StatisticResult r : list) {
+         result.setPost(result.getPost() + r.getPost());
+         result.setSubscribe(result.getSubscribe() + r.getSubscribe());
+         result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
+         result.setRemoved(result.getRemoved() + r.getRemoved());
+         result.setBounches(result.getBounches() + r.getBounches());
+      }
+      result.setName("newsletter.summary.all.bydate");
+      return result;
+   }
 
-	public List<StatisticResult> StatisticDetailByNewsletterPeriod(
-			int newsletterId, String start, String end) throws ServiceException {
+   public List<StatisticResult> StatisticDetailByNewsletterPeriod(
+         int newsletterId, String start, String end) throws ServiceException {
 
-		Date startDate;
-		Date endDate;
-		startDate = DateUtil.parser(start);
-		endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
-		return list;
-	}
-	
-	public StatisticResult StatisticSummaryByNewsletter(int newsletterId) {
-		List<StatisticResult> list = statisticCAO.getRecordsByNewsletter(newsletterId);
-		StatisticResult result = new StatisticResult();
-		for (StatisticResult r : list) {
-			result.setPost(result.getPost() + r.getPost());
-			result.setSubscribe(result.getSubscribe() + r.getSubscribe());
-			result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
-			result.setRemoved(result.getRemoved() + r.getRemoved());
-			result.setBounches(result.getBounches() + r.getBounches());
-		}
-		result.setName("newsletter.summary");
-		return result;
-	}
+      Date startDate;
+      Date endDate;
+      startDate = DateUtil.parser(start);
+      endDate = DateUtil.parser(end);
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
+      return list;
+   }
 
-	public void logPubliction(int newsletterId, HANDLE handle) {
-		int userId = CommunityModuleAdapter.getCurrentUserId();
-		statisticCAO.logPubliction(userId, newsletterId, handle);
-	}
-	
-	public List<StatisticResult> getLogs() {
-		
-		return statisticCAO.getLogs();
-	}
+   public StatisticResult StatisticSummaryByNewsletter(int newsletterId) {
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletter(newsletterId);
+      StatisticResult result = new StatisticResult();
+      for (StatisticResult r : list) {
+         result.setPost(result.getPost() + r.getPost());
+         result.setSubscribe(result.getSubscribe() + r.getSubscribe());
+         result.setUnsubscribe(result.getUnsubscribe() + r.getUnsubscribe());
+         result.setRemoved(result.getRemoved() + r.getRemoved());
+         result.setBounches(result.getBounches() + r.getBounches());
+      }
+      result.setName("newsletter.summary");
+      return result;
+   }
 
-	public int pushSumedLogs(List<StatisticResult> listRecorder) {
-		
-		return statisticCAO.insertSumedLogs(listRecorder);
-	}
+   public void logPubliction(int newsletterId, HANDLE handle) {
+      int userId = CommunityModuleAdapter.getCurrentUserId();
+      statisticCAO.logPubliction(userId, newsletterId, handle);
+   }
 
-	
+   public List<StatisticResult> getLogs() {
+      
+      return statisticCAO.getLogs();
+   }
 
-	
-
-	
-
+   public int pushSumedLogs(List<StatisticResult> listRecorder) {
+      
+      return statisticCAO.insertSumedLogs(listRecorder);
+   }
 }
