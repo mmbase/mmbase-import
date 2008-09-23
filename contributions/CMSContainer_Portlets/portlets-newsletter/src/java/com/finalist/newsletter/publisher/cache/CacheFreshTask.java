@@ -28,7 +28,7 @@ public class CacheFreshTask extends TimerTask {
          while (iterator.hasNext()) {
             Map.Entry < String , CacheInfo > entry = iterator.next();
             CacheInfo ci = entry.getValue();
-            if (ci.getTotalSeconds() != ICache.Forever) {
+            if (ci.getTotalSeconds() != ICache.FOREVER) {
                ci.setSecondsRemain(ci.getSecondsRemain() - 1);
                if (ci.getSecondsRemain() <= 0) {
                   iterator.remove();
