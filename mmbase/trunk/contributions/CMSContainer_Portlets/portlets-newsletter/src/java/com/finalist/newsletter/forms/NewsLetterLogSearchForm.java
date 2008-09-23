@@ -8,74 +8,71 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-public class NewsLetterLogSearchForm extends
-		org.apache.struts.action.ActionForm {
+public class NewsLetterLogSearchForm extends org.apache.struts.action.ActionForm {
 
-	private String newsletters;
+   private String newsletters;
 
-	private String startDate;
+   private String startDate;
 
-	private String endDate;
+   private String endDate;
 
-	private String detailOrSum;
+   private String detailOrSum;
 
-	public String getDetailOrSum (){
+   public String getDetailOrSum() {
 
-		return detailOrSum;
-	}
+      return detailOrSum;
+   }
 
-	public void setDetailOrSum (String detailorsum){
+   public void setDetailOrSum(String detailorsum) {
 
-		this.detailOrSum = detailorsum;
-	}
+      this.detailOrSum = detailorsum;
+   }
 
-	public String getNewsletters (){
+   public String getNewsletters() {
 
-		return newsletters;
-	}
+      return newsletters;
+   }
 
-	public void setNewsletters (String newsletters){
+   public void setNewsletters(String newsletters) {
 
-		this.newsletters = newsletters;
-	}
+      this.newsletters = newsletters;
+   }
 
-	@Override
-	public ActionErrors validate (ActionMapping mapping,
-			HttpServletRequest request){
+   @Override
+   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
 
-		ActionErrors errors = new ActionErrors();
+      ActionErrors errors = new ActionErrors();
 
-		if (startDate == "" && endDate != "") {
-			this.startDate = "2007-12-30";
+      if (startDate == "" && endDate != "") {
+         this.startDate = "2007-12-30";
 
-		}
-		else if (startDate != "" && endDate == "") {
-			Long time = System.currentTimeMillis();
-			Date date = new Date(time);
-			this.endDate = DateFormat.getDateInstance().format(date);
+      } else if (startDate != "" && endDate == "") {
+         Long time = System.currentTimeMillis();
+         Date date = new Date(time);
+         this.endDate = DateFormat.getDateInstance().format(date);
 
-		}
-		return errors;
-	}
+      }
+      return errors;
+   }
 
-	public String getStartDate (){
+   public String getStartDate() {
 
-		return startDate;
-	}
+      return startDate;
+   }
 
-	public void setStartDate (String startDate){
+   public void setStartDate(String startDate) {
 
-		this.startDate = startDate;
-	}
+      this.startDate = startDate;
+   }
 
-	public String getEndDate (){
+   public String getEndDate() {
 
-		return endDate;
-	}
+      return endDate;
+   }
 
-	public void setEndDate (String endDate){
+   public void setEndDate(String endDate) {
 
-		this.endDate = endDate;
-	}
+      this.endDate = endDate;
+   }
 
 }
