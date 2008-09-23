@@ -3,7 +3,7 @@ package com.finalist.newsletter.forms;
 
 public class NewsLetterShowForm extends org.apache.struts.action.ActionForm {
 
-   Private String newsletters;
+   private String newsletters;
 
    public String getNewsletters (){
 
