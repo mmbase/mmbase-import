@@ -5,7 +5,7 @@ package com.finalist.newsletter.publisher.cache;
  * 
  */
 public interface ICache {
-   public static int Forever = -1;
+   public static int FOREVER = -1;
 
    /**
     * @param key used to find value
