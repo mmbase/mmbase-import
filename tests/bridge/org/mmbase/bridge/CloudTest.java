@@ -51,7 +51,7 @@ public class CloudTest extends BridgeTest {
             String s = new Integer(i).toString();
             Node node;
             node = cloud.getNodeManager("bb").createNode();
-            node.setByteValue("bytefield", s.getBytes());
+            node.setByteValue("binaryfield", s.getBytes());
             node.setDoubleValue("doublefield", i);
             node.setFloatValue("floatfield", i);
             node.setIntValue("intfield", i);
@@ -77,7 +77,7 @@ public class CloudTest extends BridgeTest {
 
     public void testGetList() {
         NodeList nodeList;
-        nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "aa.bytefield", "", "", "", "", false);
+        nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "aa.binaryfield", "", "", "", "", false);
         assertTrue(nodeList.size() == nrOfBBNodes);
     }
 
@@ -97,23 +97,23 @@ public class CloudTest extends BridgeTest {
 
     public void testGetListWithNullParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList(null, "aa,bb", "aa.bytefield", "", "", "", "", false);
+        nodeList = cloud.getList(null, "aa,bb", "aa.binbaryfield", "", "", "", "", false);
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
     public void testGetListWithEmptyParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList("", "aa,bb", "aa.bytefield", "", "", "", "", false);
+        nodeList = cloud.getList("", "aa,bb", "aa.binaryfield", "", "", "", "", false);
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
     /*
     This test is obsolete, the new API allows these queries
-     
+
     public void testGetListWithInvalidParameterStartNodes() {
         try {
             NodeList nodeList;
-            nodeList = cloud.getList("" + bbNode.getNumber(), "aa,bb", "aa.bytefield", "", "", "", "", false);
+            nodeList = cloud.getList("" + bbNode.getNumber(), "aa,bb", "aa.binaryfield", "", "", "", "", false);
             fail("Should raise a BridgeException, but gave following list: " + nodeList);
         } catch (BridgeException e) {}
     }
@@ -121,21 +121,21 @@ public class CloudTest extends BridgeTest {
 
     public void testGetListWithNullParameterNodePath() {
         try {
-            cloud.getList(null, null, "bytefield", "", "", "", "", false);
+            cloud.getList(null, null, "binaryfield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }
 
     public void testGetListWithEmptyParameterNodePath() {
         try {
-            cloud.getList(null, "", "bytefield", "", "", "", "", false);
+            cloud.getList(null, "", "binaryfield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }
 
     public void testGetListWithInvalidParameterNodePath() {
         try {
-            cloud.getList(null, "x", "bytefield", "", "", "", "", false);
+            cloud.getList(null, "x", "binaryfield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch (BridgeException e) {}
     }
@@ -151,7 +151,7 @@ public class CloudTest extends BridgeTest {
     }
 
     */
-    
+
     /*
     This test is now obsolete, the new API allows these queries
     public void testGetListWithEmptyParameterFields() {
@@ -162,7 +162,7 @@ public class CloudTest extends BridgeTest {
         } catch (BridgeException e) {}
     }
     */
-    
+
     public void testGetListWithInvalidParameterFields() {
         try {
             NodeList nodeList;
@@ -196,7 +196,7 @@ public class CloudTest extends BridgeTest {
     }
     /*
     public void testGetListWithQuery() {
-    
+
         org.mmbase.cache.Cache cache = org.mmbase.cache.MultilevelCache.getCache();
         NodeList nodeList;
         Query query = new BasicSearchQuery();
@@ -207,7 +207,7 @@ public class CloudTest extends BridgeTest {
         query.addField(stepa, a.getField("stringfield"));
         nodeList = cloud.getList(query);
         assertTrue(cache.size() == 1);
-        
+
     }
     */
 

@@ -51,7 +51,7 @@
 
     <field>
       <gui>
-        <guiname xml:lang="en">ByteField</guiname>
+        <guiname xml:lang="en">BinaryField</guiname>
       </gui>
       <editor>
         <positions>
@@ -59,7 +59,7 @@
         </positions>
       </editor>
       <db>
-        <name>bytefield</name>
+        <name>binaryfield</name>
         <type key="false" notnull="true" state="persistent">BYTE</type>
       </db>
     </field>

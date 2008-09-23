@@ -33,7 +33,7 @@ public class NodeManagerTest extends BridgeTest {
         cloud = getCloud();
         nodes = cloud.createNodeList();
         Node node = cloud.getNodeManager("aa").createNode();
-        node.setByteValue("bytefield", "100".getBytes());
+        node.setByteValue("binaryfield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
         node.setFloatValue("floatfield", 300);
         node.setIntValue("intfield", 400);
@@ -43,7 +43,7 @@ public class NodeManagerTest extends BridgeTest {
         nodes.add(node);
 
         node = cloud.getNodeManager("aa").createNode();
-        node.setByteValue("bytefield", "100".getBytes());
+        node.setByteValue("binaryfield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
         node.setFloatValue("floatfield", 300);
         node.setIntValue("intfield", 400);
@@ -57,7 +57,7 @@ public class NodeManagerTest extends BridgeTest {
 
     public void tearDown() {
         // Remove test node.
-        
+
         for (NodeIterator i  = nodes.nodeIterator() ; i.hasNext() ; ){
             i.nextNode().delete();
         }
@@ -71,7 +71,7 @@ public class NodeManagerTest extends BridgeTest {
         nodeList = nodeManager.getList("", "", "");
         assertTrue(nodeList.size() == nodes.size());
     }
-    
+
     /**
      * Test if it is possible to search for a node that contains single quotes
      */
