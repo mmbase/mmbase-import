@@ -8,18 +8,18 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Term;
 
 public interface NewsletterCAO {
-	public Newsletter getNewsletterById(int id);
+   public Newsletter getNewsletterById(int id);
 
-	public List<Term> getALLTerm();
+   public List<Term> getALLTerm();
 
-	public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value, boolean paging);
+   public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value, boolean paging);
 
-	public int getNewsletterIdBySubscription(int id);
+   public int getNewsletterIdBySubscription(int id);
 
-	public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging);
+   public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging);
 
-	Node getNewsletterNodeById(int newsletterId);
+   Node getNewsletterNodeById(int newsletterId);
 
-	public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
+   public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
 
 }

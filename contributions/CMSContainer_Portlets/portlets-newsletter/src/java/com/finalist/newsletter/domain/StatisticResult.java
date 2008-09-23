@@ -7,124 +7,124 @@ public class StatisticResult {
    public enum HANDLE {
       BOUNCE,ACTIVE,INACTIVE,REMOVE,POST
    }
-	private int newsletterId = 0;
-	
-	private int userId=0;
+   private int newsletterId = 0;
 
-	private String name;
+   private int userId=0;
 
-	private int post = 0;
+   private String name;
 
-	private int bounches = 0;
+   private int post = 0;
 
-	private int subscribe = 0;
+   private int bounches = 0;
 
-	private int unsubscribe = 0;
+   private int subscribe = 0;
 
-	private int removed = 0;
+   private int unsubscribe = 0;
 
-	private Date logdate;
+   private int removed = 0;
 
-	private String showingdate;
+   private Date logdate;
 
-	public String getShowingdate (){
+   private String showingdate;
 
-		return showingdate;
-	}
+   public String getShowingdate (){
 
-	public void setShowingdate (String showingdate){
+      return showingdate;
+   }
 
-		this.showingdate = showingdate;
-	}
+   public void setShowingdate (String showingdate){
 
-	public int getNewsletterId (){
+      this.showingdate = showingdate;
+   }
 
-		return newsletterId;
-	}
+   public int getNewsletterId (){
 
-	public void setNewsletterId (int newsletterId){
+      return newsletterId;
+   }
 
-		this.newsletterId = newsletterId;
-	}
+   public void setNewsletterId (int newsletterId){
 
-	public String getName (){
+      this.newsletterId = newsletterId;
+   }
 
-		return name;
-	}
+   public String getName (){
 
-	public void setName (String name){
+      return name;
+   }
 
-		this.name = name;
-	}
+   public void setName (String name){
 
-	public int getPost (){
+      this.name = name;
+   }
 
-		return post;
-	}
+   public int getPost (){
 
-	public void setPost (int post){
+      return post;
+   }
 
-		this.post = post;
-	}
+   public void setPost (int post){
 
-	public int getBounches (){
+      this.post = post;
+   }
 
-		return bounches;
-	}
+   public int getBounches (){
 
-	public void setBounches (int bounches){
+      return bounches;
+   }
 
-		this.bounches = bounches;
-	}
+   public void setBounches (int bounches){
 
-	public int getSubscribe (){
+      this.bounches = bounches;
+   }
 
-		return subscribe;
-	}
+   public int getSubscribe (){
 
-	public void setSubscribe (int subscribe){
+      return subscribe;
+   }
 
-		this.subscribe = subscribe;
-	}
+   public void setSubscribe (int subscribe){
 
-	public int getUnsubscribe (){
+      this.subscribe = subscribe;
+   }
 
-		return unsubscribe;
-	}
+   public int getUnsubscribe (){
 
-	public void setUnsubscribe (int unsubscribe){
+      return unsubscribe;
+   }
 
-		this.unsubscribe = unsubscribe;
-	}
+   public void setUnsubscribe (int unsubscribe){
 
-	public int getRemoved (){
+      this.unsubscribe = unsubscribe;
+   }
 
-		return removed;
-	}
+   public int getRemoved (){
 
-	public void setRemoved (int removed){
+      return removed;
+   }
 
-		this.removed = removed;
-	}
+   public void setRemoved (int removed){
 
-	public Date getLogdate (){
+      this.removed = removed;
+   }
 
-		return logdate;
-	}
+   public Date getLogdate (){
 
-	public void setLogdate (Date logdate){
+      return logdate;
+   }
 
-		this.logdate = logdate;
-	}
+   public void setLogdate (Date logdate){
 
-	public int getUserId() {
-		return userId;
-	}
+      this.logdate = logdate;
+   }
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+   public int getUserId() {
+      return userId;
+   }
 
-	
+   public void setUserId(int userId) {
+      this.userId = userId;
+   }
+
+
 
 }
