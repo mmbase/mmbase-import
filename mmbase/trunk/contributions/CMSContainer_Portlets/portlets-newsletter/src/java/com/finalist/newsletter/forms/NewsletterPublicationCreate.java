@@ -32,14 +32,10 @@ import com.finalist.newsletter.util.NewsletterPublicationUtil;
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
    /**
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param cloud
-    *           Description of Parameter
     * @return ActionForward refresh NewsletterList
-    * @exception Exception
-    *               Description of Exception
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

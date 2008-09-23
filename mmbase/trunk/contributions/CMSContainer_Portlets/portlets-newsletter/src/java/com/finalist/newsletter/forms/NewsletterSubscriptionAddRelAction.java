@@ -52,12 +52,12 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
    /**
     * specified making selected person subscribing the newsletter ,refreshing the newsletter subscriber list
     * 
-    * @param mapping Description of Parameter
-    * @param form Description of Parameter
-    * @param request Description of Parameter
-    * @param response Description of Parameter
+    * @param mapping
+    * @param form
+    * @param request
+    * @param response
     * @return ActionForward refreshing the newsletter subscriber list
-    * @throws Exception Description of Exception
+    * @throws Exception
     */
    public ActionForward subscribeNewsletters(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response) throws Exception {

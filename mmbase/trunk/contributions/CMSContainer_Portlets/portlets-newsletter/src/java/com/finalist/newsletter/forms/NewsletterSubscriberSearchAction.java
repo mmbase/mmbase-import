@@ -86,13 +86,9 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
     * names,subscribed terms
     * 
     * @param mapping
-    *           Description of Parameter
     * @param form
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param response
-    *           Description of Parameter
     * @return ActionForward showing newsletter subscriber List
     */
    public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request,

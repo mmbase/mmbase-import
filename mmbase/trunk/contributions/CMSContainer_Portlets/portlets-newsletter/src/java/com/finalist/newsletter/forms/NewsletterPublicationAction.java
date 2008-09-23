@@ -39,12 +39,12 @@ public class NewsletterPublicationAction extends DispatchActionSupport {
    /**
     * protected unspecified function, doing default newsletter publication
     * 
-    * @param mapping Description of Parameter
-    * @param form Description of Parameter
-    * @param request Description of Parameter
-    * @param response Description of Parameter
-    * @exception Exception Description of Exception
+    * @param mapping
+    * @param form
+    * @param request
+    * @param response
     * @return Showing the default search's result
+    * @throws Exception
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response) throws Exception {
