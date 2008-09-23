@@ -59,10 +59,10 @@
 			<table border="0" width="100%" class="listcontent">
 				<tr class="listheader">
 					<th></th>
-					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
+					<th nowrap="true"><a href="javascript:orderBy('name')" class="headerlink"><fmt:message
 						key="urlsearch.namecolumn" /></a></th>
-					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
-                    <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('valid');"><fmt:message key="urlsearch.validcolumn" /></a></th>
+					<th nowrap="true"><a href="javascript:orderBy('url')" class="headerlink" ><fmt:message key="urlsearch.urlcolumn" /></a></th>
+                    <th nowrap="true"><a href="javascript:orderBy('valid')" class="headerlink" ><fmt:message key="urlsearch.validcolumn" /></a></th>
 				</tr>
 				<tbody class="hover">
 					<c:set var="useSwapStyle">true</c:set>
@@ -98,10 +98,10 @@
                                     <c:when test="${empty isValidUrl}">
                                         <fmt:message key="urlsearch.validurl.unknown" />
                                     </c:when>
-                                    <c:when test="${isValidUrl eq 0}">
+                                    <c:when test="${isValidUrl eq false}">
                                         <fmt:message key="urlsearch.validurl.invalid" />
                                     </c:when>
-                                    <c:when test="${isValidUrl eq 1}">
+                                    <c:when test="${isValidUrl eq true}">
                                         <fmt:message key="urlsearch.validurl.valid" />
                                     </c:when>
                                     <c:otherwise>
