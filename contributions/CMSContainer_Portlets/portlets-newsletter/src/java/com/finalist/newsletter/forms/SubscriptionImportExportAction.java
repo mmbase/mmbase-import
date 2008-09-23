@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+
 public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
    private static final String PARAM_NEWSLETTERID = "newsletterId";
@@ -39,13 +40,13 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
 
    protected void onInit() {
       super.onInit();
-      subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
+      subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean(
+            "subscriptionServices");
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
    }
 
-   public ActionForward export(ActionMapping mapping, ActionForm form,
-                               HttpServletRequest request, HttpServletResponse response)
-         throws IOException {
+   public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws IOException {
 
       log.debug("Export Susbscriptions");
 
@@ -58,11 +59,9 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          for (String id : ids) {
             subscriptions.addAll(getSubscriptions(type, id));
          }
-      }
-      else {
+      } else {
          subscriptions = subscriptionServices.getAllSubscription();
       }
-
 
       String xml = getXStream().toXML(subscriptions);
       byte[] bytes = xml.getBytes();
@@ -81,10 +80,8 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       return mapping.findForward(null);
    }
 
-
-   public ActionForward importsubscription(ActionMapping mapping, ActionForm form,
-                                           HttpServletRequest request, HttpServletResponse response)
-         throws IOException {
+   public ActionForward importsubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws IOException {
       SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
 
       FormFile myFile = myForm.getDatafile();
@@ -113,55 +110,54 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          return mapping.findForward("failed");
       }
 
+      return mapping.findForward("success");
+   }
+
+   public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws FileNotFoundException, IOException {
+
+      SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
+      ActionMessages messages = new ActionMessages();
+      FormFile myFile = myForm.getDatafile();
+      boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
+      int newsletterId = Integer.parseInt((String) request.getParameter(PARAM_NEWSLETTERID));
+      if (isCSV) {
+         byte[] fileData = myFile.getFileData();
+         String fileString = new String(fileData);
+         BufferedReader br = new BufferedReader(new StringReader(fileString));
+         String tmpLinsStr = br.readLine();
+         PersonService personService = (PersonService) ApplicationContextFactory.getBean("personService");
+         NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory
+               .getBean("subscriptionServices");
+
+         while (tmpLinsStr != null) {
+            String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
+            String tmpUserName = tmpUserInfo.substring(0, tmpUserInfo.indexOf(","));
+            String tmpUserEmail = tmpUserInfo.substring(tmpUserInfo.indexOf(",") + 1, tmpUserInfo.length());
+            Person tmpPerson = personService.getPersonByEmail(tmpUserEmail);
+            if (tmpPerson == null) {
+               AuthenticationService as = getAuthenticationService();
+               Authentication authentication = as.createAuthentication(tmpUserEmail, tmpUserEmail);
+               Person person = personService.createPerson(tmpUserName, "", "", authentication.getId());
+               person.setEmail(tmpUserEmail);
+               personService.updatePerson(person);
+               tmpPerson = personService.getPersonByEmail(tmpUserEmail);
+            }
+            int authId = tmpPerson.getAuthenticationId().intValue();
+            Subscription subRet = subscriptionServices.getSubscription(authId, newsletterId);
+            if (subRet == null) subscriptionServices.createSubscription(authId, newsletterId);
+            tmpLinsStr = br.readLine();
+         }
          return mapping.findForward("success");
+      } else {
+         request.setAttribute("importType", "importCSV");
+         request.setAttribute(PARAM_NEWSLETTERID, newsletterId);
+         messages.add("file", new ActionMessage("datafile.unsupport"));
+         saveMessages(request, messages);
+         return mapping.findForward("failed");
+      }
    }
 
-   public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form,
-                                           HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException{	   
-	   
-	   SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
-		ActionMessages messages = new ActionMessages();
-		FormFile myFile = myForm.getDatafile();
-		boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
-		int newsletterId = Integer.parseInt((String) request.getParameter(PARAM_NEWSLETTERID));
-		if (isCSV) {
-			byte[] fileData = myFile.getFileData();
-			String fileString = new String(fileData);
-			BufferedReader br = new BufferedReader(new StringReader(fileString));
-			String tmpLinsStr = br.readLine();
-			PersonService personService = (PersonService) ApplicationContextFactory.getBean("personService");
-			NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory
-					.getBean("subscriptionServices");
-
-			while (tmpLinsStr != null) {
-				String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
-				String tmpUserName = tmpUserInfo.substring(0, tmpUserInfo.indexOf(","));
-				String tmpUserEmail = tmpUserInfo.substring(tmpUserInfo.indexOf(",") + 1, tmpUserInfo.length());
-				Person tmpPerson = personService.getPersonByEmail(tmpUserEmail);
-				if (tmpPerson == null) {
-					AuthenticationService as = getAuthenticationService();
-					Authentication authentication = as.createAuthentication(tmpUserEmail, tmpUserEmail);
-					Person person = personService.createPerson(tmpUserName, "", "", authentication.getId());
-					person.setEmail(tmpUserEmail);
-					personService.updatePerson(person);
-					tmpPerson = personService.getPersonByEmail(tmpUserEmail);
-				}
-				int authId = tmpPerson.getAuthenticationId().intValue();
-				Subscription subRet = subscriptionServices.getSubscription(authId, newsletterId);
-				if (subRet == null)
-					subscriptionServices.createSubscription(authId, newsletterId);
-				tmpLinsStr = br.readLine();
-			}
-			return mapping.findForward("success");
-		} else {
-			request.setAttribute("importType", "importCSV");
-			request.setAttribute(PARAM_NEWSLETTERID, newsletterId);
-			messages.add("file", new ActionMessage("datafile.unsupport"));
-			saveMessages(request, messages);
-			return mapping.findForward("failed");
-		}
-   }
-   
    private List<Subscription> getSubscriptions(String type, String id) {
       if ("person".equals(type)) {
          return subscriptionServices.getSubscriptionBySubscriber(id);
@@ -174,7 +170,6 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       }
       return Collections.emptyList();
    }
-
 
    private void importFromFile(byte[] fileData) throws Exception {
       String xml = new String(fileData);
@@ -192,7 +187,6 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
 
          if (null == subscriptionServices.getSubscription(sbId, nId)) {
 
-
             log.debug(String.format("try to import user %s's subscription of %s which is not exist", sbId, nId));
 
             subscriptionServices.addNewRecord(sbId, nId);
@@ -207,7 +201,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       xstream.alias("term", Term.class);
       return xstream;
    }
-   
+
    protected AuthenticationService getAuthenticationService() {
       WebApplicationContext ctx = getWebApplicationContext();
       return (AuthenticationService) ctx.getBean("authenticationService");

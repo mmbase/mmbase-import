@@ -20,7 +20,6 @@ import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
 import com.finalist.cmsc.paging.PagingUtils;
-import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
@@ -28,221 +27,280 @@ import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.SubscriptionHibernateService;
 
+/**
+ * 
+ * @author Lisa
+ * 
+ */
 public class SubscriptioManagementAction extends DispatchActionSupport {
 
-	private static final String FORWARD_DASHBOARD = "newsletterdashboard";
-	private static final String FORWARD_OVERVIEW = "newsletteroverview";
-	private static final String FORWARD_SUBSCRIPTION = "newsletterSubscriptionDetail";
-	private static final String FORWARD_SUBSCRIBEROVERVIEW = "subscriberOverview";
-	private static final String FORWARD_SUBSCRIBER_SUBSCRIPTIONS="subscriberSubscriptionDetail";
-	private static final String FORWARD_SUBSCRIPTION_IMPORT = "importpage";
+   private static final String FORWARD_DASHBOARD = "newsletterdashboard";
+   private static final String FORWARD_OVERVIEW = "newsletteroverview";
+   private static final String FORWARD_SUBSCRIPTION = "newsletterSubscriptionDetail";
+   private static final String FORWARD_SUBSCRIBEROVERVIEW = "subscriberOverview";
+   private static final String FORWARD_SUBSCRIBER_SUBSCRIPTIONS = "subscriberSubscriptionDetail";
+   private static final String FORWARD_SUBSCRIPTION_IMPORT = "importpage";
 
-	private static final String RESULTS = "results";
-	private static final String RESULTCOUNT = "resultCount";
+   private static final String RESULTS = "results";
+   private static final String RESULTCOUNT = "resultCount";
 
-	private static final String PARAM_NAME = "name";
-	private static final String PARAM_EMAIL = "email";
-	private static final String PARAM_TITLE = "title";
-	private static final String PARAM_SUBSCRIBER = "subscriber";
-	private static final String PARAM_NEWSLETTERTITLE = "newsletterTitle";
-	private static final String PARAM_NEWSLETTERID = "newsletterId";
-	private static final String PARAM_SUBSRIBERID = "subsriberId";
-	private static final String PARAM_IMPORTTYPE = "importType";
-	
-	private static Log log = LogFactory.getLog(SubscriptioManagementAction.class);
-	
-	NewsletterService newsletterService;
-	NewsletterSubscriptionServices subscriptionServices;
-	NewsletterPublicationService publicationService;
-	PersonService personServices;
-	SubscriptionHibernateService subscriptionHService;
+   private static final String PARAM_NAME = "name";
+   private static final String PARAM_EMAIL = "email";
+   private static final String PARAM_TITLE = "title";
+   private static final String PARAM_SUBSCRIBER = "subscriber";
+   private static final String PARAM_NEWSLETTERTITLE = "newsletterTitle";
+   private static final String PARAM_NEWSLETTERID = "newsletterId";
+   private static final String PARAM_SUBSRIBERID = "subsriberId";
+   private static final String PARAM_IMPORTTYPE = "importType";
 
-	@Override
-	protected void onInit() {
-		super.onInit();
-		newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
-		subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
-		personServices = (PersonService) getWebApplicationContext().getBean("personService");
-		publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
-		subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
-	}
+   private static Log log = LogFactory.getLog(SubscriptioManagementAction.class);
 
-	@Override
-   protected ActionForward unspecified(ActionMapping mapping, ActionForm form,
-                                       HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		log.debug("No parameter specified,go to dashboard");
-		PagingUtils.initStatusHolder(request);
-		String title = request.getParameter(PARAM_TITLE);
-		String subscriber = request.getParameter(PARAM_SUBSCRIBER);
+   NewsletterService newsletterService;
+   NewsletterSubscriptionServices subscriptionServices;
+   NewsletterPublicationService publicationService;
+   PersonService personServices;
+   SubscriptionHibernateService subscriptionHService;
 
-		List<Newsletter> newsletters = newsletterService.getNewsletters(subscriber, title, false);
-		List<Map> results = convertToMap(newsletters);
-		
-		request.setAttribute(RESULTS, results);		
-		return mapping.findForward(FORWARD_DASHBOARD);
-	}
+   /**
+    * Initialize service objects : newsletterService, subscriptionServices, personServices, publicationService,
+    * subscriptionHService
+    */
+   protected void onInit() {
+      super.onInit();
+      newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
+      subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
+      personServices = (PersonService) getWebApplicationContext().getBean("personService");
+      publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
+      subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
+   }
 
-   public ActionForward newsletterOverview(ActionMapping mapping, ActionForm form, 
-		   									HttpServletRequest request, HttpServletResponse response) {
-		log.debug("Show newsletterOverview");
+   /**
+    * unspecified searching of newsletter subscription with sorting, ordering, paging
+    */
+   protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
 
-		PagingUtils.initStatusHolder(request);
-		String title = request.getParameter(PARAM_TITLE);
-		String subscriber = request.getParameter(PARAM_SUBSCRIBER);
+      log.debug("No parameter specified,go to dashboard");
 
-		int resultCount = newsletterService.getNewsletters(subscriber, title, false).size();
-		List<Newsletter> newsletters = newsletterService.getNewsletters(subscriber, title, true);
-		List<Map> results = convertToMap(newsletters);
-		
-		request.setAttribute(RESULTS, results);
-		request.setAttribute(RESULTCOUNT, resultCount);		
-		return mapping.findForward(FORWARD_OVERVIEW);
-	}
+      PagingUtils.initStatusHolder(request);
+      String title = request.getParameter(PARAM_TITLE);
+      String subscriber = request.getParameter(PARAM_SUBSCRIBER);
 
-   public ActionForward listSubscription(ActionMapping mapping, ActionForm form,
-                                         HttpServletRequest request, HttpServletResponse response) {
-	    PagingUtils.initStatusHolder(request);
-		String name = request.getParameter(PARAM_NAME);
-		String email = request.getParameter(PARAM_EMAIL);
-		int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
-		
-		log.debug(String.format("List all Subscriptions of Newsletter %s", newsletterId));
-		int resultCount = countSubscriptionByNewsletter(newsletterId, name, email);
-		if (resultCount > 0) {
-			List<Map> results = getSubscriptionByNewsletter(newsletterId, name, email);
-			request.setAttribute(RESULTS, results);
-		}
-		request.setAttribute(RESULTCOUNT, resultCount);
-		request.setAttribute(PARAM_NEWSLETTERTITLE, newsletterService.getNewsletterName(newsletterId));
-		return mapping.findForward(FORWARD_SUBSCRIPTION);
-	}
+      List<Newsletter> newsletters = newsletterService.getNewsletters(subscriber, title, false);
+      List<Map<Object, Object>> results = convertToMap(newsletters);
 
-	private List<Map> getSubscriptionByNewsletter(int newsletterId, String name, String email) {
-		List<Map> results = new ArrayList<Map>();
+      request.setAttribute(RESULTS, results);
+      return mapping.findForward(FORWARD_DASHBOARD);
+   }
 
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
-		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, name, "", email, true);
-		for (Object[] result : qResults) {
-			String tmpFullName = result[0].toString() + " " + result[1].toString();
-			String tmpEmail = result[2].toString();
-			int tmpAuthenticationId = Integer.parseInt(result[3].toString());
-			String tmpUserName = result[4].toString();
-			AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
-		}
-		return results;
-	}
+   /**
+    * 
+    * @param mapping
+    * @param form
+    * @param request
+    * @param response
+    * @return ActionForward
+    */
+   public ActionForward newsletterOverview(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
 
-	private void AddToSubscriptionMap(List<Map> results, String fullName, String userName, String email, int authenticationId) {
-		Map result = new LinkedHashMap();
-		result.put("fullname", fullName);
-		result.put("username", userName);
-		result.put("email", email);
-		result.put("id", authenticationId);
-		results.add(result);
-	}
+      log.debug("Show newsletterOverview");
 
-	private int countSubscriptionByNewsletter(int newsletterId, String name, String email) {
-		int resultCount = 0;
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
-		if (authenticationIds.size() > 0) {
-			resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, name, "", email, false).size();
-		}
-		return resultCount;
-	}
+      PagingUtils.initStatusHolder(request);
+      String title = request.getParameter(PARAM_TITLE);
+      String subscriber = request.getParameter(PARAM_SUBSCRIBER);
 
-	public ActionForward listSubscriptionByPerson(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		PagingUtils.initStatusHolder(request);
-		int subscriberId = Integer.parseInt(request.getParameter(PARAM_SUBSRIBERID));
-		String title = request.getParameter(PARAM_TITLE);
-		log.debug(String.format("List all Subscriptions of person %s", subscriberId));
+      int resultCount = newsletterService.getNewsletters(subscriber, title, false).size();
+      List<Newsletter> newsletters = newsletterService.getNewsletters(subscriber, title, true);
+      List<Map<Object, Object>> results = convertToMap(newsletters);
 
-		int resultCount = subscriptionServices.getNewslettersBySubscription(subscriberId, title, false).size();
-		Set<Newsletter> results = subscriptionServices.getNewslettersBySubscription(subscriberId, title, true);
+      request.setAttribute(RESULTS, results);
+      request.setAttribute(RESULTCOUNT, resultCount);
+      return mapping.findForward(FORWARD_OVERVIEW);
+   }
 
-		request.setAttribute(RESULTS, results);
-		request.setAttribute(RESULTCOUNT, resultCount);
-		request.setAttribute(PARAM_SUBSRIBERID, subscriberId);
-		return mapping.findForward(FORWARD_SUBSCRIBER_SUBSCRIPTIONS);
-	}
+   /**
+    * listing all subscription of one newsletter
+    * 
+    * @param mapping
+    * @param form
+    * @param request
+    * @param response
+    * @return subscription list
+    */
+   public ActionForward listSubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
 
-   public ActionForward listSubscribers(ActionMapping mapping, ActionForm form,
-                                        HttpServletRequest request, HttpServletResponse response) {
-		log.debug("Show persons who have newsletter subscription");
-		PagingUtils.initStatusHolder(request);
-		String fullname = request.getParameter(PARAM_NAME);
-		String email = request.getParameter(PARAM_EMAIL);
-		
-		int resultCount = countSubscription(fullname, email);
-		if (resultCount > 0) {
-			List<Map> results = getSubscription(fullname, email);
-			request.setAttribute(RESULTS, results);
-		}
-		request.setAttribute(RESULTCOUNT, resultCount);
-		return mapping.findForward(FORWARD_SUBSCRIBEROVERVIEW);
-	}
+      int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
 
-   private List<Map> getSubscription(String fullname, String email) {
-		List<Map> results = new ArrayList<Map>();
+      log.debug(String.format("List all Subscriptions of Newsletter %s", newsletterId));
 
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionServices.getAuthenticationIds();
-		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, true);
-		for (Object[] result : qResults) {
-			String tmpFullName = result[0].toString() + " " + result[1].toString();
-			String tmpEmail = result[2].toString();
-			int tmpAuthenticationId = Integer.parseInt(result[3].toString());
-			String tmpUserName = result[4].toString();
-			AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
-		}
-		return results;
-	}
+      PagingUtils.initStatusHolder(request);
+      String name = request.getParameter(PARAM_NAME);
+      String email = request.getParameter(PARAM_EMAIL);
 
-	private int countSubscription(String fullname, String email) {
-		int resultCount = 0;
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionServices.getAuthenticationIds();
-		if (authenticationIds.size() > 0) {
-			resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, false).size();
-		}
-		return resultCount;
-	}
+      int resultCount = countSubscriptionByNewsletter(newsletterId, name, email);
+      if (resultCount > 0) {
+         List<Map<Object, Object>> results = getSubscriptionByNewsletter(newsletterId, name, email);
+         request.setAttribute(RESULTS, results);
+      }
+      request.setAttribute(RESULTCOUNT, resultCount);
+      request.setAttribute(PARAM_NEWSLETTERTITLE, newsletterService.getNewsletterName(newsletterId));
+      return mapping.findForward(FORWARD_SUBSCRIPTION);
+   }
 
-	public ActionForward showImportPage(ActionMapping mapping, ActionForm form,
-										HttpServletRequest request, HttpServletResponse response) {
-		log.debug("Show import page");
-		String importType = request.getParameter(PARAM_IMPORTTYPE);
-		if (StringUtils.isNotEmpty(importType)) {
-			int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
-			request.setAttribute(PARAM_IMPORTTYPE, importType);
-			request.setAttribute(PARAM_NEWSLETTERID, newsletterId);
-		}
-		return mapping.findForward(FORWARD_SUBSCRIPTION_IMPORT);
-	}
+   /**
+    * get newsletter related newsletter subscription information List
+    * 
+    * @param newsletterId
+    *           subscribed newsletter's Id
+    * @param name
+    *           subscriber's name
+    * @param email
+    *           subscriber's email address
+    * @return newsletter subscription list with information subscriber's user name, email address, authenticationId,user
+    *         name,
+    */
+   private List<Map<Object, Object>> getSubscriptionByNewsletter(int newsletterId, String name, String email) {
+      List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
 
-	public ActionForward unsubscribe(ActionMapping mapping, ActionForm form,
-									HttpServletRequest request, HttpServletResponse response) {
-		String[] newsletterIds = request.getParameterValues("ids");
-		for (String id : newsletterIds) {
-			subscriptionServices.unSubscribeAllInNewsletter(Integer.decode(id));
-		}
-		return newsletterOverview(mapping, form, request, response);
-	}
+      Set<Long> authenticationIds = new HashSet<Long>();
+      authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
+      List<Object[]> qResults = subscriptionHService
+            .getSubscribersRelatedInfo(authenticationIds, name, "", email, true);
+      for (Object[] result : qResults) {
+         String tmpFullName = result[0].toString() + " " + result[1].toString();
+         String tmpEmail = result[2].toString();
+         int tmpAuthenticationId = Integer.parseInt(result[3].toString());
+         String tmpUserName = result[4].toString();
+         AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
+      }
+      return results;
+   }
 
-	private List<Map> convertToMap(List<Newsletter> newsletters) {
-		List<Map> results = new ArrayList<Map>();
-		for (Newsletter newsletter : newsletters) {
-			Map result = new HashMap();
-			int newsletterId = newsletter.getId();
-			result.put("id", newsletter.getId());
-			result.put("title", newsletter.getTitle());
-			result.put("countpublications", publicationService.countPublicationByNewsletter(newsletterId));
-			result.put("countSentPublicatons", publicationService.countSentPublications(newsletterId));
-			result.put("countSubscriptions", subscriptionServices.countSubscriptionByNewsletter(newsletterId));
-			results.add(result);
-		}
-		return results;
-	}
+   /**
+    * convert related information to Map
+    * 
+    * @param results
+    *           result list with information of newsletter subscription
+    * @param fullName
+    * @param userName
+    * @param email
+    * @param authenticationId
+    */
+   private void AddToSubscriptionMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
+         int authenticationId) {
+      Map<Object, Object> result = new LinkedHashMap<Object, Object>();
+      result.put("fullname", fullName);
+      result.put("username", userName);
+      result.put("email", email);
+      result.put("id", authenticationId);
+      results.add(result);
+   }
+
+   private int countSubscriptionByNewsletter(int newsletterId, String name, String email) {
+      int resultCount = 0;
+      Set<Long> authenticationIds = new HashSet<Long>();
+      authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
+      if (authenticationIds.size() > 0) {
+         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, name, "", email, false).size();
+      }
+      return resultCount;
+   }
+
+   public ActionForward listSubscriptionByPerson(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
+      PagingUtils.initStatusHolder(request);
+      int subscriberId = Integer.parseInt(request.getParameter(PARAM_SUBSRIBERID));
+      String title = request.getParameter(PARAM_TITLE);
+      log.debug(String.format("List all Subscriptions of person %s", subscriberId));
+
+      int resultCount = subscriptionServices.getNewslettersBySubscription(subscriberId, title, false).size();
+      Set<Newsletter> results = subscriptionServices.getNewslettersBySubscription(subscriberId, title, true);
+
+      request.setAttribute(RESULTS, results);
+      request.setAttribute(RESULTCOUNT, resultCount);
+      request.setAttribute(PARAM_SUBSRIBERID, subscriberId);
+      return mapping.findForward(FORWARD_SUBSCRIBER_SUBSCRIPTIONS);
+   }
+
+   public ActionForward listSubscribers(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
+      log.debug("Show persons who have newsletter subscription");
+      PagingUtils.initStatusHolder(request);
+      String fullname = request.getParameter(PARAM_NAME);
+      String email = request.getParameter(PARAM_EMAIL);
+
+      int resultCount = countSubscription(fullname, email);
+      if (resultCount > 0) {
+         List<Map<Object, Object>> results = getSubscription(fullname, email);
+         request.setAttribute(RESULTS, results);
+      }
+      request.setAttribute(RESULTCOUNT, resultCount);
+      return mapping.findForward(FORWARD_SUBSCRIBEROVERVIEW);
+   }
+
+   private List<Map<Object, Object>> getSubscription(String fullname, String email) {
+      List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
+
+      Set<Long> authenticationIds = new HashSet<Long>();
+      authenticationIds = subscriptionServices.getAuthenticationIds();
+      List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email,
+            true);
+      for (Object[] result : qResults) {
+         String tmpFullName = result[0].toString() + " " + result[1].toString();
+         String tmpEmail = result[2].toString();
+         int tmpAuthenticationId = Integer.parseInt(result[3].toString());
+         String tmpUserName = result[4].toString();
+         AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
+      }
+      return results;
+   }
+
+   private int countSubscription(String fullname, String email) {
+      int resultCount = 0;
+      Set<Long> authenticationIds = new HashSet<Long>();
+      authenticationIds = subscriptionServices.getAuthenticationIds();
+      if (authenticationIds.size() > 0) {
+         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, false)
+               .size();
+      }
+      return resultCount;
+   }
+
+   public ActionForward showImportPage(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
+      log.debug("Show import page");
+      String importType = request.getParameter(PARAM_IMPORTTYPE);
+      if (StringUtils.isNotEmpty(importType)) {
+         int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
+         request.setAttribute(PARAM_IMPORTTYPE, importType);
+         request.setAttribute(PARAM_NEWSLETTERID, newsletterId);
+      }
+      return mapping.findForward(FORWARD_SUBSCRIPTION_IMPORT);
+   }
+
+   public ActionForward unsubscribe(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
+      String[] newsletterIds = request.getParameterValues("ids");
+      for (String id : newsletterIds) {
+         subscriptionServices.unSubscribeAllInNewsletter(Integer.decode(id));
+      }
+      return newsletterOverview(mapping, form, request, response);
+   }
+
+   private List<Map<Object, Object>> convertToMap(List<Newsletter> newsletters) {
+      List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
+      for (Newsletter newsletter : newsletters) {
+         Map<Object, Object> result = new HashMap<Object, Object>();
+         int newsletterId = newsletter.getId();
+         result.put("id", newsletter.getId());
+         result.put("title", newsletter.getTitle());
+         result.put("countpublications", publicationService.countPublicationByNewsletter(newsletterId));
+         result.put("countSentPublicatons", publicationService.countSentPublications(newsletterId));
+         result.put("countSubscriptions", subscriptionServices.countSubscriptionByNewsletter(newsletterId));
+         results.add(result);
+      }
+      return results;
+   }
 }
