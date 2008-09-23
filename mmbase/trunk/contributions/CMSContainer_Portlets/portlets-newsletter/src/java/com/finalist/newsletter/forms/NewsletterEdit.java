@@ -1,11 +1,10 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
+ * 
  */
 package com.finalist.newsletter.forms;
 
@@ -23,18 +22,36 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterUtil;
 
+/**
+ * Newsletter Edit Action
+ * 
+ * @author Lisa
+ * 
+ */
 public class NewsletterEdit extends MMBaseFormlessAction {
 
-   @Override
+   /**
+    * @param mapping
+    *           Description of Parameter
+    * @param request
+    *           Description of Parameter
+    * @param cloud
+    *           Description of Parameter
+    * @exception Exception
+    *               Description of Exception
+    * @return ActionForward, refresh NewsletterList
+    */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = getParameter(request, "action");
-      String forwardType = getParameter(request,"forward");
+      String forwardType = getParameter(request, "forward");
 
       if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-               + mapping.findForward("returnurl").getPath() + URLEncoder.encode( "?forward") + "=" + forwardType + URLEncoder.encode( "&objectnumber") + "=" + objectnumber);
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="
+               + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath()
+               + URLEncoder.encode("?forward") + "=" + forwardType + URLEncoder.encode("&objectnumber") + "="
+               + objectnumber);
          ret.setRedirect(true);
          return ret;
       } else {
@@ -45,10 +62,10 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          NewsletterUtil.addScheduleForNewsletter(newsletterNode);
          addToRequest(request, "showpage", ewnodelastedited);
 
-         int nodeId =Integer.parseInt(request.getParameter("objectnumber"));
+         int nodeId = Integer.parseInt(request.getParameter("objectnumber"));
          ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);
-         if(forwardType.equals("manage")){
-        	 ret = mapping.findForward("newslettermanage");
+         if (forwardType.equals("manage")) {
+            ret = mapping.findForward("newslettermanage");
          }
          return ret;
       }

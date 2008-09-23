@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
@@ -31,13 +32,6 @@ import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
@@ -47,7 +41,9 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 	/** name of submit button in jsp to cancel removal */
 	private static final String ACTION_CANCEL = "cancel";
 
-	@Override
+	/**
+	 * @Override
+	 */
 	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
 		NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");

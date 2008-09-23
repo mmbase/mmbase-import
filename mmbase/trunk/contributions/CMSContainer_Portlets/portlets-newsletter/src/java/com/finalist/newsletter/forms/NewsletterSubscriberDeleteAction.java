@@ -12,24 +12,44 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
+/**
+ * using for deleting newsletter subscriber from newsletter
+ * 
+ * @author Lisa
+ * 
+ */
 public class NewsletterSubscriberDeleteAction extends MMBaseFormlessAction {
 
-	@Override
-	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
-		// TODO Auto-generated method stub
-		if (StringUtils.isNotBlank(request.getParameter("authid"))) {
-			String authId = request.getParameter("authid");
-			Node newsletterNode = cloud.getNode(Integer.parseInt(request.getParameter("newsletterId")));
-			List<Node> subscriptions = newsletterNode.getRelatedNodes(cloud.getNodeManager("subscriptionrecord"));
-			for (Node subscription : subscriptions) {
-				String subscriberId = subscription.getStringValue("subscriber");
-				if (subscriberId.equals(authId)) {
-					subscription.deleteRelations();
-					subscription.delete();
-				}
-			}
-		}
-		request.setAttribute("newsletterId", request.getParameter("newsletterId"));
-		return mapping.findForward("success");
-	}
+   /**
+    * @param mapping
+    *           Description of Parameter
+    * @param request
+    *           Description of Parameter
+    * @param cloud
+    *           Description of Parameter
+    * @exception Description
+    *               of Exception
+    * @return refreshing newsletter subscriber list
+    */
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+
+      String authId = request.getParameter("authid");
+      String newsletterId = request.getParameter("newsletterId");
+
+      if (StringUtils.isNotBlank(authId)) {
+         Node newsletterNode = cloud.getNode(Integer.parseInt(newsletterId));
+         List<Node> subscriptions = newsletterNode.getRelatedNodes(cloud.getNodeManager("subscriptionrecord"));
+
+         for (Node subscription : subscriptions) {
+            String subscriberId = subscription.getStringValue("subscriber");
+
+            if (subscriberId.equals(authId)) {
+               subscription.deleteRelations();
+               subscription.delete();
+            }
+         }
+      }
+      request.setAttribute("newsletterId", newsletterId);
+      return mapping.findForward("success");
+   }
 }
