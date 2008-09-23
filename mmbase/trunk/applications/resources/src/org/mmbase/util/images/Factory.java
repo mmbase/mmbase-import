@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Factory.java,v 1.4 2008-09-23 07:38:51 michiel Exp $
+ * @version $Id: Factory.java,v 1.5 2008-09-23 07:42:48 michiel Exp $
  */
 
 public class Factory {
@@ -51,7 +51,7 @@ public class Factory {
      */
     protected static String defaultImageFormat = "jpeg";
 
-    public static void init(Map<String, String> properties, org.mmbase.module.core.MMObjectBuilder imageCaches) {
+    public static void init(Map<String, String> properties) {
         params.putAll(properties);
 
         String tmp = properties.get("MaxConcurrentRequests");
@@ -82,11 +82,22 @@ public class Factory {
             ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
         }
     }
+
+    /**
+     * @since MMBase-1.9
+     */
     public static void shutdown() {
         for (ImageConversionRequestProcessor icrp : ireqprocessors) {
             log.service("Shutting down " + icrp);
             icrp.shutdown();
         }
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(params);
     }
 
     public static String getDefaultImageFormat() {
