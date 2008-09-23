@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.433 2008-09-23 04:12:08 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.434 2008-09-23 07:23:51 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1340,7 +1340,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
 
         String rtn;
-        String field = pars.getString("field");
+        String field = pars.getString(Parameter.FIELD);
 
         if (locale == null) {
             if (field == null || "".equals(field)) {
@@ -2615,15 +2615,13 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return a <code>Map</code> containing the current properties
      * @since MMBase 1.8.2
      */
-    public Map getInitParameters(String contextPath) {
-        Map map = new HashMap();
+    public Map<String, String> getInitParameters(String contextPath) {
+        Map<String, String> map = new HashMap<String, String>();
         map.putAll(getInitParameters());
 
         try {
-            Map contextMap = ApplicationContextReader.getProperties(contextPath);
-            if (!contextMap.isEmpty()) {
-                map.putAll(contextMap);
-            }
+            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
+            map.putAll(contextMap);
         } catch (javax.naming.NamingException ne) {
             log.debug("Can't obtain properties from application context: " + ne.getMessage());
         }
