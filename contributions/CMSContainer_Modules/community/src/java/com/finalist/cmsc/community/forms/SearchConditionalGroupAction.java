@@ -1,5 +1,6 @@
 package com.finalist.cmsc.community.forms;
 
+import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +16,19 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.Authority;
 
+/**
+ * @author nikko
+ *
+ */
 public class SearchConditionalGroupAction extends AbstractCommunityAction {
 
+   /**
+    * @param mapping goto jsp
+    * @param form get paramate
+    * @param request setSharedAttributes
+    * @param response do nothing
+    * @return ActionForward chose jsp
+    */
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response) throws Exception {
@@ -55,7 +67,7 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
    }
 
    private List < GroupForShowVO > convertAuthrityTOVO(List < Authority > authorities) {
-      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO >();
+      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO > ();
       for (Authority authority : authorities) {
          if (null != authority) {
             GroupForShowVO group = new GroupForShowVO();
