@@ -21,11 +21,11 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 public class NewsletterTermDeleteAction extends MMBaseFormlessAction {
 
    /**
-    * @param mapping Description of Parameter
-    * @param request Description of Parameter
-    * @param cloud  Description of Parameter
-    * @exception Exception Description of Exception
-    * @return ActionForward refreshing newsletter term list
+    * @param mapping
+    * @param request
+    * @param cloud
+    * @return ActionForward
+    * @throws Exception 
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

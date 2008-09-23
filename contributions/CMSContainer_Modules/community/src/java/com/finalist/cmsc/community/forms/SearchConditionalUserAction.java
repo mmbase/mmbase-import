@@ -26,9 +26,10 @@ import java.util.Set;
 
 /**
  * Search users according to some conditions.
+ * 
  * @author Eva
- * @author 
- *
+ * @author Lisa
+ * 
  */
 public class SearchConditionalUserAction extends DispatchAction {
 
@@ -117,6 +118,15 @@ public class SearchConditionalUserAction extends DispatchAction {
       }
    }
 
+   /**
+    * searching for newsletter subscriber candidate list
+    * @param actionMapping
+    * @param actionForm
+    * @param request
+    * @param httpServletResponse
+    * @return showing newsletter subscriber candidate list
+    * @throws Exception
+    */
    public ActionForward searchCandidateSubscriber(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
 
