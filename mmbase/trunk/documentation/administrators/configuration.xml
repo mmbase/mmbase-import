@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.31 2008-08-26 11:06:42 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.32 2008-09-23 07:27:56 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -272,6 +272,14 @@
             Any mmbase builder property can be overridden in the application context.
 					</para>
         </listitem>
+        <listitem>
+          <para>
+            Properties related to image conversion can also be overriden in the application context,
+            using mmbase/imaging/ properties. This could e.g. be used to specify the location of
+            image magick if it is not in the path. This could also be done by mmbase-builder/images/
+            properties, but it is a bit more generic.
+          </para>
+        </listitem>
         </itemizedlist>
         We give an example of a context xml as may be used in tomcat.
           <programlisting id="context.xml"><![CDATA[
@@ -313,7 +321,9 @@
             url="jdbc:mysql://localhost:3306/fobieen_test?autoReconnect=true"/>
 
   <!-- Set a certain builder property: -->
-  <Environment name="mmbase-builders/mmbasecontexts/contextproviders" value="maps" type="java.lang.String" />
+  <Environment name="mmbase-builders/mmbasecontexts/contextproviders" value="maps"  type="java.lang.String" />
+
+
 
   <!-- place a  few other configuration files outside the war -->
   <Environment name="mmbase-config/log/log4j.xml"
