@@ -4,7 +4,7 @@
   <head>
       <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 		<link rel="stylesheet" type="text/css" href="css/main.css">
-      <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
+	  <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 		<title><% 
     if(isPreview) { %>PREVIEW: <% } 
     %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
@@ -82,7 +82,7 @@
         }
         %>>
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
-	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0" border="0">
+	<table <% if(!printPage) {%> background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" <% } %> cellspacing="0" cellpadding="0" border="0">
 	<% 
 	if(!printPage) { 
 	   %>

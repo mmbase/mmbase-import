@@ -101,6 +101,7 @@
     </mm:node>
     </td>
 </tr>
+
 <tr>
     <td valign="top"><% boolean imageExists = false; 
         %><mm:list nodes="<%= employeeId %>" path="medewerkers,images" max="1"
@@ -118,12 +119,14 @@
             </mm:list><%
         }%><br><%
         if(!postingStr.equals("|action=print")) {
-            %><a href="smoelenboek.jsp<%= templateQueryString %>&employee=<%= employeeId %>&pst=|action=change">wijzig</a>&nbsp;/&nbsp;<a target="_blank" href="ipage.jsp<%= 
+            %><a href="smoelenboek.jsp<%= templateQueryString %>&employee=<%= employeeId %>&pst=|action=change">wijzig</a>&nbsp;/&nbsp;<a target="_blank" href="smoelenboek.jsp<%= 
                 templateQueryString %>&department=<%= departmentId %>&program=<%= programId
                 %>&firstname=<%= firstnameId %>&lastname=<%= lastnameId %>&employee=<%= employeeId %>&pst=|action=print">print</a><%
         } 
     %></td>
     <td class="black"><img src="media/spacer.gif" width="1" height="465"></td>
 </tr>
+
+
 </table>
 </mm:cloud>
