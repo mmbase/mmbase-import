@@ -70,9 +70,9 @@
          <table>
             <tr class="listheader">
                <th> </th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="imagesearch.titlecolumn" /></a></th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('filename');"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('itype');"><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('itype')" class="headerlink" ><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
                <th></th>
             </tr>
             <tbody class="hover">
