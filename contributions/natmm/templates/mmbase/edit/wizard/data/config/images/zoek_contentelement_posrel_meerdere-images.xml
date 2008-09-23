@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="images" minoccurs="0" maxoccurs="1">
-	<title>afbeelding (eerst verwijderen voordat een nieuw item kan worden toegevoegd)</title>
+<list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
+	<title>afbeelding</title>
 	<item displaytype="image">
 		<field name="titel" ftype="data"><prompt>titel</prompt></field>
-		<field name="filename" ftype="data"><prompt>filenaam</prompt></field>
+		<field name="filename" ftype="data"><prompt>bestandsnaam</prompt></field>
 		<field fdatapath="field[@name='pos']" ftype="enum"><prompt>grootte en positie</prompt><optionlist select="images_position"/></field>
 		<field ftype="startwizard" wizardname="config/images/images" />
 	</item>
