@@ -19,7 +19,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.36 2008-09-04 20:57:55 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.37 2008-09-23 16:31:20 michiel Exp $
  */
 public interface CloudContext {
 
@@ -69,7 +69,7 @@ public interface CloudContext {
      * @return                    the requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
+    public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException;
 
     /**
      * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link Cloud#getUser}
