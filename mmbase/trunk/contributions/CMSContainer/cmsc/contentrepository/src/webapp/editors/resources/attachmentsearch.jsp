@@ -68,9 +68,9 @@
          <table>
             <tr class="listheader">
                <th> </th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('title');"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('filename');"><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
-               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('mimetype');"><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
             </tr>
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
