@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.45 2008-02-16 22:13:53 nklasens Exp $
+ * @version $Id: Query.java,v 1.46 2008-09-23 12:04:41 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -388,9 +388,10 @@ public interface Query extends SearchQuery, Cloneable {
     /**
      * Shows the query in a human-readable SQL form. This is probably not the query which will
      * actually be sent to the database. This method is provided because 'toString' on a Query object
-     * is pretty complete, but pretty undigestable for mere mortals too.
-     * @return human-readable SQL
+     * is pretty complete, but pretty undigestable for mere mortals too. Implementions can also
+     * implement getSql(), which would make this available in e.g. EL too.
      *
+     * @return human-readable SQL
      * @since MMBase-1.8
      */
     String toSql();
