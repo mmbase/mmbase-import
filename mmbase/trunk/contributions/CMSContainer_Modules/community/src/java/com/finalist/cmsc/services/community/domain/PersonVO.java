@@ -50,7 +50,6 @@ public class PersonVO extends ActionForm {
       this.authId = authId;
    }
 
-
    public boolean isInGroup() {
       return inGroup;
    }

@@ -1,14 +1,12 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
+ * 
+ */
 package com.finalist.cmsc.services.community.security;
-
 
 import java.util.List;
 import java.util.Map;
@@ -21,55 +19,58 @@ import com.finalist.cmsc.paging.PagingStatusHolder;
  */
 public interface AuthorityService {
 
-    /**
-     * @return set with authorities names
-     */
-    Set<String> getAuthorityNames();
-    List<Authority> getAllAuthorities(PagingStatusHolder holder);
+   /**
+    * @return set with authorities names
+    */
+   Set < String > getAuthorityNames();
 
-    /**
-     * @param userName
-     * @return set authorities
-     */
-    Set<String> getAuthorityNamesForUser(String userName);
+   List < Authority > getAllAuthorities(PagingStatusHolder holder);
 
-    /**
-     * Create a new Authority
-     *
-     * @param parentName
-     * @param authorityName
-     */
-    Authority createAuthority(String parentName, String authorityName);
+   /**
+    * @param userName
+    * @return set authorities
+    */
+   Set < String > getAuthorityNamesForUser(String userName);
 
-    /**
-     * Delete an Authority
-     * @param authorityName
-     */
-    void deleteAuthority(String authorityName);
+   /**
+    * Create a new Authority
+    * 
+    * @param parentName
+    * @param authorityName
+    */
+   Authority createAuthority(String parentName, String authorityName);
 
-    /**
-     * Does an authority exist?
-     * 
-     * @param authorityName
-     * @return boolean true if the authority exists, otherwise false
-     */
-    boolean authorityExists(String authorityName);
+   /**
+    * Delete an Authority
+    * 
+    * @param authorityName
+    */
+   void deleteAuthority(String authorityName);
 
-    /**
-     * Finds the authoritdy 
-     * @param authorityName
-     * @return Authority with the requested name (if it exists)
-     */
-    Authority findAuthorityByName(String authorityName);
+   /**
+    * Does an authority exist?
+    * 
+    * @param authorityName
+    * @return boolean true if the authority exists, otherwise false
+    */
+   boolean authorityExists(String authorityName);
 
-    List<Authority> findAssociatedAuthorityByName(String name,PagingStatusHolder holder);
-    
-	int countAllAuthorities();
-	
-	int countAssociatedAuthorities(String name);
+   /**
+    * Finds the authoritdy
+    * 
+    * @param authorityName
+    * @return Authority with the requested name (if it exists)
+    */
+   Authority findAuthorityByName(String authorityName);
 
-	List<Authority> getAssociatedAuthorities(Map map, PagingStatusHolder holder);
+   List < Authority > findAssociatedAuthorityByName(String name, PagingStatusHolder holder);
 
-	int getAssociatedAuthoritiesNum(Map map, PagingStatusHolder holder);
-    
+   int countAllAuthorities();
+
+   int countAssociatedAuthorities(String name);
+
+   List < Authority > getAssociatedAuthorities(Map map, PagingStatusHolder holder);
+
+   int getAssociatedAuthoritiesNum(Map map, PagingStatusHolder holder);
+
 }

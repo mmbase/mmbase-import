@@ -1,11 +1,10 @@
 /*
-
- This software is OSI Certified Open Source Software.
- OSI Certified is a certification mark of the Open Source Initiative.
-
- The license (Mozilla version 1.0) can be read at the MMBase site.
- See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
+ * 
  */package com.finalist.cmsc.community.forms;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ public class UserForm extends ActionForm {
    protected static final String ACTION_ADD = "add";
 
    protected static final String ACTION_EDIT = "edit";
-   
+
    private static final long serialVersionUID = 1L;
 
    private String action;
@@ -120,22 +119,19 @@ public class UserForm extends ActionForm {
    public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
       ActionErrors actionErrors = new ActionErrors();
       if (account.equals("")) {
-         actionErrors.add("account", new ActionMessage(
-               "userform.account.empty"));
+         actionErrors.add("account", new ActionMessage("userform.account.empty"));
       }
       if (email.equals("")) {
-         actionErrors
-               .add("email", new ActionMessage("userform.email.empty"));
+         actionErrors.add("email", new ActionMessage("userform.email.empty"));
       }
-      if(!email.equals("")&&!email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")){
-         actionErrors.add("email",new ActionMessage("userform.email.not.regular"));
+      if (!email.equals("") && !email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")) {
+         actionErrors.add("email", new ActionMessage("userform.email.not.regular"));
       }
       if (this.getAction().equalsIgnoreCase(ACTION_ADD)) {
          validatePassword(actionErrors);
       } else {
          if (this.getAction().equalsIgnoreCase(ACTION_EDIT)) {
-            if (StringUtils.isNotBlank(passwordText)
-                  || StringUtils.isNotBlank(passwordConfirmation)) {
+            if (StringUtils.isNotBlank(passwordText) || StringUtils.isNotBlank(passwordConfirmation)) {
                validatePassword(actionErrors);
             }
          }
@@ -144,30 +140,29 @@ public class UserForm extends ActionForm {
    }
 
    public void validatePassword(ActionErrors actionErrors) {
-      //Only check this if an user is added
+      // Only check this if an user is added
       if (StringUtils.isBlank(passwordText)) {
          actionErrors.add("password", new ActionMessage("userform.password.empty"));
       }
       if (StringUtils.isBlank(passwordConfirmation)) {
          actionErrors.add("passwordConfirmation", new ActionMessage("userform.password.empty"));
       }
-      if (StringUtils.isNotBlank(passwordText) 
-            && StringUtils.isNotBlank(passwordConfirmation) 
+      if (StringUtils.isNotBlank(passwordText) && StringUtils.isNotBlank(passwordConfirmation)
             && !passwordText.equals(passwordConfirmation)) {
          actionErrors.add("password", new ActionMessage("userform.passwords.not_equal"));
       }
    }
 
-    public void clear() {
-        action = null;
-        email = null;
-        passwordText = null;
-        passwordConfirmation = null;
-        account = null;
-        firstName = null;
-        prefix = null;
-        lastName = null;
-        company = null;
-    }
+   public void clear() {
+      action = null;
+      email = null;
+      passwordText = null;
+      passwordConfirmation = null;
+      account = null;
+      firstName = null;
+      prefix = null;
+      lastName = null;
+      company = null;
+   }
 
 }

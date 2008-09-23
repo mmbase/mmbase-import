@@ -1,11 +1,10 @@
 /*
-
- This software is OSI Certified Open Source Software.
- OSI Certified is a certification mark of the Open Source Initiative.
-
- The license (Mozilla version 1.0) can be read at the MMBase site.
- See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
+ * 
  */
 package com.finalist.cmsc.community.forms;
 
@@ -22,54 +21,54 @@ public class GroupForm extends ActionForm {
    protected static final String ACTION_ADD = "add";
 
    protected static final String ACTION_EDIT = "edit";
-   
-	private static final long serialVersionUID = 1L;
 
-	private String action;
+   private static final long serialVersionUID = 1L;
 
-	private String name;
+   private String action;
 
-	private String[] members = new String[] {};
+   private String name;
 
-	private String[] users = new String[] {};
+   private String[] members = new String[] {};
 
-	public String getAction() {
-		return action;
-	}
+   private String[] users = new String[] {};
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+   public String getAction() {
+      return action;
+   }
 
-	public String getName() {
-		return name;
-	}
+   public void setAction(String action) {
+      this.action = action;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public String getName() {
+      return name;
+   }
 
-	public String[] getMembers() {
-		return members;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
 
-	public void setMembers(String[] members) {
-		this.members = members;
-	}
+   public String[] getMembers() {
+      return members;
+   }
 
-	public String[] getUsers() {
-		return users;
-	}
+   public void setMembers(String[] members) {
+      this.members = members;
+   }
 
-	public void setUsers(String[] users) {
-		this.users = users;
-	}
+   public String[] getUsers() {
+      return users;
+   }
 
-	@Override
-	public void reset(ActionMapping mapping, HttpServletRequest request) {
-		setName(null);
-		setMembers(new String[] {});
-		setUsers(new String[] {});
-	}
+   public void setUsers(String[] users) {
+      this.users = users;
+   }
+
+   @Override
+   public void reset(ActionMapping mapping, HttpServletRequest request) {
+      setName(null);
+      setMembers(new String[] {});
+      setUsers(new String[] {});
+   }
 
 }

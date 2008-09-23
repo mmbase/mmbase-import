@@ -14,30 +14,30 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
  */
 public class ListUsersTag extends CommunityTagSupport {
 
-	private String var;
-	
-	@Override
-	protected void doTagLogic() throws IOException {
-		PageContext ctx = (PageContext) getJspContext();
-		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
-		
-		AuthenticationService as = getAuthenticationService();
-		List<Authentication> list = as.findAuthentications();
+   private String var;
 
-		if (var != null) {
-			if (list != null) {
-				req.setAttribute(var, list);
-			} else {
-				req.removeAttribute(var);
-			}
-		} else {
-			ctx.getOut().print(list);
-		}
-		
-	}
+   @Override
+   protected void doTagLogic() throws IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+      AuthenticationService as = getAuthenticationService();
+      List < Authentication > list = as.findAuthentications();
+
+      if (var != null) {
+         if (list != null) {
+            req.setAttribute(var, list);
+         } else {
+            req.removeAttribute(var);
+         }
+      } else {
+         ctx.getOut().print(list);
+      }
+
+   }
+
+   public void setVar(String var) {
+      this.var = var;
+   }
 
 }

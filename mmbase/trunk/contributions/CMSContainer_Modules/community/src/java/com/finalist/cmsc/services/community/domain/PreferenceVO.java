@@ -14,7 +14,6 @@ public class PreferenceVO {
 
    private String value;
 
-
    private String method;
 
    public String getUserId() {
