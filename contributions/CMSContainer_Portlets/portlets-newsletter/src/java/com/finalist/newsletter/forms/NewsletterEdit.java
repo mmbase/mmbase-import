@@ -32,14 +32,10 @@ public class NewsletterEdit extends MMBaseFormlessAction {
 
    /**
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param cloud
-    *           Description of Parameter
-    * @exception Exception
-    *               Description of Exception
     * @return ActionForward, refresh NewsletterList
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

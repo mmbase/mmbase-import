@@ -22,14 +22,10 @@ public class NewsletterSubscriberDeleteAction extends MMBaseFormlessAction {
 
    /**
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param cloud
-    *           Description of Parameter
-    * @exception Description
-    *               of Exception
     * @return refreshing newsletter subscriber list
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

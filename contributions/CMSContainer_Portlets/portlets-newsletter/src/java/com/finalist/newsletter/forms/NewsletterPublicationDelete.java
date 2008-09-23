@@ -37,14 +37,10 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
    /**
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param cloud
-    *           Description of Parameter
-    * @return ActionForward refresh NewsletterList
-    * @exception Exception
-    *               Description of Exception
+    * @return ActionForward refreshing NewsletterList
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
       String forwardType = getParameter(request, "forward");
@@ -85,9 +81,7 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
    /**
     * 
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param forwardType
     *           use to distinguish different return back forward
     * @param parent

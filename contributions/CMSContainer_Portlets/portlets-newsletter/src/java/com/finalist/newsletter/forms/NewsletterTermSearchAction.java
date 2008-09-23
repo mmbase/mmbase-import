@@ -20,8 +20,8 @@ public class NewsletterTermSearchAction extends MMBaseFormlessAction {
     * @param mapping
     * @param request
     * @param cloud
-    * @exception Exception
     * @return ActionForward refreshing newsletter term list
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

@@ -28,14 +28,10 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 public class NewsletterPublicationEdit extends MMBaseFormlessAction {
    /**
     * @param mapping
-    *           Description of Parameter
     * @param request
-    *           Description of Parameter
     * @param cloud
-    *           Description of Parameter
+    * @throws Exception
     * @return ActionForward refresh NewsletterList
-    * @exception Exception
-    *               Description of Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
