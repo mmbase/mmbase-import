@@ -16,7 +16,14 @@ public interface NewsLetterStatisticCAO {
 
 	public void logPubliction(int userId,int newsletterId, HANDLE handle);
 
+	/**
+	 * @param listRecorder which get from data
+	 * @return how many SumedLogs insert
+	 */
 	public int insertSumedLogs(List<StatisticResult> listRecorder);
 	
+	/**
+    * @return List which sumLogs about StatisticResult 
+    */
 	public List<StatisticResult>  getLogs();
 }
