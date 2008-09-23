@@ -10,8 +10,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * This class should be used by non-spring-wired classes if they need
- * access to the application context
+ * This class should be used by non-spring-wired classes if they need access to the application context
  */
 public class ApplicationContextFactory implements ServletContextAware {
    private static Log log = LogFactory.getLog(ApplicationContextFactory.class);
@@ -31,28 +30,26 @@ public class ApplicationContextFactory implements ServletContextAware {
    public static ApplicationContext getApplicationContext() {
       if (initObj == null) {
          throw new IllegalStateException("Application context not initialized");
-      }
-      else if (initObj instanceof ServletContext) {
+      } else if (initObj instanceof ServletContext) {
          ServletContext servletContext = (ServletContext) initObj;
          return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 
-      }
-      else if (initObj instanceof String) {
+      } else if (initObj instanceof String) {
          if (context == null) {
             String contextResourceLocation = (String) initObj;
             context = new ClassPathXmlApplicationContext(contextResourceLocation);
          }
          return context;
-      }
-      else {
+      } else {
          throw new IllegalStateException("You must initialize the context with a String");
       }
    }
 
-
-   /* (non-Javadoc)
-   * @see org.springframework.web.context.ServletContextAwar e#setServletContext(javax.servlet.ServletContext)
-   */
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.springframework.web.context.ServletContextAwar e#setServletContext(javax.servlet.ServletContext)
+    */
    public void setServletContext(ServletContext context) {
       init(context);
    }

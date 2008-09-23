@@ -1,11 +1,10 @@
 /*
-
- This software is OSI Certified Open Source Software.
- OSI Certified is a certification mark of the Open Source Initiative.
-
- The license (Mozilla version 1.0) can be read at the MMBase site.
- See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
+ * 
  */
 package com.finalist.cmsc.community.forms;
 
@@ -33,17 +32,18 @@ public class UserAddInitAction extends AbstractCommunityAction {
 
    protected static final String AUTHENTICATION_ID = "authid";
    protected static final String FORWARD_GROUP = "group";
+
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
          HttpServletResponse httpServletResponse) throws Exception {
 
       String authId = request.getParameter(AUTHENTICATION_ID);
       String groupFoeward = request.getParameter(FORWARD_GROUP);
       setUserFormParamater(actionForm, authId);
-      if (null == groupFoeward||",".equals(groupFoeward)) {
+      if (null == groupFoeward || ",".equals(groupFoeward)) {
          setNewsletterForward(request);
-      }else {
+      } else {
          setGroupForward(request, groupFoeward);
-      }      
+      }
       return actionMapping.findForward(SUCCESS);
    }
 
@@ -59,12 +59,10 @@ public class UserAddInitAction extends AbstractCommunityAction {
 
    private void setNewsletterForward(HttpServletRequest request) {
       if (StringUtils.isNotBlank(request.getParameter("forward"))) {
-         request.getSession().setAttribute("forward",
-               request.getParameter("forward"));
+         request.getSession().setAttribute("forward", request.getParameter("forward"));
          // community preference return back
          if (request.getParameter("path") != null) {
-            request.getSession().setAttribute("path",
-                  request.getParameter("path"));
+            request.getSession().setAttribute("path", request.getParameter("path"));
          }
       }
    }
