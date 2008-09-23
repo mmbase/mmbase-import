@@ -25,111 +25,196 @@ import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.SubscriptionHibernateService;
 
+/**
+ * using for searching Newsletter Subscriber
+ * 
+ * @author Lisa
+ * 
+ */
 public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
-	private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
+   private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
 
-	NewsletterPublicationService publicationService;
-	PersonService personService;
-	NewsletterSubscriptionServices subscriptionService;
-	AuthenticationService authenticationService;
-	NewsletterService newsletterService;
-	SubscriptionHibernateService subscriptionHService;
+   NewsletterPublicationService publicationService;
+   PersonService personService;
+   NewsletterSubscriptionServices subscriptionService;
+   AuthenticationService authenticationService;
+   NewsletterService newsletterService;
+   SubscriptionHibernateService subscriptionHService;
 
-	protected void onInit() {
-		super.onInit();
-		publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
-		personService = (PersonService) getWebApplicationContext().getBean("personService");
-		subscriptionService = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
-		authenticationService = (AuthenticationService) getWebApplicationContext().getBean("authenticationService");
-		newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
-		subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
+   /**
+    * Initialize service object: publicationService , personService, subscriptionService, authenticationService,
+    * newsletterService, subscriptionHService
+    */
+   protected void onInit() {
+      super.onInit();
+      publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
+      personService = (PersonService) getWebApplicationContext().getBean("personService");
+      subscriptionService = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
+      authenticationService = (AuthenticationService) getWebApplicationContext().getBean("authenticationService");
+      newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
+      subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
 
-	}
+   }
 
-	protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		PagingUtils.initStatusHolder(request);
+   /**
+    * unspecified searching newsletter subscriber with sorting, ordering, paging
+    */
+   protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
 
-		log.debug("No parameter specified,go to subscriber page ,show related subscribers");
-		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
+      log.debug("No parameter specified,go to subscriber page ,show related subscribers");
 
-		int resultCount = countsearchSubscribers(newsletterId, "", "", "", "");
-		if (resultCount > 0) {
-			List results = searchSubscribers(newsletterId, "", "", "", "");
-			request.setAttribute("results", results);
-		}
-		request.setAttribute("resultCount", resultCount);
-		request.setAttribute("newsletterId", newsletterId);
-		String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath()+"?newsletterId="+ newsletterId;
-		request.setAttribute("forwardPath", forwardPath);
-		
-		return mapping.findForward("success");
-	}
+      PagingUtils.initStatusHolder(request);
 
-	public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		PagingUtils.initStatusHolder(request);
+      int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
+      int resultCount = countsearchSubscribers(newsletterId, "", "", "", "");
+      if (resultCount > 0) {
+         List<Map<Object,Object>> results = searchSubscribers(newsletterId, "", "", "", "");
+         request.setAttribute("results", results);
+      }
+      request.setAttribute("resultCount", resultCount);
+      request.setAttribute("newsletterId", newsletterId);
+      String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath() + "?newsletterId=" + newsletterId;
+      request.setAttribute("forwardPath", forwardPath);
 
-		log.debug("parameter action specified, go to the subscribers page, show related subscriber list");
-		int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
+      return mapping.findForward("success");
+   }
 
-		NewsletterSubscriberSearchForm myForm = (NewsletterSubscriberSearchForm) form;
-		String tmpTerm = myForm.getTerm();
-		String tmpFullName = myForm.getFullname();
-		String tmpUserName = myForm.getUsername();
-		String tmpEmail = myForm.getEmail();
+   /**
+    * specified searching subscriber with form, showing some information of subscriber, and subscribed newsletter
+    * names,subscribed terms
+    * 
+    * @param mapping
+    *           Description of Parameter
+    * @param form
+    *           Description of Parameter
+    * @param request
+    *           Description of Parameter
+    * @param response
+    *           Description of Parameter
+    * @return ActionForward showing newsletter subscriber List
+    */
+   public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) {
 
-		int resultCount = countsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
-		if (resultCount > 0) {
-			List results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
-			request.setAttribute("results", results);
-		}
+      log.debug("parameter action specified, go to the subscribers page, show related subscriber list");
+      PagingUtils.initStatusHolder(request);
+      int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
+      NewsletterSubscriberSearchForm myForm = (NewsletterSubscriberSearchForm) form;
+      String tmpTerm = myForm.getTerm();
+      String tmpFullName = myForm.getFullname();
+      String tmpUserName = myForm.getUsername();
+      String tmpEmail = myForm.getEmail();
 
-		request.setAttribute("resultCount", resultCount);
-		request.setAttribute("newsletterId", newsletterId);
-		String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath()+"?newsletterId="+ newsletterId;
-		request.setAttribute("forwardPath", forwardPath);
-		return mapping.findForward("success");
-	}
+      int resultCount = countsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
+      if (resultCount > 0) {
+         List<Map<Object,Object>> results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
+         request.setAttribute("results", results);
+      }
 
-	private void AddToMap(List<Map> results, String fullName, String userName, String email, String newsletters, String terms, int authenticationId) {
+      request.setAttribute("resultCount", resultCount);
+      request.setAttribute("newsletterId", newsletterId);
+      String forwardPath = (String) mapping.findForward("newUserLinkBack").getPath() + "?newsletterId=" + newsletterId;
+      request.setAttribute("forwardPath", forwardPath);
+      return mapping.findForward("success");
+   }
 
-		Map result = new LinkedHashMap();
-		result.put("fullname", fullName);
-		result.put("username", userName);
-		result.put("email", email);
-		result.put("newsletters", newsletters);
-		result.put("terms", terms);
-		result.put("id", authenticationId);
-		results.add(result);
+   /**
+    * convert newsletter subscribers to map
+    * 
+    * @param results
+    *           subscriber List, containing result information
+    * @param fullName
+    *           subscriber's full name
+    * @param userName
+    *           sbuscriber's user name
+    * @param email
+    *           subscriber's email address
+    * @param newsletters
+    *           newsletter name string subscribed by subscriber
+    * @param terms
+    *           newsletter's term name string subscribed by subscriber
+    * @param authenticationId
+    *           subscriber's authenticationId
+    */
+   private void AddToMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
+         String newsletters, String terms, int authenticationId) {
 
-	}
+      Map<Object, Object> result = new LinkedHashMap<Object, Object>();
+      result.put("fullname", fullName);
+      result.put("username", userName);
+      result.put("email", email);
+      result.put("newsletters", newsletters);
+      result.put("terms", terms);
+      result.put("id", authenticationId);
+      results.add(result);
 
-	private List<Map> searchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
-		List<Map> results = new ArrayList<Map>();
+   }
 
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
-		List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, true);
-		for (Object[] result : qResults) {
-			String tmpFullName = result[0].toString() + " " + result[1].toString();
-			String tmpEmail = result[2].toString();
-			int tmpAuthenticationId = Integer.parseInt(result[3].toString());
-			String tmpNewsletters = subscriptionService.getNewsletterNameList(tmpAuthenticationId);
-			String tmpTerms = subscriptionService.getTermsNameList(tmpAuthenticationId);
-			String tmpUserName = result[4].toString();
-			AddToMap(results, tmpFullName, tmpUserName, tmpEmail, tmpNewsletters, tmpTerms, tmpAuthenticationId);
-		}
-		return results;
-	}
+   /**
+    * getting subscriber's subscription information
+    * 
+    * @param newsletterId
+    *           Description of Parameter
+    * @param terms
+    *           Description of Parameter
+    * @param fullName
+    *           Description of Parameter
+    * @param userName
+    *           Description of Parameter
+    * @param email
+    *           Description of Parameter
+    * @return newsletter Subscriber search result List
+    */
+   private List<Map<Object, Object>> searchSubscribers(int newsletterId, String terms, String fullName,
+         String userName, String email) {
+      
+      Set<Long> authenticationIds = new HashSet<Long>();
+      List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
+      
+      authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
+      List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName,
+            email, true);
+      for (Object[] result : qResults) {
+         
+         String tmpFullName = result[0].toString() + " " + result[1].toString();
+         String tmpEmail = result[2].toString();
+         int tmpAuthenticationId = Integer.parseInt(result[3].toString());
+         String tmpNewsletters = subscriptionService.getNewsletterNameList(tmpAuthenticationId);
+         String tmpTerms = subscriptionService.getTermsNameList(tmpAuthenticationId);
+         String tmpUserName = result[4].toString();
+         AddToMap(results, tmpFullName, tmpUserName, tmpEmail, tmpNewsletters, tmpTerms, tmpAuthenticationId);
+      }
+      return results;
+   }
 
-	private int countsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
-		int resultCount = 0;
-		Set<Long> authenticationIds = new HashSet<Long>();
-		authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
-		if (authenticationIds.size() > 0) {
-			resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, false).size();
-		}
-		return resultCount;
-	}
+   /**
+    * counting subscriber
+    * 
+    * @param newsletterId
+    *           subscribed newsletterId
+    * @param terms
+    *           subscribed newsletter term name list
+    * @param fullName
+    *           subscriber's full name
+    * @param userName
+    *           subscriber's user name
+    * @param email
+    *           subscriber's email
+    * @return subscriber totalCount
+    */
+   private int countsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
+      
+      int resultCount = 0;
+      Set<Long> authenticationIds = new HashSet<Long>();
+      
+      authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
+      if (authenticationIds.size() > 0) {
+         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email,
+               false).size();
+      }
+      return resultCount;
+   }
+   
 }
