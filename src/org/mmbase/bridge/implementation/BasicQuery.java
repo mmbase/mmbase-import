@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.72 2008-09-23 12:03:40 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.73 2008-09-23 16:23:42 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -699,7 +699,7 @@ public class BasicQuery implements Query  {
 
 
     @Override public String toString() {
-        return query.toSql() + (used ? " (used)" : "") + " INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
+        return query.toString() + (used ? " (used)" : "") + " INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 
     }
 
