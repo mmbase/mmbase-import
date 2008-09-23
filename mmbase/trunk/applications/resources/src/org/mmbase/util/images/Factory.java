@@ -23,6 +23,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id: Factory.java,v 1.4 2008-09-23 07:38:51 michiel Exp $
  */
 
 public class Factory {
@@ -81,6 +82,12 @@ public class Factory {
             ireqprocessors[i] = new ImageConversionRequestProcessor(imageConverter, imageRequestQueue, imageRequestTable);
         }
     }
+    public static void shutdown() {
+        for (ImageConversionRequestProcessor icrp : ireqprocessors) {
+            log.service("Shutting down " + icrp);
+            icrp.shutdown();
+        }
+    }
 
     public static String getDefaultImageFormat() {
         return defaultImageFormat;
@@ -109,17 +116,13 @@ public class Factory {
             ici = (ImageConverter) cl.newInstance();
             log.service("loaded '" + className+"' for image Factory");
         } catch (ClassNotFoundException e) {
-            log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')");
-            log.error(Logging.stackTrace(e));
+            log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')", e);
         } catch (InstantiationException e) {
-            log.error("something went wrong ('could not instantiate class " + className + "')");
-            log.error(Logging.stackTrace(e));
+            log.error("something went wrong ('could not instantiate class " + className + "')", e);
         } catch (java.lang.IllegalAccessException e) {
-            log.error("something went wrong ('illegal access class " + className + "')");
-            log.error(Logging.stackTrace(e));
+            log.error("something went wrong ('illegal access class " + className + "')", e);
         } catch (NoClassDefFoundError e) {
-            log.error("are all lib's available? ('missing class used by class" + className + "')");
-            log.error(Logging.stackTrace(e));
+            log.error("are all lib's available? ('missing class used by class" + className + "')", e);
         }
         return ici;
     }
