@@ -1,4 +1,4 @@
-<mm:related path="posrel,attachments" orderby="posrel.pos,attachments.title" directions="UP,UP">
+<mm:related path="posrel,attachments" orderby="posrel.pos,attachments.title" directions="UP,UP" searchdir="destination">
     <mm:node element="attachments">
     <table>
     <tr><td style="width:60px;">

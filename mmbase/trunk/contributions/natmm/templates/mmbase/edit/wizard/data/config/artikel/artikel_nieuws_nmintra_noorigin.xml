@@ -53,7 +53,7 @@
 		<field name="archive" ftype="enum"><prompt>naar archief</prompt><optionlist select="archive"/></field>
 		<list include="config/pools/add_pools_posrel_minone.xml" />
 		<field name="intro" ftype="html" rows="14"><prompt>tekst</prompt></field>
-		<list include="config/images/zoek_contentelement_posrel_images.xml" />
+		<list include="config/images/zoek_contentelement_posrel_meerdere-images.xml" />
 		<list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
 	</form-schema>
 </wizard-schema>

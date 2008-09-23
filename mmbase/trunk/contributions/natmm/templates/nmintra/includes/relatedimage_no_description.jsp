@@ -14,7 +14,7 @@
 %>
 
 <mm:related path="posrel,images"
-   constraints="posrel.pos='9'" orderby="images.title"
+   constraints="posrel.pos='9'" orderby="images.title" searchdir="destination"
    ><br/><div align="center"><img src="<mm:node element="images"><mm:image template="s(535)" /></mm:node
       >" alt="<mm:field name="images.title" />" border="0" ></div><br/>
 </mm:related>
