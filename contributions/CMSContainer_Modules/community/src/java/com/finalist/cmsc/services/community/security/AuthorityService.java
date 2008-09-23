@@ -69,8 +69,18 @@ public interface AuthorityService {
 
    int countAssociatedAuthorities(String name);
 
+   /**
+    * @param map stored paramate
+    * @param holder treat PagingStatus
+    * @return  List stored authorities  
+    */
    List < Authority > getAssociatedAuthorities(Map map, PagingStatusHolder holder);
 
+   /**
+    * @param map stored paramate
+    * @param holder treat PagingStatus
+    * @return Num counted  
+    */
    int getAssociatedAuthoritiesNum(Map map, PagingStatusHolder holder);
 
 }

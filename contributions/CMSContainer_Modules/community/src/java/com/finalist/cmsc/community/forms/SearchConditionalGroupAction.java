@@ -31,7 +31,7 @@ public class SearchConditionalGroupAction extends AbstractCommunityAction {
     */
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+         HttpServletResponse response)  {
       SearchGroupForm searchform = (SearchGroupForm) form;
       PagingStatusHolder holder = setPagingInformation(request);
       HashMap map = getParameterMap(searchform);

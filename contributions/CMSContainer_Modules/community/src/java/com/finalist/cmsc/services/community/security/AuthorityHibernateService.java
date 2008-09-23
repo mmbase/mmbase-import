@@ -150,6 +150,11 @@ public class AuthorityHibernateService extends HibernateService implements Autho
       return findAuthoritesByCriteria(criteria).size();
    }
 
+   /**
+    * @param map stored paramate
+    * @param holder treat PagingStatus
+    * @return  List stored authorities  
+    */
    @Transactional(readOnly = true)
    public List < Authority > getAssociatedAuthorities(Map conditions, PagingStatusHolder holder) {
       List < Authority > authorities = new ArrayList < Authority >();
@@ -202,6 +207,11 @@ public class AuthorityHibernateService extends HibernateService implements Autho
       }
    }
 
+   /**
+    * @param map stored paramate
+    * @param holder treat PagingStatus
+    * @return Num counted  
+    */
    @Transactional(readOnly = true)
    public int getAssociatedAuthoritiesNum(Map conditions, PagingStatusHolder holder) {
       StringBuffer strb = new StringBuffer();
