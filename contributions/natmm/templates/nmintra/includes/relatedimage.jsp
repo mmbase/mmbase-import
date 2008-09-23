@@ -11,7 +11,7 @@
 // <option id="7">rechts groot</option>
 // <option id="8">links groot</option>
 
-%><mm:related path="posrel,images" orderby="images.title" constraints="posrel.pos!='9'" 
+%><mm:related path="posrel,images" orderby="images.title" constraints="posrel.pos!='9'" searchdir="destination"
     ><mm:first
        ><mm:field name="posrel.pos" jspvar="dummy" vartype="Integer" write="false"><%
           int posrel_pos = dummy.intValue();  

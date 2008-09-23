@@ -1,5 +1,4 @@
-<% if(true) {
-   String poolAndDate = "";
+<% String poolAndDate = "";
    String artikelBegindatum = "";
    %><mm:node referid="this_article">
        <mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"><%
@@ -22,5 +21,4 @@
        if(!poolAndDate.equals("")) {
          %><span class="normal"><%= poolAndDate %></span><br/><%
        }
-   %></mm:node><%
-} %>
+   %></mm:node>

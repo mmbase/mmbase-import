@@ -1,4 +1,5 @@
 <%@include file="/taglibs.jsp" %>
+<mm:content type="text/html" escaper="none">
 <mm:cloud jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
@@ -34,18 +35,18 @@ if(twoColumns) {
       String articlePath = "artikel";
       String articleOrderby = "";
       if(articleId.equals("-1")) { 
-      startnodeId = paginaID;
-      articlePath = "pagina,contentrel,artikel";
-      articleOrderby = "contentrel.pos";
+         startnodeId = paginaID;
+         articlePath = "pagina,contentrel,artikel";
+         articleOrderby = "contentrel.pos";
       }
-      %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
-         ><%@include file="includes/relatedarticle.jsp" 
-      %></mm:list>
+      %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>" searchdir="destination">
+          <%@include file="includes/relatedarticle.jsp"%>
+        </mm:list>
       <mm:node number="<%= paginaID %>">
          <%@include file="includes/relatedcompetencies.jsp" %>
       </mm:node>
-      <%@include file="includes/pageowner.jsp" 
-    %></td>
+      <%@include file="includes/pageowner.jsp"%>
+   </td>
 </tr>
 </table>
 </div>
@@ -74,3 +75,4 @@ if(twoColumns) {
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
+</mm:content>
