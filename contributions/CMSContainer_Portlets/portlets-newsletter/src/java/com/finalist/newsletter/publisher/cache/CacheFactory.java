@@ -12,13 +12,9 @@ public class CacheFactory {
    private static final Log logger = LogFactory.getLog(CacheFactory.class);
 
    /**
-    * get caches'cahe
-    * 
-    * @param caches
-    *           f
-    * @return ICache
+    * @param caches this is a map
+    * @return interface 
     */
-
    public static ICache getCacheInstance(Class caches) {
       if (cache == null) {
          try {
@@ -46,7 +42,7 @@ public class CacheFactory {
    /**
     * getDefaultCache
     * 
-    * @param time
+    * @param time which control the life of cache
     * @return ICache
     */
    public static ICache getDefaultCache(long time) {

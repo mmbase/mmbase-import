@@ -8,40 +8,41 @@ import java.util.TimerTask;
 
 /**
  * @author nikko yin
+ * implement the interface ICache
  */
 public class DefaultCache implements ICache {
 
    private static final int FreshTimerIntervalSeconds = 1;
-   private Map<String, CacheInfo> datas;
+   private Map < String , CacheInfo > datas;
    private long time = 1800;
    private Timer timer;
 
+   /**
+    * synchronized cache when instance it
+    * flush when every second
+    */
    public DefaultCache() {
-      // synchronized cache when instance it
-      datas = Collections.synchronizedMap(new HashMap<String, CacheInfo>());
-      // flush cache
+      datas = Collections.synchronizedMap(new HashMap < String , CacheInfo > ());
       TimerTask task = new CacheFreshTask(this);
       timer = new Timer("Cache_Timer", true);
-      // flush when every second
       timer.scheduleAtFixedRate(task, 1000, FreshTimerIntervalSeconds * 1000);
    }
 
-   // implement the interface
    public DefaultCache(long time) {
       this();
       this.time = time;
    }
 
-   // * add
+   /* add
+    * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object)
+    */
    public void add(Object key, Object value) {
       add(key, value, time);
    }
 
-   /**
-    * add
-    * 
-    * @param Object ,
-    *           Object and long
+  
+   /* 
+    * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object, long)
     */
    public void add(Object key, Object value, long slidingExpiration) {
       if (slidingExpiration != 0) {
@@ -50,16 +51,19 @@ public class DefaultCache implements ICache {
       }
    }
 
-   // contains
+   /* contains
+    * @see com.finalist.newsletter.publisher.cache.ICache#contains(java.lang.Object)
+    */
    public boolean contains(Object key) {
-      if (datas.containsKey(key)) return true;
+      if (datas.containsKey(key)) {
+         return true;
+      }
       return false;
    }
 
-   /**
-    * get
-    * 
-    * @param Object
+   
+   /* 
+    * @see com.finalist.newsletter.publisher.cache.ICache#get(java.lang.Object)
     */
    public Object get(Object key) {
       if (datas.containsKey(key)) {
@@ -71,47 +75,29 @@ public class DefaultCache implements ICache {
       return null;
    }
 
-   /**
-    * remove
-    * 
-    * @param Object
+   /* 
+    * @see com.finalist.newsletter.publisher.cache.ICache#remove(java.lang.Object)
     */
    public void remove(Object key) {
       datas.remove(key);
    }
 
-   /**
-    * removeAll
-    * 
-    * @param null
+   
+   /* 
+    * @see com.finalist.newsletter.publisher.cache.ICache#removeAll()
     */
    public void removeAll() {
    }
 
-   /**
-    * getTime
-    * 
-    * @param null
-    */
    public long getTime() {
       return time;
    }
 
-   /**
-    * setTime
-    * 
-    * @param time
-    */
    public void setTime(long time) {
       this.time = time;
    }
 
-   /**
-    * getDatas
-    * 
-    * @param null
-    */
-   public Map<String, CacheInfo> getDatas() {
+   public Map < String , CacheInfo > getDatas() {
       return datas;
    }
 }
