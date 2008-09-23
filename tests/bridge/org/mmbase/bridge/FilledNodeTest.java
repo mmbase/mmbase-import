@@ -56,7 +56,7 @@ public class FilledNodeTest extends NodeTest {
         Node typedefNode = cloud.getNodeManager("bb");
         assertTrue(typedefNode != null);
         byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
-        node.setValue("bytefield", bytes);
+        node.setValue("binaryfield", bytes);
         node.setValue("doublefield", new Double(Double.MAX_VALUE));
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));

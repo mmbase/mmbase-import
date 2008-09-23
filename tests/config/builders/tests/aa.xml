@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="aa" maintainer="mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="nl">aa</singular>
@@ -41,7 +41,7 @@
         </positions>
       </editor>
       <db>
-        <name>bytefield</name>
+        <name>binaryfield</name>
         <type key="false" notnull="false" state="persistent">BINARY</type>
       </db>
     </field>
@@ -69,7 +69,7 @@
 
     <field>
       <db>
-        <name>longfield</name> 
+        <name>longfield</name>
         <type key="false" notnull="false" state="persistent">LONG</type>
       </db>
     </field>
