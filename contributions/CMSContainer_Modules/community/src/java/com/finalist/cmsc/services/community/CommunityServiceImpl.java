@@ -122,11 +122,11 @@ public class CommunityServiceImpl extends CommunityService {
       return authentication != null ? (User) authentication.getPrincipal() : null;
    }
 
-   public Map < Long , Map < String , String >> getPreferencesByModule(String module) {
+   public Map < Long , Map < String , String > > getPreferencesByModule(String module) {
       return preferenceService.getPreferencesByModule(module);
    }
 
-   public Map < String , Map < String , String >> getPreferencesByUserId(String userId) {
+   public Map < String , Map < String , String > > getPreferencesByUserId(String userId) {
       return preferenceService.getPreferencesByUserId(userId);
    }
 
@@ -160,7 +160,7 @@ public class CommunityServiceImpl extends CommunityService {
     * @deprecated please try to use another service
     */
    @Override
-   public Map < String , Map < String , List < String >>> getPreferences(String module, String userId, String key,
+   public Map < String , Map < String , List < String > > > getPreferences(String module, String userId, String key,
          String value) {
       return null;
    }
@@ -169,7 +169,7 @@ public class CommunityServiceImpl extends CommunityService {
     * @deprecated please try to use another service
     */
    @Override
-   public Map < String , Map < String , String >> getUserProperty(String userId) {
+   public Map < String , Map < String , String > > getUserProperty(String userId) {
       // return preferenceService.getPreferencesByUserId(userId);
       return null;
    }
