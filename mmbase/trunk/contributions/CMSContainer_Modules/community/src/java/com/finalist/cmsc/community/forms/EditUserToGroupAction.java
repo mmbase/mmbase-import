@@ -39,7 +39,7 @@ public class EditUserToGroupAction extends AbstractCommunityAction {
 
          PagingStatusHolder holder = PagingUtils.getStatusHolder(request);
          int totalCount = 0;
-         List < Authority > authorities = new ArrayList < Authority >();
+         List < Authority > authorities = new ArrayList < Authority > ();
 
          if (StringUtils.isNotBlank(searchform.getGroup())) {
             // have conditons searching
@@ -84,7 +84,7 @@ public class EditUserToGroupAction extends AbstractCommunityAction {
    }
 
    private List < GroupForShowVO > convertAuthrityTOVO(List < Authority > authorities) {
-      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO >();
+      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO > ();
       for (Authority authority : authorities) {
          GroupForShowVO group = new GroupForShowVO();
          group.setGroupName(authority.getName());

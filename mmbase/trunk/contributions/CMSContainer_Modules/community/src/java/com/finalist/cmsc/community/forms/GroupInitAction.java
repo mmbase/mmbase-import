@@ -39,8 +39,8 @@ public class GroupInitAction extends AbstractCommunityAction {
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
          HttpServletResponse httpServletResponse) throws Exception {
 
-      List < LabelValueBean > usersList = new ArrayList < LabelValueBean >();
-      List < LabelValueBean > membersList = new ArrayList < LabelValueBean >();
+      List < LabelValueBean > usersList = new ArrayList < LabelValueBean > ();
+      List < LabelValueBean > membersList = new ArrayList < LabelValueBean > ();
 
       AuthenticationService as = getAuthenticationService();
       List < Authentication > users = as.findAuthentications();

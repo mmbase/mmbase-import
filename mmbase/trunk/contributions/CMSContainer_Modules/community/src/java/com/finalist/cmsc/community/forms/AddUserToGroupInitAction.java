@@ -23,7 +23,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
       PagingUtils.initStatusHolder(request);
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
       int totalCount = 0;
-      List < Authority > authorities = new ArrayList < Authority >();
+      List < Authority > authorities = new ArrayList < Authority > ();
 
       if (StringUtils.isNotBlank(searchform.getGroup())) {
          // have conditions searching
@@ -57,7 +57,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
    }
 
    private List < GroupForShowVO > convertAuthrityTOVO(List < Authority > authorities) {
-      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO >();
+      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO > ();
       for (Authority authority : authorities) {
          if (authority != null) {
             GroupForShowVO group = new GroupForShowVO();
