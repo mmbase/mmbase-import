@@ -33,7 +33,7 @@ public class DefaultCache implements ICache {
       this.time = time;
    }
 
-   /* add
+   /** add
     * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object)
     */
    public void add(Object key, Object value) {
@@ -41,7 +41,7 @@ public class DefaultCache implements ICache {
    }
 
   
-   /* 
+   /**add
     * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object, long)
     */
    public void add(Object key, Object value, long slidingExpiration) {
@@ -51,7 +51,7 @@ public class DefaultCache implements ICache {
       }
    }
 
-   /* contains
+   /** contains
     * @see com.finalist.newsletter.publisher.cache.ICache#contains(java.lang.Object)
     */
    public boolean contains(Object key) {
@@ -62,7 +62,7 @@ public class DefaultCache implements ICache {
    }
 
    
-   /* 
+   /** get
     * @see com.finalist.newsletter.publisher.cache.ICache#get(java.lang.Object)
     */
    public Object get(Object key) {
@@ -75,7 +75,7 @@ public class DefaultCache implements ICache {
       return null;
    }
 
-   /* 
+   /** remove
     * @see com.finalist.newsletter.publisher.cache.ICache#remove(java.lang.Object)
     */
    public void remove(Object key) {
@@ -83,7 +83,7 @@ public class DefaultCache implements ICache {
    }
 
    
-   /* 
+   /** removeAll
     * @see com.finalist.newsletter.publisher.cache.ICache#removeAll()
     */
    public void removeAll() {
