@@ -89,7 +89,7 @@
 <tr>
    <td style="width:48%"></td>
    <td style="text-align:left; vertical-align:top; width:744;height:157px;padding-bottom:1px;"> 
-         <img src="<%=contextPath%>/404/hooglander.jpg" border="0"></td>
+         <img src="<%=contextPath%>/404/pano_error_pagina.jpg" border="0"></td>
 
    <td style="width:48%" rowspan="2" valign="top">
    <img src="<%=contextPath%>/natmm/media/natmm_logo_rgb1.gif" width="159" height="216" style="padding:0;">
