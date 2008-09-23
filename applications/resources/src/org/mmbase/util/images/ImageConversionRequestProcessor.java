@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.3 2008-09-23 07:38:51 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -33,15 +33,17 @@ public class ImageConversionRequestProcessor implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(ImageConversionRequestProcessor.class);
     private static int idCounter =0;
     private final int processorId;
+    private Thread thread;
 
     private final ImageConverter convert;
     private final BlockingQueue<ImageConversionRequest> queue;
     private final Map<ImageConversionReceiver, ImageConversionRequest> table;
 
+
     /**
      * @javadoc
      */
-    public ImageConversionRequestProcessor(ImageConverter convert, BlockingQueue<ImageConversionRequest> queue, 
+    public ImageConversionRequestProcessor(ImageConverter convert, BlockingQueue<ImageConversionRequest> queue,
                                            Map<ImageConversionReceiver, ImageConversionRequest> table) {
         this.convert = convert;
         this.queue = queue;
@@ -54,7 +56,10 @@ public class ImageConversionRequestProcessor implements Runnable {
      * Starts the thread for this ImageRequestProcessor.
      */
     protected void start() {
-        MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
+        thread = MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
+    }
+    protected void shutdown() {
+        thread.interrupt();
     }
 
     // javadoc inherited (from Runnable)
@@ -69,7 +74,7 @@ public class ImageConversionRequestProcessor implements Runnable {
                 log.debug("Done with request");
             } catch (InterruptedException ie) {
                 log.debug(Thread.currentThread().getName() +" was interrupted.");
-                continue;
+                break;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
