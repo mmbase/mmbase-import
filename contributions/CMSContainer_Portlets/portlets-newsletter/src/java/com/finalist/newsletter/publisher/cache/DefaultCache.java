@@ -33,16 +33,19 @@ public class DefaultCache implements ICache {
       this.time = time;
    }
 
-   /** add
-    * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object)
+   /**
+    * @param key used to find value
+    * @param value store the infoBean
     */
    public void add(Object key, Object value) {
       add(key, value, time);
    }
 
   
-   /**add
-    * @see com.finalist.newsletter.publisher.cache.ICache#add(java.lang.Object, java.lang.Object, long)
+   /**
+    * @param key used to find value
+    * @param value store the infoBean
+    * @param slidingExpiration the life of infoBean
     */
    public void add(Object key, Object value, long slidingExpiration) {
       if (slidingExpiration != 0) {
@@ -51,8 +54,9 @@ public class DefaultCache implements ICache {
       }
    }
 
-   /** contains
-    * @see com.finalist.newsletter.publisher.cache.ICache#contains(java.lang.Object)
+   /**
+    * @param key used mark the infoBean
+    * @return boolean see it contains
     */
    public boolean contains(Object key) {
       if (datas.containsKey(key)) {
@@ -62,8 +66,9 @@ public class DefaultCache implements ICache {
    }
 
    
-   /** get
-    * @see com.finalist.newsletter.publisher.cache.ICache#get(java.lang.Object)
+   /**
+    * @param key used get the value
+    * @return Object is the infoBean
     */
    public Object get(Object key) {
       if (datas.containsKey(key)) {
@@ -75,16 +80,16 @@ public class DefaultCache implements ICache {
       return null;
    }
 
-   /** remove
-    * @see com.finalist.newsletter.publisher.cache.ICache#remove(java.lang.Object)
+   /**
+    * @param key remove 
     */
    public void remove(Object key) {
       datas.remove(key);
    }
 
    
-   /** removeAll
-    * @see com.finalist.newsletter.publisher.cache.ICache#removeAll()
+   /**
+    * remove all exited infoBean in the cache
     */
    public void removeAll() {
    }
