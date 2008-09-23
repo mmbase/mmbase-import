@@ -53,11 +53,11 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
          String forwardPath = mapping.findForward("cancel").getPath();
          forwardPath = forwardPath.concat("?showpage=" + number);
          if (StringUtils.isNotBlank(request.getParameter("forward"))) {
-				ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
-						+ request.getParameter("newsletterId"));
-				ret.setRedirect(true);
-				return ret;
-			}
+            ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
+                  + request.getParameter("newsletterId"));
+            ret.setRedirect(true);
+            return ret;
+         }
          return new ActionForward(forwardPath);
       }
 
