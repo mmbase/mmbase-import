@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.11 2008-09-19 16:02:41 michiel Exp $
+ * @version $Id: Images.java,v 1.12 2008-09-23 07:42:48 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -100,7 +100,7 @@ public class Images extends AbstractImages {
         Map<String, String> map = getInitParameters("mmbase/imaging");
         map.put("configfile", getConfigResource());
 
-        Factory.init(map, imageCaches);
+        Factory.init(map);
 
         return true;
     }
