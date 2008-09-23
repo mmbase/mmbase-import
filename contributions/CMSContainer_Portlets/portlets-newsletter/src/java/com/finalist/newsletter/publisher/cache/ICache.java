@@ -5,6 +5,9 @@ package com.finalist.newsletter.publisher.cache;
  * 
  */
 public interface ICache {
+   /**
+    * FOREVER is the flag mark the cache life
+    */
    public static int FOREVER = -1;
 
    /**
@@ -31,14 +34,14 @@ public interface ICache {
    public void removeAll();
 
    /**
-    * @param key
-    * @return Object
+    * @param key used get the value
+    * @return Object is the infoBean
     */
    public Object get(Object key);
 
    /**
-    * @param key
-    * @return boolean
+    * @param key used mark the infoBean
+    * @return boolean see it contains
     */
    public boolean contains(Object key);
 
