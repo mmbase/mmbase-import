@@ -14,7 +14,7 @@ public class ParameterMapper {
    private static Log log = LogFactory.getLog(ParameterMapper.class);
 
    private Object source;
-   private Map < String , String > parameters = new HashMap < String , String >();
+   private Map < String , String > parameters = new HashMap < String , String > ();
 
    public void setSource(Object source) {
       this.source = source;

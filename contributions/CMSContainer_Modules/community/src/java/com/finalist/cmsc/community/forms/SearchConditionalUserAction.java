@@ -92,7 +92,7 @@ public class SearchConditionalUserAction extends DispatchAction {
          request.setAttribute("option", option);
          Authority authority = authorityService.findAuthorityByName(groupName);
          Set < Authentication > authentications = authority.getAuthentications();
-         Set < String > userNames = new HashSet < String >();
+         Set < String > userNames = new HashSet < String > ();
          for (Iterator iter = authentications.iterator(); iter.hasNext();) {
             Authentication authentication = (Authentication) iter.next();
             userNames.add(authentication.getUserId());
@@ -121,7 +121,7 @@ public class SearchConditionalUserAction extends DispatchAction {
 
    private List < PersonVO > convertToVO(List < Person > persons) {
       List < PersonVO > perShow;
-      perShow = new ArrayList < PersonVO >();
+      perShow = new ArrayList < PersonVO > ();
       for (Person p : persons) {
          String username = authenticationService.getAuthenticationById(p.getAuthenticationId()).getUserId();
          Set < String > authorityNames = authorityService.getAuthorityNamesForUser(username);
