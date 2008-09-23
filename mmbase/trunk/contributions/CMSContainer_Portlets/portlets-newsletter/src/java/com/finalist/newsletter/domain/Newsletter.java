@@ -6,144 +6,144 @@ import java.util.Set;
 
 public class Newsletter {
 
-	private int id;
+   private int id;
 
-	private String format;
+   private String format;
 
-	private String status;
+   private String status;
 
-	private Date interval;
+   private Date interval;
 
-	private Set<Term> terms = new HashSet<Term>();
+   private Set<Term> terms = new HashSet<Term>();
 
-	private String title;
+   private String title;
 
-	private String replyName;
+   private String replyName;
 
-	private String replyAddress;
+   private String replyAddress;
 
-	private String fromName;
+   private String fromName;
 
-	private String fromAddress;
+   private String fromAddress;
 
-	private boolean sendempty;
+   private boolean sendempty;
 
-	private String txtempty;
+   private String txtempty;
 
-	public int getId() {
-		return id;
-	}
+   public int getId() {
+      return id;
+   }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+   public void setId(int id) {
+      this.id = id;
+   }
 
-	public String getTitle() {
-		return title;
-	}
+   public String getTitle() {
+      return title;
+   }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+   public void setTitle(String title) {
+      this.title = title;
+   }
 
-	public String getFormat() {
-		return format;
-	}
+   public String getFormat() {
+      return format;
+   }
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
+   public void setFormat(String format) {
+      this.format = format;
+   }
 
-	public Date getInterval() {
-		return interval;
-	}
+   public Date getInterval() {
+      return interval;
+   }
 
-	public void setInterval(Date interval) {
-		this.interval = interval;
-	}
+   public void setInterval(Date interval) {
+      this.interval = interval;
+   }
 
-	public String getStatus() {
-		return status;
-	}
+   public String getStatus() {
+      return status;
+   }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+   public void setStatus(String status) {
+      this.status = status;
+   }
 
-	public String getReplyName() {
-		return replyName;
-	}
+   public String getReplyName() {
+      return replyName;
+   }
 
-	public void setReplyName(String replyName) {
-		this.replyName = replyName;
-	}
+   public void setReplyName(String replyName) {
+      this.replyName = replyName;
+   }
 
-	public String getReplyAddress() {
-		return replyAddress;
-	}
+   public String getReplyAddress() {
+      return replyAddress;
+   }
 
-	public void setReplyAddress(String replyAddress) {
-		this.replyAddress = replyAddress;
-	}
+   public void setReplyAddress(String replyAddress) {
+      this.replyAddress = replyAddress;
+   }
 
-	public String getFromName() {
-		return fromName;
-	}
+   public String getFromName() {
+      return fromName;
+   }
 
-	public void setFromName(String fromName) {
-		this.fromName = fromName;
-	}
+   public void setFromName(String fromName) {
+      this.fromName = fromName;
+   }
 
-	public String getFromAddress() {
-		return fromAddress;
-	}
+   public String getFromAddress() {
+      return fromAddress;
+   }
 
-	public void setFromAddress(String fromAddress) {
-		this.fromAddress = fromAddress;
-	}
+   public void setFromAddress(String fromAddress) {
+      this.fromAddress = fromAddress;
+   }
 
-	public Set<Term> getTerms() {
-		return terms;
-	}
+   public Set<Term> getTerms() {
+      return terms;
+   }
 
-	public void setTerms(Set<Term> terms) {
-		this.terms = terms;
-	}
+   public void setTerms(Set<Term> terms) {
+      this.terms = terms;
+   }
 
-	public boolean getSendempty() {
-		return sendempty;
-	}
+   public boolean getSendempty() {
+      return sendempty;
+   }
 
-	public void setSendempty(boolean sendempty) {
-		this.sendempty = sendempty;
-	}
+   public void setSendempty(boolean sendempty) {
+      this.sendempty = sendempty;
+   }
 
-	public String getTxtempty() {
-		return txtempty;
-	}
+   public String getTxtempty() {
+      return txtempty;
+   }
 
-	public void setTxtempty(String txtempty) {
-		this.txtempty = txtempty;
-	}
+   public void setTxtempty(String txtempty) {
+      this.txtempty = txtempty;
+   }
 
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
-		Newsletter that = (Newsletter) o;
+      Newsletter that = (Newsletter) o;
 
-		if (id != that.id) {
-			return false;
-		}
+      if (id != that.id) {
+         return false;
+      }
 
-		return true;
-	}
+      return true;
+   }
 
-	public int hashCode() {
-		return id;
-	}
+   public int hashCode() {
+      return id;
+   }
 }

@@ -7,22 +7,22 @@ import com.finalist.newsletter.domain.Term;
 
 public interface NewsletterService {
 
-	public List<Newsletter> getAllNewsletter(boolean paging);
+   public List<Newsletter> getAllNewsletter(boolean paging);
 
-	public String getNewsletterName(int newsletterId);
+   public String getNewsletterName(int newsletterId);
 
-	public int countAllTerms();
+   public int countAllTerms();
 
-	public List<Newsletter> getNewslettersByTitle(String title, boolean paging);
+   public List<Newsletter> getNewslettersByTitle(String title, boolean paging);
 
-	public Newsletter getNewsletterBySubscription(int id);
+   public Newsletter getNewsletterBySubscription(int id);
 
-	public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
+   public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
 
-	public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging);
+   public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging);
 
-	public List<Newsletter> getNewsletters(String subscriber, String title, boolean paging);
+   public List<Newsletter> getNewsletters(String subscriber, String title, boolean paging);
 
-	void processBouncesOfPublication(String publicationId, String userId);
+   void processBouncesOfPublication(String publicationId, String userId);
 
 }
