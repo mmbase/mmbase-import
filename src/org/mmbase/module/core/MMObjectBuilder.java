@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.432 2008-09-22 17:18:29 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.433 2008-09-23 04:12:08 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1659,10 +1659,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return List of function parameters (may be functions themselves).
      * @deprecated use executeFunction(node, function, list)
      */
-    protected Vector<String> getFunctionParameters(String fields) {
+    protected List<String> getFunctionParameters(String fields) {
         int commapos =  0;
         int nested =  0;
-        Vector<String> v = new Vector<String>();
+        List<String> v = new ArrayList<String>();
         int i;
         if (log.isDebugEnabled()) log.debug("Fields=" + fields);
         for(i = 0; i<fields.length(); i++) {
@@ -1722,7 +1722,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (fv == null && MMBase.getMMBase().inDevelopment()) {
                 throw new IllegalArgumentException("You cannot use non-existing function '" + functionName + "' of node '" + getNumber() + "'");
             } else {
-                return null;
+                return fv;
             }
         }
     }
