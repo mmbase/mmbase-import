@@ -7,14 +7,11 @@ public class Tag {
 	private String description;
 	private int count;
 	
-	public Tag(String name, String description, int count) {
-		super();
+	public Tag(int number, String name, String description, int count) {
+		this.number = number;
 		this.name = name;
 		this.description = description;
 		this.count = count;
-	}
-	public void setNumber(int number) {
-		this.number = number;
 	}
 	public int getNumber() {
 		return number;
