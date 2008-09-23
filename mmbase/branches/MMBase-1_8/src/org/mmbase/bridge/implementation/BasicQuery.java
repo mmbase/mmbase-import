@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.61.2.4 2008-06-28 11:57:10 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.61.2.5 2008-09-23 12:01:43 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -383,7 +383,7 @@ public class BasicQuery implements Query  {
         BasicStepField sf = new BasicStepField(step, cf);
         if (! implicitFields.remove(sf)) {// it's explicitly added now
             if (cf.inStorage()) {
-                sf = query.addField(step, cf); 
+                sf = query.addField(step, cf);
             } else {
                 log.debug("Not adding the field " + field + " because it is not in storage (this is a virtual field)");
             }
@@ -700,6 +700,13 @@ public class BasicQuery implements Query  {
     public String toString() {
         return query.toString() + (used ? "(used)" : "") + "INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 
+    }
+
+    /*&
+     * Getter for use in EL. Returns {@link #toSql}.
+     */
+    public String getSql() {
+        return toSql();
     }
 
     public String toSql() {
