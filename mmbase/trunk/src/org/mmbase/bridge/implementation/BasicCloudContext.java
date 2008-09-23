@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.61 2008-08-08 11:30:58 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.62 2008-09-23 16:31:20 michiel Exp $
  */
 public abstract class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -148,7 +148,7 @@ public abstract class BasicCloudContext implements CloudContext {
         return getCloud(cloudName, "anonymous", null);
     }
 
-    public Cloud getCloud(String cloudName, String authenticationType, Map loginInfo) throws NotFoundException  {
+    public Cloud getCloud(String cloudName, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException  {
         checkExists(cloudName);
         return new BasicCloud(cloudName, authenticationType, loginInfo, this);
     }

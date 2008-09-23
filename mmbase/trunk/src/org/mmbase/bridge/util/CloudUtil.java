@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * An utility to work with clouds on the session or as a ThreadLocal
  * @since MMBase-1.9
- * @version $Id: CloudUtil.java,v 1.3 2008-08-12 19:48:55 michiel Exp $
+ * @version $Id: CloudUtil.java,v 1.4 2008-09-23 16:31:20 michiel Exp $
  */
 public class CloudUtil {
 
@@ -60,7 +60,7 @@ public class CloudUtil {
         Cloud cloud = null;
         if (!isEmptyOrWhitespace(username) && !isEmptyOrWhitespace(password)) {
             String authenticate = req.getParameter("authenticate");
-            final Map<String,String> loginInfo = getUserCredentials(username, password);
+            final Map<String, String> loginInfo = getUserCredentials(username, password);
 
             cloud = createCloud(req, sessionname, authenticate, loginInfo);
         }
@@ -75,7 +75,7 @@ public class CloudUtil {
      * @param loginInfo Map with login information
      * @return The new cloud
      */
-    public static Cloud createCloud(HttpServletRequest req, String authenticate, final Map<String,String> loginInfo) {
+    public static Cloud createCloud(HttpServletRequest req, String authenticate, final Map<String, ?> loginInfo) {
         return createCloud(req, DEFAULT_SESSIONNAME, authenticate, loginInfo);
     }
 
@@ -87,7 +87,7 @@ public class CloudUtil {
      * @param loginInfo Map with login information
      * @return The new cloud
      */
-    public static Cloud createCloud(HttpServletRequest req, String sessionname, String authenticate, final Map<String,String> loginInfo) {
+    public static Cloud createCloud(HttpServletRequest req, String sessionname, String authenticate, final Map<String, ?> loginInfo) {
         String cloudName = req.getParameter("cloud");
         if (isEmptyOrWhitespace(cloudName)) {
             cloudName = DEFAULT_CLOUD_NAME;
@@ -114,8 +114,8 @@ public class CloudUtil {
      * @param password password for login
      * @return Map with Login information
      */
-    public static Map<String,String> getUserCredentials(String username, String password) {
-        Map<String,String> result = new HashMap<String,String>(3, 0.7f);
+    public static Map<String, String> getUserCredentials(String username, String password) {
+        Map<String, String> result = new HashMap<String, String>(3, 0.7f);
         result.put("username", username);
         result.put("password", password);
         return result;
