@@ -2,7 +2,7 @@ package com.finalist.cmsc.community.forms;
 
 import org.apache.struts.action.ActionForm;
 
-public class PreferenceForm  extends ActionForm {
+public class PreferenceForm extends ActionForm {
 
    /**
     * 
@@ -10,21 +10,21 @@ public class PreferenceForm  extends ActionForm {
    private static final long serialVersionUID = 1L;
 
    private String id;
-   
+
    private String userId;
-   
+
    private String module;
-   
+
    private String key;
-   
+
    private String value;
-   
-   private String order;  
-   
-   private String direction;  
-   
-   private String method;  
-   
+
+   private String order;
+
+   private String direction;
+
+   private String method;
+
    public String getUserId() {
       return userId;
    }
@@ -88,6 +88,7 @@ public class PreferenceForm  extends ActionForm {
    public void setId(String id) {
       this.id = id;
    }
+
    public void clear() {
       this.key = null;
       this.module = null;

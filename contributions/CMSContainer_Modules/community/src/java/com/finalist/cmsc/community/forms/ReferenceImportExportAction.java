@@ -24,93 +24,93 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ReferenceImportExportAction extends DispatchAction {
-	private static Log log = LogFactory.getLog(ReferenceImportExportAction.class);
-	private PersonService personService;
+   private static Log log = LogFactory.getLog(ReferenceImportExportAction.class);
+   private PersonService personService;
 
-	
-	public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		log.debug("Export Susbscriptions");
-		CommunityExport communityExport = new CommunityExport(personService.getPersonExportImportVO());
-		String xml = getXStream().toXML(communityExport);
-		byte[] bytes = xml.getBytes();
-		response.setContentType("text/xml");
-		response.setContentLength(bytes.length);
-		response.setHeader("Content-Disposition", "attachment; filename=subscriptions.xml");
-		response.setHeader("Cache-Control", "no-store");
-		response.flushBuffer();
-		OutputStream outStream = response.getOutputStream();
-		outStream.write(bytes);
-		outStream.flush();
-		return mapping.findForward(null);
-	}
+   public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws IOException {
+      log.debug("Export Susbscriptions");
+      CommunityExport communityExport = new CommunityExport(personService.getPersonExportImportVO());
+      String xml = getXStream().toXML(communityExport);
+      byte[] bytes = xml.getBytes();
+      response.setContentType("text/xml");
+      response.setContentLength(bytes.length);
+      response.setHeader("Content-Disposition", "attachment; filename=subscriptions.xml");
+      response.setHeader("Cache-Control", "no-store");
+      response.flushBuffer();
+      OutputStream outStream = response.getOutputStream();
+      outStream.write(bytes);
+      outStream.flush();
+      return mapping.findForward(null);
+   }
 
-	public ActionForward importsubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		ReferenceImportUploadForm myForm = (ReferenceImportUploadForm) form;
-		FormFile myFile = myForm.getDatafile();
-		byte[] fileData = myFile.getFileData();
-		String contentType = myFile.getContentType();
-		boolean isXML = "text/xml".equals(contentType);
-		String level = myForm.getLevel();
-		ActionMessages messages = new ActionMessages();
-		if (!isXML) {
-			messages.add("file", new ActionMessage("datafile.unsupport"));
-			saveMessages(request, messages);
-			return mapping.findForward("failed");
-		}
-		try {
-			importFromFile(fileData, level);
-		} catch (Exception e) {
-			log.error(e);
-			messages.add("file", new ActionMessage("datafile.invalid"));
-			saveMessages(request, messages);
-			return mapping.findForward("failed");
-		}
+   public ActionForward importsubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws IOException {
+      ReferenceImportUploadForm myForm = (ReferenceImportUploadForm) form;
+      FormFile myFile = myForm.getDatafile();
+      byte[] fileData = myFile.getFileData();
+      String contentType = myFile.getContentType();
+      boolean isXML = "text/xml".equals(contentType);
+      String level = myForm.getLevel();
+      ActionMessages messages = new ActionMessages();
+      if (!isXML) {
+         messages.add("file", new ActionMessage("datafile.unsupport"));
+         saveMessages(request, messages);
+         return mapping.findForward("failed");
+      }
+      try {
+         importFromFile(fileData, level);
+      } catch (Exception e) {
+         log.error(e);
+         messages.add("file", new ActionMessage("datafile.invalid"));
+         saveMessages(request, messages);
+         return mapping.findForward("failed");
+      }
 
-		return mapping.findForward("success");
-	}
+      return mapping.findForward("success");
+   }
 
-	private void importFromFile(byte[] fileData, String level) throws Exception {
-		String xml = new String(fileData);
-		CommunityExport communityExport;
-		communityExport = (CommunityExport) getXStream().fromXML(xml);
-		List<PersonExportImportVO> xpersons = communityExport.getUsers();
-		if ("clean".equals(level)) {
-			batchCleanRecord();
-		}
-		for (PersonExportImportVO importPerson : xpersons) {
-			Authentication authentication=importPerson.getAuthentication();
-			if(null == authentication||StringUtils.isWhitespace(authentication.getUserId())||StringUtils.isWhitespace(authentication.getPassword())){
-				continue;
-			}
-			personService.addRelationRecord(level, importPerson);
-		}
-	}
+   private void importFromFile(byte[] fileData, String level) throws Exception {
+      String xml = new String(fileData);
+      CommunityExport communityExport;
+      communityExport = (CommunityExport) getXStream().fromXML(xml);
+      List < PersonExportImportVO > xpersons = communityExport.getUsers();
+      if ("clean".equals(level)) {
+         batchCleanRecord();
+      }
+      for (PersonExportImportVO importPerson : xpersons) {
+         Authentication authentication = importPerson.getAuthentication();
+         if (null == authentication || StringUtils.isWhitespace(authentication.getUserId())
+               || StringUtils.isWhitespace(authentication.getPassword())) {
+            continue;
+         }
+         personService.addRelationRecord(level, importPerson);
+      }
+   }
 
-	private void batchCleanRecord() throws Exception {
-		personService.batchClean();
-	}
-	
-	private XStream getXStream() {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.alias("community-export", CommunityExport.class);
-		xstream.alias("user", PersonExportImportVO.class);
-		xstream.alias("authentication", Authentication.class);
-		xstream.alias("preference", Preference.class);
-		return xstream;
-	}
+   private void batchCleanRecord() throws Exception {
+      personService.batchClean();
+   }
 
-	public static void setLog(Log log) {
-		ReferenceImportExportAction.log = log;
-	}
+   private XStream getXStream() {
+      XStream xstream = new XStream(new DomDriver());
+      xstream.alias("community-export", CommunityExport.class);
+      xstream.alias("user", PersonExportImportVO.class);
+      xstream.alias("authentication", Authentication.class);
+      xstream.alias("preference", Preference.class);
+      return xstream;
+   }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-		     
-	}
+   public static void setLog(Log log) {
+      ReferenceImportExportAction.log = log;
+   }
 
-	public static Log getLog() {
-		return log;
-	}
+   public void setPersonService(PersonService personService) {
+      this.personService = personService;
+
+   }
+
+   public static Log getLog() {
+      return log;
+   }
 }

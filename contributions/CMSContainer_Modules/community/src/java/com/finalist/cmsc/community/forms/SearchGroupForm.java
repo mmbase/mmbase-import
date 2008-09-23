@@ -24,8 +24,6 @@ public class SearchGroupForm extends ActionForm {
       this.groupname = groupname;
    }
 
-   
-    
    public String[] processNames(String temp) {
       String[] userUtil = temp.split(",");
       return userUtil;

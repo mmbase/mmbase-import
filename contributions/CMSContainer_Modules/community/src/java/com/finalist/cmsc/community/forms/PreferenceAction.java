@@ -27,9 +27,8 @@ public class PreferenceAction extends DispatchAction {
       this.preferenceService = preferenceService;
    }
 
-   public ActionForward add(ActionMapping mapping, ActionForm form,
-                            HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+   public ActionForward add(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
       PreferenceForm preferenceForm = (PreferenceForm) form;
       PreferenceVO preference = new PreferenceVO();
       BeanUtils.copyProperties(preference, preferenceForm);
@@ -39,9 +38,8 @@ public class PreferenceAction extends DispatchAction {
       return mapping.findForward(FORWARD_LIST);
    }
 
-   public ActionForward addInit(ActionMapping mapping, ActionForm form,
-                                HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+   public ActionForward addInit(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
       PreferenceForm preferenceForm = (PreferenceForm) form;
       preferenceForm.clear();
       List < String > userIds = preferenceService.getAllUserIds();
@@ -49,9 +47,8 @@ public class PreferenceAction extends DispatchAction {
       return mapping.findForward(FORWARD_INIT);
    }
 
-   public ActionForward delete(ActionMapping mapping, ActionForm form,
-                               HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+   public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
       String id = request.getParameter("id");
       if (id != null) {
          preferenceService.deletePreference(id);
@@ -59,9 +56,8 @@ public class PreferenceAction extends DispatchAction {
       return mapping.findForward(FORWARD_LIST);
    }
 
-   public ActionForward modify(ActionMapping mapping, ActionForm form,
-                               HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+   public ActionForward modify(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
       PreferenceVO preference = new PreferenceVO();
       preference.setId(request.getParameter("id"));
       preference.setKey(request.getParameter("key"));
@@ -70,9 +66,8 @@ public class PreferenceAction extends DispatchAction {
       return null;
    }
 
-   public ActionForward list(ActionMapping mapping, ActionForm form,
-                             HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+   public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response) throws Exception {
 
       PreferenceForm preferenceForm = (PreferenceForm) form;
       Object isAdd = request.getAttribute("isAddSuccess");
@@ -88,20 +83,21 @@ public class PreferenceAction extends DispatchAction {
 
       PagingUtils.initStatusHolder(request);
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
-      
+
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
-      
-      /*pagingHolder.getSort();
-      pagingHolder.getDir();*/
-      
-      List < PreferenceVO > preferences = preferenceService.getPreferences(preference, offset,
-            pagesize, preferenceForm.getOrder(), preferenceForm.getDirection());
+
+      /*
+       * pagingHolder.getSort(); pagingHolder.getDir();
+       */
+
+      List < PreferenceVO > preferences = preferenceService.getPreferences(preference, offset, pagesize, preferenceForm
+            .getOrder(), preferenceForm.getDirection());
       int totalCount = preferenceService.getTotalCount(preference);
       if (preferences == null || preferences.size() == 0) {
          if (pagingHolder.getPage() >= 1) {
-            preferences = preferenceService.getPreferences(preference, pagingHolder.getOffset(),
-                  pagingHolder.getPageSize(), preferenceForm.getOrder(), preferenceForm.getDirection());
+            preferences = preferenceService.getPreferences(preference, pagingHolder.getOffset(), pagingHolder
+                  .getPageSize(), preferenceForm.getOrder(), preferenceForm.getDirection());
          }
       }
       request.setAttribute("totalCount", totalCount);

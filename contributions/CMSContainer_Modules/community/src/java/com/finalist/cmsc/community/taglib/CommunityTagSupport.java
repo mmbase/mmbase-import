@@ -20,60 +20,62 @@ import com.finalist.cmsc.services.community.security.AuthorityService;
  */
 public abstract class CommunityTagSupport extends SimpleTagSupport {
 
-	private WebApplicationContext ctx;
-	
-	private AuthenticationService authenticationService;
+   private WebApplicationContext ctx;
 
-	private AuthorityService authorityService;
-	
-	private PersonService personService;
-	
-	private PreferenceService preferenceService;
-	
-	@Override
-	public void doTag() throws JspException, IOException {
-		PageContext pctx = (PageContext) getJspContext();
-		ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(pctx.getServletContext());
-		ctx.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
+   private AuthenticationService authenticationService;
 
-		doTagLogic();
-	}
+   private AuthorityService authorityService;
 
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
+   private PersonService personService;
 
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
-	
-	public AuthorityService getAuthorityService() {
-		return authorityService;
-	}
+   private PreferenceService preferenceService;
 
-	public void setAuthorityService(AuthorityService authorityService) {
-		this.authorityService = authorityService;
-	}
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext pctx = (PageContext) getJspContext();
+      ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(pctx.getServletContext());
+      ctx.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
 
-	public PersonService getPersonService() {
-		return personService;
-	}
+      doTagLogic();
+   }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+   public AuthenticationService getAuthenticationService() {
+      return authenticationService;
+   }
 
-	public PreferenceService getPreferenceService() {
-		return preferenceService;
-	}
+   public void setAuthenticationService(AuthenticationService authenticationService) {
+      this.authenticationService = authenticationService;
+   }
 
-	public void setPreferenceService(PreferenceService preferenceService) {
-		this.preferenceService = preferenceService;
-	}
+   public AuthorityService getAuthorityService() {
+      return authorityService;
+   }
 
-	/**
-	 * @throws JspException If something goes wrong when writing to the page
-	 * @throws IOException If something goes wrong when writing to the page
-	 */
-	protected abstract void doTagLogic() throws JspException, IOException;
+   public void setAuthorityService(AuthorityService authorityService) {
+      this.authorityService = authorityService;
+   }
+
+   public PersonService getPersonService() {
+      return personService;
+   }
+
+   public void setPersonService(PersonService personService) {
+      this.personService = personService;
+   }
+
+   public PreferenceService getPreferenceService() {
+      return preferenceService;
+   }
+
+   public void setPreferenceService(PreferenceService preferenceService) {
+      this.preferenceService = preferenceService;
+   }
+
+   /**
+    * @throws JspException
+    *            If something goes wrong when writing to the page
+    * @throws IOException
+    *            If something goes wrong when writing to the page
+    */
+   protected abstract void doTagLogic() throws JspException, IOException;
 }

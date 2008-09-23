@@ -5,21 +5,21 @@ import org.apache.struts.action.ActionForm;
 public class SearchForm extends ActionForm {
 
    private String fullName;
-   
+
    private String userName;
-   
+
    private String emailAddr;
-   
+
    private String groups;
-   
+
    private String[] chk_;
-   
+
    private String[] chk_group;
-   
+
    private String groupName;
-   
+
    private String group;
-   
+
    private String option;
 
    public String getOption() {
@@ -62,10 +62,6 @@ public class SearchForm extends ActionForm {
       this.emailAddr = emailAddr;
    }
 
-   
-
-   
-
    public String getFullName() {
       return fullName;
    }
@@ -105,7 +101,5 @@ public class SearchForm extends ActionForm {
    public void setChk_group(String[] chk_group) {
       this.chk_group = chk_group;
    }
-
-   
 
 }
