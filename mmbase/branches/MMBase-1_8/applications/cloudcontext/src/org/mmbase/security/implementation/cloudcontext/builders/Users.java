@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.48.2.3 2008-06-30 08:13:11 michiel Exp $
+ * @version $Id: Users.java,v 1.48.2.4 2008-09-24 09:55:59 rico Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -275,7 +275,7 @@ public class Users extends MMObjectBuilder {
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
-            StepField sf        = nsq.getField(getField("username"));
+            StepField sf        = nsq.getField(getField(FIELD_USERNAME));
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
             cons.setCaseSensitive(userNameCaseSensitive);
             nsq.setConstraint(cons);
@@ -324,8 +324,9 @@ public class Users extends MMObjectBuilder {
         relStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
         relStep.setRole(new Integer(mmb.getRelDef().getNumberByName("rank")));
         if (userName != null) {
-            StepField sf2 = query.addField(relStep.getNext(), this.getField("username"));
-            Constraint cons2 = new BasicFieldValueConstraint(sf2, userName);
+            StepField sf2 = query.addField(relStep.getNext(), this.getField(FIELD_USERNAME));
+            BasicFieldValueConstraint cons2 = new BasicFieldValueConstraint(sf2, userName);
+            cons2.setCaseSensitive(userNameCaseSensitive);
             BasicCompositeConstraint composite = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
             composite.addChild(cons);
             composite.addChild(cons2);
@@ -355,11 +356,16 @@ public class Users extends MMObjectBuilder {
      * UserName must be unique, check it also here (to throw nicer exceptions)
      */
     public int insert(String owner, MMObjectNode node) {
+        String userName = node.getStringValue(FIELD_USERNAME);
+        if (!userNameCaseSensitive && userName!=null) {
+            userName=userName.toLowerCase();
+            node.setValue(FIELD_USERNAME, userName);
+        }
         int res = super.insert(owner, node);
-        String userName = node.getStringValue("username");
         NodeSearchQuery nsq = new NodeSearchQuery(this);
-        StepField sf        = nsq.getField(getField("username"));
-        Constraint cons = new BasicFieldValueConstraint(sf, userName);
+        StepField sf        = nsq.getField(getField(FIELD_USERNAME));
+        BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
+        cons.setCaseSensitive(userNameCaseSensitive);
         nsq.setConstraint(cons);
         try {
             Iterator i = getNodes(nsq).iterator();
@@ -513,7 +519,7 @@ public class Users extends MMObjectBuilder {
     }
 
     public String toString(MMObjectNode n) {
-        return n.getStringValue("username");
+        return n.getStringValue(FIELD_USERNAME);
     }
 
     public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
