@@ -19,14 +19,14 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.7 2008-01-10 14:12:24 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.8 2008-09-24 22:02:11 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class ClassLogin extends ContextLoginModule {
     private static final Logger log = Logging.getLoggerInstance(ClassLogin.class);
 
-    public ContextUserContext login(Map<String, Object> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
+    public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
         org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
         if (li == null) {
