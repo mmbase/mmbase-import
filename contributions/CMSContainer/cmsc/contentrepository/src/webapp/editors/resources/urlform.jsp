@@ -24,7 +24,6 @@
    </tr>
    <tr>
       <td></td>
-      <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
-      			value="<fmt:message key="urlform.submit" />"/></td>
+      <td><input type="submit" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="urlform.submit" />"/></td>
    </tr>
 </table>

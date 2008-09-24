@@ -18,7 +18,7 @@
     </div>
 </div>
 <div class="editor">
-	<div class="body">
+   <div class="body">
 <mm:import externid="content" vartype="Node"/>
 <mm:import externid="creationchannel" vartype="Node"/>
 <mm:import externid="contentchannels" vartype="List"/>
@@ -32,17 +32,17 @@
 <mm:import externid="orderby" />
 <mm:import externid="direction" />
 <mm:node referid="creationchannel">
-	<mm:import id="creationnumber"><mm:field name="number"/></mm:import>
+   <mm:import id="creationnumber"><mm:field name="number"/></mm:import>
 </mm:node>
 
 <p>
 <mm:node referid="content">
-	<mm:import id="contentnumber"><mm:field name="number"/></mm:import>
+   <mm:import id="contentnumber"><mm:field name="number"/></mm:import>
 
- 	<fmt:message key="unlinkcreation.message">
-		<fmt:param><mm:nodeinfo type="type" /></fmt:param>
-		<fmt:param><mm:field name="title"/></fmt:param>
-	</fmt:message>
+    <fmt:message key="unlinkcreation.message">
+      <fmt:param><mm:nodeinfo type="type" /></fmt:param>
+      <fmt:param><mm:field name="title"/></fmt:param>
+   </fmt:message>
 </mm:node> 
 </p>
 <p>
@@ -50,44 +50,44 @@
 </p>
 <ul class="shortcuts">
 <mm:list referid="contentchannels">
-	<mm:import id="channelnumber"><mm:field name="number"/></mm:import>
-	
-	<mm:compare referid="channelnumber" referid2="creationnumber" inverse="true">
+   <mm:import id="channelnumber"><mm:field name="number"/></mm:import>
+   
+   <mm:compare referid="channelnumber" referid2="creationnumber" inverse="true">
         <mm:url page="${url}" id="url" write="false" >
            <mm:param name="action" value="unlink"/>
            <mm:param name="channelnumber" value="$creationnumber"/>
            <mm:param name="objectnumber" value="$contentnumber"/>
            <mm:param name="destionationchannel" value="$channelnumber"/>
            <mm:present referid="returnurl">
-	           <mm:param name="returnurl" value="$returnurl"/>
+              <mm:param name="returnurl" value="$returnurl"/>
            </mm:present>
            <mm:present referid="offset">
-	           <mm:param name="offset" value="$offset"/>
+              <mm:param name="offset" value="$offset"/>
            </mm:present>
            <mm:present referid="orderby">
-	           <mm:param name="orderby" value="$orderby"/>
+              <mm:param name="orderby" value="$orderby"/>
            </mm:present>
            <mm:present referid="direction">
-	           <mm:param name="direction" value="$direction"/>
+              <mm:param name="direction" value="$direction"/>
            </mm:present>
         </mm:url>
         <li>
-	        <a href="<mm:write referid="url"/>">
-				<mm:field name="path"/>
-			</a>
-		</li>
-	</mm:compare>
+           <a href="<mm:write referid="url"/>">
+            <mm:field name="path"/>
+         </a>
+      </li>
+   </mm:compare>
 </mm:list>
 
 <mm:node referid="trashchannel">
-	<mm:import id="trashnumber"><mm:field name="number"/></mm:import>
-	<mm:url page="${url}" id="trashurl" write="false" >
-		<mm:param name="action" value="unlink"/>
-		<mm:param name="channelnumber" value="$creationnumber"/>
-		<mm:param name="objectnumber" value="$contentnumber"/>
-		<mm:param name="destionationchannel" value="$trashnumber"/>
+   <mm:import id="trashnumber"><mm:field name="number"/></mm:import>
+   <mm:url page="${url}" id="trashurl" write="false" >
+      <mm:param name="action" value="unlink"/>
+      <mm:param name="channelnumber" value="$creationnumber"/>
+      <mm:param name="objectnumber" value="$contentnumber"/>
+      <mm:param name="destionationchannel" value="$trashnumber"/>
       <mm:present referid="offset">
-	       <mm:param name="offset" value="$offset"/>
+          <mm:param name="offset" value="$offset"/>
       </mm:present>
      <mm:present referid="orderby">
         <mm:param name="orderby" value="$orderby"/>
@@ -95,16 +95,16 @@
      <mm:present referid="direction">
         <mm:param name="direction" value="$direction"/>
      </mm:present>
-	</mm:url>
-	<li class="trashbin">
-		<a href="<mm:write referid="trashurl"/>"><fmt:message key="unlinkcreation.remove" /></a>
-	</li>
+   </mm:url>
+   <li class="trashbin">
+      <a href="<mm:write referid="trashurl"/>"><fmt:message key="unlinkcreation.remove" /></a>
+   </li>
 </mm:node>
 
 </ul>
-	</div>
-	<div class="side_block_end"></div>
-</div>	
+   </div>
+   <div class="side_block_end"></div>
+</div>   
 
 
 </mm:cloud>
