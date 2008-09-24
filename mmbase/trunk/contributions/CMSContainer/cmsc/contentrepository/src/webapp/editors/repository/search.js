@@ -4,7 +4,6 @@
  }
 
  function orderBy(orderColumn) {
- 	
     var oldOrderColumn = document.forms[0].order.value;
     
     if (oldOrderColumn == orderColumn) {

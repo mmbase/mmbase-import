@@ -19,9 +19,9 @@
         document.getElementById("notbusy").style.visibility="hidden";
     }
     
-			
-	function showInfo(objectnumber) {
-		openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
+         
+   function showInfo(objectnumber) {
+      openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
     }
           
     var blockSelect = false;
@@ -49,7 +49,7 @@
       <div class="editor" style="height:500px">
           <div class="body">
               <form action="" enctype="multipart/form-data" method="post">
-          		<input type="hidden" name="uploadAction" value="${param.uploadAction}"/>
+                <input type="hidden" name="uploadAction" value="${param.uploadAction}"/>
                     <table border="0">
                        <tr>
                           <td><fmt:message key="images.upload.explanation" /></td>
@@ -59,7 +59,7 @@
                        </tr>
                        <tr>
                           <td><input type="button" name="uploadButton" onclick="upload();" 
-                          			value="<fmt:message key="images.upload.submit" />"/></td>
+                                   value="<fmt:message key="images.upload.submit" />"/></td>
                        </tr>
                     </table>
              </form>
@@ -111,42 +111,42 @@
                 <mm:listnodescontainer path="images" nodes="<%= uploadedNodes %>">
                     <mm:listnodes>
 
-					<mm:field name="description" escape="js-single-quotes" jspvar="description">
-						<mm:field name="title" escape="js-single-quotes" jspvar="title">
-							<%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); 
-							description = ((String)description).replaceAll("[\"]","@quot;");
-							title = ((String)title).replaceAll("[\"]","@quot;");
-							%>
-		                    <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
-						</mm:field>
-					</mm:field>
-					
+               <mm:field name="description" escape="js-single-quotes" jspvar="description">
+                  <mm:field name="title" escape="js-single-quotes" jspvar="title">
+                     <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); 
+                     description = ((String)description).replaceAll("[\"]","@quot;");
+                     title = ((String)title).replaceAll("[\"]","@quot;");
+                     %>
+                          <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+                  </mm:field>
+               </mm:field>
+               
                     <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                        <td onclick="if(!blockSelect) {objClick(this);} blockSelect=false;">
                         <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
                         <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=<%=uploadedNodes%>&numberOfUploadedNodes=<%=numberOfUploadedNodes%>&uploadAction=${param.uploadAction}</c:set>
-					    <c:choose>
-					    	<c:when test="${param.uploadAction == 'select'}">
-		                        <a href="<mm:url page="SecondaryEditAction.do">
-	    	                                 <mm:param name="action" value="init"/>
-	        	                             <mm:param name="number"><mm:field name="number" /></mm:param>
-	            	                         <mm:param name="returnUrl" value="${returnUrl}"/>
-	                	                 </mm:url>" onclick="blockSelect = true">
-	                	    </c:when>
-	                	    <c:otherwise>
-	                          <a href="<mm:url page="../WizardInitAction.do">
+                   <c:choose>
+                      <c:when test="${param.uploadAction == 'select'}">
+                              <a href="<mm:url page="SecondaryEditAction.do">
+                                           <mm:param name="action" value="init"/>
+                                           <mm:param name="number"><mm:field name="number" /></mm:param>
+                                           <mm:param name="returnUrl" value="${returnUrl}"/>
+                                       </mm:url>" onclick="blockSelect = true">
+                          </c:when>
+                          <c:otherwise>
+                             <a href="<mm:url page="../WizardInitAction.do">
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                                      <mm:param name="returnurl" value="${returnUrl }" />
                                                   </mm:url>">
-	                	    </c:otherwise>
-                	    </c:choose>
-                    	          <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
+                          </c:otherwise>
+                       </c:choose>
+                                 <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
                      
-	        		                <a href="<mm:url page="DeleteSecondaryContentAction.do" >
-	                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                 <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                                        <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                                         <mm:param name="object_type" value="imagesupload" />
-	                                                  </mm:url>">
-	                              <img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
+                                                     </mm:url>">
+                                 <img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
 
                         <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
                               <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/></a>

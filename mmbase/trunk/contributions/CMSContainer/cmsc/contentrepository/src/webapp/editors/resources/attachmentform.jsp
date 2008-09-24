@@ -15,6 +15,6 @@
    <tr>
       <td></td>
       <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
-      			value="<fmt:message key="attachmentform.submit" />"/></td>
+               value="<fmt:message key="attachmentform.submit" />"/></td>
    </tr>
 </table>

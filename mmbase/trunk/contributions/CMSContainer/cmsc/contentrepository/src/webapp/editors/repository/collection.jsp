@@ -8,7 +8,7 @@
 <cmscedit:head title="collection.title" />
 <body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
-	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
+     <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
       <mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write referid="parentchannel"/>&direction=down</mm:import>
 
       <div class="tabs">
@@ -35,6 +35,6 @@
    </div>
 
 </mm:cloud>
-	</body>
+   </body>
 </html:html>
 </mm:content>

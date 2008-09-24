@@ -40,7 +40,7 @@ function move(direction, objectNumber, channel) {
 }
 
 
-	
+   
 function sortBy(orderColumn, channel) {
     var offset = document.forms[0].offset.value;
     var oldOrderColumn = document.forms[0].order.value;
@@ -66,7 +66,7 @@ function sortBy(orderColumn, channel) {
     
     document.location = url;
     
- }	
+ }   
 
 
 var moveContentNumber;
