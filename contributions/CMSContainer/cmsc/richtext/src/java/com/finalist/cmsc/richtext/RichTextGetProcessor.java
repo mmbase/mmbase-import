@@ -249,6 +249,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                if ("urls".equals(builderName)) {
                   name = destinationNode.getStringValue("name");
                   url = destinationNode.getStringValue("url");
+                  url = url.replaceAll("&(?!amp;)", "&amp;");
                }
                else {
                   if (destinationNode.getNodeManager().hasField(RichText.TITLE_FIELD)) {
@@ -288,12 +289,12 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
    private String getContentUrl(Node node) {
       String title = null;
-      
+
       //Check for the existence of title field of the node
       if (node.getNodeManager().hasField(RichText.TITLE_FIELD)) {
          title = node.getStringValue(RichText.TITLE_FIELD);
       }
-      
+
       String id = node.getStringValue("number");
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
    }
