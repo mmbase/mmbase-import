@@ -97,7 +97,7 @@ public class CloudTest extends BridgeTest {
 
     public void testGetListWithNullParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList(null, "aa,bb", "aa.binbaryfield", "", "", "", "", false);
+        nodeList = cloud.getList(null, "aa,bb", "aa.binaryfield", "", "", "", "", false);
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
