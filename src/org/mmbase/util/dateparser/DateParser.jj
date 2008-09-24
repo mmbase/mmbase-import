@@ -75,7 +75,6 @@ public class DateParser {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         beginOfHour();
     }
-
     protected void beginOfWeek() {
         beginOfDay();
         cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
@@ -280,7 +279,6 @@ void inc_period() : {}
   | "month"  { field = Calendar.MONTH; }
   | "year" {   field = Calendar.YEAR; }
   | "century" {   field = Calendar.YEAR; factor =  100;}
- | "millisecond" { field = Calendar.MILLISECOND; }
 }
 
 void this_period() : {}  {
