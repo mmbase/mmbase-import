@@ -25,18 +25,18 @@
          <div id="bigdiv" style="position:relative;">
          
          <div id="skyscraper" style="visibility: hidden; position:absolute; left:-1000px; top:-600px; width:2000; height:2000; color:#000000; z-index:101;">
-            <div style="position: absolute; left: 1280px; top:705px; z-index:102; display: block;">
+            <div style="position: absolute; left: 1220px; top:838px; z-index:102; display: block;">
                <img src="flash/cross.gif" onclick="closeSkyscraper();"/>
             </div>
             <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="2000" height="2000" id="overlayerbanner_pop_600x600" align="middle">
                <param name="allowScriptAccess" value="sameDomain" />
-               <param name="movie" value="flash/overlayerbanner_pop_600x600.swf?clickTag=http://www.natuurmonumenten.nl&clickTarget=_blank" />
+               <param name="movie" value="flash/080923_hart_v1.swf?clickTag=http://www.natuurmonumenten.nl&clickTarget=_blank" />
                <param name="menu" value="false" />
                <param name="quality" value="high" />
                <param name="scale" value="noscale" />
                <param name="wmode" value="transparent" />
                <param name="bgcolor" value="#ffffff" />
-               <embed src="flash/overlayerbanner_pop_600x600.swf?clickTag=http://www.natuurmonumenten.nl&clickTarget=_blank" menu="false" quality="high" scale="noscale" wmode="transparent" bgcolor="#ffffff" width="2000" height="2000" name="overlayerbanner_pop_600x600" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+               <embed src="flash/080923_hart_v1.swf?clickTag=http://www.natuurmonumenten.nl&clickTarget=_blank" menu="false" quality="high" scale="noscale" wmode="transparent" bgcolor="#ffffff" width="2000" height="2000" name="overlayerbanner_pop_600x600" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
             </object>
          </div>
       </td>
