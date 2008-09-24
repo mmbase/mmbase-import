@@ -2,11 +2,11 @@
 
 
 echo setting PATH, JAVA HOME
-export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/home/nightly/bin
+export PATH=/home/nightly/jdk/bin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/home/nightly/bin
 
 echo $HOME
 
-export BUILD_HOME="/home/nightly"
+export BUILD_HOME="/home/nightly/"
 
 export JAVA_HOME=/home/nightly/jdk
 export JAVAC=${JAVA_HOME}/bin/javac
@@ -38,15 +38,15 @@ if [ 1 == 1 ] ; then
 
     echo Cleaning
     echo >  ${builddir}/messages-maven.log 2> ${builddir}/errors-maven.log
-# removes all 'target' directories
-# the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+
     find . -type d -name target -print | xargs rm -rf  >> ${builddir}/messages-maven.log
 
     pwd
 
+    echo `java -version`
 
     echo Starting nightly build | tee -a ${builddir}/messages-maven.log
-    echo all:install
+    echo ${MAVEN} all:install
     ((${MAVEN} all:install | tee -a ${builddir}/messages-maven.log) 3>&1 1>&2 2>&3 | tee -a ${builddir}/errors.log) 3>&1 1>&2 2>&3
 fi
 
