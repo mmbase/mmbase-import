@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -12,7 +12,7 @@ See http://www.MMBase.org/license
   <name>Jumpers</name>
   <shortDescription>MMBase Jumpers</shortDescription>
   <description>
-    The jumpers application could be used to make short urls which 
+    The jumpers application could be used to make short urls which
     redirects to a long one.
   </description>
   <properties>
@@ -21,12 +21,14 @@ See http://www.MMBase.org/license
   </properties>
   <dependencies>
     <!-- Code does not enforce it through the compiler, but it will not work in runtime -->
+    <!-- Jumpers must work with 1.8
     <dependency>
       <groupId>mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
       <type>jar</type>
     </dependency>
+    -->
   </dependencies>
 </project>
 
