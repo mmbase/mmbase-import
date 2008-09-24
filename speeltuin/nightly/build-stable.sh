@@ -137,10 +137,10 @@ if ( true ) ; then
     export JAVAC=${JAVAC15}
 
     cd ${STABLE}/applications
-    pwd >> ${builddir}/messages.log 
+    pwd >> ${builddir}/messages.log
     ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     cd ${STABLE}/contributions
-    pwd >> ${builddir}/messages.log 
+    pwd >> ${builddir}/messages.log
     ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 
 
