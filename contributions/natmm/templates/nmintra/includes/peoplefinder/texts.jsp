@@ -18,10 +18,10 @@
       pzText += "<br><br>Achternaam '" + e.getStringValue("lastname") + "' moet worden gewijzigd in: " + lastnameId;
    }
    if(!omschrijving_engId.equals(e.getStringValue("omschrijving_eng"))) {
-      pzText += "<br><br>Beschrijving regio/afdeling en functie moet worden gewijzigd in:<br>" + omschrijving_engId;
+      pzText += "<br><br>Beschrijving lokatie, regio/afdeling en functie moet worden gewijzigd in:<br>" + omschrijving_engId;
    }
    if(!omschrijving_deId.equals(e.getStringValue("omschrijving_de"))) {
-      pzText += "<br><br>Beschrijving lokatie moet worden gewijzigd in:<br>" + omschrijving_deId;
+      pzText += "<br><br>Beschrijving werkzaamheden moet worden gewijzigd in:<br>" + omschrijving_deId;
    }
    
    // *** FZ ***
