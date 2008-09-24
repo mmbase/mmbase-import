@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.7 2008-01-10 14:12:24 michiel Exp $
+ * @version $Id: FileLoginModule.java,v 1.8 2008-09-24 10:48:25 michiel Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
@@ -62,7 +62,7 @@ public class FileLoginModule implements LoginModule {
         log.debug("file login loaded");
     }
 
-    public boolean login(NameContext user, Map<String, Object> loginInfo,  Object[] parameters) {
+    public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
         if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
         if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");
         ExtendedProperties reader = new ExtendedProperties();
