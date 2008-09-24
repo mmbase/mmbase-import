@@ -33,6 +33,7 @@
       <optionlist select="ja_nee"></optionlist>
    </field>
    <field name="omschrijving_fra" ftype="text" rows="5"><prompt>vaste vrije/werk dagen (medewerker)</prompt></field>
+   <field name="omschrijving_de" ftype="html" rows="15"><prompt>werkzaamheden</prompt></field>
    <field name="omschrijving" ftype="text" rows="5"><prompt>en verder (medewerker)</prompt></field>
    <field name="dayofbirth"><prompt>geboortedatum</prompt></field>
    <!-- <field name="job"><prompt>job</prompt></field> -->
