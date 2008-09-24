@@ -366,6 +366,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="run.convertimage" depends="jar,init" description="Image conversion tests">
+    <antcall target="clean.database" />
     <java
         classname="${ui.class}"
         fork="true"
