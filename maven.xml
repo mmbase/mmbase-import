@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven"
 		xmlns:ant="jelly:ant" xmlns:artifact="artifact"
         xmlns:util="jelly:util">
 
 	<preGoal name="java:compile">
-	    <attainGoal name="javacc"/>
+    <attainGoal name="javacc"/>
+	</preGoal>
+
+  <preGoal name="java:compile">
+    <path id="generated-src" location="${basedir}/target/generated-src/main/java" />
+    <ant:ant dir="${basedir}" antfile="javacc.xml">
+      <ant:property name="build.dir" location="target" />
+      <ant:property name="generated-source-src.dir" location="target/generated-src/main/java" />
+    </ant:ant>
+    <maven:addPath id="maven.compile.src.set" refid="generated-src" />
 	</preGoal>
 
 	<preGoal name="jar:jar">
@@ -36,5 +45,5 @@ See http://www.MMBase.org/license
 			<echo file="${maven.build.dest}/org/mmbase/builddate.properties">${formattedDate}</echo>
 		</util:available>
 	</preGoal>
-	
+
 </project>
