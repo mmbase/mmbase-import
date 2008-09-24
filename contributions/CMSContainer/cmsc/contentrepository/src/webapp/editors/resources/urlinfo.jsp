@@ -5,17 +5,17 @@
 <html:html xhtml="true">
 <cmscedit:head title="urlinfo.title" />
 <script type="text/javascript">
-		function modifycontent(str) {
-			var openerurl ="../WizardInitAction.do?objectnumber="+str;
-			var returnurl = "${param.returnUrl}";
-			var order = "${param.order}";
-			var direction = "${param.direction}";
-			var offset = "${param.offset}";
-			var url = openerurl+"&returnurl="+returnurl+"%26order="+order+"%26direction="+direction+"%26offset="+offset;
-			window.opener.location.href=url;
-			window.close();	
+      function modifycontent(str) {
+         var openerurl ="../WizardInitAction.do?objectnumber="+str;
+         var returnurl = "${param.returnUrl}";
+         var order = "${param.order}";
+         var direction = "${param.direction}";
+         var offset = "${param.offset}";
+         var url = openerurl+"&returnurl="+returnurl+"%26order="+order+"%26direction="+direction+"%26offset="+offset;
+         window.opener.location.href=url;
+         window.close();   
         }
-	</script>
+   </script>
 <body>
     <div class="tabs">
         <div class="tab_active">
@@ -27,14 +27,14 @@
         </div>
     </div>
 
-	<div class="editor">
-		<div class="body">
-			<mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
-				<mm:node number="${param.objectnumber}">
-			        <div style="float:left; padding:5px;">
-			           	<fmt:message key="urlinfo.name" />: <b><mm:field name="name"/></b><br/>
-			           	<fmt:message key="urlinfo.description" />: <mm:field name="description"/><br/>
-			           	<fmt:message key="urlinfo.url" />: <mm:field name="url"/><br/>
+   <div class="editor">
+      <div class="body">
+         <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
+            <mm:node number="${param.objectnumber}">
+                 <div style="float:left; padding:5px;">
+                       <fmt:message key="urlinfo.name" />: <b><mm:field name="name"/></b><br/>
+                       <fmt:message key="urlinfo.description" />: <mm:field name="description"/><br/>
+                       <fmt:message key="urlinfo.url" />: <mm:field name="url"/><br/>
                         <fmt:message key="urlform.valid" />: 
                                  <mm:field name="valid" write="false" jspvar="isValidUrl"/>
                                  <c:choose>
@@ -52,23 +52,23 @@
                                     </c:otherwise>
                                 </c:choose>
                         <br/>
-			           	<br/>
-			           	<mm:field name="creationdate" id="creationdate" write="false"/>
-			           	<mm:present referid="creationdate">
-				           	<fmt:message key="secondaryinfo.creator" />: <mm:field name="creator"/><br/>
+                       <br/>
+                       <mm:field name="creationdate" id="creationdate" write="false"/>
+                       <mm:present referid="creationdate">
+                          <fmt:message key="secondaryinfo.creator" />: <mm:field name="creator"/><br/>
                             <fmt:message key="secondaryinfo.creationdate"/>: <mm:write referid="creationdate"><mm:time
                                format="dd-MM-yyyy hh:mm"/></mm:write><br/>
-				        </mm:present>
+                    </mm:present>
 
-			           	<mm:field name="lastmodifieddate" id="lastmodifieddate" write="false"/>
-			           	<mm:present referid="lastmodifieddate">
-				           	<fmt:message key="secondaryinfo.lastmodifier" />: <mm:field name="lastmodifier"/><br/>
+                       <mm:field name="lastmodifieddate" id="lastmodifieddate" write="false"/>
+                       <mm:present referid="lastmodifieddate">
+                          <fmt:message key="secondaryinfo.lastmodifier" />: <mm:field name="lastmodifier"/><br/>
                             <fmt:message key="secondaryinfo.lastmodifieddate"/>: <mm:write
                                 referid="lastmodifieddate"><mm:time format="dd-MM-yyyy hh:mm"/></mm:write><br/>
-				        </mm:present>
-			           	<br/>
-			            <b><fmt:message key="urlinfo.related" /></b>:<br/>
-			            <ul>
+                    </mm:present>
+                       <br/>
+                     <b><fmt:message key="urlinfo.related" /></b>:<br/>
+                     <ul>
                         <% HashSet hs = new HashSet(); %>
                         <mm:relatednodes type="contentelement" orderby="contentelement.title">
                             <mm:field name="number" jspvar="thenumber" write="false"/>
@@ -87,21 +87,21 @@
                                     hs.add(nodeNumber);
                                 }
                             %>
-			            </mm:relatednodes>
-			           	</ul>
-					</div>
-					<div style="clear:both; float:left">
-						<ul class="shortcuts">
-			               <li class="close">
-				               <a href="#" onClick="window.close()"><fmt:message key="urlinfo.close" /></a>
-							</li>
-						</ul>
-					</div>
-				</mm:node>
-			</mm:cloud>
-		</div>
-		<div class="side_block_end"></div>
-	</div>	
+                     </mm:relatednodes>
+                       </ul>
+               </div>
+               <div style="clear:both; float:left">
+                  <ul class="shortcuts">
+                        <li class="close">
+                           <a href="#" onClick="window.close()"><fmt:message key="urlinfo.close" /></a>
+                     </li>
+                  </ul>
+               </div>
+            </mm:node>
+         </mm:cloud>
+      </div>
+      <div class="side_block_end"></div>
+   </div>   
 </body>
 </html:html>
-</mm:content>	            
+</mm:content>               
