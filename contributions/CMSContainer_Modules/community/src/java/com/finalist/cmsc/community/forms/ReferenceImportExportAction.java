@@ -121,16 +121,16 @@ public class ReferenceImportExportAction extends DispatchAction {
       return xstream;
    }
 
-   private static void setLog(Log log) {
+   public static void setLog(Log log) {
       ReferenceImportExportAction.log = log;
    }
 
-   private void setPersonService(PersonService personService) {
+   public void setPersonService(PersonService personService) {
       this.personService = personService;
 
    }
 
-   private static Log getLog() {
+   public static Log getLog() {
       return log;
    }
 }
