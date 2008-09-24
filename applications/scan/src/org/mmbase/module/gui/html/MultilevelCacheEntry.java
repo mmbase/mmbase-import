@@ -18,12 +18,12 @@ import org.mmbase.util.*;
  * @application SCAN
  * @deprecated-now This is an _excact copy_ of org.mmbase.cache.MultilevelCacheEntry
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheEntry.java,v 1.6 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: MultilevelCacheEntry.java,v 1.5 2004-10-01 08:43:45 pierre Exp $
  */
 public class MultilevelCacheEntry {
     // callbacks to my 'parents' who
     // listen for me to signals
-    Vector<MultilevelSubscribeNode> listeners=new Vector<MultilevelSubscribeNode>();
+    Vector listeners=new Vector();
     MultilevelCacheHandler han;
     Object cachedobject;
     public Object hash;
@@ -41,9 +41,9 @@ public class MultilevelCacheEntry {
     }
 
     public synchronized void clear() {
-        Enumeration<MultilevelSubscribeNode> e=listeners.elements();
+        Enumeration e=listeners.elements();
         while (e.hasMoreElements()) {
-            MultilevelSubscribeNode l=e.nextElement();
+            MultilevelSubscribeNode l=(MultilevelSubscribeNode)e.nextElement();
             l.removeCacheEntry(this);
         }
         // now remove ourselfs from the cache

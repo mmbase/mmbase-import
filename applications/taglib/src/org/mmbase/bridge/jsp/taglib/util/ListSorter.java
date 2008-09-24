@@ -21,20 +21,20 @@ import java.text.Collator;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ListSorter.java,v 1.8 2006-05-10 12:57:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
 
 
-    public static <E> List<E> sort(List<E> list, String comparator, ContextReferrerTag tag) throws JspTagException {
+    public static List sort(List list, String comparator, ContextReferrerTag tag) throws JspTagException {
         if (comparator != null) {
             if (comparator.equals("SHUFFLE")) {
                 Collections.shuffle(list);
             }  else if (comparator.equals("REVERSE")) {
                 Collections.reverse(list);
             }  else if (comparator.equals("NATURAL")) {
-                Collections.sort((List<? extends Comparable>) list);
+                Collections.sort(list);
             }  else if (comparator.equals("CASE_INSENSITIVE")) {
                 Collator col = Collator.getInstance(tag.getLocale());
                 col.setStrength(Collator.PRIMARY);
@@ -42,26 +42,26 @@ public class  ListSorter  {
             } else {
                 try {
                     PageContext pageContext = tag.getPageContext();
-                    Class<? super E> claz = null;
+                    Class claz = null;
                     boolean pageClass = false;
                     if (comparator.indexOf(".") == -1) {
                         Class[] classes = pageContext.getPage().getClass().getDeclaredClasses();
-                        for (Class element : classes) {
-                            if (element.toString().endsWith(comparator)) {
-                                claz = element;
+                        for (int i = 0; i < classes.length; i++) {
+                            if (classes[i].toString().endsWith(comparator)) {
+                                claz = classes[i];
                                 pageClass = true;
                                 break;
                             }
                         }
                     }
                     if (claz == null) {
-                        claz = (Class<E>) Class.forName(comparator);
+                        claz = Class.forName(comparator);
                     }
 
                     if (pageClass && ! java.lang.reflect.Modifier.isStatic(claz.getModifiers())) {
                         throw new TaglibException("Don't know how to instantiate non-static inner class: " + comparator + " (make it static please)");
                     }
-                    Comparator<? super E> comp = (Comparator<? super E>) claz.newInstance();
+                    Comparator comp = (Comparator) claz.newInstance();
                     init(comp, pageContext);
                     Collections.sort(list, comp);
                 } catch (Exception e) {
@@ -78,7 +78,7 @@ public class  ListSorter  {
     private static void init(Comparator comp, PageContext pageContext) {
         try {
             java.lang.reflect.Method initMethod = comp.getClass().getMethod("init" , PAGE_CONTEXT_ARRAY);
-            initMethod.invoke(comp, pageContext);
+            initMethod.invoke(comp, new Object[] { pageContext });
         } catch(Exception e){
             // never mind
         }

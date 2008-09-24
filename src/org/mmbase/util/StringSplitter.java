@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for splitting delimited values.
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @author Michiel Meeuwissen
- * @version $Id: StringSplitter.java,v 1.10 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: StringSplitter.java,v 1.7 2006-06-26 18:15:22 johannes Exp $
  */
 public class StringSplitter {
 
@@ -28,11 +28,12 @@ public class StringSplitter {
      * @param delimiter
      * @return a (modifiable) List containing the elements
      */
-    static public List<String> split(String string, String delimiter) {
-        List<String> result = new ArrayList<String>();
+    static public List split(String string, String delimiter) {
+        List result = new ArrayList();
         if (string == null) return result;
-        for (String v : string.split(delimiter)) {
-            result.add(v.trim());
+        String[] values = string.split(delimiter);
+        for (int i = 0; i < values.length; i++) {
+            result.add(values[i].trim());
         }
         return result;
     }
@@ -44,7 +45,7 @@ public class StringSplitter {
      * @param string the string to split
      * @return a List containing the elements
      */
-    static public List<String> split(String string) {
+    static public List split(String string) {
         return split(string, ",");
     }
 
@@ -53,10 +54,10 @@ public class StringSplitter {
      * a(b,c,d),e,f(g) will be split up in a(b,c,d) and e and f(g).
      * @since MMBase-1.8
      */
-    static public List<String> splitFunctions(CharSequence attribute) {
+    static public List splitFunctions(CharSequence attribute) {
         int commaPos =  0;
         int nested   =  0;
-        List<String>  result = new ArrayList<String>();
+        List  result = new ArrayList();
         int i;
         int length   =  attribute.length();
         for(i = 0; i < length; i++) {
@@ -77,19 +78,6 @@ public class StringSplitter {
         }
         return result;
     }
-    /**
-     * @since MMBase-1.9
-     */
-
-    static public Map<String, String> map(String string) {
-        Map<String, String>map = new HashMap<String, String>();
-        List<String> keyValues = split(string);
-        for (String kv : keyValues) {
-            if ("".equals(kv)) continue;
-            int is = kv.indexOf('=');
-            map.put(kv.substring(0, is), kv.substring(is + 1));
-        }
-        return map;
-    }
+    
 
 }

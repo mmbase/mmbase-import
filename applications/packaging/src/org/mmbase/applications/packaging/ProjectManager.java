@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.packaging;
@@ -19,7 +19,7 @@ import java.util.*;
 import org.mmbase.applications.packaging.projects.Project;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -42,10 +42,10 @@ public class ProjectManager {
     private static boolean state = false;
 
     // list of all the defined projects (xml file)
-    private static Map<String, Project> projects = new HashMap<String, Project>();
-
+    private static Map projects = new HashMap();
+ 
     // list of all the defined creators this manager can work with (xml file)
-    private static Map<String, CreatorInterface> creators = new HashMap<String, CreatorInterface>();
+    private static Map creators = new HashMap();
 
     // defines needed for the xml readers to find the dtd's
     public static final String DTD_PROJECTS_1_0 = "projects_1_0.dtd";
@@ -55,11 +55,11 @@ public class ProjectManager {
     public static final String PUBLIC_ID_CREATORS_1_0 = "-//MMBase//DTD creators config 1.0//EN";
 
     static {
-        EntityResolver.registerPublicID(PUBLIC_ID_PROJECTS_1_0, "DTD_PROJECTS_1_0", ProjectManager.class);
-        EntityResolver.registerPublicID(PUBLIC_ID_CREATORS_1_0, "DTD_CREATORS_1_0", ProjectManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PROJECTS_1_0, "DTD_PROJECTS_1_0", ProjectManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_CREATORS_1_0, "DTD_CREATORS_1_0", ProjectManager.class);
     }
 
-
+    
 
     /**
     * start this manager, it reads all the defined creators and projects
@@ -89,7 +89,7 @@ public class ProjectManager {
      *
      * @return projects
      */
-    public static Iterator<Project> getProjects() {
+    public static Iterator getProjects() {
         return projects.values().iterator();
     }
 
@@ -100,7 +100,7 @@ public class ProjectManager {
     * @return Project or null if not found
     */
     public static Project getProject(String name) {
-        return projects.get(name);
+        return (Project)projects.get(name);
     }
 
 
@@ -127,12 +127,12 @@ public class ProjectManager {
     * @return true if the change worked, false if something went wrong
     */
     public static boolean changeProjectSettings(String oldname,String newname,String newpath) {
-        Project p = projects.get(oldname);
+        Project p = (Project)projects.get(oldname);
         if (p != null) {
             projects.remove(oldname);
             addProject(newname,newpath);
             save();
-        }
+        }    
         return true;
     }
 
@@ -164,7 +164,8 @@ public class ProjectManager {
             if(reader!=null) {
 
                 // decode projects
-                for (Element n: reader.getChildElements("projects", "project")) {
+                for(Iterator ns=reader.getChildElements("projects","project");ns.hasNext(); ) {
+                    Element n=(Element)ns.next();
                     NamedNodeMap nm=n.getAttributes();
                     if (nm!=null) {
                         String name=null;
@@ -200,8 +201,8 @@ public class ProjectManager {
     * config directory. Uses a xml reader and the dtd's found as
     * resources.
     */
-    public static void readCreators() {
-        creators = new HashMap<String, CreatorInterface>();
+    public static void readCreators() {        
+        creators = new HashMap();
 
         // XXX Should use ResourceLoader here
 
@@ -211,7 +212,8 @@ public class ProjectManager {
         if(file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename, ProjectManager.class);
             if(reader != null) {
-                for (Element n: reader.getChildElements("creators", "creator")) {
+                for(Iterator ns = reader.getChildElements("creators","creator");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String type = null;
@@ -229,8 +231,8 @@ public class ProjectManager {
                             classname = n2.getNodeValue();
                         }
                         try {
-                            Class newclass = Class.forName(classname);
-                            CreatorInterface cr = (CreatorInterface)newclass.newInstance();
+                            Class newclass = Class.forName(classname);    
+                            CreatorInterface cr = (CreatorInterface)newclass.newInstance(); 
                             cr.setType(type);
                             if (cr !=null) creators.put(type,cr);
                         } catch (Exception e) {
@@ -250,7 +252,7 @@ public class ProjectManager {
     *
     * @return creators
     */
-    public static Map<String, CreatorInterface> getCreators() {
+    public static Map getCreators() {
         return creators;
     }
 
@@ -275,9 +277,9 @@ public class ProjectManager {
        String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
        body += "<!DOCTYPE projects PUBLIC \"-//MMBase/DTD projects config 1.0//EN\" \"http://www.mmbase.org/dtd/projects_1_0.dtd\">\n";
        body += "<projects>\n";
-       Iterator<Project> e=projects.values().iterator();
+       Iterator e=projects.values().iterator();
        while (e.hasNext()) {
-           Project pr = e.next();
+           Project pr = (Project)e.next();
            body += "\t<project name=\""+pr.getName()+"\" path=\""+pr.getPath()+"\" />\n";
        }
        body += "</projects>\n";

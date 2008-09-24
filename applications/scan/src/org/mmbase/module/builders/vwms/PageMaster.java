@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.18 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: PageMaster.java,v 1.17 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -203,7 +203,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * Handles a pages/mirror service request.
      * Places a page in the file2copy queue, so it will be sent to a mirror
      * site by the FileCopier.
-     * @param filenode the filenet node that contains the service request
+     * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -262,7 +262,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * - changed: page is scheduled to be recalculated<br />
      * - recaculate" page is recaclcutated and scheduled to be handled<br />
      *
-     * @param filenode the netfiles node that contains the service request
+     * @param node the netfiles node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -379,7 +379,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * Recalculate a page.
      * Invokes the SCAN parser (which will re-cache the page through the scancache module)
      * Only works for SCAN.
-     * @param url of the page to cache
+     * @param the url of the page to cache
      */
     public void calcPage(String url) {
         scanparser m=(scanparser)Vwms.getMMBase().getModule("SCANPARSER");

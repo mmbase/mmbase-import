@@ -12,12 +12,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -25,7 +26,7 @@ import org.w3c.dom.NamedNodeMap;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
- *
+ * 
  * @author Daniel Ockeloen (MMBased)
  */
 public class Model {
@@ -46,11 +47,11 @@ public class Model {
 
     public final static String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
 
-    private ArrayList<NeededBuilder> neededbuilders = new ArrayList<NeededBuilder>();
+    private ArrayList neededbuilders = new ArrayList();
 
-    private ArrayList<NeededRelDef> neededreldefs = new ArrayList<NeededRelDef>();
+    private ArrayList neededreldefs = new ArrayList();
 
-    private ArrayList<AllowedRelation> allowedrelations = new ArrayList<AllowedRelation>();
+    private ArrayList allowedrelations = new ArrayList();
 
     private String path;
 
@@ -58,9 +59,9 @@ public class Model {
      * Description of the Method
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0,
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0,
                 "DTD_PACKAGING_CLOUD_MODEL_1_0", Model.class);
-        EntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, "DTD_BUILDER_1_1", Model.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, "DTD_BUILDER_1_1", Model.class);
     }
 
     public Model(String modelfilename) {
@@ -70,24 +71,24 @@ public class Model {
         readModel(modelfilename);
     }
 
-    public Iterator<NeededBuilder> getNeededBuilders() {
+    public Iterator getNeededBuilders() {
         return neededbuilders.iterator();
     }
 
     public NeededBuilder getNeededBuilder(String buildername) {
-        Iterator<NeededBuilder> nbl = getNeededBuilders();
+        Iterator nbl = getNeededBuilders();
         while (nbl.hasNext()) {
-            NeededBuilder nb = nbl.next();
+            NeededBuilder nb = (NeededBuilder) nbl.next();
             if (nb.getName().equals(buildername)) { return nb; }
         }
         return null;
     }
 
-    public Iterator<NeededRelDef> getNeededRelDefs() {
+    public Iterator getNeededRelDefs() {
         return neededreldefs.iterator();
     }
 
-    public Iterator<AllowedRelation> getAllowedRelations() {
+    public Iterator getAllowedRelations() {
         return allowedrelations.iterator();
     }
 
@@ -102,9 +103,9 @@ public class Model {
     }
 
     public boolean deleteNeededBuilder(String builder, String maintainer, String version) {
-        Iterator<NeededBuilder> nbl = getNeededBuilders();
+        Iterator nbl = getNeededBuilders();
         while (nbl.hasNext()) {
-            NeededBuilder nb = nbl.next();
+            NeededBuilder nb = (NeededBuilder) nbl.next();
             if (nb.getName().equals(builder) && nb.getMaintainer().equals(maintainer)
                     && nb.getVersion().equals(version)) {
                 neededbuilders.remove(nb);
@@ -131,9 +132,9 @@ public class Model {
 
     public boolean deleteNeededRelDef(String source, String target, String direction,
             String guisourcename, String guitargetname, String builder) {
-        Iterator<NeededRelDef> nrl = getNeededRelDefs();
+        Iterator nrl = getNeededRelDefs();
         while (nrl.hasNext()) {
-            NeededRelDef nr = nrl.next();
+            NeededRelDef nr = (NeededRelDef) nrl.next();
             if (nr.getSource().equals(source) && nr.getTarget().equals(target)
                     && nr.getDirection().equals(direction)
                     && nr.getGuiSourceName().equals(guitargetname)
@@ -158,9 +159,9 @@ public class Model {
     }
 
     public boolean deleteAllowedRelation(String from, String to, String type) {
-        Iterator<AllowedRelation> arl = getAllowedRelations();
+        Iterator arl = getAllowedRelations();
         while (arl.hasNext()) {
-            AllowedRelation ar = arl.next();
+            AllowedRelation ar = (AllowedRelation) arl.next();
             if (ar.getFrom().equals(from) && ar.getTo().equals(to) && ar.getType().equals(type)) {
                 allowedrelations.remove(ar);
                 writeModel();
@@ -175,7 +176,9 @@ public class Model {
         if (file.exists()) {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(path, Model.class);
             if (reader != null) {
-                for (Element n: reader.getChildElements("cloudmodel.neededbuilderlist","builder")) {
+                for (Iterator ns = reader.getChildElements("cloudmodel.neededbuilderlist",
+                        "builder"); ns.hasNext();) {
+                    Element n = (Element) ns.next();
                     String name = reader.getElementValue(n);
                     NeededBuilder nb = new NeededBuilder();
                     nb.setName(name);
@@ -194,7 +197,9 @@ public class Model {
                     // try to find if this is defined in a real file
                     readBuilder(nb);
                 }
-                for (Element n: reader.getChildElements("cloudmodel.neededreldeflist","reldef")) {
+                for (Iterator ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef"); ns
+                        .hasNext();) {
+                    Element n = (Element) ns.next();
                     NeededRelDef nr = new NeededRelDef();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -225,7 +230,10 @@ public class Model {
                     }
                     neededreldefs.add(nr);
                 }
-                for (Element n: reader.getChildElements("cloudmodel.allowedrelationlist","relation")) {
+
+                for (Iterator ns = reader.getChildElements("cloudmodel.allowedrelationlist",
+                        "relation"); ns.hasNext();) {
+                    Element n = (Element) ns.next();
                     AllowedRelation ar = new AllowedRelation();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -297,7 +305,9 @@ public class Model {
                         nb.setClassName(n2.getNodeValue());
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.names", "singular")) {
+                for (Iterator ns = reader.getChildElements("builder.names", "singular"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String name = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -309,7 +319,8 @@ public class Model {
                         nb.setSingularName(language, name);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.names", "plural")) {
+                for (Iterator ns = reader.getChildElements("builder.names", "plural"); ns.hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String name = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -321,7 +332,9 @@ public class Model {
                         nb.setPluralName(language, name);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.descriptions", "description")) {
+                for (Iterator ns = reader.getChildElements("builder.descriptions", "description"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     String description = reader.getElementValue(n4);
                     NamedNodeMap nm = n4.getAttributes();
                     if (nm != null) {
@@ -333,7 +346,9 @@ public class Model {
                         nb.setDescription(language, description);
                     }
                 }
-                for (Element n4: reader.getChildElements("builder.fieldlist", "field")) {
+                for (Iterator ns = reader.getChildElements("builder.fieldlist", "field"); ns
+                        .hasNext();) {
+                    Element n4 = (Element) ns.next();
                     decodeField(nb, n4);
                 }
             }
@@ -465,9 +480,9 @@ public class Model {
 
         body += "<cloudmodel>\n";
         body += "\t<neededbuilderlist>\n";
-        Iterator<NeededBuilder> nbl = getNeededBuilders();
+        Iterator nbl = getNeededBuilders();
         while (nbl.hasNext()) {
-            NeededBuilder nb = nbl.next();
+            NeededBuilder nb = (NeededBuilder) nbl.next();
             body += "\t\t<builder maintainer=\"" + nb.getMaintainer() + "\" version=\""
                     + nb.getVersion() + "\">" + nb.getName() + "</builder>\n";
             writeBuilder(nb);
@@ -475,9 +490,9 @@ public class Model {
         body += "\t</neededbuilderlist>\n\n";
 
         body += "\t<neededreldeflist>\n";
-        Iterator<NeededRelDef> rdl = getNeededRelDefs();
+        Iterator rdl = getNeededRelDefs();
         while (rdl.hasNext()) {
-            NeededRelDef nr = rdl.next();
+            NeededRelDef nr = (NeededRelDef) rdl.next();
             body += "\t\t<reldef source=\"" + nr.getSource() + "\" target=\"" + nr.getTarget()
                     + "\" direction=\"" + nr.getDirection() + "\" guisourcename=\""
                     + nr.getGuiSourceName() + "\" guitargetname=\"" + nr.getGuiTargetName()
@@ -486,9 +501,9 @@ public class Model {
         body += "\t</neededreldeflist>\n\n";
 
         body += "\t<allowedrelationlist>\n";
-        Iterator<AllowedRelation> arl = getAllowedRelations();
+        Iterator arl = getAllowedRelations();
         while (arl.hasNext()) {
-            AllowedRelation ar = arl.next();
+            AllowedRelation ar = (AllowedRelation) arl.next();
             body += "\t\t<relation from=\"" + ar.getFrom() + "\" to=\"" + ar.getTo() + "\" type=\""
                     + ar.getType() + "\" />\n";
 
@@ -532,40 +547,40 @@ public class Model {
         body += "\t<searchage>" + nb.getSearchAge() + "</searchage>\n";
         body += "\t<names>\n";
         body += "\t\t<!-- singles per language as defined by ISO 639 -->\n";
-        HashMap<String, String> sn = nb.getSingularNames();
-        Iterator<Map.Entry<String, String>> snk = sn.entrySet().iterator();
+        HashMap sn = nb.getSingularNames();
+        Iterator snk = sn.entrySet().iterator();
         while (snk.hasNext()) {
-            Map.Entry<String, String> entry = snk.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            Map.Entry entry = (Map.Entry) snk.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
             body += "\t\t<singular xml:lang=\"" + key + "\">" + value + "</singular>\n";
         }
         body += "\t\t<!-- singles per language as defined by ISO 639 -->\n";
-        HashMap<String, String> pn = nb.getPluralNames();
-        Iterator<Map.Entry<String, String>> pnk = pn.entrySet().iterator();
+        HashMap pn = nb.getPluralNames();
+        Iterator pnk = pn.entrySet().iterator();
         while (pnk.hasNext()) {
-            Map.Entry<String, String> entry = pnk.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            Map.Entry entry = (Map.Entry) pnk.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
             body += "\t\t<plural xml:lang=\"" + key + "\">" + value + "</plural>\n";
         }
         body += "\t</names>\n";
         body += "\t<!-- <descriptions> small description of the builder for human reading -->\n";
         body += "\t<descriptions>\n";
-        Map<String, String> de = nb.getDescriptions();
-        Iterator<Map.Entry<String, String>> dek = de.entrySet().iterator();
+        Map de = nb.getDescriptions();
+        Iterator dek = de.entrySet().iterator();
         while (dek.hasNext()) {
-            Map.Entry<String, String> entry = dek.next();
-            String key = entry.getKey();
-            String value = entry.getValue();
+            Map.Entry entry = (Map.Entry) dek.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
             body += "\t\t<description xml:lang=\"" + key + "\">" + value + "</description>\n";
         }
         body += "\t</descriptions>\n";
         body += "\t<fieldlist>\n";
-        Iterator<NeededBuilderField> fl = nb.getFields();
+        Iterator fl = nb.getFields();
         int pos = 3;
         while (fl.hasNext()) {
-            NeededBuilderField nbf = fl.next();
+            NeededBuilderField nbf = (NeededBuilderField) fl.next();
             body += "\t\t<!-- POS " + (pos++) + " : <field> '" + nbf.getDBName() + "'  -->\n";
             body += "\t\t<field>\n";
             body += "\t\t\t<descriptions>\n";
@@ -573,9 +588,9 @@ public class Model {
             de = nbf.getDescriptions();
             dek = de.entrySet().iterator();
             while (dek.hasNext()) {
-                Map.Entry<String, String> entry = dek.next();
-                String key = entry.getKey();
-                String value = entry.getValue();
+                Map.Entry entry = (Map.Entry) dek.next();
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
                 body += "\t\t\t\t<description xml:lang=\"" + key + "\">" + value
                         + "</description>\n";
             }
@@ -584,9 +599,9 @@ public class Model {
             de = nbf.getGuiNames();
             dek = de.entrySet().iterator();
             while (dek.hasNext()) {
-                Map.Entry<String, String> entry = dek.next();
-                String key = entry.getKey();
-                String value = entry.getValue();
+                Map.Entry entry = (Map.Entry) dek.next();
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
                 body += "\t\t\t\t<guiname xml:lang=\"" + key + "\">" + value + "</guiname>\n";
             }
             body += "\t\t\t\t<guitype>" + nbf.getGuiType() + "</guitype>\n";

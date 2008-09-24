@@ -43,6 +43,7 @@
             "Resources",
             "MyNews",
         /*    "Community", app, not included in distribution */
+            "Codings",
         /*    "RichText", not included in distribution */
             "MyCompany",
         /*    "MyUsers", scan, not included in distribution */

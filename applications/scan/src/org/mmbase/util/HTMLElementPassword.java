@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementPassword.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id: HTMLElementPassword.java,v 1.6 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementPassword  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementText
@@ -39,7 +39,7 @@ public class HTMLElementPassword  extends HTMLElement {
     protected String generate() {
         String html = "";
         if (moreValues) {
-            Enumeration e = Collections.enumeration(valuesList);
+            Enumeration e = valuesList.elements();
             if (e.hasMoreElements()) {
                 String val = (String) e.nextElement();
                 html += name + "<input type=\"password\" name=\"" + name + "\" ";

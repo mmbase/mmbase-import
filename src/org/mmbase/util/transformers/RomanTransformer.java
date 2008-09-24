@@ -15,9 +15,9 @@ import java.util.regex.*;
  * Static utilities to deal with roman numbers, and non static functions to transform strings
  * representing decimal numbers to roman numbers and back.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: RomanTransformer.java,v 1.6 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: RomanTransformer.java,v 1.4 2005-11-01 23:36:02 michiel Exp $
  */
 
 public class RomanTransformer extends StringTransformer {
@@ -49,7 +49,7 @@ public class RomanTransformer extends StringTransformer {
      * Converts an integer to one the letters of the roman number system, or ' ' if no such number.
      * @see #decimalToRoman(int)
      */
-
+    
     public static char decimalToRomanDigit(int i) {
         switch(i) {
         case M: return 'm';
@@ -62,7 +62,7 @@ public class RomanTransformer extends StringTransformer {
         default: return ' ';
         }
     }
-
+    
     /**
      * Converts roman number to int.
      */
@@ -80,10 +80,10 @@ public class RomanTransformer extends StringTransformer {
                 tot += value;
             }
         }
-
+            
         return tot;
     }
-    /**
+    /** 
      * Converts int to roman number (if bigger than 0, smaller then 4000), other wise return the
      * integer as a string.
     */
@@ -92,8 +92,8 @@ public class RomanTransformer extends StringTransformer {
             // throw new IllegalArgumentException("Only natural numbers smaller than 4000 can be
             // presented as a roman number");
             return "" + value;
-        }
-        final StringBuilder buf = new StringBuilder();
+        } 
+        final StringBuffer buf = new StringBuffer();
         int mode = M;
         while (value > 0) {
             while (value < mode) mode /= 10;
@@ -107,7 +107,7 @@ public class RomanTransformer extends StringTransformer {
                 if (value < 5 * mode) {
                     buf.append(decimalToRomanDigit(mode));
                     value += mode;
-                }
+                } 
                 buf.append(decimalToRomanDigit(5 * mode));
                 value -= 5 * mode;
             }
@@ -130,7 +130,7 @@ public class RomanTransformer extends StringTransformer {
         }
     }
 
-    // javadoc inherited
+    // javadoc inherited        
     public String transformBack(String r) {
         return "" + romanToDecimal(r);
     }
@@ -140,26 +140,19 @@ public class RomanTransformer extends StringTransformer {
     }
 
 
-    /**
+    /** 
      * Just to test
      */
     public static void main(String argv[]) {
         if (argv.length == 0) {
             System.out.println("Use roman or decimal argument");
             return;
-        }
+        }    
         if (argv.length == 1) {
             if (NUMERIC.matcher(argv[0]).matches()) {
                 System.out.println(decimalToRoman(Integer.parseInt(argv[0])));
             } else {
                 System.out.println(romanToDecimal(argv[0]));
-            }
-        }
-        if (argv.length == 2) {
-            int start = NUMERIC.matcher(argv[0]).matches() ? Integer.parseInt(argv[0]) : romanToDecimal(argv[0]);
-            int end   = NUMERIC.matcher(argv[1]).matches() ? Integer.parseInt(argv[1]) : romanToDecimal(argv[1]);
-            for (int i = start; i <= end; i++) {
-                System.out.println(decimalToRoman(i));
             }
         }
     }

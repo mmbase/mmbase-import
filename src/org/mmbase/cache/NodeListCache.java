@@ -9,15 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
+import org.mmbase.core.event.RelationEvent;
+
 /**
  * Query result cache used for getNodes from MMObjectBuilder. So it contains only simple nodes (no
- * clusternodes).
- * 
- * The query <em>can</em> contain more than one <code>Step</step>, the queried fields are, however, excactly all
- * fields of one of the steps (the 'node step').
+ * clusternodes)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.8 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: NodeListCache.java,v 1.4.2.2 2007-07-19 15:17:40 michiel Exp $
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */
@@ -49,4 +48,5 @@ public class NodeListCache extends QueryResultCache {
         super(size);
     }
 
+    
 }

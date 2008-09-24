@@ -12,11 +12,10 @@ package org.mmbase.module.lucene;
 import org.mmbase.core.event.*;
 
 /**
- * Events send during the execution of a full index.
- *
+ * All the code necessary to propagate events with the meaning 'the lucene index has changed, you must refresh your searchers'.
  * @since  MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: FullIndexEvents.java,v 1.2 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id: FullIndexEvents.java,v 1.1 2008-02-01 12:40:42 michiel Exp $
  */
 
 public class FullIndexEvents {
@@ -75,10 +74,9 @@ public class FullIndexEvents {
             Listener nel = (Listener) listener;
             nel.notify(ne);
         }
-        public String toString() {
-            return "Lucene Full Index Broker";
-        }
     }
+
+
 
 
 }

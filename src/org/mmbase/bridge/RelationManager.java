@@ -20,11 +20,11 @@ package org.mmbase.bridge;
  * (formerly known as the TypeRel builder).
  * This includes direction and cardinality, and the NodeManagers of nodes itself. These fields cannot be changed
  * except through the use of an administration module.
- * This interface is therefore not a real mmbase 'object' in itself - it exists of two objects joined together.
+ * This interface is therefor not a real mmbase 'object' in itself - it exists of two objects joined together.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: RelationManager.java,v 1.9 2007-11-28 15:09:55 michiel Exp $
+ * @version $Id: RelationManager.java,v 1.8 2004-10-09 09:39:32 nico Exp $
  */
 public interface RelationManager extends NodeManager {
     /**
@@ -99,15 +99,8 @@ public interface RelationManager extends NodeManager {
 
     /**
      * Retrieves all the relations of this type from a given node.
-     * This method returns all relations of a certain node <em>not considering role, source
-     * manager and destination manager<em>, but only the builder of relation (e.g. it queries either
-     * insrel, or an extension thereof).
-     *
-     * See {@link Node#getRelations(String, NodeManager, String)}.
-     *
      * @param node the node from which to give the relations
      * @return a list of relations
-     * @todo I think this is a silly method.
      */
     public RelationList getRelations(Node node);
 

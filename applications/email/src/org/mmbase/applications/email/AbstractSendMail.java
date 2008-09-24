@@ -20,11 +20,13 @@ import javax.mail.internet.*;
  * @application Mail
  * @author Michiel Meeuwissen
  */
-abstract public class AbstractSendMail extends WatchedReloadableModule {
+abstract public class AbstractSendMail extends WatchedReloadableModule { //implements SendMailInterface {
 
+    /*
     public AbstractSendMail(String name) {
         super(name);
     }
+    */
 
     /**
      * Send mail without extra headers

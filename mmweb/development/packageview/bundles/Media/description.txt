@@ -1,1 +1,0 @@
-The media application providers a comprehensive and generic way to handle media within MMBase.

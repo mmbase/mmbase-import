@@ -1,1 +1,0 @@
-UML2MMBase is a code generation tool that can be used  to convert a UML model of the MMBase cloud into a basic MMBase  application. UML2MMBase can greatly speed up development of MMBase  applications while enforcing a well documented cloud model.

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * Class for doing random things.
  * @deprecated-now not used anywhere
  * @author Rico Jansen
- * @version $Id: RandomThings.java,v 1.10 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: RandomThings.java,v 1.9 2004-09-30 14:07:13 pierre Exp $
  */
 public class RandomThings {
 
@@ -30,7 +30,7 @@ public class RandomThings {
      * Shuffle a Vector until it is a Random mess
      * @deprecated java.util.Collections#shuffle
      */
-    static public void shuffleVector(Vector<Object> v) {
+    static public void shuffleVector(Vector v) {
         int src,dst;
         int siz = v.size();
 
@@ -44,8 +44,8 @@ public class RandomThings {
      * Return a new Shuffled vector
      * @deprecated java.util.Collections#shuffle and clone
      */
-    static public Vector<Object> shuffleCloneVector(Vector<Integer> v) {
-        Vector<Object> newv = (Vector<Object>)v.clone();
+    static public Vector shuffleCloneVector(Vector v) {
+        Vector newv = (Vector)v.clone();
         shuffleVector(newv);
         return newv;
     }
@@ -69,7 +69,7 @@ public class RandomThings {
     /**
      * @deprecated use Collections.swap
      */
-    private static void swap(Vector<Object> v,int i,int j) {
+    private static void swap(Vector v,int i,int j) {
         Object ob1 = v.elementAt(i);
         Object ob2 = v.elementAt(j);
         v.setElementAt(ob1,j);
@@ -80,8 +80,8 @@ public class RandomThings {
      * Return 'max' random elements from a Vector.
      * No duplicates will be given.
      */
-    public static Vector<Object> giveRandomFrom(Vector<Integer> v,int max) {
-        Vector<Object> newv = new Vector<Object>();
+    public static Vector giveRandomFrom(Vector v,int max) {
+        Vector newv = new Vector();
         Object ob;
         int siz = v.size();
 
@@ -107,7 +107,7 @@ public class RandomThings {
      * For testing
      */
     public static void main(String args[]) {
-        Vector<Integer> v = new Vector<Integer>();
+        Vector v = new Vector();
         int siz = 128;
         int idx[] = new int[siz];
         int i;

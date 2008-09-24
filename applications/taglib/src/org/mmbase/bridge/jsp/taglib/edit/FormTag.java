@@ -11,13 +11,12 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.pageflow.*;
-import org.mmbase.bridge.Transaction;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-import java.util.*;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 
 /**
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.19 2008-07-31 09:54:08 michiel Exp $
+ * @version $Id: FormTag.java,v 1.6.2.6 2008-04-22 22:56:52 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -35,7 +34,7 @@ public class FormTag extends TransactionTag implements Writer {
     private static final Logger log = Logging.getLoggerInstance(FormTag.class);
 
     public static final String KEY = "org.mmbase.bridge.jsp.taglib.form";
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
+    public static final int SCOPE  = PageContext.REQUEST_SCOPE;
 
     /**
      * Produces an HTML form, and (reuses) an MMBase transaction. Only explicit commit/cancel (with
@@ -66,7 +65,7 @@ public class FormTag extends TransactionTag implements Writer {
     private Attribute page = Attribute.NULL;
     private Attribute clazz = Attribute.NULL;
 
-    private Attribute absolute = Attribute.NULL;
+    private Attribute referid = Attribute.NULL;
 
     private Object previous;
 
@@ -88,12 +87,14 @@ public class FormTag extends TransactionTag implements Writer {
 
     private int getMode() throws JspTagException {
         String m = mode.getString(this).toLowerCase();
-        if (m.length() == 0 || m.equals("form")) {
+        if (m.equals("") || m.equals("form")) {
             return MODE_HTML_FORM;
         } else if (m.equals("url")) {
             return MODE_URL;
         } else if (m.equals("validate")) {
             return MODE_VALIDATE;
+        } else if (m.equals("transaction")) {
+            return MODE_TRANSACTION;
         } else {
             throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
@@ -104,12 +105,9 @@ public class FormTag extends TransactionTag implements Writer {
         page = getAttribute(p);
     }
 
-    public void setAbsolute(String a) throws JspTagException {
-        absolute = getAttribute(a, true);
-    }
-
 
     public int doStartTag() throws JspTagException {
+
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), this);
         }
@@ -118,16 +116,15 @@ public class FormTag extends TransactionTag implements Writer {
             log.debug("Found previous form-tag " + previous);
         }
         pageContext.setAttribute(KEY, this, SCOPE);
-        m = getMode();
-        Url u = new Url(this, page.getString(this), absolute.getString(this));
-        u.setProcess();
-        String url = u.toString();
 
+        m = getMode();
         switch(m) {
         case MODE_URL:
-            helper.setValue(url);
+            helper.setValue(page.getString(this));
             break;
         case MODE_HTML_FORM:
+            String url = page.getString(this);
+            if (url.startsWith("/")) url = ((javax.servlet.http.HttpServletRequest) pageContext.getRequest()).getContextPath() + url;
             String id = getId();
             String c  = clazz.getString(this);
             try {
@@ -168,7 +165,6 @@ public class FormTag extends TransactionTag implements Writer {
         }
         return result;
     }
-
 
     // never commit on close, unless, explicitely requested, of course.
     protected boolean getDefaultCommit() {

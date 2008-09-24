@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.gui.html;
 
 import java.util.*;
-
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditStateNode.java,v 1.18 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: EditStateNode.java,v 1.17 2005-10-06 14:07:32 michiel Exp $
  */
 public class EditStateNode {
 
@@ -31,8 +30,8 @@ public class EditStateNode {
 
     private static boolean removeRelations=false; // remover relations on node delete
 
-    Hashtable<String, Object> searchValues = new Hashtable<String, Object>();
-    Hashtable<String, Object> htmlValues = new Hashtable<String, Object>();
+    Hashtable searchValues = new Hashtable();
+    Hashtable htmlValues = new Hashtable();
     String editNode;
     String editor;
     String dutchEditor;
@@ -42,7 +41,7 @@ public class EditStateNode {
     MMBase mmBase;
     int nodeEditPos=0;
     boolean insSave=false;
-    Vector<MMObjectNode> insSaveList=new Vector<MMObjectNode>();
+    Vector insSaveList=new Vector();
 
     public EditStateNode(MMBase mmBase) {
         this.mmBase=mmBase;
@@ -67,7 +66,7 @@ public class EditStateNode {
         return result;
     }
 
-    public Hashtable<String, Object> getSearchValues() {
+    public Hashtable getSearchValues() {
         return searchValues;
     }
 
@@ -80,7 +79,7 @@ public class EditStateNode {
     }
 
     public void clearSearchValues() {
-        searchValues=new Hashtable<String, Object>();
+        searchValues=new Hashtable();
     }
 
 
@@ -104,12 +103,12 @@ public class EditStateNode {
         return (String)htmlValues.get(name);
     }
 
-    public Hashtable<String, Object> getHtmlValues() {
+    public Hashtable getHtmlValues() {
         return htmlValues;
     }
 
     public void clearHtmlValues() {
-        htmlValues=new Hashtable<String, Object>();
+        htmlValues=new Hashtable();
     }
 
     public void setEditNode(String number,String userName) {
@@ -219,12 +218,12 @@ public class EditStateNode {
         log.debug("setInsSaveNode(): "+insSaveList.toString());
     }
 
-    public Vector<MMObjectNode> getInsSaveList() {
+    public Vector getInsSaveList() {
         return insSaveList;
     }
 
     public void delInsSaveList() {
-        insSaveList=new Vector<MMObjectNode>();
+        insSaveList=new Vector();
     }
 
     public void delRelationTable() {
@@ -235,7 +234,7 @@ public class EditStateNode {
      * Returns Hashtable with the currently linked items sorted by relation
      * type.
      */
-    public Hashtable<String, Vector> getRelationTable() {
+    public Hashtable getRelationTable() {
         Enumeration enumeration = mmBase.getTypeRel().getAllowedRelations(node);
         MMObjectNode typeRel;
         String typeName;
@@ -243,7 +242,7 @@ public class EditStateNode {
         // build Hashtable with Vectors for all allowed relations
         // Key = TypeName for objects that may be linked
 
-        Hashtable<String, Vector> relationTable = new Hashtable<String, Vector>();
+        Hashtable relationTable = new Hashtable();
         while (enumeration.hasMoreElements()) {
             typeRel = (MMObjectNode)enumeration.nextElement();
             int j=typeRel.getIntValue("snumber");
@@ -281,7 +280,7 @@ public class EditStateNode {
                     else
                         target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
                     typeName = target.getBuilder().getTableName();
-                    Vector<MMObjectNode> relList = relationTable.get(typeName);
+                    Vector relList = (Vector)relationTable.get(typeName);
                     if (relList != null) {
                         relList.addElement(target);
                         relList.addElement(rel);

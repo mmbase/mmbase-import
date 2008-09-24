@@ -21,26 +21,15 @@ See http://www.MMBase.org/license
 				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>mmbase</groupId>
-			<artifactId>mmbase-clustering</artifactId>
+			<artifactId>mmbase-packaging</artifactId>
 			<version>${mmbase.version}</version>
 			<type>mmbase-module</type>
 			<properties>
-				<mmbase.templates.bundle>true</mmbase.templates.bundle>
-				<mmbase.templates.path>mmbase/clustering</mmbase.templates.path>
-			</properties>
-		</dependency>
-   		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-resources</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<mmbase.templates.bundle>true</mmbase.templates.bundle>
-				<mmbase.templates.path>mmbase/resources</mmbase.templates.path>
+				<mmbase.templates.path>mmbase</mmbase.templates.path>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples/resources</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
@@ -58,64 +47,54 @@ See http://www.MMBase.org/license
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-dove</artifactId>
 			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
+			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples/dove</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-taglib</artifactId>
 			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
+			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples/taglib</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
-
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-jumpers</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
+		
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version> <!-- btw, newest version 1.8.0.8, but not yet in maven repositories.. sigh -->
+            <type>jar</type>
+            <properties>
 				<war.bundle>${war.bundle}</war.bundle>
-				<mmbase.templates.path>mmexamples</mmbase.templates.path>
-			</properties>
-		</dependency>
+            </properties>
+        </dependency>
 
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase-mynews</artifactId>
-			<version>${mmbase.version}</version>
-			<type>mmbase-module</type>
-			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
-				<mmbase.templates.path>mmexamples</mmbase.templates.path>
-			</properties>
-		</dependency>
-    
-  </dependencies>
-  <build>
-    <defaultGoal>war:install</defaultGoal>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <!-- J A R  R E S O U R C E S -->
-    <!-- Resources that are packaged up inside the JAR file -->
-    <resources>
-      <resource>
-        <directory>${basedir}/src/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.dtd</include>
-          <include>**/*.xsd</include>
-          <include>**/*.properties</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-    </resources>
-  </build>
+		<!-- Download libraries for database connection pooling -->        
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+        </dependency>
+
+    </dependencies>
 </project>

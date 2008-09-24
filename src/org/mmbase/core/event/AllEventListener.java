@@ -9,12 +9,10 @@ package org.mmbase.core.event;
 
 
 /**
- * This is a listener interface for every type of event. Primarily created for
- * {@link org.mmbases.clustering.CluserManager}, which has to propagate all local events to the mmbase cluster.
+ * This is a listener interface for every type of event. Primarily created for the
+ * CluserManager, which has to propagate all local events int the mmbase cluster.
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: AllEventListener.java,v 1.3 2008-09-04 21:21:41 michiel Exp $
- * @see  AllEventBroker
  *
  */
 public interface AllEventListener extends EventListener {

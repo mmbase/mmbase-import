@@ -1,4 +1,0 @@
-#!/bin/sh
-
-grep -lr "wizardname=\"$1\"" src/education/|xargs perl -i.bak -npe "s#wizardname=\"$1\"#wizardname=\"$2\"#g"
-

@@ -20,7 +20,6 @@
 
 	<!-- Database settings -->
 		<!-- HsqlDB -->
-<!-- 
 	 <Resource name="jdbc/MMBase"
 			auth="Container"
 			type="javax.sql.DataSource"
@@ -35,7 +34,7 @@
 			driverClassName="org.hsqldb.jdbcDriver"
 			url="jdbc:hsqldb:mmbase;shutdown=true"
 		/>
- -->
+
 		<!-- MySQL -->
 	<!--
 			username="mmbase"
@@ -56,26 +55,12 @@
 		
 		MySql error: Incorrect arguments to mysql_stmt_execute
 		MySql error: Duplicate entry '1234' for key 1 in query
-	 -->
-<!-- 
+	-->
+
 	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
 	<Environment name="mmbase/mmbaseroot/datasource" value="jdbc/MMBase" type="java.lang.String" />
-	<Environment name="mmbase/mmbaseroot/basename" value="mm" type="java.lang.String" />
- -->
-<!-- JDBC module --> 
-	<Environment name="mmbase/jdbc/url" value="jdbc:hsqldb:mem:$DBM;shutdown=true" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/user" value="sa" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/password" value="" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/database" value="mmbase" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/connections" value="20" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/host" value="localhost" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/driver" value="org.hsqldb.jdbcDriver" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/port" value="0" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/queries" value="256" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/probetime" value="30" type="java.lang.String" />
-	<Environment name="mmbase/jdbc/maxlifetime" value="120" type="java.lang.String" />
-
-
+	<!-- <Environment name="mmbase/mmbaseroot/basename" value="mm" type="java.lang.String" /> -->
+	
 	<Environment name="mmbase/imaging/ImageConvertClass"
 		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
 	<Environment name="mmbase/imaging/ImageConvert.ConverterCommand" value="convert" type="java.lang.String" />

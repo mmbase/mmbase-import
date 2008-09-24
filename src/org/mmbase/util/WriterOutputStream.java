@@ -24,7 +24,7 @@ public class WriterOutputStream extends OutputStream {
     protected Writer writer;
     protected String encoding;
     private byte[] buf = new byte[1];
-
+    
     public WriterOutputStream(Writer writer, String encoding) {
         this.writer = writer;
         this.encoding = encoding;
@@ -34,27 +34,27 @@ public class WriterOutputStream extends OutputStream {
         writer = null;
         encoding = null;
     }
-
+    
 
     public void flush() throws IOException {
         writer.flush();
     }
-
+    
     public void write(byte[] b) throws IOException {
-        if (encoding == null) {
+        if (encoding == null) {            
             writer.write(new String(b));
         } else {
             writer.write(new String(b, encoding));
         }
-
+        
     }
-
+    
     public void write(byte[] b, int off, int len) throws IOException {
         if (encoding == null) {
             writer.write(new String(b, off, len));
-        } else {
+        } else {            
             writer.write(new String(b, off, len, encoding));
-        }
+        }        
     }
     public synchronized void write(int b) throws IOException {
         buf[0] = (byte)b;

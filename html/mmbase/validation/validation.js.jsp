@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.54 2008-08-12 19:46:14 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.28 2008-04-18 08:58:09 michiel Exp $
  */
 
 
@@ -27,7 +27,7 @@ function MMBaseValidator(root) {
     this.validateHook;
     this.root = root;
     this.setup();
-    this.lang          = "client";
+    this.lang          = null;
     this.sessionName   = null;
     this.id = MMBaseValidator.validators.push(this);
     if (MMBaseValidator.validators.length == 1) {
@@ -325,32 +325,7 @@ MMBaseValidator.prototype.isBinary = function(el) {
 
 MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
 
-MMBaseValidator.prototype.getDecimalSeparator = function () {
-    if (this.DECIMAL == null) {
-	var url = '<mm:url page="/mmbase/validation/numberInfo.jspx" />';
-	var params = {lang: this.lang };
-	var result;
-	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-		complete: function(res, status){
-		    if (status == "success") {
-			result = res.responseXML;
-		    } else {
-			result = $("<numberInfo />");
-		    }
-		}
-	       });
-	var decimal = this.find(result, 'numberInfo decimalSeparator')[0].childNodes[0].nodeValue;
-	this.DECIMAL = decimal  == "." ? "\\." : "[\\.\\" + decimal + "]";
-    }
-    return this.DECIMAL;
-}
-MMBaseValidator.prototype.floatRegExp = function() {
-    if (this.FLOAT == null) {
-	this.FLOAT = new RegExp("^[+-]?(\\d+|\\d+" + this.getDecimalSeparator() + "\\d*|\\d*" + this.getDecimalSeparator() + "\\d+)(e[+-]?\\d+|)$");
-    }
-    return this.FLOAT;
-
-}
+MMBaseValidator.prototype.FLOAT   = /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i;
 
 MMBaseValidator.prototype.typeValid = function(el) {
     if (el.value == "") return true;
@@ -359,7 +334,7 @@ MMBaseValidator.prototype.typeValid = function(el) {
         if (! this.INTEGER.test(el.value)) return false;
     }
     if (this.isFloat(el)) {
-        if (! this.floatRegExp().test(el.value)) return false;
+        if (! this.FLOAT.test(el.value)) return false;
     }
     return true;
 

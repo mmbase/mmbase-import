@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 import org.mmbase.applications.packaging.sharehandlers.ShareInfo;
 
@@ -38,7 +37,7 @@ public class BundleContainer implements BundleInterface {
 
     private BundleInterface activeBundle;
 
-    private HashMap<String, BundleVersionContainer> versions = new HashMap<String, BundleVersionContainer>();
+    private HashMap versions = new HashMap();
     
     public BundleContainer(BundleInterface b) {
         // its the first one so it has to be the best
@@ -51,7 +50,7 @@ public class BundleContainer implements BundleInterface {
 
 
     public boolean contains(String version,ProviderInterface provider) {
-        BundleVersionContainer vc=versions.get(version);
+        BundleVersionContainer vc=(BundleVersionContainer)versions.get(version);
         if (vc!=null) {
             return vc.contains(provider);
         }
@@ -69,7 +68,7 @@ public class BundleContainer implements BundleInterface {
     }
 
     public boolean addBundle(BundleInterface b) {
-        BundleVersionContainer vc = versions.get(b.getVersion());
+        BundleVersionContainer vc = (BundleVersionContainer)versions.get(b.getVersion());
         // we allready have this verion, so maybe its a different provider
         if (vc != null) {
             vc.addBundle(b);
@@ -96,19 +95,19 @@ public class BundleContainer implements BundleInterface {
         return true;
     }
 
-    public Iterator<HashMap<String, String>> getNeededPackages() {
+    public Iterator getNeededPackages() {
         return activeBundle.getNeededPackages();
     }
 
-    public List<Object> getRelatedPeople(String type) {
+    public List getRelatedPeople(String type) {
         return activeBundle.getRelatedPeople(type);
     }
 
-    public List<Object> getScreenshots() {
+    public List getScreenshots() {
         return activeBundle.getScreenshots();
     }
 
-    public List<Object> getStarturls() {
+    public List getStarturls() {
         return activeBundle.getStarturls();
     }
 
@@ -160,12 +159,12 @@ public class BundleContainer implements BundleInterface {
         return activeBundle.getProvider();
     }
 
-    public Iterator<BundleVersionContainer> getVersions() {
-        return ((HashMap<String, BundleVersionContainer>)versions.clone()).values().iterator();
+    public Iterator getVersions() {
+        return ((HashMap)versions.clone()).values().iterator();
     }
 
     public BundleInterface getVersion(String version,ProviderInterface provider) {
-        BundleVersionContainer bvc = versions.get(version);
+        BundleVersionContainer bvc = (BundleVersionContainer)versions.get(version);
         if (bvc != null) {
             BundleInterface b = (BundleInterface)bvc.get(provider);
             if (b != null) {
@@ -180,18 +179,18 @@ public class BundleContainer implements BundleInterface {
 
 
     public BundleInterface getBundleByScore(String version) {
-        BundleVersionContainer bvc=versions.get(version);
+        BundleVersionContainer bvc=(BundleVersionContainer)versions.get(version);
         if (bvc!=null) {
             return bvc.getBundleByScore();
         }
         return null;
     }
 
-    public Iterator<installStep> getInstallSteps() {
+    public Iterator getInstallSteps() {
         return activeBundle.getInstallSteps();
     }
 
-    public Iterator<installStep> getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         return activeBundle.getInstallSteps(logid);
     }
 
@@ -279,10 +278,5 @@ public class BundleContainer implements BundleInterface {
    public int getPackageProgressBarValue() {
        return activeBundle.getPackageProgressBarValue();
    }
-
-    public long lastSeen() {
-    
-        return activeBundle.lastSeen();
-    }
 
 }

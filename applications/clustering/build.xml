@@ -14,8 +14,7 @@
 
   <property file="build.properties.default" />
 
-  <target name="jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,buildbase.jar">
-  </target>
+  <target name="jar" description="Create mmbase-clustering.jar" depends="jgroups.jar,project.manifest,buildbase.jar" />
 
   <target name="jgroups.jar" description="Get JGroups jar">
 

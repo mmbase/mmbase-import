@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.28 2008-06-26 13:58:00 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.23.2.1 2008-07-01 08:49:36 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -46,7 +46,7 @@ public class NodeProviderHelper implements NodeProvider {
      * 'underscore' stack, containing the values for '_node'.
      * @since MMBase_1.8
      */
-    private   Stack<NodeChanger> _Stack;
+    private   Stack _Stack;
     // whether this tag pushed something on the stack already.
     private   int pushed = 0;
 
@@ -117,9 +117,9 @@ public class NodeProviderHelper implements NodeProvider {
 
 
     boolean checked = false; // need to check jspvar/pagecontext-var conflict only first time.
-
     /**
      * Fill the jsp and context vars
+     *
      */
 
     public void fillVars() throws JspTagException {
@@ -132,10 +132,9 @@ public class NodeProviderHelper implements NodeProvider {
         }
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack<NodeChanger>) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE, PageContext.REQUEST_SCOPE);
         if (_Stack == null) {
-            _Stack = new Stack<NodeChanger>();
-            pushed = 0;
+            _Stack = new Stack();
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack, PageContext.REQUEST_SCOPE);
         }
         _Stack.push(node);
@@ -143,6 +142,9 @@ public class NodeProviderHelper implements NodeProvider {
         pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
     }
 
+    private String getSimpleReturnValueName(String fieldName){
+        return getSimpleReturnValueName(jspvar, fieldName);
+    }
     /**
      * Generates the variable-name for a field.
      *
@@ -167,16 +169,10 @@ public class NodeProviderHelper implements NodeProvider {
             PageContext pageContext = thisTag.getPageContext();
             if (_Stack.empty()) {
                 pageContext.removeAttribute(_NODE, PageContext.REQUEST_SCOPE);
-                if (pushed != 0) {
-                    // would otherwise come in infinite loop in doEndTag. But it should not have
-                    // happend in the first place
-                    log.warn("The _Stack was empty while there should still be things on it ", new Exception());
-                    pushed = 0;
-                }
-                _Stack = null;
             } else {
                 pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), PageContext.REQUEST_SCOPE);
             }
+            _Stack = null;
         }
     }
     /**
@@ -217,17 +213,16 @@ public class NodeProviderHelper implements NodeProvider {
             }
         }
         pushed = 0;
+        checked = false;
         node = null;
         _Stack = null;
         query = null;
-        checked = false;
         return BodyTagSupport.EVAL_PAGE;
     }
 
     public void doFinally () {
         node = null;
         _Stack = null;
-        pushed = 0;
         query = null;
     }
 }

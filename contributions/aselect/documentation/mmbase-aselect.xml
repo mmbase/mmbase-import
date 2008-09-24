@@ -6,7 +6,7 @@
   <articleinfo>
     <title>MMBase-ASelect</title>
     <date>2005-03-01</date>
-    <edition>$Id: mmbase-aselect.xml,v 1.2 2007-04-28 08:49:28 michiel Exp $</edition>
+    <edition>$Id: mmbase-aselect.xml,v 1.1 2005-03-16 20:04:04 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -153,7 +153,13 @@ editor=500
         be assigned with a 'accounts.properties', which can be configured as the URL of OwnerAuthorization.
       </para>
       <para>
-        And to configure it as your authentication implementation. WEB-INF/config/security/security.xml might look like this then:
+
+      </para>
+    </section>
+
+
+
+And to configure it as your authentication implementation. WEB-INF/config/security/security.xml might look like this then:
       <programlisting id="web.xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE security PUBLIC "-//MMBase//DTD security config 1.0//EN" "http://www.mmbase.org/dtd/security_1_0.dtd">
@@ -169,16 +175,15 @@ editor=500
       was chosen. OwnerAuthorization is a simple authorization mechanism which allows only for
       changing your 'own' nodes. More sophisticated implementations could be created, but a way to
       synchronize ASelect users with MMBase users would be required then.
-      </para>
-      <para>
-        The ASelectAuthentication is configured with the same configuration file as the ASelect
-        agent. It uses only a few properties of it (mainly to decide to which server an authentication
-        request must be redirected).
-      </para>
-      <para>
-        MMBase templates must can be changed to use the 'delegate' method of the cloud-tag, and
-        perhaps 'rank' and 'authenticate' attributes should be added as well.
-      </para>
-    </section>
+    </para>
+    <para>
+      The ASelectAuthentication is configured with the same configuration file as the ASelect
+      agent. It uses only a few properties of it (mainly to decide to which server an authentication
+      request must be redirected).
+    </para>
+    <para>
+      MMBase templates must can be changed to use the 'delegate' method of the cloud-tag, and
+      perhaps 'rank' and 'authenticate' attributes should be added as well.
+    </para>
   </section>
 </article>

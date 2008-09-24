@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 import java.util.Map;
 import org.mmbase.security.AuthenticationData;
-import org.mmbase.security.ActionRepository;
 
 /**
  * The collection of clouds and modules within a Java Virtual Machine.
@@ -19,7 +18,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.37 2008-09-23 16:31:20 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.28 2006-02-14 22:28:06 michiel Exp $
  */
 public interface CloudContext {
 
@@ -69,14 +68,13 @@ public interface CloudContext {
      * @return                    the requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException;
+    public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
 
     /**
      * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link Cloud#getUser}
      * @param name                The name of the cloud to be returned, always "mmbase".
      * @param user                The user object for which this cloud object must be created.
      * @return                    the requested cloud
-     * @throws NotFoundException thrown when cloud not found
      * @since MMBase-1.8
      */
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
@@ -109,7 +107,6 @@ public interface CloudContext {
 
     /**
      * Returns the default time zone.
-     * @return the default time zone
      * @since MMBase-1.8
      */
     public java.util.TimeZone getDefaultTimeZone();
@@ -177,35 +174,17 @@ public interface CloudContext {
 
     /**
      * Acquired information about the currently configuration Authentication implementation.
-     * @return current Authentication information
      * @since MMBase-1.8
      */
     public AuthenticationData getAuthentication();
 
-    /**
-     * Returns the Repository with actions
-     * @return Repository with actions
-     * @since MMBase-1.9
-     */
-    public ActionRepository getActionRepository();
-
 
     /**
-     * Returns whether MMbase is up and running
-     * @return <code>true</code> when mmbase is running
      * @since MMBase-1.8
      */
     public boolean isUp();
-
     /**
-     * Assert whether MMbase is up and running. This will wait until it is.
      * @since MMBase-1.8
      */
-    public CloudContext assertUp();
-
-    /**
-     * The String which could be used to acquire this cloud context using {@link ContextProvider#getCloudContext(String)}.
-     * @since MMBase-1.9
-     */
-    public String getUri();
+    public void assertUp();
  }

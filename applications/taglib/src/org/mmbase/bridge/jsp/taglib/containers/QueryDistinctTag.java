@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryDistinctTag.java,v 1.3 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryDistinctTag.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
 public class QueryDistinctTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -41,8 +41,9 @@ public class QueryDistinctTag extends CloudReferrerTag implements QueryContainer
     }
 
 
-    public int doStartTag() throws JspTagException {
-        Query query = getQuery(container);
+    public int doStartTag() throws JspTagException { 
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();       
         query.setDistinct(distinct.getBoolean(this, true));
         return SKIP_BODY;
     }

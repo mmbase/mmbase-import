@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.6 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: CP1252Surrogator.java,v 1.5 2005-02-02 10:12:37 michiel Exp $
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
@@ -96,8 +96,8 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
     }
 
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put("CP1252_SURROGATOR",  new Config(CP1252Surrogator.class, WELL_ENCODED,  "Takes the java String, and surrogates the 32 characters of it which are in CP1252 but not in ISO-8859-1"));
         h.put("CP1252_WRONG_SURROGATOR",  new Config(CP1252Surrogator.class, WRONG_ENCODED,  "Also surrogates the characters specific to CP1252, but supposed the String originally wrong encoded (it was suppoed to be ISO-8859-1, but actually was CP1252)"));
         return h;

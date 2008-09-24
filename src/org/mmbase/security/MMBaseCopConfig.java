@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.32 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.28.2.1 2008-06-09 09:44:50 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -36,8 +36,6 @@ public class MMBaseCopConfig {
 
     /** our current authorization class */
     private Authorization authorization;
-
-    private ActionRepository actions;
 
     /** if the securitymanager is configured to functionate */
     private boolean active = false;
@@ -78,8 +76,8 @@ public class MMBaseCopConfig {
     public static final String DTD_SECURITY_1_0 = "security_1_0.dtd";
 
     static {
-        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
-        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
     }
 
     /**
@@ -103,6 +101,8 @@ public class MMBaseCopConfig {
         cop = mmbaseCop;
         // force loading of Class security:
         log.debug(org.mmbase.security.classsecurity.ClassAuthentication.class);
+
+
 
     }
 
@@ -164,18 +164,6 @@ public class MMBaseCopConfig {
             }
             authorization.load(cop, watcher,  authorizationUrl);
 
-            entry = reader.getElementByPath("security.actions");
-            if (entry != null) {
-                String actionsClass = reader.getElementAttributeValue(entry, "class");
-                String actionsUrl = reader.getElementAttributeValue(entry, "url");
-                actions = getActions(actionsClass);
-                actions.load(cop, watcher,  actionsUrl);
-            } else {
-                actions = new MemoryActionRepository();
-                actions.load(cop, watcher,  null);
-            }
-
-
 
         } else {
             // we dont use security...
@@ -183,8 +171,6 @@ public class MMBaseCopConfig {
             authentication.load(cop, watcher, null);
             authorization = new NoAuthorization();
             authorization.load(cop, watcher, null);
-            actions = new MemoryActionRepository();
-            actions.load(cop, watcher, null);
             log.debug("Retrieved dummy security classes");
         }
     }
@@ -203,9 +189,6 @@ public class MMBaseCopConfig {
      */
     public Authorization getAuthorization() {
         return authorization;
-    }
-    public ActionRepository getActionRepository() {
-        return actions;
     }
 
     /**
@@ -269,30 +252,6 @@ public class MMBaseCopConfig {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             result = (Authorization) o;
-            log.debug("Setting manager of " + result + " to " + cop);
-            result.manager = cop;
-        }
-        catch(java.lang.ClassNotFoundException cnfe) {
-            log.debug("", cnfe);
-            throw new SecurityException(cnfe.toString());
-        }
-        catch(java.lang.IllegalAccessException iae) {
-            log.debug("", iae);
-            throw new SecurityException(iae.toString());
-        }
-        catch(java.lang.InstantiationException ie) {
-            log.debug("", ie);
-            throw new SecurityException(ie.toString());
-        }
-        return result;
-    }
-    private ActionRepository getActions(String className) throws SecurityException {
-
-        ActionRepository result;
-        try {
-            Class classType = Class.forName(className);
-            Object o = classType.newInstance();
-            result = (ActionRepository) o;
             log.debug("Setting manager of " + result + " to " + cop);
             result.manager = cop;
         }

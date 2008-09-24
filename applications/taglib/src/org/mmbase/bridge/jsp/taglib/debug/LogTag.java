@@ -11,16 +11,16 @@ package org.mmbase.bridge.jsp.taglib.debug;
 
 import javax.servlet.jsp.*;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The implementation of the log tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LogTag.java,v 1.17 2008-07-24 11:49:16 michiel Exp $
+ * @version $Id: LogTag.java,v 1.15 2006-08-30 18:02:16 michiel Exp $
  */
 
 public class LogTag extends ContextReferrerTag {
@@ -31,8 +31,6 @@ public class LogTag extends ContextReferrerTag {
     public final static String LOGTAG_CATEGORY = Logging.PAGE_CATEGORY + ".LOGTAG";  // pages themselfs log to subcategories of this.
 
     private String jspvar;
-
-    private Attribute level = Attribute.NULL;
     /**
      * JspVar to Create, and write to
      */
@@ -40,20 +38,9 @@ public class LogTag extends ContextReferrerTag {
         jspvar = j;
     }
 
-    /**
-     *@since MMBase-1.9
-     */
-    public void setLevel(String l) throws JspTagException {
-        level = getAttribute(l, true);
-    }
-
-    private Level getLevel() throws JspTagException {
-        return  level == Attribute.NULL ? Level.SERVICE : Level.toLevel(level.getString(this));
-    }
-
 
     public void setPageContext(PageContext pc) {
-        /* Determin logger only once per page */
+        /* Determin only once per page if it can log */
         super.setPageContext(pc);
         log = (Logger) pageContext.getAttribute("__logtag_logger");
         if(log == null) {
@@ -61,6 +48,7 @@ public class LogTag extends ContextReferrerTag {
             counter = 0;
             pageContext.setAttribute("__logtag_logger", log);
         }
+        doLog = log.isServiceEnabled();
 
     }
 
@@ -68,19 +56,16 @@ public class LogTag extends ContextReferrerTag {
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, log);
             return EVAL_BODY;
+        } else if (doLog) {
+            return EVAL_BODY_BUFFERED;
         } else {
-            doLog = Logging.isEnabled(getLevel(), log);
-            if (doLog) {
-                return EVAL_BODY_BUFFERED;
-            } else {
-                return SKIP_BODY;
-            }
+            return SKIP_BODY;
         }
     }
 
     public int doEndTag() throws JspTagException {
         if (doLog && jspvar == null) {
-            Logging.log(getLevel(), log, counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));
+            log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));
         }
         if (jspvar != null && EVAL_BODY == EVAL_BODY_BUFFERED) {
 

@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://uml2mmbase.finalist.com/download.html"><img src="images/arrow-right.gif"></a></td>
-</tr>

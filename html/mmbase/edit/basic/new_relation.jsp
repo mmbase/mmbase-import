@@ -14,15 +14,11 @@
    <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
-     <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
-     <!-- TODO escapeamps=false was not needed in 1.8 -->
-   <mm:import externid="to_page"><mm:url escapeamps="false" absolute="context"
-                                         referids="role_name,node_type,node,direction">
+<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
+   <mm:import externid="to_page" escape="none"><mm:url escapeamps="no" referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>
                                  </mm:url></mm:import>
    <mm:import id="maylink">yes</mm:import>
-
-
 
    <mm:node referid="node">
 
@@ -37,7 +33,7 @@
     </mm:compare>
 
      <tr><td>
-       <mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
+     <mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
      </td></tr>
      </table>
 
@@ -80,7 +76,7 @@
     <mm:present referid="annotate">
         <mm:write referid="style" escape="none" />
         </head>
-        <body class="basic" onLoad="document.new.elements[2].focus();">
+        <body class="basic" onLoad="document.new.elements[4].focus();">
           <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
         <input type="hidden" name="create_relation" value="yes" />
@@ -93,7 +89,7 @@
          <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
         </mm:context></mm:fieldlist>
         </mm:node>
-        <tr><td colspan="2" class="data"><input type="submit" id="okbutton" name="annotate_relation" value="ok" /></td></tr>
+        <tr><td colspan="2" class="data"><input type="submit" name="annotate_relation" value="ok" /></td></tr>
         </table>
        </form>
      </mm:present>
@@ -119,7 +115,7 @@
           <mm:fieldinfo type="useinput" />
        </mm:context></mm:fieldlist>
     </mm:node>
-    <meta http-equiv="refresh" content="0; url=<mm:url page="$redirectTo" />">
+    <META HTTP-EQUIV="refresh" content="0; url=<mm:url page="$redirectTo" />">
     <mm:write referid="style" escape="none" />
     </head>
     <body>

@@ -26,9 +26,4 @@
     <path>/META-INF/tags/mm/rich/versions.tagx</path>
   </tag-file>
 
-  <tag-file>
-    <name>kupulink</name>
-    <path>/META-INF/tags/mm/rich/kupulink.tagx</path>
-  </tag-file>
-
 </taglib>

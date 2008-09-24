@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 public class Upload extends ProcessorModule {
 
     private static Logger log = Logging.getLoggerInstance(Upload.class.getName());
-    private Hashtable<String, FileInfo> FilesInMemory = new Hashtable<String, FileInfo>();
+    private Hashtable FilesInMemory = new Hashtable();
     private String fileUploadDirectory = null;
 
     public void init() {
@@ -112,7 +112,7 @@ public class Upload extends ProcessorModule {
         // Is file located in memory?
         if(filename.indexOf("mem://")!=-1) {
             if(FilesInMemory.containsKey(filename)) {
-                FileInfo fi = FilesInMemory.get(filename);
+                FileInfo fi = (FileInfo)FilesInMemory.get(filename);
                 return fi.bytes;
             }
         }

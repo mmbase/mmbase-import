@@ -22,12 +22,11 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.19 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.18 2006-07-04 12:16:09 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
     private Query   query        = null;
-    protected Object prevQuery   = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
@@ -79,7 +78,6 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
 
     public int doStartTag() throws JspTagException {
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
@@ -106,7 +104,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         Queries.addFields(query, (String) fields.getValue(this));
 
         Queries.addStartNodes(query, nodes.getString(this));
-        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
+
         return EVAL_BODY;
     }
 
@@ -123,8 +121,6 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
-        pageContext.setAttribute(KEY, prevQuery, SCOPE);
-        prevQuery = null;
         query = null;
         return super.doEndTag();
     }

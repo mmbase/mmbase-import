@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.14 2008-08-14 13:58:54 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.9.2.2 2008-01-24 14:18:51 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -69,17 +69,13 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            Query q = (Query) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
-            if (q != null && (q instanceof NodeQuery)) query = (NodeQuery) q;
-            if (query == null) {
-                NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
-                if (c != null) {
-                    query = c.getNodeQuery();
-                }
+            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, null, false);
+            if (c != null) {
+                query = c.getNodeQuery();
             }
         } else if (! "".equals(container)) {
             log.debug("container attribute, trying container");
-            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, container, true);
+            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, container, true);
             if (c != null) {
                 query = c.getNodeQuery();
             }
@@ -103,8 +99,6 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     }
 
     public int doStartTag() throws JspTagException {
-        initTag();
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 
         query = getStartQuery(this, container, parentNodeId);
@@ -124,7 +118,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 // I'm not entirely sure why the following is necessary at all:
-                Step step = tree.getTemplate().getSteps().get(2);
+                Step step = (Step) tree.getTemplate().getSteps().get(2);
                 if (query.getSteps().contains(step)) {
                     query.setNodeStep(step);
                 }
@@ -133,7 +127,6 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, tree);
         }
-        pageContext.setAttribute(QueryContainer.KEY, getNodeQuery(), QueryContainer.SCOPE);
         return EVAL_BODY;
     }
 

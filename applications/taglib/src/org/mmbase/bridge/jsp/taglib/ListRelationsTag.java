@@ -21,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.23 2008-07-15 19:54:37 michiel Exp $
+ * @version $Id: ListRelationsTag.java,v 1.20.2.1 2008-07-15 17:05:31 michiel Exp $
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -32,13 +32,13 @@ public class ListRelationsTag extends AbstractNodeListTag {
     protected Attribute container = Attribute.NULL;
 
     private NodeManager nm;
-    private BridgeList<Node> relatedNodes = null;
+    private NodeList relatedNodes = null;
     private NodeQuery relatedQuery = null;
     private Node     relatedFromNode;
 
 
     Node getRelatedfromNode() {
-        BridgeList<Node> returnList = getReturnList();
+        NodeList returnList = getReturnList();
         return returnList == null ? null : (Node) returnList.getProperty("relatedFromNode");
     }
 
@@ -85,6 +85,25 @@ public class ListRelationsTag extends AbstractNodeListTag {
             return rel.getSource();
         }
     }
+    /* original implementation
+    public Node getRelatedNode() throws JspTagException {
+
+        if (relatedNodes == null) {
+            NodesAndTrim result = getNodesAndTrim(getRelatedQuery());
+            relatedNodes = result.nodeList;
+            if (getId() != null) {
+                getRelatedQuery();
+                listHelper.getReturnList().setProperty("relatedNodes", relatedNodes);
+            }
+
+        }
+        int i = listHelper.getIndex();
+        if (i >= relatedNodes.size()) i = relatedNodes.size() - 1;
+        if (i < 0) i = 0;
+        return relatedNodes.getNode(i);
+
+    }
+    */
 
     public int doStartTag() throws JspTagException{
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
@@ -95,7 +114,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
             return superresult;
         }
 
-        ListRelationsContainerTag c = findParentTag(ListRelationsContainerTag.class, (String) container.getValue(this), false);
+        ListRelationsContainerTag c = (ListRelationsContainerTag) findParentTag(ListRelationsContainerTag.class, (String) container.getValue(this), false);
 
         relatedNodes = null;
         relatedQuery = null;

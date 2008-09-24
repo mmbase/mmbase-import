@@ -1,9 +1,8 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<mm:content type="text/html" expires="0">
+<mm:content type="text/html">
 <html>
 <head>
-  <mm:import externid="category" />
 <%
     String category=request.getParameter("category");
     String subcategory=request.getParameter("subcategory");
@@ -43,9 +42,6 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top">
     <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
-    &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=components" />" target="_top">
-    <span class="<%=("components".equals(category)) ? "current" : ""%>menuitem">COMPONENTS</span></a>
         <hr />
     <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
@@ -115,53 +111,19 @@
     <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span>
       </a>
     </mm:haspage>
+    <mm:haspage page="/mmbase/crontab/index.jspx">
+      &nbsp;&nbsp;
+      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/crontab/" />" target="_top" >
+    <span class="<%=("crontab".equals(subcategory)) ? "current" : ""%>menuitem">CRONTAB</span>
+      </a>
+    </mm:haspage>
     <mm:haspage page="/mmbase/clustering/index.jspx">
       &nbsp;&nbsp;
       <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/clustering/" />" target="_top" >
     <span class="<%=("clustering".equals(subcategory)) ? "current" : ""%>menuitem">CLUSTERING</span>
       </a>
     </mm:haspage>
-    <mm:haspage page="/mmbase/events/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/events/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">EVENTS</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/functions/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/functions/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">FUNCTIONS</span>
-      </a>
-    </mm:haspage>
-    <mm:haspage page="/mmbase/lucene/index.jspx">
-      &nbsp;&nbsp;
-      <a href="<mm:url page="default.jsp?category=tools&url=/mmbase/lucene/" />" target="_top" >
-    <span class="<%=("events".equals(subcategory)) ? "current" : ""%>menuitem">LUCENE</span>
-      </a>
-    </mm:haspage>
-        <% } else if("components".equals(category)) { 
-        %>
-        <mm:import id="currentblock" externid="block">components</mm:import>
-        <mm:import externid="component">core</mm:import>
-        <mm:functioncontainer>
-          <mm:param name="id">mmbase.admin</mm:param>
-          <mm:listfunction set="components" name="blockClassification">
-            <mm:stringlist id="block" referid="_.blocks">
-              &nbsp;&nbsp;
-              <mm:link page="default.jsp" referids="category">
-                <mm:param name="block">${block.name}</mm:param>
-                <mm:param name="component">${block.component}</mm:param>
-                <a href="${_}"  target="_top">
-                  <span class="${currentblock eq block.name and block.component.name eq component ? 'current' : ''}menuitem">
-                    ${block.component.name eq 'core' ? '' : mm:escape('uppercase', block.component.name)} ${mm:escape('uppercase', block.name)}
-                  </span>
-                </a>
-              </mm:link>
-            </mm:stringlist>
-          </mm:listfunction>
-        </mm:functioncontainer>
         <% } %>
-
 </td>
 </tr>
 </table>

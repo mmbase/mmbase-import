@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*" 
-%><% response.setStatus(500); 
+<%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*"
+%><% response.setStatus(500);
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
 <mm:import jspvar="ticket"><mm:time time="now" format="yyyyMMddHHmmssSSS" /></mm:import>
@@ -17,6 +17,7 @@ String webmasterEmail = "webmaster@"+domain;
 // prepare error details
 String title = null;
 StringBuffer msg = new StringBuffer();
+StringBuffer ex = new StringBuffer();
 {
     java.util.Stack stack = new java.util.Stack();
 
@@ -63,7 +64,7 @@ StringBuffer msg = new StringBuffer();
     msg.append("requesturl: ").append(request.getRequestURL()).append("\n");
     msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
     msg.append("status: ").append(status).append("\n\n");
-    
+
 
     msg.append("Parameters\n----------\n");
     // request parameters
@@ -75,7 +76,7 @@ StringBuffer msg = new StringBuffer();
     msg.append("\nException\n----------\n\n" + (exception != null ? (exception.getClass().getName()) : "NO EXCEPTION") + ": ");
 
 
-     while (! stack.isEmpty()) { 
+     while (! stack.isEmpty()) {
 
          Throwable t = (Throwable) stack.pop();
          // add stack stacktraces
@@ -88,24 +89,24 @@ StringBuffer msg = new StringBuffer();
 		  title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
                 }
 	     }
-       msg.append(message).append("\n");
-       msg.append(org.mmbase.util.logging.Logging.stackTrace(t));
+       ex.append(message).append("\n");
+       ex.append(org.mmbase.util.logging.Logging.stackTrace(t));
        if (! stack.isEmpty()) {
-          msg.append("\n-------caused:\n");
-       }  
+          ex.append("\n-------caused:\n");
+       }
 
          }
 
-    } 
+    }
 }
 
 // write errors to mmbase log
 if (status == 500) {
-  log.error(ticket + ":\n" + msg);
+//  log.error(ticket + ":\n" + msg);
 }
 
 %>
-<mm:content type="text/html"  expires="0">
+<mm:content type="text/html"  postprocessor="none" expires="0">
 <html>
 <head>
   <mm:import id="title">MMBase - Error <%= status %></mm:import>
@@ -131,15 +132,17 @@ if (status == 500) {
   %>
   <p><a href="<%=org.mmbase.util.transformers.Xml.XMLAttributeEscape(referrer) %>">back</a></p>
   <% } %>
-  <div id="show">   
+  <div id="show">
     <a href="javascript:show();">Show error</a>
   </div>
   <div id="error" style="background-color:yellow; display: none;">
     <a href="javascript:hide();">Hide error</a>
-    <mm:import id="msg"> <%=msg.toString()%></mm:import>
+    <mm:import id="msg" escape="none"> <%=msg.toString()%></mm:import>
     <mm:write referid="msg" escape="p" />
+    <mm:import id="exceptionMsg" escape="none"> <%=ex.toString()%></mm:import>
+    <mm:write referid="exceptionMsg" escape="none" />
   </div>
-  
+
   <hr />
   Please contact your system administrator about this.
   </body>

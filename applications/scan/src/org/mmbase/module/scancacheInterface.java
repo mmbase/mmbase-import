@@ -25,7 +25,7 @@ import org.mmbase.util.scanpage;
  * @rename SCANCacheInterface
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancacheInterface.java,v 1.14 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: scancacheInterface.java,v 1.13 2004-10-01 08:42:47 pierre Exp $
  */
 public interface scancacheInterface {
     /**
@@ -36,7 +36,7 @@ public interface scancacheInterface {
 
     /**
      * Retrieve a file from the indicated pool's cache.
-     * @param pool name of the cache pool
+     * @param poolname name of the cache pool
      * @param key key under which the content was cached
      * @return the cached content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
@@ -45,7 +45,7 @@ public interface scancacheInterface {
 
     /**
      * Retrieve a file from the indicated pool's cache.
-     * @param pool name of the cache pool
+     * @param poolname name of the cache pool
      * @param key key under which the content was cached
      * @param line options for retrieving, such as an expiration value
      * @return the cached content as a string, or <code>null</code> if no entry was found
@@ -83,7 +83,7 @@ public interface scancacheInterface {
     /**
      * Store a file in the indicated pool's cache.
      * Returns the old value if available.
-     * @param pool name of the cache pool
+     * @param poolname name of the cache pool
      * @param key key under which the content was cached
      * @param value content to store
      * @return the old cached content as a string, or <code>null</code> if no entry was found
@@ -93,8 +93,8 @@ public interface scancacheInterface {
     /**
      * Store a file in the indicated pool's cache.
      * Returns the old value if available.
-     * @param pool name of the cache pool
-     * @param res response object for retrieving headers (used by mmbase.org?)
+     * @param poolname name of the cache pool
+     * @param res reponse object for retrieving headers (used by mmbase.org?)
      * @param key key under which the content was cached
      * @param value content to store
      * @param mimeType the content's mime type
@@ -105,7 +105,7 @@ public interface scancacheInterface {
     /**
      * Store a file in the indicated pool's cache.
      * Returns the old value if available.
-     * @param pool name of the cache pool
+     * @param poolname name of the cache pool
      * @param key key under which the content was cached
      * @param value content to store
      * @param cachetype only needed for cachepool "PAGE".
@@ -113,13 +113,13 @@ public interface scancacheInterface {
      *        invoked to start the VWM that handles the transfer.
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the old cached content as a string, or <code>null</code> if no entry was found
-     * @deprecated Temporary hack for solving asis problems (?). Use {@link #newput(String, HttpServletResponse, String, String, String)} instead.
+     * @deprecated Temporary hack for solving asis problems (?). Use {@link #newput} instead.
      */
     public String newput2(String pool,String key,String value, int cachetype, String mimeType);
 
     /**
      * Removes an entry from the cache pool.
-     * @param poolName name of cache pool
+     * @param pool name of cache pool
      * @param key key of the content to remove
      */
     public void remove(String poolName, String key);

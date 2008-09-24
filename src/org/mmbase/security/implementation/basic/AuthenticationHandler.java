@@ -11,8 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import org.w3c.dom.Element;
-import org.mmbase.util.xml.DocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.XMLEntityResolver;
 
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
@@ -33,43 +33,40 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.15 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.10 2005-07-09 15:29:12 nklasens Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
 
     public static final String PUBLIC_ID_BASICSECURITY_1_0 = "-//MMBase//DTD securitybasicauth config 1.0//EN";
     public static final String DTD_BASICSECURITY_1_0       = " securitybasicauth_1_0.dtd";
-
-
+    
+    
     static {
-        EntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
     }
 
-    private Map<String, LoginModule> modules = new HashMap<String, LoginModule>();
-    private Map<String, Rank> moduleRanks    = new HashMap<String, Rank>();
+    // hashmap of the modules..
+    private Map modules = new HashMap();
+    // hashmap of the ranks of the modules..
+    private Map moduleRanks = new HashMap();
 
     protected void load() {
-        DocumentReader reader;
-        try {
-            org.xml.sax.InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
-            log.debug("using: '" + configResource + "' as config file for authentication");
-            reader = new DocumentReader(in, getClass());
-        } catch (Exception e) {
-            throw new SecurityException(e);
-        }
-
-
+        log.debug("using: '" + configFile + "' as config file for authentication");
+        XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath(), getClass());
 
         log.debug("Trying to load all loginmodules:");
-        for (Element modTag: reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule")) {
+        for (Iterator modIter = reader.getChildElements(reader.getElementByPath("authentication"), "loginmodule"); modIter.hasNext();) {
+            Element modTag = (Element) modIter.next();
             String modName = reader.getElementAttributeValue(modTag, "name");
             if (modName.equals("")) {
-                throw new SecurityException("module attribute name was not defined in :" + configResource);
+                log.error("module attribute name was not defined in :" + configFile);
+                throw new SecurityException("module attribute name was not defined in :" + configFile);
             }
             String modClass = reader.getElementAttributeValue(modTag, "class");
             if (modClass.equals("")) {
-                throw new SecurityException("module attribute class was not defined in :" + configResource + " for module: " + modName);
+                log.error("module attribute class was not defined in :" + configFile + " for module: " + modName);
+                throw new SecurityException("module attribute class was not defined in :" + configFile + " for module: " + modName);
             }
             String modRankString = reader.getElementAttributeValue(modTag, "rank");
             Rank modRank;
@@ -92,14 +89,15 @@ public class AuthenticationHandler extends Authentication {
             }
 
             // retrieve the properties...
-            Map<String, Object> properties = new HashMap<String, Object>();
-            for (Element propTag: reader.getChildElements(modTag, "property")) {
+            HashMap properties = new HashMap();
+            for (Iterator propIter = reader.getChildElements(modTag, "property"); propIter.hasNext();) {
+                Element propTag = (Element) propIter.next();
                 String propName = reader.getElementAttributeValue(propTag, "name");
                 String propValue = reader.getElementValue(propTag).trim();
                 properties.put(propName, propValue);
                 log.debug("\tadding key : " + propName + " with value : " + propValue);
             }
-            properties.put("_parentFile", configResource);
+            properties.put("_parentFile", configFile);
             // if module's configuration uses filenames, they probably want to be relative to this one.
             module.load(properties);
             modules.put(modName, module);
@@ -110,12 +108,12 @@ public class AuthenticationHandler extends Authentication {
     }
 
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
-        LoginModule module = modules.get(moduleName);
+        LoginModule module = (LoginModule)modules.get(moduleName);
         if (module == null) {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
             throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
-        NameContext newUser = new NameContext(moduleRanks.get(moduleName), moduleName);
+        NameContext newUser = new NameContext((Rank)moduleRanks.get(moduleName), moduleName);
         if (module.login(newUser, loginInfo, parameters)) {
             // our login succeeded..
             // check if the identifier was set by the loginModule, when invalid will trow exception..
@@ -126,11 +124,12 @@ public class AuthenticationHandler extends Authentication {
     }
 
     private String listModules() {
-        StringBuffer loginModulesAvailable = new StringBuffer();
-        for (String mod : modules.keySet()) {
-            loginModulesAvailable.append("\"").append(mod).append("\" ");
+        Iterator i = modules.keySet().iterator();
+        String loginModulesAvailable = "";
+        while (i.hasNext()) {
+            loginModulesAvailable += "\"" + (String)i.next() + "\" ";
         }
-        return loginModulesAvailable.toString();
+        return loginModulesAvailable;
     }
 
     /**

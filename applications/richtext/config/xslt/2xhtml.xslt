@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.30 2008-09-19 16:04:32 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.29 2008-07-24 10:45:48 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -12,7 +12,6 @@
     xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-    xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="node mmxf o taglib"
     version="1.0" >
 
@@ -125,7 +124,7 @@
       For images, and atachments, the URL is determined a bit differently.
   -->
   <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">
-    <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'url')" />
+    <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
   <!--
@@ -168,7 +167,6 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    INLINE
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -186,7 +184,6 @@
   <xsl:template match="o:object" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
-    INLINEBodY
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -234,7 +231,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumb)" />
-    <img src="{node:saxonFunction($cloud, string($icache/@id ), 'url')}" >
+    <img src="{node:saxonFunction($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -250,7 +247,6 @@
   -->
   <xsl:template match="o:object" mode="in_a">
     <xsl:param name="relation" />
-    INA
     <xsl:apply-templates select="." mode="title" />
     <xsl:apply-templates select="." mode="inline">
       <xsl:with-param name="relation" select="$relation" />
@@ -324,7 +320,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $popupsize)" />
-            <xsl:variable name="href"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'url')" /></xsl:variable>
+            <xsl:variable name="href"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
             <xsl:variable name="width"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'width')" /></xsl:variable>
             <xsl:variable name="height"><xsl:value-of select="node:saxonFunction($cloud, string($icache/@id ), 'height')" /></xsl:variable>
             <a href="{$href}"
@@ -374,37 +370,6 @@
       <xsl:attribute name="class">generated</xsl:attribute>
       <xsl:apply-templates select="." mode="icon" />
     </a>
-    <xsl:if test="$position != $last">,</xsl:if>
-  </xsl:template>
-
-  <xsl:template match="o:object[@type = 'flashobjects']" mode="inline">
-    <xsl:param name="relation" />
-    <xsl:param name="position" />
-    <xsl:param name="last" />
-    <object
-            type="application/x-shockwave-flash">
-      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
-      <xsl:attribute name="height">
-        <xsl:choose>
-          <xsl:when test="o:field[@name='height'] != ''">
-            <xsl:value-of select="o:field[@name='height']" />
-          </xsl:when>
-          <xsl:otherwise>100</xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:attribute name="width">
-        <xsl:choose>
-          <xsl:when test="o:field[@name='width'] != ''">
-            <xsl:value-of select="o:field[@name='width']" />
-          </xsl:when>
-          <xsl:otherwise>100</xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:attribute name="data"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <param name="movie">
-        <xsl:attribute name="value"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      </param>
-    </object>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
@@ -471,6 +436,8 @@
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
+
+
 
 
 

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.util.concurrent.*;
 import java.text.DateFormat;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.51 2008-08-20 20:09:53 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.42.2.2 2008-07-09 13:49:54 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -39,7 +38,7 @@ public class DayMarkers extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(DayMarkers.class);
 
     private int day = 0; // current day number/count
-    private Map<Integer, Integer> daycache = new TreeMap<Integer, Integer>();           // day -> mark, but ordered
+    private Map daycache = new TreeMap();           // day -> mark, but ordered
 
     private int smallestDay; // will be queried when this builder is started
 
@@ -49,12 +48,16 @@ public class DayMarkers extends MMObjectBuilder {
      */
     private void cachePut(int day, int mark) {
         synchronized(daycache) {
-            daycache.put(day, mark);
+            daycache.put(new Integer(day), new Integer(mark));
         }
     }
 
-    private ScheduledFuture future;
-
+    /**
+     * set the current day. This is the number of days from 1970.
+     */
+    public DayMarkers() {
+        day = currentDay();
+    }
 
     /**
      * Calculate smallestMark, and smallestDay.
@@ -72,9 +75,9 @@ public class DayMarkers extends MMObjectBuilder {
             StepField field = query.getField(getField(FIELD_NUMBER));
             query.addSortOrder(field);
             query.setMaxNumber(1);
-            List<MMObjectNode> resultList = getNodes(query);
+            List resultList = getNodes(query);
             if (resultList.size() > 0) {
-                MMObjectNode mark = resultList.get(0);
+                MMObjectNode mark = (MMObjectNode) resultList.get(0);
                 smallestDay  = mark.getIntValue(FIELD_DAYCOUNT);
             }
             if (smallestDay == 0) {
@@ -85,19 +88,8 @@ public class DayMarkers extends MMObjectBuilder {
             log.error("SQL Exception " + e + ". Could not find smallestMarker, smallestDay");
             result = false;
         }
-        day = currentDay();
         createMarker();
-        Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
-        future =  ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    day = currentDay();
-                    createMarker();
-                }
-            },
-            100 +  // shortly after
-            3600 * 24 - ((now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)) * 60 + now.get(Calendar.SECOND)),  // some effort to run shortly after midnight
-            3600 * 24, TimeUnit.SECONDS);
-        ThreadPools.identify(future, "DayMarker creation");
+
         return result;
     }
 
@@ -105,13 +97,9 @@ public class DayMarkers extends MMObjectBuilder {
      * The current time in days since 1-1-1970
      */
     private int currentDay() {
-        Calendar now = Calendar.getInstance(mmb.getTimeZone(), mmb.getLocale());
-        return (int)((now.getTimeInMillis() + now.get(Calendar.ZONE_OFFSET)) / MILLISECONDS_IN_A_DAY);
+        return (int)(System.currentTimeMillis()/MILLISECONDS_IN_A_DAY);
     }
 
-    public void shutdown() {
-        if (future != null) future.cancel(true);
-    }
 
     /**
      * Creates a mark in the database, if necessary.
@@ -121,23 +109,23 @@ public class DayMarkers extends MMObjectBuilder {
         NodeSearchQuery query = new NodeSearchQuery(this);
         query.setMaxNumber(1);
         StepField daycountField = query.getField(getField(FIELD_DAYCOUNT));
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(daycountField, day);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(daycountField, new Integer(day));
         query.setConstraint(constraint);
         try {
-            List<MMObjectNode> resultList = getNodes(query);
+            List resultList = getNodes(query);
             if (resultList.size() == 0) {
                 // if not, retrieve the mark (highest node number) for today
                 MMObjectBuilder root = mmb.getRootBuilder();
                 query = new NodeSearchQuery(root);
                 ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-                Step step = query.getSteps().get(0);
+                Step step = (Step) query.getSteps().get(0);
                 AggregatedField field = new BasicAggregatedField(
                     step, root.getField(FIELD_NUMBER), AggregatedField.AGGREGATION_TYPE_MAX);
-                List<StepField> newFields = new ArrayList<StepField>(1);
+                List newFields = new ArrayList(1);
                 newFields.add(field);
                 modifiedQuery.setFields(newFields);
-                List<MMObjectNode> results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
-                MMObjectNode result = results.get(0);
+                List results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
+                ResultNode result = (ResultNode) results.get(0);
                 int max = result.getIntValue(FIELD_NUMBER);
                 // add a new daymarker node
                 MMObjectNode node = getNewNode(SYSTEM_OWNER);
@@ -151,6 +139,18 @@ public class DayMarkers extends MMObjectBuilder {
 
     }
 
+    /**
+     * This gets called every hour to see if the day has past.
+     */
+    public void probe() {
+        int newday;
+        newday = currentDay();
+        //debug("Days "+newday+" current "+day);
+        if (newday > day) {
+            day = newday;
+            createMarker();
+        }
+    }
 
 
     /**
@@ -159,19 +159,19 @@ public class DayMarkers extends MMObjectBuilder {
      */
     public int getAge(int nodeNumber) {
         // first, check if it accidentily can be found with the cache:
-        Set<Map.Entry<Integer,Integer>> days = daycache.entrySet();
-        Iterator<Map.Entry<Integer,Integer>> i = days.iterator();
+        Set days = daycache.entrySet();
+        Iterator i = days.iterator();
         if (i.hasNext()) {   // cache not empty
-            Map.Entry<Integer,Integer> current = i.next();
-            Map.Entry<Integer,Integer> previous = null;
-            while (i.hasNext() && current.getValue().intValue() < nodeNumber) { // search until current > nodeNumber
+            Map.Entry current = (Map.Entry)i.next();
+            Map.Entry previous = null;
+            while (i.hasNext() && ((Integer)current.getValue()).intValue() < nodeNumber) { // search until current > nodeNumber
                 previous = current;
-                current = i.next();
+                current = (Map.Entry)i.next();
             }
-            if ((previous != null) && current.getValue().intValue() >= nodeNumber) { // found in cache
+            if ((previous != null) && ((Integer)current.getValue()).intValue() >= nodeNumber) { // found in cache
                 // if we found a lower and a higher mark on two consecutive days, return the lower.
-                if (current.getKey().intValue() - previous.getKey().intValue() == 1) {
-                    return day - previous.getKey().intValue();
+                if (((Integer)current.getKey()).intValue() - ((Integer)previous.getKey()).intValue() == 1) {
+                    return day - ((Integer)previous.getKey()).intValue();
                 }
             }
 
@@ -184,12 +184,12 @@ public class DayMarkers extends MMObjectBuilder {
             BasicSortOrder sortOrder = query.addSortOrder(dayCount);
             sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
             StepField markField = query.getField(getField(FIELD_MARK));
-            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(markField, nodeNumber);
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(markField, new Integer(nodeNumber));
             cons.setOperator(FieldCompareConstraint.LESS);
             query.setConstraint(cons);
             query.setMaxNumber(1);
 
-            List<MMObjectNode> resultList = getNodes(query);
+            List resultList = getNodes(query);
             // mark < in stead of mark = will of course only be used in database with are not on line always, such
             // that some days do not have a mark.
             if (log.isDebugEnabled()) {
@@ -200,7 +200,7 @@ public class DayMarkers extends MMObjectBuilder {
             if (resultList.size() > 0) {
                 // search the first daycount of which' mark is lower.
                 // that must be the day which we were searching (at least a good estimate)
-                MMObjectNode markNode = resultList.get(0);
+                MMObjectNode markNode = (MMObjectNode) resultList.get(0);
                 int mark     = markNode.getIntValue(FIELD_MARK);
                 int daycount = markNode.getIntValue(FIELD_DAYCOUNT);
                 cachePut(daycount, mark);   // found one, could as well cache it
@@ -218,7 +218,7 @@ public class DayMarkers extends MMObjectBuilder {
                 resultList = getNodes(query);
 
                 if (resultList.size() > 0) {
-                    MMObjectNode markNode = resultList.get(0);
+                    MMObjectNode markNode = (MMObjectNode) resultList.get(0);
                     int mark     = markNode.getIntValue(FIELD_MARK);
                     int daycount = markNode.getIntValue(FIELD_DAYCOUNT);
                     cachePut(daycount, mark);   // found one, could as well cache it
@@ -262,7 +262,7 @@ public class DayMarkers extends MMObjectBuilder {
      */
     private int getDayCount(int wday) {
         log.debug("finding mark of day " + wday);
-        Integer result = daycache.get(wday);
+        Integer result = (Integer)daycache.get(new Integer(wday));
         if (result!=null) { // already in cache
             return result.intValue();
         }
@@ -278,14 +278,14 @@ public class DayMarkers extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(1);
             StepField daycountField = query.getField(getField(FIELD_DAYCOUNT));
-            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(daycountField, wday);
+            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(daycountField, new Integer(wday));
             constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
             query.setConstraint(constraint);
             int mark = 0;
             try {
-                List<MMObjectNode> resultList = getNodes(query);
+                List resultList = getNodes(query);
                 if (resultList.size() != 0) {
-                    MMObjectNode resultNode = resultList.get(0);
+                    MMObjectNode resultNode = (MMObjectNode) resultList.get(0);
                     mark = resultNode.getIntValue(FIELD_MARK);
                     int daycount = resultNode.getIntValue(FIELD_DAYCOUNT);
                     if (daycount != wday) {
@@ -438,19 +438,19 @@ public class DayMarkers extends MMObjectBuilder {
         NodeSearchQuery query = new NodeSearchQuery(this);
         query.setMaxNumber(1);
         StepField markField = query.getField(getField(FIELD_MARK));
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(markField, number);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(markField, new Integer(number));
         constraint.setOperator(FieldCompareConstraint.LESS);
         query.setConstraint(constraint);
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-        Step step = query.getSteps().get(0);
+        Step step = (Step) query.getSteps().get(0);
         AggregatedField field = new BasicAggregatedField(
             step, getField(FIELD_DAYCOUNT), AggregatedField.AGGREGATION_TYPE_MAX);
-        List<StepField> newFields = new ArrayList<StepField>(1);
+        List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
         try {
-            List<MMObjectNode> results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
-            MMObjectNode result = results.get(0);
+            List results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
+            ResultNode result = (ResultNode) results.get(0);
             return result.getIntValue(FIELD_DAYCOUNT);
         } catch (SearchQueryException e) {
             log.error(Logging.stackTrace(e));

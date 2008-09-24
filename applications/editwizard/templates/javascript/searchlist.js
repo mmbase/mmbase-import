@@ -49,10 +49,10 @@ function dosubmit() {
 function doAddSubmit(relationOriginNode, relationRole, relationCreateDir) {
     selected = buildSelectedList();
     var url = "linklistitem.jsp?"+"relationOriginNode="+relationOriginNode+"&relationRole=" + 
-    relationRole + "&relationCreateDir" + relationCreateDir + "&selected="+selected;
+        relationRole + "&relationCreateDir" + relationCreateDir + "&selected="+selected;
     loadXMLDoc(url, false);
-
-    window.opener.document.forms[0].submit();
+    
+    window.opener.location.reload()
     window.close();
 }
 

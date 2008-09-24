@@ -3,12 +3,12 @@
 <util>
   <!--
       What is Multicast?
-
+      
       Multicast is essentially the ability to send one IP packet to multiple receivers. Multicast is often used
       for audio and video conferencing systems. You often hear about the Mbone in reference to Multicast. The Mbone
       is essentially a ``virtual backbone'' which exists in the Internet itself. If you want to send and/or receive
       Multicast, you need to be ``on the Mbone.''
-
+      
       Things to remember:
       1 Multicast tunnels/configurations/infrastructure are often unstable. You may lose multicast connectivity
       but still have unicast connectivity.
@@ -35,7 +35,7 @@
     <!--
 	name="multicastTTL" The Multicast TTL determines how ``far'' your ICP queries will go.
 	In the Mbone, there is a certain TTL threshold defined for each network interface or tunnel.
-	A multicast packet's TTL must be larger than the defined TTL for that packet to be forwarded
+	A multicast packet's TTL must be larger than the defined TTL for that packet to be forwarded 
 	across that link. For example, the mrouted manual page recommends:
 	32   for links that separate sites within an organization.
 	64   for links that separate communities or organizations, and are
@@ -53,6 +53,6 @@
 	name="dpsize"  Datapacket receive size 64*1024
       -->
     <property name="dpsize">65536</property>
-
+    
   </properties>
 </util>

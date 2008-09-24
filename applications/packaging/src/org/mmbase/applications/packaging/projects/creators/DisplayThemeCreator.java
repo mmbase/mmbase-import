@@ -15,7 +15,7 @@ import java.util.jar.Manifest;
 import org.mmbase.applications.packaging.ProviderManager;
 import org.mmbase.applications.packaging.projects.Target;
 import org.mmbase.applications.packaging.projects.packageStep;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 
 /**
  * DisplayThemePackage, Handler for theme packages
@@ -38,7 +38,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
      *  Description of the Method
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_DISPLAY_THEME_1_0, "DTD_PACKAGING_DISPLAY_THEME_1_0", DisplayThemeCreator.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_DISPLAY_THEME_1_0, "DTD_PACKAGING_DISPLAY_THEME_1_0", DisplayThemeCreator.class);
     }
 
 

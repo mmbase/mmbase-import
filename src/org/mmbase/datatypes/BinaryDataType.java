@@ -17,17 +17,16 @@ import org.apache.commons.fileupload.FileItem;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.15 2008-09-01 17:39:44 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.10.2.1 2007-05-08 15:12:29 michiel Exp $
  * @since MMBase-1.8
  */
-public class BinaryDataType extends AbstractLengthDataType<byte[]> {
+public class BinaryDataType extends AbstractLengthDataType {
 
     private static final Logger log = Logging.getLoggerInstance(BinaryDataType.class);
 
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected Pattern validMimeTypes = Pattern.compile(".*");
-
     /**
      * Constructor for binary field.
      * @param name the name of the data type
@@ -49,7 +48,7 @@ public class BinaryDataType extends AbstractLengthDataType<byte[]> {
         if (value instanceof byte[]) {
             byte[] bytes = (byte[]) value;
             if (log.isDebugEnabled()) {
-                StringBuilder buf = new StringBuilder("[");
+                StringBuffer buf = new StringBuffer("[");
                 for (int i = 0 ; i < bytes.length; i++) {
                     buf.append((char) bytes[i]);
                     if (i + 1 < bytes.length) {

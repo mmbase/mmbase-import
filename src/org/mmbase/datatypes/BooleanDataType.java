@@ -13,12 +13,12 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.14 2008-09-01 17:39:44 michiel Exp $
+ * @version $Id: BooleanDataType.java,v 1.10.2.1 2007-02-07 09:50:58 michiel Exp $
  * @since MMBase-1.8
  */
-public class BooleanDataType extends BasicDataType<Boolean> {
+public class BooleanDataType extends BasicDataType {
 
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
      * Constructor for a boolean datatype (either a primitive boolean type or the Boolean class).
@@ -29,8 +29,8 @@ public class BooleanDataType extends BasicDataType<Boolean> {
     public BooleanDataType(String name, boolean primitive) {
         super(name, primitive ? Boolean.TYPE : Boolean.class);
     }
-
-    protected <D> D preCast(D value, Cloud cloud, Node node, Field field) {
+    
+    protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
         if (value == null) return null;
         if (value instanceof String) {
             if ("".equals(value)) return null;
@@ -41,15 +41,16 @@ public class BooleanDataType extends BasicDataType<Boolean> {
         }
         return super.preCast(value, cloud, node, field);
     }
+     
 
     /**
      * Cast a bit more conservatively, because Casting aggressively casts everything to boolean,
      * which would make nearly every value valid.
      */
-    protected final Boolean cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+    protected final Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
-        if (value instanceof Boolean) return (Boolean) value;
+        if (value instanceof Boolean) return value;
         if (value instanceof String) {
             String s = ((String)value).toLowerCase();
             if ("".equals(value)) return null;
@@ -66,5 +67,6 @@ public class BooleanDataType extends BasicDataType<Boolean> {
             throw new CastException("The number '" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
         }
         throw new CastException("'" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
+
     }
 }

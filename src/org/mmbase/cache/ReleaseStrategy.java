@@ -12,8 +12,10 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.core.event.*;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.25 2008-08-19 17:22:54 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.19 2006-07-28 09:23:07 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -35,7 +37,7 @@ public abstract class ReleaseStrategy {
     private int totalEvaluated = 0;
     private int totalPreserved = 0;
 
-    private long totalEvaluationNanoTime = 0;
+    private long totalEvaluationTimeInMillis = 0;
 
     private boolean isActive = true;
 
@@ -54,11 +56,11 @@ public abstract class ReleaseStrategy {
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#avgEvaluationTimeInMilis()
      */
     public int getAvgEvaluationTimeInMilis() {
-        return (int) (totalEvaluationNanoTime / (1000000 * totalEvaluated));
+        return (int) (totalEvaluationTimeInMillis / totalEvaluated);
     }
 
     public long getTotalEvaluationTimeMillis() {
-        return totalEvaluationNanoTime / 1000000;
+        return totalEvaluationTimeInMillis;
     }
 
     /**
@@ -68,33 +70,33 @@ public abstract class ReleaseStrategy {
      * {@link #doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)}.
      *
      */
-    public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List<MMObjectNode> cachedResult) {
-        final long startTime = System.nanoTime();
+    public final StrategyResult evaluate(final NodeEvent event, final SearchQuery query, final List cachedResult) {
+        final Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            long cost = System.nanoTime() - startTime;
-            totalEvaluationNanoTime += cost;
+            long cost = timer.getTimeMillis();
+            totalEvaluationTimeInMillis += cost;
             return new StrategyResult(shouldRelease, cost);
         } else {
             // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, System.nanoTime() - startTime);
+            return new StrategyResult(true, timer.getTimeMillis());
         }
     }
 
-    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
-        final long startTime = System.nanoTime();
+    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        Timer timer = new Timer();
         if (isActive) {
             boolean shouldRelease = doEvaluate(event, query, cachedResult);
             totalEvaluated++;
             if (!shouldRelease) totalPreserved++;
-            long cost = System.nanoTime() - startTime;
-            totalEvaluationNanoTime += cost;
+            long cost = timer.getTimeMillis();
+            totalEvaluationTimeInMillis += cost;
             return new StrategyResult(shouldRelease, cost);
         } else {
             // if the cache is inactive it can not prevent the flush
-            return new StrategyResult(true, System.nanoTime() - startTime);
+            return new StrategyResult(true, timer.getTimeMillis());
         }
     }
 
@@ -124,7 +126,7 @@ public abstract class ReleaseStrategy {
      * @param cachedResult
      * @return true if the cache entry should be released
      */
-    protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult);
+    protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult);
 
     /**
      * implement this method to create your own strategy.
@@ -134,7 +136,7 @@ public abstract class ReleaseStrategy {
      * @param cachedResult
      * @return true if the cache entry should be released
      */
-    protected abstract boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult);
+    protected abstract boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult);
 
     /*
      * (non-Javadoc)
@@ -155,7 +157,7 @@ public abstract class ReleaseStrategy {
     public void clear(){
         totalEvaluated = 0;
         totalPreserved = 0;
-        totalEvaluationNanoTime = 0;
+        totalEvaluationTimeInMillis = 0;
     }
 
     public boolean equals(Object ob){
@@ -175,21 +177,22 @@ public abstract class ReleaseStrategy {
      * a certain field
      * TODO MM: This method is used like this:
      * <code> if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){  return false;}</code>
-     * IOW, only the <em>size</em> of the return list is used, and then even whether it is 0 or not. I think it is a waste to construct a complete new list, only for that.
+     * IOW, only the <em>size</em> of the return list is used, and then even wheter it is 0 or not. I think it is a waste to construct a complete new list, only for that.
      * Perhaps the method should return an Iterator?, and can be used with only 'hasNext()', constructing a longer list then necessary is avoided then.
      * @param fieldName
      * @param builder
      * @param constraint
      * @param query
      */
-    protected static List<Constraint> getConstraintsForField(String  fieldName, final MMObjectBuilder builder, Constraint constraint, final SearchQuery query){
+    protected static List getConstraintsForField(String  fieldName, final MMObjectBuilder builder, Constraint constraint, final SearchQuery query){
         if(constraint == null) constraint = query.getConstraint();
-        if(constraint == null) return Collections.emptyList();
-        List<Constraint> result = new ArrayList<Constraint>();
+        if(constraint == null) return Collections.EMPTY_LIST;
+        List result = new ArrayList();
 
         if(constraint instanceof CompositeConstraint) {
             log.debug("constraint is composite.");
-            for (Constraint c :  ((CompositeConstraint)constraint).getChilds()) {
+            for (Iterator i = ((CompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
+                Constraint c = (Constraint) i.next();
                 result.addAll(getConstraintsForField(fieldName, builder, c, query));
             }
         } else if (constraint instanceof LegacyConstraint) {
@@ -226,11 +229,12 @@ public abstract class ReleaseStrategy {
      * @param sortOrders
      * @param query
      */
-    protected static List<SortOrder> getSortordersForField(final String fieldName, final MMObjectBuilder builder, List<SortOrder> sortOrders, final SearchQuery query) {
+    protected static List getSortordersForField(final String fieldName, final MMObjectBuilder builder, List sortOrders, final SearchQuery query) {
         if(sortOrders == null) sortOrders = query.getSortOrders();
-        if(sortOrders == null) return Collections.emptyList();
-        List<SortOrder> result = new ArrayList<SortOrder>();
-        for (SortOrder order : sortOrders) {
+        if(sortOrders == null) return Collections.EMPTY_LIST;
+        List result = new ArrayList();
+        for (Iterator iter = sortOrders.iterator(); iter.hasNext();) {
+            SortOrder order = (SortOrder) iter.next();
             StepField sf = order.getField();
             String stepName = sf.getStep().getTableName();
             if(sf.getFieldName().equals(fieldName) && (stepName.equals(builder.getTableName()) ||
@@ -258,7 +262,7 @@ public abstract class ReleaseStrategy {
         }
 
         /**
-         * The cost of a node event evaluation. This is in nanoseconds.
+         * The cost of a node event evaluation. XXX What is the cost?
          */
         public long getCost() {
             return cost;
@@ -276,21 +280,16 @@ public abstract class ReleaseStrategy {
      * @author Ernst Bunders This is a utility class to help timing the
      *         evaluation. Just create an instance before the evaluation and
      *         then use it to create the StrategyResult object
-     * @deprecated The only thing what this  does is knowing how to subtract, which is really not so
-     * difficult or verbose by itself
      */
     protected final static class Timer {
-        private final long start;
+        private final long now;
 
         Timer() {
-            start = System.nanoTime();
+            now = System.currentTimeMillis();
         }
 
-        public long getNanoTime() {
-            return System.nanoTime() - start;
-        }
         public long getTimeMillis() {
-            return getNanoTime() / 1000000;
+            return System.currentTimeMillis() - now;
         }
     }
 

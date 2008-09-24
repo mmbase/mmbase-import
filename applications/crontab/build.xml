@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
-<project name="crontab" default="jar" basedir=".">
-  <property name="java.source.version" value="1.5" />
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase Crontab" default="jar" basedir=".">
+  <property name="project.name"    value="crontab" />
   <property name="project.package" value="org/mmbase/applications/crontab" />
-  <import file="../buildbase-include.xml" />
+  &base;
 </project>

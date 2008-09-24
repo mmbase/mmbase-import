@@ -17,17 +17,13 @@ import java.net.MalformedURLException;
 // import org.mmbase.bridge.remote.RemoteCloudContext;
 
 /**
- * This, despite its name, is not actually a CloudContext, it only provides the static method to obtain one.
- *
+ * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.14 2008-07-29 06:52:25 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.7 2005-06-07 12:02:37 michiel Exp $
  * @since MMBase-1.5
  */
-public final class RemoteContext {
+public class RemoteContext {
 
-    private RemoteContext() {
-        throw new IllegalArgumentException("This class has no instances");
-    }
     /**
      * Connect to a remote cloudcontext. The name of the context
      * depends on configurations found in mmbaseroot.xml (host) and
@@ -39,12 +35,18 @@ public final class RemoteContext {
      */
     public static CloudContext getCloudContext(String uri) {
         try {
-
+            
             Object remoteCloudContext= Naming.lookup(uri);
-            Class<?> clazz = Class.forName("org.mmbase.bridge.remote.proxy.UriRemoteCloudContext_Proxy");
-            Constructor<?> constr =  clazz.getConstructor(Class.forName("org.mmbase.bridge.remote.RemoteCloudContext"), String.class);
-            return (CloudContext) constr.newInstance(remoteCloudContext, uri);
-            //new RemoteCloudContext_Impl(remoteCloudContext);
+            try {
+                Class clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
+                Constructor constr =  clazz.getConstructor(new Class [] { Class.forName("org.mmbase.bridge.remote.RemoteCloudContext") });
+                return (CloudContext) constr.newInstance(new Object[] { remoteCloudContext } );
+                //new RemoteCloudContext_Impl(remoteCloudContext);
+            } catch (ClassNotFoundException e) {
+                return null;
+            } catch (NoSuchMethodException e) {
+                return null;
+            }
         } catch (MalformedURLException mue) {
             String message = mue.getMessage();
             if (message != null && message.indexOf("no protocol") > -1) {
@@ -58,7 +60,7 @@ public final class RemoteContext {
             }
             throw new BridgeException("While connecting to " + uri + ": " + mue.getMessage(), mue);
         } catch (Exception e){
-            throw new BridgeException("While connecting to " + uri + ": " + e.getClass() + " " +  e.getMessage(), e);
+            throw new BridgeException("While connecting to " + uri + ": " +  e.getMessage(), e);
         }
     }
     public static void main(String[] argv) {

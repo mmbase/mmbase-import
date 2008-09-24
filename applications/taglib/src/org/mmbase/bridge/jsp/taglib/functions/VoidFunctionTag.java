@@ -19,11 +19,10 @@ import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: VoidFunctionTag.java,v 1.4 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id: VoidFunctionTag.java,v 1.3 2004-12-06 15:25:19 pierre Exp $
  */
 public class VoidFunctionTag extends AbstractFunctionTag implements FunctionContainerReferrer {
     public int doStartTag() throws JspTagException {
-        initTag();
         getFunctionValue();
         return SKIP_BODY;
     }

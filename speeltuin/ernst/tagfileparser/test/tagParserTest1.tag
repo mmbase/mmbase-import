@@ -1,1 +1,0 @@
-<%@ property readonly="false" something="true"   %>

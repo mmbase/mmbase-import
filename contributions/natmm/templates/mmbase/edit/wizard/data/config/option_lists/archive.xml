@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="archive">
-	<option id="no">nee</option>
-	<option id="half_year">een half jaar</option>
-	<option id="unlimited">voor altijd</option>
-</optionlist>

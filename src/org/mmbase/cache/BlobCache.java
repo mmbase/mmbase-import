@@ -16,10 +16,10 @@ import org.mmbase.util.logging.*;
  * replacement for the 'handle cache' which was present in MMBase <1.8.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BlobCache.java,v 1.5 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id: BlobCache.java,v 1.4 2005-07-09 11:10:09 nklasens Exp $
  * @since MMBase 1.8
  */
-public abstract class BlobCache extends Cache<String, Object> {
+public abstract class BlobCache extends Cache {
 
     private static final Logger log = Logging.getLoggerInstance(BlobCache.class);
 
@@ -44,7 +44,7 @@ public abstract class BlobCache extends Cache<String, Object> {
         return "" + nodeNumber + '-' + fieldName;
     }
 
-    public Object put(String key, Object value) {
+    public Object put(Object key, Object value) {
         if (!checkCachePolicy(key)) return null;
         if (value instanceof byte[]) {
             int max = getMaxEntrySize();

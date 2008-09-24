@@ -1,6 +1,0 @@
-# ftp://ftp.software.ibm.com/software/globalization/icu/icu4j/3.4.4/icu4j_3_4_4.jar
-icu.version=3.4.4
-icu.file=icu4j_3_4_4.jar
-icu.dest=${download.dir}/icu4j.jar
-icu.loc=ftp://ftp.software.ibm.com/software/globalization/icu/icu4j/${icu.version}/${icu.file}
-

@@ -7,11 +7,9 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab;
 
-import java.util.*;
 import org.mmbase.util.DynamicDate;
-import org.mmbase.core.event.EventManager;
+import java.util.*;
 import org.mmbase.util.logging.*;
-import java.util.concurrent.DelayQueue;
 
 /**
  * CronDaemon is a "crontab" clone written in java.
@@ -20,155 +18,37 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.21 2008-08-04 13:36:28 michiel Exp $
  */
-public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
+public class CronDaemon  {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
+    private TimerTask task;
+
     private static CronDaemon cronDaemon;
     private Timer cronTimer;
-    private Set<CronEntry> cronEntries;
-    private Set<CronEntry> removedCronEntries;
-    private Set<CronEntry> addedCronEntries;
-
-    private DelayQueue<ProposedJobs.Event> proposedJobs = null;
-    private final DelayQueue<RunningCronEntry> runningJobs = new DelayQueue<RunningCronEntry>();
+    private Set cronEntries;
+    private Set removedCronEntries;
+    private Set addedCronEntries;
 
     /**
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
-        cronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable order
-        removedCronEntries = Collections.synchronizedSet(new HashSet<CronEntry>());
-        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet<CronEntry>()); // predictable  order
-        EventManager.getInstance().addEventListener(this);
+        cronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
+        removedCronEntries = Collections.synchronizedSet(new HashSet());
+        addedCronEntries = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
         start();
     }
-
-
-    public void notify(ProposedJobs.Event event) {
-        log.debug("Received " + event);
-        if (proposedJobs != null) {
-            synchronized(proposedJobs) {
-                log.debug("" + proposedJobs.size());
-                Iterator<ProposedJobs.Event> i = proposedJobs.iterator();
-                while (i.hasNext()) {
-                    ProposedJobs.Event proposed = i.next();
-                    if (event.equals(proposed)) {
-                        log.debug("Found job " + event + " already ");
-                        if (proposed.getMachine().compareTo(event.getMachine()) < 0) {
-                            log.debug("Will prefer " + proposed.getMachine());
-                            event = proposed;
-                        } else {
-                            log.debug("Will prefer " + event.getMachine());
-                        }
-                        // remove any way, to readd later after the loop.
-                        i.remove();
-                        break; //can be only one
-                    } else {
-                        log.debug("" + event + " != " + proposed);
-                    }
-                }
-                log.debug("Scheduling " + event);
-                proposedJobs.add(event);
-                log.debug("" + proposedJobs.size());
-            }
-        } else {
-            log.service("Ignored " + event + " because we don't have jobs of type " + CronEntry.Type.BALANCE);
-        }
-    }
-    public void notify(Events.Event event) {
-        synchronized(runningJobs) {
-            switch (event.getType()) {
-            case Events.STARTED: runningJobs.add(event.getEntry()); break;
-            case Events.INTERRUPTED: log.service("Removing " + event  + " from " + runningJobs);
-            case Events.DONE   :
-                if (! runningJobs.remove(event.getEntry())) {
-                    log.warn("" + event + " was not administrated as running in: " + runningJobs);
-                }
-                break;
-            case Events.INTERRUPT: {
-                String dest = event.getEntry().getMachine();
-                if (dest.equals(org.mmbase.module.core.MMBaseContext.getMachineName())) {
-                    CronEntry entry = getCronEntry(event.getEntry().getCronEntry().getId());
-                    int threadId = event.getEntry().getId();
-                    RunningCronEntry running = new RunningCronEntry(entry, event.getEntry().getStart(), dest, threadId);
-                    Interruptable i = entry.getThread(threadId);
-                    if (i != null)  {
-                        log.info("Will interrupt " + i);
-                        i.interrupt();
-                        EventManager.getInstance().propagateEvent(new Events.Event(running, Events.INTERRUPTED));
-
-                    } else {
-                        log.service("No job " + running);
-                    }
-                }
-                break;
-            }
-            default: log.warn("" + event);
-            }
-        }
-    }
-    public boolean interrupt(String machine, String entry, int id) {
-        EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(getCronEntry(entry), null, machine, id), Events.INTERRUPT));
-        return true;
-    }
-
-
-    protected void consumeJobs() {
-        synchronized(proposedJobs) {
-
-            for (ProposedJobs.Event event = proposedJobs.poll(); event != null; event = proposedJobs.poll()) {
-                log.service("Consuming " + event);
-                if (event.isLocal()) {
-                    CronEntry proposed = event.getCronEntry();
-                    CronEntry local = getById(cronEntries, event.getCronEntry().getId());
-                    if (local == null) {
-                        log.service("Ignored " + event + " because we don't have it.");
-                        continue;
-                    }
-                    if (local.equals(proposed)) {
-                        //local.setLastRun(event.getCronStart());
-                        org.mmbase.util.ThreadPools.jobsExecutor.execute(local.getExecutable());
-                    }
-                } else {
-                    /// event will be execute somewhere else
-                    /// could administrate this, and perhaps watch if it sucessfully succeeds
-                }
-            }
-        }
-    }
-
-    public List<ProposedJobs.Event> getQueue() {
-        if (proposedJobs != null) {
-            synchronized(proposedJobs) {
-                return new ArrayList<ProposedJobs.Event>(proposedJobs);
-            }
-        } else {
-            return Collections.emptyList();
-        }
-    }
-    public List<RunningCronEntry> getRunning() {
-       synchronized(runningJobs) {
-           return new ArrayList<RunningCronEntry>(runningJobs);
-       }
-    }
-
-    protected void detectFailedJobs() {
-        synchronized(runningJobs) {
-            for (RunningCronEntry running = runningJobs.poll(); running != null; running = runningJobs.poll()) {
-            }
-        }
-    }
-
 
     /**
      * Finds in given set the CronEntry with the given id.
      * @return a CronEntry if found, <code>null</code> otherwise.
      */
-    protected static CronEntry getById(Set<CronEntry> set, String id) {
-        for (CronEntry entry : set) {
+    protected static CronEntry getById(Set set, String id) {
+        Iterator i = set.iterator();
+        while (i.hasNext()) {
+            CronEntry entry = (CronEntry)i.next();
             if (entry.getId().equals(id))
                 return entry;
         }
@@ -194,21 +74,14 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         } else {
             addEntry(entry);
         }
-    }
 
+    }
 
     /**
      * Actually adds, no checks for 'removedEntries' and so on.
      */
     protected void addEntry(CronEntry entry) {
         entry.init();
-        if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
-             && proposedJobs == null) {
-            proposedJobs = new DelayQueue<ProposedJobs.Event>();
-            cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
-        }
-
-        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.detectFailedJobs();} }, getFirst(), 60 * 1000);
         cronEntries.add(entry);
         log.service("Added entry " + entry);
     }
@@ -238,17 +111,6 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         log.service("Removed entry " + entry);
     }
 
-    protected Date getFirst() {
-        Date first;
-        try {
-            first = DynamicDate.eval(DynamicDate.getInstance("tominute next minute"));
-        } catch (Exception parseException) {
-            log.fatal(parseException); // could not happen
-            first = new Date();
-        }
-        return first;
-    }
-
     /**
      * Starts the daemon, which you might want to do if you have stopped if for some reason. The
      * daemon is already started on default.
@@ -256,7 +118,13 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     public void start() {
         log.info("Starting CronDaemon");
         cronTimer = new Timer(true);
-        Date first = getFirst();
+        Date first;
+        try {
+            first = DynamicDate.eval(DynamicDate.getInstance("tominute next minute"));
+        } catch (Exception parseException) {
+            log.fatal(parseException); // could not happen
+            first = new Date();
+        }
         log.debug("First run at " + first);
         cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000);
     }
@@ -268,7 +136,9 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         log.info("Stopping CronDaemon");
         cronTimer.cancel();
         cronTimer = null;
-        for (CronEntry entry : cronEntries) {
+        Iterator i = cronEntries.iterator();
+        while (i.hasNext()) {
+            CronEntry entry = (CronEntry)i.next();
             entry.stop();
         }
     }
@@ -289,21 +159,22 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     }
 
     /**
-     * The main loop of the daemon.
+     * The main loop of the daemon, which of course is a Thread, implemented in run() to satisfy the
+     * 'Runnable' interface.
      */
-    protected void run() {
+    public void run() {
         long now = System.currentTimeMillis();
         try {
             Date currentMinute = new Date(now / 60000 * 60000);
 
             if (log.isDebugEnabled()) {
-                log.debug("Checking for " + currentMinute);
+                log.debug("Checking for " + new Date() + " " + currentMinute);
             }
 
             // remove jobs which were scheduled for removal
-            Iterator<CronEntry> z = removedCronEntries.iterator();
+            Iterator z = removedCronEntries.iterator();
             while (z.hasNext()) {
-                CronEntry entry = z.next();
+                CronEntry entry = (CronEntry)z.next();
                 if (entry.isAlive()) {
                     if (log.isDebugEnabled()) {
                         log.debug("Job " + entry + " still running, so could not yet be removed");
@@ -319,10 +190,12 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
                 }
             }
             // start jobs which need starting on this minute
-            for (CronEntry entry : cronEntries) {
+            z = cronEntries.iterator();
+            while (z.hasNext()) {
                 if (Thread.currentThread().isInterrupted()) return;
+                CronEntry entry = (CronEntry)z.next();
                 if (entry.mustRun(currentMinute)) {
-                    if (entry.kick(currentMinute)) {
+                    if (entry.kick()) {
                         if (log.isDebugEnabled()) {
                             log.debug("Started " + entry);
                         }
@@ -339,12 +212,8 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     /**
      * @since MMBase-1.8
      */
-    public Set<CronEntry> getEntries() {
+    public Set getEntries() {
         return Collections.unmodifiableSet(cronEntries);
-    }
-
-    public String toString() {
-        return "MMBase Cron Daemon";
     }
 
     /**

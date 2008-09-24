@@ -17,20 +17,24 @@ import org.mmbase.bridge.*;
  * A list of Modules
  *
  * @author Pierre van Rooden
- * @version $Id: BasicModuleList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicModuleList.java,v 1.12 2005-01-30 16:46:36 nico Exp $
  */
-public class BasicModuleList extends BasicList<Module> implements ModuleList {
+public class BasicModuleList extends BasicList implements ModuleList {
 
     BasicModuleList() {
         super();
     }
 
-    BasicModuleList(Collection<? extends Module> c) {
+    BasicModuleList(Collection c) {
         super(c);
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        return (Module)o;
+    }
+
     public Module getModule(int index) {
-        return get(index);
+        return (Module)get(index);
     }
 
     public ModuleIterator moduleIterator() {
@@ -40,11 +44,11 @@ public class BasicModuleList extends BasicList<Module> implements ModuleList {
     protected class BasicModuleIterator extends BasicIterator implements ModuleIterator {
 
         public Module nextModule() {
-            return next();
+            return (Module)next();
         }
 
         public Module previousModule() {
-            return previous();
+            return (Module)previous();
         }
 
     }

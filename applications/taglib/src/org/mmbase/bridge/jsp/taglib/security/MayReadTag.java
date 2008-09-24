@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be viewed
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayReadTag.java,v 1.2 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: MayReadTag.java,v 1.1 2006-07-11 20:07:58 michiel Exp $
  * @since MMBase-1.8.1
  */
 
@@ -53,7 +53,7 @@ public class MayReadTag extends CloudReferrerTag implements Condition {
             nodeNumber  = getString(rid);
         } else {
             nodeNumber = n;
-            if (rid.length() != 0) {
+            if (! rid.equals("")) {
                 throw new JspTagException("Cannot specify both 'number' and 'referid");
             }
         }

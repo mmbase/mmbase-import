@@ -2,23 +2,17 @@ MMBase configuration and 'Resource loading'
 -------------------------------------
 
 You have found this README in the mmbase configuration directory (WEB-INF/config)
-
+ 
 Configuration can be on multiple locations in MMBase. Every file found here, could also be found as
 a 'resource' in (in order of descending prevalence):
 
-
-- The location of any resource can be explicitely overriden with an application context setting like
-  this (in the server.xml of tomcat):
-  <Environment name="mmbase-config/utils/multicast.xml"  value="file://${catalina.base}/conf/multicast/nomulticast.xml"    type="java.lang.String" />
-
 - A node of the type 'resources' (if installed, and of course not valid for resources like modules/jdbc.xml,
-  buiders/core/object.xml , builders/resources.xml etc..)
-  This 'resources' builder is not widely used, new in 1.8, and should be considered an experimental feature.
-
+   buiders/core/object.xml , builders/resources.xml etc..)
+   This 'resources' builder is not widely used, new in 1.8, and should be considered an experimental feature.
 
 - Some other directory specified by the servlet context init parameter 'mmbase.config' (in web.xml) or
-  by a System property 'mmbase.config' (typically by the command line switch -Dmmbase.config=..)
-
+   by a System property 'mmbase.config' (typically by the command line switch -Dmmbase.config=..)
+  
    The value of mmbase.config may start with $WEBROOT, to resolve relative to the web root of the
    application.
 
@@ -35,30 +29,17 @@ a 'resource' in (in order of descending prevalence):
 If a certain configuration resource is matched by more than one of the above mechanisms, then one of
 the following two things can happen, depending on the semantics of that resource.
 
-1. Only one of the representations is used, and the other ones are 'shadowed'.
-   There can e.g. be only one modules/jdbc.xml in use.
+1. Only one of the representations is used, and the other ones are 'shadowed'. 
+   There can e.g. be only one modules/jdbc.xml in use. 
    This is valid for resources in applications, builders, dtd, log, modules, security, util, xmlns,
    xslt.
-
-   Sometimes, a resource with the same name can exist multiple times with the same 'prevalence',
-   e.g. the same builder xml can occur in different jars. In the case of builder xmls the one with
-   the highest version is then used (the 'version' attribution on the builder tag in the resource
-   itself). In most other cases more or less a random one will be used, it probably is better to not
-   depend on that, and make sure that the resource are equal, or that it does not happen.
-
-   Most resources have a well defined name. E.g. the logging configuration is in config/log/log.xml,
-   and log4j can be configured in the resource mentioned in _that_ resource (default
-   config/log/log4j.xml).
-
-   Some things are read as a 'lists of resources', where the individual resources are not known
-   beforehand in the code. These are applications, builders and modules. MMBase will try to use
-   _all_ resources in those directories. Since listing cannot be done by a class loader, in jar files
-   one may create a list of resource names in a resource with the name INDEX:
+   Some of these are all 'lists of resources', with no one typical name. Since listing cannot be done by
+   class loader, in jar files one may create a list of resource names in a resource with the name
+   INDEX:
    applications/INDEX
    builders/INDEX
    modules/INDEX
-   (so these INDEX'es are treated like in (2)).
-
+   (so these INDEX'es are treated like in (2).
 
 2. All representations are somehow used. Typical examples are 'datatypes.xml' and 'caches.xml'. If
    more then one of those are found, then they are all read and used.
@@ -85,7 +66,7 @@ How to know what is
 ---------------------
 You can explore what resources are availabe in a certain jar like so:
 
-~/mmbase/head/build$ jar tf mmbase.jar org/mmbase/config
+~/mmbase/head/build$ jar tf mmbase.jar org/mmbase/config       
 org/mmbase/config/
 org/mmbase/config/applications/
 org/mmbase/config/builders/
@@ -160,7 +141,7 @@ org/mmbase/config/xslt/statsview.xsl
 org/mmbase/config/xslt/test.xslt
 org/mmbase/config/xslt/text.xslt
 org/mmbase/config/xslt/xmlindent.xslt
-~/mmbase/head/build$
+~/mmbase/head/build$ 
 
 ---------------------
-Version of this file: $Id: README,v 1.2 2008-09-12 06:06:10 michiel Exp $
+Version of this file: $Id: README,v 1.1 2005-12-18 09:07:53 michiel Exp $

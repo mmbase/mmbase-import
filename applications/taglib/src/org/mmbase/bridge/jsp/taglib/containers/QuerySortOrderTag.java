@@ -11,20 +11,24 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
+//import org.mmbase.util.logging.*;
 
 /**
  * Applies a sortorder to the surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.5.2.1 2007-04-20 12:12:36 pierre Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
+
+    //private static final Logger log = Logging.getLoggerInstance(QuerySortOrderTag.class);
 
     protected Attribute container = Attribute.NULL;
     protected Attribute direction = Attribute.NULL;
@@ -53,13 +57,14 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     }
 
     public int doStartTag() throws JspTagException {
-        Query query = getQuery(container);
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+
+        Query query = c.getQuery();
         int order = Queries.getSortOrder(direction.getString(this));
         int orderPart = Queries.getDateTimePart(part.getString(this));
         StepField stepField = query.createStepField(field.getString(this));
 
-        query.addSortOrder(stepField, order, casesensitive.getBoolean(this, false), orderPart);
-
+        SortOrder newSortOrder = query.addSortOrder(stepField, order, casesensitive.getBoolean(this, false), orderPart);
         return SKIP_BODY;
     }
 

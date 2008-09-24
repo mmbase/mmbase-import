@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.30 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: ImageMaster.java,v 1.28 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -50,7 +50,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * The filelist is periodically cleared by {@link ImagePusher} (which purges duplicate
      * files and handles the remaining transfers).
      */
-    Vector<aFile2Copy> files=new Vector<aFile2Copy>();
+    Vector files=new Vector();
     /**
      * The background thread that takes care of of the files scheduled for transfer.
      */
@@ -243,7 +243,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * Handles an images/mirror service request.
      * Converts images to an asis file format, then places the asis file in the files list,
      * so it will be sent to a mirror site by the ImagePusher.
-     * @param filenode the filenet node that contains the service request
+     * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -289,7 +289,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                     // We now have a clean ckey ( aka 234242+f(gif) )
                     // Get mimetype from ckey params string.
                     StringTokenizer st = new StringTokenizer(ckey,"+\n\r");
-                    Vector<Object> ckeyVec = new Vector<Object>();
+                    Vector ckeyVec = new Vector();
                     while (st.hasMoreTokens()) {
                         ckeyVec.addElement(st.nextElement());
                     }
@@ -349,7 +349,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Handles a images/main service request.
      * Schedules requests to mirror the file using {@link #doMainRequest}<br />
-     * @param filenode the filenet node that contains the service request
+     * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -452,6 +452,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Retrieves a named property of a server.
      * Should use the same system as PageMaster (retrieve data from MSMerver).
+     * @param machine name of the server
      * @param key name of the property to retrieve
      * @return the property value
      */
@@ -526,14 +527,14 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      *
      *
      */
-    private String getImageMimeType(Images images, List<Object> params) {
+    private String getImageMimeType(Images images, List params) {
         String format = null;
         String key;
 
         // WHY the itype colomn isn't used?
 
-        for (Object object : params) {
-            key = (String)object;
+        for (Iterator e = params.iterator() ;e.hasNext();) {
+            key = (String)e.next();
 
             // look if our string is long enough...
             if(key != null && key.length() > 2) {

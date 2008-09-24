@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * namely, ensuring that it is unique already.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UniqueStringDataType.java,v 1.2 2008-06-09 10:20:35 michiel Exp $
+ * @version $Id: UniqueStringDataType.java,v 1.1.2.2 2008-06-10 11:08:45 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class UniqueStringDataType extends StringDataType {
@@ -34,24 +34,35 @@ public class UniqueStringDataType extends StringDataType {
         super(name);
     }
 
-    public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
+    public Object getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue == null) return null;
-        if (field == null) return defaultValue;
+        if (field == null) {
+            log.debug("No field provided, returing plain default value.");
+            return defaultValue;
+        }
         try {
             int seq = 0;
-            String value = defaultValue;
+            Object value = defaultValue;
             while (true) {
                 NodeQuery q = field.getNodeManager().createQuery();
-                value = defaultValue + seq;
+                log.debug("No field provided, returing plain default value.");
+                value = "" + defaultValue + seq;
                 Constraint constraint = q.createConstraint(q.createStepField(field.getName()), value);
                 q.setConstraint(constraint);
+                if (log.isDebugEnabled()) {
+                    log.debug("Counting " + q.toSql());
+                }
                 if (Queries.count(q) == 0) {
+                    log.debug("" + value + " is unique");
                     break;
-            }
+                } else {
+                    log.debug("" + value + " is not unique");
+                }
                 seq++;
             }
             return value;
         } catch (UnsupportedOperationException uoe) {
+            log.debug(uoe);
             return null;
         }
 

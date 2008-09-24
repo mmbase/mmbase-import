@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetData.java,v 1.7 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: ConnectorCommandGetData.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
  */
 
 public class ConnectorCommandGetData extends ConnectorCommand {
@@ -34,6 +34,7 @@ public class ConnectorCommandGetData extends ConnectorCommand {
      * @javadoc
      */
     private void addObject(String objectnumber, NodeList queryfields) throws WizardException {
+        String nr = objectnumber;
         Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
         if (queryfields!=null) {
             // place extra restrictions

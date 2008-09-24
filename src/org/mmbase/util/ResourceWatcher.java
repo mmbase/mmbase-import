@@ -21,12 +21,12 @@ import org.mmbase.bridge.*;
 
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
- *  to is added or changed, it's onChange will be triggered, if not a 'more important' one was
+ *  to is added or changed, it's onChange will be triggered, if not a 'more important' wil was
  *  existing already. If a file is removed, and was the most important one, it will be removed from the filewatcher.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.22 2008-09-03 21:46:33 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.13.2.2 2007-06-29 10:28:57 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -38,18 +38,22 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static  Set<ResourceWatcher> resourceWatchers = Collections.synchronizedSet(new HashSet<ResourceWatcher>());
+    static  Set resourceWatchers = new HashSet();
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
      */
     static void setResourceBuilder() {
         synchronized(resourceWatchers) {
-            for (ResourceWatcher rw : resourceWatchers) {
+            Iterator i = resourceWatchers.iterator();
+            while (i.hasNext()) {
+                ResourceWatcher rw = (ResourceWatcher) i.next();
                 if (rw.running) {
                     EventManager.getInstance().addEventListener(rw);
                 }
-                for (String resource : rw.resources) {
+                Iterator j = rw.resources.iterator();
+                while (j.hasNext()) {
+                    String resource = (String) j.next();
                     if (rw.mapNodeNumber(resource)) {
                         log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
                         rw.onChange(resource);
@@ -69,14 +73,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
      */
-    protected final SortedSet<String> resources = new TreeSet<String>();
+    protected SortedSet resources = new TreeSet();
 
     /**
      * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
      * can't know that any more. Used in {@link #notify(NodeEvent)}
      */
-    protected final Map<Integer, String> nodeNumberToResourceName = new HashMap<Integer, String>();
+    protected Map       nodeNumberToResourceName = new HashMap();
 
     /**
      * Whether this ResourceWatcher has been started (see {@link #start})
@@ -86,12 +90,12 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * Wrapped FileWatcher for watching the file-resources. ResourceName -> FileWatcher.
      */
-    protected final Map<String, FileWatcher> fileWatchers = new HashMap<String, FileWatcher>();
+    protected Map fileWatchers = new HashMap();
 
     /**
      * The resource-loader associated with this ResourceWatcher.
      */
-    protected final ResourceLoader resourceLoader;
+    protected ResourceLoader resourceLoader;
 
 
     /**
@@ -100,7 +104,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     protected ResourceWatcher(ResourceLoader rl) {
         resourceLoader = rl;
         if (resourceWatchers != null) {
-            resourceWatchers.add(this);
+            synchronized(resourceWatchers) {
+                resourceWatchers.add(this);
+            }
         }
     }
     /**
@@ -115,7 +121,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * @return Unmodifiable set of String of watched resources
      */
-    public Set<String> getResources() {
+    public Set getResources() {
         return Collections.unmodifiableSortedSet(resources);
     }
 
@@ -182,7 +188,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     protected synchronized boolean mapNodeNumber(String resource) {
         Node node = resourceLoader.getResourceNode(resource);
         if (node != null) {
-            nodeNumberToResourceName.put(node.getNumber(), resource);
+            nodeNumberToResourceName.put("" + node.getNumber(), resource);
             return true;
         } else {
             return false;
@@ -190,17 +196,20 @@ public abstract class ResourceWatcher implements NodeEventListener  {
 
     }
 
+
+
+
     /**
      * If a node (of the type 'resourceBuilder') changes, checks if it is a node belonging to one of the resource of this resource-watcher.
      * If so, {@link #onChange} is called.
      */
     public void notify(NodeEvent event) {
         if (event.getBuilderName().equals("resources")) {
-            int number = event.getNodeNumber();
+            String number = "" + event.getNodeNumber();
             switch(event.getType()) {
             case NodeEvent.TYPE_DELETE: {
                 // hard..
-                String name = nodeNumberToResourceName.get(number);
+                String name = (String) nodeNumberToResourceName.get(number);
                 if (name != null && resources.contains(name)) {
                     nodeNumberToResourceName.remove(number);
                     log.service("Resource " + name + " changed (node removed)");
@@ -224,7 +233,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
 
     public synchronized void start() {
         // create and start all filewatchers.
-        for (String resource : resources) {
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            String resource = (String) i.next();
             //resourceLoader.checkShadowedNewerResources(resource);
             mapNodeNumber(resource);
             createFileWatcher(resource);
@@ -245,21 +256,25 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Calls {@link #onChange(String)} for every added resource.
      */
     public final void onChange() {
-        for (String resource : resources) {
-            onChange(resource);
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            onChange((String) i.next());
         }
     }
 
+
     /**
      * Set the delay to observe between each check of the file changes.
-     * @param delay The delay in milliseconds
      */
     public synchronized void setDelay(long delay) {
         this.delay = delay;
-        for (FileWatcher fw : fileWatchers.values()) {
+        Iterator i = fileWatchers.values().iterator();
+        while (i.hasNext()) {
+            FileWatcher fw = (FileWatcher) i.next();
             fw.setDelay(delay);
         }
     }
+
 
     /**
      */
@@ -291,9 +306,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Stops watching. Stops all filewatchers, removes observers.
      */
     public synchronized void exit() {
-        Iterator<FileWatcher> i = fileWatchers.values().iterator();
+        Iterator i = fileWatchers.values().iterator();
         while (i.hasNext()) {
-            FileWatcher fw = i.next();
+            FileWatcher fw = (FileWatcher) i.next();
             fw.exit();
             i.remove();
         }
@@ -303,12 +318,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         running = false;
     }
 
+
     /**
      * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
      */
     public String toString() {
         return "" + resources + " " + fileWatchers;
     }
+
 
     /**
      * A FileWatcher associated with a certain resource of this ResourceWatcher.
@@ -328,5 +345,6 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             }
         }
     }
+
 
 }

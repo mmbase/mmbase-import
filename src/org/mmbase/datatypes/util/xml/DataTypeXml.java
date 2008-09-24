@@ -12,6 +12,10 @@ import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import org.w3c.dom.*;
 
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.datatypes.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.BeanFunction;
@@ -23,7 +27,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.12 2007-11-01 09:44:37 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.5.2.3 2007-11-01 09:43:35 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -112,20 +116,21 @@ public abstract class DataTypeXml {
         return processor;
     }
 
+
     private static Object getParameterValue(Element param) {
         String stringValue = param.getAttribute("value");
         if (stringValue == null || "".equals(stringValue)) {
             stringValue = DocumentReader.getNodeTextValue(param, false);
             NodeList childNodes = param.getChildNodes();
-            Collection<Entry<String, Object>> subParams = null;
+            Collection subParams = null;
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node child = childNodes.item(i);
                 if (! (child instanceof Element)) continue;
                 if (child.getLocalName().equals("param")) {
                     Element subParam = (Element) child;
-                    if (subParams == null) subParams = new ArrayList<Entry<String, Object>>();
+                    if (subParams == null) subParams = new ArrayList();
                     String name = subParam.getAttribute("name");
-                    subParams.add(new Entry<String, Object>(name, getParameterValue(subParam)));
+                    subParams.add(new Entry(name, getParameterValue(subParam)));
                 }
             }
             if (subParams != null) {
@@ -144,6 +149,7 @@ public abstract class DataTypeXml {
             return stringValue;
         }
     }
+
     private static void fillParameters(Element paramContainer, Parameters params) {
         NodeList childNodes = paramContainer.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -236,9 +242,9 @@ public abstract class DataTypeXml {
                     } catch (ClassNotFoundException cnfe) {
                         log.error("Class '" + clazString + "' could not be found");
                     } catch (IllegalAccessException iae) {
-                        log.error("Class " + clazString + " may  not be instantiated. " + iae);
+                        log.error("Class " + clazString + " may  not be instantiated");
                     } catch (InstantiationException ie) {
-                        log.error("Class " + clazString + " can not be instantiated. " + ie, ie);
+                        log.error("Class " + clazString + " can not be instantiated");
                     }
 
                 }

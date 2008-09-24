@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
+import java.util.*;
 import java.io.*;
 import org.mmbase.util.functions.*;
 
@@ -20,14 +21,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: WordWrapperFactory.java,v 1.5 2007-08-04 07:45:52 michiel Exp $
  */
 
-public class WordWrapperFactory implements ParameterizedTransformerFactory<CharTransformer> {
+public class WordWrapperFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(WordWrapperFactory.class);
 
-    protected static final Parameter<Integer> LENGTH = new Parameter<Integer>("length", Integer.class, 80);
-    protected static final Parameter[] PARAMS = new Parameter[] { LENGTH };
+    protected static final Parameter[] PARAMS = new Parameter[] {
+        new Parameter("length", Integer.class, new Integer(80))
+    };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -37,15 +38,16 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
     /**
      * Creates a parameterized transformer.
      */
-    public CharTransformer createTransformer(final Parameters parameters) {
+    public Transformer createTransformer(final Parameters parameters) {
+        parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
         }
-        final int length = parameters.get(LENGTH);
-        return new ReaderTransformer() {
+        final int length = ((Integer) parameters.get("length")).intValue();
+        return new ReaderTransformer() {            
 
             public Writer transform(Reader r, Writer w) {
-                StringBuilder word = new StringBuilder();  // current word
+                StringBuffer word = new StringBuffer();  // current word
                 try {
                     log.trace("Starting wrapping words.");
                     int ll = 0; // 'line lenght'
@@ -66,7 +68,7 @@ public class WordWrapperFactory implements ParameterizedTransformerFactory<CharT
                             } else {
                                 ll += word.length();
                                 if (ll < length) {
-                                    w.write(c);
+                                    w.write(c);                             
                                 }
                                 ll++;
                             }

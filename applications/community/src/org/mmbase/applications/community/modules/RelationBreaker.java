@@ -13,6 +13,7 @@ package org.mmbase.applications.community.modules;
 import java.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.core.TemporaryNodeManager;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
- * @version $Id: RelationBreaker.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: RelationBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
  */
 
 public class RelationBreaker extends Thread {
@@ -34,7 +35,7 @@ public class RelationBreaker extends Thread {
     private static Logger log = Logging.getLoggerInstance(RelationBreaker.class.getName());
     // List of RelationHolder objects, which reference relations in the
     // temporary node manager
-    private Vector<RelationHolder> relations = new Vector<RelationHolder>();
+    private Vector relations = new Vector();
     // The interval at which the relation breaker checks for expired relations
     private long checkInterval = 10 * 60 * 1000;
     // Reference to MMBase
@@ -80,7 +81,7 @@ public class RelationBreaker extends Thread {
      * @param expireTime the new expiration time of the relation
      */
     public synchronized boolean update(String id, long expireTime) {
-        RelationHolder relationHolder = relations.elementAt(relations.indexOf(id));
+        RelationHolder relationHolder = (RelationHolder)relations.elementAt(relations.indexOf(id));
         if (relationHolder != null)
         {    relationHolder.setExpireTime(expireTime);
             return true;
@@ -139,7 +140,7 @@ public class RelationBreaker extends Thread {
             log.debug("search for expired");
             int i = 0;
             while (i < relations.size()) {
-                RelationHolder relationHolder = relations.elementAt(i);
+                RelationHolder relationHolder = (RelationHolder)relations.elementAt(i);
                 if (relationHolder.getExpireTime() < currentTime)
                     remove(relationHolder, i);
 

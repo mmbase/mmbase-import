@@ -11,11 +11,10 @@ package org.mmbase.module.core;
 
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.mmbase.util.*;
+import java.io.File;
 import org.mmbase.cache.Cache;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.Required;
-
 
 /**
  * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
@@ -25,12 +24,12 @@ import org.mmbase.util.functions.Required;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.12 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: SmartPathFunction.java,v 1.4.2.4 2007-06-22 14:59:02 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
 
-    protected static Cache<String, String> smartPathCache = new Cache<String, String>(100) {
+    protected static Cache/*<String, String>*/ smartPathCache = new Cache/*<String, String>*/(100) {
             public String getName() {
                 return "SmartPathCache";
             }
@@ -41,11 +40,11 @@ public class SmartPathFunction {
     static {
         smartPathCache.putCache();
     }
-
+    
 
     protected final MMObjectBuilder parent;
     protected String nodeNumber;
-    protected String version;
+    protected String version = null;
     protected String path;
     protected String documentRoot;
     protected boolean backwardsCompatible = true;
@@ -61,7 +60,7 @@ public class SmartPathFunction {
      */
     public void setNodeNumber(String nm) {
         log.debug("Setting " + nodeNumber);
-        if (nm != null && ! nm.equals("")) {
+        if (nm != null) {
             nodeNumber = nm;
         }
     }
@@ -80,7 +79,7 @@ public class SmartPathFunction {
 
     /**
      * the root of the path to search.
-     * @deprecated Use {@link #setLoader(ResourceLoader)}.
+     * @deprecated Use {@link #setLoader(ResourceLoder)}.
      */
     public void setRoot(String r) {
         documentRoot = r;
@@ -95,7 +94,7 @@ public class SmartPathFunction {
     /**
      * The subpath of the path to search
      */
-    @Required public void setPath(String p) {
+    public void setPath(String p) {
         path = p;
     }
 
@@ -109,7 +108,6 @@ public class SmartPathFunction {
     public String smartKey() {
         return path + '.' + nodeNumber + '.' + version;
     }
-
     /**
      * The found path as a <code>String</code>, or <code>null</code> if not found    
      */
@@ -118,7 +116,7 @@ public class SmartPathFunction {
         String key = null;
         if (smartPathCache.isActive()) {
             key = smartKey();
-            result = smartPathCache.get(key);
+            result = (String) smartPathCache.get(key);
             if (result != null || smartPathCache.containsKey(key)) {
                 return result;
             }
@@ -134,11 +132,7 @@ public class SmartPathFunction {
         return result;
     }
 
-    /**
-     * The found path as a <code>String</code>, or <code>null</code> if not found    
-     */
     protected String getSmartPath() {
-        log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
         if (backwardsCompatible) {
             return parent.getSmartPath(documentRoot, path, nodeNumber, version);
         } else {
@@ -148,9 +142,9 @@ public class SmartPathFunction {
             if (version != null) node += "\\." + version;
             Set s = child.getChildContexts(Pattern.compile(".*\\D" + node + "\\D.*"), false);
             if (s.size() == 0) {
-                return null;
+                return  null;
             } else {
-                return path + s.iterator().next() + "/";
+                return  path + s.iterator().next() + "/";
             }                
         }
     }

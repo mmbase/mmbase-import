@@ -23,20 +23,20 @@ import org.xml.sax.SAXParseException;
  *
  * @application Config
  * @author cjr@dds.nl
- * @version $Id: XMLCheckErrorHandler.java,v 1.6 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: XMLCheckErrorHandler.java,v 1.5 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLCheckErrorHandler implements ErrorHandler {
 
     private static Logger log = Logging.getLoggerInstance(XMLCheckErrorHandler.class.getName());
 
-    private List<ErrorStruct> warninglist,errorlist,fatallist,resultlist;
+    private List warninglist,errorlist,fatallist,resultlist;
 
     public XMLCheckErrorHandler() {
         log.debug("New xmlcheckerrorhandler");
-        warninglist = new Vector<ErrorStruct>();
-        errorlist   = new Vector<ErrorStruct>();
-        fatallist   = new Vector<ErrorStruct>();
-        resultlist  = new Vector<ErrorStruct>();
+        warninglist = new Vector();
+        errorlist   = new Vector();
+        fatallist   = new Vector();
+        resultlist  = new Vector();
     }
 
     public void warning(SAXParseException ex) throws SAXException {
@@ -61,19 +61,19 @@ public class XMLCheckErrorHandler implements ErrorHandler {
         resultlist.add(err);
     }
 
-    public List<ErrorStruct> getWarningList() {
+    public List getWarningList() {
         return warninglist;
     }
 
-    public List<ErrorStruct> getErrorList() {
+    public List getErrorList() {
         return errorlist;
     }
 
-    public List<ErrorStruct> getFatalList() {
+    public List getFatalList() {
         return fatallist;
     }
 
-    public List<ErrorStruct> getResultList() {
+    public List getResultList() {
         return resultlist;
     }
 }

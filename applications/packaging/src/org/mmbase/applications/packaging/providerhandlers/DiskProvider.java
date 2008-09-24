@@ -20,7 +20,7 @@ import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -57,11 +57,11 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
-        EntityResolver.registerPublicID(PUBLIC_ID_BUNDLE_1_0, DTD_BUNDLE_1_0, DiskProvider.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGE_1_0, DTD_PACKAGE_1_0, DiskProvider.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUNDLE_1_0, DTD_BUNDLE_1_0, DiskProvider.class);
     }
 
 
@@ -141,7 +141,8 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
 
         String files[] = appDir.list();
 
-        for (String filename : files) {
+        for (int i = 0; i < files.length; i++) {
+            String filename = files[i];
             if (filename.endsWith(".mmp") && filename.indexOf(".") != 0) {
 
                 // open the jar to read the input xml

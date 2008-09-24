@@ -20,7 +20,6 @@
     <builder maintainer="mmbase.org" version="0">urls</builder>
     <builder maintainer="mmbase.org" version="0">images</builder>
     <builder maintainer="mmbase.org" version="0">attachments</builder>
-    <builder maintainer="mmbase.org" version="0">flashobjects</builder>
 
     <builder maintainer="mmbase.org" version="0">insrel</builder>
     <builder maintainer="mmbase.org" version="0">posrel</builder>
@@ -39,11 +38,10 @@
 
   <allowedrelationlist>
 
-    <relation from="content"       to="images"        type="idrel" />
-    <relation from="content"       to="attachments"   type="idrel" />
+    <relation from="content"       to="images"      type="idrel" />
+    <relation from="content"       to="attachments" type="idrel" />
     <relation from="content"       to="content"       type="idrel" />
-    <relation from="content"       to="urls"          type="idrel" />
-    <relation from="content"       to="flashobjects" type="idrel" />
+    <relation from="content"       to="urls"        type="idrel" />
     <relation from="content"       to="blocks"        type="idrel" />
 
 

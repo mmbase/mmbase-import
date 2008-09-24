@@ -15,7 +15,7 @@ package org.mmbase.applications.xmlimporter;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: User.java,v 1.5 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: User.java,v 1.4 2006-06-29 13:42:09 andre Exp $
  */
 public class User {
 
@@ -35,6 +35,7 @@ public class User {
      * @return Name, based on last 8 characters of original name.
      */
     String getName() {
+        int length = name.length();
         // String tempname = "TR"+ name.substring(length-8,length);
         String tempname = "import";
         return tempname;

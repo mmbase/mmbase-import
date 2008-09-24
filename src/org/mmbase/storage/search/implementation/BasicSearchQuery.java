@@ -12,7 +12,8 @@ package org.mmbase.storage.search.implementation;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.core.CoreField;
@@ -23,15 +24,13 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.48 2008-08-19 22:03:12 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.32.2.6 2008-06-28 11:57:10 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
-    /**
-     * Distinct property.
-     */
+    /** Distinct property. */
     private boolean distinct = false;
 
     /** MaxNumber property. */
@@ -40,10 +39,14 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Offset property. */
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
-    private List<Step> steps = new ArrayList<Step>();
-    private  List<Step> unmodifiableSteps = Collections.unmodifiableList(steps); // getSteps is called very  very often
-    protected List<StepField> fields = new ArrayList<StepField>();
-    private List<SortOrder> sortOrders = new ArrayList<SortOrder>();
+    /** Step list. */
+    private List steps = new ArrayList();
+
+    /** StepField list. */
+    protected List fields = new ArrayList();
+
+    /** SortOrder list. */
+    private List sortOrders = new ArrayList();
 
     /** Constraint.. */
     private Constraint constraint = null;
@@ -55,11 +58,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     private boolean hasChangedHashcode = true;
     private int savedHashcode = -1;
 
+
     /**
      * Whether this Query is cacheable.
      */
-    private CachePolicy cachePolicy = CachePolicy.ALWAYS;
-
+    protected CachePolicy cachePolicy = CachePolicy.ALWAYS;
 
     /**
      * Constructor.
@@ -141,26 +144,13 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         }
     }
 
+
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
-        steps = new ArrayList<Step>(q.getSteps().size());
-        /*
-        // if using .clear here:
-
-        org.mmbase.framework.FrameworkException: Index: 0, Size: 0
-        java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
-        at java.util.ArrayList.RangeCheck(ArrayList.java:546)
-        at java.util.ArrayList.get(ArrayList.java:321)
-        at java.util.Collections$UnmodifiableList.get(Collections.java:1155)
-        at org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag.getRelatedQuery(ListRelationsContainerTag.java:81)
-        at org.mmbase.bridge.jsp.taglib.ListRelationsTag.doStartTag(ListRelationsTag.java:120)
-        at org.apache.jsp.mmbase.components.x.change_jspx._jspx_meth_mm_005flistrelations_005f0(change_jspx.java:1600)
-
-        Which is a bit suspicious
-        */
-        Iterator<Step> i = q.getSteps().iterator();
-        while(i.hasNext()) {
-            Step step = i.next();
+        steps = new ArrayList();
+        Iterator i = q.getSteps().iterator();
+        while (i.hasNext()) {
+            Step step = (Step) i.next();
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
                 MMObjectBuilder dest   = mmb.getBuilder(relationStep.getNext().getTableName());
@@ -170,46 +160,44 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 newRelationStep.setCheckedDirectionality(relationStep.getCheckedDirectionality());
                 newRelationStep.setRole(relationStep.getRole());
                 newRelationStep.setAlias(relationStep.getAlias());
-                if (relationStep.getNodes() != null) {
-                    for (Integer j : relationStep.getNodes()) {
-                        newRelationStep.addNode(j);
-                    }
+                Iterator j = relationStep.getNodes().iterator();
+                while (j.hasNext()) {
+                    newRelationStep.addNode(((Integer) j.next()).intValue());
                 }
                 BasicStep next    = (BasicStep) relationStep.getNext();
                 BasicStep newNext = (BasicStep) newRelationStep.getNext();
                 newNext.setAlias(next.getAlias());
-                if (next.getNodes() != null) {
-                    for (Integer j : next.getNodes()) {
-                        newNext.addNode(j);
-                    }
+                j = next.getNodes().iterator();
+                while (j.hasNext()) {
+                    newNext.addNode(((Integer) j.next()).intValue());
                 }
                 i.next(); // dealt with that already
 
             } else {
                 BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
                 newStep.setAlias(step.getAlias());
-                if (step.getNodes() != null) {
-                    for (Integer j : step.getNodes()) {
-                        newStep.addNode(j);
-                    }
+                Iterator j = step.getNodes().iterator();
+                while (j.hasNext()) {
+                    newStep.addNode(((Integer) j.next()).intValue());
                 }
             }
         }
         //log.info("copied steps " + q.getSteps() + " became " + steps);
-        unmodifiableSteps = Collections.unmodifiableList(steps);
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
-        fields = new ArrayList<StepField>(q.getFields().size());
+        fields = new ArrayList();
         MMBase mmb = MMBase.getMMBase();
-        for (StepField field : q.getFields()) {
+        Iterator i = q.getFields().iterator();
+        while (i.hasNext()) {
+            StepField field = (StepField) i.next();
             Step step = field.getStep();
             MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
             int j = q.getSteps().indexOf(step);
             if (j == -1) {
                 throw new  RuntimeException("Step " + step + " could not be found in " + q.getSteps());
             }
-            Step newStep = steps.get(j);
+            Step newStep = (Step) steps.get(j);
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
             newField.setAlias(field.getAlias());
         }
@@ -217,9 +205,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
-        sortOrders = new ArrayList<SortOrder>(q.getSortOrders().size());
+        sortOrders = new ArrayList();
         MMBase mmb = MMBase.getMMBase();
-        for (SortOrder sortOrder : q.getSortOrders()) {
+        Iterator i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder) i.next();
             StepField field = sortOrder.getField();
             int j = q.getFields().indexOf(field);
             StepField newField;
@@ -228,7 +218,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
                 newField = new BasicStepField(field.getStep(), bul.getField(field.getFieldName()));
             } else {
-                newField = fields.get(j);
+                newField = (StepField) fields.get(j);
             }
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
@@ -242,14 +232,10 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     protected static StepField createNewStepField(SearchQuery q, StepField f) {
         Step fstep = f.getStep();
         // find existing step.
-        List<Step> steps = q.getSteps();
-        Step step = steps.get(steps.indexOf(fstep));
+        List steps = q.getSteps();
+        Step step = (Step) steps.get(steps.indexOf(fstep));
         MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
-        CoreField field = bul.getField(f.getFieldName());
-        if (field == null) {
-            throw new IllegalStateException("Did not find field " + f.getFieldName() + " in builder " + step.getTableName() + " " + bul.getFields());
-        }
-        return new BasicStepField(step, field);
+        return new BasicStepField(step, bul.getField(f.getFieldName()));
     }
 
 
@@ -260,7 +246,9 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
-            for (Constraint cons : constraint.getChilds()) {
+            Iterator i = constraint.getChilds().iterator();
+            while (i.hasNext()) {
+                Constraint cons = (Constraint) i.next();
                 newConstraint.addChild(copyConstraint(q, cons));
             }
             newConstraint.setInverse(constraint.isInverse());
@@ -309,7 +297,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
 
-            Iterator<Object> k = constraint.getValues().iterator();
+            Iterator k = constraint.getValues().iterator();
             while (k.hasNext()) {
                 Object value = k.next();
                 newConstraint.addValue(value);
@@ -450,7 +438,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
     // only sensible for NodeSearchQuery
-    protected void mapField(CoreField field, BasicStepField stepField) {
+    protected void mapField(CoreField field, StepField stepField) {
 
     }
 
@@ -464,19 +452,12 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is import for microsoft JDBC.
-        if (builder != null) {
-            for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-                if (field.inStorage()) {
-                    BasicStepField stepField = addField(step, field);
-                    mapField(field, stepField);
-                }
-            }
-        } else {
-            // this can e.g. happen during shut-down of mmbase
-            if (mmb.getState()) {
-                throw new RuntimeException("Step is describing non-existing builder " + step.getTableName());
-            } else {
-                log.debug("Step is describing non-existing builder " + step.getTableName());
+        Iterator iFields = builder.getFields(NodeManager.ORDER_CREATE).iterator();
+        while (iFields.hasNext()) {
+            CoreField field = (CoreField) iFields.next();
+            if (field.inStorage()) {
+                BasicStepField stepField = addField(step, field);
+                mapField(field, stepField);
             }
         }
         hasChangedHashcode = true;
@@ -529,6 +510,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         return sortOrder;
     }
 
+
     /**
      * Sets constraint.
      *
@@ -551,19 +533,20 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
     // javadoc is inherited
-    public List<SortOrder> getSortOrders() {
+    public List getSortOrders() {
         // return as unmodifiable list
         return Collections.unmodifiableList(sortOrders);
     }
 
     // javadoc is inherited
-    public List<Step> getSteps() {
-        return unmodifiableSteps;
+    public List getSteps() {
+        // return as unmodifiable list
+        return Collections.unmodifiableList(steps);
     }
 
 
     // javadoc is inherited
-    public List<StepField> getFields() {
+    public List getFields() {
         // return as unmodifiable list
         return Collections.unmodifiableList(fields);
     }
@@ -582,6 +565,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public int getOffset() {
         return offset;
     }
+
 
     public CachePolicy getCachePolicy() {
         return cachePolicy;
@@ -628,15 +612,13 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("SearchQuery(distinct:").append(isDistinct()).
-        append(", steps:" + getSteps()).
-        append(", fields:").append(getFields()).
-        append(", constraint:").append(getConstraint()).
-        append(", sortorders:").append(getSortOrders()).
-        append(", max:").append(getMaxNumber()).
-        append(", offset:").append(getOffset()).
-        append(")");
-        return sb.toString();
+        return "SearchQuery(distinct:" + isDistinct()
+        + ", steps:" + getSteps()
+        + ", fields:" + getFields()
+        + ", constraint:" + getConstraint()
+        + ", sortorders:" + getSortOrders()
+        + ", max:" + getMaxNumber()
+        + ", offset:" + getOffset() + ")";
     }
 
 }

@@ -32,13 +32,13 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.33 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: sessions.java,v 1.28 2005-01-25 12:45:18 pierre Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
     private static Logger log = Logging.getLoggerInstance(sessions.class.getName());
 
-    Hashtable<String, sessionInfo> sessions = new Hashtable<String, sessionInfo>();
+    Hashtable sessions = new Hashtable();
     private MMBase mmbase;
     MMObjectBuilder props,users;
 
@@ -57,7 +57,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             log.debug("getSession(): wanted=" + wanted);
         }
         if (wanted!=null) {
-            sessionInfo session=sessions.get(wanted);
+            sessionInfo session=(sessionInfo)sessions.get(wanted);
             if (session==null) {
                 if (sp.req!=null) {
                     session=new sessionInfo(sp.req.getRemoteHost(),wanted);
@@ -126,14 +126,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
      *
      * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.
-     * @param values   a Vector containing the
+     * @param value    a Vector containing the
      *                 Strings to be added to the set.
      */
-    public void addSetValues(sessionInfo session,String key,Vector<Object> values) {
+    public void addSetValues(sessionInfo session,String key,Vector values) {
         if (session!=null) {
             String str;
-            for (Object object : values) {
-                str=(String)object;
+            for (Enumeration e=values.elements();e.hasMoreElements();) {
+                str=(String)e.nextElement();
                 session.addSetValue(key,str);
             }
         } else {
@@ -143,7 +143,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
     /**
      * Adds a String to a set. If the String is
-     * already contained by the set nothing happens.
+     * allready contained by the set nothing happens.
      *
      * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.
@@ -459,10 +459,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         if (cmd.charAt(0)=='"') cmd=cmd.substring(1,cmd.length()-1);
         if (cmd.equals("sessions")) {
             Vector results = new Vector();
-            for (Enumeration<String> e=sessions.keys();e.hasMoreElements();) {
-                val = e.nextElement();
+            for (Enumeration e=sessions.keys();e.hasMoreElements();) {
+                val = (String)e.nextElement();
                 results.addElement(val);
-                tmps=sessions.get(val);
+                tmps=(sessionInfo)sessions.get(val);
                 results.addElement(tmps.getHostName());
             }
             return results;
@@ -471,14 +471,14 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             Vector results=new Vector();
             String key;
             sessionInfo session=getSession(sp,sp.sname);
-            for (Enumeration<String> e=session.values.keys();e.hasMoreElements();) {
-                key=e.nextElement();
+            for (Enumeration e=session.values.keys();e.hasMoreElements();) {
+                key=(String)e.nextElement();
                 results.addElement("VAR");
                 results.addElement(key);
                 results.addElement(session.getValue(key));
             }
-            for (Enumeration<String> e=session.setvalues.keys();e.hasMoreElements();) {
-                key=e.nextElement();
+            for (Enumeration e=session.setvalues.keys();e.hasMoreElements();) {
+                key=(String)e.nextElement();
                 results.addElement("SET");
                 results.addElement(key);
                 results.addElement(session.getSetString(key));
@@ -486,7 +486,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
             return results;
         }
 
-        String line = Strip.doubleQuote(cmd,Strip.BOTH);
+        String line = Strip.DoubleQuote(cmd,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd2=tok.nextToken();
@@ -661,14 +661,10 @@ public class sessions extends ProcessorModule implements sessionsInterface {
         return sessions.size();
     }
 
-    public Map<String, String> getStates() {
-        setState("Sessions", "" + getSize());
-        return super.getStates();
-    }
-
-    public Map<String, String> state() {
-        return getStates();
-    }
+     public Hashtable state() {
+        state.put("Sessions",""+getSize());
+        return state;
+     }
 
     /**
      * Stores visiting info (counters) in a session

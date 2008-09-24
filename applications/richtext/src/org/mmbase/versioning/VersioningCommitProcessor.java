@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.10 2008-08-05 16:38:21 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.9 2008-06-16 13:38:45 michiel Exp $
  * @since
  */
 
@@ -75,11 +75,7 @@ public class VersioningCommitProcessor implements CommitProcessor {
 
                 if (! "".equals(statusField) && node.getNodeManager().hasField(statusField)) {
                     if (node.getIntValue(statusField) == Status.NEW) {
-                        if (! node.getChanged().contains(statusField)) {
-                            node.setIntValue(statusField, Status.ONLINE);
-                        } else {
-                            log.debug("Ignoreing auto-online because explicitely set to new");
-                        }
+                        node.setIntValue(statusField, Status.ONLINE);
                     }
                 }
 

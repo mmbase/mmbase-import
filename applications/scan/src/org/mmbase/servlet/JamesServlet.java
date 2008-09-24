@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.50 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: JamesServlet.java,v 1.49 2006-03-09 16:39:03 michiel Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -134,7 +134,8 @@ public class JamesServlet extends MMBaseServlet {
         Cookie[] cookies = req.getCookies(); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
         if (cookies!= null) {
-            for (Cookie cookie : cookies) {
+            for (int i = 0; i < cookies.length; i++) {
+                Cookie cookie = cookies[i];
                 if (cookie.getName().equals(MMBASE_COOKIENAME)) {
                     return MMBASE_COOKIENAME + '/' + cookie.getValue();
                 }

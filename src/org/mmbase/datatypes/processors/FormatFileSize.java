@@ -9,44 +9,37 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
+import org.mmbase.bridge.*;
+
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
- * Actually, using setters like {@link FormatQuantity#setUnit(String)}, this class can also be used to postfix all
- * other kinds of units to integers.
- *
- * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
- *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.8 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: FormatFileSize.java,v 1.1 2005-12-07 19:44:49 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class FormatFileSize extends FormatQuantity {
+public class FormatFileSize implements Processor {
 
     private static final long serialVersionUID = 1L;
+    private static int KILO     = 1000;
+    private static int MEGA     = 1000000;
+    private static int GIGA     = 1000000000;
+    private static int KBYTE    = 1024;
+    private static int MBYTE    = KBYTE * KBYTE;
+    private static int GBYTE    = KBYTE * KBYTE * KBYTE;
 
 
-    public FormatFileSize() {
-        setClassical(false);
-    }
-    /**
-     * It was commonplace to mix SI prefixes with 'binary' factors.
-     * If this is set to 'true', then SI prefixes are used 'byte' will be the unit symbol, and 1024 the
-     * basic factor (which basically adheres to no recommendation or standard, but is widely used by
-     * e.g. hard disk manufacturers).
-     * @param c classical
-     * @since MMBase-1.9
-     */
-    public void setClassical(boolean c) {
-        if (c) {
-            prefixes = SI;
-            unit = "byte";
-            k = KIBI;
+    public final Object process(Node node, Field field, Object value) {
+        int size = node.getIntValue(field.getName());
+        if (size < 9 * KILO) {
+            return "" + size + " byte";
+        } else if (size < 9 * MEGA) {
+            return "" + size / KBYTE + " kbyte";
+        } else if (size < 9 * GIGA) {
+            return "" + size / MBYTE + " Mbyte";
         } else {
-            prefixes = IEEE_BI;
-            unit = "B";
-            k = KIBI;
+            return "" + size / GBYTE + " Gbyte";
         }
     }
 

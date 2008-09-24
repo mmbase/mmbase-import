@@ -8,7 +8,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.10 2007-11-23 10:07:41 michiel Exp $
+  @version $Id: prompts.xsl,v 1.9 2005-06-03 14:10:17 pierre Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -91,7 +91,7 @@
 <!-- search : other filters -->
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" width="20" height="20"/></xsl:template>
 <xsl:variable name="tooltip_search" >Cerca e aggiungi un item</xsl:variable>
-<xsl:template name="prompt_search_title" >Contiene</xsl:template>
+<xsl:template name="prompt_search_title" >Il titolo contiene</xsl:template>
 <xsl:template name="prompt_search_owner" >Il proprietario e'</xsl:template>
 <xsl:variable name="filter_required" >E' richiesto l'inserimento di un termine da ricercare.</xsl:variable>
 <!-- navigation -->

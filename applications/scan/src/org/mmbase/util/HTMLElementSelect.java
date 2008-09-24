@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementSelect.java,v 1.8 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id: HTMLElementSelect.java,v 1.7 2004-09-29 14:29:24 pierre Exp $
  */
 
 public class HTMLElementSelect  extends HTMLElement  {
@@ -73,12 +73,12 @@ public class HTMLElementSelect  extends HTMLElement  {
 
             String val = null;
             Vector list = new Vector();
-            List vec = valuesList;
+            Vector vec = valuesList;
             // log.debug("ServScan->"+vec);
             if (sorted!=null && (sorted.equals("ALPHA") || sorted.equals("\"ALPHA\""))) {
                 vec=SortedVector.SortVector(vec);
             }
-            Enumeration e = Collections.enumeration(vec);
+            Enumeration e = vec.elements();
             int j=0;
             while (e.hasMoreElements() && ((j++<max)||max==-1)) {
                 val = (String) e.nextElement();
@@ -140,7 +140,7 @@ public class HTMLElementSelect  extends HTMLElement  {
             String val = null;
             String val2 = null;
             Vector list = new Vector();
-            Enumeration e = Collections.enumeration(valuesList);
+            Enumeration e = valuesList.elements();
             while (e.hasMoreElements()) {
                 val = (String) e.nextElement();
                 if (e.hasMoreElements()) {

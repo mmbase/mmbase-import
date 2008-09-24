@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<portletdefinition exportsource="jdbc:mysql://localhost/playlist" timestamp="20050919142139">
-	<node number="55001" owner="default">
-		<title>PlayListPortlet</title>
-		<description>PlayListPortlet</description>
-		<definition>playlistportlet</definition>
-		<type>multiple</type>
-	</node>
-</portletdefinition>

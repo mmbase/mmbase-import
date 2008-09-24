@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.24 2008-08-07 20:04:19 michiel Exp $
+ * @version $Id: AbstractDove.java,v 1.20.2.2 2008-03-03 14:46:11 michiel Exp $
  */
 
 public abstract class AbstractDove {
@@ -141,7 +141,7 @@ public abstract class AbstractDove {
      * The document that is being constructed. This should be used to
      * construct new DOM elements.
      */
-    protected final Document doc;
+    protected Document doc = null;
 
     /**
      * Constructor
@@ -150,7 +150,7 @@ public abstract class AbstractDove {
      *            to this document, but to the out element.
      */
     public AbstractDove(Document doc) {
-        this.doc = doc;
+        this.doc=doc;
     }
 
     protected String getTypeDescription(int type) {
@@ -170,9 +170,9 @@ public abstract class AbstractDove {
      * @param out the element to which to add the new Element.
      * @return the newly created element
      */
-    protected Element addContentElement(String tagname,String content, Element out) {
+    protected Element addContentElement(String tagname, String content, Element out) {
         Element el = doc.createElement(tagname);
-        if (content == null) content = "";
+        if (content == null) content="";
         Text tel = doc.createTextNode(content);
         el.appendChild(tel);
         out.appendChild(el);
@@ -186,9 +186,9 @@ public abstract class AbstractDove {
      * @return the first child element, or <code>null</code>.
      */
     protected Element getFirstElement(Node item) {
-        if (item == null) return null;
-        item = item.getFirstChild();
-        if ((item != null) && !(item instanceof Element)) {
+        if (item==null) return null;
+        item=item.getFirstChild();
+        if ((item!=null) && !(item instanceof Element)) {
             item = getNextElement(item);
         };
         return (Element)item;
@@ -202,9 +202,9 @@ public abstract class AbstractDove {
      * @return the first child element, or <code>null</code>.
      */
     protected Element getFirstElement(Node item, String tagname) {
-        Element elm = getFirstElement(item);
-        if (elm != null && !elm.getTagName().equals(tagname)) {
-            elm = getNextElement(elm,tagname);
+        Element elm=getFirstElement(item);
+        if (elm!=null && !elm.getTagName().equals(tagname)) {
+            elm=getNextElement(elm,tagname);
         }
         return elm;
     }
@@ -216,10 +216,10 @@ public abstract class AbstractDove {
      * @return the sibling element, or <code>null</code>.
      */
     protected Element getNextElement(Node item) {
-        if (item == null) return null;
+        if (item==null) return null;
         do {
-            item = item.getNextSibling();
-        } while ((item != null) && !(item instanceof Element));
+            item=item.getNextSibling();
+        } while ((item!=null) && !(item instanceof Element));
         return (Element)item;
     }
 
@@ -231,9 +231,9 @@ public abstract class AbstractDove {
      * @return the first child element, or <code>null</code>.
      */
     protected Element getNextElement(Node item, String tagname) {
-        Element elm = getNextElement(item);
-        while (elm != null && !elm.getTagName().equals(tagname)) {
-            elm = getNextElement(elm);
+        Element elm=getNextElement(item);
+        while (elm!=null && !elm.getTagName().equals(tagname)) {
+            elm=getNextElement(elm);
         }
         return elm;
     }
@@ -264,7 +264,7 @@ public abstract class AbstractDove {
      * @param cloud the MMCI cloud to use, if applicable.
      * @param repository Repository that contains the blobs
      */
-    public abstract  void doRequest(Element in, Element out, Cloud cloud, Map<String,byte[]> repository);
+    public abstract  void doRequest(Element in, Element out, Cloud cloud, Map repository);
 
     /**
      * Handles a request running one or more RPCs.
@@ -286,16 +286,16 @@ public abstract class AbstractDove {
      * @return the element that described the response (or return value).
      *           Results of calls should be added as childs to this element.
      */
-    public Element executeRequest (Element in, Cloud cloud, Map<String,byte[]> repository) {
-        Element out = doc.createElement(RESPONSE);
+    public Element executeRequest (Element in, Cloud cloud, Map repository) {
+        Element out =doc.createElement(RESPONSE);
         doc.appendChild(out);
         if (in.getTagName().equals(REQUEST)) {
-            doRequest(in, out, cloud, repository);
+            doRequest(in,out,cloud, repository);
             return out;
         }
         log.error("Request doesn't contain a <REQUEST> tag.");
-        Element err = addContentElement(ERROR, "Request doesn't contain a <REQUEST> tag.", out);
-        err.setAttribute(ELM_TYPE, IS_CLIENT);
+        Element err=addContentElement(ERROR,"Request doesn't contain a <REQUEST> tag.",out);
+        err.setAttribute(ELM_TYPE,IS_CLIENT);
         return out;
     }
 
@@ -308,7 +308,7 @@ public abstract class AbstractDove {
      *           Results of calls should be added as childs to this element.
      */
     public Element executeRequest (Element in) {
-        return executeRequest(in, null, null);
+        return executeRequest(in,null,null);
     }
 }
 

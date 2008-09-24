@@ -14,25 +14,27 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * ChangesSender is a thread object sending the nodes found in the
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.13 2006-08-09 11:14:49 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ChangesSender.class);
+
 
     private final Statistics send;
 
@@ -40,10 +42,10 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue<byte[]> nodesToSend;
+    private final Queue nodesToSend;
 
     /** For the port on which the talking between nodes take place.*/
-    private final Map<String,String> configuration;
+    private final Map configuration;
     private final int defaultUnicastPort;
 
     /** Timeout of the connection.*/
@@ -51,20 +53,19 @@ public class ChangesSender implements Runnable {
 
     /** last time the mmservers table was checked for active servers */
     private long lastServerChecked = -1;
-    private List<MMObjectNode> activeServers = new ArrayList<MMObjectNode>();
+    private List activeServers = new ArrayList();
 
     /** Interval of servers change their state */
     private long serverInterval;
 
     /**
      * Construct UniCast Sender
-     * @param configuration configuration of unicast
      * @param unicastPort port of the unicast connections
      * @param unicastTimeout timeout on the connections
      * @param nodesToSend Queue of messages to send
-     * @param send Statistics
+     * @param mmbase MMBase instance
      */
-    ChangesSender(Map<String,String> configuration, int unicastPort, int unicastTimeout, BlockingQueue<byte[]> nodesToSend, Statistics send) {
+    ChangesSender(Map configuration, int unicastPort, int unicastTimeout, Queue nodesToSend, Statistics send) {
         this.nodesToSend = nodesToSend;
         this.configuration = configuration;
         this.defaultUnicastPort = unicastPort;
@@ -80,7 +81,6 @@ public class ChangesSender implements Runnable {
             log.debug("UnicastSender started");
         }
     }
-
     void stop() {
         if (kicker != null) {
             kicker.interrupt();
@@ -91,21 +91,22 @@ public class ChangesSender implements Runnable {
         }
     }
 
+
     // javadoc inherited
     public void run() {
         while(kicker != null) {
             try {
-                byte[] data = nodesToSend.take();
+                byte[] data = (byte[]) nodesToSend.get();
                 long startTime = System.currentTimeMillis();
-                List<MMObjectNode> servers = getActiveServers();
+                List servers = getActiveServers();
                 for (int i = 0; i < servers.size(); i++) {
-                    MMObjectNode node = servers.get(i);
+                    MMObjectNode node = (MMObjectNode) servers.get(i);
                     if (node != null) {
                         String hostname = node.getStringValue("host");
                         String machinename = node.getStringValue("name");
 
                         int unicastPort = defaultUnicastPort;
-                        String specificPort = configuration.get(machinename + ".unicastport");
+                        String specificPort = (String) configuration.get(machinename + ".unicastport");
                         if (specificPort != null) {
                             unicastPort = Integer.parseInt(specificPort);
                         }
@@ -160,8 +161,8 @@ public class ChangesSender implements Runnable {
      * Get Active server list
      * @return server list
      */
-    private List<MMObjectNode> getActiveServers() {
-        List<MMObjectNode> prevActiveServers = activeServers;
+    private List getActiveServers() {
+        List prevActiveServers = activeServers;
         if (serverInterval < 0) {
             MMBase mmbase = MMBase.getMMBase();
             MMServers mmservers = (MMServers) mmbase.getBuilder("mmservers");
@@ -184,5 +185,6 @@ public class ChangesSender implements Runnable {
         }
         return activeServers;
     }
+
 
 }

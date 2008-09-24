@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.55 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: INFO.java,v 1.51.2.1 2007-07-24 20:55:37 michiel Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -56,7 +56,7 @@ public class INFO extends ProcessorModule {
     /**
      * @scope private
      */
-    Hashtable<String,SortedVector> DirCache=new Hashtable<String,SortedVector>();
+    Hashtable DirCache=new Hashtable();
 
     /**
      * Constructor for
@@ -74,12 +74,6 @@ public class INFO extends ProcessorModule {
         rnd=new RandomPlus();
     }
 
-    /**
-     * Returns one propertyvalue to the subclass (original in Module).
-     */
-    protected String getProperty(String name, String var) {
-        return ""; // really unsure what this is supposed to do?
-    }
 
     /**
      * Generate a list of values from a command to the processor.
@@ -98,8 +92,8 @@ public class INFO extends ProcessorModule {
      * @return a <code>Vector</code> containing the requested values.
      * @throws ParseException
      */
-     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-        String line = Strip.doubleQuote(value,Strip.BOTH);
+     public Vector getList(PageInfo sp,StringTagger tagger, String value)  {
+        String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -118,7 +112,7 @@ public class INFO extends ProcessorModule {
      * @param vars the variables to process
      * @return alwyas <code>false</code>
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds,Hashtable vars) {
         if (log.isDebugEnabled()) {
             log.debug("CMDS="+cmds);
             log.debug("VARS="+vars);
@@ -149,7 +143,7 @@ public class INFO extends ProcessorModule {
      * @param cmds the command to process
      * @return a <code>String</code> with the command's result value
        */
-    public String replace(scanpage sp, String cmds) {
+    public String replace(PageInfo sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -166,7 +160,7 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("RELTIME")) return doRelTime(tok);
             if (cmd.equals("STRING")) return doString(tok);
             if (cmd.equals("STRINGCMP")) return toYesNo(doString(tok).equals(""+true));
-                    if (cmd.equals("TIME")) return doTime(tok);
+            if (cmd.equals("TIME")) return doTime(tok);
             if (cmd.equals("TIMEFORMAT")) return doTimeFormat(tok, false);
             if (cmd.equals("TIMEFORMATSEC")) return doTimeFormat(tok, true);
             if (cmd.equals("PARSETIME")) return doParseTime(tok);
@@ -300,7 +294,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doEscape(scanpage sp, StringTokenizer tok) {
+    String doEscape(PageInfo sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -321,7 +315,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doParamEncode(scanpage sp, StringTokenizer tok) {
+    String doParamEncode(PageInfo  sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -342,7 +336,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doParamDecode(scanpage sp, StringTokenizer tok) {
+    String doParamDecode(PageInfo sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -363,7 +357,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doOs(scanpage sp, StringTokenizer tok) {
+    String doOs(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             return "Illegal OS command";
@@ -407,7 +401,7 @@ public class INFO extends ProcessorModule {
      * param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> containing a random number
      */
-    String doRandom(scanpage sp, StringTokenizer tok) {
+    String doRandom(PageInfo  sp, StringTokenizer tok) {
     int j=0;
     int s=0;
     int e=0;
@@ -439,7 +433,7 @@ public class INFO extends ProcessorModule {
      * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> containing the result
      */
-    String doBrowser(scanpage sp, StringTokenizer tok) {
+    String doBrowser(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("OS")) {
@@ -492,7 +486,8 @@ public class INFO extends ProcessorModule {
      * @author Eduard Witteveen 08-11-2000
      */
      // http://uk.php.net/manual/language.variables.predefined.php <-- a few defines from php
-    String doUser(scanpage sp, StringTokenizer tok) {
+    String doUser(PageInfo pi, StringTokenizer tok) {
+        scanpage sp = (scanpage) pi;            
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("NAME")) return HttpAuth.getRemoteUser(sp.req);
@@ -539,14 +534,14 @@ public class INFO extends ProcessorModule {
                     String domain = tmp.substring(tmp.lastIndexOf('.'));
                     tmp = tmp.substring(0,tmp.lastIndexOf('.'));
                     tmp = tmp.substring(tmp.lastIndexOf('.')+1);
-                    domain = tmp + domain;
+                    domain = tmp+domain;
                     if (domain!=null) {
-                        String serverdomain = getProperty("server","Domain");
+                        String serverdomain=getProperty("server","Domain");
                         return toYesNo(serverdomain.equals(domain));
                     }
                     return toYesNo(false);
                 } else {
-                    String servername = getProperty("server","MachineName");
+                    String servername=getProperty("server","MachineName");
                     return toYesNo(servername.equals(tmp));
                 }
             }
@@ -555,13 +550,7 @@ public class INFO extends ProcessorModule {
             return HttpAuth.getRemoteUser(sp.req);
         }
     }
-    /**
-     * Returns the properties to the subclass.
-     */
-    protected Map getProperties(String propertytable) {
-         return null;
-     }
- 
+
     /**
      * Returns a continues range of values with two set numerical boundaries and a step-increase, or
      * the range of characters of the alphabet. <br />
@@ -946,6 +935,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("WEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=(days/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -993,6 +984,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("GWEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=((days+3)/7)+1;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1016,6 +1009,8 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("NEXTGWEEKDATE")) {
                 String sday;
                 int iday,iweek;
+                Date ad;
+
                 iweek=((days+3)/7)+2;
                 if (tok.hasMoreTokens()) {
                     sday=tok.nextToken();
@@ -1192,7 +1187,7 @@ public class INFO extends ProcessorModule {
      * @return a <code>Vector</code> containing color names and RGB values
      * @deprecated hereditary code. Should be dropped or adapted.
      */
-    Vector doScanDate(scanpage sp,StringTagger tagger) {
+    Vector doScanDate(PageInfo sp,StringTagger tagger) {
         String temp = sp.req.getHeader("Pragma");
         if (temp!=null && temp.indexOf("no-cache")!=-1) {
             DirCache=new Hashtable();
@@ -1203,13 +1198,13 @@ public class INFO extends ProcessorModule {
         // get base
         String base=tagger.Value("BASE");
         if (base==null) return results;
-           base = Strip.doubleQuote(base,Strip.BOTH);
+           base = Strip.DoubleQuote(base,Strip.BOTH);
 
         // find the start
         Date start=null;
         String val=tagger.Value("START");
         if (val!=null) {
-            val = Strip.doubleQuote(val,Strip.BOTH);
+            val = Strip.DoubleQuote(val,Strip.BOTH);
             start=DateSupport.parsedbmdate(val);
         }
 
@@ -1217,7 +1212,7 @@ public class INFO extends ProcessorModule {
         Date end=null;
         val=tagger.Value("END");
         if (val!=null) {
-            val = Strip.doubleQuote(val,Strip.BOTH);
+            val = Strip.DoubleQuote(val,Strip.BOTH);
             end=DateSupport.parsedbmdate(val);
         }
 
@@ -1225,7 +1220,7 @@ public class INFO extends ProcessorModule {
         boolean startincluded=true;
         val=tagger.Value("STARTINCLUDED");
         if (val!=null) {
-            val = Strip.doubleQuote(val,Strip.BOTH);
+            val = Strip.DoubleQuote(val,Strip.BOTH);
             startincluded=isNotNo(val);
         }
 
@@ -1233,7 +1228,7 @@ public class INFO extends ProcessorModule {
         boolean endincluded=true;
         val=tagger.Value("ENDINCLUDED");
         if (val!=null) {
-            val = Strip.doubleQuote(val,Strip.BOTH);
+            val = Strip.DoubleQuote(val,Strip.BOTH);
             endincluded=isNotNo(val);
         }
 
@@ -1241,14 +1236,14 @@ public class INFO extends ProcessorModule {
         boolean revert=false;
         val=tagger.Value("REVERS");
         if (val!=null) {
-            val = Strip.doubleQuote(val,Strip.BOTH);
+            val = Strip.DoubleQuote(val,Strip.BOTH);
             revert = isYes(val);
         }
 
         // scan the disk
         File scanfile = new File(documentroot+base);
         //debug(documentroot+base);
-        SortedVector fullres=DirCache.get(documentroot+base);
+        SortedVector fullres=(SortedVector)DirCache.get(documentroot+base);
         if (fullres==null) {
             fullres=getDirTimes(scanfile);
             DirCache.put(documentroot+base,fullres);
@@ -1320,8 +1315,8 @@ public class INFO extends ProcessorModule {
         String theFileName;
         String files[] = scanfile.list();
         if (files!=null) {
-            for (String element : files) {
-                theFileName=element;
+            for (int i=0;i<files.length;i++) {
+                theFileName=files[i];
                 theFile = new File(scanfile,theFileName);
                 if (theFile.isDirectory() && theFileName.length()==10) {
                     d=DateSupport.parsedbmdate(theFileName);
@@ -1339,7 +1334,8 @@ public class INFO extends ProcessorModule {
      * @param tok the commands to be executed
      * @return a <code>String</code> withe the value 'YES' if the check succeeded, 'NO' if it failed.
      */
-    public String doExists(scanpage sp,StringTokenizer tok) {
+    public String doExists(PageInfo pi,StringTokenizer tok) {
+        scanpage sp = (scanpage) pi;            
         String type=tok.nextToken();
         String path=tok.nextToken();
         boolean rtn=false;
@@ -1405,7 +1401,8 @@ public class INFO extends ProcessorModule {
      * @param tok the commands to be executed
      * @return Always <code>null</code>. This comamnd is executed for its side effects, it does not return a value.
      */
-    private String doMove( scanpage sp, StringTokenizer tok ) {
+    private String doMove( PageInfo pi, StringTokenizer tok ) {
+        scanpage sp = (scanpage) pi;       
         String result = null;
 
         if( tok.hasMoreTokens() ) {

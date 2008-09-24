@@ -7,25 +7,27 @@
 package org.mmbase.core.event;
 
 import java.util.*;
+//import java.util.concurrent.CopyOnWriteArraySet;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.lang.ref.SoftReference;
 
+import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * An EventBroker which administrates the listeners in a {@link java.util.WeakHashMap}. This means
- * that such listeners can be garbage collected, even if they are still brokered.
+ * An EventBroker which administrates the listeners in a {@link java.util.WeakHashMap}.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.5
- * @version $Id: WeakEventBroker.java,v 1.2 2007-07-26 14:08:53 michiel Exp $
  */
 public abstract class WeakEventBroker extends EventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(WeakEventBroker.class);
 
-    private final Map<EventListener, Boolean> listeners = new WeakHashMap<EventListener, Boolean>();
+    private final Map listeners = new WeakHashMap();
 
-    protected Collection<EventListener> backing() {
+    protected Collection backing() {
         return listeners.keySet();
     }
 
@@ -44,7 +46,7 @@ public abstract class WeakEventBroker extends EventBroker {
     }
 
     public synchronized void removeListener(EventListener listener) {
-        if (! listeners.remove(listener)) {
+        if (listeners.remove(listener) == null) {
             log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
         }
 
@@ -58,15 +60,6 @@ public abstract class WeakEventBroker extends EventBroker {
 
     public String toString(){
         return "Weak Event Broker";
-    }
-
-
-    public static void main(String[] argv) {
-        Map<Object, Object> weakSet = new WeakHashMap<Object, Object>();
-        weakSet.put(new Object(), null);
-        System.out.println("set " + weakSet.keySet());
-        Runtime.getRuntime().gc();
-        System.out.println("set " + weakSet.keySet());
     }
 
 }

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.31 2008-08-08 08:05:48 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.29 2007-11-09 10:14:47 michiel Exp $
  * @since  MMBase-1.7
  */
 class EmailHandler {
@@ -63,12 +63,10 @@ class EmailHandler {
             // bulk-mailing
             Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>(getTo(node));
             toUsers.addAll(toGroup);
-            boolean success = true;
+
             // loop all the users we need to mail
             for (NodeRecipient to : toUsers) {
-                if (! sendMail(node, from, to, body, headers)) {
-                    success = false;
-                }
+                sendMail(node, from, to, body, headers);
 
                 // make sure that CC and BCC are only on first mail, otherwise those poor people get a lot of mail.
                 headers.put("CC", null);

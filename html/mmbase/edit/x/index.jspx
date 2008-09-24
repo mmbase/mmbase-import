@@ -1,5 +1,4 @@
 <mm:content 
-    unacceptable="Please use a better browser"
     type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -9,11 +8,10 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page session="true" buffer="200kb" />  
-  <html lang="${locale}"
-        xmlns="http://www.w3.org/1999/xhtml">
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.20 2007-07-12 08:54:40 michiel Exp $
+         $Id: index.jspx,v 1.18 2006-07-18 17:21:14 michiel Exp $
     -->
     <mm:cloud rank="basic user">
       
@@ -21,8 +19,7 @@
       <body>
         <mm:import externid="nodemanager">object</mm:import>
         <mm:import externid="only" />
-        <mm:import externid="pagesize" from="request,">50</mm:import>
-        <mm:import externid="referids">nodemanager,only?,pagesize</mm:import>
+        <mm:import externid="referids">nodemanager,only?</mm:import>
 
         
         <!-- handle delete nodes -->
@@ -45,7 +42,6 @@
 
         <mm:import id="thispage"><mm:url page="."  /></mm:import>
         <form id="form" action="${thispage}" method="post">
-          <input type="hidden" name="pagesize" value="${pagesize}" />
           <h1>
             <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
               <span class="navigate">
@@ -93,6 +89,7 @@
           </table>
 
           <table id="searchresult" summary="Search results for ${nodemanager}">
+            <mm:import id="pagesize">50</mm:import>
             <mm:import externid="offset">0</mm:import>
             
             <mm:listnodescontainer type="$nodemanager">
@@ -167,13 +164,6 @@
                 <tfoot>
                   <tr class="paging">
                     <th colspan="2">
-                      <form method="POST" action="${base}">
-                        <select name="pagesize"  onchange="this.form.submit();">
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                          <option value="200">200</option>
-                        </select>
-                      </form>
                     </th>
                     <th colspan="100"><mm:write referid="paging" escape="none" /></th>
                   </tr>

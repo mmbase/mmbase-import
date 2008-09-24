@@ -8,9 +8,9 @@
   <xsd:annotation>
     <xsd:documentation>Lucene search query redefinition</xsd:documentation>
   </xsd:annotation>
-
+  
   <xsd:redefine schemaLocation="http://www.mmbase.org/xmlns/searchquery.xsd">
-
+    
     <xsd:complexType name="SearchQuery">
       <xsd:complexContent>
         <xsd:extension base="SearchQuery">
@@ -22,7 +22,7 @@
         </xsd:extension>
       </xsd:complexContent>
     </xsd:complexType>
-
+    
     <xsd:complexType name="Field">
       <xsd:complexContent>
         <xsd:extension base="mmsq:Field">
@@ -32,7 +32,6 @@
           <xsd:attribute name="store" type="xsd:string"/>
           <xsd:attribute name="password" type="xsd:string"/>
           <xsd:attribute name="boost" type="xsd:float"/>
-          <xsd:attribute name="split" type="xsd:string" default="" />
           <xsd:attribute name="multiple" type="type_multiple" default="add">
             <xsd:annotation>
               <xsd:documentation xml:lang="en">
@@ -49,7 +48,7 @@
         </xsd:extension>
       </xsd:complexContent>
     </xsd:complexType>
-
+    
   </xsd:redefine>
 
   <xsd:element name="related" type="SearchQuery" />
@@ -57,11 +56,11 @@
 
   <xsd:simpleType name="type_multiple">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="add"/>
+      <xsd:enumeration value="add"/> 
       <xsd:enumeration value="first"/>
       <xsd:enumeration value="last"/>
       <!--
-          we could make  e.g. also
+          we could make  e.g. also 
           <xsd:enumeration value="biggest"/>
           <xsd:enumeration value="smallest"/>
       -->

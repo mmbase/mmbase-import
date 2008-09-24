@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.46 2008-09-04 14:02:41 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.45 2006-05-08 18:02:49 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -165,7 +165,7 @@ if (request.getParameter("remove") != null) {
 
     if (ewconfig.subObjects.empty()) { // it _is_ empty? Then we are ready.
         log.debug("last object cleared, redirecting");
-        if (! refer.startsWith("http:") && ! refer.startsWith("https:")) {
+        if (! refer.startsWith("http:")) {
             refer = response.encodeRedirectURL(request.getContextPath() + refer);
         }
         log.debug("Redirecting to " + refer);

@@ -10,22 +10,26 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import java.util.Map.Entry;
 
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.core.CoreField;
 import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.Field;
+import org.mmbase.cache.Cache;
+import org.mmbase.cache.MultilevelCache;
+import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.util.functions.*;
-import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.DataTypes;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
-import org.mmbase.storage.search.legacy.QueryConvertor;
+import org.mmbase.util.QueryConvertor;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.logging.*;
 
 /**
  * The builder for {@link ClusterNode clusternodes}.
@@ -53,7 +57,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.98 2008-09-04 21:19:41 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.85.2.2 2008-06-28 11:57:10 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -172,11 +176,12 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         // Else "name"-fields of contained nodes.
-        StringBuilder sb = new StringBuilder();
-        for (Entry<String, Object> entry : node.getValues().entrySet()) {
-            String key = entry.getKey();
+        StringBuffer sb = new StringBuffer();
+        for (Iterator i= node.getValues().entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String) entry.getKey();
             if (key.endsWith(".name")) {
-                if (sb.length() != 0) {
+                if (s.length() != 0) {
                     sb.append(", ");
                 }
                 sb.append(entry.getValue());
@@ -221,12 +226,12 @@ public class ClusterBuilder extends VirtualBuilder {
                         Parameters newPars = new Parameters(pars.getDefinition(), pars);
                         newPars.set(Parameter.FIELD, fieldName);
                         newPars.set("stringvalue", null);
-                        org.mmbase.bridge.Node bnode = pars.get(Parameter.NODE);
+                        org.mmbase.bridge.Node bnode = (org.mmbase.bridge.Node) pars.get(Parameter.NODE);
                         if (bnode != null) {
                             newPars.set(Parameter.NODE, bnode.getNodeValue(bulName));
                         }
                         newPars.set(Parameter.CORENODE, n);
-                        return bul.guiFunction.getFunctionValue(newPars);
+                        return (String) bul.guiFunction.getFunctionValue(newPars);
                     }
                 }
             }
@@ -278,28 +283,28 @@ public class ClusterBuilder extends VirtualBuilder {
             //
             MMObjectBuilder bul = mmb.getBuilder(getTrueTableName(fieldName));
             if (bul != null) {
-                return new FieldDefs(fieldName, Field.TYPE_NODE, -1, Field.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
+                return new FieldDefs(fieldName, FieldDefs.TYPE_NODE, -1, FieldDefs.STATE_VIRTUAL, org.mmbase.datatypes.DataTypes.getDataType("node"));
             }
         }
         return null;
     }
 
-    public List<CoreField> getFields(int order) {
+    public List getFields(int order) {
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
-    public Collection<CoreField> getFields() {
+    public Collection getFields() {
         throw new UnsupportedOperationException("Cluster-nodes can have any field.");
     }
 
     /**
      * @since MMBase-1.8
      */
-    public Map<String, CoreField> getFields(MMObjectNode node) {
-        Map<String, CoreField> ret = new HashMap<String, CoreField>();
-        Iterator<String> i = node.getValues().keySet().iterator();
-        DataType<? extends Object> nodeType  = DataTypes.getDataType("node");
+    public Map getFields(MMObjectNode node) {
+        Map ret = new HashMap();
+        Iterator i = node.getValues().keySet().iterator();
+        DataType nodeType  = DataTypes.getDataType("node");
         while (i.hasNext()) {
-            String name = i.next();
+            String name = (String) i.next();
             int pos = name.indexOf(".");
             if (pos != -1) {
                 String builderName = name.substring(0, pos);
@@ -320,17 +325,16 @@ public class ClusterBuilder extends VirtualBuilder {
      *
      * @see #searchMultiLevelVector(List, List, String, List, String, List, List, List)
      */
-   public Vector<MMObjectNode> searchMultiLevelVector(
+   public Vector searchMultiLevelVector(
         int snode,
-        List<String> fields,
+        Vector fields,
         String pdistinct,
-        List<String> tables,
+        Vector tables,
         String where,
-        List<String> orderVec,
-        List<String> direction) {
-
-        List<String> v= new ArrayList<String>();
-        v.add("" + snode);
+        Vector orderVec,
+        Vector direction) {
+        Vector v= new Vector();
+        v.addElement("" + snode);
         return searchMultiLevelVector(v, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
     }
 
@@ -340,20 +344,21 @@ public class ClusterBuilder extends VirtualBuilder {
      *
      * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
      */
-    public Vector<MMObjectNode> searchMultiLevelVector(List<String> snodes,
-                                                       List<String> fields,
-                                                       String pdistinct,
-                                                       List<String> tables,
-                                                       String where,
-                                                       List<String> orderVec,
-                                                       List<String> direction) {
+    public Vector searchMultiLevelVector(
+        Vector snodes,
+        Vector fields,
+        String pdistinct,
+        Vector tables,
+        String where,
+        Vector orderVec,
+        Vector direction) {
         return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
      * Return all the objects that match the searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -367,7 +372,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields the fieldnames on which you want to sort.
@@ -380,17 +385,17 @@ public class ClusterBuilder extends VirtualBuilder {
      * @deprecated use {@link #searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where,
      *               List orderVec, List directions, List searchDirs)}
      */
-    public Vector<MMObjectNode> searchMultiLevelVector(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where, List<String> sortFields,
-            List<String> directions, int searchDir) {
-        List<Integer> searchDirs = new ArrayList<Integer>();
-        searchDirs.add(searchDir);
+    public Vector searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where, List sortFields,
+            List directions, int searchDir) {
+        List searchDirs = new ArrayList();
+        searchDirs.add(new Integer(searchDir));
         return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
     }
 
     /**
      * Return all the objects that match the searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -404,7 +409,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields the fieldnames on which you want to sort.
@@ -416,15 +421,15 @@ public class ClusterBuilder extends VirtualBuilder {
      *      for the remaining relations. If you specify an empty list the default direction is BOTH.
      * @return a <code>Vector</code> containing all matching nodes
      */
-    public Vector<MMObjectNode> searchMultiLevelVector(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where, List<String> sortFields,
-        List<String> directions, List<Integer> searchDirs) {
+    public Vector searchMultiLevelVector(List snodes, List fields, String pdistinct, List tables, String where, List sortFields,
+        List directions, List searchDirs) {
         // Try to handle using the SearchQuery framework.
         try {
             SearchQuery query = getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
-            List<MMObjectNode> clusterNodes = getClusterNodes(query);
-            return new Vector<MMObjectNode>(clusterNodes);
+            List clusterNodes = getClusterNodes(query);
+            return new Vector(clusterNodes);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e + Logging.stackTrace(e));
             return null;
         }
     }
@@ -432,20 +437,22 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
      * query is a Node-query.
-     * This method uses the MultilevelCache for query results
      *
      * @param query The query.
      * @return The clusternodes.
+     * @throws org.mmbase.storage.search.SearchQueryException
+     *         When an exception occurred while retrieving the results.
      * @since MMBase-1.7
+     * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
      */
-    public List<MMObjectNode> getClusterNodes(SearchQuery query) {
-
+    public List getClusterNodes(SearchQuery query) {
         // start multilevel cache
-        MultilevelCache multilevelCache = MultilevelCache.getCache();
+        Cache multilevelCache = MultilevelCache.getCache();
+
         // check multilevel cache if needed
-        List<MMObjectNode> resultList = null;
+        List resultList = null;
         if (query.getCachePolicy().checkPolicy(query)) {
-            resultList = multilevelCache.get(query);
+            resultList = (List)multilevelCache.get(query);
         }
         // if unavailable, obtain from database
         if (resultList == null) {
@@ -461,23 +468,10 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         return resultList;
+
     }
 
-    /**
-     * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
-     * query is a Node-query.
-     * The results are retrieved directly from storage without the MultilevelCache
-     * {@link #getClusterNodes(SearchQuery)} which uses the MultilevelCache
-     *
-     * @param query The query.
-     * @return The clusternodes.
-     * @throws org.mmbase.storage.search.SearchQueryException
-     *         When an exception occurred while retrieving the results.
-     * @since MMBase-1.7
-     * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
-     */
-    public List<MMObjectNode> getClusterNodesFromQueryHandler(SearchQuery query)
-            throws SearchQueryException {
+    public List getClusterNodesFromQueryHandler(SearchQuery query) throws SearchQueryException {
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
 
@@ -508,7 +502,7 @@ public class ClusterBuilder extends VirtualBuilder {
         String tab = getTableName(table);
         int rnumber = mmb.getRelDef().getNumberByName(tab);
         if (rnumber != -1) {
-            return mmb.getRelDef().getBuilderName(rnumber);
+            return mmb.getRelDef().getBuilderName(new Integer(rnumber));
         } else {
             return tab;
         }
@@ -550,7 +544,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes <code>null</code> or a list of numbers
@@ -570,7 +564,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
@@ -587,10 +581,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the resulting search query.
      * @since MMBase-1.7
      */
-    public BasicSearchQuery getMultiLevelSearchQuery(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where,
-            List<String> sortFields, List<String> directions, int searchDir) {
-        List<Integer> searchDirs = new ArrayList<Integer>();
-        searchDirs.add(searchDir);
+    public BasicSearchQuery getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
+            List sortFields, List directions, int searchDir) {
+        List searchDirs = new ArrayList();
+        searchDirs.add(new Integer(searchDir));
         return getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, sortFields, directions, searchDirs);
     }
 
@@ -598,7 +592,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Creates search query that selects all the objects that match the
      * searchkeys.
      * The constraint must be in one of the formats specified by {@link
-     * QueryConvertor#setConstraint(BasicSearchQuery,String)
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes <code>null</code> or a list of numbers
@@ -618,7 +612,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
      * @param where The constraint, must be in one of the formats specified by {@link
-     *        QueryConvertor#setConstraint(BasicSearchQuery,String)
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
@@ -633,8 +627,8 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the resulting search query.
      * @since MMBase-1.7
      */
-    public BasicSearchQuery getMultiLevelSearchQuery(List<String> snodes, List<String> fields, String pdistinct, List<String> tables, String where,
-            List<String> sortFields, List<String> directions, List<Integer> searchDirs) {
+    public BasicSearchQuery getMultiLevelSearchQuery(List snodes, List fields, String pdistinct, List tables, String where,
+            List sortFields, List directions, List searchDirs) {
 
         // Create the query.
         BasicSearchQuery query= new BasicSearchQuery();
@@ -644,14 +638,14 @@ public class ClusterBuilder extends VirtualBuilder {
         query.setDistinct(distinct);
 
         // Get ALL tables (including missing reltables)
-        Map<String, Integer> roles= new HashMap<String, Integer>();
-        Map<String, BasicStepField> fieldsByAlias= new HashMap<String, BasicStepField>();
-        Map<String, BasicStep> stepsByAlias= addSteps(query, tables, roles, !distinct, fieldsByAlias);
+        Map roles= new HashMap();
+        Map fieldsByAlias= new HashMap();
+        Map stepsByAlias= addSteps(query, tables, roles, !distinct, fieldsByAlias);
 
         // Add fields.
-        Iterator<String> iFields= fields.iterator();
+        Iterator iFields= fields.iterator();
         while (iFields.hasNext()) {
-            String field = iFields.next();
+            String field = (String) iFields.next();
             addFields(query, field, stepsByAlias, fieldsByAlias);
         }
 
@@ -661,41 +655,41 @@ public class ClusterBuilder extends VirtualBuilder {
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
         if (snodes != null && snodes.size() > 0) {
-            Integer nodeNumber= -1;
+            Integer nodeNumber= new Integer(-1);
 
             // Copy list, so the original list is not affected.
-            List<Integer> snodeNumbers = new ArrayList<Integer>();
+            snodes= new ArrayList(snodes);
 
             // Go trough the whole list of strings (each representing
             // either a nodenumber or an alias), convert all to Integer objects.
             // from last to first,,... since we want snode to be the one that
             // contains the first..
             for (int i= snodes.size() - 1; i >= 0; i--) {
-                String str= snodes.get(i);
+                String str= (String)snodes.get(i);
                 try {
-                    nodeNumber= Integer.valueOf(str);
+                    nodeNumber= new Integer(str);
                 } catch (NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias
                     // table then
-                    nodeNumber= mmb.getOAlias().getNumber(str);
+                    nodeNumber= new Integer(mmb.getOAlias().getNumber(str));
                     if (nodeNumber.intValue() < 0) {
-                        nodeNumber= 0;
+                        nodeNumber= new Integer(0);
                     }
                 }
-                snodeNumbers.add(nodeNumber);
+                snodes.set(i, nodeNumber);
             }
 
-            Step nodesStep = getNodesStep(query.getSteps(), nodeNumber.intValue());
+            BasicStep nodesStep= getNodesStep(query.getSteps(), nodeNumber.intValue());
 
             if (nodesStep == null) {
                 // specified a node which is not of the type of one of the steps.
                 // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
-                nodesStep = query.getSteps().get(0);
+                nodesStep = (BasicStep) query.getSteps().get(0);
             }
 
-            Iterator<Integer> iNodeNumbers= snodeNumbers.iterator();
+            Iterator iNodeNumbers= snodes.iterator();
             while (iNodeNumbers.hasNext()) {
-                Integer number= iNodeNumbers.next();
+                Integer number= (Integer)iNodeNumbers.next();
                 nodesStep.addNode(number.intValue());
             }
         }
@@ -730,15 +724,15 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    Map<String, BasicStep> addSteps(BasicSearchQuery query, List<String> tables, Map<String, Integer> roles, boolean includeAllReference, Map<String, BasicStepField> fieldsByAlias) {
+    Map addSteps(BasicSearchQuery query, List tables, Map roles, boolean includeAllReference, Map fieldsByAlias) {
 
-        Map<String, BasicStep> stepsByAlias= new HashMap<String, BasicStep>(); // Maps original table names to steps.
-        Set<String> tableAliases= new HashSet<String>(); // All table aliases that are in use.
+        Map stepsByAlias= new HashMap(); // Maps original table names to steps.
+        Set tableAliases= new HashSet(); // All table aliases that are in use.
 
-        Iterator<String> iTables= tables.iterator();
+        Iterator iTables= tables.iterator();
         if (iTables.hasNext()) {
             // First table.
-            String tableName= iTables.next();
+            String tableName= (String)iTables.next();
             MMObjectBuilder bul= getBuilder(tableName, roles);
             String tableAlias= getUniqueTableAlias(tableName, tableAliases, tables);
             BasicStep step= query.addStep(bul);
@@ -750,7 +744,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
         while (iTables.hasNext()) {
-            String tableName2 = iTables.next();
+            String tableName2 = (String)iTables.next();
             MMObjectBuilder bul2 = getBuilder(tableName2, roles);
             BasicRelationStep relation;
             BasicStep step2;
@@ -759,7 +753,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 // Explicit relation step.
                 tableName = tableName2;
                 InsRel bul = (InsRel)bul2;
-                tableName2 = iTables.next();
+                tableName2 = (String)iTables.next();
                 bul2 = getBuilder(tableName2, roles);
                 relation = query.addRelationStep(bul, bul2);
                 step2 = (BasicStep)relation.getNext();
@@ -821,7 +815,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    MMObjectBuilder getBuilder(String tableAlias, Map<String, Integer> roles) {
+    MMObjectBuilder getBuilder(String tableAlias, Map roles) {
         String tableName= getTableName(tableAlias);
         // check builder - should throw exception if builder doesn't exist ?
         MMObjectBuilder bul= null;
@@ -834,15 +828,17 @@ public class ClusterBuilder extends VirtualBuilder {
             // rolename and store a filter on rnumber.
             int rnumber= mmb.getRelDef().getNumberByName(tableName);
             if (rnumber == -1) {
-                throw new IllegalArgumentException("Specified builder '" + tableName + "' does not exist.");
+                String msg= "Specified builder " + tableName + " does not exist.";
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
             } else {
                 bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
-                roles.put(tableAlias, rnumber);
+                roles.put(tableAlias, new Integer(rnumber));
             }
         } else if (bul instanceof InsRel) {
             int rnumber= mmb.getRelDef().getNumberByName(tableName);
             if (rnumber != -1) {
-                roles.put(tableAlias, rnumber);
+                roles.put(tableAlias, new Integer(rnumber));
             }
         }
         if (log.isDebugEnabled()) {
@@ -866,7 +862,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    String getUniqueTableAlias(String tableAlias, Set<String> tableAliases, Collection<String> originalAliases) {
+    String getUniqueTableAlias(String tableAlias, Set tableAliases, Collection originalAliases) {
 
         // If provided alias is not unique, try alternatives,
         // skipping alternatives that are already in originalAliases.
@@ -909,7 +905,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    void addFields(BasicSearchQuery query, String expression, Map<String, BasicStep> stepsByAlias, Map<String, BasicStepField> fieldsByAlias) {
+    void addFields(BasicSearchQuery query, String expression, Map stepsByAlias, Map fieldsByAlias) {
 
         // TODO RvM: stripping functions is this (still) necessary?.
         // Strip function(s).
@@ -921,9 +917,9 @@ public class ClusterBuilder extends VirtualBuilder {
         } else if (pos1 != -1) {
             // Function parameter list containing subexpression(s).
             String parameters= expression.substring(pos1 + 1, pos2);
-            Iterator<String> iParameters= getFunctionParameters(parameters).iterator();
+            Iterator iParameters= getFunctionParameters(parameters).iterator();
             while (iParameters.hasNext()) {
-                String parameter= iParameters.next();
+                String parameter= (String)iParameters.next();
                 addFields(query, parameter, stepsByAlias, fieldsByAlias);
             }
         } else if (!Character.isDigit(expression.charAt(0))) {
@@ -935,7 +931,7 @@ public class ClusterBuilder extends VirtualBuilder {
             String stepAlias= expression.substring(0 + bracketOffset, pos);
             String fieldName= expression.substring(pos + 1 - bracketOffset);
 
-            BasicStep step = stepsByAlias.get(stepAlias);
+            BasicStep step = (BasicStep)stepsByAlias.get(stepAlias);
             if (step == null) {
                 throw new IllegalArgumentException("Invalid step alias: \"" + stepAlias + "\" in fields list");
             }
@@ -954,7 +950,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        An entry is added for each stepfield added to the query.
      * @since MMBase-1.7
      */
-    private void addField(BasicSearchQuery query, BasicStep step, String fieldName, Map<String, BasicStepField> fieldsByAlias) {
+    private void addField(BasicSearchQuery query, BasicStep step, String fieldName, Map fieldsByAlias) {
 
         // Fieldalias = stepalias.fieldname.
         // This value is used to store the field in fieldsByAlias.
@@ -987,7 +983,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package visibility!
-    void addSortOrders(BasicSearchQuery query, List<String> fieldNames, List<String> directions, Map<String, BasicStepField> fieldsByAlias) {
+    void addSortOrders(BasicSearchQuery query, List fieldNames, List directions, Map fieldsByAlias) {
 
         // Test if fieldnames are specified.
         if (fieldNames == null || fieldNames.size() == 0) {
@@ -996,16 +992,16 @@ public class ClusterBuilder extends VirtualBuilder {
 
         int defaultSortOrder= SortOrder.ORDER_ASCENDING;
         if (directions != null && directions.size() != 0) {
-            if (directions.get(0).trim().equalsIgnoreCase("DOWN")) {
+            if (((String)directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
                 defaultSortOrder= SortOrder.ORDER_DESCENDING;
             }
         }
 
-        Iterator<String> iFieldNames= fieldNames.iterator();
-        Iterator<String> iDirections= directions.iterator();
+        Iterator iFieldNames= fieldNames.iterator();
+        Iterator iDirections= directions.iterator();
         while (iFieldNames.hasNext()) {
-            String fieldName = iFieldNames.next();
-            StepField field= fieldsByAlias.get(fieldName);
+            String fieldName= (String)iFieldNames.next();
+            StepField field= (BasicStepField)fieldsByAlias.get(fieldName);
             if (field == null) {
                 // Field has not been added.
                 field= ConstraintParser.getField(fieldName, query.getSteps());
@@ -1019,7 +1015,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
             // Change direction if needed.
             if (iDirections.hasNext()) {
-                String direction = iDirections.next();
+                String direction= (String)iDirections.next();
                 if (direction.trim().equalsIgnoreCase("DOWN")) {
                     sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
                 } else if (!direction.trim().equalsIgnoreCase("UP")) {
@@ -1042,7 +1038,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package visibility!
-    Step getNodesStep(List<Step> steps, int nodeNumber) {
+    BasicStep getNodesStep(List steps, int nodeNumber) {
         if (nodeNumber < 0) {
             return null;
         }
@@ -1053,12 +1049,12 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         MMObjectBuilder builder = node.parent;
-        Step result = null;
+        BasicStep result = null;
         do {
             // Find step corresponding to builder.
-            Iterator<Step> iSteps= steps.iterator();
+            Iterator iSteps= steps.iterator();
             while (iSteps.hasNext() && result == null) {
-                Step step= iSteps.next();
+                BasicStep step= (BasicStep)iSteps.next();
                 if (step.getTableName().equals(builder.tableName)) {  // should inheritance not be considered?
                     // Found.
                     result = step;
@@ -1068,8 +1064,15 @@ public class ClusterBuilder extends VirtualBuilder {
             builder = builder.getParentBuilder();
         } while (builder != null && result == null);
 
+        /*
+          if (result == null) {
+          throw new RuntimeException("Node '" + nodeNumber + "' not of one of the types " + steps);
+          }
+        */
+
         return result;
     }
+
 
     /**
      * Adds relation directions.
@@ -1083,34 +1086,32 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package visibility!
-    void addRelationDirections(BasicSearchQuery query, List<Integer> searchDirs, Map<String, Integer> roles) {
+    void addRelationDirections(BasicSearchQuery query, List searchDirs, Map roles) {
 
-        Iterator<Step> iSteps = query.getSteps().iterator();
-        Iterator<Integer> iSearchDirs = searchDirs.iterator();
+        Iterator iSteps = query.getSteps().iterator();
+        Iterator iSearchDirs = searchDirs.iterator();
         int searchDir = RelationStep.DIRECTIONS_BOTH;
 
         if (! iSteps.hasNext()) return; // nothing to be done.
-        Step sourceStep = iSteps.next();
-        Step destinationStep = null;
+        BasicStep sourceStep = (BasicStep)iSteps.next();
+        BasicStep destinationStep = null;
 
         while (iSteps.hasNext()) {
             if (destinationStep != null) {
                 sourceStep = destinationStep;
             }
             BasicRelationStep relationStep= (BasicRelationStep)iSteps.next();
-            destinationStep= iSteps.next();
-            if (iSearchDirs.hasNext()) searchDir = iSearchDirs.next().intValue();
-
-
-            // FIXME this cast to BasicStep is ugly and should not be here in a clean implementation
+            destinationStep= (BasicStep)iSteps.next();
+            if (iSearchDirs.hasNext()) searchDir = ((Integer)iSearchDirs.next()).intValue();
 
             // Determine typedef number of the source-type.
-            int sourceType = ((BasicStep)sourceStep).getBuilder().getObjectType();
-            // Determine the typedef number of the destination-type.
-            int destinationType = ((BasicStep)destinationStep).getBuilder().getObjectType();
+            int sourceType = sourceStep.getBuilder().getObjectType();
 
             // Determine reldef number of the role.
-            Integer role = roles.get(relationStep.getAlias());
+            Integer role = (Integer) roles.get(relationStep.getAlias());
+
+            // Determine the typedef number of the destination-type.
+            int destinationType = destinationStep.getBuilder().getObjectType();
 
             int roleInt;
             if (role != null) {

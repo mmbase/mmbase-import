@@ -19,18 +19,18 @@ import org.mmbase.util.Entry;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Censor.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Censor.java,v 1.6 2005-05-04 22:23:31 michiel Exp $
  */
 
 public class Censor extends RegexpReplacer {
 
-    protected static Collection<Entry<Pattern,String>> forbidden = new ArrayList<Entry<Pattern,String>>();
+    protected static Collection forbidden = new ArrayList();
     
     static {        
         new Censor().readPatterns(forbidden);   
     }
 
-    protected Collection<Entry<Pattern,String>> getPatterns() {        
+    protected Collection getPatterns() {        
         return forbidden;
     }
 
@@ -40,10 +40,10 @@ public class Censor extends RegexpReplacer {
 
 
 
-    protected void readDefaultPatterns(Collection<Entry<Pattern,String>> patterns) {
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("(?i)mmbase"),      "MMBase"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("(?i)microsoft"),   "Micro$soft"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("(?i)fuck"),        "****"));
+    protected void readDefaultPatterns(Collection patterns) {
+        patterns.add(new Entry(Pattern.compile("(?i)mmbase"),      "MMBase"));
+        patterns.add(new Entry(Pattern.compile("(?i)microsoft"),   "Micro$soft"));
+        patterns.add(new Entry(Pattern.compile("(?i)fuck"),        "****"));
     }
     
 

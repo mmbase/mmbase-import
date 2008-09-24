@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.17 2005-09-27 14:52:36 michiel Exp $
+ * @version $Id: FieldEditor.java,v 1.17.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger
@@ -47,7 +47,7 @@ public class FieldEditor implements CommandHandlerInterface {
      * List commands
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException {
+    public Vector getList(PageInfo sp, StringTagger args, StringTokenizer command) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
 
@@ -68,7 +68,7 @@ public class FieldEditor implements CommandHandlerInterface {
      * Replace/Trigger commands
      * @javadoc
      */
-    public String replace(scanpage sp, StringTokenizer command) {
+    public String replace(PageInfo sp, StringTokenizer command) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = stateMngr.getEditState(userName);
@@ -97,7 +97,7 @@ public class FieldEditor implements CommandHandlerInterface {
      * The hook that passes all form related pages to the correct handler
      * @javadoc
      */
-    public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = stateMngr.getEditState(userName);
@@ -242,7 +242,8 @@ public class FieldEditor implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    boolean setEditIMGField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
+    boolean setEditIMGField(EditState ed, String fieldname,Hashtable cmds,PageInfo pi) {
+        scanpage sp = (scanpage) pi;
         MMObjectBuilder obj=ed.getBuilder();
         FieldDefs def=obj.getField(fieldname);
         try {
@@ -260,7 +261,7 @@ public class FieldEditor implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    boolean setEditDISKField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
+    boolean setEditDISKField(EditState ed, String fieldname,Hashtable cmds,PageInfo sp) {
         MMObjectBuilder obj=ed.getBuilder();
         FieldDefs def=obj.getField(fieldname);
         try {
@@ -297,10 +298,12 @@ public class FieldEditor implements CommandHandlerInterface {
                 // node.preEdit(ed);
                 node.commit();
             }
-            if (node.getIntValue("snumber")!=-1 && node.getIntValue("dnumber")!=-1) {
-                EditStateNode prenode=ed.getEditStateNode(1);
-                if (prenode!=null) {
-                    prenode.delRelationTable();
+            if (node.getBuilder() instanceof InsRel) {
+                if (node.getIntValue("snumber") != -1 && node.getIntValue("dnumber") != -1) {
+                    EditStateNode prenode=ed.getEditStateNode(1);
+                    if (prenode!=null) {
+                        prenode.delRelationTable();
+                    }
                 }
             }
             return id;

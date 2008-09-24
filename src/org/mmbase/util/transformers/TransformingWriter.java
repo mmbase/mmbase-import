@@ -18,22 +18,22 @@ import org.mmbase.util.logging.*;
 
 <pre>
 
-  ____  _________
- /    \/         \
+  ____  _________  
+ /    \/         \  
  |this - PR --> W |
  | PW  |    T     |
  \____/ \________/
-
+  
 
   PR: piped reader, this PW: this writer, T: transformer
 
   </pre>
- * This writer can be instantiated with another Writer and a CharTransformer. All writing will be transformed by the given
+ * This writer can be instantiated with another Writer and a CharTransformer. All writing will be transformed by the given 
  * CharTransformer before arriving at the given Writer.
  *
  * When ready, this TransformingWriter should be 'closed'. A coding example can be found in this classe's main method.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  * @see   ChainedCharTransformer
  * @see   TransformingReader
@@ -52,19 +52,24 @@ public class TransformingWriter extends PipedWriter {
         this.out = out;
 
         PipedReader r = new PipedReader();
-        try {
+        try {            
             connect(r);
             link = new CharTransformerLink(charTransformer, r, out, false);
-            org.mmbase.util.ThreadPools.filterExecutor.execute(link);
+            org.mmbase.util.ThreadPools.filterExecutor.execute(link);    
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
         }
     }
 
-    protected void waitUntilReady() throws IOException {
+   
+    /**
+     * {@inheritDoc}
+     * ALso closes the wrapped Writer.
+     */
+    public void close() throws IOException {
         super.close(); // accept no more input
         try {
-            while (! link.ready()) {
+            while (! link.ready()) {                
                 synchronized(link) { // make sure we have the lock
                     link.wait();
                 }
@@ -72,19 +77,10 @@ public class TransformingWriter extends PipedWriter {
         } catch (InterruptedException ie) {
             log.warn("" + ie);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * Also closes the wrapped Writer.
-     */
-    public void close() throws IOException {
-        waitUntilReady();
         out.close();
-
     }
-
-
+   
+  
     // main for testing purposes
     public static void main(String[] args) {
         Writer out = new OutputStreamWriter(System.out);
@@ -100,16 +96,12 @@ public class TransformingWriter extends PipedWriter {
         try {
             writer.write(testString);
             writer.close();
-
         } catch(Exception e) {
             log.error("" + e + Logging.stackTrace(e));
         }
-
-        org.mmbase.util.ThreadPools.filterExecutor.shutdown();
-
     }
 
-
+    
 
 
 }

@@ -1,1 +1,0 @@
-The language redirect does allow the visitor to jump between different sites (in different languages) to the best related page in another (language) site

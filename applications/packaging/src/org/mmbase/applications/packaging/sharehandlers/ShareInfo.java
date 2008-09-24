@@ -21,9 +21,9 @@ public class ShareInfo {
     // this works the same way as windows shares.
     private boolean active;
 
-    private HashMap<String, Object> users = new HashMap<String, Object>();
+    private HashMap users = new HashMap();
 
-    private HashMap<String, Object> groups = new HashMap<String, Object>();
+    private HashMap groups = new HashMap();
 
     /**
      * Constructor for the ShareInfo object
@@ -141,7 +141,7 @@ public class ShareInfo {
      *
      * @return    The shareUsers value
      */
-    public Iterator<Object> getShareUsers() {
+    public Iterator getShareUsers() {
         return users.values().iterator();
     }
 
@@ -169,7 +169,7 @@ public class ShareInfo {
      *
      * @return    The shareGroups value
      */
-    public Iterator<Object> getShareGroups() {
+    public Iterator getShareGroups() {
         return groups.values().iterator();
     }
 }

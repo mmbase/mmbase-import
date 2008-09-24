@@ -1,5 +1,0 @@
-<relation destination="pools" role="posrel">
-  <object>
-    <relation destination="urls" role="posrel" />
-  </object>
-</relation>

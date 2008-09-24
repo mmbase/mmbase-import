@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.36 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Message.java,v 1.33 2006-08-30 18:05:17 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -122,7 +122,7 @@ public class Message extends MMObjectBuilder {
         if ((messageUser == null) || (messageUser.length() == 0)) {
             messageUser = "system";
         }
-        tmpNodeManager = TransactionManager.getInstance().getTemporaryNodeManager();
+        tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
         chatboxMessages = new NodeBreaker(2 * expireTime, tmpNodeManager);
 
@@ -507,19 +507,19 @@ public class Message extends MMObjectBuilder {
      * @param params the attributes of the LIST tag.
      * @return A <code>Vector</code> containing the requested fields.
      */
-    public Vector<String> getListMessages(StringTagger params) {
+    public Vector getListMessages(StringTagger params) {
         /* Get the thread/node from who the related messages have to be given.
          */
         String id = params.Value("NODE");
         MMObjectNode node = getNode(id);
         if (node == null) {
             log.debug("getListMessages(): no or incorrect node specified");
-            return new Vector<String>();
+            return new Vector();
         }
 
         /* Get the fieldnames out of the FIELDS attribute.
          */
-        Vector<String> fields = params.Values("FIELDS");
+        Vector fields = params.Values("FIELDS");
 
         /*
          * When fields contains listhead it's assumed a <ul> HTML listing has to get generated.
@@ -592,15 +592,15 @@ public class Message extends MMObjectBuilder {
          * the list sequence is used as a default.
          * Sortdirections can be specified in SORTDIRS or DBDIR.
          */
-        Vector<String> sortFields = params.Values("SORTFIELDS");
+        Vector sortFields = params.Values("SORTFIELDS");
         if (sortFields == null) {
             sortFields = params.Values("DBSORT");
             if (sortFields == null) {
-                sortFields = new Vector<String>(1);
+                sortFields = new Vector(1);
                 sortFields.add(F_SEQUENCE);
             }
         }
-        Vector<String> sortDirs = params.Values("SORTDIRS");
+        Vector sortDirs = params.Values("SORTDIRS");
         if (sortDirs == null) sortDirs = params.Values("DBDIR");
         NodeComparator compareMessages;
         if (sortDirs == null) {
@@ -609,7 +609,7 @@ public class Message extends MMObjectBuilder {
             compareMessages = new NodeComparator(sortFields, sortDirs);
         }
 
-        Vector<String> result = null;
+        Vector result = null;
 
         if (maxCount == Integer.MAX_VALUE) {
             // no max, grab everything
@@ -622,12 +622,12 @@ public class Message extends MMObjectBuilder {
             int realCount = (fromCount + maxCount) * fields.size();
             int realFromCount = (fromCount) * fields.size();
             if (result.size() > realCount) {
-                result = new Vector<String>(result.subList(realFromCount, realCount));
+                result = new Vector(result.subList(realFromCount, realCount));
             } else if (realFromCount > 0) {
                 if (realFromCount >= result.size()) {
-                    result = new Vector<String>();
+                    result = new Vector();
                 } else {
-                    result = new Vector<String>(result.subList(realFromCount, result.size()));
+                    result = new Vector(result.subList(realFromCount, result.size()));
                 }
             }
         }
@@ -657,11 +657,11 @@ public class Message extends MMObjectBuilder {
      *      startAfterNode (i.e. 'number' or 'sequence').
      * @return A <code>Vector</code> containing the requested fields.
      */
-    public Vector<String> getListMessages(MMObjectNode thread, Vector<String> fields, Comparator<MMObjectNode> ci,
+    public Vector getListMessages(MMObjectNode thread, Vector fields, Comparator ci,
                                   int maxCount, int depth, int maxDepth, int startAfterNode,
                                   String nodeselectfield) {
-        Vector<String> result = new Vector<String>(), childMsgs;
-        Vector<MMObjectNode> relatedMessages = getRelatedMessages(thread, ci);
+        Vector result = new Vector(), childMsgs;
+        Vector relatedMessages = getRelatedMessages(thread, ci);
 
         int msgPointer = relatedMessages.size() - 1;
         int added = 0, count = 0;
@@ -672,7 +672,7 @@ public class Message extends MMObjectBuilder {
         boolean startAfterNodePassed = (startAfterNode == -1);
 
         while ((msgPointer >= 0) && (added < maxCount)) {
-            relmsg = relatedMessages.elementAt(msgPointer);
+            relmsg = (MMObjectNode) relatedMessages.elementAt(msgPointer);
 
             startAfterNodePassed = startAfterNodePassed ||
                     (startAfterNode == relmsg.getIntValue(nodeselectfield));
@@ -689,7 +689,7 @@ public class Message extends MMObjectBuilder {
                  */
                 if (added == maxCount) replycount = getNrMsgAndHighSeq(relmsg).messageCount;
             } else {
-                childMsgs = new Vector<String>();
+                childMsgs = new Vector();
                 replycount = getNrMsgAndHighSeq(relmsg).messageCount;
             }
 
@@ -700,7 +700,7 @@ public class Message extends MMObjectBuilder {
                 /* Add the fields of the relmsg to the result and then of his children.
                 */
                 for (int i = 0; i < fieldsCount; i++) {
-                    cmd = fields.elementAt(i).trim();
+                    cmd = ((String) fields.elementAt(i)).trim();
                     if (cmd.equals("depth")) {
                         item = "" + depth;
                     } else if (cmd.equals("replycount")) {
@@ -728,10 +728,10 @@ public class Message extends MMObjectBuilder {
      * @param ci A Comparator to use for sorting the messages
      * @return A <code>Vector</code> containing the requested message nodes.
      */
-    public Vector<MMObjectNode> getRelatedMessages(MMObjectNode node, Comparator<MMObjectNode> ci) {
+    public Vector getRelatedMessages(MMObjectNode node, Comparator ci) {
         // we might decide to use a SortedSet instead
-        Vector<MMObjectNode> result = new Vector<MMObjectNode>();
-        Enumeration<MMObjectNode> relatedMessages;
+        Vector result = new Vector();
+        Enumeration relatedMessages;
 
         MMObjectNode channel = isPostedInChannel(node);
         MMObjectNode community = channelBuilder.communityParent(channel);
@@ -755,7 +755,7 @@ public class Message extends MMObjectBuilder {
         while (relatedMessages.hasMoreElements()) {
             // XXX: Tempory hack: test if the related message is indeed
             // a child by his thread field.
-            relmsg = relatedMessages.nextElement();
+            relmsg = (MMObjectNode) relatedMessages.nextElement();
             if (relmsg.getIntValue(F_THREAD) == parent)
                 result.add(relmsg);
         }
@@ -767,7 +767,7 @@ public class Message extends MMObjectBuilder {
      * Add a node to a result vector, provided the type matches and the
      * current count is higher than the offset of the resultlist.
      */
-    private int addRelatedNode(MMObjectNode node, int otypeWanted, int count, int offset, Vector<MMObjectNode> result) {
+    private int addRelatedNode(MMObjectNode node, int otypeWanted, int count, int offset, Vector result) {
         if ((node != null) &&
                 (node.getIntValue("otype") == otypeWanted)) {
             count += 1;
@@ -783,7 +783,7 @@ public class Message extends MMObjectBuilder {
      * provided the type matches and the current count is higher than the
      * offset of the resultlist.
      */
-    private int addRelated(int number, int otypeWanted, int count, int offset, Vector<MMObjectNode> result) {
+    private int addRelated(int number, int otypeWanted, int count, int offset, Vector result) {
         MMObjectNode node = getNode(number);
         return addRelatedNode(node, otypeWanted, count, offset, result);
     }
@@ -793,9 +793,9 @@ public class Message extends MMObjectBuilder {
      * provided the type matches and the current count is higher than the
      * offset of the resultlist.
      */
-    private int addRelated(Object key, int otypeWanted, int count, int offset, Vector<MMObjectNode> result) {
+    private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
         if (key != null) {
-            MMObjectNode node = temporaryNodes.get("" + key);
+            MMObjectNode node = (MMObjectNode) temporaryNodes.get("" + key);
             count = addRelatedNode(node, otypeWanted, count, offset, result);
         }
         return count;
@@ -806,7 +806,7 @@ public class Message extends MMObjectBuilder {
      * @param node this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
-    public Vector<MMObjectNode> getTemporaryRelated(MMObjectNode node, String wtype) {
+    public Vector getTemporaryRelated(MMObjectNode node, String wtype) {
         return getTemporaryRelated(node, wtype, 0, Integer.MAX_VALUE);
     }
 
@@ -815,9 +815,9 @@ public class Message extends MMObjectBuilder {
      * @param node this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
-    public Vector<MMObjectNode> getTemporaryRelated(MMObjectNode node, String wtype,
+    public Vector getTemporaryRelated(MMObjectNode node, String wtype,
                                       int offset, int max) {
-        Vector<MMObjectNode> result = new Vector<MMObjectNode>();
+        Vector result = new Vector();
         if (max <= 0) return result;
         MMObjectNode tmpInsRel;
         boolean found;
@@ -832,7 +832,7 @@ public class Message extends MMObjectBuilder {
         // Get all temporary nodes and filter out all insrels.
         Iterator tmpInsRels = temporaryNodes.keySet().iterator();
         while ((count < (offset + max)) && tmpInsRels.hasNext()) {
-            tmpInsRel = temporaryNodes.get(tmpInsRels.next());
+            tmpInsRel = (MMObjectNode) temporaryNodes.get(tmpInsRels.next());
             if (tmpInsRel != null) {
                 if (tmpInsRel.getBuilder() instanceof InsRel) {
                     found = false;
@@ -889,7 +889,7 @@ public class Message extends MMObjectBuilder {
      *      a message follows a thread or to <code>listtail</code> when a
      *      message is the last in the list.
      */
-    private void addListTags(Vector<String> items, int listheadItemNr, int listtailItemNr,
+    private void addListTags(Vector items, int listheadItemNr, int listtailItemNr,
                              int depthItemNr, int fieldsCount, String openTag, String closeTag) {
         int depth;
         int previousDepth = 0;
@@ -897,7 +897,7 @@ public class Message extends MMObjectBuilder {
         int itemsCount = items.size();
         String prefix, postfix;
         while (itemNr < itemsCount) {
-            depth = (Integer.decode(items.elementAt(itemNr + depthItemNr))).intValue();
+            depth = (Integer.decode((String) items.elementAt(itemNr + depthItemNr))).intValue();
             if (itemNr == 0) {
                 prefix = openTag; // begin of the list
                 while (previousDepth < depth) {
@@ -959,8 +959,8 @@ public class Message extends MMObjectBuilder {
         // If recursive is true delete the childmessages
         // else abort on any childmessages.
         MMObjectNode relmsg;
-        for (Enumeration<MMObjectNode> messages = getReplies(node); messages.hasMoreElements();) {
-            relmsg = messages.nextElement();
+        for (Enumeration messages = getReplies(node); messages.hasMoreElements();) {
+            relmsg = (MMObjectNode) messages.nextElement();
             // Before doing all this hot stuff, there should be
             // a check preventing recorded messages get deleted!
             // (not an issue right now, as session is not implemented)
@@ -993,8 +993,8 @@ public class Message extends MMObjectBuilder {
         int highestSequence = -1;
         int messageCount = 0;
         MMObjectNode msg;
-        for (Enumeration<MMObjectNode> messages = getReplies(node); messages.hasMoreElements();) {
-            msg = messages.nextElement();
+        for (Enumeration messages = getReplies(node); messages.hasMoreElements();) {
+            msg = (MMObjectNode) messages.nextElement();
             if (msg.getIntValue(F_THREAD) == node.getNumber()) {
                 sequence = msg.getIntValue(F_SEQUENCE);
                 if (sequence > highestSequence) highestSequence = sequence;
@@ -1026,7 +1026,7 @@ public class Message extends MMObjectBuilder {
      * @param node the node to find the relations of
      * @return an <code>Enumeration</code> containign the related messages.
      */
-    public Enumeration<MMObjectNode> getReplies(MMObjectNode node) {
+    public Enumeration getReplies(MMObjectNode node) {
         return node.getRelatedNodes("message").elements();
     }
 
@@ -1136,7 +1136,7 @@ public class Message extends MMObjectBuilder {
         String tmp = tok.nextToken();
         MMObjectNode message = getNode(tmp);
         //tmp = tmp.substring(tmp.indexOf("_") + 1);
-        if (message == null) message = temporaryNodes.get(tmp.trim());
+        if (message == null) message = (MMObjectNode) temporaryNodes.get(tmp.trim());
         if (message == null) {
             log.error("Message with id '" + tmp + "' cannot be found.");
             return "";

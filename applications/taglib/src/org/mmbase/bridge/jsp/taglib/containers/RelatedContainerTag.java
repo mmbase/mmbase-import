@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -24,14 +23,13 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.21 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.18 2006-07-04 12:16:09 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
     //  private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
     private Query     query      = null;
-    private Object prevQuery     = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
     private Attribute searchDirs = Attribute.NULL;
@@ -69,9 +67,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
 
 
-    public int doStartTag() throws JspException {
-        initTag();
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+    public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
             query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
@@ -104,8 +100,6 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
         Queries.addFields(query, (String) fields.getValue(this));
 
-        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
-
         return EVAL_BODY;
     }
 
@@ -122,8 +116,6 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
-        pageContext.setAttribute(KEY, prevQuery, SCOPE);
-        prevQuery = null;
         query = null;
         return super.doEndTag();
     }

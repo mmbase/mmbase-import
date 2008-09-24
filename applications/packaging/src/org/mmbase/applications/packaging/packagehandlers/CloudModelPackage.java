@@ -7,6 +7,7 @@
 package org.mmbase.applications.packaging.packagehandlers;
 
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -18,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.corebuilders.TypeRel;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -46,10 +47,10 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_CLOUDMODEL_1_0, DTD_CLOUDMODEL_1_0, CloudModelPackage.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_CLOUDMODEL_1_0, DTD_CLOUDMODEL_1_0, CloudModelPackage.class);
     }
 
 
@@ -214,7 +215,9 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      */
     private boolean installNeededRelDefs(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         MMBase mmb = MMBase.getMMBase();
-        for (Element n: reader.getChildElements("cloudmodel.neededreldeflist", "reldef")) {
+        for (Iterator ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef");
+                ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String buildername = n.getAttribute("builder");
             String source = n.getAttribute("source");
             String target = n.getAttribute("target");
@@ -257,7 +260,9 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installAllowedRelations(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Element n: reader.getChildElements("cloudmodel.allowedrelationlist", "relation")) {
+        for (Iterator ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
+                ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String from = n.getAttribute("from");
             String to = n.getAttribute("to");
             String type = n.getAttribute("type");
@@ -285,8 +290,12 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installNeededBuilders(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        for (Element n3: reader.getChildElements("cloudmodel.neededbuilderlist", "builder")) {
+        for (Iterator ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder");
+                ns.hasNext(); ) {
+            Element n3 = (Element) ns.next();
+
             String name = reader.getElementValue(n3);
+
             installStep substep = step.getNextInstallStep();
             substep.setUserFeedBack("checking builder " + name + " ..");
             if (getBundleStep()!=null) getBundleStep().setUserFeedBack("calling package installer "+getName()+"..checking builder "+ name);

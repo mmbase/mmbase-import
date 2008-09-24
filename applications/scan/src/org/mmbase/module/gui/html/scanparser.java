@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.79 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id: scanparser.java,v 1.73 2005-10-26 07:35:36 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -40,16 +40,20 @@ public class scanparser extends ProcessorModule {
     private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName());
     private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
     private CounterInterface counter = null;
+    private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
     private static MMBase mmbase=null;
     private static TransactionHandlerInterface transactionhandler;
-    private static Hashtable<String, ProcessorModule> processors = new Hashtable<String, ProcessorModule>();
+    private static Hashtable processors = new Hashtable();
+    private static boolean debug=false;
     private static RandomPlus rnd;
     private static int crcseed;
 
-    private Hashtable<String, PageProcess> pagesprocessing=new Hashtable<String, PageProcess>();
+    private Hashtable pagesprocessing=new Hashtable();
 
+    // needs fix !
+    private static String loadmode="no-cache";
     private static String htmlroot;
     Hashtable Roots;
 
@@ -83,7 +87,7 @@ public class scanparser extends ProcessorModule {
      public String getMimeType(String ext) {
          return getMimeTypeFile("dummy."+ext);
      }
-
+ 
      public String getMimeTypeFile(String fileName) {
          ServletContext sx = MMBaseContext.getServletContext();
          String mimeType = sx.getMimeType(fileName);
@@ -99,6 +103,7 @@ public class scanparser extends ProcessorModule {
         int precmd=0,postcmd=0,prepostcmd=0,index;
         StringBuffer dst=new StringBuffer();
         String cmd="$ITEM";
+        int endc='^';
         if (template==null) return "No Template";
         while ((precmd=template.indexOf(cmd,postcmd))!=-1) {
             dst.append(template.substring(postcmd,precmd));
@@ -137,6 +142,7 @@ public class scanparser extends ProcessorModule {
         int precmd=0,postcmd=0,prepostcmd=0,index;
         StringBuffer dst=new StringBuffer();
         String cmd="$ITEM";
+        int endc='^';
         if (template==null) return "No Template";
         while ((precmd=template.indexOf(cmd,postcmd))!=-1) {
             dst.append(template.substring(postcmd,precmd));
@@ -171,9 +177,9 @@ public class scanparser extends ProcessorModule {
         return dst.toString();
     }
 
-    public Vector reverse(List input,int num) {
+    public Vector reverse(Vector input,int num) {
         Vector results=new Vector();
-        for (Enumeration e = Collections.enumeration(input);e.hasMoreElements();) {
+        for (Enumeration e=input.elements();e.hasMoreElements();) {
             for (int i=0;i<num;i++) {
                 String val=(String)e.nextElement();
                 results.insertElementAt(val,i);
@@ -183,6 +189,8 @@ public class scanparser extends ProcessorModule {
     }
 
     boolean do_vals(String cmd,sessionInfo session,scanpage sp) throws ParseException {
+        int il=-1;
+        int ir=-1;
         int andpos=cmd.indexOf(" AND ");
         int orpos=cmd.indexOf(" OR ");
         if (andpos!=-1 || orpos!=-1) {
@@ -262,7 +270,7 @@ public class scanparser extends ProcessorModule {
     public final String handle_line(String body,sessionInfo session,scanpage sp) throws ParseException {
 
         String part=null;
-        int end_pos2;
+        int qw_pos,qw_pos2,end_pos,end_pos2;
         int precmd=0,postcmd=-1,prepostcmd=0;
         StringBuffer newbody=new StringBuffer();
 
@@ -619,7 +627,7 @@ public class scanparser extends ProcessorModule {
     private final String do_part(String part2,sessionInfo session,scanpage sp,int markPart) throws ParseException {
 
         String part="",filename,paramline=null;;
-        Vector<String> oldparams=sp.getParamsVector();
+        Vector oldparams=sp.getParamsVector();
         String oldQueryString = sp.querystring;
 
         sp.partlevel++;
@@ -780,13 +788,13 @@ public class scanparser extends ProcessorModule {
                                      String builderPath, // path to add between path and filename for LEAVE version
                                      String fileName, // File name of part we are looking for
                                      String bestFile, // Last found file which is ok
-                                     Enumeration<MMObjectNode> nodes, // The passed object nodes
+                                     Enumeration nodes, // The passed object nodes
                                      sessionInfo session, // The session for version control
                                      boolean leaf, // TREE or LEAF version
                                      boolean byALias // NAME version
                                     ) throws ParseException {
         // Get node from args
-        MMObjectNode node = nodes.nextElement();
+        MMObjectNode node = (MMObjectNode)nodes.nextElement();
         String nodeNumber;
         if (byALias) {
             nodeNumber = ""+mmbase.getOAlias().getAlias(node.getIntValue("number"));
@@ -872,7 +880,7 @@ public class scanparser extends ProcessorModule {
         // Add the buildernames of the passed nodes to builderPath for leafpart and leaffile
         String filename = "";
         String builderPath = "";
-        Vector<MMObjectNode> nodes = new Vector<MMObjectNode>();
+        Vector nodes = new Vector();
         String arg = "";
         boolean skip = false;
         StringTokenizer tokens = new StringTokenizer(args, "+");
@@ -924,7 +932,7 @@ public class scanparser extends ProcessorModule {
         } else bestFile = path + filename; // If nothing better found part bestFile
 
         // Travel the smart object tree to find an override of the default part
-        Enumeration<MMObjectNode> e = nodes.elements();
+        Enumeration e = nodes.elements();
         if (e.hasMoreElements())
             bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf, byALias);
 
@@ -991,8 +999,8 @@ public class scanparser extends ProcessorModule {
 
         long oldtime = System.currentTimeMillis();
 
-        String part;
-        int qw_pos,qw_pos2;
+        String part,part2;
+        int qw_pos,qw_pos2,end_pos,end_pos2;
 
         // Parameter fill in
         while (newbody.indexOf("$PARAM")!=-1) {
@@ -1227,7 +1235,7 @@ public class scanparser extends ProcessorModule {
     }
 
     /**
-     *  try to acces a module (Must be a ProcessorModule)
+     *  try to acces a module (Must be a ProcessorInterface)
      *  and replace "part" by whatever the processor returns.
      */
     private final String do_mod(scanpage sp,String part) {
@@ -1239,7 +1247,7 @@ public class scanparser extends ProcessorModule {
             String moduleName = part.substring(0,index);
             String moduleCommand = part.substring(index+1,part.length());
 
-            ProcessorModule proc = getProcessor(moduleName);
+            ProcessorInterface proc = getProcessor(moduleName);
             if (proc == null) {
                 log.error("do_mod(): no Processor(" + moduleName +") found for page("+sp.getUrl()+")");
                 return "";
@@ -1252,9 +1260,9 @@ public class scanparser extends ProcessorModule {
     /**
      * give a name an you get the  processor (Interface), if procName does not exists then null is returned.
      */
-    private final ProcessorModule getProcessor(String procName) {
+    private final ProcessorInterface getProcessor(String procName) {
         if (processors.containsKey(procName)) {
-            return processors.get(procName);
+            return (ProcessorInterface) processors.get(procName);
         } else {
             Object obj = getModule (procName);
             if (obj == null) {
@@ -1264,9 +1272,9 @@ public class scanparser extends ProcessorModule {
                 // debug(obj);
             }
 
-            if (obj instanceof ProcessorModule) {
+            if (obj instanceof ProcessorInterface) {
                 //debug("servscan.getProcessor: we have a new Processor("+procName+")");
-                ProcessorModule pr = (ProcessorModule) obj;
+                ProcessorInterface pr = (ProcessorInterface) obj;
                 processors.put(procName,pr);
                 return pr;
             } else {
@@ -1277,6 +1285,9 @@ public class scanparser extends ProcessorModule {
     }
 
      private final String do_unmap(String part,sessionInfo session,scanpage sp) throws ParseException {
+        String part1,part2;
+        int pnt;
+
         part=dodollar(part,session,sp);
         return "";
     }
@@ -1351,7 +1362,7 @@ public class scanparser extends ProcessorModule {
         String tokje;
 
         Vector cmds;
-        ProcessorModule tmpprocessor=null;
+        ProcessorInterface tmpprocessor=null;
 
         part=dodollar(part,session,sp);
 
@@ -1397,6 +1408,7 @@ public class scanparser extends ProcessorModule {
     private Vector tokenizestring(String part) {
         String current="",tokje;
         boolean inDQuote=false;
+        int pos;
         Vector cmds=new Vector();
         StringTokenizer tok;
 
@@ -1437,7 +1449,22 @@ public class scanparser extends ProcessorModule {
     String do_conditions_lif(String body,sessionInfo session,scanpage sp) throws ParseException {
         StringBuffer buffer = new StringBuffer();
 
+        int depth=0;
         int ifpos=0;
+        int newifpos=0;
+        int elsepos=0;
+        int elseifpos=0;
+        int endifpos=0;
+
+        // counters for occurrence
+        int ifcount=0;
+        int elsecount=0;
+        int elseifcount=0;
+        int endifcount=0;
+
+        // boolean if a token was found
+        boolean found=true;
+
         buffer = new StringBuffer();
         ifpos=body.indexOf("<LIF",ifpos);
         while (ifpos!=-1) {
@@ -1458,6 +1485,7 @@ public class scanparser extends ProcessorModule {
     }
 
     String do_if(String body,sessionInfo session,scanpage sp) throws ParseException {
+        int endpos=-1;
         // first hunt down the command
         int pos = body.indexOf('>');
         if (pos!=-1) {
@@ -1520,7 +1548,22 @@ public class scanparser extends ProcessorModule {
     String do_conditions(String body,sessionInfo session,scanpage sp) throws ParseException {
         StringBuffer buffer = new StringBuffer();
 
+        int depth=0;
         int ifpos=0;
+        int newifpos=0;
+        int elsepos=0;
+        int elseifpos=0;
+        int endifpos=0;
+
+        // counters for occurrence
+        int ifcount=0;
+        int elsecount=0;
+        int elseifcount=0;
+        int endifcount=0;
+
+        // boolean if a tken was found
+        boolean found=true;
+
         buffer = new StringBuffer();
         ifpos=body.indexOf("<IF",ifpos);
         while (ifpos!=-1) {
@@ -1543,22 +1586,23 @@ public class scanparser extends ProcessorModule {
     private String do_list(String cmd,String template, sessionInfo session,scanpage sp) throws ParseException {
         long ll1,ll2;
         StringBuffer rtn=new StringBuffer();
-        ProcessorModule tmpprocessor=null;
+        ProcessorInterface tmpprocessor=null;
         String command=null;
         String sorted=null;
         String sortedpos=null;
         String str,key=null;
         StringTagger tagger=null;
         Object obj;
-        List t,cmds,result;
+        Vector t,cmds,result;
         int numitems=1,maxitems=-1,curitem=0,offset=0;
         int maxtotal=-1;
 
         ll1=System.currentTimeMillis();
         cmd=dodollar(cmd,session,sp);
-        cmd=Strip.whitespace(cmd,Strip.BOTH);
+        cmd=Strip.Whitespace(cmd,Strip.BOTH);
         String oldcmd=cmd;
 
+        String  wantCache="HENK";
         if (sp.reload) {
             if (cmd.indexOf(" CACHE=")!=-1) {
                 String rst=scancache.get("HENK","/LISTS/"+cmd+template,sp);
@@ -1716,15 +1760,15 @@ public class scanparser extends ProcessorModule {
                     }
                     offset*=numitems;
                     for (int j=offset;j<maxitems;j+=numitems) {
-                        t.clear();
+                        t.removeAllElements();
                         for (int i=0;i<numitems;i++) {
                             try {
-                                obj=result.get(j+i);
+                                obj=result.elementAt(j+i);
                                 if (obj==null) obj="NULL";
                             } catch (ArrayIndexOutOfBoundsException r) {
                                 obj="No Such Element";
                             }
-                            t.add(obj);
+                            t.addElement(obj);
                         }
                         rtn.append(processtemplate(t,template,curitem+(offset/numitems),jsize/numitems,curitem,numitems));
                         //rtn.append(processtemplate(t,template,curitem+(offset/numitems),maxtotal,curitem));
@@ -1816,15 +1860,15 @@ public class scanparser extends ProcessorModule {
                     }
 
                     for (int j=offset;j<maxitems;j+=numitems) {
-                        t.clear();
+                        t.removeAllElements();
                         for (int i=0;i<numitems;i++) {
                             try {
-                                obj=result.get(j+i);
+                                obj=result.elementAt(j+i);
                                 if (obj==null) obj="NULL";
                             } catch (ArrayIndexOutOfBoundsException r) {
                                 obj="No Such Element";
                             }
-                            t.add(obj);
+                            t.addElement(obj);
                         }
                         rtn.append(processtemplate(t,template,curitem+(offset/numitems),jsize/numitems,curitem,numitems));
                         //rtn.append(processtemplate(t,template,curitem+(offset/numitems),maxtotal,curitem));
@@ -1862,10 +1906,11 @@ public class scanparser extends ProcessorModule {
         return rtn.toString();
     }
 
-    private String processtemplate(List v,String template, int pos, int last, int rpos, int numitems) {
+    private String processtemplate(Vector v,String template, int pos, int last, int rpos, int numitems) {
         int precmd=0,postcmd=0,prepostcmd=0,index;
         StringBuffer dst=new StringBuffer();
         String cmd="$ITEM";
+        int endc='^';
         if (template==null) return "No Template";
         if (v==null) return "Vector is null";
         while ((precmd=template.indexOf(cmd,postcmd))!=-1) {
@@ -1880,7 +1925,7 @@ public class scanparser extends ProcessorModule {
                 } catch (Exception g) {}
                 index--;
                 try {
-                    dst.append((v.get(index)).toString());
+                    dst.append((v.elementAt(index)).toString());
                 } catch (ArrayIndexOutOfBoundsException e) {}
             } catch (NumberFormatException e) {
                 //index=1;
@@ -1934,7 +1979,11 @@ public class scanparser extends ProcessorModule {
      * it has done the PRC-VAR's fill in.
      */
     public final void do_proc_input(String rq_line,HttpPost poster,Hashtable proc_var,Hashtable proc_cmd,scanpage sp) {
-        String part;
+        String part,part2,sqlstatement;
+        Object obj;
+        int qw_pos,qw_pos2;
+        Vector  results;
+
         // First find the processor of this page
         if ((part=(String)proc_var.get("PROCESSOR"))!=null) {
             //processor=(Processor)getModule(part);
@@ -2050,17 +2099,17 @@ public class scanparser extends ProcessorModule {
      * @param numberofitems - integer with the amount of items.
      * @return a Vector with sorted items.
      */
-    Vector doMAlphaSort(List input,String sortonnumbers,int numberofitems) {
+    Vector doMAlphaSort(Vector input,String sortonnumbers,int numberofitems) {
 
         //SortedVector output = new SortedVector(new RowVectorCompare(sortonnumber));
         if (log.isDebugEnabled()) log.debug("doMAlphaSort: Sorting using MultiColCompare("+sortonnumbers+ ")");
         SortedVector output = new SortedVector(new MultiColCompare(sortonnumbers));
         // first create vectors with numberofitems per vector
-        Enumeration einput = Collections.enumeration(input);
+        Enumeration einput=input.elements();
         while (einput.hasMoreElements()) {
             Vector row=new Vector();
             for (int i=0;i<numberofitems;i++) {
-                row.add(einput.nextElement());
+                row.addElement((String)einput.nextElement());
             }
             output.addSorted(row);
         }
@@ -2070,10 +2119,24 @@ public class scanparser extends ProcessorModule {
             Vector row=(Vector)eoutput.nextElement();
             Enumeration erow=row.elements();
             while (erow.hasMoreElements()) {
-                result.add(erow.nextElement());
+                result.addElement(erow.nextElement());
             }
         }
         return result;
+    }
+
+    private String printURI(scanpage sp) {
+        String rtn="";
+        if (sp!=null) {
+            if (sp.req_line!=null) {
+                rtn=sp.req_line;
+            } else {
+                rtn="req_line==NULL";
+            }
+        } else {
+            rtn="scanpage==NULL";
+        }
+        return rtn;
     }
 
     private String do_transaction(String template, sessionInfo session,scanpage sp) throws ParseException {

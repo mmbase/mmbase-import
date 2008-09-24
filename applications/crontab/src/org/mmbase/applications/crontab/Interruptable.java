@@ -15,7 +15,6 @@ import org.mmbase.util.logging.*;
  * if the job does sleeps (InterruptedException) or check Thread.isInterrupted().
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Interruptable.java,v 1.7 2008-07-29 17:58:34 michiel Exp $
  */
 
 public class Interruptable implements Runnable {
@@ -23,33 +22,16 @@ public class Interruptable implements Runnable {
     private Thread runThread = null;
     private Date   startTime;
     private final Runnable runnable;
-    private final Collection<Interruptable> collection;
-    private final CallBack ready;
-    private final CallBack start;
-    private static int seq = 0;
-    private final int sequence = seq++;
+    private final Collection collection;
+    private final Runnable ready;
 
-    static interface CallBack {
-        void run(Interruptable i);
+    public Interruptable(Runnable run, Collection col) {
+        this(run, col, null);
     }
-
-    public Interruptable(Runnable run, Collection<Interruptable>  col) {
-        this(run, col, null, null);
-    }
-    /**
-     * @param run The runnable wrapped by this Interrupted, which is to be executed in {@link #run}.
-     * @param col A modifiable collection or <code>null</code> If not null, this interruptable is
-     *            added to it just before running, and removed from it just after running.
-     */
-    public Interruptable(Runnable run, Collection<Interruptable> col, CallBack s, CallBack r) {
+    public Interruptable(Runnable run, Collection col, Runnable r) {
         runnable = run;
         collection = col;
         ready = r;
-        start = s;
-    }
-
-    public int getId() {
-        return sequence;
     }
 
     public void run() {
@@ -58,9 +40,8 @@ public class Interruptable implements Runnable {
         runThread = Thread.currentThread();
         startTime = new Date();
         try {
-            if (start != null) start.run(this);
             runnable.run();
-            if (ready != null) ready.run(this);
+            if (ready != null) ready.run();
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
         }

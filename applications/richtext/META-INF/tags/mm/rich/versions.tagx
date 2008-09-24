@@ -14,8 +14,8 @@
   <mm:include page="/mmbase/jquery/jquery.jspx" />
   <script type="text/javascript">
 var changer = function() {
-	var oldSelected = $("ul.versionselector li input[name=version1]:checked").attr("value");
-	var newSelected = $("ul.versionselector li input[name=version2]:checked").attr("value");
+	var oldSelected = $("ul.versionselector li input[name=version1]:checked")[0].value;
+	var newSelected = $("ul.versionselector li input[name=version2]:checked")[0].value;
 	$("ul.versionselector li").each(function() {
 	    var version1 = $(this).find("input[name=version1]")[0];
 	    var version2 = $(this).find("input[name=version2]")[0];

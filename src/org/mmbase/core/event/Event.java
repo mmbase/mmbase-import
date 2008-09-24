@@ -1,4 +1,5 @@
 /*
+ * Created on 6-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -8,14 +9,14 @@ package org.mmbase.core.event;
 
 import java.io.Serializable;
 
-import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.module.core.MMBase;
 
 /**
  * This class is the base class for all mmbase events
- *
+ * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.15 2008-09-04 20:59:06 michiel Exp $
+ * @version $Id: Event.java,v 1.8.2.1 2007-02-27 13:32:43 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -25,18 +26,18 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public static final int TYPE_CHANGE   = 1;
     public static final int TYPE_DELETE   = 2;
 
-    protected int eventType = TYPE_UNSPECIFIED;
+    protected int    eventType = TYPE_UNSPECIFIED;
     protected String machine;
 
     /**
      * Every event originates from a certain machine, which is identified by a String.
-     * If this equals {@link MMBaseContext#getMachineName()} then this is a local event.
+     * If this equals {@link MMBase#getMachineName()} then this is a local event.
      */
     public String getMachine() {
         return machine;
     }
     public boolean isLocal() {
-        return MMBaseContext.getMachineName().equals(machine);
+        return MMBase.getMMBase().getMachineName().equals(machine);
     }
 
 
@@ -50,11 +51,11 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
 
     /**
      * @param machine The machine name. If <code>null</code> the local machine name is extracted from MMBase, using
-     *                {@link MMBaseContext#getMachineName()}
+     *                {@link MMBase#getMachineName()}
      */
     public Event(String machine, int type) {
         this.machine =  machine == null ?
-            MMBaseContext.getMachineName() :
+            MMBase.getMMBase().getMachineName() :
             machine;
         this.eventType    = type;
     }
@@ -62,12 +63,11 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public Event(String machine) {
         this(machine, TYPE_UNSPECIFIED);
     }
-
     /**
      * @since MMBase-1.8.4
      */
     public Event() {
-        this(MMBaseContext.getMachineName());
+        this(MMBase.getMMBase().getMachineName());
     }
 
     public Object clone(){

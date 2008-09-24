@@ -13,7 +13,7 @@ See http://www.MMBase.org/license
  *
  * @author Michiel Meeuwisssen
  * @since MMBase-1.8.6
- * @version $Id: ListParser.jj,v 1.4 2008-07-08 15:54:46 michiel Exp $
+ * @version $Id: ListParser.jj,v 1.2.2.2 2008-07-24 16:17:48 michiel Exp $
  */
 
 options {
@@ -33,12 +33,12 @@ import java.io.*;
 public class ListParser {
     int curDepth = 0;
     boolean begin = true;
-    LinkedList<Character> stack = new LinkedList<Character>();
+    LinkedList stack = new LinkedList();
 
     static String transform( String inString ) {
         Reader reader = new StringReader(inString) ;
         ListParser parser = new ListParser(reader) ;
-        StringBuilder buffer = new StringBuilder() ;
+        StringBuffer buffer = new StringBuffer() ;
         try {
             parser.start(buffer) ; }
         catch( TokenMgrError e ) {
@@ -54,19 +54,19 @@ public class ListParser {
     char getType(Token t, int depth) {
         return t.image.charAt(depth - 1 +  (begin ? 0 : 1)) == '*' ? 'o' : 'u';
     }
-    void open(StringBuilder buf, char type) {
+    void open(StringBuffer buf, char type) {
         curDepth++;
-        stack.addFirst(type);
+        stack.addFirst(new Character(type));
         if (! begin && curDepth == 1) buf.append('\n');
         buf.append('<').append(type).append("l>");
     }
-    void close(StringBuilder buf) {
+    void close(StringBuffer buf) {
         curDepth--;
-        char t = stack.removeFirst();
+        char t = ((Character) stack.removeFirst()).charValue();
         buf.append("</li></").append(t).append("l>");
         if (curDepth > 0) buf.append("</li>");
     }
-    void handleList(StringBuilder buf, Token t) {
+    void handleList(StringBuffer buf, Token t) {
         int depth = getDepth(t);
         char type = getType(t, depth);
         if (depth == curDepth + 1) {
@@ -78,7 +78,7 @@ public class ListParser {
         }
         buf.append("<li>");
     }
-    void endLists(StringBuilder buf) {
+    void endLists(StringBuffer buf) {
         while (stack.size() > 0) {
             close(buf);
         }
@@ -93,6 +93,7 @@ public class ListParser {
 
 PARSER_END(ListParser)
 
+
 TOKEN : { <BOL: "*" (["*","-"])* (" ")> }
 TOKEN : { <BUL: "-" (["*", "-"])* (" ")> }
 TOKEN : { <OL: "\n*" (["*", "-"])* (" ")> }
@@ -100,7 +101,8 @@ TOKEN : { <UL: "\n-" (["*", "-"])* (" ")> }
 TOKEN : { <END: ("\n")> }
 TOKEN : { <OTHER : ~[] > }
 
-void start(StringBuilder buf) :
+
+void start(StringBuffer buf) :
 {
   Token t ;
 }

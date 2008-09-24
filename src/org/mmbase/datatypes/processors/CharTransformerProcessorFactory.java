@@ -14,24 +14,24 @@ import org.mmbase.util.transformers.*;
 
 
 /**
- * Wraps a {@link org.mmbase.util.transformers.ParameterizedTransformerFactory} (it <em>must</em> produce
- * a CharTransformer), to be a ParameterizedProcessorFactory. Of course based on {@link CharTransformerProcessor}.
+ * Wraps a {@link org.mmbase.util.transformers.ParameterizedTransformerFactory} (it <em>must</em> produces
+ * CharTransformer), to be a ParameterizedProcessorFactory. Of course based on {@link CharTransformerProcessor}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessorFactory.java,v 1.3 2008-08-27 17:08:09 michiel Exp $
+ * @version $Id: CharTransformerProcessorFactory.java,v 1.2 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class CharTransformerProcessorFactory implements ParameterizedProcessorFactory {
 
-    private ParameterizedTransformerFactory<CharTransformer> factory;
+    private ParameterizedTransformerFactory factory;
 
-    public CharTransformerProcessorFactory(ParameterizedTransformerFactory<CharTransformer> f) {
+    public CharTransformerProcessorFactory(ParameterizedTransformerFactory f) {
         factory = f;
     }
 
     public Processor createProcessor(Parameters parameters) {
-        CharTransformer ct = factory.createTransformer(parameters);
+        CharTransformer ct = (CharTransformer) factory.createTransformer(parameters);
         return new CharTransformerProcessor(ct);
     }
 

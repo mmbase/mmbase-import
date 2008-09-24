@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.4 2005-05-02 11:54:31 michiel Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -41,7 +41,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
         container = getAttribute(c);
     }
 
-    public void setElement(String e) throws JspTagException {
+    public void setElement(String e) throws JspTagException { 
         element = getAttribute(e);
     }
 
@@ -59,19 +59,19 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
     }
 
 
-    protected SortedSet<Integer> getOTypes(List<String> names) throws JspTagException {
+    protected SortedSet getOTypes(List names) throws JspTagException {
         Cloud cloud = getCloudVar();
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
+        SortedSet set = new TreeSet();
+        Iterator i = names.iterator();
         boolean desc = descendants.getBoolean(this, true);
         while (i.hasNext()) {
-            NodeManager nm = cloud.getNodeManager(i.next());
-            set.add(nm.getNumber());
+            NodeManager nm = cloud.getNodeManager((String) i.next());
+            set.add(new Integer(nm.getNumber()));
             if (desc) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
                 while (j.hasNext()) {
-                    set.add(j.nextNodeManager().getNumber());
-                }
+                    set.add(new Integer(j.nextNodeManager().getNumber()));
+                }                
             }
         }
         return set;
@@ -80,10 +80,11 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
 
 
     public int doStartTag() throws JspTagException {
-        Query query = getQuery(container);
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();
         String elementString = element.getString(this);
         Step step;
-        if (elementString.length() == 0) {
+        if (elementString.equals("")) {
             if (query instanceof NodeQuery) {
                 step = ((NodeQuery) query).getNodeStep();
             } else {
@@ -107,7 +108,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {

@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.packaging;
@@ -23,7 +23,7 @@ import org.mmbase.applications.packaging.sharehandlers.ShareGroup;
 import org.mmbase.applications.packaging.sharehandlers.ShareInfo;
 import org.mmbase.applications.packaging.sharehandlers.ShareUser;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -43,13 +43,13 @@ public class ShareManager {
 
     private static String providername = "";
 
-    private static HashMap<String, ShareUser> users = new HashMap<String, ShareUser>();
+    private static HashMap users = new HashMap();
 
-    private static HashMap<String, ShareGroup> groups = new HashMap<String, ShareGroup>();
+    private static HashMap groups = new HashMap();
 
-    private static HashMap<String, ShareClientSession> clients = new HashMap<String, ShareClientSession>();
+    private static HashMap clients = new HashMap();
 
-    private static HashMap<String, String> providingpaths = new HashMap<String, String>();
+    private static HashMap providingpaths = new HashMap();
 
     /** DTD resource filename of the sharing DTD version 1.0 */
     public static final String DTD_SHARING_1_0 = "shared_1_0.dtd";
@@ -59,13 +59,13 @@ public class ShareManager {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_SHARING_1_0, "DTD_SHARING_1_0", ShareManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_SHARING_1_0, "DTD_SHARING_1_0", ShareManager.class);
     }
 
-
+    
     public static synchronized void init() {
         if (!isRunning()) {
             state=true;
@@ -83,40 +83,40 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator<PackageContainer> getSharedPackages() {
+    public static Iterator getSharedPackages() {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Iterator<PackageContainer> p = PackageManager.getPackages();
-            ArrayList<PackageContainer> reallyshared = new ArrayList<PackageContainer>();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallyshared = new ArrayList();
             while (p.hasNext()) {
-                PackageContainer e = p.next();
+                PackageContainer e = (PackageContainer)p.next();
                 if (e.isShared()) {
                     reallyshared.add(e);
                 }
             }
             return reallyshared.iterator();
         } else {
-            return (new ArrayList<PackageContainer>()).iterator();
+            return (new ArrayList()).iterator();
         }
     }
 
 
     /**
      */
-    public static Iterator<BundleContainer> getSharedBundles() {
+    public static Iterator getSharedBundles() {
         // first getthe BundleManager
         if (BundleManager.isRunning()) {
-            Iterator<BundleContainer> b = BundleManager.getBundles();
-            ArrayList<BundleContainer> reallyshared = new ArrayList<BundleContainer>();
+            Iterator b = BundleManager.getBundles();
+            ArrayList reallyshared = new ArrayList();
             while (b.hasNext()) {
-                BundleContainer e = b.next();
+                BundleContainer e = (BundleContainer)b.next();
                 if (e.isShared()) {
                     reallyshared.add(e);
                 }
             }
             return reallyshared.iterator();
         } else {
-            return (new ArrayList<BundleContainer>()).iterator();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -125,20 +125,20 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator<PackageContainer> getNotSharedPackages() {
+    public static Iterator getNotSharedPackages() {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Iterator<PackageContainer> p = PackageManager.getPackages();
-            ArrayList<PackageContainer> reallynotshared = new ArrayList<PackageContainer>();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallynotshared = new ArrayList();
             while (p.hasNext()) {
-                PackageContainer e = p.next();
+                PackageContainer e = (PackageContainer)p.next();
                 if (!e.isShared()) {
                     reallynotshared.add(e);
                 }
             }
             return reallynotshared.iterator();
         } else {
-            return (new ArrayList<PackageContainer>()).iterator();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -147,20 +147,20 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator<BundleContainer> getNotSharedBundles() {
+    public static Iterator getNotSharedBundles() {
         // first get the BundleManager
         if (BundleManager.isRunning()) {
-            Iterator<BundleContainer> b = BundleManager.getBundles();
-            ArrayList<BundleContainer> reallynotshared = new ArrayList<BundleContainer>();
+            Iterator b = BundleManager.getBundles();
+            ArrayList reallynotshared = new ArrayList();
             while (b.hasNext()) {
-                BundleContainer e = b.next();
+                BundleContainer e = (BundleContainer)b.next();
                 if (!e.isShared()) {
                     reallynotshared.add(e);
                 }
             }
             return reallynotshared.iterator();
         } else {
-            return (new ArrayList<BundleContainer>()).iterator();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -169,13 +169,13 @@ public class ShareManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator<Object> getRemoteSharedPackages(String user,String password,String method,String host) {
+    public static Iterator getRemoteSharedPackages(String user,String password,String method,String host) {
         // first get the PackageManager
         if (PackageManager.isRunning()) {
-            Iterator<PackageContainer> p = PackageManager.getPackages();
-            ArrayList<Object> reallyshared = new ArrayList<Object>();
+            Iterator p = PackageManager.getPackages();
+            ArrayList reallyshared = new ArrayList();
             while (p.hasNext()) {
-                PackageContainer e = p.next();
+                PackageContainer e = (PackageContainer)p.next();
                 if (e.isShared()) {
                     ShareInfo shareinfo = e.getShareInfo();
                     if (shareinfo!=null && shareinfo.isActive()) {
@@ -186,9 +186,9 @@ public class ShareManager {
                 }
             }
 
-            Iterator<BundleContainer> b = BundleManager.getBundles();
+            Iterator b = BundleManager.getBundles();
             while (b.hasNext()) {
-                BundleContainer e = b.next();
+                BundleContainer e = (BundleContainer)b.next();
                 if (e.isShared()) {
                     ShareInfo shareinfo = e.getShareInfo();
                     if (shareinfo != null && shareinfo.isActive()) {
@@ -200,7 +200,7 @@ public class ShareManager {
             }
             return reallyshared.iterator();
         } else {
-            return (new ArrayList<Object>()).iterator();
+            return (new ArrayList()).iterator();
         }
     }
 
@@ -217,76 +217,81 @@ public class ShareManager {
                 decodeGroups(reader);
 
                 // decode packages
-                for (Element n: reader.getChildElements("shared", "packaging")) {
-                    for (Element n2: reader.getChildElements(n, "package")) {
-                        NamedNodeMap nm = n2.getAttributes();
-                        if (nm != null) {
-                            String name = null;
-                            String maintainer = null;
-                            String type = null;
-                            String versions = null;
-                            String active = null;
+                for(Iterator ns = reader.getChildElements("shared","packaging");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
 
-                            // decode name
-                            org.w3c.dom.Node n3 = nm.getNamedItem("name");
-                            if (n3 != null) {
-                                name = n3.getNodeValue();
-                            }
+                        for(Iterator ns2 = reader.getChildElements(n,"package");ns2.hasNext(); ) {
+                            Element n2 = (Element)ns2.next();
+                            NamedNodeMap nm = n2.getAttributes();
+                            if (nm != null) {
+                                String name = null;
+                                String maintainer = null;
+                                String type = null;
+                                String versions = null;
+                                String active = null;
+                
+                                // decode name
+                                org.w3c.dom.Node n3 = nm.getNamedItem("name");
+                                if (n3 != null) {
+                                    name = n3.getNodeValue();
+                                }
 
-                            // decode maintainer
-                            n3 = nm.getNamedItem("maintainer");
-                            if (n3 != null) {
-                                maintainer = n3.getNodeValue();
-                            }
+                                // decode maintainer
+                                n3 = nm.getNamedItem("maintainer");
+                                if (n3 != null) {
+                                    maintainer = n3.getNodeValue();
+                                }
 
-                            // decode type
-                            n3 = nm.getNamedItem("type");
-                            if (n3 != null) {
-                                type = n3.getNodeValue();
-                            }
+                                // decode type
+                                n3 = nm.getNamedItem("type");
+                                if (n3 != null) {
+                                    type = n3.getNodeValue();
+                                }
 
-                            // decode versions
-                            n3 = nm.getNamedItem("versions");
-                            if (n3 != null) {
-                                versions = n3.getNodeValue();
-                            }
+                                // decode versions
+                                n3 = nm.getNamedItem("versions");
+                                if (n3 != null) {
+                                    versions = n3.getNodeValue();
+                                } 
 
-                            // decode active
-                            n3 = nm.getNamedItem("active");
-                            if (n3 != null) {
-                                active = n3.getNodeValue();
-                            }
+                                // decode active
+                                n3 = nm.getNamedItem("active");
+                                if (n3 != null) {
+                                    active = n3.getNodeValue();
+                                }
 
 
-                            // create its id (name+maintainer)
-                            String id = name+"@"+maintainer+"_"+type;
-                            id = id.replace(' ','_');
-                            id = id.replace('/','_');
-                            PackageContainer p = (PackageContainer)PackageManager.getPackage(id);
-                            if (p != null) {
-                                ShareInfo shareinfo = p.getShareInfo();
-                                if (shareinfo == null) {
-                                    shareinfo = new ShareInfo();
-                                    if (active.equals("true")) {
-                                        shareinfo.setActive(true);
-                                    } else {
-                                        shareinfo.setActive(false);
+                                // create its id (name+maintainer)
+                                String id = name+"@"+maintainer+"_"+type;
+                                id = id.replace(' ','_');
+                                id = id.replace('/','_');
+                                PackageContainer p = (PackageContainer)PackageManager.getPackage(id);
+                                if (p != null) {
+                                    ShareInfo shareinfo = p.getShareInfo();
+                                    if (shareinfo == null) {
+                                        shareinfo = new ShareInfo();
+                                        if (active.equals("true")) {
+                                            shareinfo.setActive(true);
+                                        } else {
+                                            shareinfo.setActive(false);
+                                        }
                                     }
+                                    if (versions.equals("best")) {
+                                        p.setShareInfo(shareinfo);
+                                    }
+                                    decodeLogins(p,reader,n2);
+                                } else {    
+                                    log.error("trying to share a non available package, ignoring");
                                 }
-                                if (versions.equals("best")) {
-                                    p.setShareInfo(shareinfo);
-                                }
-                                decodeLogins(p,reader,n2);
-                            } else {
-                                log.error("trying to share a non available package, ignoring");
-                            }
+                            } 
                         }
-                    }
                 }
 
                 // decode bundles
-                for (Element n: reader.getChildElements("shared", "bundles")) {
-                    for (Element n2: reader.getChildElements(n, "bundle")) {
+                for(Iterator ns = reader.getChildElements("shared","bundles");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
+                    for(Iterator ns2 = reader.getChildElements(n,"bundle");ns2.hasNext(); ) {
+                        Element n2 = (Element)ns2.next();
                         NamedNodeMap nm = n2.getAttributes();
                         if (nm != null) {
                             String name = null;
@@ -294,7 +299,7 @@ public class ShareManager {
                             String type = null;
                             String versions = null;
                             String active = null;
-
+                
                             // decode name
                             org.w3c.dom.Node n3 = nm.getNamedItem("name");
                             if (n3 != null) {
@@ -344,7 +349,7 @@ public class ShareManager {
                                     b.setShareInfo(shareinfo);
                                 }
                                 decodeBundleLogins(b,reader,n2);
-                            } else {
+                            } else {    
                                 log.error("trying to share a non available package, ignoring");
                             }
                         }
@@ -355,12 +360,13 @@ public class ShareManager {
             log.error("missing shares file : "+filename);
         }
     }
-
+    
 
     private static boolean decodeLogins(PackageContainer p,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = p.getShareInfo();
         if (s != null) {
-            for (Element loginnode: reader.getChildElements(e,"login")) {
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -385,7 +391,8 @@ public class ShareManager {
     private static boolean decodeBundleLogins(BundleContainer b,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = b.getShareInfo();
         if (s != null) {
-            for (Element loginnode: reader.getChildElements(e, "login")) {
+            for (Iterator e2 = reader.getChildElements(e,"login"); e2.hasNext();) {
+                org.w3c.dom.Node loginnode = (org.w3c.dom.Node)e2.next();
                 NamedNodeMap nm = loginnode.getAttributes();
                 if (nm != null) {
                     // decode possible user
@@ -410,15 +417,17 @@ public class ShareManager {
 
 
     private static boolean decodeUsers(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "users")) {
-            for (Element n2: reader.getChildElements(n, "user")) {
+        for(Iterator ns = reader.getChildElements("shared","users");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"user");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
                     String password = null;
                     String method = null;
                     String ip = null;
-
+            
                     // decode name
                     org.w3c.dom.Node n3 = nm.getNamedItem("name");
                     if (n3 != null) {
@@ -455,13 +464,15 @@ public class ShareManager {
     }
 
     private static boolean decodeProvidingPaths(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "providingpaths")) {
-            for (Element n2: reader.getChildElements(n, "providingpath")) {
+        for(Iterator ns = reader.getChildElements("shared","providingpaths");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+            for(Iterator ns2 = reader.getChildElements(n,"providingpath");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String method = null;
                     String path = null;
-
+            
                     // decode path
                     org.w3c.dom.Node n3 = nm.getNamedItem("path");
                     if (n3 != null) {
@@ -473,7 +484,7 @@ public class ShareManager {
                     if (n3 != null) {
                         method = n3.getNodeValue();
                     }
-
+    
                     if (path != null && method != null) {
                         providingpaths.put(method,path);
                     }
@@ -485,7 +496,8 @@ public class ShareManager {
 
 
     private static boolean decodeSettings(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "settings")) {
+        for(Iterator ns = reader.getChildElements("shared","settings");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
             org.w3c.dom.Node n2 = n.getFirstChild();
                 while (n2 != null) {
                 String name = n2.getNodeName();
@@ -506,12 +518,15 @@ public class ShareManager {
 
 
     private static boolean decodeGroups(ExtendedDocumentReader reader) {
-        for (Element n: reader.getChildElements("shared", "groups")) {
-            for (Element n2: reader.getChildElements(n,"group")) {
+        for(Iterator ns = reader.getChildElements("shared","groups");ns.hasNext(); ) {
+            Element n = (Element)ns.next();
+
+            for(Iterator ns2 = reader.getChildElements(n,"group");ns2.hasNext(); ) {
+                Element n2 = (Element)ns2.next();
                 NamedNodeMap nm = n2.getAttributes();
                 if (nm != null) {
                     String name = null;
-
+            
                     // decode name
                     org.w3c.dom.Node n3 = nm.getNamedItem("name");
                     if (n3 != null) {
@@ -519,7 +534,8 @@ public class ShareManager {
                     }
 
                     ShareGroup sg = new ShareGroup(name);
-                    for (Element n4: reader.getChildElements(n2,"member")) {
+                    for(Iterator ns3 = reader.getChildElements(n2,"member");ns3.hasNext(); ) {
+                        Element n4 = (Element)ns3.next();
                         NamedNodeMap nm2 = n4.getAttributes();
                         if (nm2 != null) {
                             String member = null;
@@ -530,7 +546,7 @@ public class ShareManager {
                                 sg.addMember(member);
                             }
                         }
-                    }
+                    }  
                     groups.put(name,sg);
                 }
             }
@@ -541,7 +557,7 @@ public class ShareManager {
     public static boolean createGroup(String name) {
         if (!name.equals("") && groups.get(name) == null) {
             ShareGroup sg = new ShareGroup(name);
-            groups.put(name,sg);
+            groups.put(name,sg);        
             writeShareFile();
             return true;
         } else {
@@ -550,24 +566,24 @@ public class ShareManager {
     }
 
     public static boolean removeGroup(String name) {
-        groups.remove(name);
+        groups.remove(name);        
         writeShareFile();
         return true;
     }
 
-    public static Iterator<ShareUser> getShareUsers() {
+    public static Iterator getShareUsers() {
         return users.values().iterator();
     }
 
-    public static Iterator<ShareGroup> getShareGroups() {
+    public static Iterator getShareGroups() {
         return groups.values().iterator();
     }
 
     public static ShareUser getShareUser(String name) {
         Object o=users.get(name);
         if (o!=null) {
-            return users.get(name);
-        }
+            return (ShareUser)users.get(name);
+        } 
         log.error("Share refers to a user ("+name+") that is not defined");
         return null;
     }
@@ -575,8 +591,8 @@ public class ShareManager {
     public static ShareGroup getShareGroup(String name) {
         Object o = groups.get(name);
         if (o != null) {
-            return groups.get(name);
-        }
+            return (ShareGroup)groups.get(name);
+        } 
         log.error("Share refers to a group ("+name+") that is not defined");
         return null;
     }
@@ -627,29 +643,29 @@ public class ShareManager {
     }
 
     public static void reportClientSession(String callbackurl) {
-        ShareClientSession scs = clients.get(callbackurl);
+        ShareClientSession scs = (ShareClientSession)clients.get(callbackurl);
         if (scs != null) {
         } else {
             if (callbackurl != null && !callbackurl.equals("")) {
                 scs=new ShareClientSession(callbackurl);
                 clients.put(callbackurl,scs);
             }
-        }
+        }    
     }
 
     public static void signalRemoteClients() {
-        Iterator<ShareClientSession> e = clients.values().iterator();
+        Iterator e = clients.values().iterator();
         while (e.hasNext()) {
-            ShareClientSession s = e.next();
+            ShareClientSession s = (ShareClientSession)e.next();
             s.sendRemoteSignal(getProviderName());
         }
-    }
+    } 
 
     public static String getProvidingPath(String method) {
-        return providingpaths.get(method);
+        return (String)providingpaths.get(method);
     }
 
-    public static HashMap<String, String> getProvidingPaths() {
+    public static HashMap getProvidingPaths() {
         return providingpaths;
     }
 

@@ -16,8 +16,8 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.DocumentReader;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -26,34 +26,38 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.11 2008-08-27 17:29:52 michiel Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.6 2005-11-23 15:45:13 pierre Exp $
  */
-class VersionXMLCacheNodeReader {
+public class VersionXMLCacheNodeReader {
 
-    private static final Logger log = Logging.getLoggerInstance(VersionCacheNode.class);
-    private final Document document;
+    private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
+    Document document;
     Versions parent;
 
-    public VersionXMLCacheNodeReader(String filename) throws SAXException, IOException {
-        DocumentBuilder db = DocumentReader.getDocumentBuilder(false);
-        File file = new File(filename);
-        if (!file.exists()) {
-            log.error("no cache version " + filename + " found)");
+    public VersionXMLCacheNodeReader(String filename) {
+        try {
+            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
+            File file = new File(filename);
+            if (!file.exists()) {
+                log.error("no cache version " + filename + " found)");
+            }
+            document = db.parse(file);
         }
-        document = db.parse(file);
+        catch (SAXException e) {
+            log.error("", e);
+        }
+        catch (IOException e) {
+            log.error("", e);
+        }
     }
 
-    /**
-     * @javadoc
-     */
     public void setBuilder(Versions parent) {
         this.parent = parent;
     }
 
     /**
-     * @javadoc
-     */
-    public Map<String, Vector<VersionCacheNode>> getCacheVersions(Map<String, Vector<VersionCacheNode>> handlers) {
+    */
+    public Hashtable getCacheVersions(Hashtable handlers) {
         Node n1 = document.getFirstChild();
         if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             n1 = n1.getNextSibling();
@@ -73,9 +77,9 @@ class VersionXMLCacheNodeReader {
                             // find the node
                             MMObjectNode versionnode = null;
                             String query = "name=='" + name + "'+type=='cache'";
-                            Enumeration<MMObjectNode> b = parent.search(query);
+                            Enumeration b = parent.search(query);
                             if (b.hasMoreElements()) {
-                                versionnode = b.nextElement();
+                                versionnode = (MMObjectNode)b.nextElement();
                             }
                             if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
                             VersionCacheNode cnode = new VersionCacheNode(parent.getMMBase());
@@ -99,9 +103,9 @@ class VersionXMLCacheNodeReader {
 
                                                 // place ourselfs in the call hash
 
-                                                Vector<VersionCacheNode> subs = handlers.get(type);
+                                                Vector subs = (Vector)handlers.get(type);
                                                 if (subs == null) {
-                                                    subs = new Vector<VersionCacheNode>();
+                                                    subs = new Vector();
                                                     subs.addElement(cnode);
                                                     handlers.put(type, subs);
                                                 } else {
@@ -131,17 +135,17 @@ class VersionXMLCacheNodeReader {
         }
         return handlers;
     }
+
     /**
-     * @javadoc
-     */
-    public List<Map<String, String>> getDefines() {
-        List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+    */
+    public Vector getDefines() {
+        Vector results = new Vector();
         Node n1 = document.getFirstChild();
         if (n1 != null) {
             Node n2 = n1.getFirstChild();
             while (n2 != null) {
                 if (n2.getNodeName().equals("define")) {
-                    Map<String, String> rep = new HashMap<String,String>();
+                    Hashtable rep = new Hashtable();
 
                     // decode all the needed values in the replace itself
                     NamedNodeMap nm = n2.getAttributes();
@@ -181,7 +185,7 @@ class VersionXMLCacheNodeReader {
 
                     }
 
-                    results.add(rep);
+                    results.addElement(rep);
                 }
                 n2 = n2.getNextSibling();
             }

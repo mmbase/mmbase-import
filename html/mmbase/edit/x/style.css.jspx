@@ -160,13 +160,9 @@ a.ok::before{
   top: 0px;
 }
 a.logout::before {
-  content: url(${logout});
+ content: url(${logout});
 }
 
-h2 {
-  font-size: smaller;
-  border-top: 1px solid;
-  background-color: #ddd;
-}
+
   </mm:content>
 </jsp:root>

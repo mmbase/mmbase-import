@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.40 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.34.2.2 2007-12-10 12:26:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -48,7 +48,6 @@ public class DateTimeDataType extends ComparableDataType {
         setMin(MIN_VALUE, true);
         setMax(MAX_VALUE, true);
     }
-
     protected void xmlValue(org.w3c.dom.Element el, Object value) {
         if (value instanceof DynamicDate) {
             el.setAttribute("value", ((DynamicDate) value).getFormat());
@@ -92,7 +91,7 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
     /**
-     * @return the maximum value as an <code>Date</code>, or a date very very far in the future if there is no maximum.
+     * @return the maximum value as an <code>Date</code>, or a very very in the future if there is no maximum.
      */
     public Date getMax() {
         Object max = getMaxRestriction().getValue();
@@ -129,14 +128,14 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
 
-    public DateTimeDataType clone(String name) {
+    public Object clone(String name) {
         DateTimeDataType clone = (DateTimeDataType) super.clone(name);
         clone.weakPattern = true;
         return clone;
     }
 
-    protected StringBuilder toStringBuilder() {
-        StringBuilder buf = super.toStringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         buf.append(" " + pattern);
         return buf;
     }

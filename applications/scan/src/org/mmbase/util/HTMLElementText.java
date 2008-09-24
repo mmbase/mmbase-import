@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementText.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id: HTMLElementText.java,v 1.6 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementText  extends HTMLElement {
     /**
@@ -38,7 +38,7 @@ public class HTMLElementText  extends HTMLElement {
     protected String generate() {
         String html = "";
         if (moreValues) {
-            Enumeration e = Collections.enumeration(valuesList);
+            Enumeration e = valuesList.elements();
             if (e.hasMoreElements()) {
                 String val = (String) e.nextElement();
                 if (val.equals("null")) {

@@ -22,7 +22,7 @@ import org.mmbase.datatypes.DataType;
  * implementation on a existing <code>Field</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: FieldWrapper.java,v 1.5 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: FieldWrapper.java,v 1.1 2006-07-18 13:49:36 michiel Exp $
  * @since   MMBase-1.8.1
  */
 
@@ -36,7 +36,7 @@ public abstract class FieldWrapper implements Field {
 
     public int getState() { return Field.STATE_VIRTUAL; }
 
-    public DataType<Object> getDataType() { return field.getDataType(); }
+    public DataType getDataType() { return field.getDataType(); }
     public boolean isUnique() { return field.isUnique(); }
     public boolean hasIndex() { return field.hasIndex(); }
     public int getType() {  return field.getType(); }
@@ -48,7 +48,7 @@ public abstract class FieldWrapper implements Field {
     public String getGUIType() { return field.getGUIType(); }
     public boolean isRequired() { return field.isRequired(); }
     public int getMaxLength() { return field.getMaxLength(); }
-    public Collection<String> validate(Object value) { return field.validate(value); }
+    public Collection validate(Object value) { return field.validate(value); }
     public boolean isVirtual() { return true; }
     public boolean isReadOnly() { return true; }
     public String getName() { return field.getName(); }

@@ -18,7 +18,7 @@ import javax.mail.*;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.13 2008-07-31 13:22:36 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.12 2008-02-03 17:42:06 nklasens Exp $
  */
 public interface  MailHandler {
 
@@ -60,7 +60,7 @@ public interface  MailHandler {
     //List<Address> getRecipients();
 
 
-    public static class Factory {
+    static class Factory {
         private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
         static UtilReader.PropertiesMap  mailHandlers =

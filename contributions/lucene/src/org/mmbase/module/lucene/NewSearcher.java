@@ -13,8 +13,9 @@ import org.mmbase.core.event.*;
 
 /**
  * All the code necessary to propagate events with the meaning 'the lucene index has changed, you must refresh your searchers'.
+ * @since  MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: NewSearcher.java,v 1.6 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id: NewSearcher.java,v 1.5 2008-07-21 14:30:18 michiel Exp $
  */
 
 public class NewSearcher {
@@ -59,9 +60,6 @@ public class NewSearcher {
             NewSearcher.Event ne = (NewSearcher.Event) event; //!!!!!
             Listener nel = (Listener) listener;
             nel.notify(ne);
-        }
-        public String toString() {
-            return "Lucene New Searcher Broker";
         }
     }
 

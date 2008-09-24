@@ -15,7 +15,7 @@ import java.util.*;
  * This class is used when no authorization is configured. Everything is allowed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.12 2008-06-13 10:22:04 michiel Exp $
+ * @version $Id: NoAuthorization.java,v 1.11 2005-01-30 16:46:34 nico Exp $
  */
 final public class NoAuthorization extends Authorization {
 
@@ -86,14 +86,14 @@ final public class NoAuthorization extends Authorization {
     /**
      * Since this is not authorization, we simply allow every change of context.
      */
-    public void setContext(UserContext user, int nodeid, String context) throws SecurityException {
+    public void setContext(UserContext user, int nodeid, String context) throws SecurityException {        
         //if(!EVERYBODY.equals(context)) throw new SecurityException("unknown context");
     }
 
     /**
      * This method does nothing, except from returning a dummy value
      */
-    public Set<String> getPossibleContexts(UserContext user, int nodeid) throws SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException {
         return possibleContexts;
     }
 

@@ -15,32 +15,26 @@ import java.util.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheWhenNode.java,v 1.8 2008-08-27 17:29:52 michiel Exp $
+ * @version $Id: VersionCacheWhenNode.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
  */
-class VersionCacheWhenNode {
+public class VersionCacheWhenNode extends Object {
 
-    private List<String> types = new Vector<String>();
-    private List<String> nodes = new Vector<String>();
+    private Vector types = new Vector();
+    private Vector nodes = new Vector();
 
     public void addType(String type) {
-        types.add(type);
+        types.addElement(type);
     }
 
     public void addNode(String node) {
-        nodes.add(node);
+        nodes.addElement(node);
     }
 
-    /**
-     * @javadoc
-     */
-    public List<String> getTypes() {
+    public Vector getTypes() {
         return types;
     }
 
-    /**
-     * @javadoc
-     */
-    public List<String> getNodes() {
+    public Vector getNodes() {
         return nodes;
     }
 }

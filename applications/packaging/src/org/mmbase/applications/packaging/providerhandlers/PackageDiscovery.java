@@ -77,9 +77,9 @@ public class PackageDiscovery implements Runnable {
 
     public void getPackages() {
         // get all the providers lines up for a call
-        Iterator<ProviderInterface> i = ProviderManager.getProviders();
+        Iterator i = ProviderManager.getProviders();
         while (i.hasNext()) {
-            ProviderInterface pi = i.next();
+            ProviderInterface pi = (ProviderInterface)i.next();
             try {
 	        pi.getPackages();
                 PackageManager.removeOfflinePackages(pi);

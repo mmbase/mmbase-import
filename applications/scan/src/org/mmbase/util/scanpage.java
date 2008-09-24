@@ -18,7 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mmbase.module.ProcessorModule;
+import org.mmbase.module.ProcessorInterface;
 import org.mmbase.module.sessionInfo;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.servlet.JamesServlet;
@@ -36,24 +36,24 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.32 2008-08-01 22:01:32 michiel Exp $
+ * @version $Id: scanpage.java,v 1.29 2006-03-09 16:38:36 michiel Exp $
  */
 public class scanpage extends PageInfo {
     // logger
-    private static final Logger log = Logging.getLoggerInstance(scanpage.class);
+    private static Logger log = Logging.getLoggerInstance(scanpage.class.getName());
 
     /**
      * The parameters of this page.
      * These are either set mnaually using {@link #setParamsVector}, or
      * determined from the page using the {@link #req} field
      */
-    public Vector<String> params;
+    public Vector params;
     /**
      * The processor set for this page.
      * This values is set and used by scanparser to determine the default
      * processor to call when interpreting LIST tags.
      */
-    public ProcessorModule processor;
+    public ProcessorInterface processor;
     /**
      * Object for accessing values sent by a form using
      * enctype multipart/form-data.
@@ -93,7 +93,7 @@ public class scanpage extends PageInfo {
      * Construct a scanpage for a servlet
      */
     public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
-        super(req, res, null);
+        super(req,res);
         req_line = req.getServletPath();
         querystring = req.getQueryString();
 
@@ -170,7 +170,7 @@ public class scanpage extends PageInfo {
             params=buildparams();
         }
         try {
-            str=params.elementAt(num);
+            str=(String)params.elementAt(num);
         } catch(IndexOutOfBoundsException e) {
             str=null;
         }
@@ -182,8 +182,8 @@ public class scanpage extends PageInfo {
      * Parse the querystring of the current page to retrieve all paarmeters
      * @return a <code>Vector</code> of parameter values
      */
-    private Vector<String> buildparams() {
-        Vector<String> params=new Vector<String>();
+    private Vector buildparams() {
+        Vector params=new Vector();
         if (querystring!=null) {
             String paramline=querystring;
             //StringTokenizer tok=new StringTokenizer(querystring,"+\n\r",true);
@@ -202,7 +202,7 @@ public class scanpage extends PageInfo {
      * Manually set the parameters of a page.
      * @param params a <code>Vector</code> of parameter values
      */
-    public boolean setParamsVector(Vector<String> params) {
+    public boolean setParamsVector(Vector params) {
         this.params=params;
         return true;
     }
@@ -211,7 +211,7 @@ public class scanpage extends PageInfo {
      * Retrieve all parameters of a page.
      * @return a <code>Vector</code> of parameter values
      */
-    public Vector<String> getParamsVector() {
+    public Vector getParamsVector() {
         if (params==null) params=buildparams();
         if (params.size()==0) return null;
         return params;
@@ -223,7 +223,7 @@ public class scanpage extends PageInfo {
      * @param paramline  a string containing teh parametervalues seperated by '+' characters
      */
     public boolean setParamsLine(String paramline) {
-        this.params=new Vector<String>();
+        this.params=new Vector();
         //StringTokenizer tok=new StringTokenizer(paramline,"+\n\r");
         // rico
         int pos=paramline.indexOf("+");

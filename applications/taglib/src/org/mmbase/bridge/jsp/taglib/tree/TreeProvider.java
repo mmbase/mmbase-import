@@ -16,7 +16,7 @@ import java.util.Stack;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeProvider.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id: TreeProvider.java,v 1.2.4.1 2008-02-14 14:21:47 michiel Exp $
  */
 public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider {
 
@@ -26,7 +26,7 @@ public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider 
 
     public int getNextDepth();
 
-    public Stack<ShrinkTag.Entry> getShrinkStack();
+    public Stack getShrinkStack();
 
 }
 

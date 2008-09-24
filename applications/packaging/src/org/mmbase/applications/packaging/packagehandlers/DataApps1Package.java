@@ -9,6 +9,7 @@ package org.mmbase.applications.packaging.packagehandlers;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -22,7 +23,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -65,12 +66,12 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_DATASET_1_0, DTD_DATASET_1_0, DataApps1Package.class);
-        EntityResolver.registerPublicID(PUBLIC_ID_OBJECTSET_1_0, DTD_OBJECTSET_1_0, DataApps1Package.class);
-        EntityResolver.registerPublicID(PUBLIC_ID_RELATIONSET_1_0, DTD_RELATIONSET_1_0, DataApps1Package.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATASET_1_0, DTD_DATASET_1_0, DataApps1Package.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_OBJECTSET_1_0, DTD_OBJECTSET_1_0, DataApps1Package.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_RELATIONSET_1_0, DTD_RELATIONSET_1_0, DataApps1Package.class);
     }
 
 
@@ -204,7 +205,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 substep.setUserFeedBack("Opening data.xml ... done");
                 increaseProgressBar(100);
                 // 40%
-                for (Element n: reader.getChildElements("dataset.objectsets", "objectset")) {
+                for (Iterator ns = reader.getChildElements("dataset.objectsets", "objectset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String path = n.getAttribute("path");
                     substep = step.getNextInstallStep();
                     substep.setUserFeedBack("loading objects " + path + "..");
@@ -219,7 +221,8 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 }
                 increaseProgressBar(100);
                 // 50%
-                for (Element n: reader.getChildElements("dataset.relationsets", "relationset")) {
+                for (Iterator ns = reader.getChildElements("dataset.relationsets", "relationset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String path = n.getAttribute("path");
                     installRelationSet(jf, path);
@@ -249,15 +252,15 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
         if (syncbul != null) {
             JarEntry je = jf.getJarEntry(path);
-        if (je == null) {
-        if (path.indexOf('/') != -1 ) {
-            path.replace('/','\\');
-        }
-        if (path.indexOf('\\') != -1 ) {
-            path.replace('\\','/');
-        }
+	    if (je == null) {
+		if (path.indexOf('/') != -1 ) {
+			path.replace('/','\\');
+		}
+		if (path.indexOf('\\') != -1 ) {
+			path.replace('\\','/');
+		}
                 je = jf.getJarEntry(path);
-        }
+	    }
             if (je != null) {
                 try {
                     InputStream input = jf.getInputStream(je);
@@ -271,13 +274,15 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
                     } catch (Exception e) {}
-                    for (Element n: nodereader.getChildElements("objectset", "object")) {
+                    for (Iterator ns = nodereader.getChildElements("objectset", "object");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         MMObjectBuilder bul = mmb.getMMObject(type);
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
-                        Enumeration<MMObjectNode> b = syncbul.search(query);
+                        Enumeration b = syncbul.search(query);
                         if (b.hasMoreElements()) {
-                            MMObjectNode syncnode = b.nextElement();
+                            MMObjectNode syncnode = (MMObjectNode) b.nextElement();
                             log.info("node allready installed : " + exportnumber);
                         } else {
                             log.info("node installing !! : " + exportnumber);
@@ -336,7 +341,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             newnode.setAlias(alias);
         }
 
-        for (Element n2: nodereader.getChildElements(n, "field")) {
+        for (Iterator ns2 = nodereader.getChildElements(n, "field");
+                ns2.hasNext(); ) {
+            Element n2 = (Element) ns2.next();
             String field = n2.getAttribute("name");
             org.w3c.dom.Node n3 = n2.getFirstChild();
             String value = null;
@@ -386,7 +393,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                         log.warn("error setting long-field " + e);
                         newnode.setValue(field, -1);
                     }
-                } else if (type == Field.TYPE_BINARY) {
+                } else if (type == Field.TYPE_BYTE) {
                     String filename = n2.getAttribute("file");
                     JarEntry je = jf.getJarEntry("data/" + filename);
                     if (je != null) {
@@ -418,8 +425,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
      */
     private MMObjectNode getExistingContentNode(MMObjectNode newnode, MMObjectBuilder bul) {
         String checkQ = "";
-        Collection<CoreField> vec = bul.getFields();
-        for (CoreField def : vec) {
+        Collection vec = bul.getFields();
+        for (Iterator h = vec.iterator(); h.hasNext(); ) {
+            CoreField def = (CoreField) h.next();
             if (def.isUnique()) {
                 int type = def.getType();
                 String name = def.getName();
@@ -434,9 +442,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             }
         }
         if (!checkQ.equals("")) {
-            Enumeration<MMObjectNode> r = bul.search(checkQ);
+            Enumeration r = bul.search(checkQ);
             if (r.hasMoreElements()) {
-                MMObjectNode oldnode = r.nextElement();
+                MMObjectNode oldnode = (MMObjectNode) r.nextElement();
                 return oldnode;
             }
         }
@@ -468,9 +476,10 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                     int timestamp = -1;
                     try {
                         timestamp = Integer.parseInt(nr.getAttribute("timestamp"));
-                    } catch (Exception e) {
-                    }
-                    for (Element n: nodereader.getChildElements("relationset", "relation")) {
+                    } catch (Exception e) {}
+                    for (Iterator ns = nodereader.getChildElements("relationset", "relation");
+                            ns.hasNext(); ) {
+                        Element n = (Element) ns.next();
                         String exportnumber = n.getAttribute("number");
                         String snumber = n.getAttribute("snumber");
                         String dnumber = n.getAttribute("dnumber");
@@ -479,9 +488,9 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 
                         MMObjectBuilder bul = mmb.getMMObject(type);
 
-                        Enumeration<MMObjectNode> b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
+                        Enumeration b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
-                            MMObjectNode syncnode = b.nextElement();
+                            MMObjectNode syncnode = (MMObjectNode) b.nextElement();
                             log.debug("relation allready installed : " + exportnumber);
                         } else {
                             MMObjectNode loadednode = createNewObject(nodereader, bul, n, jf);
@@ -489,7 +498,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                             b = syncbul.search("exportnumber==" + snumber + "+exportsource=='" + exportsource + "'");
                             int realsnumber = -1;
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2 = b.nextElement();
+                                MMObjectNode n2 = (MMObjectNode) b.nextElement();
                                 realsnumber = n2.getIntValue("localnumber");
                             }
 
@@ -497,7 +506,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                             int realdnumber = -1;
                             b = syncbul.search("exportnumber==" + dnumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2 = b.nextElement();
+                                MMObjectNode n2 = (MMObjectNode) b.nextElement();
                                 realdnumber = n2.getIntValue("localnumber");
                             }
 

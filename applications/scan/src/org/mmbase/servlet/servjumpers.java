@@ -14,7 +14,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.mmbase.jumpers.Jumpers;
+import org.mmbase.module.builders.Jumpers;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,10 +23,10 @@ import org.mmbase.util.logging.*;
  * If a jumper is found, it will redirect the jumper to the designation url.
  *
  * @application SCAN (depends from JamesServlet)
- * @deprecated use org.mmbase.servlet.JumpersFilter
+ * @deprecated use JumpersFilter
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.24 2008-03-25 21:00:24 nklasens Exp $
- * @see    org.mmbase.servlet.JumpersFilter
+ * @version $Id: servjumpers.java,v 1.22 2004-10-01 08:41:49 pierre Exp $
+ * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
     private static final Logger  log = Logging.getLoggerInstance(servjumpers.class);

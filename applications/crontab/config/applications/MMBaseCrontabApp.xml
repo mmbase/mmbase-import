@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application auto-deploy="true" version="2" name="MMBaseCrontabApp" maintainer="mmbase.org">
+<application auto-deploy="false" version="1" name="MMBaseCrontabApp" maintainer="mmbase.org">
   <neededbuilderlist>
     <builder version="1" maintainer="mmbase.org">cronjobs</builder>
   </neededbuilderlist>
@@ -10,9 +10,13 @@
   <allowedrelationlist>
     <relation type="related" to="mmservers" from="cronjobs"/>
   </allowedrelationlist>
-  <datasourcelist />
+  <datasourcelist>
+    <datasource builder="cronjobs" path="MMBaseCrontabApp/cronjobs.xml"/>
+  </datasourcelist>
   <relationsourcelist/>
-  <contextsourcelist />
-  <description>Defined the relations from cronjobs to mmservers</description>
-  <install-notice>MMBase Crontab builder has been installed</install-notice>
+  <contextsourcelist>
+    <contextsource goal="backup" type="depth" path="MMBaseCrontabApp/backup.xml"/>
+  </contextsourcelist>
+  <description>desc</description>
+  <install-notice>installed</install-notice>
 </application>

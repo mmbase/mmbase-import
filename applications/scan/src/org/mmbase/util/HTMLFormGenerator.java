@@ -12,7 +12,7 @@ package org.mmbase.util;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.mmbase.module.ProcessorModule;
+import org.mmbase.module.ProcessorInterface;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -71,7 +71,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLFormGenerator.java,v 1.10 2008-08-01 22:01:32 michiel Exp $
+ * @version $Id: HTMLFormGenerator.java,v 1.9 2004-09-29 14:29:25 pierre Exp $
  */
 public class HTMLFormGenerator {
     // logger
@@ -123,7 +123,7 @@ public class HTMLFormGenerator {
     * @param proc The Processor to handle the getList (2nd Element from the Vector marco)
     * @param macro The Vector with Strings
     */
-    public String getHTMLElement (scanpage sp,ProcessorModule proc, Vector macro) {
+    public String getHTMLElement (scanpage sp,ProcessorInterface proc, Vector macro) {
         String type = getFirstElement(macro);
         Vector params = getTailElements(macro);
 

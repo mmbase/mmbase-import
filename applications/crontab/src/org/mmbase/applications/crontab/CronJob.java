@@ -13,7 +13,7 @@ package org.mmbase.applications.crontab;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronJob.java,v 1.3 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id: CronJob.java,v 1.2 2006-01-20 08:19:10 michiel Exp $
  */
 
 
@@ -34,8 +34,6 @@ public interface CronJob extends Runnable {
      * This is the method which is repeatedly called.
      */
     void run();
-
-    CronEntry getEntry();
 
 
 }

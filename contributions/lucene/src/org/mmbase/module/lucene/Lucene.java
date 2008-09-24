@@ -48,9 +48,9 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.124 2008-09-22 11:59:38 pierre Exp $
+ * @version $Id: Lucene.java,v 1.112 2008-07-21 14:26:34 michiel Exp $
  **/
-public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
+public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
     public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
     public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
@@ -71,7 +71,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     public static final String NAMESPACE_LUCENE = NAMESPACE_LUCENE_1_0;
 
-    protected MMBase mmbase;
 
     /**
      * Parameter constants for Lucene functions.
@@ -81,9 +80,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected final static Parameter/*<String>*/ INDEX = new Parameter("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
-
-    protected final static Parameter/*<List>*/ MACHINES = new Parameter("machines", List.class);
-    static { MACHINES.setDescription("the machines on which to execute a full index"); }
 
     protected final static Parameter/*<Boolean>*/ COPY = new Parameter("copy", Boolean.class, Boolean.FALSE);
     static { INDEX.setDescription("use the copy of the index (used for full index)"); }
@@ -127,12 +123,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE, DTD_LUCENE, Lucene.class);
     }
 
-    // initial wait time after startup, default 2 minutes. This can be needed to give e.g. CCS time
-    // to deploy
-
+    // initial wait time after startup, default 2 minutes
     private static final long INITIAL_WAIT_TIME = 2 * 60 * 1000;
+    // wait time bewteen individual checks, default 5 seconds
     private static final long WAIT_TIME = 5 * 1000;
-
+    // default path to the lucene data
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
 
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
@@ -142,7 +137,13 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         return (Lucene) getModule("lucene");
     }
 
+    /**
+     * The MMBase instance, used for low-level access
+     */
+    protected MMBase mmbase = null;
 
+    private long initialWaitTime = INITIAL_WAIT_TIME;
+    private long waitTime = WAIT_TIME;
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
@@ -150,11 +151,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     private final Map<String, Indexer>  indexerMap    = new ConcurrentHashMap<String, Indexer>();
     private final Map<String, Searcher> searcherMap   = new ConcurrentHashMap<String, Searcher>();
     private boolean readOnly = false;
-    private String master; // If readonly, the machine name of the mmbase which is responsible for the index
-
-    private long initialWaitTime = INITIAL_WAIT_TIME;
-    private long waitTime  = WAIT_TIME;
-
 
     private List<String> configErrors = new ArrayList<String>();
     private Date configReadTime = new Date(0);
@@ -192,59 +188,20 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function can be called through the function framework.
      */
     //protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
-    protected Function/*<Void>*/ fullIndexFunction = new AbstractFunction/*<Void>*/("fullIndex", new Parameter[] {INDEX, MACHINES}, ReturnType.VOID) {
+    protected Function/*<Void>*/ fullIndexFunction = new AbstractFunction/*<Void>*/("fullIndex", new Parameter[] {INDEX}, ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
+            if (scheduler == null) throw new RuntimeException("Read only");
             String index = (String) arguments.get(INDEX);
-            List<String> machines = (List<String>) arguments.get(MACHINES);
-            EventManager.getInstance().propagateEvent(new AssignmentEvents.Event(index, machines, AssignmentEvents.FULL, null,  null));
+            if (index == null || "".equals(index)) {
+                scheduler.fullIndex();
+            } else {
+                scheduler.fullIndex(index);
+            }
             return null;
         }
     };
     {
         addFunction(fullIndexFunction);
-    }
-
-    public void notify(AssignmentEvents.Event event) {
-        log.info("Received " + event);
-        if (event.getMachines().contains(MMBase.getMMBase().getMachineName())) {
-            switch(event.getType()) {
-            case AssignmentEvents.FULL: {
-                    String index = event.getIndex();
-                    if (scheduler == null) throw new RuntimeException("Read only");
-                    if (index == null || "".equals(index)) {
-                        scheduler.fullIndex();
-                    } else {
-                        scheduler.fullIndex(index);
-                    }
-                } break;
-            case AssignmentEvents.UPDATE:
-                throw new UnsupportedOperationException();
-            case AssignmentEvents.DELETE: {
-                    if (scheduler == null) throw new RuntimeException("Read only");
-                    if(!readOnly){
-                        String index      = event.getIndex();
-                        String identifier = event.getIdentifier();
-                        Class  klass      = event.getClassFilter();
-                        if(index == null || "".equals(index)){
-                            scheduler.deleteIndex(identifier, klass);
-                        } else {
-                            scheduler.deleteIndex(identifier, index);
-                        }
-                    }
-                } break;
-            case AssignmentEvents.CLEAR: {
-                    if (readOnly) {
-                        throw new IllegalStateException("This lucene is readonly");
-                    }
-                    String index = event.getIndex();
-                    Indexer indexer = indexerMap.get(index);
-                    boolean copy = event.getCopy();
-                    indexer.clear(copy);
-                } break;
-            }
-        } else {
-            log.info("Event " + event + " ignored");
-        }
     }
 
     /**
@@ -253,14 +210,19 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * the right index is addressed.
      */
     //protected Function<Void> deleteIndexFunction = new AbstractFunction<Void>("deleteIndex", INDEX, IDENTIFIER, CLASS) {
-    protected Function/*<Void>*/ deleteIndexFunction = new AbstractFunction/*<Void>*/("deleteIndex", new Parameter[] {INDEX, MACHINES, IDENTIFIER, CLASS}, ReturnType.VOID) {
+    protected Function/*<Void>*/ deleteIndexFunction = new AbstractFunction/*<Void>*/("deleteIndex", new Parameter[] {INDEX, IDENTIFIER, CLASS}, ReturnType.VOID) {
             public Object getFunctionValue(Parameters arguments) {
-                String index = (String) arguments.get(INDEX);
-                String identifier = (String) arguments.get(IDENTIFIER);
-
-                Class klass = (Class)  arguments.get(CLASS);
-                List<String> machines = (List<String>) arguments.get(MACHINES);
-                EventManager.getInstance().propagateEvent(new AssignmentEvents.Event(index, machines, AssignmentEvents.DELETE, identifier, klass));
+                if (scheduler == null) throw new RuntimeException("Read only");
+                if(!readOnly){
+                    String index      = (String) arguments.get(INDEX);
+                    String identifier = (String) arguments.get(IDENTIFIER);
+                    Class  klass      = (Class)  arguments.get(CLASS);
+                    if(index == null || "".equals(index)){
+                        scheduler.deleteIndex(identifier, klass);
+                    } else {
+                        scheduler.deleteIndex(identifier, identifier);
+                    }
+                }
                 return null;
             }
         };
@@ -357,19 +319,13 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
     //protected Function<Boolean> readOnlyFunction = new AbstractFunction<Boolean>("readOnly"){
-    protected Function /*<Boolean>*/ readOnlyFunction = new AbstractFunction /*<Boolean>*/("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN) {
+    protected Function /*<Boolean>*/ readOnlyFunction = new AbstractFunction /*<Boolean>*/("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
         public Boolean getFunctionValue(Parameters arguments) {
             return readOnly;
         }
     };
     {
         addFunction(readOnlyFunction);
-
-        addFunction(new AbstractFunction/*<String>*/("master", Parameter.EMPTY, ReturnType.STRING) {
-                public String getFunctionValue(Parameters argumnets) {
-                    return master;
-                }
-            });
     }
 
     /**
@@ -519,13 +475,30 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     }
 
 
-    protected Function/*<Void>*/ clearDirectory = new AbstractFunction/*<Void>*/("clearDirectory", new Parameter[] {INDEX, MACHINES, COPY}, ReturnType.VOID) {
+    protected Function/*<Void>*/ clearDirectory = new AbstractFunction/*<Void>*/("clearDirectory", new Parameter[] {INDEX, COPY}, ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            String index = (String) arguments.get(INDEX);
-            List<String> machines = (List<String>) arguments.get(MACHINES);
-            AssignmentEvents.Event event = new AssignmentEvents.Event(index, machines, AssignmentEvents.CLEAR, null, null);
-            event.setCopy((Boolean) arguments.get(COPY));
-            EventManager.getInstance().propagateEvent(event);
+            if (readOnly) {
+                throw new IllegalStateException("This lucene is readonly");
+            }
+            String index = (String) arguments.getString(INDEX);
+            Indexer indexer = indexerMap.get(index);
+            boolean copy = Boolean.TRUE.equals(arguments.get(COPY));
+            try {
+                Directory dir = copy ? indexer.getDirectoryForFullIndex(): indexer.getDirectory();
+                for (String file : dir.list()) {
+                    if (file != null) {
+                        try {
+                            log.service("Deleting " + file);
+                            dir.deleteFile(file);
+                        } catch (Exception e) {
+                            log.warn(e);
+                        }
+                    }
+                }
+                if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
+            } catch (java.io.IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
             return null;
         }
         };
@@ -614,11 +587,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     return indexerMap.get(defaultIndex);
                 }
             });
-        addFunction(new AbstractFunction/*<String>*/("path", Parameter.EMPTY, ReturnType.STRING){
-                public String getFunctionValue(Parameters arguments) {
-                    return Lucene.this.indexPath;
-                }
-            });
 
         //addFunction(new AbstractFunction<List<String>>("errors", INDEX, OFFSET, MAX) {
         addFunction(new AbstractFunction("errors", new Parameter[] {INDEX, OFFSET, MAX}, ReturnType.LIST) {
@@ -655,36 +623,53 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected void init(final boolean initialWait) {
         super.init();
-        // Force init of MMBase
-        mmbase = MMBase.getMMBase();
 
 
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
-                    String databaseName = "";
-                    String binaryFileBasePath = "";
-                    //try to get the index path from the strorage configuration
-                    try {
-                        DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
-                        String binaries = dsmf.getBinaryFileBasePath().toString();
-                        if (binaries != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
-                            if (! binaries.endsWith(File.separator)) {
-                                binaries += File.separator;
+                    // Force init of MMBase
+                    mmbase = MMBase.getMMBase();
+
+                    if (initialWait) {
+                        // initial wait time?
+                        String time = getInitParameter("initialwaittime");
+                        if (time != null) {
+                            try {
+                                initialWaitTime = Long.parseLong(time);
+                                log.debug("Set initial wait time to " + time + " milliseconds");
+                            } catch (NumberFormatException nfe) {
+                                log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
                             }
-                            binaryFileBasePath = binaries;
-                            databaseName = dsmf.getDatabaseName();
                         }
-                    } catch(Exception e){}
+                        try {
+                            if (initialWaitTime > 0) {
+                                log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                                Thread.sleep(initialWaitTime);
+                            }
+                        } catch (InterruptedException ie) {
+                            //return;
+                        }
+                    }
+
+                    factory = ContentExtractor.getInstance();
+
 
                     String path = getInitParameter("indexpath");
                     if (path != null) {
                         indexPath = path;
-                        indexPath = indexPath.replace("$BINARYFILEBASEPATH", binaryFileBasePath);
-                        indexPath = indexPath.replace("$DATABASE", databaseName);
-                        indexPath = indexPath.replaceAll("/+", File.separator);
                         log.service("found module parameter for lucene index path : " + indexPath);
                     } else {
-                        indexPath = binaryFileBasePath + "lucene" + File.separator + databaseName;
+                        //try to get the index path from the strorage configuration
+                        try {
+                            DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
+                            indexPath = dsmf.getBinaryFileBasePath().toString();
+                            if (indexPath != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
+                                if (! indexPath.endsWith(File.separator)) {
+                                    indexPath += File.separator;
+                                }
+                                indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                            }
+                        } catch(Exception e){}
                     }
 
                     if(indexPath != null) {
@@ -694,32 +679,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
                         log.service("fall back to default for lucene index path : " + indexPath);
                     }
-
-
-                    if (initialWait) {
-                        // initial wait time?
-                        String time = getInitParameter("initialwaittime");
-                       if (time != null) {
-                           try {
-                               initialWaitTime = Long.parseLong(time);
-                               log.debug("Set initial wait time to " + time + " milliseconds");
-                           } catch (NumberFormatException nfe) {
-                               log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
-                           }
-                       }
-                       try {
-                           if (initialWaitTime > 0) {
-                               log.service("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
-                               Thread.sleep(initialWaitTime);
-                           }
-                       } catch (InterruptedException ie) {
-                           //return;
-                       }
-                    }
-
-
-                    factory = ContentExtractor.getInstance();
-
 
 
                     String readOnlySetting = getInitParameter("readonly");
@@ -732,36 +691,36 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             try {
                                 boolean write =
                                     java.net.InetAddress.getLocalHost().getHostName().equals(host) ||
-                                    (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host) ||
-                                    mmbase.getMachineName().equals(host);
+                                    (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host);
                                 readOnly = ! write;
-                                if (readOnly) {
-                                    master = getInitParameter("master");
-                                    if (master == null) {
-                                        master = host;
-                                    }
-                                }
                             } catch (java.net.UnknownHostException uhe) {
                                 log.error(uhe);
                             }
                         } else {
                             readOnly = "true".equals(readOnlySetting);
-                            if (readOnly) {
-                                master = getInitParameter("master");
-                            }
                         }
                     }
                     if (readOnly) {
-                        log.info("Lucene module of this MMBase will be READONLY. Responsible for the index is " + (master != null ? master : "UKNOWN"));
+                        log.info("Lucene module of this MMBase will be READONLY");
                     }
 
                     String time = getInitParameter("waittime");
                     if (time != null) {
                         try {
                             waitTime = Long.parseLong(time);
-                            log.debug("Set wait time to " + time + " milliseconds. This long assigments remain scheduled, and can still be canceled.");
+                            log.debug("Set wait time to " + time + " milliseconds");
                         } catch (NumberFormatException nfe) {
-                            log.warn("Invalid value '" + time +" ' for property 'waittime'");
+                            log.warn("Invalid value '" + time +" ' for property 'iwaittime'");
+                        }
+                    }
+                    while(! mmbase.getState()) {
+                        if (mmbase.isShutdown()) break;
+                        try {
+                            log.service("MMBase not yet up, waiting for 10 seconds.");
+                            Thread.sleep(10000);
+                        } catch (InterruptedException ie) {
+                            log.info(ie);
+                            return;
                         }
                     }
 
@@ -779,7 +738,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         log.service("Module Lucene started");
                         // full index ?
                         String fias = getInitParameter("fullindexatstartup");
-                        if ("true".equals(fias)) {
+                        if (initialWaitTime < 0 || "true".equals(fias)) {
                             scheduler.fullIndex();
                         }
                     } else {
@@ -817,8 +776,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
 
     public void shutdown() {
-        EventManager.getInstance().removeEventListener(assignmentsListener);
-        EventManager.getInstance().removeEventListener(idListener);
         if (scheduler != null) {
             log.service("Stopping Lucene Scheduler");
             scheduler.interrupt();
@@ -829,7 +786,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         }
         searcherMap.clear();
         scheduler = null;
-
+        mmbase = null;
     }
 
     public void reload() {
@@ -873,7 +830,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             // MM: I think the follwing functionality should be present on MMBaseIndexDefinition itself. and not on Lucene.
             // And of course, the new event-mechanism must be used.
             if (!readOnly) {
-                MMBase mmbase = MMBase.getMMBase();
                 // register. Unfortunately this can currently only be done through the core
                 //for (Step step : queryDefinition.query.getSteps() ) {
                 for (Iterator i = queryDefinition.query.getSteps().iterator(); i.hasNext();) {
@@ -904,7 +860,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             return queryDefinition;
         } catch (Exception e) {
             configErrors.add(e.getMessage());
-            log.warn("Invalid query in " + queryElement.getOwnerDocument().getDocumentURI() + " for index " + XMLWriter.write(queryElement, true, true), e);
+            log.warn("Invalid query for index " + XMLWriter.write(queryElement, true, true), e);
             return null;
         }
     }
@@ -918,16 +874,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 return Lucene.this.toString();
             }
         };
-    protected final AssignmentEvents.Listener assignmentsListener = new AssignmentEvents.Listener() {
-            // wrapping to avoid also registring it as a NodeEventListener
-            public void notify(AssignmentEvents.Event event) {
-                Lucene.this.notify(event);
-            }
-            public String toString() {
-                return Lucene.this.toString();
-            }
-        };
-
 
     protected void readConfiguration(String resource) {
 
@@ -1028,7 +974,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                         String snodes = childElement.getAttribute("startnodes");
                                         String[] sn = snodes.split(",");
                                         if (snodes != null && !"".equals(snodes)) {
-                                            log.debug("Found startnodes '" + snodes + "' of list in index: " + indexName);
+                                            log.info("Found startnodes '" + snodes + "' of list in index: " + indexName);
                                             for (i = 0; i < sn.length; i++) {
                                                 String snr = cloud.getNodeByAlias(sn[i]).getStringValue("number");
                                                 log.debug("checking for: " + snr);
@@ -1037,8 +983,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                         }
                                     }
                                 } else if ("jdbc".equals(name)) {
-                                    MMBase mmbase = MMBase.getMMBase();
-
                                     DataSource ds =  ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
                                                                                  allIndexedFieldsSet, storeText, mergeText, analyzer, false);
@@ -1059,7 +1003,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                 }
                             }
                         }
-
                         Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly);
                         for (String s : configErrors) {
                             indexer.addError(url.toString() + ": " + s);
@@ -1077,7 +1020,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 log.warn("Can't read Lucene configuration: "+ e.getMessage(), e);
             }
         }
-        EventManager.getInstance().addEventListener(assignmentsListener);
         configReadTime = new Date();
     }
 
@@ -1169,7 +1111,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         private BlockingQueue<Scheduler.Assignment> indexAssignments = new DelayQueue<Scheduler.Assignment>();
 
         Scheduler() {
-            super(MMBaseContext.getThreadGroup(), null, MMBaseContext.getMachineName() + ":Lucene.Scheduler");
+            super("Lucene.Scheduler");
             setDaemon(true);
             start();
         }
@@ -1185,7 +1127,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         }
 
         public void run() {
-            MMBase mmbase = MMBase.getMMBase();
             log.service("Start Lucene Scheduler");
             while (mmbase != null && !mmbase.isShutdown()) {
                 if (log.isTraceEnabled()) {

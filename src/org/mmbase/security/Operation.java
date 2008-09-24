@@ -10,11 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- * This class is a kind of enumeration (introduced before java 1.5 enumerations) of the operations
- * possible within the security authorization.
+ * This class is somekinda enumeration of the operations possible within
+ * the security context
+ * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
- * @see Authorization
+ * @version $Id: Operation.java,v 1.11 2004-03-08 17:46:32 michiel Exp $
  */
 public final class Operation {
     /** int value for the read Operation*/
@@ -44,15 +44,10 @@ public final class Operation {
     public final static int CHANGECONTEXT_INT = CHANGE_CONTEXT_INT;
 
 
-    /** 
-     * A 'read' operation is acquiring an MMBase Node. We have no field-level granularity for the
-     * authorization. Having a {@link org.mmbase.bridge.Node} means that you 
-     */
+    /** Identifier for read operation, which is used for reading information*/
     public final static Operation READ = new Operation(READ_INT, "read");
 
-    /**
-     * {@link org.mmbase.bridge.Node#setValue(String, Object)} is an example of a write-operation.
-     */
+    /** Identifier for write operation, which is used for writing information*/
     public final static Operation WRITE = new Operation(WRITE_INT, "write");
 
     /**
@@ -67,8 +62,7 @@ public final class Operation {
      */
     public final static Operation CHANGE_RELATION = new Operation(CHANGE_RELATION_INT, "change relation");
 
-    /** 
-     *Identifier for remove operation, which is used when removing a node */
+    /** Identifier for remove operation, which is used when removing a node */
     public final static Operation DELETE = new Operation(DELETE_INT, "delete");
 
     /** 
@@ -77,10 +71,15 @@ public final class Operation {
      */
     public final static Operation CHANGE_CONTEXT = new Operation(CHANGE_CONTEXT_INT, "change context");
 
+
+    /** 
+     * Identifier for change context operation, which is used when changing the context of a node 
+     * @deprecated Use CHANGE_CONTEXT
+     */
+    public final static Operation CHANGECONTEXT = CHANGE_CONTEXT;
+
     /**
      *	Private constructor, to prevent creation of new Operations
-     * @param level operation identifier 
-     * @param description operation description
      */
     private Operation(int level, String description) {
         this.level = level;
@@ -92,31 +91,24 @@ public final class Operation {
      *	which can be used in switch statements
      *	@return the internal int value
      */
-    public int getInt() {
+    public int getInt(){
         return level;
     }
 
     /**
      *	@return a string containing the description of the operation
      */
-    public String toString() {
+    public String toString(){
         return description;
     }
 
-    /**
-     * the int value of the instance
-     */
-    private final int level;
+    /** the int value of the instance */
+    private int level;
 
-    /**
-     * the description of this operation
-     */
-    private final String description;
- 
-    /** retrieve a Operation by a given string 
-     * @param operationString the {@link Operation#toString()}   
-     * @return Operation
-     */
+    /** the description of this operation */
+    private String description;
+    
+    /** retrieve a Operation by a given string */
     public static Operation getOperation(String operationString) {
         if(READ.toString().equals(operationString)) return READ;
         if(WRITE.toString().equals(operationString)) return WRITE;

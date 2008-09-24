@@ -1,5 +1,5 @@
 <%@ include file="settings.jsp"
-%><mm:content postprocessor="none" type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod" rank="basic user"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
+%><mm:content postprocessor="none" type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
 <mm:import externid="xmlmode" />
 <mm:present referid="xmlmode">
   <mm:param name="org.mmbase.xml-mode" value="$xmlmode" />
@@ -9,7 +9,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.28 2008-09-05 08:54:13 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.26 2005-06-28 14:20:32 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -65,7 +65,7 @@ if (wizardConfig != null) {
     } else {
         if ((closedObject instanceof Config.WizardConfig) &&
             ((Config.WizardConfig)closedObject).wiz.committed()) {
-
+            
             log.trace("we move from a inline sub-wizard to a parent wizard...");
             Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
             // with an inline popupwizard we should like to pass the newly created or updated
@@ -125,7 +125,7 @@ if (wizardConfig.wiz.startWizard()) {
                                  "&proceed=true&wizard=" + wizardname +
                                  "&sessionkey=" + ewconfig.sessionKey +
                                  "&origin=" + origin +
-                                 "&objectnumber=" + objectnumber +
+                                 "&objectnumber=" + objectnumber + 
                                  "&popupid=" + popupId);
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);

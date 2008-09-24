@@ -10,12 +10,10 @@
     
     <mm:cloud>
       <table>
-        <tr>
-          <th colspan="2">
-            The 'mm:include' tag is similar to jsp:include. It's a bit handier, because it knows about mmbase-variables.
-            See also what happens with <a href="<mm:url><mm:param name="hoi" value="Tot ziens" /></mm:url>">this url</a>
-          </th>
-        </tr>
+        <tr><th colspan="2">
+          The 'mm:include' tag is similar to jsp:include. It's a bit handier, because it knows about mmbase-variables.
+          See also what happens with <a href="<mm:url><mm:param name="hoi" value="Tot ziens" /></mm:url>">this url</a>
+        </th></tr>
         <tr valign="top">
           <td width="50%">
             <pre><mm:include cite="true" page="codesamples/include.jsp" escape="text/xml" /></pre>

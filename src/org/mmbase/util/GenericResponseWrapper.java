@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.22 2008-02-20 12:01:49 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.17.2.4 2008-02-20 11:59:21 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -58,7 +58,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
     private HttpServletResponse wrappedResponse;
 
-    protected String redirected = null;
+
+    private String redirected = null;
     /**
      * Public constructor
      */
@@ -84,7 +85,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * @since MMBase-1.7.1
      */
     public HttpServletResponse getHttpServletResponse() {
-        //return (HttpServletResponse) getResponse(); // should work, I think, but doesn't
+        //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
         HttpServletResponse response = wrappedResponse;
         while (response instanceof HttpServletResponseWrapper) {
             if (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
@@ -97,8 +98,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
     private boolean mayAddHeader(String header) {
-        for (String element : IGNORED_HEADERS) {
-            if (element.equalsIgnoreCase(header)) {
+        for (int i=0; i<IGNORED_HEADERS.length; i++) {
+            if (IGNORED_HEADERS[i].equalsIgnoreCase(header)) {
                 return false;
             }
         }
@@ -115,7 +116,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public String getRedirected() {
         return redirected;
     }
-
 
     public void setStatus(int s) {
         getHttpServletResponse().setStatus(s);
@@ -227,10 +227,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return outputStream;
             //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-
-        bytes        = new ByteArrayOutputStream();
-        outputStream = new MyServletOutputStream(bytes);
-
+        if (log.isDebugEnabled()) {
+            log.debug("Got outputstream", new Exception());
+        }
+        if (outputStream == null) {
+            bytes        = new ByteArrayOutputStream();
+            outputStream = new MyServletOutputStream(bytes);
+        }
         return outputStream;
     }
 
@@ -245,10 +248,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return writer;
             //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-
-        string = new StringWriter();
-        writer  = new PrintWriter(string);
-
+        if (log.isDebugEnabled()) {
+            log.debug("Got writer", new Exception());
+        }
+        if (writer == null) {
+            string = new StringWriter();
+            writer  = new PrintWriter(string);
+        }
         return writer;
     }
 

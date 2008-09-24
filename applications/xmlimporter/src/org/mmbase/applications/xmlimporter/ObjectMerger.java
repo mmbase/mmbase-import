@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: ObjectMerger.java,v 1.5 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: ObjectMerger.java,v 1.4 2003-03-07 08:50:02 pierre Exp $
  */
 public interface ObjectMerger {
 
@@ -27,7 +27,7 @@ public interface ObjectMerger {
      *  name/value pairs (both String).
      * @throws TransactionHandlerException if a failure occurred.
      */
-    public void init(HashMap<String, String> params) throws TransactionHandlerException;
+    public void init(HashMap params) throws TransactionHandlerException;
 
     /**
      * Merges a field.
@@ -53,7 +53,7 @@ public interface ObjectMerger {
      *  object (as TmpObject instances).
      */
     public void mergeRelations(TmpObject tmpObj1, TmpObject tmpObj2,
-        List<TmpObject> relations1, List<TmpObject> relations2);
+        List relations1, List relations2);
 
     /**
      * Tests if two relations should be considered duplicates,

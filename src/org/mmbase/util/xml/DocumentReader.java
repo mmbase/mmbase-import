@@ -12,6 +12,8 @@ package org.mmbase.util.xml;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.*;
@@ -19,6 +21,9 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.XMLErrorHandler;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -35,14 +40,14 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.45 2008-09-12 14:28:34 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.5 2008-04-23 13:21:52 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map<String, DocumentBuilder> documentBuilders = Collections.synchronizedMap(new HashMap<String, DocumentBuilder>());
+    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -58,22 +63,22 @@ public class DocumentReader  {
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, DocumentReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, DocumentReader.class);
     }
 
     protected Document document;
 
     private String systemId;
 
-    static UtilReader.PropertiesMap<String> utilProperties = null;
+    static UtilReader.PropertiesMap utilProperties = null;
     /**
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on
      */
-    public static final boolean validate() {
+    protected static final boolean validate() {
         Object validate = utilProperties == null ? null : utilProperties.get("validate");
         return validate == null || validate.equals("true");
     }
@@ -119,7 +124,7 @@ public class DocumentReader  {
      * @param source the input source from which to read the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, Class<?> resolveBase) {
+    public DocumentReader(InputSource source, Class resolveBase) {
         this(source, DocumentReader.validate(), resolveBase);
     }
 
@@ -131,14 +136,14 @@ public class DocumentReader  {
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, boolean validating, Class<?> resolveBase) {
+    public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
         if (source == null) {
             throw new IllegalArgumentException("InputSource cannot be null");
         }
         try {
             systemId = source.getSystemId();
-            org.xml.sax.EntityResolver resolver = null;
-            if (resolveBase != null) resolver = new EntityResolver(validating, resolveBase);
+            XMLEntityResolver resolver = null;
+            if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
             DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log != null && log.isDebugEnabled()) {
@@ -157,7 +162,6 @@ public class DocumentReader  {
      */
     public DocumentReader(Document doc) {
         document = doc;
-        systemId = doc.getDocumentURI();
     }
 
 
@@ -171,17 +175,19 @@ public class DocumentReader  {
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use a default resolver
      * @return a DocumentBuilder instance, or null if none could be created
      */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
-        if (handler == null) handler = new ErrorHandler();
-        if (resolver == null) resolver = new EntityResolver(validating);
+        if (handler == null) handler = new XMLErrorHandler();
+        if (resolver == null) resolver = new XMLEntityResolver(validating);
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
+            Class cl = dfactory.getClass();
             try {
-                dfactory.setXIncludeAware(true);
+                java.lang.reflect.Method m =  cl.getMethod("setXIncludeAware", new Class[] {Boolean.TYPE});
+                m.invoke(dfactory, new Object[] {Boolean.TRUE});
             } catch(Exception e) {
                 if (! warnedXinclude) {
                     log.info(e + " Your current document builder factory does not support xi:include.");
@@ -209,8 +215,7 @@ public class DocumentReader  {
             db.setEntityResolver(resolver);
 
         } catch(ParserConfigurationException pce) {
-            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
-            log.error(Logging.stackTrace(pce));
+            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested", pce);
             return null;
         }
         return db;
@@ -236,7 +241,7 @@ public class DocumentReader  {
     /**
      * See {@link #getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         return getDocumentBuilder(validating, false, handler, resolver);
     }
 
@@ -251,11 +256,11 @@ public class DocumentReader  {
      * @return a DocumentBuilder instance, or null if none could be created
      * @since MMBase-1.8.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, org.xml.sax.ErrorHandler handler, org.xml.sax.EntityResolver resolver) {
+    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
         validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;
-            DocumentBuilder db = documentBuilders.get(key);
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
             if (db == null) {
                 db = createDocumentBuilder(validating, xsd, null, null);
                 documentBuilders.put(key, db);
@@ -283,7 +288,7 @@ public class DocumentReader  {
      */
     public static String getNodeTextValue(Node n, boolean trim) {
         NodeList nl = n.getChildNodes();
-        StringBuilder res = new StringBuilder();
+        StringBuffer res = new StringBuffer();
         for (int i = 0; i < nl.getLength(); i++) {
             Node textnode = nl.item(i);
             if (textnode.getNodeType() == Node.TEXT_NODE) {
@@ -301,16 +306,13 @@ public class DocumentReader  {
      * @since MMBase-1.8.1
      */
     public static void setNodeTextValue(Node n, String value) {
-        Node child = n.getFirstChild();
-        while (child != null) {
-            Node next = child.getNextSibling();
-            n.removeChild(child);
-            child = next;
+        NodeList textNodes = n.getChildNodes();
+        for (int j = 0; j < textNodes.getLength(); j++) {
+            n.removeChild(textNodes.item(j));
         }
         Text text = n.getOwnerDocument().createTextNode(value);
         n.appendChild(text);
     }
-
 
     /**
      * @since MMBase-1.8.5
@@ -379,9 +381,7 @@ public class DocumentReader  {
      *
      * @param parent The parent element, to which a new child will be added
      * @param newChild this new child
-     * @param path The beforementioned comma separated list of regexps. See also {@link
-     * java.util.regex.Pattern};
-     * Namespace prefixes are ignored.
+     * @param path The beforementioned comma separated list of regexps. See also {@link java.util.regex.Pattern};
      * @since MMBase-1.8
      */
     static public void appendChild(Element parent, Element newChild, String path) {
@@ -485,7 +485,7 @@ public class DocumentReader  {
         if (document == null) {
             log.error("Document is not defined, cannot get " + path);
         }
-        return getElementByPath(document.getDocumentElement(), path);
+        return getElementByPath(document.getDocumentElement(),path);
     }
 
     /**
@@ -494,7 +494,7 @@ public class DocumentReader  {
      * @param path Dot-separated list of tags describing path from root element to requested element
      * @return Leaf element of the path
      */
-    public static Element getElementByPath(Element e, String path) {
+    public Element getElementByPath(Element e, String path) {
         StringTokenizer st = new StringTokenizer(path,".");
         if (!st.hasMoreTokens()) {
             // faulty path
@@ -508,8 +508,8 @@ public class DocumentReader  {
                 return null;
             } else if (!e.getLocalName().equals(root)) {
                 // path should start with document root element
-                log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + e.getLocalName() + "): incorrect xml file" +
-                          "(" + e.getOwnerDocument().getDocumentURI() + ")");
+                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getLocalName()+"): incorrect xml file" +
+                          "("+getSystemId()+")");
                 return null;
             }
             OUTER:
@@ -518,9 +518,8 @@ public class DocumentReader  {
                 NodeList nl = e.getChildNodes();
                 for(int i = 0; i < nl.getLength(); i++) {
                     if (! (nl.item(i) instanceof Element)) continue;
-                    e = (Element) nl.item(i);
-                    String tagName = e.getLocalName();
-                    if (tagName == null || tagName.equals(tag) || "*".equals(tag)) continue OUTER;
+                    e = (Element)nl.item(i);
+                    if (e.getLocalName().equals(tag)) continue OUTER;
                 }
                 // Handle error!
                 return null;
@@ -534,7 +533,7 @@ public class DocumentReader  {
      * @param path Path to the element
      * @return Text value of element
      */
-    public  String getElementValue(String path) {
+    public String getElementValue(String path) {
         return getElementValue(getElementByPath(path));
     }
 
@@ -542,7 +541,7 @@ public class DocumentReader  {
      * @param e Element
      * @return Text value of element
      */
-    public static String getElementValue(Element e) {
+    public String getElementValue(Element e) {
         if (e == null) {
             return "";
         } else {
@@ -552,60 +551,65 @@ public class DocumentReader  {
 
     /**
      * @param path Path to the element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public List<Element> getChildElements(String path) {
+    public Iterator getChildElements(String path) {
         return getChildElements(getElementByPath(path));
     }
 
     /**
      * @param e Element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public static List<Element> getChildElements(Element e) {
-        return getChildElements(e, "*");
+    public Iterator getChildElements(Element e) {
+        return getChildElements(e,"*");
     }
 
     /**
      * @param path Path to the element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
      */
-    public List<Element> getChildElements(String path, String tag) {
-        return getChildElements(getElementByPath(path), tag);
+    public Iterator getChildElements(String path,String tag) {
+        return getChildElements(getElementByPath(path),tag);
     }
 
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
+     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
-    public static List<Element> getChildElements(Element e, String tag) {
-        List<Element> v = new ArrayList<Element>();
+    public Iterator getChildElements(Element e,String tag) {
+        List v = new ArrayList();
         boolean ignoretag = tag.equals("*");
-        if (e != null) {
+        if (e!=null) {
             NodeList nl = e.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
-                if (n.getLocalName() == null) continue;
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
-                    v.add((Element) n);
+                    v.add(n);
                 }
             }
         }
-        return v;
+        return v.iterator();
     }
 
-    /**
-     * @since MMBase-1.9
-     */
-    public Document getDocument() {
-        return document;
+    public static void main(String[] argv) throws Exception {
+        if (argv.length == 0) {
+            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
+            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
+            System.out.println(" Errors will be reported if the XML is invalid");
+
+            return;
+        }
+        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
+        /*
+        DocumentReader doc =  new DocumentReader(d);
+        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
+        */
     }
 
-    public static void main(String argv[]) throws Exception {
-        org.mmbase.util.ResourceLoader.getSystemRoot().getDocument(argv[0]);
-    }
 }

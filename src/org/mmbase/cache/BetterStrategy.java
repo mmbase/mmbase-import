@@ -26,17 +26,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.32 2008-08-28 11:46:20 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.24.2.2 2007-12-07 14:41:17 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
     //public BetterStrategy() {}
     private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private static final Logger log = Logging.getLoggerInstance(BetterStrategy.class);
-
-
-    private static final Logger nodeEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".nodeevent");
-    private static final Logger relationEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".relationevent");
 
     // inheritdoc
     public String getName() {
@@ -56,7 +52,7 @@ public class BetterStrategy extends ReleaseStrategy {
             "outcome of a query.";
     }
 
-    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         return shouldRelease(event, query);
     }
 
@@ -67,7 +63,7 @@ public class BetterStrategy extends ReleaseStrategy {
      *
      * @return true if query should be released
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         if (log.isDebugEnabled()) {
             log.debug(event.toString());
         }
@@ -204,7 +200,8 @@ public class BetterStrategy extends ReleaseStrategy {
             return false;
         }
         //test if all changed fields are aggreagting and of type count, if not: return false;
-        for (StepField field : query.getFields()) {
+        for(Iterator i = query.getFields().iterator();  i.hasNext(); ){
+            StepField field = (StepField) i.next();
             if(event.getChangedFields().contains(field.getFieldName()) ){
                 if( ! (field instanceof AggregatedField)) {
                     return false;
@@ -220,7 +217,8 @@ public class BetterStrategy extends ReleaseStrategy {
             return true;
         }
         MMObjectBuilder eventBuilder = MMBase.getMMBase().getBuilder(event.getBuilderName());
-        for (String fieldName : event.getChangedFields()) {
+        for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
+            String fieldName = (String) i.next();
             if(getConstraintsForField(fieldName, eventBuilder, constraint, query).size() > 0){
                 return false;
             }
@@ -250,13 +248,13 @@ public class BetterStrategy extends ReleaseStrategy {
         MMObjectBuilder eventDest       = mmb.getBuilder(eventDestType);
 
 
-        Iterator<Step> i = query.getSteps().iterator();
-        Step prevStep = i.next();
+        Iterator i = query.getSteps().iterator();
+        Step prevStep = (Step) i.next();
         String stepDest = prevStep.getTableName();
         while (i.hasNext()) {
             String stepSource = stepDest;
             RelationStep step = (RelationStep) i.next();
-            Step nextStep = i.next();
+            Step nextStep = (Step) i.next();
             stepDest = nextStep.getTableName();
             //when source or destination are null (no active builders), this event can not affect the cache of this mmbase app
             boolean matchesProper = (eventSource != null && eventDest != null)
@@ -300,9 +298,11 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventBuilderName);
         search:
-        for (String fieldName : event.getChangedFields()) {
+        for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
+            String fieldName = (String) i.next();
+
             //first test the constraints
-            List<Constraint> constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
+            List constraintsForFieldList = getConstraintsForField(fieldName, eventBuilder, query.getConstraint(), query);
             if(constraintsForFieldList.size() > 0) {
                 constraintsFound = true;
                 if (log.isDebugEnabled()) {
@@ -311,7 +311,9 @@ public class BetterStrategy extends ReleaseStrategy {
                 break search;
             }
 
-            for (StepField field : query.getFields()) {
+            // then test the fields (only if no constraint match was found)
+            for (Iterator fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
+                StepField field = (StepField) fieldIterator.next();
                 if (field.getFieldName().equals(fieldName)
                     && (field.getStep().getTableName().equals(eventBuilderName) ||
                         eventBuilder.isExtensionOf(mmb.getBuilder(field.getStep().getTableName())))
@@ -325,7 +327,7 @@ public class BetterStrategy extends ReleaseStrategy {
             }
 
             //test the sortorders
-            List<SortOrder> sortordersForFieldList = getSortordersForField(fieldName, eventBuilder, query.getSortOrders(), query);
+            List sortordersForFieldList = getSortordersForField(fieldName, eventBuilder, query.getSortOrders(), query);
             if(sortordersForFieldList.size() > 0) {
                 sortordersFound = true;
                 if (log.isDebugEnabled()) {
@@ -357,19 +359,21 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
-    private final boolean checkSteps(NodeEvent event, SearchQuery query) {
+    private boolean checkSteps(NodeEvent event, SearchQuery query){
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
         //perhaps the builder of the event is locally inactive
         if(eventBuilder != null){
-            for (Step step : query.getSteps()) {
+            Iterator i = query.getSteps().iterator();
+            while (i.hasNext()) {
+                Step step = (Step) i.next();
                 String table = step.getTableName();
                 if (! (table.equals(eventTable) ||
                        eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
-                Set<Integer> nodes = step.getNodes();
-                if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
+                Set nodes = step.getNodes();
+                if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
                     return true;
                 }
             }
@@ -377,18 +381,9 @@ public class BetterStrategy extends ReleaseStrategy {
         return false;
     }
 
-    private void logResult(String comment, SearchQuery query, Event event) {
-        if(log.isDebugEnabled() || nodeEventLog.isDebugEnabled() || relationEventLog.isDebugEnabled()){
-            String role = "";
-             Logger logger;
-             if (event instanceof RelationEvent) {
-                 logger = relationEventLog;
-             } else if (event instanceof NodeEvent) {
-                 logger = nodeEventLog;
-             } else {
-                 logger = log;
-             }
-
+    private void logResult(String comment, SearchQuery query, Event event){
+        if(log.isDebugEnabled()){
+            String role="";
             // a small hack to limit the output
             if (event instanceof RelationEvent) {
                 //get the role name
@@ -401,9 +396,9 @@ public class BetterStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                logger.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**" + sqlHandler.toSql(query, sqlHandler) + "\n******");
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**" + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
-                logger.warn(e);
+                log.warn(e);
             }
         }
     }

@@ -9,10 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.packaging.util;
 
+import java.util.*;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
+import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
@@ -27,20 +30,20 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.7 2008-09-04 06:01:05 michiel Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.3 2005-07-09 15:29:12 nklasens Exp $
  */
-public class ExtendedDocumentReader extends DocumentReader  {
+public class ExtendedDocumentReader extends XMLBasicReader {
 
     public ExtendedDocumentReader(String path) {
-        super(getInputSource(path));
+        super(path);
     }
 
     public ExtendedDocumentReader(String path, boolean validating) {
-        super(getInputSource(path), validating, null);
+        super(path, validating);
     }
 
     public ExtendedDocumentReader(String path, Class resolveBase) {
-        super(getInputSource(path), DocumentReader.validate(), resolveBase);
+        super(path, resolveBase);
     }
 
     public ExtendedDocumentReader(InputSource source) {
@@ -59,20 +62,11 @@ public class ExtendedDocumentReader extends DocumentReader  {
         super(source, validating, resolveBase);
     }
 
-
-    protected static InputSource getInputSource(String path) {
-        try {
-            return ResourceLoader.getConfigurationRoot().getInputSource(path);
-        } catch (Exception ioe) {
-            return null;
-        }
-    }
-
     public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         return DocumentReader.getDocumentBuilder(validating, handler, resolver);
     }
 
-    public static DocumentBuilder getDocumentBuilder(Class<ExtendedDocumentReader> refer) {
-        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new org.mmbase.util.xml.EntityResolver(DocumentReader.validate(), refer));
+    public static DocumentBuilder getDocumentBuilder(Class refer) {
+        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
     }
 }

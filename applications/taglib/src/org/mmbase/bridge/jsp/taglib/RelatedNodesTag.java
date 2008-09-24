@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.41 2008-07-24 08:08:30 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.39 2006-07-08 12:51:56 michiel Exp $
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 
@@ -45,13 +45,13 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type, true);
+        this.type = getAttribute(type);
     }
     /**
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role, true);
+        this.role = getAttribute(role);
     }
 
     /**
@@ -68,19 +68,19 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      * @since MMBase-1.7.1
      */
     public void setPath(String p) throws JspTagException {
-        path = getAttribute(p, true);
+        path = getAttribute(p);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e, true);
+        element = getAttribute(e);
     }
     /**
      * @since MMBase-1.7.1
      */
     public void setSearchdirs(String s) throws JspTagException {
-        searchDirs = getAttribute(s, true);
+        searchDirs = getAttribute(s);
     }
 
     /**
@@ -91,7 +91,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        RelatedNodesContainerTag c = findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
+        RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
         if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
@@ -150,7 +150,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to third step (first step is the related node, second is the relation)
-                    query.setNodeStep(query.getSteps().get(2));
+                    query.setNodeStep((Step) query.getSteps().get(2));
                 }
             }
 

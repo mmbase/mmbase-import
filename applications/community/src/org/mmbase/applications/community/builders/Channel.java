@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.31 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Channel.java,v 1.29 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -112,10 +112,10 @@ public class Channel extends MMObjectBuilder {
      * This Hashtable contains all open channels with their highest sequence
      * number for which the highseq is keeped track of in memory.
      */
-    private Hashtable<Integer, Integer> openChannels = new Hashtable<Integer, Integer>();
+    private Hashtable openChannels = new Hashtable();
 
     // Holds the recorders associated with their channels.
-    private Hashtable<Integer, Writer> recorders = new Hashtable<Integer, Writer>();
+    private Hashtable recorders = new Hashtable();
     // The base file path for log files.
     private String baseRecordPath = null;
     // The default filename for log files.
@@ -170,7 +170,7 @@ public class Channel extends MMObjectBuilder {
             communityBuilder = (Community) mmb.getMMObject("community");
             if (messageBuilder != null && communityBuilder != null) {
                 // obtain temporary node manager
-                tmpNodeManager = TransactionManager.getInstance().getTemporaryNodeManager();
+                tmpNodeManager = new TemporaryNodeManager(mmb);
                 // create relation breaker for maintaining temporary relations
                 chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
                 active = true;
@@ -270,7 +270,7 @@ public class Channel extends MMObjectBuilder {
         Integer channelnr=new Integer(channel.getNumber());
         if (channel.getIntValue(F_OPEN) != CLOSED) {
             channel.setValue(F_OPEN, CLOSED);
-            Integer highseq = openChannels.get(channelnr);
+            Integer highseq = (Integer)openChannels.get(channelnr);
             if (highseq != null) channel.setValue("highseq", highseq);
             if (channel.commit()) {
                 log.debug("close(): channel "+channelnr+"("+channel.getValue("name")+") closed.");
@@ -327,7 +327,7 @@ public class Channel extends MMObjectBuilder {
     public int getNewSequence(MMObjectNode channel) {
         int newHighseq;
         Integer channelnr=new Integer(channel.getNumber());
-        Integer highseqObj = openChannels.get(channelnr);
+        Integer highseqObj = (Integer)openChannels.get(channelnr);
         if (highseqObj != null) {
             // The highest sequence is kept track of in the openChannels table.
             newHighseq = highseqObj.intValue() + 1;
@@ -371,7 +371,7 @@ public class Channel extends MMObjectBuilder {
      *         the recorder doesn't exist.
      */
     public Writer getRecorder(int channel) {
-        return recorders.get(new Integer(channel));
+        return (Writer)recorders.get(new Integer(channel));
     }
 
     /**
@@ -416,7 +416,7 @@ public class Channel extends MMObjectBuilder {
      * @param channel the channel being recorded
      */
     public void stopRecorder(int channel) {
-        Writer recorder=recorders.get(new Integer(channel));
+        Writer recorder=(Writer)recorders.get(new Integer(channel));
         if (recorder!=null) {
             try {
                 recorder.flush();
@@ -500,9 +500,9 @@ public class Channel extends MMObjectBuilder {
         MMObjectNode community = communityParent(channel);
         MMObjectNode relatedCommunity;
 
-        Enumeration<MMObjectNode> relatedChannels = messageBuilder.getTemporaryRelated(user, "channel").elements();
+        Enumeration relatedChannels = messageBuilder.getTemporaryRelated(user, "channel").elements();
         while (relatedChannels.hasMoreElements()) {
-            relatedChannel = relatedChannels.nextElement();
+            relatedChannel = (MMObjectNode)relatedChannels.nextElement();
             relatedCommunity = communityParent(relatedChannel);
             if (relatedCommunity.getNumber() == community.getNumber())
                 if (relatedChannel.getNumber() != channel.getNumber())
@@ -563,20 +563,20 @@ public class Channel extends MMObjectBuilder {
      * @param params contains the parameters for this list command.
      * @return a vector with the (string) values of the requested fields, per user.
      */
-    public Vector<String> getListUsers(StringTagger params) {
-        Vector<MMObjectNode> relatedUsers = getNodeListUsers(params);
+    public Vector getListUsers(StringTagger params) {
+        Vector relatedUsers = getNodeListUsers(params);
         // Get the fieldnames out of the FIELDS attribute.
-        Vector<String> fields = params.Values("FIELDS");
+        Vector fields = params.Values("FIELDS");
         // Put in params the number of fields that will get returned.
         params.setValue("ITEMS","" + fields.size());
 
-        Vector<String> result=new Vector<String>();
+        Vector result=new Vector();
         MMObjectNode relatedUser;
         String field;
-        for (Iterator<MMObjectNode> i=relatedUsers.iterator(); i.hasNext();) {
-            relatedUser = i.next();
-            for (Iterator<String> j=fields.iterator(); j.hasNext(); ) {
-                field=j.next();
+        for (Iterator i=relatedUsers.iterator(); i.hasNext();) {
+            relatedUser = (MMObjectNode)i.next();
+            for (Iterator j=fields.iterator(); j.hasNext(); ) {
+                field=(String)j.next();
                 result.add(relatedUser.getStringValue(field));
             }
         }
@@ -597,8 +597,8 @@ public class Channel extends MMObjectBuilder {
      * @param params contains the parameters for this list command.
      * @return a vector with the user nodes.
      */
-    public Vector<MMObjectNode> getNodeListUsers(Map params) {
-        Vector<MMObjectNode> result = new Vector<MMObjectNode>();
+    public Vector getNodeListUsers(Map params) {
+        Vector result = new Vector();
         String id = (String)params.get("CHANNEL");
         MMObjectNode node = getNode(id);
         if ((node == null) || !(node.getBuilder() instanceof Channel)) {
@@ -624,14 +624,14 @@ public class Channel extends MMObjectBuilder {
          * We need to fix StringTagger so that get() always returns the
          * _original_ value.
          */
-        Vector<String> sortFields;
-        Vector<String> sortDirs;
+        Vector sortFields;
+        Vector sortDirs;
         if (params instanceof StringTagger) {
             sortFields = ((StringTagger)params).Values("SORTFIELDS");
             sortDirs = ((StringTagger)params).Values("SORTDIRS");
         } else {
-            sortFields = (Vector<String>)params.get("SORTFIELDS");
-            sortDirs = (Vector<String>)params.get("SORTDIRS");
+            sortFields = (Vector)params.get("SORTFIELDS");
+            sortDirs = (Vector)params.get("SORTDIRS");
         }
 
         NodeComparator compareUsers=null;
@@ -661,9 +661,9 @@ public class Channel extends MMObjectBuilder {
      *          means the result is not no sorted
      * @return a vector with the nodes of the users.
      */
-    public Vector<MMObjectNode> getListUsers(MMObjectNode channel, String usertype,
-                               Comparator<MMObjectNode> compareUsers, int offset, int max) {
-        Vector<MMObjectNode> relatedUsers = messageBuilder.getTemporaryRelated(channel,usertype,offset,max);
+    public Vector getListUsers(MMObjectNode channel, String usertype,
+                               Comparator compareUsers, int offset, int max) {
+        Vector relatedUsers = messageBuilder.getTemporaryRelated(channel,usertype,offset,max);
         if (compareUsers!=null) {
             Collections.sort(relatedUsers,compareUsers);
         }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.31 2007-08-10 10:05:36 michiel Exp $
+ * @version $Id: LocaleTag.java,v 1.28.2.2 2007-08-16 08:46:14 michiel Exp $
  */
 
 public class LocaleTag extends CloudReferrerTag  {
@@ -44,7 +44,7 @@ public class LocaleTag extends CloudReferrerTag  {
     protected Cloud  cloud;
     private String jspvar = null;
 
-    protected Set<String> varyHeaders;
+    protected Set varyHeaders;
 
     // ------------------------------------------------------------
     // Attributes (documenation can be found in tld).
@@ -102,7 +102,7 @@ public class LocaleTag extends CloudReferrerTag  {
             }
         }
         String tz = timezone.getString(this);
-        if (tz.length() != 0) {
+        if (timezone != null && ! tz.equals("")) {
             pageContext.setAttribute(TZ_KEY, TimeZone.getTimeZone(tz), SCOPE);
         } else {
             if (pageContext.getAttribute(TZ_KEY, SCOPE) == null) {
@@ -139,16 +139,15 @@ public class LocaleTag extends CloudReferrerTag  {
     }
 
     protected void addVary(String header) {
-        if (varyHeaders == null) varyHeaders = new HashSet<String>();
+        if (varyHeaders == null) varyHeaders = new HashSet();
         varyHeaders.add(header);
     }
-
     /**
      * @throws JspTagException
      */
     protected void determineLocaleFromAttributes() throws JspTagException {
         String l = language.getString(this);
-        if (l.length() != 0) {
+        if (! l.equals("")) {
             if (l.equalsIgnoreCase("client")) {
                 locale = pageContext.getRequest().getLocale();
                 addVary("Accept-Language");
@@ -194,6 +193,8 @@ public class LocaleTag extends CloudReferrerTag  {
 
     public void doFinally() {
         cloud = null;
+        locale = null;
+        prevLocale = null;
         jspvar = null;
         super.doFinally();
     }

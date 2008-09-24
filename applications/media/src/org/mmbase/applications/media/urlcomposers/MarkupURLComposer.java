@@ -75,15 +75,15 @@ public class MarkupURLComposer extends FragmentURLComposer {
         }
         
     }
-    public String getGUIIndicator(Map<String,Locale> options) {
-        Locale locale = options.get("locale");
+    public String getGUIIndicator(Map options) {
+        Locale locale = (Locale) options.get("locale");
         Format sourceFormat = Format.get(source.getIntValue("format"));
         return super.getGUIIndicator(options) + " (" + sourceFormat.getGUIIndicator(locale) + ")";
     }
     
     
-    public String getDescription(Map<String,Locale> options) {
-        Locale locale = options.get("locale");
+    public String getDescription(Map options) {
+        Locale locale = (Locale) options.get("locale");
         ResourceBundle m = ResourceBundle.getBundle("org.mmbase.applications.media.urlcomposers.resources.markupurlcomposer", locale);
         String url = getURL() + "&amp;language=" + locale.getLanguage();
         MMObjectNode template = getTemplate();

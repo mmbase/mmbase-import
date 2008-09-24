@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.3 2008-09-19 16:03:21 michiel Exp $
+ * @version $Id: Kupu.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
  */
 
 class Kupu {
@@ -409,48 +409,6 @@ class Kupu {
         return true;
     }
 
-    private boolean handleFlash(String href, Element a, List<Map.Entry<String, Node>> usedFlash,
-                                NodeList relatedFlash, Node editedNode) {
-        Cloud cloud = editedNode.getCloud();
-        HttpServletRequest request = (HttpServletRequest) cloud.getProperty("request");
-        NodeManager flashobjects = cloud.getNodeManager("flashobjects");
-        String flashIntro = request.getContextPath() + "/mmbase/kupu/mmbase/icons/flash.png?o=";
-        if (! href.startsWith(flashIntro)) {
-            log.info("href " + href + " does not start with " + flashIntro + "hence this is not a flash object");
-            return false;
-        }
-        log.info("Found flash " + href);
-        String nodeNumber = href.substring(flashIntro.length());
-        Node flash = cloud.getNode(nodeNumber);
-        String klass = a.getAttribute("class");
-        String id = a.getAttribute("id");
-        usedFlash.add(new Entry(id, flash));
-        NodeList linkedFlash = Util.get(cloud, relatedFlash, "idrel.id", a.getAttribute("id"));
-        if (! linkedFlash.isEmpty()) {
-            // ok, already related!
-            log.service("" + flash + " image already correctly related, nothing needs to be done");
-            Node idrel = linkedFlash.getNode(0).getNodeValue("idrel");
-            if (!idrel.getStringValue("class").equals(klass)) {
-                idrel.setStringValue("class", klass);
-                idrel.commit();
-            }
-
-        } else {
-            log.service(" to" + flash + ", creating new relation");
-            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), flashobjects, "idrel");
-            Relation newIdRel = rm.createRelation(editedNode, flash);
-            newIdRel.setStringValue("id", id);
-            newIdRel.setStringValue("class", klass);
-            newIdRel.commit();
-        }
-        a.removeAttribute("src");
-        a.removeAttribute("height");
-        a.removeAttribute("width");
-        a.removeAttribute("class");
-        a.removeAttribute("alt");
-        return true;
-    }
-
     private boolean handleAttachment(Matcher matcher, Element a, List<Map.Entry<String, Node>>  usedAttachments, NodeList relatedAttachments, Node editedNode) {
         if (! matcher.matches()) return false;
         if (! matcher.group(1).equals("attachments")) return false;
@@ -620,8 +578,7 @@ class Kupu {
             log.warn("Node node given, cannot handle cross-links!!");
         } else {
             Cloud cloud = editedNode.getCloud();
-            NodeManager images       = cloud.getNodeManager("images");
-            NodeManager flashobjects = cloud.getNodeManager("flashobjects");
+            NodeManager images      = cloud.getNodeManager("images");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
             NodeManager blocks      = cloud.getNodeManager("blocks");
@@ -631,19 +588,16 @@ class Kupu {
 
 
             NodeList relatedImages        = Util.getRelatedNodes(editedNode, images);
-            List<Map.Entry<String, Node>> usedImages = new ArrayList<Map.Entry<String, Node>>();
-
-            NodeList relatedFlash        = Util.getRelatedNodes(editedNode, flashobjects);
-            List<Map.Entry<String, Node>> usedFlash = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedImages = new ArrayList();
 
             NodeList relatedAttachments   = Util.getRelatedNodes(editedNode, attachments);
-            List<Map.Entry<String, Node>> usedAttachments = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedAttachments = new ArrayList();
 
             NodeList relatedBlocks        = Util.getRelatedNodes(editedNode, blocks);
-            List<Map.Entry<String, Node>> usedBlocks = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedBlocks = new ArrayList();
 
             NodeList relatedUrls          = Util.getRelatedNodes(editedNode, urls);
-            List<Map.Entry<String, Node>> usedUrls = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedUrls = new ArrayList();
 
             NodeList relatedTexts;
             List<Map.Entry<String, Node>> usedTexts;
@@ -673,8 +627,6 @@ class Kupu {
                     String href = getHref(a, cloud);
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
                     if (handleImage(href, a, usedImages, relatedImages, editedNode)) { // found an image!
-                        continue;
-                    } else if (handleFlash(href, a, usedFlash, relatedFlash, editedNode)) { // found an image!
                         continue;
                     } else if (handleAttachment(mmbaseMatcher, a, usedAttachments, relatedAttachments, editedNode)) {
                         continue;

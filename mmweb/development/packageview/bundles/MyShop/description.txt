@@ -1,2 +1,0 @@
-MyShop is a package that shows an example of a shoppingcart in MMBase. You can manage products and productgroups with the editwizards. Keywords, discounts and detailed product information, like images and attachments, can be attached to the products. The completed orders are posted to an email account. The MyShop templates include a search page by which you can search products on text, keywords and productgroups. 
-

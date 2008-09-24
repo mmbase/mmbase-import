@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.13 2007-07-25 05:15:55 michiel Exp $;
+ @version $Id: mmbase.css,v 1.11.2.2 2007-05-25 10:29:17 michiel Exp $;
 */
 
 html { 
@@ -31,9 +31,6 @@ table {
 
 
 }
-td.numeric { 
-  text-align: right;
-}
 
 /* a basic body is a page not using a table */
 body.basic h1 { 
@@ -45,15 +42,13 @@ body.basic p, table {
   width: 94%;
 }
 
+
 .intro { 
   font-style: italic;
 }
 
 td {
   padding: 3pt;
-}
-td p { 
-
 }
 th {
   background-color: #ddd;
@@ -181,29 +176,4 @@ a:hover {
 
 #tabnav a:hover {
   background: #f3f3f3;
-}
-
-.filelisting h1 { 
-  border-bottom: #666688 solid 2px;
-}
-
-.filelisting table { 
-  background-color: #f3f3f3;
-  border-left: #666688 solid 15px;
-  border-right: #666688 solid 15px;
-  margin-bottom: 20px;
-
-}
-.filelisting td { 
-  border-bottom: solid 1px white;
-}
-
-.filelisting .lastmodified { 
-  border-right: solid 1px black;
-  width: 20ex;
-}
-
-.filelisting h3 { 
-  text-align: right;
-  border-top: #666688 solid 2px;
 }

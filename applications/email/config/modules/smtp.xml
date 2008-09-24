@@ -7,14 +7,7 @@
 
     <!-- mandatory properties -->
     <property name="hostname">localhost</property>
-    <!--
-        If port -1 then the module will actually not start a listener,
-        Suggested is to overrid this like so in your applicagtion context
-        <Environment name="mmbase/smtp/port"
-                     value="1025"    type="java.lang.String" />
-
-    -->
-    <property name="port">-1</property>
+    <property name="port">1025</property>
     <property name="domains">localhost</property>
 
 

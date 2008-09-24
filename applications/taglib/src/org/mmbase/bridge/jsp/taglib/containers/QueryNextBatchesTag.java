@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.10 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.7 2006-04-11 22:58:36 michiel Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -56,8 +56,9 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
 
 
-    protected List<String> getList() throws JspTagException {
-        Query query = getQuery(container);
+    protected List getList() throws JspTagException {
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
         if (maxNumber == SearchQuery.DEFAULT_MAX_NUMBER) {
@@ -70,7 +71,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         int totalSize = Queries.count(query);
 
         indexOffSet = offset / maxNumber + 1 + indexOffsetOffset.getInt(this, 0);
-        List<String> resultList = new ArrayList<String>();
+        List resultList = new ArrayList();
 
         int maxTotalSize = maxtotal.getInt(this, -1);
 
@@ -78,11 +79,11 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         if (maxTotalSize > 0) {
             maxSize = (maxTotalSize - 1) / 2; // half for both, 1 for current
-            int numberOfPreviousBatches = offset / maxNumber;
+            int numberOfPreviousBatches = offset / maxNumber; 
             int availableForPrevious = maxTotalSize / 2;   // == maxSize in QueryPreviousBatches
             if (numberOfPreviousBatches < availableForPrevious) { // previousbatches did not use all
-                maxSize += (availableForPrevious - numberOfPreviousBatches);
-            }
+                maxSize += (availableForPrevious - numberOfPreviousBatches);            
+            } 
 
             int max = getMaxNumber();
             if (max > 0 && maxSize > max) maxSize = max;
@@ -94,7 +95,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         while (offset + maxNumber < totalSize) {
             offset += maxNumber;
-            resultList.add(String.valueOf(offset));
+            resultList.add(new Integer(offset));
             if (maxSize > 0 && resultList.size() == maxSize) break;
         }
         return resultList;

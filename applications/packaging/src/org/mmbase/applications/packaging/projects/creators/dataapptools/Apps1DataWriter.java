@@ -26,13 +26,13 @@ public class Apps1DataWriter {
      */
     private static Logger log = Logging.getLoggerInstance(Apps1DataWriter.class.getName());
 
-    public static boolean write(HashSet<Integer> fb,String alias,String builder,String where,int depth,String datafile,String datapath,Target target) {
+    public static boolean write(HashSet fb,String alias,String builder,String where,int depth,String datafile,String datapath,Target target) {
 
 	int startnode = getStartNode(alias,builder,where);
 
         // the trick is to get all nodes until depth x and filter them
-        HashSet<Integer> relnodes = new HashSet<Integer>();
-        HashSet<Integer> nodes = new HashSet<Integer>();
+        HashSet relnodes = new HashSet();
+        HashSet nodes = new HashSet();
         getSubNodes(startnode,depth,fb, nodes,relnodes);
 
         writeDataXML(fb,datafile,target);
@@ -52,13 +52,13 @@ public class Apps1DataWriter {
         return true;
     }
 
-    static void writeNodes(HashSet<Integer> builders,HashSet<Integer> nodes,HashSet<Integer> relnodes, String targetpath) {
+    static void writeNodes(HashSet builders,HashSet nodes,HashSet relnodes, String targetpath) {
 
         // create a list of writer objects for the nodes
-        Hashtable<String, NodeWriter> nodeWriters = new Hashtable<String, NodeWriter>();
-        Iterator<Integer> res = builders.iterator();
+        Hashtable nodeWriters = new Hashtable();
+        Iterator res = builders.iterator();
         while (res.hasNext()) {
-            Integer i = res.next();
+            Integer i = (Integer)res.next();
 	    String nb = MMBase.getMMBase().getTypeDef().getValue(i.intValue());
 	    MMObjectBuilder bul=MMBase.getMMBase().getMMObject(nb);
 	    boolean isRelation = false;
@@ -72,12 +72,12 @@ public class Apps1DataWriter {
         MMObjectBuilder bul = MMBase.getMMBase().getMMObject("typedef"); // get Typedef object
         int nrofnodes=0;	// set total nodes to export to zero (is this used?).
         // Store all the nodes that apply using their corresponding NodeWriter object
-        for (Integer integer : nodes) {
+        for (Iterator nods=nodes.iterator(); nods.hasNext(); ) {
         // retrieve the node to export
-            int nr = integer.intValue();
+            int nr = ((Integer)nods.next()).intValue();
             MMObjectNode node = bul.getNode(nr);
             String name = node.getName();
-            NodeWriter nodeWriter = nodeWriters.get(name);
+            NodeWriter nodeWriter = (NodeWriter)nodeWriters.get(name);
             // export the node if the writer was found
             if (nodeWriter!=null) {
                 nodeWriter.write(node);
@@ -87,12 +87,12 @@ public class Apps1DataWriter {
 	    }
         }
 
-        for (Integer integer : relnodes) {
+        for (Iterator nods=relnodes.iterator(); nods.hasNext(); ) {
         // retrieve the node to export
-            int nr = integer.intValue();
+            int nr = ((Integer)nods.next()).intValue();
             MMObjectNode node = bul.getNode(nr);
             String name = node.getName();
-            NodeWriter nodeWriter = nodeWriters.get(name);
+            NodeWriter nodeWriter = (NodeWriter)nodeWriters.get(name);
             // export the node if the writer was found
             if (nodeWriter!=null) {
                 nodeWriter.write(node);
@@ -103,10 +103,10 @@ public class Apps1DataWriter {
         }
 
         // close the files.
-        for (Enumeration<String> e = nodeWriters.keys(); e.hasMoreElements();) {
-            String name = e.nextElement();
+        for (Enumeration e = nodeWriters.keys(); e.hasMoreElements();) {
+            String name = (String)e.nextElement();
             NodeWriter nodeWriter;
-            nodeWriter = nodeWriters.get(name);
+            nodeWriter = (NodeWriter)nodeWriters.get(name);
             nodeWriter.done();
         }
     }
@@ -126,10 +126,10 @@ public class Apps1DataWriter {
         }
     }
 
-    static void getSubNodes(int startnodenr, int maxdepth, HashSet<Integer> fb, HashSet<Integer> nodesdoneSet, HashSet<Integer> relationnodesSet) {
+    static void getSubNodes(int startnodenr, int maxdepth, HashSet fb, HashSet nodesdoneSet, HashSet relationnodesSet) {
 	MMBase mmb=MMBase.getMMBase();
-        HashSet<Integer> nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
-        HashSet<Integer> nodesSet_next = new HashSet<Integer>();  // holds all nodes not yet 'done' that are on the next level
+        HashSet nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
+        HashSet nodesSet_next = new HashSet();  // holds all nodes not yet 'done' that are on the next level
         InsRel bul = mmb.getInsRel();		// builder for collecting relations. should be changed to MMRelations later on!
         Integer type = new Integer(bul.getNodeType(startnodenr));	// retrieve node type (new method in MMObjectBuiilder)
         if (!fb.contains(type)) {   // exit if the type of this node conflicts.
@@ -141,16 +141,21 @@ public class Apps1DataWriter {
         // For each depth of the tree, traverse the nodes on that depth
         for (int curdepth=1;curdepth<=maxdepth;curdepth++) {
             nodesSet_current = nodesSet_next;	// use the next level of nodes to tarverse
-            nodesSet_next = new HashSet<Integer>();          // and create a new holder for the nodes one level deeper
+            nodesSet_next = new HashSet();          // and create a new holder for the nodes one level deeper
 
             // since the nodes on this level are 'almost done', and therefor should be skipped
             // when referenced in the next layer, add the current set to the set of nodes that are 'done'
             //
             nodesdoneSet.addAll(nodesSet_current);
             // iterate through the current level
-            for (Integer thisnodenr : nodesSet_current) {
-                for (MMObjectNode relnode : bul.getRelationsVector(thisnodenr.intValue())) {
+            for (Iterator curlist=nodesSet_current.iterator(); curlist.hasNext();) {
+                // get the next node's number
+                Integer thisnodenr = (Integer)curlist.next();
+                // Iterate through all the relations of a node
+                // determining relations has to be adapted when using MMRelations!
+                for (Iterator rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
                     // get the relation node and node number
+                    MMObjectNode relnode=(MMObjectNode)rel.next();
                     Integer relnumber=new Integer(relnode.getIntValue("number"));
                     // check whether to add the referenced node
                     // and the relation between this node and the referenced one.
@@ -212,11 +217,11 @@ public class Apps1DataWriter {
             MMObjectBuilder bul=MMBase.getMMBase().getMMObject(builder);
             if (bul!=null) {
                 // find the nodes that match
-                Enumeration<MMObjectNode> results=bul.search(where);
+                Enumeration results=bul.search(where);
                 // check if there are any nodes
                 if (results.hasMoreElements()) {
                     // then return the first node found.
-                    MMObjectNode node=results.nextElement();
+                    MMObjectNode node=(MMObjectNode)results.nextElement();
                     return node.getIntValue("number");
                 }
             } else {
@@ -269,7 +274,7 @@ public class Apps1DataWriter {
         return true;
     }
 
-    public static boolean writeDataXML(HashSet<Integer> fb,String datafile,Target target) {
+    public static boolean writeDataXML(HashSet fb,String datafile,Target target) {
         String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body+="<!DOCTYPE dataset PUBLIC \"-//MMBase/DTD dataset config 1.0//EN\" \"http://www.mmbase.org/dtd/dataset_1_0.dtd\">\n";
         body+="<dataset>\n";
@@ -281,9 +286,9 @@ public class Apps1DataWriter {
         body+="\t</creationinfo>\n";
 	*/
         body+="\t<objectsets>\n";
-        Iterator<Integer> res = fb.iterator();
+        Iterator res = fb.iterator();
         while (res.hasNext()) {
-            Integer i = res.next();
+            Integer i = (Integer)res.next();
             String nb = MMBase.getMMBase().getTypeDef().getValue(i.intValue());
             MMObjectBuilder bul=MMBase.getMMBase().getMMObject(nb);
             if (!(bul instanceof InsRel)) {
@@ -294,7 +299,7 @@ public class Apps1DataWriter {
         body+="\t<relationsets>\n";
         res = fb.iterator();
         while (res.hasNext()) {
-            Integer i = res.next();
+            Integer i = (Integer)res.next();
             String nb = MMBase.getMMBase().getTypeDef().getValue(i.intValue());
             MMObjectBuilder bul=MMBase.getMMBase().getMMObject(nb);
             if (bul instanceof InsRel) {

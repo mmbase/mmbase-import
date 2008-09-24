@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.gui.html;
 
 import java.util.*;
-
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
@@ -20,7 +19,7 @@ import org.mmbase.module.core.*;
  * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: EditState.java,v 1.18 2005-10-06 14:07:32 michiel Exp $
  */
 public class EditState {
 
@@ -31,7 +30,7 @@ public class EditState {
 
     private String user;
 
-    Vector<EditStateNode> nodes=new Vector<EditStateNode>();
+    Vector nodes=new Vector();
     EditStateNode curNode;
     MMBase mmBase;
 
@@ -55,17 +54,17 @@ public class EditState {
     }
 
     public boolean clear() {
-        nodes=new Vector<EditStateNode>();
+        nodes=new Vector();
         return true;
     }
 
     public boolean popState() {
         nodes.removeElement(curNode);
-        curNode=nodes.lastElement();
+        curNode=(EditStateNode)nodes.lastElement();
         return true;
     }
 
-    public Vector<EditStateNode> getEditStates() {
+    public Vector getEditStates() {
         return nodes;
     }
 
@@ -97,7 +96,7 @@ public class EditState {
         return result;
     }
 
-    public Hashtable<String, Object> getSearchValues() {
+    public Hashtable getSearchValues() {
         return curNode.getSearchValues();
     }
 
@@ -133,7 +132,7 @@ public class EditState {
         return result;
     }
 
-    public Hashtable<String, Object> getHtmlValues() {
+    public Hashtable getHtmlValues() {
         return curNode.getHtmlValues();
     }
 
@@ -166,7 +165,7 @@ public class EditState {
     public MMObjectNode getEditNode(int i) {
         int pos=nodes.indexOf(curNode);
         if ((pos-i)<0) return null;
-        EditStateNode node=nodes.elementAt(pos-i);
+        EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
         if (node==null) {
             return null;
         } else {
@@ -177,7 +176,7 @@ public class EditState {
     public EditStateNode getEditStateNode(int i) {
         int pos=nodes.indexOf(curNode);
         if ((pos-i)<0) return null;
-        EditStateNode node=nodes.elementAt(pos-i);
+        EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
         if (node==null) {
             return null;
         } else {
@@ -331,7 +330,7 @@ public class EditState {
         // by there caller !!
         int pos=nodes.indexOf(curNode);
         int src=curNode.getEditNodeNumber();
-        EditStateNode node2=nodes.elementAt(pos-1);
+        EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
         if (node2!=null) {
             log.debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
             mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
@@ -350,7 +349,7 @@ public class EditState {
         curNode.setInsSave(set);
     }
 
-    public Vector<MMObjectNode> getInsSaveList() {
+    public Vector getInsSaveList() {
         return curNode.getInsSaveList();
     }
 
@@ -358,7 +357,7 @@ public class EditState {
         if (curNode!=null) curNode.delInsSaveList();
     }
 
-    public Hashtable<String, Vector> getRelationTable() {
+    public Hashtable getRelationTable() {
         return curNode.getRelationTable();
     }
 

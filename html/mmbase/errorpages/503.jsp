@@ -13,24 +13,15 @@
     }
     if (q != null) url += "?" + q;
     %>
-    
-    <% 
-    if (request.getMethod().equals("GET")) {
-      response.setHeader("Refresh", "30; url=" + url);
-    }
-    %>
+
+    <% response.setHeader("Refresh", "30; url=" + url);%>
     <%@include file="meta.jsp"%>
   </head>
   <body class="basic">
     <h1>503 This web-site is temporary unavailable</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
-      <em><%=new java.util.Date()%></em> - This web-site is currently unavailable. 
-      <% if (request.getMethod().equals("GET")) { %>
-         Please come <a href="<%=org.mmbase.util.transformers.Xml.XMLAttributeEscape(url)%>">back</a> in a few minutes.
-      <% } else { %>
-         Please press reload in a few minutes.
-      <% } %>
+      <em><%=new java.util.Date()%></em> - This web-site is currently unavailable. Please come <a href="<%=org.mmbase.util.transformers.Xml.XMLAttributeEscape(url)%>">back</a> in a few minutes.
     </p>
     <p>
       If you are the administrator of this site, and this message does not disappear, please check

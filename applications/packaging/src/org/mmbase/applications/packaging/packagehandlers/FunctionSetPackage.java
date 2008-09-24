@@ -12,13 +12,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -46,10 +47,10 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSETS_1_0, DTD_FUNCTIONSETS_1_0, FunctionSetPackage.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSETS_1_0, DTD_FUNCTIONSETS_1_0, FunctionSetPackage.class);
     }
 
 
@@ -169,7 +170,8 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
             try {
                 InputStream input = jf.getInputStream(je);
                 ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), FunctionSetPackage.class);
-                for (Element n: reader.getChildElements("functionsets", "functionset")) {
+                for (Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+                    Element n = (Element) ns.next();
                     String name = n.getAttribute("name");
                     String file = n.getAttribute("file");
                     if (file != null) {
@@ -229,7 +231,8 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
         body += "<!DOCTYPE functionsets PUBLIC \"//MMBase - functionsets//\" \"http://www.mmbase.org/dtd/functionsets_1_0.dtd\">\n";
         body += "<functionsets>\n";
         boolean found = false;
-        for (Element n: reader.getChildElements("functionsets", "functionset")) {
+        for (Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
+            Element n = (Element) ns.next();
             String oldname = n.getAttribute("name");
             String oldfile = n.getAttribute("file");
             body += "\t<functionset name=\"" + oldname + "\" file=\"" + oldfile + "\" />\n";

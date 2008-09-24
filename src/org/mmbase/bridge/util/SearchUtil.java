@@ -21,9 +21,9 @@ import org.mmbase.storage.search.*;
  * code which uses the query objects in the mmbase bridge.
  * The implementation of these methods can also be used as documentation how to use the
  * search query api.
- * 
+ *
  * @author Nico Klasens
- * @version $Id: SearchUtil.java,v 1.20 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: SearchUtil.java,v 1.5.2.8 2007-12-12 18:08:00 michiel Exp $
  */
 public class SearchUtil {
 
@@ -40,7 +40,7 @@ public class SearchUtil {
      * Search for a node which contains a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -48,14 +48,14 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findNode(Cloud cloud, String managerName, String fieldname, String value) {
-        return findNode(cloud, managerName, fieldname, value, null, null); 
+        return findNode(cloud, managerName, fieldname, value, null, null);
     }
 
     /**
      * Search for a node which contains a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -64,24 +64,24 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findNode(Cloud cloud, String managerName, String fieldname, String value, String sortName) {
-        return findNode(cloud, managerName, fieldname, value, sortName, null); 
+        return findNode(cloud, managerName, fieldname, value, sortName, null);
     }
 
     /**
      * Retrieve the first node based on the sort field
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param sortName - name of field to sort on.
      * @return Single node
      */
     public static Node findOrderedNode(Cloud cloud, String managerName, String sortName) {
-        return findNode(cloud, managerName, null, null, sortName, null); 
+        return findNode(cloud, managerName, null, null, sortName, null);
     }
 
     /**
      * Retrieve the first node based on the sort field
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param sortName - name of field to sort on.
@@ -89,14 +89,14 @@ public class SearchUtil {
      * @return Single node
      */
     public static Node findOrderedNode(Cloud cloud, String managerName, String sortName, String sortDirection) {
-        return findNode(cloud, managerName, null, null, sortName, sortDirection); 
+        return findNode(cloud, managerName, null, null, sortName, sortDirection);
     }
-    
+
     /**
      * Search for a node which contains a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -106,9 +106,9 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findNode(Cloud cloud, String managerName, String fieldname, String value, String sortName, String sortDirection) {
-        NodeList list = findNodeList(cloud, managerName, fieldname, value, sortName, sortDirection); 
+        NodeList list = findNodeList(cloud, managerName, fieldname, value, sortName, sortDirection);
         if (list.size() > 0) {
-            return list.getNode(0); 
+            return list.getNode(0);
         }
         return null;
     }
@@ -116,7 +116,7 @@ public class SearchUtil {
     /**
      * Search for nodes which contain a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @return list of nodes
@@ -124,11 +124,11 @@ public class SearchUtil {
     public static NodeList findNodeList(Cloud cloud, String managerName) {
         return findNodeList(cloud, managerName, null, null, null, null);
     }
-    
+
     /**
      * Search for nodes which contain a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -142,7 +142,7 @@ public class SearchUtil {
     /**
      * Search for nodes which contain a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -151,12 +151,12 @@ public class SearchUtil {
      * @return list of nodes which match the field value
      */
     public static NodeList findNodeList(Cloud cloud, String managerName, String fieldname, Object value, String sortName) {
-        return findNodeList(cloud, managerName, fieldname, value, sortName, null); 
+        return findNodeList(cloud, managerName, fieldname, value, sortName, null);
     }
 
     /**
      * Retrieve nodes which are sorted on the field name
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param sortName - name of field to sort on.
@@ -168,7 +168,7 @@ public class SearchUtil {
 
     /**
      * Retrieve nodes which are sorted on the field name
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param sortName - name of field to sort on.
@@ -178,11 +178,11 @@ public class SearchUtil {
     public static NodeList findOrderedNodeList(Cloud cloud, String managerName, String sortName, String sortDirection) {
         return findNodeList(cloud, managerName, null, null, sortName, sortDirection);
     }
-    
+
     /**
      * Retrieve nodes which contain a field value. The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param cloud - user cloud to search in
      * @param managerName - name of manager to search with
      * @param fieldname - name of field to search with
@@ -204,22 +204,22 @@ public class SearchUtil {
     /**
      * Search for a node which is related to the parent node.
      * If multiple nodes are found then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
      * @return Single node
      */
     public static Node findRelatedNode(Node parent, String managerName, String role) {
-        return findRelatedNode(parent, managerName, role, null, null, null, null); 
+        return findRelatedNode(parent, managerName, role, null, null, null, null);
     }
-    
+
     /**
      * Search for a node which is related to the parent node and contains a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -228,7 +228,7 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value) {
-        return findRelatedNode(parent, managerName, role, fieldname, value, null, null); 
+        return findRelatedNode(parent, managerName, role, fieldname, value, null, null);
     }
 
     /**
@@ -236,7 +236,7 @@ public class SearchUtil {
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -246,13 +246,13 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value, String sortName) {
-        return findRelatedNode(parent, managerName, role, fieldname, value, sortName, null); 
+        return findRelatedNode(parent, managerName, role, fieldname, value, sortName, null);
     }
 
     /**
      * Retrieve a node which is related to the parent node and is sorted in a field.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -260,13 +260,13 @@ public class SearchUtil {
      * @return Single node
      */
     public static Node findRelatedOrderedNode(Node parent, String managerName, String role, String sortName) {
-        return findRelatedNode(parent, managerName, role, null, null, sortName, null); 
+        return findRelatedNode(parent, managerName, role, null, null, sortName, null);
     }
 
     /**
      * Retrieve a node which is related to the parent node and is sorted in a field.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -275,15 +275,15 @@ public class SearchUtil {
      * @return Single node
      */
     public static Node findRelatedOrderedNode(Node parent, String managerName, String role, String sortName, String sortDirection) {
-        return findRelatedNode(parent, managerName, role, null, null, sortName, sortDirection); 
+        return findRelatedNode(parent, managerName, role, null, null, sortName, sortDirection);
     }
-    
+
     /**
      * Search for a node which is related to the parent node and contains a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * If multiple nodes are found with the same value then the first node is returned
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -294,30 +294,30 @@ public class SearchUtil {
      * @return Single node which matches the field value
      */
     public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, Object value, String sortName, String sortDirection) {
-        NodeList list = findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, sortDirection); 
+        NodeList list = findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, sortDirection);
         if (list.size() > 0) {
-            return list.getNode(0); 
+            return list.getNode(0);
         }
         return null;
     }
 
     /**
      * Search for nodes which are related to the parent node.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
      * @return a list of nodes
      */
     public static NodeList findRelatedNodeList(Node parent, String managerName, String role) {
-        return findRelatedNodeList(parent, managerName, role, null, null, null, null); 
+        return findRelatedNodeList(parent, managerName, role, null, null, null, null);
     }
-    
+
     /**
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -326,14 +326,14 @@ public class SearchUtil {
      * @return a list of nodes which match the field value
      */
     public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value) {
-        return findRelatedNodeList(parent, managerName, role, fieldname, value, null, null); 
+        return findRelatedNodeList(parent, managerName, role, fieldname, value, null, null);
     }
 
     /**
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -343,14 +343,14 @@ public class SearchUtil {
      * @return a list of nodes which match the field value
      */
     public static NodeList findRelatedNodeList(Node parent, String managerName, String role, String fieldname, Object value, String sortName) {
-        return findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, null); 
+        return findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, null);
     }
 
     /**
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -358,14 +358,14 @@ public class SearchUtil {
      * @return a list of nodes
      */
     public static NodeList findRelatedOrderedNodeList(Node parent, String managerName, String role, String sortName) {
-        return findRelatedNodeList(parent, managerName, role, null, null, sortName, null); 
+        return findRelatedNodeList(parent, managerName, role, null, null, sortName, null);
     }
-    
+
     /**
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -374,14 +374,14 @@ public class SearchUtil {
      * @return a list of nodes
      */
     public static NodeList findRelatedOrderedNodeList(Node parent, String managerName, String role, String sortName, String sortDirection) {
-        return findRelatedNodeList(parent, managerName, role, null, null, sortName, sortDirection); 
+        return findRelatedNodeList(parent, managerName, role, null, null, sortName, sortDirection);
     }
-    
+
     /**
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -400,7 +400,7 @@ public class SearchUtil {
      * Search for nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -415,13 +415,13 @@ public class SearchUtil {
         NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir);
         return query.getNodeManager().getList(query);
     }
-    
+
     /**
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
      * Relation direction is destination
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -439,7 +439,7 @@ public class SearchUtil {
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -460,7 +460,7 @@ public class SearchUtil {
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -474,7 +474,7 @@ public class SearchUtil {
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -504,7 +504,7 @@ public class SearchUtil {
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parentNodes - nodes to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -513,12 +513,12 @@ public class SearchUtil {
     public static NodeQuery createRelatedNodeListQuery(NodeList parentNodes, String managerName, String role) {
         return createRelatedNodeListQuery(parentNodes, managerName, role, DESTINATION);
     }
-    
+
     /**
      * Create a query for a list of nodes which are related to the parent node and contain a field value.
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param parentNodes - nodes to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -530,13 +530,13 @@ public class SearchUtil {
             throw new IllegalArgumentException("paretnodes is empty. should be at leat one");
         }
         Node parent = parentNodes.getNode(0);
-        
+
         NodeManager manager = parent.getCloud().getNodeManager(managerName);
 
         NodeQuery query = parent.getCloud().createNodeQuery();
         Step step1 = query.addStep(parent.getNodeManager());
-        for (Node element : parentNodes) {
-            Node parentNode = element;
+        for (Iterator iter = parentNodes.iterator(); iter.hasNext();) {
+            Node parentNode = (Node) iter.next();
             query.addNode(step1, parentNode);
         }
 
@@ -545,10 +545,10 @@ public class SearchUtil {
         query.setNodeStep(step3); // makes it ready for use as NodeQuery
         return query;
     }
-    
+
     /**
      * Search for a list of relations which are related to the parent node.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -562,7 +562,7 @@ public class SearchUtil {
 
     /**
      * Search for a list of relations which are related to the parent node.
-     * 
+     *
      * @param parent - node to start the search from
      * @param managerName - name of manager to search with
      * @param role - name of relation (relation role in the mmbase system)
@@ -585,9 +585,8 @@ public class SearchUtil {
         }
 
         NodeManager nm = query.getNodeManager();
-        return new CollectionRelationList(nm.getList(query), parent.getCloud());
+        return (RelationList) nm.getList(query);
     }
-
 
     /**
      * Finds the relation-nodes between two specified nodes
@@ -596,17 +595,17 @@ public class SearchUtil {
      * @param role - name of relation (relation role in the mmbase system)
      * @param searchdir - direction of the relation (source, destination, both)
      * @return a list of relations
-     * 
+     *
      * @since MMBase-1.8.5
      */
     public static RelationList findRelations(Node source, Node destination, String role, String searchdir) {
-        
+
         Cloud cloud = source.getCloud();
-        RelationManager relationManager = 
+        RelationManager relationManager =
             role == null ?
             cloud.getNodeManager("insrel").toRelationManager() :
             cloud.getRelationManager(source.getNodeManager(), destination.getNodeManager(), role);
-        
+
         NodeQuery q = relationManager.createQuery();
         if (DESTINATION.equalsIgnoreCase(searchdir)) {
             Queries.addConstraint(q, Queries.createConstraint(q, "snumber", FieldCompareConstraint.EQUAL, source));
@@ -617,8 +616,8 @@ public class SearchUtil {
         } else {
             Queries.addConstraint(q, Queries.createConstraint(q, "snumber", FieldCompareConstraint.EQUAL, source));
             Queries.addConstraint(q, Queries.createConstraint(q, "dnumber", FieldCompareConstraint.EQUAL, destination));
-            if (Queries.count(q) == 0) { 
-                RelationManager relationManager2 = 
+            if (Queries.count(q) == 0) {
+                RelationManager relationManager2 =
                     role == null ?
                     cloud.getNodeManager("insrel").toRelationManager() :
                     cloud.getRelationManager(destination.getNodeManager(), source.getNodeManager(), role);
@@ -633,7 +632,8 @@ public class SearchUtil {
         }
         return new CollectionRelationList(relationManager.getList(q), cloud);
     }
-   
+
+
     /**
      * Add constraints and sort orders to a query.
      * The field value is matched on equality (exact match).
@@ -652,7 +652,7 @@ public class SearchUtil {
         addFeatures(query, parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
     }
 
-    
+
     /**
      * Add constraints and sort orders to a query.
      * The field value is matched on equality (exact match).
@@ -672,7 +672,7 @@ public class SearchUtil {
         NodeManager manager = null;
         if (!isEmptyOrWhitespace(managerName)) {
             manager = parent.getCloud().getNodeManager(managerName);
-        	addEqualConstraint(query, manager, fieldname, value);
+            addEqualConstraint(query, manager, fieldname, value);
         }
 
         if (!isEmptyOrWhitespace(sortName)) {
@@ -700,12 +700,12 @@ public class SearchUtil {
             }
             else {
                 if (manager != null) {
-                	addSortOrder(query, manager, sortName, sortDirection);
+                    addSortOrder(query, manager, sortName, sortDirection);
                 }
             }
         }
     }
-    
+
     /**
      * Check to see if a relation is allowed from the parent node
      * @param parent - node to start  from
@@ -716,7 +716,7 @@ public class SearchUtil {
     public static boolean hasAllowedRelation(Node parent, String role, String searchdir) {
         return parent.getNodeManager().getAllowedRelations((String) null, role, searchdir) != null;
     }
-    
+
     /**
      * Add a sort order to a query for a field of the manager.
      *
@@ -749,6 +749,7 @@ public class SearchUtil {
      *
      * @param query - the query to add the sort order to
      * @param sf - StepField of the sort order
+     * @param sortName - name of field to sort on.
      * @param sortDirection - direction of the sort (UP, DOWN)
      */
     public static void addSortOrder(NodeQuery query, StepField sf, String sortDirection) {
@@ -758,13 +759,13 @@ public class SearchUtil {
         }
         query.addSortOrder(sf, dir);
     }
-    
+
 
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -779,7 +780,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -794,7 +795,7 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -811,7 +812,7 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -823,11 +824,11 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, keyField, value);
         return constraint;
     }
-    
+
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -841,7 +842,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -851,11 +852,11 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -870,7 +871,7 @@ public class SearchUtil {
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -885,7 +886,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -899,7 +900,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -909,11 +910,11 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -928,7 +929,7 @@ public class SearchUtil {
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -944,7 +945,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -953,13 +954,13 @@ public class SearchUtil {
     public static void addEqualConstraint(NodeQuery query, NodeManager manager, String fieldname, Object value) {
         if (!isEmptyOrWhitespace(fieldname)) {
             if (value instanceof String) {
-                addEqualConstraint(query, manager, fieldname, (String) value);    
+                addEqualConstraint(query, manager, fieldname, (String) value);
             }
             else if (value instanceof Integer) {
-                addEqualConstraint(query, manager, fieldname, (Integer) value);    
+                addEqualConstraint(query, manager, fieldname, (Integer) value);
             }
             else if (value instanceof Boolean) {
-                addEqualConstraint(query, manager, fieldname, (Boolean) value);    
+                addEqualConstraint(query, manager, fieldname, (Boolean) value);
             }
             else {
                 FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
@@ -967,12 +968,12 @@ public class SearchUtil {
             }
         }
     }
-    
+
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -982,12 +983,12 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, manager, fieldname, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -1003,7 +1004,7 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -1014,12 +1015,12 @@ public class SearchUtil {
         Field keyField = manager.getField(fieldname);
         return createEqualConstraint(query, keyField, value);
     }
-    
+
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1033,7 +1034,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1042,12 +1043,12 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, field, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1061,7 +1062,7 @@ public class SearchUtil {
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1079,7 +1080,7 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1093,7 +1094,7 @@ public class SearchUtil {
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1107,11 +1108,11 @@ public class SearchUtil {
         query.setCaseSensitive(constraint, caseSensitive);
         return constraint;
     }
-    
+
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1124,7 +1125,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1133,11 +1134,11 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, field, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1148,11 +1149,11 @@ public class SearchUtil {
                 FieldCompareConstraint.EQUAL, value);
         return constraint;
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1168,7 +1169,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1181,7 +1182,7 @@ public class SearchUtil {
     /**
      * Add a constraint to a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1190,11 +1191,11 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, field, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1205,11 +1206,11 @@ public class SearchUtil {
                 FieldCompareConstraint.EQUAL, value);
         return constraint;
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1226,7 +1227,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1240,7 +1241,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1249,12 +1250,12 @@ public class SearchUtil {
         FieldValueConstraint constraint = createEqualConstraint(query, field, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1265,12 +1266,12 @@ public class SearchUtil {
                 FieldCompareConstraint.EQUAL, value);
         return constraint;
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on equality (exact match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1282,19 +1283,19 @@ public class SearchUtil {
                 FieldCompareConstraint.EQUAL, value);
         return constraint;
     }
-    
+
     /**
      * Find a step field in a query based on a bridge field
-     * 
+     *
      * @param query - the query
      * @param field - the bridge field which belongs to a node manager
      * @return a step field in the query
      */
     public static StepField findField(Query query, Field field) {
         StepField equalsField = null;
-        Iterator<StepField> fields = query.getFields().iterator();
+        Iterator fields = query.getFields().iterator();
         while(fields.hasNext()) {
-            StepField stepField = fields.next();
+            StepField stepField = (StepField) fields.next();
             if (stepField.getStep().getTableName().equals(field.getNodeManager().getName())) {
                 if (stepField.getFieldName().equals(field.getName())) {
                     equalsField = stepField;
@@ -1315,12 +1316,12 @@ public class SearchUtil {
 
         return equalsField;
     }
-    
+
     /**
      * Add a constraint to a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1334,7 +1335,7 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1349,7 +1350,7 @@ public class SearchUtil {
      * Add a constraint to a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1358,12 +1359,12 @@ public class SearchUtil {
         FieldValueConstraint constraint = createLikeConstraint(query, field, value);
         addConstraint(query, constraint);
     }
-    
+
     /**
      * Create a constraint for a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param value - value to search for in the field
@@ -1378,9 +1379,9 @@ public class SearchUtil {
      * Create a constraint for a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
-     * @param stepField - the constraint field
+     * @param field - the constraint field
      * @param value - value to search for in the field
      * @return constraint which matches a field value
      */
@@ -1390,11 +1391,11 @@ public class SearchUtil {
         query.setCaseSensitive(constraint, false);
         return constraint;
     }
-    
+
     /**
-     * Add a date and time constraint to a query where the value is between now 
+     * Add a date and time constraint to a query where the value is between now
      * and the days passed in. The days can be a negative number.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param manager - manager of the constraint field
      * @param fieldname - name of field to search with
@@ -1422,7 +1423,7 @@ public class SearchUtil {
 
     /**
      * Add a date and time constraint to a query
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param from - from value to search for in the field
@@ -1437,7 +1438,7 @@ public class SearchUtil {
      * Create a date and time constraint for a query
      * The value is matched on likelihood (wildcard % match).
      * For a string field type the match is case-insensitive.
-     * 
+     *
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param from - from value to search for in the field
@@ -1452,16 +1453,16 @@ public class SearchUtil {
         }
         else {
             constraint = query.createConstraint(query.getStepField(field),
-                    Long.valueOf(from), Long.valueOf(to));
+                    new Long(from), new Long(to));
         }
         return constraint;
     }
 
     /**
-     * Limit the result set of the query. 
-     * Note: converting a query with a limit to a counted query 
-     * {@link org.mmbase.bridge.util.Queries#count(Query)} will only limit the 
-     * result set for that query A result set is than always one. 
+     * Limit the result set of the query.
+     * Note: converting a query with a limit to a counted query
+     * {@link org.mmbase.bridge.util.Queries#count(Query)} will only limit the
+     * result set for that query A result set is than always one.
      * @param query - the query to add the constraint to
      * @param offset - the offset where the result set should start
      * @param maxNumber - the maximum number of results which are allowed to return
@@ -1480,7 +1481,7 @@ public class SearchUtil {
      * @param query - the query to add the constraint to
      * @param types - names of node managers
      */
-    public static void addTypeConstraints(NodeQuery query, List<String> types) {
+    public static void addTypeConstraints(NodeQuery query, List types) {
         FieldValueInConstraint constraint = createTypeConstraints(query, types);
         addConstraint(query, constraint);
     }
@@ -1491,12 +1492,13 @@ public class SearchUtil {
      * @param types - names of node managers
      * @return constraint with node types
      */
-    public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List<String> types) {
+    public static FieldValueInConstraint createTypeConstraints(NodeQuery query, List types) {
         Cloud cloud = query.getCloud();
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        for (String type : types) {
+        SortedSet set = new TreeSet();
+        for (Iterator iter = types.iterator(); iter.hasNext();) {
+            String type = (String) iter.next();
             NodeManager manager = cloud.getNodeManager(type);
-            set.add(manager.getNumber());
+            set.add(new Integer(manager.getNumber()));
         }
         Field field = query.getNodeManager().getField("otype");
         return createInConstraint(query, field, set);
@@ -1509,7 +1511,7 @@ public class SearchUtil {
      * @param nodes - node which should be used for the constraint
      */
     public static void addNodesConstraints(Query query, Field field, NodeList nodes) {
-        SortedSet<Integer> set = createNodesConstraints(nodes);
+        SortedSet set = createNodeNumberSet(nodes);
         addInConstraint(query, field, set);
     }
 
@@ -1518,21 +1520,22 @@ public class SearchUtil {
      * @param nodes - list of nodes
      * @return Set sorted on node number
      */
-    public static SortedSet<Integer> createNodesConstraints(NodeList nodes) {
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        for (Node element : nodes) {
-            Node node = element;
-            set.add(node.getNumber());
+    public static SortedSet createNodeNumberSet(NodeList nodes) {
+        SortedSet set = new TreeSet();
+        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+            Node node = (Node) iter.next();
+            set.add(new Integer(node.getNumber()));
         }
         return set;
     }
+
     /**
      * Add a constraint to the query which limits the values in the result based on the set
      * @param query - the query to add the constraint to
      * @param field - the constraint field
      * @param set - set with possible values
-     */    
-    public static void addInConstraint(Query query, Field field, SortedSet<? extends Object> set) {
+     */
+    public static void addInConstraint(Query query, Field field, SortedSet set) {
         FieldValueInConstraint constraint = createInConstraint(query, field, set);
         addConstraint(query, constraint);
     }
@@ -1544,13 +1547,13 @@ public class SearchUtil {
      * @param set - set with possible values
      * @return in-constraint
      */
-    public static FieldValueInConstraint createInConstraint(Query query, Field field, SortedSet<? extends Object> set) {
+    public static FieldValueInConstraint createInConstraint(Query query, Field field, SortedSet set) {
         query.getStep(field.getNodeManager().getName());
-        StepField stepfield = findField(query, field);        
+        StepField stepfield = findField(query, field);
         FieldValueInConstraint constraint = query.createConstraint(stepfield, set);
         return constraint;
     }
-    
+
     /**
      * Add a constraint to the query. When there is already a constraint then
      * the constraint is added with an AND operator
@@ -1571,9 +1574,9 @@ public class SearchUtil {
     public static Constraint createANDConstraint(Query query, Constraint first, Constraint second) {
         return createLogicalConstraint(query, first, second, CompositeConstraint.LOGICAL_OR);
     }
-    
+
     /**
-     * Add a constraint to the query. When there is already a constraint then 
+     * Add a constraint to the query. When there is already a constraint then
      * the constraint is added with an OR operator
      * @param query - the query to add the constraint to
      * @param constraint - the constraint
@@ -1592,9 +1595,9 @@ public class SearchUtil {
     public static Constraint addORConstraint(Query query, Constraint first, Constraint second) {
         return createLogicalConstraint(query, first, second, CompositeConstraint.LOGICAL_OR);
     }
-    
+
     /**
-     * Add a constraint to the query. When there is already a constraint then 
+     * Add a constraint to the query. When there is already a constraint then
      * the constraint is added with the operator specified
      * @param query - the query to add the constraint to
      * @param constraint - the constraint
@@ -1618,7 +1621,7 @@ public class SearchUtil {
      * @param operator - the logical operator (CompositeConstraint.LOGICAL_OR, CompositeConstraint.LOGICAL_AND)
      * @return composite constraint
      */
-    public static CompositeConstraint createLogicalConstraint(Query query, Constraint first, 
+    public static CompositeConstraint createLogicalConstraint(Query query, Constraint first,
                                                                 Constraint second, int operator) {
         CompositeConstraint newc = query.createConstraint(first, operator, second);
         return newc;
@@ -1626,7 +1629,7 @@ public class SearchUtil {
 
     /**
      * is Empty Or Whitespace.String
-     * 
+     *
      * @param str String to check emptiness
      * @return boolean is it empty
      */

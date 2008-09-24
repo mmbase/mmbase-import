@@ -11,7 +11,9 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
+import org.mmbase.core.*;
 import org.mmbase.core.util.StorageConnector;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -28,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.29 2008-08-13 21:35:25 michiel Exp $
+ * @version $Id: MMTable.java,v 1.23 2006-06-16 09:08:42 michiel Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
@@ -48,6 +50,9 @@ public abstract class MMTable extends FunctionProvider {
      * Maximum number of nodes to return on a query (-1 means no limit, and is also the default)
      */
     protected int maxNodesFromQuery = -1;
+
+    // indices for the storage layer
+    private Map indices = new HashMap();
 
     // link to the storage layer
     protected StorageConnector storageConnector;
@@ -79,7 +84,7 @@ public abstract class MMTable extends FunctionProvider {
      * @param tableName the name of the table
      */
     public void setTableName(String tableName) {
-        this.tableName = tableName;
+        this.tableName=tableName;
     }
 
     /**
@@ -170,7 +175,7 @@ public abstract class MMTable extends FunctionProvider {
         try {
             return storageConnector.getNode(number, useCache);
         } catch(IllegalArgumentException iae) {
-            log.service(iae.getMessage());
+            log.warn(iae.getMessage());
             if (log.isDebugEnabled()) {
                 log.debug(iae);
             }
@@ -212,13 +217,12 @@ public abstract class MMTable extends FunctionProvider {
      * @return List containing real nodes, directly from this Builders
      * @since MMBase-1.6.2
      */
-    protected List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals)  {
-        List<MMObjectNode> result;
+    protected List getNodes(Collection virtuals)  {
+        List result = new ArrayList();
         try {
             result = storageConnector.getNodes(virtuals);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage() + Logging.stackTrace(sqe));
-            result = new ArrayList<MMObjectNode>();
         }
         return result;
     }
@@ -273,7 +277,7 @@ public abstract class MMTable extends FunctionProvider {
      *         by the query is not the nodetype corresponding to this builder.
      * @since MMBase-1.7
      */
-    public List<MMObjectNode> getNodes(NodeSearchQuery query) throws SearchQueryException {
+    public List getNodes(NodeSearchQuery query) throws SearchQueryException {
         return storageConnector.getNodes(query);
     }
 
@@ -314,7 +318,7 @@ public abstract class MMTable extends FunctionProvider {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration<MMObjectNode> search(String where) {
+    public Enumeration search(String where) {
         return searchVector(where).elements();
     }
 
@@ -355,14 +359,14 @@ public abstract class MMTable extends FunctionProvider {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Vector<MMObjectNode> searchVector(String where) {
+    public Vector searchVector(String where) {
         // In order to support this method:
         // - Exceptions of type SearchQueryExceptions are caught.
         // - The result is converted to a vector.
-        Vector<MMObjectNode> result = new Vector<MMObjectNode>();
+        Vector result = new Vector();
         NodeSearchQuery query = storageConnector.getSearchQuery(where);
         try {
-            List<MMObjectNode> nodes = getNodes(query);
+            List nodes = getNodes(query);
             result.addAll(nodes);
         } catch (SearchQueryException e) {
             log.error(e);
@@ -374,16 +378,16 @@ public abstract class MMTable extends FunctionProvider {
      * Returns all the nodes from the builder.
      * @return The nodes.
      */
-    public List<MMObjectNode> getNodes() {
+    public List getNodes() {
         try {
-            List<MMObjectNode> nodes = storageConnector.getNodes();
+            List nodes = storageConnector.getNodes();
             if (nodes != null) {
                 return nodes;
             }
         } catch (SearchQueryException e) {
             log.error(e);
         }
-        return new ArrayList<MMObjectNode>();
+        return new ArrayList();
     }
 
     /**

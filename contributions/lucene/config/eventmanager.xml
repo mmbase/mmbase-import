@@ -4,6 +4,5 @@
 	<brokers>
 		<broker class="org.mmbase.module.lucene.NewSearcher$Broker"/>
 		<broker class="org.mmbase.module.lucene.FullIndexEvents$Broker"/>
-		<broker class="org.mmbase.module.lucene.AssignmentEvents$Broker"/>
 	</brokers>
 </eventmanager>

@@ -1,8 +1,8 @@
 <!--
   This translates XML to HTML, put this in a <pre>
 
-  @version: $Id: 2xml.xslt,v 1.2 2008-02-20 18:10:05 michiel Exp $
-  @author:  Michiel Meeuwissen
+  @version: $Id: 2xml.xslt,v 1.1.1.1 2003-02-25 06:59:47 kees Exp $
+  @author:  Michiel Meeuwissen 
   @todo:    It needs some work still....
 -->
 <xsl:stylesheet xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" version = "1.0" >
@@ -20,19 +20,19 @@
     standalone="no"
     indent="no"
     />
-
+  
   <xsl:template match="*">
     <xsl:param name="ident" />
     <xsl:text>
-    </xsl:text>
+    </xsl:text> 
     <xsl:value-of select="$ident" /><xsl:text>&lt;</xsl:text><font color="{$tagcolor}"><xsl:value-of select="name()" /></font>
     <xsl:apply-templates select="@*" />
     <xsl:choose>
-
+      
       <xsl:when test="not(*) and text()=''">
         <xsl:text>/&gt;</xsl:text>
       </xsl:when>
-
+      
       <xsl:otherwise>
         <xsl:text>&gt;</xsl:text>
 			<xsl:apply-templates select="*|text()">
@@ -41,7 +41,7 @@
         <xsl:text>&lt;/</xsl:text>
 		    <font color="{$tagcolor}"><xsl:value-of select="name()" /></font>
         <xsl:text>&gt;</xsl:text><br />
-      </xsl:otherwise>
+      </xsl:otherwise>      
     </xsl:choose>
   </xsl:template>
 
@@ -51,7 +51,7 @@
     </font>
     <xsl:text>"</xsl:text>
   </xsl:template>
-
+  
   <xsl:template match="text()"><span class="text"><xsl:value-of select="." /></span></xsl:template>
-
+    
 </xsl:stylesheet>

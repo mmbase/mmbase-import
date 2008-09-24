@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementCheckBox.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id: HTMLElementCheckBox.java,v 1.6 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementCheckBox  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementSelect
@@ -60,7 +60,7 @@ public class HTMLElementCheckBox  extends HTMLElement {
         if (moreValues) {
             String val = null;
             String basic = "<input type=\"checkbox\" name=\"" +name+ "\" value=\"";
-            Enumeration e = Collections.enumeration(valuesList);
+            Enumeration e = valuesList.elements();
 
             Vector list = new Vector();
 
@@ -133,7 +133,7 @@ public class HTMLElementCheckBox  extends HTMLElement {
         } else if (moredouble) {
             String val = null;
             String basic = "<input type=\"checkbox\" name=\"" +name+ "\" value=\"";
-            Enumeration e = Collections.enumeration(valuesList);
+            Enumeration e = valuesList.elements();
 
             Vector list = new Vector();
 

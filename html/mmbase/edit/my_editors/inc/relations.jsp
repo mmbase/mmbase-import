@@ -77,7 +77,7 @@ while(relIterator.hasNext()) {
             <mm:param name="nr"><mm:field name="number" /></mm:param>
           </mm:url>" title="edit node"><img src="img/mmbase-edit.png" alt="edit node" width="21" height="20" /></a></mm:maywrite>
           </td>
-          <td class="relgui"> <mm:function name="gui" /> </td>
+          <td> <mm:function name="gui" /> </td>
           <td class="buttons">
             <a onclick="toggle('edit_<mm:write referid="relation" />');return false;" href="#" title="edit or delete relation"><img src="img/mmbase-<%= arrow %>.png" alt="edit relation" width="21" height="20" /></a>
           </td>
@@ -97,18 +97,12 @@ while(relIterator.hasNext()) {
               <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
               <mm:fieldlist type="edit" fields="owner" id="fields${relation}">
                 <div class="row">
-                  <label for="mm_<mm:fieldinfo type="name" />">
-                    <strong><mm:fieldinfo type="guiname" /></strong>
-                    <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
-                    <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
-                  </label>
-                  <mm:fieldinfo type="$formtype" />
-                  <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
+                <label class="rel"><mm:fieldinfo type="guiname" /></label> <%-- mm:fieldinfo type="name" / --%>
+                <mm:fieldinfo type="$formtype" />
                 </div>
               </mm:fieldlist>
               <div class="row">
-                <label class="rel">&nbsp;</label>
-                <mm:maywrite><input type="submit" name="changerel" value="Change" /></mm:maywrite>
+                <label class="rel">&nbsp;</label><mm:maywrite><input type="submit" name="changerel" value="Change" /></mm:maywrite>
                 <mm:maydelete><input type="submit" name="deleterel" value="Delete" /></mm:maydelete>
               </div>
               </fieldset>

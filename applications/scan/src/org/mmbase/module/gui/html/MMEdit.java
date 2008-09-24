@@ -24,11 +24,11 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.14 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: MMEdit.java,v 1.12.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class MMEdit extends ProcessorModule {
 
-    Hashtable<String,CommandHandlerInterface> commandHandlers; // The objects that handle process, replace and
+    Hashtable commandHandlers; // The objects that handle process, replace and
     // list commands
     StateManager stateMngr;
 
@@ -42,7 +42,7 @@ public class MMEdit extends ProcessorModule {
         CommandHandlerInterface newHandler;
 
         mmBase= (MMBase)getModule("MMBASEROOT");
-        commandHandlers = new Hashtable<String,CommandHandlerInterface>();
+        commandHandlers = new Hashtable();
         stateMngr = new StateManager(mmBase);
         commandHandlers.put("STATE", stateMngr);
         newHandler = new ObjectSelector(stateMngr);
@@ -118,11 +118,11 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all list related pages to the correct handler
      */
-    public Vector getList(scanpage sp,StringTagger tagger, String command) throws ParseException {
+    public Vector getList(PageInfo sp,StringTagger tagger, String command)  {
         Vector result = new Vector();
         CommandHandlerInterface handler;
 
-        StringTokenizer tok = new StringTokenizer(Strip.doubleQuote(command,Strip.BOTH),"-\n\r");
+        StringTokenizer tok = new StringTokenizer(Strip.DoubleQuote(command,Strip.BOTH),"-\n\r");
         String token = tok.nextToken();
 
         if (token.startsWith ("DATE")) {
@@ -139,7 +139,7 @@ public class MMEdit extends ProcessorModule {
                     DirectoryLister imglister = new DirectoryLister();
                     String path = tok.nextToken();
                     Vector unsorted = imglister.getDirectories(path);  //Retrieve all filepaths
-                    Vector<String> sorted = imglister.sortDirectories(unsorted,comparefield);
+                    Vector sorted = imglister.sortDirectories(unsorted,comparefield);
                     result = imglister.createThreeItems(sorted,tagger);
                     tagger.setValue("ITEMS", "3");
                     //added 27jan1999
@@ -152,7 +152,7 @@ public class MMEdit extends ProcessorModule {
                     }
                 } else {
 
-                    handler = commandHandlers.get(token);
+                    handler = (CommandHandlerInterface)commandHandlers.get(token);
 
                     if (handler != null) {
                         result = handler.getList(sp, tagger, tok);
@@ -170,7 +170,7 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
 
         CommandHandlerInterface handler;
         String token, cmdline;
@@ -179,7 +179,7 @@ public class MMEdit extends ProcessorModule {
             cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
             token = tok.nextToken();
-            handler = commandHandlers.get(token);
+            handler = (CommandHandlerInterface)commandHandlers.get(token);
 
             if (handler != null) {
                 handler.process(sp, tok, cmds, vars);
@@ -208,14 +208,14 @@ public class MMEdit extends ProcessorModule {
      * The hook that passes all replace and trigger related pages to the
      * correct handler
      */
-    public String replace(scanpage sp, String command) {
+    public String replace(PageInfo sp, String command) {
         CommandHandlerInterface handler;
         String token;
 
         StringTokenizer tok = new StringTokenizer(command,"-\n\r");
         token = tok.nextToken();
         // log.error("MMEDIT->"+token+" "+commandHandlers);
-        handler =  commandHandlers.get(token);
+        handler =  (CommandHandlerInterface)commandHandlers.get(token);
 
         if (handler != null) return handler.replace(sp, tok);
 

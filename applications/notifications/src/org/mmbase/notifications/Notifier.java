@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.14 2008-09-04 16:33:41 michiel Exp $
+ * @version $Id: Notifier.java,v 1.13 2007-12-18 09:30:18 michiel Exp $
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -69,7 +69,7 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
         NodeManager notifyables = cloud.getNodeManager("notifyables");
         NodeQuery nq = notifyables.createQuery();
 
-        SortedMap<Object, String> map = SortedBundle.getResource("org.mmbase.notifications.resources.offset",
+        SortedMap<Object, Object> map = SortedBundle.getResource("org.mmbase.notifications.resources.offset",
                                                                  null, null, null, Integer.class, null);
 
         Integer first = (Integer) map.entrySet().iterator().next().getKey();

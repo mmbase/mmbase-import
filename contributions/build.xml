@@ -16,7 +16,7 @@ Contributions build file
   <property file="${source.dir}/build.properties" />
 
   <property name="build.dir"    value="${source.dir}/build" />
-  <property name="download.dir" value="${source.dir}/download" />
+  <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
   <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
@@ -29,13 +29,9 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,mmbar,lucene,principletracker,calendar,poll" />
-  <target name="all.not.compiling" depends="thememanager,multilanguagegui,mmbob" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker,calendar" />
+  <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
-
-  <target name="all18_14" depends="init,aselect,mmbar,multilanguagegui,principletracker" />
-  <target name="all18_15" depends="init,lucene,mmbob,thememanager" />
-
 
   <target name="jars" depends="all">
     <copy todir="${contributions.build.dir}/jars" flatten="true" preservelastmodified="true" >
@@ -104,34 +100,20 @@ Contributions build file
   </target>
 
   <target name="lucene" depends="mmbase">
-    <ant dir="lucene"   inheritAll="false">
-      <property name="project.zip.dir"        value="${contributions.build.dir}" />
-      <property name="build.dir"        value="${build.dir}" />
-      <property name="download.dir"        value="${download.dir}" />
-    </ant>
+     <ant dir="lucene"   inheritAll="false">
+       <property name="project.zip.dir"        value="${contributions.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
   </target>
 
   <target name="calendar" depends="mmbase">
-    <ant dir="calendar"   inheritAll="false">
-      <property name="project.zip.dir"      value="${contributions.build.dir}" />
-      <property name="build.dir"            value="${build.dir}" />
-      <property name="download.dir"        value="${download.dir}" />
-    </ant>
+     <ant dir="calendar"   inheritAll="false">
+       <property name="project.zip.dir"      value="${contributions.build.dir}" />
+       <property name="build.dir"            value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
   </target>
-  <target name="poll" depends="mmbase">
-    <ant dir="poll"   inheritAll="false">
-      <property name="project.zip.dir"      value="${contributions.build.dir}" />
-      <property name="build.dir"            value="${build.dir}" />
-      <property name="download.dir"        value="${download.dir}" />
-    </ant>
-  </target>
-
-
-  <target name="didactor">
-    <ant dir="didactor2"  target="srcdist" inheritAll="false" />
-    <ant dir="didactor2"  target="war" inheritAll="false" />
-  </target>
-
 
   <target name="fullinstall">
     <ant dir="aselect"        target="dependent.install" inheritAll="false">
@@ -146,22 +128,18 @@ Contributions build file
     <ant dir="calendar"     target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="poll"     target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
   </target>
 
   <target name="clean">
-    <ant dir="aselect"          target="clean" inheritAll="false" />
-    <ant dir="mmbob"            target="clean" inheritAll="false" />
-    <ant dir="multilanguagegui" target="clean" inheritAll="false" />
-    <ant dir="thememanager"     target="clean" inheritAll="false" />
-    <ant dir="mmbar"            target="clean" inheritAll="false" />
-    <ant dir="principletracker" target="clean" inheritAll="false" />
-    <ant dir="lucene"           target="clean" inheritAll="false" />
-    <ant dir="calendar"         target="clean" inheritAll="false" />
-    <ant dir="poll"             target="clean" inheritAll="false" />
-    <delete dir="${contributions.build.dir}" />
+     <ant dir="aselect"          target="clean" inheritAll="false" />
+     <ant dir="mmbob"            target="clean" inheritAll="false" />
+     <ant dir="multilanguagegui" target="clean" inheritAll="false" />
+     <ant dir="thememanager"     target="clean" inheritAll="false" />
+     <ant dir="mmbar"            target="clean" inheritAll="false" />
+     <ant dir="principletracker" target="clean" inheritAll="false" />
+     <ant dir="lucene"           target="clean" inheritAll="false" />
+     <ant dir="calendar"         target="clean" inheritAll="false" />
+     <delete dir="${contributions.build.dir}" />
   </target>
 
 

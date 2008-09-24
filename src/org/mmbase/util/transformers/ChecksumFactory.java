@@ -22,14 +22,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.11 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: ChecksumFactory.java,v 1.8 2006-04-18 14:10:38 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
     private static final Logger log = Logging.getLoggerInstance(ChecksumFactory.class);
 
     public static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("implementation", String.class, java.util.zip.Adler32.class.getName())
+        new Parameter("implementation", String.class, java.util.zip.Adler32.class.getName())
     };
 
     public Parameters createParameters() {
@@ -42,7 +42,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
     public Transformer createTransformer(Parameters parameters) {
         String impl = (String) parameters.get("implementation");
         try {
-            Class<?> clazz = Class.forName(impl);
+            Class clazz = Class.forName(impl);
             if (Checksum.class.isAssignableFrom(clazz)) {
                 Checksum checksum = (Checksum) clazz.newInstance();
                 return new ChecksumTransformer(checksum);
@@ -91,7 +91,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
             Object cs = in.readObject();
             if (cs instanceof Class) {
                 try {
-                    checksum = (Checksum) ((Class<?>) cs).newInstance();
+                    checksum = (Checksum) ((Class) cs).newInstance();
                 } catch (InstantiationException e) {
                     throw new IOException(e.getMessage());
                } catch (IllegalAccessException e) {
@@ -102,14 +102,6 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
             }
         }
 
-    }
-
-    public static void main(String argv[]) {
-        ChecksumFactory fact = new ChecksumFactory();
-        Parameters params = fact.createParameters();
-        params.set("implementation", java.util.zip.Adler32.class.getName());
-        CharTransformer transformer = new ByteCharTransformer((ByteToCharTransformer) fact.createTransformer(params));
-        System.out.println("" + transformer.transform("hoi"));
     }
 
 }

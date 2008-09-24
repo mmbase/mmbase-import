@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20030308170724">
-    <node number="16000" owner="system" alias="component.portfolio">
-        <name>portfolio</name>
-        <classname>nl.didactor.component.portfolio.DidactorPortfolio</classname>
-    </node>
-</components>
-

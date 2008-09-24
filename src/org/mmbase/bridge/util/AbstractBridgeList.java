@@ -18,13 +18,13 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: AbstractBridgeList.java,v 1.1 2005-12-29 22:08:25 michiel Exp $
  * @since   MMBase-1.8
  */
 
-abstract public class AbstractBridgeList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E> {
+abstract public class AbstractBridgeList extends AbstractList implements BridgeList {
 
-    private Map<Object,Object> properties = new HashMap<Object,Object>();
+    private Map properties = new HashMap();
 
     // javadoc inherited
     public Object getProperty(Object key) {
@@ -42,13 +42,12 @@ abstract public class AbstractBridgeList<E extends Comparable<? super E>> extend
     }
 
     // javadoc inherited
-    public void sort(Comparator<? super E> comparator) {
+    public void sort(Comparator comparator) {
         Collections.sort(this, comparator);
     }
-    public abstract BridgeList<E> subList(int f, int t);
 
-    protected class BasicIterator implements ListIterator<E> {
-        protected final ListIterator<E> iterator;
+    protected class BasicIterator implements ListIterator {
+        protected ListIterator iterator;
 
         protected BasicIterator() {
             this.iterator = AbstractBridgeList.this.listIterator();
@@ -75,18 +74,18 @@ abstract public class AbstractBridgeList<E extends Comparable<? super E>> extend
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(E o) {
+        public void set(Object o) {
             iterator.set(o);
         }
 
-        public void add(E o) {
+        public void add(Object o) {
             iterator.add(o);
         }
 
-        public E next() {
+        public Object next() {
             return iterator.next();
         }
-        public E previous() {
+        public Object previous() {
             return iterator.previous();
         }
 

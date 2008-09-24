@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.74 2008-08-14 13:42:18 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.67.2.3 2008-03-31 13:06:37 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -182,18 +182,13 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
     }
 
-    public int doStartTag() throws JspException {
-        initTag();
+    public int doStartTag() throws JspTagException {
         Node node = getNode();
         fieldName = (String) name.getValue(this);
         boolean findValue = true;
         boolean hasField = node != null && fieldName != null && node.getNodeManager().hasField(fieldName);
         if (! hasField) {
             switch(Notfound.get(notfound, this)) {
-            case Notfound.LOG:
-                findValue = false;
-                log.warn("Field '" + fieldName + "' does not exist in " + getNode().getNodeManager().getName());
-                break;
             case Notfound.SKIP:
                 return SKIP_BODY;
             case Notfound.PROVIDENULL:
@@ -237,7 +232,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 }
             } else {        // a field was found!
                 // if direct parent is a Formatter Tag, then communicate
-                FormatterTag f = findParentTag(FormatterTag.class, null, false);
+                FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
                 if (f != null && f.wantXML()) {
                     if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
                     f.getGenerator().add(node, field); // add the field
@@ -272,16 +267,16 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                             break;
                         case Field.TYPE_INTEGER:
                         case Field.TYPE_NODE:
-                            value = node.getIntValue(fieldName);
+                            value = new Integer(node.getIntValue(fieldName));
                             break;
                         case Field.TYPE_DOUBLE:
-                            value = node.getDoubleValue(fieldName);
+                            value = new Double(node.getDoubleValue(fieldName));
                             break;
                         case Field.TYPE_LONG:
-                            value = node.getLongValue(fieldName);
+                            value = new Long(node.getLongValue(fieldName));
                             break;
                         case Field.TYPE_FLOAT:
-                            value = node.getFloatValue(fieldName);
+                            value = new Float(node.getFloatValue(fieldName));
                             break;
                         case Field.TYPE_DATETIME:
                             value = node.getValue(fieldName);

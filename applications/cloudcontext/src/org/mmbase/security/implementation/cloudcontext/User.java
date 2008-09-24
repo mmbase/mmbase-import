@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.core.event.*;
-
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.HashCodeUtil;
@@ -28,13 +27,16 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.25 2007-07-26 12:45:57 michiel Exp $
+ * @version $Id: User.java,v 1.22.2.3 2008-07-22 12:03:37 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements WeakNodeEventListener  {
+public class User extends BasicUser implements WeakNodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(User.class);
 
     private static final long serialVersionUID = 1L;
+    private static long counter = 0;
+
+    private final long count = ++counter;
 
     protected MMObjectNode node;
     protected long key;
@@ -48,7 +50,9 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         node = n;
         key = l;
         EventManager.getInstance().addEventListener(this);
+        log.debug("Instantiated " + this);
     }
+
 
     // javadoc inherited
     public String getIdentifier()  {
@@ -82,6 +86,9 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         }
     }
 
+    public String toString() {
+        return count + ":" + super.toString();
+    }
     /**
      * @javadoc
      */
@@ -97,7 +104,7 @@ public class User extends BasicUser implements WeakNodeEventListener  {
     }
 
 
-    public SortedSet<Integer> getGroups() {
+    public SortedSet getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }
 
@@ -110,6 +117,7 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         if (node == null) throw new SecurityException("Account has been removed.");
         return node;
     }
+
 
     public void notify(NodeEvent ne) {
         if ((node != null) && (node.getNumber() == ne.getNodeNumber())) {

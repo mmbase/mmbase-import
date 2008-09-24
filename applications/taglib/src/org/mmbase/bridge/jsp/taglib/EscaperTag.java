@@ -10,16 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.Entry;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.transformers.*;
 import javax.servlet.jsp.*;
+import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.14 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.9.2.1 2007-04-24 12:46:20 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -41,7 +43,6 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
     }
-
     public void setInverse(String i) throws JspTagException {
         inverse = getAttribute(i);
     }
@@ -92,7 +93,7 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), transformer);
         } else {
-            EscaperTag parent = findParentTag(EscaperTag.class, null, false);
+            EscaperTag parent = (EscaperTag) findParentTag(EscaperTag.class, null, false);
             if (parent == null) throw new JspTagException("EscaperTag without id must live as child of another Escaper tag");
             parent.chain(transformer);
 

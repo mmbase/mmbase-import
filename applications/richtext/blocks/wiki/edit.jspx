@@ -4,20 +4,12 @@
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c c_wiki b_edit ${requestScope['org.mmbase.componentClassName']}"
-    id="${requestScope['org.mmbase.componentId']}">
+    class="mm_c c_wiki b_page ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="n" required="true" />
+  <mm:import externid="o" required="true" />
 
   <mm:cloud method="asis" jspvar="cloud">
-
-
-    <mm:compare referid="n" value="new">
-      <mm:createnode type="wikiobjects" id="newnode" />
-      <mm:redirect referids="newnode@n" />
-    </mm:compare>
-
-
     <mm:param name="org.mmbase.xml-mode" value="wiki" />
     <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
     <mm:param name="org.mmbase.richtext.wiki.load_relations" value="false" />
@@ -25,10 +17,10 @@
     <mm:form id="transaction"  commitonclose="false">
 
 
-      <mm:node number="${n}">
+      <mm:node number="${o}">
         <div id="main">
 
-          <input type="hidden" name="n" value="${_node}" />
+          <input type="hidden" name="o" value="${_node}" />
           <mm:nodeinfo type="type" write="false" id="type" />
           <input type="hidden" name="objecttype" value="${type}" />
           <table class="wiki ${type}">
@@ -44,17 +36,15 @@
                   </td>
                 </tr>
               </mm:fieldlist>
-              <mm:hasfield name="version">
-                <tr>
-                  <td>
-                  </td>
-                  <td>
-                    <input class="small mm_validate" type="text" name="comments"
-                           size="80"
-                           value="Beschrijf uw verandering hier" />
-                  </td>
-                </tr>
-              </mm:hasfield>
+              <tr>
+                <td>
+                </td>
+                <td>
+                  <input class="small mm_validate" type="text" name="comments"
+                         size="80"
+                         value="Beschrijf uw verandering hier" />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -65,7 +55,9 @@
         <div class="show_node">
           <p>[Hier wordt het object onder de cursor getoond]</p>
         </div>
-
+        <div class="versions">
+          <mm:include page="versions.jspx" />
+        </div>
         <!-- preview is a bit broken, so switched if off.
 
              <div id="preview">
@@ -80,13 +72,12 @@
 
         <div id="relations">
 
-          <ul class="idrels">
+          <ul>
             <c:forTokens items="${mm:managerProperty(type, 'wiki_idrelated')}"  delims="," var="relatedtype" >
               <mm:include page="related.li.jspx" referids="relatedtype@type" />
             </c:forTokens>
           </ul>
         </div>
-
         <div id="commit">
           <mm:import externid="cancel" />
           <mm:present referid="cancel">
@@ -103,7 +94,7 @@
                 <mm:param name="org.mmbase.versioning.comments" referid="comments" />
                 <h1>Committing ${_} for ${transaction.cloudVar}</h1>
                 <mm:commit />
-                <mm:redirect  referids="o" />
+                <mm:redirect page="/mmbase/examples/wiki/page" referids="o" />
               </mm:present>
           </mm:valid>
           <mm:valid inverse="true">
@@ -113,8 +104,7 @@
 
         </div>
         <div id="title">
-          <mm:field name="number" />: <mm:nodeinfo type="gui" />
-          <mm:hasfield name="version">: v. ${_node.version}</mm:hasfield>
+          <mm:field name="number" />: <mm:nodeinfo type="gui" /> : v. ${_node.version}
         </div>
       </mm:node>
     </mm:form>

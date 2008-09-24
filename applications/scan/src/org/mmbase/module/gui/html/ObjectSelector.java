@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
+
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.core.ClusterBuilder;
@@ -21,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.HttpAuth;
 import org.mmbase.util.StringTagger;
-import org.mmbase.util.scanpage;
+import org.mmbase.util.PageInfo;
 
 /**
  * The ObjectSelector class offers the functionality to search for objects
@@ -31,7 +29,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.24 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ObjectSelector.java,v 1.22.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -48,7 +46,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * General List pages coming from MMEdit.
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
+    public Vector getList(PageInfo sp, StringTagger args, StringTokenizer commands) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
 
@@ -92,8 +90,9 @@ public class ObjectSelector implements CommandHandlerInterface {
         if (node!=null) {
             FieldDefs def;
             String DBName,val;
-            for (Object element : obj.getFields(FieldDefs.ORDER_EDIT)) {
-                def=(FieldDefs)element;
+            Object o;
+            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) {
+                def=(FieldDefs)i.next();
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
                     val=obj.getGUIIndicator(DBName,node);
@@ -123,6 +122,9 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectNode node=ed.getEditNode();
 
         if (node!=null && node.getIntValue("number")!=-1) {
+            FieldDefs def;
+            String DBName,val;
+            Object o;
             Enumeration e=stateMngr.mmBase.getInsRel().getRelations(ed.getEditNodeNumber());
             MMObjectNode rel;
             for (;e.hasMoreElements();) {
@@ -150,10 +152,10 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    Vector<String> getAllowedBuilders(String user) {
-        Vector<String> allowed=null;
+    Vector getAllowedBuilders(String user) {
+        Vector allowed=null;
         if (stateMngr.mmBase.getAuthType().equals("basic")) {
-            allowed=new Vector<String>();
+            allowed=new Vector();
             ClusterBuilder clusterBuilder = stateMngr.mmBase.getClusterBuilder();
             Vector tables=new Vector();
             tables.addElement("typedef");
@@ -202,23 +204,25 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectNode node=ed.getEditNode();
 
         String user=args.Value("USER");
-        Vector<String> allowed=null;
+        Vector allowed=null;
         if (user!=null && !user.equals("")) {
             allowed=getAllowedBuilders(user);
         }
 
         if (node!=null) {
-            String name;
-            Hashtable<String, Vector> res=ed.getRelationTable();
-            Enumeration<String> e=res.keys();
+            FieldDefs def;
+            String DBName,val,name;
+            Object o;
+            Hashtable res=ed.getRelationTable();
+            Enumeration e=res.keys();
             MMObjectNode rel;
             MMObjectNode other;
             Vector qw;
             for (;e.hasMoreElements();) {
-                name=e.nextElement();
+                name=(String)e.nextElement();
 
                 if (allowed==null || allowed.contains(name)) {
-                    qw=res.get(name);
+                    qw=(Vector)res.get(name);
                     for (Enumeration h=qw.elements();h.hasMoreElements();) {
                         other=(MMObjectNode)h.nextElement();
                         rel=(MMObjectNode)h.nextElement();
@@ -273,6 +277,10 @@ public class ObjectSelector implements CommandHandlerInterface {
         MMObjectBuilder obj=ed.getBuilder();
         MMObjectNode node=ed.getEditNode();
         if (node!=null) {
+            FieldDefs def;
+            String DBName,val;
+            Object o;
+
             // find all the typeRel that are allowed
             Enumeration e=stateMngr.mmBase.getTypeRel().getAllowedRelations(node);
             MMObjectNode trn;
@@ -318,7 +326,7 @@ public class ObjectSelector implements CommandHandlerInterface {
         String HTMLString = "";
 
         if (builder != null) {
-            Vector vals = new Vector(builder.getFields(org.mmbase.bridge.NodeManager.ORDER_LIST));
+            List vals = builder.getSortedListFields();
             //searchResult = builder.search(conditions);
             //searchResult = builder.search(conditions,"number");
             searchResult = HtmlBase.search(builder,conditions,"number",false);
@@ -328,7 +336,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                 result.addElement(node.getValue("number").toString());
                 HTMLString = "";
 
-                for (Enumeration enumeration = vals.elements(); enumeration.hasMoreElements();) {
+                for (Enumeration enumeration = Collections.enumeration(vals); enumeration.hasMoreElements();) {
                     key = ((FieldDefs)enumeration.nextElement()).getDBName();
                     guival=builder.getGUIIndicator(key,node);
                     if (guival!=null) {
@@ -361,11 +369,11 @@ public class ObjectSelector implements CommandHandlerInterface {
         Vector result = new Vector();
         String language=state.getLanguage();
         MMObjectBuilder builder = state.getBuilder();
-        Vector fieldDefs;
+        List fieldDefs;
 
         if (builder != null) {
-            fieldDefs = new Vector(builder.getFields(org.mmbase.bridge.NodeManager.ORDER_LIST));
-            for (Enumeration enumeration = fieldDefs.elements(); enumeration.hasMoreElements();) {
+            fieldDefs = builder.getSortedListFields();
+            for (Enumeration enumeration = Collections.enumeration(fieldDefs); enumeration.hasMoreElements();) {
                 result.addElement(((FieldDefs)enumeration.nextElement()).getGUIName(language));
             }
         }
@@ -376,7 +384,7 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * General proces pages coming from MMEdit.
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
@@ -396,7 +404,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * Handle a $MOD command.
      * ObjectSelector does not offer any commands.
      */
-    public String replace(scanpage sp, StringTokenizer cmds) {
+    public String replace(PageInfo sp, StringTokenizer cmds) {
         return "Command not defined (ObjectSelector)";
         // bedoeld voor het clearen van de serachvalues
     }

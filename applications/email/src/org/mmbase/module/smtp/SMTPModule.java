@@ -18,7 +18,7 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.9 2008-08-21 09:20:55 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.8 2007-11-29 11:03:13 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.WatchedReloadableModule {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
@@ -101,7 +101,7 @@ public class SMTPModule extends org.mmbase.module.WatchedReloadableModule {
      */
     public void shutdown() {
         log.info("Shutting down SMTP module");
-        if (listener != null) listener.interrupt();
+        listener.interrupt();
     }
 
     {

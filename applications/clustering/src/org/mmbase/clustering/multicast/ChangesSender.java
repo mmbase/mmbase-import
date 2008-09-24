@@ -13,9 +13,9 @@ import org.mmbase.clustering.Statistics;
 
 import java.net.*;
 import java.io.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.11.2.1 2007-12-12 16:15:40 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -38,7 +38,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue<byte[]> nodesToSend;
+    private final Queue nodesToSend;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -58,9 +58,8 @@ public class ChangesSender implements Runnable {
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
      * @param send Statistics object in which to administer duration costs
-     * @throws UnknownHostException when multicastHost is not found
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
+    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -100,12 +99,11 @@ public class ChangesSender implements Runnable {
             log.service("Cannot stop thread, because it is null");
         }
     }
-
     public void run() {
         log.debug("Started sending");
         while(ms != null) {
             try {
-                byte[] data = nodesToSend.take();
+                byte[] data = (byte[]) nodesToSend.get();
                 long startTime = System.currentTimeMillis();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {

@@ -24,7 +24,6 @@
   <properties>
     <property name="readall">false</property>
     <!-- if true, read rights never need a check -->
-
     <property name="allcontextspossible">true</property>
     <!-- 
     if this is true, and if you have the 'change context' right, then you may change to every existing context 
@@ -42,7 +41,7 @@
 
   </properties>
   <fieldlist>
-    <field name="name">
+    <field>
       <gui>
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
@@ -53,26 +52,23 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <unique value="true" />
-        <required value="true" enforce="never" />
-        <maxLength value="64" />
-      </datatype>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>name</name>
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
     </field>
-    <field name="description">
+    <field>
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="1024" enforce="never"/>
-      </datatype>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>description</name>
+        <type notnull="false" size="1024" state="persistent">STRING</type>
+      </db>
     </field>
   </fieldlist>
-
-  <indexlist>
-    <index name="name"><indexfield name="name" /></index>
-  </indexlist>
-
 </builder>

@@ -15,12 +15,17 @@ import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
-import org.mmbase.datatypes.handlers.Handler;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A value in MMBase (such as the value of a field, or function parameter) is associated with a
- * 'datatype'.  A DataType is actually an elaborated wrapper around a Class object, but besides
+ * 'datatype'.  A DataType is actually an elaborated wrapper arround a Class object, but besides
  * this basic type of the value, it also defines restrictions on the values, a default value,
  * Processors, and perhaps other properties (e.g. properties which describe indications for edit
  * tool implementations).
@@ -33,11 +38,10 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.70 2008-08-27 17:09:16 michiel Exp $
- * @param <C> Class this DataType
+ * @version $Id: DataType.java,v 1.54.2.1 2008-04-24 11:41:58 michiel Exp $
  */
 
-public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serializable {
+public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -50,52 +54,50 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value
-     * restriction must be enforced always, and furthermore, that extensions (based on clone) cannot
-     * loosen it. For example, the absolute maximum for any datatype backed by a integer is
-     * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this
-     * restriction is 'absolute'.
+     * must be enforced always, and furthermore, that extensions (based on clone) cannot loosen
+     * it. For example, the absolute maximum for any datatype backed by a integer is
+     * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this restriction is 'absolute'.
      */
     static final int ENFORCE_ABSOLUTE  = Integer.MAX_VALUE;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that a
-     * restriction on a value must be enforced always.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced always.
      */
     static final int ENFORCE_ALWAYS   = 100000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that a
-     * restriction on a value must be enforced only if it was changed.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only if it was changed.
      */
     static final int ENFORCE_ONCHANGE = 10000;
 
     /**
-     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
-     * restriction on a value must be enforced only on creation.
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only on creation.
      */
     static final int ENFORCE_ONCREATE = 1000;
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
-     * restriction on a value must be enforced never, so the restriction serves only as UI indication.
+     * value must be enforced never, so the restriction serves only as UI indication.
      */
     static final int ENFORCE_NEVER    = 0;
 
     /**
-     * Returned by {@link #validate(Object, Node, Field)} if no errors: an empty (nonmodifiable)
-     * Collection containing no error messages.
+     * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
-    public static final Collection<LocalizedString> VALID = Collections.emptyList();
+    public static final Collection VALID = Collections.EMPTY_LIST;
+
+    /**
+     * Inherit properties and processors from the passed datatype.
+     */
+    public void inherit(BasicDataType origin);
 
     /**
      * Return the DataType from which this one inherited, or <code>null</code>
-     * @return inherited DataType
      */
-    public DataType<?> getOrigin();
+    public DataType getOrigin();
 
     /**
      * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
-     * @return identifier for the basic type
      */
     public String getBaseTypeIdentifier();
 
@@ -103,16 +105,15 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Return the datatype's basic (MMBase) type (i.e., STRING, INTEGER, DATETIME) as definied in the Field interface
      * Note that in some cases (i.e. with older clouds) this may differ from the basic type of the datatype's field,
      * which defines in what format the data is stored.
-     * @return identifier of the basic type
      * @see Field#getType
      */
     public int getBaseType();
 
-    /**
+        /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
-    public Class<C> getTypeAsClass();
+    public Class getTypeAsClass();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),
@@ -130,79 +131,62 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @param value The value to be filled in a value with this DataType.
      * @param node  Sometimes a node might be needed.
      * @param field Sometimes a (or 'the') field might be needed.
-     * @return casted object of Class of this DataType
      */
-    public C cast(Object value, Node node, Field field);
+    public Object cast(Object value, Node node, Field field);
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
      * datatype, e.g. enumerations may get resolved (enumerations have the feature that they can
      * e.g. resolve java-constants to their values).
      *
-     * This does not guarantee that the value has the 'proper' type, but only that it now can be
-     * cast to the right type without further problems. ({@link org.mmbase.util.Casting#toType(Class, Object)} should do).
+     * This does not garantuee that the value has the 'proper' type, but only that it now can be
+     * cast to the right type without further problems. ({@link org.mmbase.util.Casting#toType} should do).
      *
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
-     * @param value The value to be filled in a value with this DataType.
-     * @param node  Sometimes a node might be needed.
-     * @param field Sometimes a (or 'the') field might be needed.
-     * @param <D>
-     * @return converted value to be able to cast to the DataType of the field
      */
-    public <D> D preCast(D value, Node node, Field field);
-    //public Object preCast(Object value, Node node, Field field);
+    public Object preCast(Object value, Node node, Field field);
 
     /**
-     * Returns the default value of this data type.
+     * Returns the default value of this data type. See also {@link #getDefaultValue(Locale, Cloud,
+     * Field)} which may, especially with String datatypes often more correct.
      * @return the default value
      */
-    public C getDefaultValue();
+    public Object getDefaultValue();
 
     /**
      * Returns the (locale dependent) default value of this data type,
      * @since MMBase-1.8.6
      */
-    public C getDefaultValue(Locale locale, Cloud cloud, Field field);
+    public Object getDefaultValue(Locale locale, Cloud cloud, Field field);
 
     /**
-     * Set the default value for this DataType
-     * @param def default value
+     * @javadoc
      */
-    public void setDefaultValue(C def);
+    public void setDefaultValue(Object def);
 
     /**
-     * Unlock a DataType so it can be changed or altered.
-     * @param owner the object to finish datatypes with
-     * @return unlocked DataType
+     * @javadoc
      */
-    public DataType<C> rewrite(Object owner);
+    public DataType rewrite(Object owner);
 
     /**
-     * Is datatype locked
-     * @return <code>true</code> when datatype is locked
+     * @javadoc
      */
     public boolean isFinished();
 
     /**
-     * Lock a dataType so it can be changed or altered.
-     * @param owner the object to finish datatypes with
+     * @javadoc
      */
     public void finish(Object owner);
 
-    /**
-     * The maximum enforce strength of all restrictions on this datatype.
-     * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
-     * @return maximum enforce strength
-     */
-    public int getEnforceStrength();
 
     /**
      * @see #validate(Object, Node, Field)
      * @return The error message(s) if the value is not compatible. An empty collection if valid.
      * @param value the value to be validated
      */
-    public Collection<LocalizedString> validate(C value);
+    public Collection /*<LocalizedString>*/ validate(Object value);
 
     /**
      * Checks if the passed object obeys the restrictions defined for this type.
@@ -211,28 +195,30 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      *        datatype is determined as unique, than uniquness is checked for this value using the passed field.
      * @param field the field for which the datatype is checked.
      *
-     * @return The error message(s) if the value is not compatible. An empty collection ({@link
-     * DataType#VALID})if the value is valid.
+     * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
-    public Collection<LocalizedString> validate(C value, Node node, Field field);
+    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field);
 
     /**
-     * Returns whether this field is required (may not be <code>null</code>, or otherwise empty).
+     * Returns whether this field is required (should have content).
+     * Note that the MMBase core does not generally enforce required fields to be filled -
+     * If not provided, a default value (generally an empty string or the integer value -1)
+     * is filled in by the system.
      *
      * @return  <code>true</code> if the field is required
      */
     public boolean isRequired();
 
     /**
-     * Returns the 'required' restriction, containing the value, error messages, and fixed status of this attribute.
+     * Returns the 'required' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Boolean> getRequiredRestriction();
+    public DataType.Restriction getRequiredRestriction();
 
     /**
      * Sets whether the data type requires a value, which means that it may not remain unfilled.
      * @param required <code>true</code> if a value is required
-     * @throws IllegalStateException if the datatype was finished (and thus can no longer be changed)
+     * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      */
     public void setRequired(boolean required);
 
@@ -251,12 +237,12 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Returns the 'unique' restriction, containing the value, error messages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Boolean> getUniqueRestriction();
+    public DataType.Restriction getUniqueRestriction();
 
     /**
      * Sets whether the data type requires a value.
      * @param unique <code>true</code> if a value is unique
-     * @throws IllegalStateException if the datatype was finished (and thus can no longer be changed)
+     * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
      */
     public void setUnique(boolean unique);
 
@@ -272,13 +258,12 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @param cloud  Possibly the possible values depend on a cloud (security)
      * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
-     * @return iterator over all possible values for this datatype
      *
      */
-    public Iterator<Map.Entry<C, String>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
     /**
-     * Returns a (gui) value from a list of restricted enumerated values, or
+     * Returns a (gui) value from a list of retsricted enumerated values, or
      * <code>null</code> if no enumeration restrictions apply or teh value cannot be found.
      *
      * @param locale for which to produce
@@ -286,31 +271,27 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
-     * @return a (gui) value from a list of restricted enumerated values
      */
-    public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
      * #getEnumerationValues}. Never <code>null</code>. This can be used to add more possible values.
      */
-    public LocalizedEntryListFactory<C> getEnumerationFactory();
+    public LocalizedEntryListFactory getEnumerationFactory();
 
     /**
      * The enumeration for this datatype as a {@link Restriction}.
-     * @return enumeration for this datatype
      */
-    public DataType.Restriction<LocalizedEntryListFactory<C>> getEnumerationRestriction();
+    public DataType.Restriction getEnumerationRestriction();
 
     /**
-     * Return the Commit processor of this datatype
-     * @return Commit processor
+     * @javadoc
      */
     public CommitProcessor getCommitProcessor();
 
     /**
-     * Set the Commit processor of this datatype
-     * @param cp Commit processor
+     * @javadoc
      */
     public void setCommitProcessor(CommitProcessor cp);
 
@@ -318,7 +299,6 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Returns the default processor for this action
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      * XXX What exactly would be against getGetProcesor(), getSetProcessor() ?
-     * @return the default processor for this action
      */
     public Processor getProcessor(int action);
 
@@ -326,21 +306,18 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Returns the processor for this action and processing type
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      * @param processingType the MMBase type defining the type of value to process
-     * @return the processor for this action and processing type
      */
     public Processor getProcessor(int action, int processingType);
 
     /**
      * Sets the processor for this action
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
-     * @param processor the processor for this action
      */
     public void setProcessor(int action, Processor processor);
 
     /**
      * Sets the processor for this action
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
-     * @param processor the processor for this action and processing type
      * @param processingType the MMBase type defining the type of value to process
      */
     public void setProcessor(int action, Processor processor, int processingType);
@@ -349,84 +326,61 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Returns a cloned instance of this datatype, inheriting all validation rules.
      * Unlike the original datatype though, the cloned copy is declared unfinished even if the original
      * was finished. This means that the cloned datatype can be changed.
-     * @return cloned instance
      */
-    public DataType<C> clone();
+    public Object clone();
 
     /**
      * Returns a cloned instance of this datatype, inheriting all validation rules.
      * Similar to calling clone(), but changes the data type name if one is provided.
      * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
-     * @return cloned DataType
      */
-    public DataType<C> clone(String name);
+    public Object clone(String name);
 
 
     /**
      * Returns a DOM element describing this DataType.
-     * @return a DOM element describing this DataType.
      * @todo EXPERIMENTAL.
      */
     public org.w3c.dom.Element toXml();
 
     /**
-     * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one
-     * XML, fully describing the DataType).  The implementation of this method is
-     * <em>unfinished</em>!
+     * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one XML, fully describing the DataType).
+     * The implementation of this method is <em>unfinished</em>!
      * @todo EXPERIMENTAL
      * @param element a 'datatype' element.
      */
     public void toXml(org.w3c.dom.Element element);
 
     /**
-     * Returns a handler for given mimetype for this DataType. The handler can be used to produce UI
-     * for values of this datatype.
-     * @todo EXPERIMENTAL
-     * @since MMBase-1.9.1
+     * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
      */
-    public Handler getHandler(String mimeType);
-    /**
-     * @since MMBase-1.9.1
-     */
-    public Map<String, Handler> getHandlers();
-
-
-    /**
-     * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType
-     * generally has several restrictions.
-     * @param <D> Type of Value describing the restriction
-     */
-    public interface Restriction<D extends Serializable> extends Serializable {
+    public interface Restriction extends Serializable {
 
         /**
-         * @return Name of datatype
+         * @javadoc
          */
         public String getName();
 
         /**
          * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type (as long as it is Serializable)
-         * @return A Value describing the restriction
          */
-        public D getValue();
+        public Serializable getValue();
 
         /**
-         * Set the Value describing the restriction
-         * @param value The instanc for the Value
+         * @javadoc
          */
-        public void setValue(D value);
+        public void setValue(Serializable value);
 
         /**
          * If the restriction does not hold, the following error description can be used. On default
          * these descriptions are searched in a resource bundle based on the name of this
          * restriction.
-         * @return error description
          */
         public LocalizedString getErrorDescription();
 
         /**
-         * Set error description for this restriction
-         * @param errorDescription description of error
+         * @javadoc
          */
         public void setErrorDescription(LocalizedString errorDescription);
 
@@ -443,19 +397,16 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
 
         /**
          * If a restriction is 'fixed', the value and error-description cannot be changed any more.
-         * @param fixed
          */
         public void setFixed(boolean fixed);
 
         /**
          * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
-         * @return enforce strength
          */
         public int getEnforceStrength();
 
         /**
-         * Set enforce strength
-         * @param v value of {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
+         * @javadoc
          */
         public void setEnforceStrength(int v);
 

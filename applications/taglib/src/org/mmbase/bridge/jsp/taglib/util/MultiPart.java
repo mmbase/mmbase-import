@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.20 2008-09-04 14:31:08 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.18 2006-03-28 20:32:40 michiel Exp $
  **/
 
 public class MultiPart {
@@ -37,42 +37,35 @@ public class MultiPart {
         return (ct.startsWith("multipart/"));
     }
 
-    /**
-     * @since MMBase-1.8.7
-     */
-    public static MMultipartRequest getMultipartRequest(HttpServletRequest request, String encoding) {
-        MMultipartRequest multipartRequest = (MMultipartRequest) request.getAttribute(MULTIPARTREQUEST_KEY);
+    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
+        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY, PageContext.REQUEST_SCOPE);
         if (multipartRequest == null) {
             log.debug("Creating new MultipartRequest");
-            multipartRequest = new MMultipartRequest(request, encoding);
+            multipartRequest = new MMultipartRequest((HttpServletRequest)pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
             log.debug("have it");
 
             if (log.isDebugEnabled()) {
                 if (multipartRequest != null) {
-                    StringBuilder params = new StringBuilder();
-                    for (String paramName : (Collection<String>) multipartRequest.getParameterNames()) {
-                        params.append(paramName).append(",");
+                    Iterator paramNames = multipartRequest.getParameterNames();
+                    StringBuffer params = new StringBuffer();
+                    while (paramNames.hasNext()) {
+                        params.append(paramNames.next()).append(",");
                     }
                     log.debug("multipart parameters: " + params);
                 } else {
                     log.debug("not a multipart request");
                 }
             }
-            request.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest);
+            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
         } else {
             log.debug("Found multipart request on pageContext" + multipartRequest);
         }
         return multipartRequest;
     }
 
-    public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
-        return getMultipartRequest((HttpServletRequest) pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
-
-    }
-
     static public class MMultipartRequest {
 
-        private Map<String, Object> parametersMap = new HashMap<String, Object>();
+        private Map parametersMap = new HashMap();
         private String coding = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
@@ -94,12 +87,12 @@ public class MultiPart {
                         if (oldValue == null ) {
                             parametersMap.put(fi.getFieldName(), value);
                         } else if (!(oldValue instanceof FileItem)) {
-                            List<Object> values;
+                            List values;
                             if (oldValue instanceof String) {
-                                values = new ArrayList<Object>();
+                                values = new ArrayList();
                                 values.add(oldValue);
                             } else {
-                                values = (List<Object>)oldValue;
+                                values = (List)oldValue;
                             }
                             values.add(value);
                             parametersMap.put(fi.getFieldName(), values);
@@ -215,8 +208,8 @@ public class MultiPart {
             }
         }
 
-        public Collection<String> getParameterNames() {
-            return parametersMap.keySet();
+        public Iterator getParameterNames() {
+            return parametersMap.keySet().iterator();
         }
     }
 

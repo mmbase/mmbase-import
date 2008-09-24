@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageException;
 
@@ -25,7 +26,7 @@ import org.mmbase.storage.StorageException;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.10 2008-06-13 09:58:26 nklasens Exp $
+ * @version $Id: ResultBuilder.java,v 1.8.2.1 2008-06-28 11:57:10 nklasens Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
@@ -43,12 +44,12 @@ public class ResultBuilder extends VirtualBuilder {
     public ResultBuilder(MMBase mmbase, SearchQuery query) {
         super(mmbase);
         this.query = query;
-
+        
         // Create fieldsByAlias map.
-        List<StepField> queryFields = query.getFields();
-        Iterator<StepField> i = queryFields.iterator();
+        List queryFields = query.getFields();
+        Iterator i = queryFields.iterator();
         while (i.hasNext()) {
-            StepField field = i.next();
+            StepField field = (StepField) i.next();
             String fieldAlias = field.getAlias();
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();
@@ -64,15 +65,14 @@ public class ResultBuilder extends VirtualBuilder {
         return new ResultNode(this);
     }
 
-    public List<MMObjectNode> getResult() throws StorageException, SearchQueryException {
-        AggregatedResultCache cache = AggregatedResultCache.getCache();
+    public List getResult() throws StorageException, SearchQueryException {
+        Cache cache = AggregatedResultCache.getCache();
 
-        List<MMObjectNode> resultList = cache.get(query);
+        List resultList = (List) cache.get(query);
         if (resultList == null) {
             resultList = this.mmb.getSearchQueryHandler().getNodes(query, this);
             cache.put(query, resultList);
         }
         return resultList;
     }
-
 }

@@ -16,17 +16,15 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class is the main class of the security system. It loads the authentication
  * and authorization classes if needed, and they can be requested from this manager.
- *
- *
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.27 2008-09-16 16:36:59 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.22 2005-09-16 13:14:48 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
-    /**
-     * The configuration used by our system
+    /** 
+     * The configuration used by our system 
      */
     private MMBaseCopConfig config;
 
@@ -41,20 +39,9 @@ public class MMBaseCop extends SecurityManager  {
         super();
         config = new MMBaseCopConfig(this);
         config.load();
-        copyActions(ActionRepository.bootstrap, config.getActionRepository());
-        ActionRepository.bootstrap = null;
         log.service("Done loading security configuration");
     }
 
-
-    /**
-     * @since MMBase-1.9
-     */
-    protected void copyActions(ActionRepository source, ActionRepository destination) {
-        for (Action a : source.getActions()) {
-            destination.add(a);
-        }
-    }
 
     /**
      *	reload, will load the classes for authorization and authentication
@@ -69,7 +56,6 @@ public class MMBaseCop extends SecurityManager  {
         newConfig.load();
         // if no exception happed, the configuration can be replaced
         config.watcher.clear();
-        copyActions(config.getActionRepository(), newConfig.getActionRepository());
         config = newConfig;
         log.info("Done changing security configuration");
     }
@@ -93,13 +79,6 @@ public class MMBaseCop extends SecurityManager  {
      */
     public Authorization getAuthorization() {
         return getConfig().getAuthorization();
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public ActionRepository getActionRepository() {
-        return getConfig().getActionRepository();
     }
 
     /**

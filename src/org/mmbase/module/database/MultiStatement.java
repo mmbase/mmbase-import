@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.21 2008-07-28 16:24:42 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.18.2.1 2008-03-07 14:39:29 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -46,7 +46,7 @@ public class MultiStatement implements Statement {
      */
     MultiStatement(MultiConnection parent,Statement s) {
       this.parent = parent;
-      this.s = s;
+      this.s=s;
     }
 
     /**
@@ -194,7 +194,7 @@ public class MultiStatement implements Statement {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");
             s.close();
-            parent.getParent().replaceConnection(parent);
+            parent.parent.replaceConnection(parent);
             s = parent.createStatement();
             // this would be more correct:
             //s = parent.createStatement(s.getResultSetType(), s.getResultSetConcurrency(), s.getResultSetHoldability());
@@ -464,6 +464,7 @@ public class MultiStatement implements Statement {
         return s.getResultSetHoldability();
     }
 
+
     public boolean isClosed() throws SQLException {
         return s == null;// || s.isClosed(); // java 6
     }
@@ -478,12 +479,13 @@ public class MultiStatement implements Statement {
         return false;
     }
 
-    public <T> T unwrap(Class<T> iface) {
-        return (T) s;
+    public Object unwrap(Class iface) {
+        return s;
     }
 
-    public boolean isWrapperFor(Class<?> iface) {
+    public boolean isWrapperFor(Class iface) {
         return iface.isAssignableFrom(s.getClass());
     }
+
 }
 

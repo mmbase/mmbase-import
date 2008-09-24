@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
-import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.installhandlers.installThread;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.util.logging.Logger;
@@ -47,7 +46,7 @@ public class InstallManager {
 
     private static boolean running = false;
 
-    private static ArrayList<String> autoresetfiles = null;
+    private static ArrayList autoresetfiles = null;
 
     public static synchronized void init() {
         if (!PackageManager.isRunning()) PackageManager.init();
@@ -165,21 +164,21 @@ public class InstallManager {
         return bnd;
     }
 
-    public static Iterator<installStep> getInstallSteps() {
+    public static Iterator getInstallSteps() {
         return pkg.getInstallSteps();
     }
 
   
     public static void addAutoResetFile(String path) {
-        if (autoresetfiles == null) autoresetfiles = new ArrayList<String>();
+        if (autoresetfiles == null) autoresetfiles = new ArrayList();
         autoresetfiles.add(path);
     }
 
     private static void renameAutoResetFiles() {
         if (autoresetfiles != null) {
-	    Iterator<String> e=autoresetfiles.iterator();
+	    Iterator e=autoresetfiles.iterator();
             while (e.hasNext()) {
-                String name=e.next();
+                String name=(String)e.next();
                 File oldfile = new File(name);
                 File newfile = new File(name.substring(0,name.length()-4));
                 if (oldfile.exists()) {

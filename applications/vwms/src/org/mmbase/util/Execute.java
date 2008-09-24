@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @application VWMS
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Execute.java,v 1.2 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Execute.java,v 1.1 2005-01-30 16:46:40 nico Exp $
  */
 public class Execute {
     // logger
@@ -98,6 +98,14 @@ public class Execute {
             return s;
         }
         return s;
+    }
+
+    /**
+     * Outputs debug code.
+     * Not used.
+     */
+    private void writeLog( String msg ) {
+        log.error(msg);
     }
 
     /**

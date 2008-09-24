@@ -20,7 +20,7 @@
         <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
       </author>
-
+      
       <author>
         <firstname>Andre</firstname>
         <surname>van Toly</surname>
@@ -242,16 +242,7 @@
       <para>The attribute store of a field may be set to 'true' to be able to
       return a field in the search results. </para>
     </section>
-    <section>
-      <title>Keywords</title>
-      <para>You can make a field a keywords field, like so:</para>
-      <programlisting><![CDATA[
-      <mmsq:field name="episodes.keywords" alias="keywords" keyword="true" split="," />
-]]>
-      </programlisting>
-      <para>The split option makes the value be split first, and then be added as lucene keywords to the index.</para>
-      <para>The split option is also useable for non-keyword fields, but it may make less sense then</para>
-    </section>
+
     <section>
       <title>Other types of indices</title>
 
@@ -338,30 +329,15 @@
       <para>Returns the number of items found.</para>
     </section>
 
-  </section>
-  <section id="clustering">
-    <title>Clustering</title>
-    <para>
-      When using the lucene module on a clustered MMBase,  then you have the following options.
-    </para>
-    <section>
-      <title>Shared file system</title>
-      <para>
-        Using the property 'readonly" you can configure only one of the lucenes' to be not 'readonly'
-        This property is either 'true' which makes it explicelty readonly or 'host:&lt;machinename&gt;|&lt;ip-address&gt;|&lt;${catalina.base}@ip-address&gt;, wich makes it read only
-        if the current host doesn't match one of the given strings.
-      </para>
+    <section id="history">
+      <title>History</title>
+
+      <para>There are currently two publicly available Lucene modules. The
+      site http://mmapps.sourceforge.net provides an alternate version,
+      careted by Finalist, which works on MMBase 1.7.</para>
+
+      <para>The version you are looking at now was developed on the 1.8
+      version of MMBase.</para>
     </section>
-  </section>
-  <section id="history">
-    <title>History</title>
-
-    <para>There are currently at least three publicly available Lucene modules. The
-    site http://mmapps.sourceforge.net provides an alternate version,
-    created by Finalist, which works on MMBase 1.7.</para>
-    <para>There is also one in 'CMSC', called 'luceus'.</para>
-
-    <para>The version you are looking at now was developed on the 1.8
-    version of MMBase. It is however maintained in HEAD.</para>
   </section>
 </article>

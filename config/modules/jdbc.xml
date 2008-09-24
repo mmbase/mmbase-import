@@ -1,17 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <!--
-   The JDBC module is used to configure the database access for MMBase. 
-   This module is not essential.
+   The JDBC module is used to configure the database access for MMBase. This module is essential. Do not remove it or make it inactive.
 -->
 <module maintainer="mmbase.org" version="0">
 
-  <!--
-      This module  sets up mmbase jdbc connection pooling.
-      It remains unused if you set up a datasource in mmbaseroot.xml
+  <!-- <class>
+  Class used for initalization of this module
 
+  Options:
+  - When org.mmbase.module.database.Naming is used, the Connections will be retrieved from the application
+  server, so the application-server should define a resource for this, in most cases called 'jdbc/MMbase'.
+    required properties for this class are:
+    - context
+    - datasources
+
+    (sample below)
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+    <module maintainer="mmbase.org" version="0">
+    <status>active</status>
+    <class>org.mmbase.module.database.Naming</class>
+    <properties>
+    <property name="context">java:comp/env</property>
+    <property name="datasource">jdbc/MMBase</property>
+    </properties>
+    </module>
+
+  - When org.mmbase.module.database.JDBC is used, the MMBase Connection pooling is used.
+    required properties for this class are:
+    - url
+    - user
+    - password
+    - supportclass
+    - database
+    - connections
+    - probetime
+    - host
+    - driver
+    - port
+    - host
   -->
   <class>org.mmbase.module.database.JDBC</class>
+
+  <!-- <properties>
+  You can define properties to be used by the classfile.
+  The properties described here are mandatory.
+  -->
   <properties>
 
     <!-- <properties>
@@ -50,7 +85,7 @@
     <property name="url">jdbc:microsoft:sqlserver://$HOST:$PORT;DatabaseName=$DBM</property>
     -->
 
-    <!--
+    <!-- 
          HSQL
 
          Stand alone HSQL which was started with:
@@ -163,10 +198,11 @@
     <property name="probetime">30</property>
 
 
-    <!-- max life time of a query (in s)
+    <!-- max life time of a query (in s) 
          If a query runs langer than this, MMBase will attempt to 'kill' it.
     -->
     <property name="maxlifetime">120</property>
+
 
   </properties>
 </module>

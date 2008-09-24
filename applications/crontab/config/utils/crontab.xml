@@ -8,7 +8,6 @@
     -->
     <!--
       Another example: mmbase statistics.
-      Logs cache and memory statistics to the mmbase log.
     <property name="memorystats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||Memory|short</property>
     <property name="nodesstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.Nodes|short</property>
     <property name="tagstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.TagAttributeCache|short</property>
@@ -16,28 +15,9 @@
     -->
     <!--
         If you run HSQL, you may want to schedule a 'shutdown' compact' periodically.
-        It is based on executing a certain query, in this case at 4 am.
     -->
     <!--
     <property name="hsqladmin">0 4 * * *|org.mmbase.applications.crontab.MMBaseQueryJob||shutdown compact;</property>
-    -->
-    <!--
-        Periodially clearing caches
-        Clears at 3:59 am all mmbase caches.
-    -->
-    <!--
-    <property name="cacheclearer">59 3 * * *|org.mmbase.applications.crontab.MMBaseCacheClearerJob|Clear all mmbase caches</property>
-    -->
-    <!--
-         Memory warnings.
-         This examples sends me mail every 2 hours if the memory use (after a full gc) comes over 80%.
-    -->
-    <!--
-    <property name="memory">0 */2 * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl</property>
-    -->
-
-    <!--
-    <property name="testjob">*/1 20-23 * * *|org.mmbase.applications.crontab.TestCronJob|||balance</property>
     -->
   </properties>
 </util>

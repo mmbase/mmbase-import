@@ -1,0 +1,103 @@
+/*
+ CSS for MMBase documentation
+ @author Michiel Meeuwissen
+ @version $Id: mmbase.css,v 1.6.4.2 2007-05-25 10:29:17 michiel Exp $;
+*/
+
+
+body {
+     font-family: Verdana, Arial, Helvetica, sans-serif;
+     background-color: white;
+     margin-left: 3%;
+     margin-right: 3%;
+     padding-left: 0pt;
+     padding-right: 0pt;
+}
+
+
+table {
+         font-size: 9pt;
+         width: 100%;
+         border-bottom: none;
+         border-top: none;
+         border-left: solid thin white;
+         border-right: none;
+         border-collapse:separate;
+         border-spacing: 1pt;
+}
+td {
+    padding: 3pt;
+}
+th {
+    background-color: #ddd;
+    text-align: left;
+}
+
+tr.footer td {
+   border-top: solid thin black;
+   border-left: none;
+   border-right: none;
+   border-collapse:collapse;
+}
+
+.title,
+.subtitle {
+   color: navy
+ }
+
+textarea.small {
+     height: 6em;
+}
+textarea.big   {
+         height: 15em;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+a:hover { // color: red;
+          // text-decoration: underline;
+        }
+
+.data {
+    border-bottom: solid thin #ddd;
+}
+.navigate {
+    text-align: center;
+    border-bottom: solid thin #ddd;
+}
+.linkdata {
+    text-align: center;
+    border-bottom: solid thin #ddd;
+}
+.multidata  {
+   background-color: #ddd;
+   padding: 5pt;
+   margin: 5pt;
+   border: solid thin black;
+}
+
+.currentmenuitem {
+  color: navy;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: right;
+  text-weight: bold;
+}
+
+.menuitem {
+  color: black;
+  font-size: 1em;
+  text-align: right;
+  text-weight: bold;
+}
+

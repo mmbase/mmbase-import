@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 
 package org.mmbase.applications.packaging;
@@ -25,7 +25,7 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -40,21 +40,21 @@ public class PackageManager {
     private static Logger log = Logging.getLoggerInstance(PackageManager.class);
 
     // Contains all packages key=packagename/maintainer value=reference to application
-    private static HashMap<String, PackageContainer> packages = new HashMap<String, PackageContainer>();
+    private static HashMap packages = new HashMap();
 
     // state of this manager
     private static boolean state = false;
-    private static HashMap<String, String> packagehandlers;
+    private static HashMap packagehandlers;
 
     public static final String DTD_PACKAGEHANDLERS_1_0 = "packagehandlers_1_0.dtd";
-    public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN";
+    public static final String PUBLIC_ID_PACKAGEHANDLERS_1_0 = "-//MMBase//DTD packagehandlers config 1.0//EN"; 
 
     /**
      * Register the Public Ids for DTDs used by XMLBasicReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_PACKAGEHANDLERS_1_0, DTD_PACKAGEHANDLERS_1_0, PackageManager.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGEHANDLERS_1_0, DTD_PACKAGEHANDLERS_1_0, PackageManager.class);
     }
     /**
     * init(), starts the package manager mostly start the
@@ -73,15 +73,15 @@ public class PackageManager {
      * return all packages based on the input query
      * @return all packages
      */
-    public static Iterator<PackageContainer> getPackages() {
+    public static Iterator getPackages() {
         return packages.values().iterator();
     }
-
+    
     /**
-     * return all packages based
+     * return all packages based 
      * @return all packages
      */
-    public static Iterator<PackageVersionContainer> getPackageVersions(String id) {
+    public static Iterator getPackageVersions(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -94,7 +94,7 @@ public class PackageManager {
     /**
      * return a list of version numbers of this package
      */
-    public static Iterator<String> getPackageVersionNumbers(String id) {
+    public static Iterator getPackageVersionNumbers(String id) {
         Object o = packages.get(id);
         if (o != null) {
             PackageContainer pc = (PackageContainer)o;
@@ -163,9 +163,9 @@ public class PackageManager {
         String id = name+"@"+maintainer+"_"+type;
         id = id.replace(' ','_');
         id = id.replace('/','_');
-
+    
         // check if we allready have a package container for this
-        PackageContainer pc = packages.get(id);
+        PackageContainer pc = (PackageContainer)packages.get(id);
 
         boolean found = false;
         if (pc != null) {
@@ -174,12 +174,12 @@ public class PackageManager {
             found = pc.contains(version,provider);
         }
 
-        if (!found) {
+        if (!found) {    
             // so we don't have this package refernce yet, then
             // create and store it
 
             // try to create this handler
-            String classname = packagehandlers.get(type);
+            String classname = (String)packagehandlers.get(type);
             if (classname != null) {
                 try {
                     Class newclass = Class.forName(classname);
@@ -216,7 +216,7 @@ public class PackageManager {
             log.error("Versions builder not installed.");
             return -1;
         } else {
-            return versions.getInstalledVersion(id,"package");
+            return versions.getInstalledVersion(id,"package");    
         }
     }
 
@@ -225,9 +225,9 @@ public class PackageManager {
             int newversion = Integer.parseInt(p.getVersion());
             if (getInstalledVersion(p.getId()) == newversion) {
                 return true;
-            }
+            } 
         } catch(Exception e) {
-            log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
+        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
             return false;
         }
         return false;
@@ -238,11 +238,11 @@ public class PackageManager {
         try {
             int newversion = Integer.parseInt(p.getVersion());
             int oldversion = getInstalledVersion(p.getId());
-        if (oldversion!=-1 && newversion > oldversion) {
-        return true;
-        }
+	    if (oldversion!=-1 && newversion > oldversion) {
+		return true;
+	    }
         } catch(Exception e) {
-            log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
+        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
             return false;
         }
         return false;
@@ -250,13 +250,13 @@ public class PackageManager {
 
 
 
-    public static boolean updateRegistryInstalled(PackageInterface p) {
+    public static boolean updateRegistryInstalled(PackageInterface p) { 
         try {
             Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
             if (versions == null) {
                 log.error("Versions builder not installed.");
                 return false;
-            }
+            } 
             int newversion = Integer.parseInt(p.getVersion());
             int oldversion = getInstalledVersion(p.getId());
             if (oldversion == -1) {
@@ -266,40 +266,40 @@ public class PackageManager {
             }
             return true;
         } catch(Exception e) {
-            log.debug("error while updating versions for version "+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p + ":" + e.getMessage() , e);
+			log.debug("error while updating versions for version "+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
 
 
-    public static boolean updateRegistryUninstalled(PackageInterface p) {
+    public static boolean updateRegistryUninstalled(PackageInterface p) { 
         try {
             Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
             if(versions == null) {
                 log.error("Versions builder not installed.");
                 return false;
-            }
+            } 
             versions.updateInstalledVersion(p.getId(),"package",p.getMaintainer(),0);
             return true;
         } catch(Exception e) {
-            log.debug("error while updating the installed status to 0 of the package "+ p + ":" + e.getMessage() , e);
+			log.debug("error while updating the installed status to 0 of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
-
+   
     public static boolean removeOfflinePackages(ProviderInterface wantedprov) {
         // this checks all the packages if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last package update
-        Iterator<PackageContainer> e = ((HashMap<String,PackageContainer>)packages.clone()).values().iterator();
+        Iterator e = ((HashMap)packages.clone()).values().iterator();
         while (e.hasNext()) {
-            PackageContainer pc = e.next();
-            Iterator<PackageVersionContainer> e2 = pc.getVersions();
+            PackageContainer pc = (PackageContainer)e.next();
+            Iterator e2 = pc.getVersions();
             while (e2.hasNext()) {
-                PackageVersionContainer pvc = e2.next();
-                Iterator<PackageInterface> e3 = pvc.getPackages();
+                PackageVersionContainer pvc = (PackageVersionContainer)e2.next();
+                Iterator e3 = pvc.getPackages();
                 while (e3.hasNext()) {
-                    PackageInterface p = e3.next();
+                    BasicPackage p = (BasicPackage)e3.next();
                     ProviderInterface prov = p.getProvider();
                     if (wantedprov == prov) {
                         long providertime = p.getProvider().lastSeen();
@@ -321,7 +321,7 @@ public class PackageManager {
     }
 
     public static void readPackageHandlers() {
-        packagehandlers = new HashMap<String, String>();
+        packagehandlers = new HashMap();
         String filename = getConfigPath()+File.separator+"packaging"+File.separator+"packagehandlers.xml";
 
         File file = new File(filename);
@@ -329,7 +329,8 @@ public class PackageManager {
 
             ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,PackageManager.class);
             if(reader != null) {
-                for (Element n: reader.getChildElements("packagehandlers", "packagehandler")) {
+                for(Iterator ns = reader.getChildElements("packagehandlers","packagehandler");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String type = null;
@@ -355,16 +356,16 @@ public class PackageManager {
         }
     }
 
-    public static HashMap<String, String> getPackageHandlers() {
+    public static HashMap getPackageHandlers() { 
         return packagehandlers;
     }
 
     public static String getConfigPath() {
-        List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.size() == 0) {
             return null;
         } else {
-            return files.get(0).getAbsolutePath();
+            return ((File) files.get(0)).getAbsolutePath();
         }
     }
 

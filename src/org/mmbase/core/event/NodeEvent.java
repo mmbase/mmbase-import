@@ -1,4 +1,5 @@
 /*
+ * Created on 21-jun-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -11,10 +12,10 @@ import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.cache.Cache;
-import org.mmbase.cache.CacheManager;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * This class communicates a node event. in case of a change event, it contains
@@ -23,12 +24,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.38 2008-08-08 12:28:54 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27.2.5 2008-02-07 16:45:59 michiel Exp $
  */
 public class NodeEvent extends Event {
-    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
+
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     /**
      * Event type speicfic for MMBase nodes.
@@ -38,22 +41,22 @@ public class NodeEvent extends Event {
     private final int nodeNumber;
     private String builderName;
 
-    private final Map<String, Object> oldValues;
-    private final Map<String, Object> newValues;
+    private final Map oldValues;
+    private final Map newValues;
 
     /**
-    *@param machineName (MMBase) name of the server
-    *@param builderName name of builder of node event is about
-    *@param oldValues map with fields and their values that have been changed by the event
-    *@param newValues map with new values of changed fields
-    *@param eventType the type of event
-    **/
-    public NodeEvent(String machineName, String builderName, int nodeNumber, Map<String, Object> oldValues, Map<String, Object> newValues, int eventType ){
+     * @param machineName (MMBase) name of the server
+     * @param builderName name of builder of node event is about
+     * @param oldValues map with fields and their values that have been changed by the event
+     * @param newValues map with new values of changed fields
+     * @param eventType the type of event
+     **/
+    public NodeEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.oldValues = oldValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(oldValues));
-        this.newValues = newValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(newValues));
+        this.oldValues = oldValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(oldValues));
+        this.newValues = newValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(newValues));
     }
 
 
@@ -69,17 +72,17 @@ public class NodeEvent extends Event {
     /**
      * @return a set containing the names of the fields that have changed
      */
-    public final Set<String> getChangedFields() {
+    public final Set getChangedFields() {
         switch(getType()) {
         case TYPE_NEW:
             return newValues.keySet();
         case TYPE_CHANGE:
             //for changed both old and new values are good (similar keys)
             return newValues.keySet();
-        case TYPE_DELETE:
+        case  TYPE_DELETE:
             return oldValues.keySet();
         default:
-            return Collections.emptySet();
+            return Collections.EMPTY_SET;
         }
     }
 
@@ -92,8 +95,6 @@ public class NodeEvent extends Event {
     public final  Object getNewValue(String fieldName) {
         return newValues.get(fieldName);
     }
-
-
 
     /**
      * @return Returns the builderName.
@@ -111,8 +112,8 @@ public class NodeEvent extends Event {
 
     public String toString() {
         String changedFields = "";
-        for (Object element : getChangedFields()) {
-            changedFields = changedFields + (String) element + ",";
+        for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
+            changedFields = changedFields + (String) i.next() + ",";
         }
         return "Node event: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
     }
@@ -218,7 +219,7 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map<String, Object> getOldValues(){
+    public final Map getOldValues(){
         return oldValues;
     }
 
@@ -231,7 +232,7 @@ public class NodeEvent extends Event {
      * </ul>
      * @return a map where the key is a fieldname and the value the field's value
      */
-    public final Map<String, Object> getNewValues(){
+    public final Map getNewValues(){
         return newValues;
     }
 
@@ -241,17 +242,19 @@ public class NodeEvent extends Event {
         try {
             int otype = MMBase.getMMBase().getTypeDef().getIntValue(builderName);
             if (otype != -1) {
-                Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
+                Cache typeCache = Cache.getCache("TypeCache");
                 if (typeCache != null) {
-                    Integer cachedType = typeCache.get(nodeNumber);
+                    Integer node = new Integer(nodeNumber);
+                    Integer type = new Integer(otype);
+                    Integer cachedType = (Integer) typeCache.get(node);
                     if (cachedType == null) {
-                        log.debug("Putting in type cache " + nodeNumber + " -> " + otype);
-                        typeCache.put(nodeNumber, otype);
+                        log.debug("Putting in type cache " + node + " -> " + type);
+                        typeCache.put(node, type);
                     } else {
-                        if (otype == cachedType.intValue()) {
+                        if (type.equals(cachedType)) {
                             log.debug("Type already cached");
                         } else {
-                            log.warn("Type in event not the same as in cache " + otype + " != " + cachedType + " Event: " + this + " from " + getMachine());
+                            log.warn("Type in event not the same as in cache " + type + " != " + cachedType);
                         }
                     }
                 } else {
@@ -269,12 +272,12 @@ public class NodeEvent extends Event {
 
     public static void main(String[] args) {
         //test serializable
-        Map<String,Object>  oldv = new HashMap<String,Object>(), newv = new HashMap<String,Object>();
+        Map  oldv = new HashMap(), newv = new HashMap();
         oldv.put("een","veen");
         oldv.put("twee","vtwee");
         newv.putAll(oldv);
 
-        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, Event.TYPE_CHANGE);
+        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.TYPE_CHANGE);
         System.out.println("event 1: " + event.toString());
 
     }

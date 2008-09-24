@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.13 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Detector.java,v 1.11 2006-01-25 19:09:43 michiel Exp $
  */
 
 public class Detector {
@@ -66,7 +66,7 @@ public class Detector {
     private String test; // Test value
     private char testComparator; // What the test is like,
     private String message; // Designation for this type in 'magic' file
-    private List<String> extensions; // Possible file extensions for this type
+    private List extensions; // Possible file extensions for this type
     private String mimetype; // MimeType for this type
 
     // What are these?
@@ -74,7 +74,7 @@ public class Detector {
     private int xInt;
     private char xChar;
 
-    private List<Detector> childList;
+    private List childList;
 
     private boolean valid; // Set this if parsing of magic file fails
     private boolean hasX; // Is set when an 'x' value is matched
@@ -89,7 +89,7 @@ public class Detector {
             if (childList.size() == 0) {
                 log.debug("Hm. level = " + level + ", but childList is empty");
             } else {
-                (childList.get(childList.size() - 1)).addChild(detector, level - 1);
+                ((Detector) childList.get(childList.size() - 1)).addChild(detector, level - 1);
             }
         }
     }
@@ -97,8 +97,8 @@ public class Detector {
      * Detectors are instanciated by MagicXMLReader, and by Parser.
      */
     Detector() {
-        childList  = new ArrayList<Detector>();
-        extensions = new ArrayList<String>();
+        childList  = new ArrayList();
+        extensions = new ArrayList();
         mimetype   = "application/octet-stream";
         message    = "Unknown";
         valid      = true;
@@ -114,9 +114,9 @@ public class Detector {
         if (extensions.size() == 0) {
             return "";
         }
-        return extensions.get(0);
+        return (String) extensions.get(0);
     }
-    public List<String> getExtensions() {
+    public List getExtensions() {
         return extensions;
     }
 
@@ -186,7 +186,7 @@ public class Detector {
         if (hit) {
             log.debug("Detector " + this + " hit");
             for (int i = 0; i < childList.size(); i++) {
-                Detector child = childList.get(i);
+                Detector child = (Detector) childList.get(i);
                 if (child.test(lithmus)) {
                     String s = child.getDesignation();
                     if (s.startsWith("\\b")) {
@@ -238,8 +238,8 @@ public class Detector {
      */
     private int byteArrayToInt(byte[] ar) {
         StringBuffer buf = new StringBuffer();
-        for (byte element : ar) {
-            buf.append(Integer.toHexString(element & 0x000000ff));
+        for (int i = 0; i < ar.length; i++) {
+            buf.append(Integer.toHexString((int) ar[i] & 0x000000ff));
         }
         return Integer.decode("0x" + buf.toString()).intValue();
     }
@@ -249,8 +249,8 @@ public class Detector {
      */
     private long byteArrayToLong(byte[] ar) {
         StringBuffer buf = new StringBuffer();
-        for (byte element : ar) {
-            buf.append(Integer.toHexString(element & 0x000000ff));
+        for (int i = 0; i < ar.length; i++) {
+            buf.append(Integer.toHexString((int) ar[i] & 0x000000ff));
         }
         return Long.decode("0x" + buf.toString()).longValue();
     }
@@ -317,8 +317,8 @@ public class Detector {
             // Hm. How did that binary arithmatic go?
             log.debug(
                       "dumb string conversion: 0x"
-                      + Integer.toHexString(lithmus[offset] & 0x000000ff)
-                      + Integer.toHexString(lithmus[offset + 1] & 0x000000ff));
+                      + Integer.toHexString((int) lithmus[offset] & 0x000000ff)
+                      + Integer.toHexString((int) lithmus[offset + 1] & 0x000000ff));
             
             switch (testComparator) {
             case '=' :
@@ -408,7 +408,7 @@ public class Detector {
         log.debug("testing byte for " + rawinput);
         if (test.equals("x")) {
             hasX = true;
-            xInt = lithmus[offset];
+            xInt = (int) lithmus[offset];
             xChar = (char) lithmus[offset];
             xString = "" + xChar;
             return true;
@@ -456,7 +456,7 @@ public class Detector {
                 break;
             default :
                 // Convert all characters not in the allowed XML character set
-                int n = c;
+                int n = (int) c;
                 /* -- below is actual xml standard definition of allowed characters
                    if (n == 0x9 || n == 0xA || n == 0xD || (n >= 0x20 && n <= 0xD7FF) || (n >= 0xE000 && n <= 0xFFFD) ||
                    (n >= 0x10000 && n <= 0x10FFFF)) {
@@ -549,8 +549,9 @@ public class Detector {
         f.write(s.toString());
         if (childList.size() > 0) {
             f.write(padStr + "  <childlist>\n");
-            for (Detector detector : childList) {
-                detector.toXML(f, level + 1);
+            Iterator i = childList.iterator();
+            while (i.hasNext()) {
+                ((Detector) i.next()).toXML(f, level + 1);
             }
             f.write(padStr + "  </childlist>\n");
         }
@@ -573,7 +574,8 @@ public class Detector {
             if (childList.size() > 0) {
                 res.append("\n");
                 for (int i = 0; i < childList.size(); i++) {
-                    res.append("> ").append(childList.get(i).toString());
+                    res.append("> ").append(
+                                            ((Detector) childList.get(i)).toString());
                 }
             }
             return res.toString();

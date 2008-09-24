@@ -10,17 +10,22 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.io.InputStream;
 import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.CoreField;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
@@ -28,7 +33,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.27 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.19.2.1 2006-11-28 13:48:45 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -61,13 +66,11 @@ public class VirtualNode extends AbstractNode implements Node {
     /**
      * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
      * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
-     * See {@link org.mmbase.bridge.util.MapNode}, which <em>is</em> a complete reimplementation (with no core dependencies).
      */
     public VirtualNode(Map values, Cloud cloud) {
         this(getVirtualNode(values), cloud);
     }
 
-    @Override
     public String toString() {
         return "BridgeVirtualNode " + noderef;
     }
@@ -93,32 +96,26 @@ public class VirtualNode extends AbstractNode implements Node {
     }
 
 
-    @Override
     public boolean isRelation() {
         return false;
     }
 
-    @Override
     public Relation toRelation() {
         return (Relation)this;
     }
 
-    @Override
     public boolean isNodeManager() {
         return false;
     }
 
-    @Override
     public NodeManager toNodeManager() {
         return (NodeManager)this;
     }
 
-    @Override
     public boolean isRelationManager() {
         return false;
     }
 
-    @Override
     public RelationManager toRelationManager() {
         return (RelationManager)this;
     }
@@ -143,7 +140,6 @@ public class VirtualNode extends AbstractNode implements Node {
         return nodeManager;
     }
 
-    @Override
     public int getNumber() {
         return noderef.getNumber();
     }
@@ -153,12 +149,10 @@ public class VirtualNode extends AbstractNode implements Node {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
 
-    @Override
     public boolean isNull(String fieldName) {
         return noderef.isNull(fieldName);
     }
 
-    @Override
     public void setSize(String fieldName, long size) {
         noderef.setSize(fieldName, size);
     }
@@ -166,7 +160,6 @@ public class VirtualNode extends AbstractNode implements Node {
         return noderef.getSize(fieldName);
     }
 
-    @Override
     protected  void setValueWithoutChecks(String fieldName, Object value) {
         // cannot edit virtual node.
         // should not come here..
@@ -178,19 +171,16 @@ public class VirtualNode extends AbstractNode implements Node {
         return result;
     }
 
-    @Override
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         return result.booleanValue();
     }
 
-    @Override
     public Date getDateValue(String fieldName) {
         Date result =  noderef.getDateValue(fieldName);
         return result;
     }
 
-    @Override
     public List getListValue(String fieldName) {
         List result =  noderef.getListValue(fieldName);
         return result;
@@ -201,7 +191,6 @@ public class VirtualNode extends AbstractNode implements Node {
      * Returns the Node value of a certain field, but in the case of a VirtualNode this can also occasionally be <code>null</code>
      * because the node can have been deleted.
      */
-    @Override
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
             return this;
@@ -209,6 +198,11 @@ public class VirtualNode extends AbstractNode implements Node {
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
+            MMObjectBuilder builder = mmobjectNode.getBuilder();
+            if (builder instanceof VirtualBuilder) {
+                return new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
+            }
+                
             try {
                 result = cloud.getNode(mmobjectNode.getNumber());
             } catch (NotFoundException nfe) {
@@ -220,70 +214,59 @@ public class VirtualNode extends AbstractNode implements Node {
         return result;
     }
 
-    @Override
     public int getIntValue(String fieldName) {
-        Integer result = getNode().getIntValue(fieldName);
+        Integer result = new Integer(getNode().getIntValue(fieldName));
         return result.intValue();
 
     }
 
-    @Override
     public float getFloatValue(String fieldName) {
-        Float result = getNode().getFloatValue(fieldName);
+        Float result = new Float(getNode().getFloatValue(fieldName));
         return result.floatValue();
     }
 
-    @Override
     public long getLongValue(String fieldName) {
-        Long result = getNode().getLongValue(fieldName);
+        Long result = new Long(getNode().getLongValue(fieldName));
         return result.longValue();
     }
 
-    @Override
     public double getDoubleValue(String fieldName) {
-        Double result = getNode().getDoubleValue(fieldName);
+        Double result = new Double(getNode().getDoubleValue(fieldName));
         return result.doubleValue();
     }
 
-    @Override
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
         return result;
     }
-    @Override
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         return result;
     }
 
-    @Override
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
         return result;
     }
 
-    @Override
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
         return result;
     }
 
 
-    public Collection<Function<?>>  getFunctions() {
+    public Collection  getFunctions() {
         return  getNode().getFunctions();
     }
 
-    @Override
-    protected Function<?> getNodeFunction(String functionName) {
+    protected Function getNodeFunction(String functionName) {
         return getNode().getFunction(functionName);
     }
 
-    @Override
     public Parameters createParameters(String functionName) {
         return getNode().getFunction(functionName).createParameters();
     }
 
-    @Override
     protected FieldValue createFunctionValue(Object result) {
         return new BasicFunctionValue(getCloud(), result);
     }

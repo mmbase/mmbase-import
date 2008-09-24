@@ -10,27 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 /**
- * ParamHandlers can have the &lt;mm:param&gt; ({@link ParamTag}) tag as subtag.
+ * ParamHandlers can have the &lt;mm:param&gt; tag as subtag
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: ParamHandler.java,v 1.5 2008-08-29 12:40:29 michiel Exp $
+ * @version $Id: ParamHandler.java,v 1.2 2003-09-01 13:29:43 pierre Exp $
  */
 
 public interface ParamHandler {
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static final String KEY = "org.mmbase.paramhandler";
-    /**
-     * @since MMBase-1.9
-     */
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
-
     public void addParameter(String key, Object value) throws JspTagException;
-
 }

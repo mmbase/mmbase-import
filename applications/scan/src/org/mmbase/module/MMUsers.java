@@ -24,13 +24,13 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.16 2008-08-01 21:46:51 michiel Exp $
+ * @version $Id: MMUsers.java,v 1.13 2004-10-01 08:42:46 pierre Exp $
  */
 public class MMUsers extends ProcessorModule {
 
     private static Logger log = Logging.getLoggerInstance(MMUsers.class.getName());
 
-    private PasswordGenerator pwgen = new PasswordGenerator ();
+    private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
     private MMBase mmbase;
     private sessionsInterface sessions;
     private SendMailInterface sendMail;
@@ -68,9 +68,10 @@ public class MMUsers extends ProcessorModule {
             log.debug("Clearing session-info of user " + userid);
         }
         if (userid!=null) {
-            Map<String, MMObjectNode> has = getUserProperties (userid);
+            Hashtable has = getUserProperties (userid);
             if (has != null) {
-                for (MMObjectNode node : has.values()) {
+                for (Enumeration e = has.elements (); e.hasMoreElements (); ) {
+                    MMObjectNode node = (MMObjectNode)e.nextElement ();
                     String key = node.getStringValue ("key");
                     if ((key != null) && (excludedKeys.indexOf(";"+key+";")<0)) {
                         if (log.isDebugEnabled()) {
@@ -283,7 +284,7 @@ public class MMUsers extends ProcessorModule {
 
             if (tok.equals ("PARENT") && tokens.hasMoreTokens ()) {
                 String    userid = tokens.nextToken ();
-                Map<String, MMObjectNode> props  = getUserProperties (userid);
+                Hashtable props  = getUserProperties (userid);
                 Vector    fields = tagger.Values ("FIELD");
                 String    wanted = (String)fields.firstElement ();
 
@@ -302,17 +303,18 @@ public class MMUsers extends ProcessorModule {
         return res;
     }
 
-    private Vector getListAll (Map<String, MMObjectNode> props, StringTagger tagger) {
+    private Vector getListAll (Hashtable props, StringTagger tagger) {
         Vector v = new Vector ();
 
         // Go through all properties...
-        for (MMObjectNode n : props.values()) {
-            String       key  = n.getStringValue ("key");
-            String       type = n.getStringValue ("ptype");
+        for (Enumeration p    = props.elements (); p.hasMoreElements (); ) {
+            MMObjectNode n    = (MMObjectNode)p.nextElement ();
+            String       key  = (String)n.getStringValue ("key");
+            String       type = (String)n.getStringValue ("ptype");
 
             v.addElement (key);
 
-            if (type.equals ("string")) v.addElement (n.getStringValue ("value"));
+            if (type.equals ("string")) v.addElement ((String)n.getStringValue ("value"));
             // Place for more types...
             else v.addElement ("<NON-PRINTABLE>");
         }
@@ -322,7 +324,7 @@ public class MMUsers extends ProcessorModule {
         return v;
     }
 
-    private Vector getListSelection (Map<String, MMObjectNode> props, Vector fields, StringTagger tagger)
+    private Vector getListSelection (Hashtable props, Vector fields, StringTagger tagger)
     {
         Vector v = new Vector ();
 
@@ -334,7 +336,7 @@ public class MMUsers extends ProcessorModule {
             if (node != null) {
                 String type = node.getStringValue ("ptype");
 
-                if (type.equals ("string")) v.addElement (node.getStringValue("value"));
+                if (type.equals ("string")) v.addElement ((String)node.getStringValue("value"));
                 // Place for more types...
                 else v.addElement ("<NON-PRINTABLE>");
             }
@@ -426,15 +428,15 @@ public class MMUsers extends ProcessorModule {
     // new version from daniel, now uses the getproperties in each node
     // and uses its cache (general mmobjectnode cache).
 
-    private Map<String, MMObjectNode> getUserProperties (String userid) {
+    private Hashtable getUserProperties (String userid) {
         // need a builder to obtain the usernode and its properties
         if (users == null) users = mmbase.getMMObject ("users");
 
         // obtain the correct node so we can get its hashtable of properties nodes
-        MMObjectNode usernode = users.getNode(userid);
+        MMObjectNode usernode = (MMObjectNode)users.getNode(userid);
 
         if (usernode!=null) {
-            Map<String, MMObjectNode> properties = usernode.getProperties();
+            Hashtable properties = usernode.getProperties();
             return properties;
         } else {
             log.warn("MMUsers -> getUserProperties not a valid user = " + userid);
@@ -514,13 +516,13 @@ public class MMUsers extends ProcessorModule {
         // oke now lets set the new values
         sessions.setValue(info,"USERNUMBER",newUserID);
 
-        Map<String, MMObjectNode> has2=getUserProperties(newUserID);
+        Hashtable has2=getUserProperties(newUserID);
         if (has2 == null) {
             log.warn("SWITCH: newuser " + newUserID + " has no properties!");
             return "";
         }
-        for (MMObjectNode propNode : has2.values()) {
-            sessions.setValueFromNode( info, propNode);
+        for (Enumeration e = has2.elements(); e.hasMoreElements (); ) {
+            sessions.setValueFromNode( info, (MMObjectNode)e.nextElement());
         }
         return "";
     }

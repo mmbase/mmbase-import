@@ -13,13 +13,10 @@ import org.mmbase.bridge.*;
 
 /**
  * This processor can be used as a 'set' processor on a field.
- * If the field is set an exception is thrown (in other words, the
- * field is read only). In the builder XML you should also add the
- * 'readonly' attribute on the field, to indicate to generic editors
- * that this field should not be presented editable. 
+ * If the field is set an exception is thrown (in other words, the field is read only).
  *
  * @author Nico Klasens
- * @version $Id: Readonly.java,v 1.3 2008-06-25 06:20:31 michiel Exp $
+ * @version $Id: Readonly.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 public class Readonly implements Processor {

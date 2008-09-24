@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema
-   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"     
    targetNamespace="http://www.mmbase.org/xmlns/searchquery"
    xmlns="http://www.mmbase.org/xmlns/searchquery"
    version="1.0">
@@ -52,7 +52,6 @@
 
     <xsd:complexType name="Field">
       <xsd:attribute name="name" type="xsd:token" use="required"/>
-      <xsd:attribute name="optional" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="Limiter">
@@ -69,11 +68,6 @@
         <xsd:enumeration value="like"/>
         <xsd:enumeration value="between"/>
         <xsd:enumeration value="in"/>
-        <xsd:enumeration value="lt"/>
-        <xsd:enumeration value="le"/>
-        <xsd:enumeration value="eq"/>
-        <xsd:enumeration value="gt"/>
-        <xsd:enumeration value="ge"/>
         <xsd:enumeration value="null"/>
       </xsd:restriction>
     </xsd:simpleType>

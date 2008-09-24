@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Used by a device buidlers (i.e. Cameras), and by SCAN
  * @application SCAN or Devices
  * @author David V van Zeventer
- * @version $Id: DirectoryLister.java,v 1.15 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: DirectoryLister.java,v 1.14 2005-08-31 11:46:55 nklasens Exp $
  */
 public class DirectoryLister {
 
@@ -59,11 +59,11 @@ public class DirectoryLister {
             return v;
         }
 
-        for (String element : files) {
-            path = dir + File.separator + element;    //Build full pathname for this entry.
+        for (int i = 0; i < files.length; i++) {
+            path = dir + File.separator + files[i];    //Build full pathname for this entry.
             d = new File (path);    //Assign new fileobject for this newly build path.
 
-            if ( !d.isDirectory() && element.endsWith(ext) ) {  //fileobj d is not a directory
+            if ( !d.isDirectory() && files[i].endsWith(ext) ) {  //fileobj d is not a directory
                 v.addElement(path);                 //AND has the right extension.
             } else {
                 if (d.isDirectory()) {                 //fileobj d is a directory.
@@ -130,8 +130,8 @@ public class DirectoryLister {
      * Creates a Vector with File-objs by using the
      * directories vector. Used by {#link #sortDirectoriesOnModTime}
      */
-    private Vector<File> createFilesVector(Vector directories) {
-        Vector<File> filesvec = new Vector<File>();
+    private Vector createFilesVector(Vector directories) {
+        Vector filesvec = new Vector();
         String filepathname=null;
         File file=null;
 
@@ -148,18 +148,18 @@ public class DirectoryLister {
      * Sorts a Vector containing file pathnames on modification time.
      * @return a new sorted <code>Vector</code> containing filepathnames.
      */
-    public Vector<String> sortDirectoriesOnModTime(Vector directories) {
+    public Vector sortDirectoriesOnModTime(Vector directories) {
         String methodname = "sortDirectoriesOnModTime";
         CompareInterface filecmp = new FileCompare();
         SortedVector sortedfilesvec = new SortedVector(filecmp); //Create new sortedvec.
-        Vector<String> dirs_sorted= new Vector<String>();
+        Vector dirs_sorted= new Vector();
         File file=null;
 
-        Vector<File> filesvec = createFilesVector(directories); //Create filesvector.
+        Vector filesvec = createFilesVector(directories); //Create filesvector.
         log.debug(methodname+": filesvec= "+filesvec);
 
         //Sort the filesvec on modification time.
-        Enumeration<File> filesvec_enum = filesvec.elements(); //Enumerate all filesvec elements.
+        Enumeration filesvec_enum = filesvec.elements(); //Enumerate all filesvec elements.
         while (filesvec_enum.hasMoreElements()) {
             sortedfilesvec.addSorted(filesvec_enum.nextElement());    //Add fileobj to sortedvec.
         }
@@ -180,12 +180,12 @@ public class DirectoryLister {
      * It then adds these objs to a SortedVector obj (sorted on comparefield)..
      * @return a <code>Vector</code> with 2 items : filepath & moddate
      */
-    public Vector<String> sortDirectories(Vector directories, String comparefield) {
+    public Vector sortDirectories(Vector directories, String comparefield) {
 
         String methodname = "sortDirectories";
         CompareInterface xfilecmp = new XFileCompare(comparefield); //Compare implementation that will be used, also specifying comparefield.
         SortedVector sortedxfiles = new SortedVector(xfilecmp);        //SortedVector containing xfileobjs.
-        Vector<String> sorteddirs = new Vector<String>(); //Sorted Vector containing the xfile fields stored as strings.
+        Vector sorteddirs = new Vector(); //Sorted Vector containing the xfile fields stored as strings.
         XFile xfile=null;
         int modtime=0;
         String filepath =null;
@@ -218,11 +218,11 @@ public class DirectoryLister {
      * ITEM1=fileentry, ITEM2=moddate,
      * ITEM3=previewfilename if exists else fileentry.
      */
-     public Vector createThreeItems(Vector<String> sorted,StringTagger tagger) {
+     public Vector createThreeItems(Vector sorted,StringTagger tagger) {
         String methodname = "createThreeItems";
         Vector merged = new Vector();
         String typefmt=null,previewfmt=null,path=null,indexsymbol=null;
-        Enumeration<String> sort_enum=null;
+        Enumeration sort_enum=null;
 
         log.debug(methodname+": Creating 3 items vector.");
         typefmt    = tagger.Value("TYPEFORMAT");    //eg. fullsize.#.jpg
@@ -232,7 +232,7 @@ public class DirectoryLister {
         sort_enum = sorted.elements();
         if(sort_enum.hasMoreElements()) {
             //Retrieve path using a sorted entry.
-            path = sort_enum.nextElement();
+            path = (String)sort_enum.nextElement();
             int lastSlash = path.lastIndexOf('/');
             path = path.substring(0,lastSlash+1);
 
@@ -246,12 +246,12 @@ public class DirectoryLister {
                 sort_enum = sorted.elements(); //Find sorted entry & date
                 while (sort_enum.hasMoreElements()) {
 
-                    String sentry = sort_enum.nextElement();
+                    String sentry = (String) sort_enum.nextElement();
 
                     //Check if the sorted entry equals the typeformat
                     if(checkEntryformat(indexsymbol,typefmt,sentry)) {
                         merged.addElement(sentry);  //ITEM1
-                        String date = sort_enum.nextElement();
+                        String date = (String) sort_enum.nextElement();
                         merged.addElement(date);    //ITEM2
 
                         //Create preview entry & check if exists in sorted vector.
@@ -262,7 +262,7 @@ public class DirectoryLister {
                             merged.addElement(sentry);  //ITEM3=ITEM1
                         }
                     }else{    //sorted entry is other ->skip date
-                        String skipdate=sort_enum.nextElement(); //Skipping date
+                        String skipdate=(String)sort_enum.nextElement(); //Skipping date
                         log.debug("skipping date " + skipdate);
                     }
                 }//while loop
@@ -271,9 +271,9 @@ public class DirectoryLister {
 
                 sort_enum = sorted.elements();
                 while (sort_enum.hasMoreElements()) {    //Create std vector.
-                    String sentry = sort_enum.nextElement();
+                    String sentry = (String) sort_enum.nextElement();
                     merged.addElement(sentry);  //ITEM1
-                    String date   = sort_enum.nextElement();
+                    String date   = (String) sort_enum.nextElement();
                     merged.addElement(date);    //ITEM2
                     merged.addElement(sentry);  //ITEM3=ITEM1
                 }
@@ -333,6 +333,13 @@ public class DirectoryLister {
     }
 
 
+    /**
+     * Converts the integer timevalue to a String containing
+     * hours, minutes, seconds, monthday, month and year in that order.
+     */
+    private String time2DateAndTime(int time) {
+        return DateSupport.getTime(time)+" "+DateSupport.getMonthDay(time)+" "+DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(time))+" "+DateSupport.getYear(time);
+    }
     /**
      * Converts the integer timevalue to a String containing
      * hours, minutes, seconds, monthday, month in that order.

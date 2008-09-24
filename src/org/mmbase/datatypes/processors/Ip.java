@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * to the IP address of the current user. If at least that is possible.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ip.java,v 1.2 2008-03-12 16:03:30 michiel Exp $
+ * @version $Id: Ip.java,v 1.1.2.1 2008-03-12 16:03:10 michiel Exp $
  * @since MMBase-1.8.6
  */
 

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.76 2008-08-08 12:58:10 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.64.2.5 2007-10-01 07:50:42 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -36,7 +36,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
-    private Attribute notfound  = Attribute.NULL;
+
+    private Attribute notfound = Attribute.NULL;
 
     /**
      * Release all allocated resources.
@@ -44,8 +45,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void doFinally() {
         log.debug("releasing");
         super.doFinally();
-        number   = Attribute.NULL;
-        element  = Attribute.NULL;
+        number = Attribute.NULL;
+        element = Attribute.NULL;
         notfound = Attribute.NULL;
     }
 
@@ -54,13 +55,23 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
         }
-        this.number = getAttribute(number, true);
+        this.number = getAttribute(number);
     }
 
 
     public void setNotfound(String i) throws JspTagException {
-        notfound = getAttribute(i, true);
+        notfound = getAttribute(i);
     }
+    /**
+     * This function cannot be added because of Orion.
+     * It will call this function even if you use an attribute without <%= %>, stupidly.
+
+     public void setNumber(int number) throws JspTagException {
+     this.number = new Integer(number).toString();
+     }
+
+    */
+
 
     /**
      * The element attribute is used to access elements of
@@ -80,35 +91,27 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 log.debug("Looking up Node with " + referString + " in context");
             }
             switch(Notfound.get(notfound, this)) {
-            case Notfound.MESSAGE:
-                node = getNodeOrNull(referString);
-                if (node == null) {
-                    try {
-                        getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
-                    } catch (java.io.IOException ioe) {
-                        log.warn(ioe);
+                case Notfound.MESSAGE:
+                    node = getNodeOrNull(referString);
+                    if (node == null) {
+                        try {
+                            getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
+                        } catch (java.io.IOException ioe) {
+                            log.warn(ioe);
+                        }
+                        return SKIP_BODY;
                     }
-                    return SKIP_BODY;
+                    break;
+                case Notfound.SKIP:         {
+                    node = getNodeOrNull(referString);
+                    if (node == null) return SKIP_BODY;
+                    break;
                 }
-                break;
-            case Notfound.LOG: {
-                node = getNodeOrNull(referString);
-                if (node == null) {
-                    log.warn("Could not find node element '" + element.getString(this) + "'");
-                    return SKIP_BODY;
+                case Notfound.PROVIDENULL:  {
+                    node = getNodeOrNull(referString);
+                    break;
                 }
-                break;
-            }
-            case Notfound.SKIP:         {
-                node = getNodeOrNull(referString);
-                if (node == null) return SKIP_BODY;
-                break;
-            }
-            case Notfound.PROVIDENULL:  {
-                node = getNodeOrNull(referString);
-                break;
-            }
-            default: node = getNode(referString);
+                default: node = getNode(referString);
             }
             if (node != null) {
                 if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
@@ -128,12 +131,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
             }
-            // if (! n.length() == 0) {
-            // if empty string should mean 'not present'. Not sure what is most conventient
-            // We don't change this, becuase it was always like follows.
-            // It would not be backwards compatible.
-
-            if (number != Attribute.NULL) {
+            if (number != Attribute.NULL) { // if (! n.equals("")) {   // if empty string should mean 'not present'. Not sure what is most conventient
                 // explicity indicated which node (by number or alias)
                 Cloud c = getCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
@@ -174,7 +172,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }
 
                 String elString = element.getString(this);
-                if (elString.length() != 0) {
+                if (! "".equals(elString)) {
                     try {
                         node = node.getNodeValue(elString);
                     } catch (org.mmbase.bridge.NotFoundException nfe) {
@@ -182,9 +180,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     }
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
-                        case Notfound.LOG:
-                            log.warn("Could not find node element '" + elString + "'");
-                            return SKIP_BODY;
                         case Notfound.MESSAGE:
                             try {
                                 getPageContext().getOut().write("Could not find node element '" + elString + "'");
@@ -216,7 +211,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         setNodeVar(node);
 
         // if direct parent is a Formatter Tag, then communicate
-        FormatterTag f = findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
             f.setCloud(node.getCloud());

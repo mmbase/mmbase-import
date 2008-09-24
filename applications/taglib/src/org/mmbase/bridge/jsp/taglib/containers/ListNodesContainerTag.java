@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -24,13 +23,12 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.28 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.21.2.2 2008-02-26 17:05:15 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
 
     protected NodeQuery   query       = null;
-    protected Object      prevQuery   = null;
     protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute   path        = Attribute.NULL;
     protected Attribute   searchDirs  = Attribute.NULL;
@@ -45,29 +43,22 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
      * @since MMBase-1.8.0
      */
     public void setCachepolicy(String t) throws JspTagException {
-        cachePolicy = getAttribute(t, true);
+        cachePolicy = getAttribute(t);
     }
 
     public void setType(String t) throws JspTagException {
-        nodeManager = getAttribute(t, true);
+        nodeManager = getAttribute(t);
     }
 
     public void setPath(String t) throws JspTagException {
-        path = getAttribute(t, true);
+        path = getAttribute(t);
     }
     public void setSearchdirs(String s) throws JspTagException {
-        searchDirs = getAttribute(s, true);
+        searchDirs = getAttribute(s);
     }
 
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e, true);
-    }
-
-    /**
-     * @since MMBase-1.7.1
-     */
-    public void setNodes(String n) throws JspTagException {
-        nodes = getAttribute(n, true);
+        element = getAttribute(e);
     }
 
 
@@ -82,6 +73,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
      */
     public void setMarkused(String mu) throws JspTagException {
         markused = getAttribute(mu);
+    }
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    public void setNodes(String n) throws JspTagException {
+        nodes = getAttribute(n);
     }
 
     /**
@@ -107,21 +105,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return query.getCloud();
     }
 
-    public int doStartTag() throws JspException {
-        initTag();
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+    public int doStartTag() throws JspTagException {
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
-            if (query == null) {
-                throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
-            }
             query = (NodeQuery) query.clone();
         } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
-            if (query == null) {
-                throw new JspTagException("No query found in referred id " + getReferid());
-            }
             if (nodeManager != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'path' or 'element' attributes together with 'referid'");
             }
@@ -145,7 +135,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.setNodeStep(query.getSteps().get(0));
+                    query.setNodeStep((Step) query.getSteps().get(0));
                 }
             }
         }
@@ -163,7 +153,6 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
         }
-        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
 
         return EVAL_BODY;
     }
@@ -181,8 +170,6 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
-        pageContext.setAttribute(KEY, prevQuery, SCOPE);
-        prevQuery = null;
         if (markused.getBoolean(this, false)) {
             query.markUsed();
         }

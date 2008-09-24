@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -26,7 +27,7 @@ import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
 import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.util.Encode;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -61,10 +62,10 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
     /**
      * Register the Public Ids for DTDs used by DatabaseReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_SHAREDPACKAGES_1_0, DTD_SHAREDPACKAGES_1_0, HttpProvider.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_SHAREDPACKAGES_1_0, DTD_SHAREDPACKAGES_1_0, HttpProvider.class);
     }
 
 
@@ -184,7 +185,9 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), HttpProvider.class);
             if (reader != null) {
                 try {
-                    for (Element e: reader.getChildElements("sharedpackages", "package")) {
+                    for (Iterator ns = reader.getChildElements("sharedpackages", "package"); ns.hasNext(); ) {
+                        Element e = (Element) ns.next();
+
                         NamedNodeMap nm = e.getAttributes();
                         if (nm != null) {
                             String name = null;
@@ -315,11 +318,11 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
                 localname = getImportPath() + id + "_" + version + ".mmb";
             }
 
-        File checkfile = new File(localname);
-        if (!checkfile.exists()) {
+	    File checkfile = new File(localname);
+	    if (!checkfile.exists()) {
 
-            URL includeURL = new URL(path);
-                HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
+	        URL includeURL = new URL(path);
+       	        HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
                 BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
                 int buffersize = 10240;
                 byte[] buffer = new byte[buffersize];
@@ -328,24 +331,24 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(localname));
                 StringBuffer string = new StringBuffer();
                 int len;
-        int totallen = 0;
+		int totallen = 0;
                 while ((len = in.read(buffer, 0, buffersize)) != -1) {
                     out.write(buffer, 0, len);
-                if (getInstallStep()!=null) {
-            totallen+=len;
-            String lenp=" received ";
-            if (totallen<1024) {
-                lenp+=""+totallen+" bytes";
-            } else if (totallen<(1024*1024)) {
-                lenp+=""+((float)totallen/1024)+" KB";
-            } else {
-                lenp+=""+((float)totallen/(1024*1024))+" MB";
-            }
-            getInstallStep().setUserFeedBack("getting the mmb bundle... "+lenp);
-            }
+        	    if (getInstallStep()!=null) {
+			totallen+=len;
+			String lenp=" received ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getInstallStep().setUserFeedBack("getting the mmb bundle... "+lenp);
+		    }
                 }
                 out.close();
-        }
+	    }
 
             JarFile jarFile = new JarFile(localname);
             return jarFile;
@@ -456,82 +459,82 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
 
     public boolean publish(CreatorInterface creator,PackageInterface pack,String sharepassword) {
-    // should be general code for all types once all is in
-    String filename=pack.getId()+"_"+pack.getVersion()+".mmp";
+	// should be general code for all types once all is in
+	String filename=pack.getId()+"_"+pack.getVersion()+".mmp";
 
-    String posturl = getPath();
-    if (posturl.startsWith("http://")) {
-        posturl = posturl.substring(7);
-    }
-    int pos=posturl.indexOf("/");
-    if (pos!=-1) {
-        posturl = posturl.substring(0,pos);
-    }
-    posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
+	String posturl = getPath();
+	if (posturl.startsWith("http://")) {
+		posturl = posturl.substring(7);
+	}
+	int pos=posturl.indexOf("/");
+	if (pos!=-1) {
+		posturl = posturl.substring(0,pos);
+	}
+	posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
         try {
-        String boundary =  "*5433***3243";
-
+ 	    String boundary =  "*5433***3243";
+    
             // Send data
-        URL url = new URL(posturl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoInput(true);
-            conn.setDoOutput(true);
+	    URL url = new URL(posturl);
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+   	    conn.setDoInput(true);
+       	    conn.setDoOutput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
 
-       DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+	   DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
-       out.writeBytes(filename+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
+	   out.writeBytes(filename+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
-       out.writeBytes(account+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
+	   out.writeBytes(account+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
-       out.writeBytes(password+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
+	   out.writeBytes(password+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
-       out.writeBytes(sharepassword+"\r\n");
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
-       String oldline="";
-           if (getPackageStep()!=null) { oldline = getPackageStep().getUserFeedBack(); }
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
+	   out.writeBytes(sharepassword+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+	   String oldline="";
+       	   if (getPackageStep()!=null) { oldline = getPackageStep().getUserFeedBack(); }
 
             try {
                 BufferedInputStream in = new BufferedInputStream(pack.getJarStream());
                 int val;
-        int totallen=0;
+		int totallen=0;
                 while ((val = in.read()) != -1) {
                     out.write(val);
-            totallen++;
-                if (getPackageStep()!=null) {
-            String lenp=" send ";
-            if (totallen<1024) {
-                lenp+=""+totallen+" bytes";
-            } else if (totallen<(1024*1024)) {
-                lenp+=""+((float)totallen/1024)+" KB";
-            } else {
-                lenp+=""+((float)totallen/(1024*1024))+" MB";
-            }
-            getPackageStep().setUserFeedBack(oldline+lenp);
-            }
+		    totallen++;
+        	    if (getPackageStep()!=null) {
+			String lenp=" send ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getPackageStep().setUserFeedBack(oldline+lenp);
+		    }
                 }
             } catch (Exception e) {
                 log.error("can't load : " + path);
                 e.printStackTrace();
             }
-        out.writeBytes("\r\n");
-        out.writeBytes("--"+boundary+"--\r\n");
-        out.flush();
-        out.close();
+	    out.writeBytes("\r\n");	
+	    out.writeBytes("--"+boundary+"--\r\n");
+	    out.flush();
+	    out.close();
 
-            if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
-
+       	    if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
+    
             // Get the response
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
@@ -540,87 +543,87 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             }
             rd.close();
         } catch (Exception e) {
-        log.error("Publish upload problem to : "+posturl);
+		log.error("Publish upload problem to : "+posturl);
         }
-    return true;
+	return true;
     }
 
     public boolean publish(CreatorInterface creator,BundleInterface bundle,String sharepassword) {
-    // should be general code for all types once all is in
-    String filename=bundle.getId()+"_"+bundle.getVersion()+".mmb";
+	// should be general code for all types once all is in
+	String filename=bundle.getId()+"_"+bundle.getVersion()+".mmb";
 
-    String posturl = getPath();
-    if (posturl.startsWith("http://")) {
-        posturl = posturl.substring(7);
-    }
-    int pos=posturl.indexOf("/");
-    if (pos!=-1) {
-        posturl = posturl.substring(0,pos);
-    }
-    posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
+	String posturl = getPath();
+	if (posturl.startsWith("http://")) {
+		posturl = posturl.substring(7);
+	}
+	int pos=posturl.indexOf("/");
+	if (pos!=-1) {
+		posturl = posturl.substring(0,pos);
+	}
+	posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
         try {
-        String boundary =  "*5433***3243";
-
+ 	    String boundary =  "*5433***3243";
+    
             // Send data
-        URL url = new URL(posturl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoInput(true);
-            conn.setDoOutput(true);
+	    URL url = new URL(posturl);
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+   	    conn.setDoInput(true);
+       	    conn.setDoOutput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
 
-       DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+	   DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
-       out.writeBytes(filename+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
+	   out.writeBytes(filename+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
-       out.writeBytes(account+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
+	   out.writeBytes(account+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
-       out.writeBytes(password+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
+	   out.writeBytes(password+"\r\n");
 
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
-       out.writeBytes(sharepassword+"\r\n");
-       out.writeBytes("--"+boundary+"\r\n");
-       out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
-       String oldline="";
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
+	   out.writeBytes(sharepassword+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+   	   String oldline="";
            if (getPackageStep()!=null) { oldline = getPackageStep().getUserFeedBack(); }
 
             try {
                 BufferedInputStream in = new BufferedInputStream(bundle.getJarStream());
                 int val;
-        int totallen=0;
+		int totallen=0;
                 while ((val = in.read()) != -1) {
                     out.write(val);
-            totallen++;
-                if (getPackageStep()!=null) {
-            String lenp=" send ";
-            if (totallen<1024) {
-                lenp+=""+totallen+" bytes";
-            } else if (totallen<(1024*1024)) {
-                lenp+=""+((float)totallen/1024)+" KB";
-            } else {
-                lenp+=""+((float)totallen/(1024*1024))+" MB";
-            }
-            getPackageStep().setUserFeedBack(oldline+lenp);
-            }
+		    totallen++;
+        	    if (getPackageStep()!=null) {
+			String lenp=" send ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getPackageStep().setUserFeedBack(oldline+lenp);
+		    }
                 }
             } catch (Exception e) {
                 log.error("can't load : " + path);
                 e.printStackTrace();
             }
-        out.writeBytes("\r\n");
-        out.writeBytes("--"+boundary+"--\r\n");
-        out.flush();
-        out.close();
-
-            if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
+	    out.writeBytes("\r\n");	
+	    out.writeBytes("--"+boundary+"--\r\n");
+	    out.flush();
+	    out.close();
+    
+       	    if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
 
             // Get the response
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -630,9 +633,9 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             }
             rd.close();
         } catch (Exception e) {
-        log.error("Publish upload problem to : "+posturl);
+		log.error("Publish upload problem to : "+posturl);
         }
-    return true;
+	return true;
     }
 }
 

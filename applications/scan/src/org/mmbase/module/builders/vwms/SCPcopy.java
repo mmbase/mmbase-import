@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: SCPcopy.java,v 1.7 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: SCPcopy.java,v 1.6 2003-03-10 11:50:24 pierre Exp $
  */
 public class SCPcopy {
 
@@ -140,7 +140,7 @@ public class SCPcopy {
      */
     public void copy(String base,String src) {
         int last;
-        String path;
+        String path,res;
 
         last=src.lastIndexOf('/');
 

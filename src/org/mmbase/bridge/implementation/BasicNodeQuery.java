@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.logging.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -30,12 +31,13 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.33 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.29 2006-07-25 20:05:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
     protected Step step = null;
 
     BasicNodeQuery(Cloud c) {
@@ -48,12 +50,12 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     BasicNodeQuery(BasicNodeManager nodeManager) {
         super(nodeManager.cloud);
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
-        this.step = getSteps().get(0); // the only step
+        this.step = (Step) getSteps().get(0); // the only step
     }
     BasicNodeQuery(BasicNodeManager nodeManager, NodeSearchQuery q) {
         super(nodeManager.cloud);
         query = q;
-        this.step = getSteps().get(0); // the only step
+        this.step = (Step) getSteps().get(0); // the only step
     }
 
     /**
@@ -63,9 +65,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     BasicNodeQuery(Cloud cloud, SearchQuery q) {
         super(cloud);
         query = new BasicSearchQuery(q);
-        List<Step> steps = query.getSteps();
+        List steps = query.getSteps();
         if (steps.size() > 0) {
-            setNodeStep( (steps.get(steps.size() -1 )));
+            setNodeStep((Step) (steps.get(steps.size() -1 )));
         }
     }
 
@@ -100,7 +102,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     // overridden from BasicQuery (a node query does not have '.' in its field names)
-    @Override
     public StepField createStepField(String fieldName) {
         if (fieldName.indexOf('.') == -1) {
             BasicStepField stepField = (BasicStepField) getStepField(getNodeManager().getField(fieldName));
@@ -118,9 +119,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
             BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField)field).coreField);
             return stepField;
         } else {
-            Iterator<StepField> fields = query.getFields().iterator();
+            Iterator fields = query.getFields().iterator();
             while(fields.hasNext()) {
-                StepField stepField = fields.next();
+                StepField stepField = (StepField) fields.next();
                 if (stepField.getStep().equals(step)) {
                     if (stepField.getFieldName().equals(field.getName())) {
                         return stepField;
@@ -134,14 +135,13 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
 
-    @Override
     public void removeFields() {
         explicitFields.clear();
         setNodeStep(step);
     }
 
 
-    public List<StepField> getExtraFields() {
+    public List getExtraFields() {
         return Collections.unmodifiableList(explicitFields);
     }
 
@@ -149,8 +149,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     /**
      * Adds all fields of the gives collection, unless it is a field of the 'step' itself
      */
-    protected void addFields(Collection<StepField> c) {
-        Iterator<StepField> i = c.iterator();
+    protected void addFields(Collection c) {
+        Iterator i = c.iterator();
         while (i.hasNext()) {
             BasicStepField sf = (BasicStepField) i.next();
             Step addedStep = sf.getStep();
@@ -160,7 +160,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     // overrides setDistinct of super, because it should consider 'step' Fields.
-    @Override
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
         query.setDistinct(distinct);
@@ -190,7 +189,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return prevStep;
     }
 
-    @Override
     public Query cloneWithoutFields() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         if (queryCheck != null) {
@@ -202,7 +200,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return clone;
     }
 
-    @Override
     public NodeList getList() {
         return getNodeManager().getList(this);
     }

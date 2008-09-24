@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -25,19 +25,23 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.26 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.15.2.2 2008-03-13 15:52:41 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
 
-    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class);
+    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class) ;
     protected Attribute objectList = Attribute.NULL;
-
-    public void setObjectlist(String p) throws JspTagException {
-        objectList = getAttribute(p);
-    }
-
     private TreeHelper th = new TreeHelper();
+
+    public int doStartTag() throws JspTagException {
+        if (objectList == Attribute.NULL) {
+            throw new JspTagException("Attribute 'objectlist' was not specified");
+        }
+        th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
+        return super.doStartTag();
+    }
 
     protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
@@ -58,15 +62,9 @@ public class TreeIncludeTag extends IncludeTag {
         }
     }
 
-
-    protected void initTag(boolean internal) throws JspTagException {
-        th.setCloud(getCloudVar());
-        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
-        super.initTag(internal);
-        url.setLegacy();
-        if (log.isDebugEnabled()) {
-            log.debug("TreeInclude end of starttag: " + url.toString());
-        }
+    public void doAfterBodySetValue() throws JspTagException {
+        // Let IncludeTag do the rest of the work
+        includePage();
     }
 
     public void doFinally() {
@@ -74,10 +72,25 @@ public class TreeIncludeTag extends IncludeTag {
         super.doFinally();
     }
 
+    public void setObjectlist(String p) throws JspTagException {
+        objectList = getAttribute(p);
+    }
+
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+        String url = "";
+        try {
+            url = super.getUrl(writeamp, encode);
+        } catch (JspTagException e) {
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
+            }
+        }
+        return url;
+    }
 
     // override to cancel
     protected boolean doMakeRelative() {
-        log.debug("doMakeRelative() overridden!");
+    	log.debug("doMakeRelative() overridden!");
         return false;
     }
 }

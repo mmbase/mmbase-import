@@ -11,9 +11,11 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.40 2007-11-27 13:02:35 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.34.2.2 2007-12-12 09:53:37 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -56,11 +58,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         super(node, cloud);
     }
 
-    @Override
     public final boolean isRelationManager() {
+
         return true;
     }
-    @Override
     public final  RelationManager toRelationManager() {
         return this;
     }
@@ -69,7 +70,6 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * Initializes the NodeManager: determines the MMObjectBuilder from the
      * passed node (reldef or typerel), and fills temporary variables to maintain status.
      */
-    @Override
     protected void initManager() {
         MMObjectBuilder bul = noderef.getBuilder();
         if (bul instanceof RelDef) {
@@ -94,7 +94,6 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
 
-    @Override
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
         if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
@@ -145,7 +144,6 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
 
-    @Override
     protected final BasicNode createBasicNode() {
         return createBasicRelation();
     }
@@ -160,7 +158,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         }
         NodeAndId n = createMMObjectNode();
         BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
-        relation.setValueWithoutChecks("rnumber", relDefNode.getNumber());
+        relation.setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
         return relation;
     }
 
@@ -170,7 +168,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds." + sourceNode.getCloud() + " != " + cloud);
+            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds.");
         }
         if (destinationNode.getCloud() != cloud) {
             throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
@@ -190,7 +188,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
         InsRel insRel = (InsRel) builder;
-        List<MMObjectNode> result = insRel.getRelationsVector(node.getNumber());
+        List result = insRel.getRelationsVector(node.getNumber());
         return new BasicRelationList(result, this);
     }
 
@@ -198,11 +196,16 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         return cloud.check(Operation.CREATE, builder.getNumber(),
                            sourceNode.getNumber(), destinationNode.getNumber());
     }
+
     public String toString() {
-        return "RelationManager " +
-            (typeRelNode != null ? getSourceManager().getName() : "???") +
-            " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
-            (typeRelNode != null ? getDestinationManager().getName() : "???") +
-            " ( " + getNode().getNumber() + ")";
+        try {
+            return "RelationManager " +
+                (typeRelNode != null ? getSourceManager().getName() : "???") +
+                " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
+                (typeRelNode != null ? getDestinationManager().getName() : "???") +
+                " ( " + getNode().getNumber() + ")";
+        } catch (Exception e) {
+            return e.getMessage() + " " + super.toString();
+        }
     }
 }

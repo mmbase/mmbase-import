@@ -17,9 +17,9 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.38 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: Field.java,v 1.36 2006-04-18 13:13:12 michiel Exp $
  */
-public interface Field extends Descriptor, Comparable<Field> {
+public interface Field extends Descriptor {
 
     /** MMBase base type identifier for the String data type */
     public final static int TYPE_STRING  = 1;
@@ -31,7 +31,6 @@ public interface Field extends Descriptor, Comparable<Field> {
      * MMBase base type identifier for the binary (byte[]) data type
      * @deprecated use {@link #TYPE_BINARY}
      */
-    @Deprecated
     public final static int TYPE_BYTE    = TYPE_BINARY;
     /** MMBase base type identifier for the Float data type */
     public final static int TYPE_FLOAT   = 5;
@@ -145,7 +144,6 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when searching.
      * A value of -1 indicates the field is unavailable during search.
-     * @return position of the field when searching
      * @since MMBase-1.8
      */
     public int getSearchPosition();
@@ -153,7 +151,6 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when listing.
      * A value of -1 indicates the field is unavailable in a list.
-     * @return position of the field when listing
      * @since MMBase-1.8
      */
     public int getListPosition();
@@ -161,25 +158,21 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when editing.
      * A value of -1 indicates the field cannot be edited.
-     * @return  position of the field when editing
      * @since MMBase-1.8
      */
     public int getEditPosition();
 
     /**
      * Retrieve the position of the field in the database table.
-     * @return position in the database table
      * @since MMBase-1.8
      */
     public int getStoragePosition();
 
     /**
      * Returns the GUI name for the data type this field contains.
-     * @return the GUI name
-     * @deprecated use {@link #getDataType } and {@link Descriptor#getName}
+     * @deprecated use {@link #getDataType } and {@link DataType#getName}
      * @see #getDataType
      */
-    @Deprecated
     public String getGUIType();
 
     /**
@@ -206,11 +199,10 @@ public interface Field extends Descriptor, Comparable<Field> {
 
     /**
      * Checks whether a given value is valid for this field.
-     * @param value value to validate
      * @return Collection of error-strings (describing the problem) in the current locale, or an empty collection if the value is ok.
      * @since MMBase-1.8
      */
-    public java.util.Collection<String> validate(Object value);
+    public java.util.Collection validate(Object value);
 
     /**
      * A field's state is 'virtual' if it is not persistent in storage.

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.editor;
 
-import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
 
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.18 2008-04-25 11:50:33 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.9.2.5 2008-07-23 16:43:01 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -41,12 +40,12 @@ public class BasicEditor extends Editor {
     private static final FunctionProvider patterns = PatternNodeFunctionProvider.getInstance();
 
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("url", String.class, "/mmbase/edit/basic/"),
-        new Parameter<Map>("urlparams", Map.class, null),
-        new Parameter<String>("icon", String.class, ""),
-        new Parameter<Map>("iconparams", Map.class, null),
-        new Parameter<String>("when", String.class, "always"),
-        new Parameter<String>("target", String.class, "new"),
+        new Parameter("url", String.class, "/mmbase/edit/basic/"),
+        new Parameter("urlparams", Map.class, null),
+        new Parameter("icon", String.class, ""),
+        new Parameter("iconparams", Map.class, null),
+        new Parameter("when", String.class, "always"),
+        new Parameter("target", String.class, "new"),
         new Parameter("styleClass", String.class, "mm_edit"),
         Parameter.CLOUD
     };
@@ -66,7 +65,7 @@ public class BasicEditor extends Editor {
 
         String nodenr = "";
         if (!nodenrList.isEmpty()) {    // get the first node from this list to edit
-            nodenr = nodenrList.get(0);
+            nodenr = (String) nodenrList.get(0);
         }
 
         makeHTML(nodenr, context);
@@ -76,20 +75,20 @@ public class BasicEditor extends Editor {
      * Fills parameters of the parameters to be interpreted as PatternNodeFunctions
      */
     protected String getValue(String param, Cloud cloud, String nodenr, PageContext context) {
-           Function<String> urlFunction = (Function<String>) patterns.getFunction(parameters.getString(param));
-           Parameters urlParameters = urlFunction.createParameters();
-           if (cloud != null && ! "".equals(nodenr)) {
-               if (cloud.hasNode(nodenr)) {
-                   Node node = cloud.getNode(nodenr);
-                   urlParameters.set(Parameter.NODE, node);
-               } else {
-                   log.warn("No such node " + nodenr);
-               }
-           }
-           urlParameters.setAll((Map) parameters.get(param + "params"));
-           urlParameters.setIfDefined(Parameter.REQUEST, (HttpServletRequest) context.getRequest());
-           urlParameters.setIfDefined(Parameter.RESPONSE, (HttpServletResponse) context.getResponse());
-           return  urlFunction.getFunctionValue(urlParameters);
+        Function urlFunction = patterns.getFunction(parameters.getString(param));
+        Parameters urlParameters = urlFunction.createParameters();
+        if (cloud != null) {
+            if (cloud.hasNode(nodenr)) {
+                Node node = cloud.getNode(nodenr);
+                urlParameters.set(Parameter.NODE, node);
+            } else {
+                log.warn("No such node " + nodenr);
+            }
+        }
+        urlParameters.setAll((Map) parameters.get(param + "params"));
+        urlParameters.setIfDefined(Parameter.REQUEST, context.getRequest());
+        urlParameters.setIfDefined(Parameter.RESPONSE, context.getResponse());
+        return (String) urlFunction.getFunctionValue(urlParameters);
     }
     /**
     * Creates a string with the link (and icon) to the editor
@@ -101,11 +100,12 @@ public class BasicEditor extends Editor {
         String when =  parameters.getString("when");
 
         if ("always".equals(when) || "true".equals(context.getRequest().getParameter("edit"))) {
-            Cloud cloud =  parameters.get(Parameter.CLOUD);
+            Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
 
-            String url = getValue("url", cloud, nodenr, context);
+            String url  = getValue("url", cloud, nodenr, context);
             String icon = getValue("icon", cloud, nodenr, context);
-            url = makeRelative(url, context);
+            // 404
+            // url = makeRelative(url, context);
             Writer html = context.getOut();
             Locale locale = (Locale) context.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
             if (locale == null) {
@@ -140,8 +140,8 @@ public class BasicEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuilder show = new StringBuilder(url);
-        HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
+        StringBuffer show = new StringBuffer(url);
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
                 log.debug("'absolute' url, not making relative");

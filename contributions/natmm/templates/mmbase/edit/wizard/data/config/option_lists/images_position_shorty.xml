@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="images_position">
-   <option id="1">geschaald op breedte van de kolom</option>
-   <option id="0">orginele afmeting</option>
-   <option id="5">orginele afmeting zonder floating tekst</option>
-</optionlist>

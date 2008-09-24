@@ -11,19 +11,21 @@ See http://www.MMBase.org/license
 package org.mmbase.core;
 
 import java.util.*;
-import org.mmbase.util.PublicCloneable;
 import org.mmbase.bridge.Descriptor;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.13 2008-08-27 17:09:39 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.8.2.1 2006-10-12 11:35:59 pierre Exp $
  */
 
-abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<AbstractDescriptor> {
+abstract public class AbstractDescriptor implements Descriptor, Cloneable {
+
+    private static final Logger log = Logging.getLoggerInstance(AbstractDescriptor.class);
 
     protected String key;
     protected LocalizedString description;
@@ -52,8 +54,8 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
             description = (LocalizedString)descriptor.getLocalizedDescription().clone();
             guiName = (LocalizedString)descriptor.getLocalizedGUIName().clone();
         } else {
-            description = descriptor.getLocalizedDescription();
-            guiName = descriptor.getLocalizedGUIName();
+            description = (LocalizedString)descriptor.getLocalizedDescription();
+            guiName = (LocalizedString)descriptor.getLocalizedGUIName();
         }
     }
 
@@ -63,10 +65,9 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
 
 
     /**
-     * The locale which must be used if no locale is specified.
-     * The default implementation returns <code>null</code>.
-     * This method can be overriden if another more logical default is
-     * available. E.g. in BasicField the locale of the current cloud is returned.
+     * The locale wihch must be used if no locale is specified .  Returns <code>null</code> for the
+     * defaul of this. This method can be overriden if another more logical default is
+     * available. E.g. in BasicField, where the locale of the current cloud is returned here.
      * @since MMBase-1.8.1
      */
     protected Locale getDefaultLocale() {
@@ -74,7 +75,7 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     }
 
     /**
-     * Returns the name or 'key' of this descriptor.
+     * Returns the name or 'key' of this data type.
      * @return the name as a String
      */
     public String getName() {
@@ -150,24 +151,20 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
         return key;
     }
 
-    public AbstractDescriptor clone()  {
+    public Object clone() throws CloneNotSupportedException {
         return clone(getName() + ".clone");
     }
 
-    public AbstractDescriptor clone(String name) {
-        try {
-            AbstractDescriptor clone = (AbstractDescriptor)super.clone();
-            clone.description = description.clone();
-            clone.guiName = guiName.clone();
-            if (name != null) {
-                clone.key = name;
+    public Object clone(String name) throws CloneNotSupportedException {
+        AbstractDescriptor clone = (AbstractDescriptor)super.clone();
+        clone.description = (LocalizedString)description.clone();
+        clone.guiName = (LocalizedString)guiName.clone();
+        if (name != null) {
+            clone.key = name;
             clone.description.setKey(name);
             clone.guiName.setKey(name);
-            }
-            return clone;
-        } catch (CloneNotSupportedException cnse) {
-            throw new RuntimeException(cnse);
         }
+        return clone;
     }
 
 }
