@@ -90,6 +90,9 @@
            <tr><td style="padding-bottom:3px;"><%= specialDays %>:&nbsp;</td>
               <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td>
            </tr>
+           <tr><td style="padding-bottom:3px;">Werkzaamheden:&nbsp;</td>
+              <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_de" /></td>
+           </tr>
            <%
            if(!sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
               %>
