@@ -44,10 +44,10 @@ public class EmptyNodeTest extends NodeTest {
         }
     }
 
-    public void testGetByteValue() {
+    public void testGetBinaryValue() {
         for (String element : fieldTypes) {
             byte[] bytes = node.getByteValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(bytes.length == 0);
             } else if (element.equals("double")) {
                 assertTrue(bytes.length == 0);

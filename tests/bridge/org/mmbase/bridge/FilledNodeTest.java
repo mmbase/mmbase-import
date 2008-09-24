@@ -84,7 +84,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetValue() {
         for (String element : fieldTypes) {
             Object object = node.getValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 byte[] bytes = (byte[])object;
                 assertTrue("getValue on byte field should give 'Hello World!' but gave '" + new String(bytes) + "'",
                     "Hello world!".equals(new String(bytes)));
@@ -127,10 +127,10 @@ public class FilledNodeTest extends NodeTest {
         }
     }
 
-    public void testGetByteValue() {
+    public void testGetBinaryValue() {
         for (String element : fieldTypes) {
             byte[] bytes = node.getByteValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 byte[] check = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
                 for (int j = 0; j < bytes.length; j++) {
                     assertTrue(bytes[j] == check[j]);
@@ -164,7 +164,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetDoubleValue() {
         for (String element : fieldTypes) {
             double d = node.getDoubleValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(d == -1);
             } else if (element.equals("double")) {
                 assertTrue(d == Double.MAX_VALUE);
@@ -196,7 +196,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetFloatValue() {
         for (String element : fieldTypes) {
             float f = node.getFloatValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(f == -1);
             } else if (element.equals("double")) {
                 assertTrue("Infinity".equals(String.valueOf(f)));
@@ -228,7 +228,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetIntValue() {
         for (String element : fieldTypes) {
             int integer = node.getIntValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(integer == -1);
             } else if (element.equals("double")) {
                 assertTrue(integer == Integer.MAX_VALUE);
@@ -260,7 +260,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetLongValue() {
         for (String element : fieldTypes) {
             long l = node.getLongValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(l == -1);
             } else if (element.equals("double")) {
                 assertTrue(l == Long.MAX_VALUE);
@@ -292,7 +292,7 @@ public class FilledNodeTest extends NodeTest {
     public void testGetStringValue() {
         for (String element : fieldTypes) {
             String string = node.getStringValue(element + "field");
-            if (element.equals("byte")) {
+            if (element.equals("binary")) {
                 assertTrue(element + "field queried as string did not return \"Hello world!\" but " + string, "Hello world!".equals(string));
             } else if (element.equals("double")) {
                 assertTrue(element + "field queried as string did not return " + Double.MAX_VALUE + " but " + string,
@@ -364,7 +364,7 @@ public class FilledNodeTest extends NodeTest {
         for (String element : fieldTypes) {
            boolean bool = node.getBooleanValue(element + "field");
            if (element.equals("list") || element.equals("xml") || element.equals("string")
-                || element.equals("byte")) {
+                || element.equals("binary")) {
                assertTrue(element + " field queried as boolean returns TRUE", !bool);
            } else {
                assertTrue(element + " field queried as boolean returns FALSE", bool);
