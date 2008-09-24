@@ -1,38 +1,27 @@
 package com.finalist.cmsc.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.CharArrayWriter;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
 /**
  * Common utilities for handling XML.
- * 
+ *
  * @author Nico Klasens
  */
 public class XmlUtil {
 
     /** MMbase logging system */
     private static Logger logger = Logging.getLoggerInstance(XmlUtil.class.getName());
-    
+
     private XmlUtil() {
         // utility class
     }
@@ -65,11 +54,11 @@ public class XmlUtil {
         boolean omitDocumentType, boolean omitXMLDeclaration) {
         Properties format = getXmlOutput(indent, omitComments,
                 omitDocumentType, omitXMLDeclaration);
-        
+
         return serializeDocument(doc, format);
     }
 
-    
+
     /**
      * Serialize <code>Document</code> instance to pretty printed
      * <code>String</code>.
@@ -94,7 +83,9 @@ public class XmlUtil {
 			logger.error(e.getMessage());
 			logger.debug(e);
 		} finally {
-			if( caw != null ) caw.close();
+			if( caw != null ) {
+            caw.close();
+         }
 		}
 		return "";
     }
@@ -123,7 +114,9 @@ public class XmlUtil {
 			logger.error( e.getMessage() );
 			logger.debug(e);
 		} finally {
-		   if( caw != null ) caw.close();
+		   if( caw != null ) {
+            caw.close();
+         }
 		}
 		return "";
 	}
@@ -164,7 +157,9 @@ public class XmlUtil {
 			logger.error(e.getMessage());
 			logger.debug(e);
 		} finally {
-			if( caw != null ) caw.close();
+			if( caw != null ) {
+            caw.close();
+         }
 		}
 		return "";
 	}
@@ -180,7 +175,7 @@ public class XmlUtil {
      */
     public static Properties getXmlOutput(boolean indent, boolean omitComments,
             boolean omitDocumentType, boolean omitXMLDeclaration) {
-        
+
         Properties format = new Properties();
         format.put(OutputKeys.METHOD, "xml");
         if (indent) {
@@ -213,10 +208,10 @@ public class XmlUtil {
         else {
             format.put(OutputKeys.OMIT_XML_DECLARATION, "no");
         }
-        
+
         return format;
     }
-    
+
     public static Document createDocument() {
         try {
             return getFactory().newDocumentBuilder().newDocument();
@@ -239,7 +234,7 @@ public class XmlUtil {
     public static Element createChild(Element root, String elementName) {
         return createChild(root, elementName, null);
     }
-    
+
     public static Element createChild(Element root, String elementName, String namespaceURI) {
         Element child = createElement(root.getOwnerDocument(), elementName, namespaceURI);
         root.appendChild(child);
@@ -249,7 +244,7 @@ public class XmlUtil {
     public static Element createRoot(Document doc, String elementName) {
         return createRoot(doc, elementName, null);
     }
-    
+
     public static Element createRoot(Document doc, String elementName, String namespaceURI) {
         Element child = createElement(doc, elementName, namespaceURI);
         doc.appendChild(child);
@@ -259,18 +254,18 @@ public class XmlUtil {
     public static Element createElement(Document doc, String elementName) {
         return createElement(doc, elementName, null);
     }
-    
+
     public static Element createElement(Document doc, String elementName, String namespaceURI) {
         Element child;
         if (namespaceURI != null) {
-            child = doc.createElementNS(namespaceURI, elementName);    
+            child = doc.createElementNS(namespaceURI, elementName);
         }
         else {
             child = doc.createElement(elementName);
         }
         return child;
     }
-    
+
     public static void createAttribute(Element element, String name, String value) {
         element.setAttribute(name, value);
     }
@@ -286,7 +281,7 @@ public class XmlUtil {
             root.appendChild(child);
         }
     }
-    
+
     public static Element createChildText(Element element, String name, String value) {
         Element child = createChild(element, name);
         createText(child, value);
@@ -308,7 +303,7 @@ public class XmlUtil {
     public static void createAttribute(Element root, String name, double value) {
         createAttribute(root, name, String.valueOf(value));
     }
-    
+
     public static void createText(Element root, boolean text) {
         createText(root, String.valueOf(text));
     }
@@ -324,7 +319,7 @@ public class XmlUtil {
     public static void createText(Element root, double text) {
         createText(root, String.valueOf(text));
     }
-    
+
     public static Element createChildText(Element element, String name, boolean value) {
         return createChildText(element, name, String.valueOf(value));
     }
@@ -340,11 +335,11 @@ public class XmlUtil {
     public static Element createChildText(Element element, String name, double value) {
         return createChildText(element, name, String.valueOf(value));
     }
-    
+
     public static String getText(Node node) {
         return getText(node, "");
     }
-    
+
     public static String getText(Node node, String defaultvalue) {
 		if (node == null) {
 			return defaultvalue;
@@ -360,14 +355,15 @@ public class XmlUtil {
             Node childnode=node.getFirstChild();
             StringBuffer value = new StringBuffer();
             while (childnode != null) {
-                if ((childnode.getNodeType()==Node.TEXT_NODE) 
+                if ((childnode.getNodeType()==Node.TEXT_NODE)
                         || (childnode.getNodeType()==Node.CDATA_SECTION_NODE)) {
                     value.append(childnode.getNodeValue());
                 }
                 childnode = childnode.getNextSibling();
             }
-            if (value.length() > 0) 
-                return value.toString();
+            if (value.length() > 0) {
+               return value.toString();
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -376,7 +372,7 @@ public class XmlUtil {
 
     /**
      * Returns a W3C Document representation of the string.
-     * 
+     *
      * @param str Xml which should be converted
      * @return DOM structure
      */
@@ -386,7 +382,7 @@ public class XmlUtil {
 
     /**
      * Returns a W3C Document representation of the string.
-     * 
+     *
      * @param str Xml which should be converted
      * @param validate should the xml be validated
      * @return DOM structure
@@ -403,7 +399,7 @@ public class XmlUtil {
       }
       return doc;
    }
-    
+
     /**
      * Returns a W3C Document representation of the stream.
      * @param stream The input stream with the xml to convert
@@ -412,7 +408,7 @@ public class XmlUtil {
     public static Document toDocument(InputStream stream) {
         return toDocument(stream, true);
     }
-    
+
    /**
     * Returns a W3C Document representation of the stream.
     * @param stream The input stream with the xml to convert
@@ -425,7 +421,7 @@ public class XmlUtil {
          builderFactory.setValidating(validate);
          DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
          Document doc = docBuilder.parse(stream);
-         
+
          return doc;
       } catch (Exception e) {
          logger.error("InputStream could not be converted to a Document.", e);
@@ -435,7 +431,7 @@ public class XmlUtil {
 
    public static List<Element> getElements(Element element) {
       List<Element> elements = new ArrayList<Element>();
-      
+
       NodeList nlist = element.getChildNodes();
       for(int i = 0; i < nlist.getLength(); i++) {
           Node node = nlist.item(i);
@@ -465,11 +461,11 @@ public class XmlUtil {
        if (xml == null) {
            throw new IllegalArgumentException("xml string is null");
        }
-      return xml.replaceAll("&(?!amp;|lt;|gt;|#\\d+;|quot;)", "&amp;");
+       return xml.replaceAll("&(?!lt;|gt;)", "&amp;");
    }
 
    /**
-    * Escapes XML entities.
+    * Unscapes XML entities.
     *
     * @param xml the input xml
     * @return escaped xml
@@ -478,14 +474,14 @@ public class XmlUtil {
        if (xml == null) {
            throw new IllegalArgumentException("xml string is null");
        }
-      return xml.replaceAll("&amp;(?!amp;|lt;|gt;|#\\d+;|quot;)", "&");
+      return xml.replaceAll("&amp;(?!lt;|gt;)", "&");
    }
 
-   
+
    public static void trimTextNodes(Node in) {
        if (in.getNodeType() == Node.TEXT_NODE) {
           in.setNodeValue(in.getNodeValue().trim());
-       } 
+       }
        else if (in.hasChildNodes()) {
           NodeList nl = in.getChildNodes();
           for (int i = 0; i < nl.getLength(); i++) {
@@ -527,5 +523,5 @@ public class XmlUtil {
 
       return null;
    }
-   
+
 }

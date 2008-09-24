@@ -82,16 +82,43 @@ public class RichText {
       // to string and strip root node, doctype and xmldeclaration
       String out = XmlUtil.serializeDocument(doc, false, false, true, true);
       out = out.replaceAll("<.?richtext.?>", "");
-      out = XmlUtil.unescapeXMLEntities(out);
+      out = unescapeXMLEntities(out);
       return out;
    }
 
 
    public final static Document getRichTextDocument(String in) {
-      String out = XmlUtil.escapeXMLEntities(in);
+      String out = escapeXMLEntities(in);
       out = RichText.RICHTEXT_ROOT_OPEN + out + RichText.RICHTEXT_ROOT_CLOSE;
       Document doc = XmlUtil.toDocument(out, false);
       return doc;
    }
+
+   /**
+    * Escapes XML entities.
+    *
+    * @param xml the input xml
+    * @return escaped xml
+    */
+   public static String escapeXMLEntities(String xml) {
+       if (xml == null) {
+           throw new IllegalArgumentException("xml string is null");
+       }
+       return xml.replaceAll("&(?!lt;|gt;)", "&amp;");
+   }
+
+   /**
+    * Unscapes XML entities.
+    *
+    * @param xml the input xml
+    * @return escaped xml
+    */
+   public static String unescapeXMLEntities(String xml) {
+       if (xml == null) {
+           throw new IllegalArgumentException("xml string is null");
+       }
+      return xml.replaceAll("&amp;(?!lt;|gt;)", "&");
+   }
+
 
 }

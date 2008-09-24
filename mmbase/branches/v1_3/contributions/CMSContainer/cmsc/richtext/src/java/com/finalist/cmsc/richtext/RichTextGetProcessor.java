@@ -239,6 +239,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                  if ("urls".equals(builderName)) {
                      name = destinationNode.getStringValue("name");
                      url = destinationNode.getStringValue("url");
+                     url = url.replaceAll("&(?!amp;)", "&amp;");
                  }
                  else {
                      if (destinationNode.getNodeManager().hasField(RichText.TITLE_ATTR)) {
