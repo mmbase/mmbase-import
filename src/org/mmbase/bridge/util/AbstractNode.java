@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.25 2008-09-18 09:47:48 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.26 2008-09-24 22:34:50 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -496,12 +496,13 @@ public abstract class AbstractNode implements Node {
             if (! field.isReadOnly() && !field.isVirtual()) {
 		// Only change a field if the enforcestrength of the restrictions is
 		// applicable to the change.
-                int enforceStrength = field.getDataType().getEnforceStrength();
+                DataType dataType = field.getDataType();
+                int enforceStrength = dataType.getEnforceStrength();
                 if ((enforceStrength > DataType.ENFORCE_ONCHANGE) ||
 		    (isChanged(field.getName()) && (enforceStrength >= DataType.ENFORCE_ONCREATE)) ||
 	            (isNew() && (enforceStrength >= DataType.ENFORCE_NEVER))) {
                     Object value = getValueWithoutProcess(field.getName());
-                    Collection<LocalizedString> fieldErrors = field.getDataType().validate(value, this, field);
+                    Collection<LocalizedString> fieldErrors = dataType.validate(value, this, field);
                     for (LocalizedString error : fieldErrors) {
                         errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
                                    error.get(locale));
