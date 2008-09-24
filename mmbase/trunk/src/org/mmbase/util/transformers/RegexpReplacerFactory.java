@@ -23,10 +23,10 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacerFactory.java,v 1.16 2008-07-23 22:21:04 michiel Exp $
+ * @version $Id: RegexpReplacerFactory.java,v 1.17 2008-09-24 22:03:18 michiel Exp $
  */
 
-public class RegexpReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {
+public class RegexpReplacerFactory implements ParameterizedTransformerFactory<CharTransformer>, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacerFactory.class);
 
     protected static final Parameter<Collection> PATTERNS =
