@@ -10,10 +10,11 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.richtext.builders;
 
 import org.mmbase.module.Module;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.InsRel;
-
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 public class InlineRel extends InsRel {
    static final Logger log = Logging.getLoggerInstance(InlineRel.class.getName());
@@ -27,5 +28,20 @@ public class InlineRel extends InsRel {
       }
 
       node.setValue("referid", mmbaseroot.getStorageManager().createKey() + "");
+   }
+
+   /**
+    * This method is here to solve
+    * MMB-1713  Bridge transaction always commits nodes even when not changed
+    *
+    * MMBase always commits nodes even when they are not changed or deleted.
+    * @see org.mmbase.module.core.MMObjectBuilder#commit(org.mmbase.module.core.MMObjectNode)
+    */
+   @Override
+   public boolean commit(MMObjectNode node) {
+      if (!node.isChanged()) {
+         return true;
+      }
+      return super.commit(node);
    }
 }
