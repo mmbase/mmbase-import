@@ -32,7 +32,7 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 
    private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
 
-   NewsletterPublicationService publicationService;
+   private NewsletterPublicationService publicationService;
 
    /**
     * Initialize publicationService
@@ -48,11 +48,9 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
     * unspecified searching newsletter publication with sorting, ordering, paging
     * 
     * @param mapping
-    *           Description of Parameter
+    * @param form
     * @param request
-    *           Description of Parameter
     * @param response
-    *           Description of Parameter
     * @return ActionForward refresh Newsletter statistic list
     * 
     */
