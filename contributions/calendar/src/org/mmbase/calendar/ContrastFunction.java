@@ -20,10 +20,10 @@ import org.mmbase.util.logging.Logging;
  * Calculates a contrasting color for a given color. Used by calendar items types.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContrastFunction.java,v 1.1 2006-12-28 13:58:12 michiel Exp $
+ * @version $Id: ContrastFunction.java,v 1.2 2008-09-24 15:08:03 michiel Exp $
  * @since MMBase-1.9
  */
-public class ContrastFunction extends org.mmbase.util.functions.NodeFunction<String> {
+public class ContrastFunction extends org.mmbase.util.functions.NodeFunction {
 
     private static final Logger log = Logging.getLoggerInstance(ContrastFunction.class);
     public static final Pattern CSS1_BRIGHT_COLORS =  Pattern.compile("aqua|lime|silver|white|yellow");
@@ -33,7 +33,7 @@ public class ContrastFunction extends org.mmbase.util.functions.NodeFunction<Str
     public static final Pattern HEX6_COLORS = Pattern.compile("#([0-9,a-f][0-9,a-f])([0-9,a-f][0-9,a-f])([0-9,a-f][0-9,a-f])");
 
     public ContrastFunction() {
-        super("contrast", Parameter.EMPTY);
+        super("contrast", Parameter.EMPTY, ReturnType.STRING);
     }
 
     public static String getContrast(String color) {
