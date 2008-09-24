@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.3 2005-10-31 12:57:56 ernst Exp $
+  @version $Id: caches.xml,v 1.4 2008-09-24 06:55:21 michiel Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -17,7 +17,7 @@
   <!--
   	Here you can add release strategies to all QueryResultCache specializations.
   	You can allso add them to individual (multilevel) caches.
-  	This part is still in developement stage. It is expected that the caches will 
+  	This part is still in developement stage. It is expected that the caches will
   	gradually become more economical.
   -->
   <releaseStrategies>
@@ -121,13 +121,13 @@
 
   <!-- Quick search of the icache node number (by template/ckey) -->
   <cache name="CkeyNumberCache">
-    <status>active</status>
+    <status>inactive</status>
     <size>500</size>
   </cache>
 
   <!-- The 'handle' field of small images (and icaches) objects are cached in a dedicated cache -->
   <cache name="ImageHandles">
-    <status>active</status>
+    <status>inactive</status>
     <size>200</size>
     <maxEntrySize>100000</maxEntrySize>
   </cache>
@@ -135,7 +135,7 @@
 
   <!-- All other blobs -->
   <cache name="GenericBlobCache">
-    <status>active</status>
+    <status>inactive</status>
     <size>200</size>
     <maxEntrySize>100000</maxEntrySize>
   </cache>
