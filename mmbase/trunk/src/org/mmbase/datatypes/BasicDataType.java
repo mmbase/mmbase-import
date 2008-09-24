@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.98 2008-09-08 08:56:56 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.99 2008-09-24 22:33:26 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -50,6 +50,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
+
+    //private Collection<Restriction<?>> restrictions = new ArrayList<Restriction<?>>();
+    //private Collection<Restriction<?>> unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
 
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
@@ -118,6 +121,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         out.writeObject(getProcessors);
         out.writeObject(setProcessors);
         out.writeObject(handlers);
+        //out.writeObject(restrictions);
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -140,6 +144,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
         handlers              = (Map<String, Handler>) in.readObject();
+        //restrictions          = (Collection<Restriction<?>>) in.readObject();
+        //unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
     }
 
     public String getBaseTypeIdentifier() {
@@ -721,7 +727,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public Map<String, Handler> getHandlers() {
         return handlers;
     }
-
+    /*
+    public Collection<Restriction<?>> getRestrictions() {
+        return unmodifiableRestrictions;
+    }
+    */
     public int compareTo(DataType<C> a) {
         int compared = getName().compareTo(a.getName());
         if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
@@ -935,7 +945,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected LocalizedString errorDescription;
         protected D value;
         protected boolean fixed = false;
-        protected int enforceStrength = DataType.ENFORCE_ALWAYS;
+        protected int enforceStrength = DataType.ENFORCE_ONCHANGE;
 
         /**
          * If a restriction has an 'absolute' parent restriction, then also that restriction must be
@@ -962,12 +972,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
                 enforceStrength = DataType.ENFORCE_ALWAYS;
             }
+            //if (parent != null && parent.restrictions != null) { // could happen during deserialization
+            //parent.restrictions.add(this);
+            //}
+
         }
 
         protected StaticAbstractRestriction(BasicDataType parent, String name, D value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
+            //if (parent != null && parent.restrictions != null) { // could happen during deserialization
+            //parent.restrictions.add(this);
+            //}
         }
 
         public String getName() {
