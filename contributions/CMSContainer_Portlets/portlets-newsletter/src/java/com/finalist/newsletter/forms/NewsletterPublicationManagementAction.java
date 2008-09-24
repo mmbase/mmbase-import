@@ -31,7 +31,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 
    private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
 
-   NewsletterPublicationService publicationService;
+   private NewsletterPublicationService publicationService;
 
    /**
     * Initialize the publcationService

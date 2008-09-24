@@ -35,8 +35,8 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
    private static final String PARAM_NEWSLETTERID = "newsletterId";
 
-   NewsletterSubscriptionServices subscriptionServices;
-   NewsletterService newsletterService;
+   private NewsletterSubscriptionServices subscriptionServices;
+   private NewsletterService newsletterService;
 
    protected void onInit() {
       super.onInit();
@@ -127,8 +127,8 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          BufferedReader br = new BufferedReader(new StringReader(fileString));
          String tmpLinsStr = br.readLine();
          PersonService personService = (PersonService) ApplicationContextFactory.getBean("personService");
-         NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory
-               .getBean("subscriptionServices");
+         NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean(
+               "subscriptionServices");
 
          while (tmpLinsStr != null) {
             String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
@@ -145,7 +145,9 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
             }
             int authId = tmpPerson.getAuthenticationId().intValue();
             Subscription subRet = subscriptionServices.getSubscription(authId, newsletterId);
-            if (subRet == null) subscriptionServices.createSubscription(authId, newsletterId);
+            if (subRet == null) {
+               subscriptionServices.createSubscription(authId, newsletterId);
+            }
             tmpLinsStr = br.readLine();
          }
          return mapping.findForward("success");

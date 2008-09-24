@@ -35,12 +35,12 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
    private static Log log = LogFactory.getLog(NewsletterPublicationManagementAction.class);
 
-   NewsletterPublicationService publicationService;
-   PersonService personService;
-   NewsletterSubscriptionServices subscriptionService;
-   AuthenticationService authenticationService;
-   NewsletterService newsletterService;
-   SubscriptionHibernateService subscriptionHService;
+   private NewsletterPublicationService publicationService;
+   private PersonService personService;
+   private NewsletterSubscriptionServices subscriptionService;
+   private AuthenticationService authenticationService;
+   private NewsletterService newsletterService;
+   private SubscriptionHibernateService subscriptionHService;
 
    /**
     * Initialize service object: publicationService , personService, subscriptionService, authenticationService,
@@ -134,7 +134,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
     * @param authenticationId
     *           subscriber's authenticationId
     */
-   private void AddToMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
+   private void addToMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
          String newsletters, String terms, int authenticationId) {
 
       Map<Object, Object> result = new LinkedHashMap<Object, Object>();
@@ -180,7 +180,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
          String tmpNewsletters = subscriptionService.getNewsletterNameList(tmpAuthenticationId);
          String tmpTerms = subscriptionService.getTermsNameList(tmpAuthenticationId);
          String tmpUserName = result[4].toString();
-         AddToMap(results, tmpFullName, tmpUserName, tmpEmail, tmpNewsletters, tmpTerms, tmpAuthenticationId);
+         addToMap(results, tmpFullName, tmpUserName, tmpEmail, tmpNewsletters, tmpTerms, tmpAuthenticationId);
       }
       return results;
    }

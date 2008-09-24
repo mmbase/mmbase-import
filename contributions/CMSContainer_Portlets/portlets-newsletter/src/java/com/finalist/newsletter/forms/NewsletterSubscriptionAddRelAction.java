@@ -20,7 +20,7 @@ import com.finalist.newsletter.services.NewsletterSubscriptionServices;
  */
 public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 
-   NewsletterSubscriptionServices subscriptionServices;
+   private NewsletterSubscriptionServices subscriptionServices;
 
    /**
     * Initialize service object : subscriptionServices
