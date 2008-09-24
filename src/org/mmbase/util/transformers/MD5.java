@@ -14,8 +14,8 @@ package org.mmbase.util.transformers;
  * can not be efficiently 'piped', because the complete String is
  * needed. So, be careful 'chaining' it.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: MD5.java,v 1.7 2003-05-12 14:33:00 kees Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: MD5.java,v 1.8 2008-09-24 22:03:18 michiel Exp $
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {
@@ -36,7 +36,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
 
     // from http://pajhome.org.uk/crypt/md5/md5.java.txt
     // With permission of Thomas Weber (tw@orange-interactive.de)
-    class MD5Implementation {
+    class MD5Implementation implements java.io.Serializable {
         /*
          * A Java implementation of the RSA Data Security, Inc. MD5 Message
          * Digest Algorithm, as defined in RFC 1321.
