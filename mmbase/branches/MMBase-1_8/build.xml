@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.147.2.9 2008-06-30 09:09:32 ernst Exp $
+$Id: build.xml,v 1.147.2.10 2008-09-24 08:30:12 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -1074,7 +1074,7 @@ Build-compiler: ${build.compiler}
       <param name="destfile" value="${fileupload.dest}"/>
       <param name="expandedfile" value="${fileupload.jar}"/>
     </antcall>
-    
+
      <echo message="io" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${io.loc}"/>
@@ -1370,7 +1370,7 @@ Build-compiler: ${build.compiler}
     <mkdir dir="${generated-source-src.dir}/org/mmbase/util/transformers"/>
     <echo message="${javacc.dir}" />
     <javacc
-        target="${source-src.dir}/org/mmbase/util/DateParser.jj"
+        target="${source-src.dir}/org/mmbase/util/dateparser/DateParser.jj"
         outputdirectory="${generated-source-src.dir}/org/mmbase/util/dateparser"
         javacchome="${javacc.dir}"
         />
