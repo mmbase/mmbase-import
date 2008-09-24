@@ -45,7 +45,7 @@
 
   <target name="download" unless="exist" depends="setproxy,testexist,download.init.get">
     <!-- Download the package -->
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+    <get src="${sourcefile}" dest="${destfile}" ignoreerrors="true" verbose="on" />
   </target>
 
   <target name="downloadgz" unless="expanded" depends="download,testexpanded">
