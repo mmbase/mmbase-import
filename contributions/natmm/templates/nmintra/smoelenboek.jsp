@@ -7,6 +7,7 @@
 <%@include file="includes/calendar.jsp" %>
 <%
 
+String tasksId = request.getParameter("tasks"); if(tasksId==null) { tasksId=""; }
 String descriptionId = request.getParameter("description"); if(descriptionId==null) { descriptionId=""; }
 
 // smoelenboek update
@@ -38,6 +39,7 @@ if("Wis".equals(submitId)) {
   nameId = "";
   firstnameId = "";
   lastnameId = "";
+  tasksId = "";
   descriptionId = "";
   departmentId= "default";
   programId= "default";
