@@ -1,6 +1,7 @@
 package org.mmbase.bridge.tests;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.images.*;
@@ -12,11 +13,18 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.6 2008-09-23 07:58:54 michiel Exp $
+ * @version $Id: ConvertImageTest.java,v 1.7 2008-09-24 06:14:58 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
     private final static String JPG_IMAGE_NAME = "testimage.jpg";
+
+    protected int countIcaches() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("icaches");
+        return Queries.count(nodeManager.createQuery());
+    }
+
 
     public void testImportedJpegImage() {
         Cloud cloud = getCloud();
@@ -32,7 +40,12 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
     public void testGetInvalueCachedImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
-        node.getIntValue("cache(s(30x30))"); // does this actually convert something, I think not.
+        int icacheNodeNumber = node.getIntValue("cache(s(30x30))");
+
+        assertEquals(1, countIcaches());
+        Node icache = cloud.getNode(icacheNodeNumber);
+        icache.getFunctionValue("wait", null); // triggers actual conversion
+        assertEquals(1, countIcaches());
     }
 
     /**
@@ -44,8 +57,12 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         Node node = cloud.getNode("jpeg.test.image");
         Function f = node.getFunction("cache");
         Parameters p = f.createParameters();
-        p.set("template","s(30x30)");
-        f.getFunctionValue(p);
+        p.set("template","s(31x31)");
+        int nn = (Integer) f.getFunctionValue(p);
+        assertEquals(2, countIcaches());
+        Node icache = cloud.getNode(nn);
+        icache.getFunctionValue("wait", null);
+        assertEquals(2, countIcaches());
     }
 
     protected Map<String, String> breakImaging() {
@@ -57,22 +74,38 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         Factory.init(brokenParameters);
         return originalParameters;
     }
+
     protected void restoreImaging(Map<String, String> parameters) {
         Factory.shutdown();
+        System.err.println("Restoring with " + parameters);
         Factory.init(parameters);
     }
 
     public void testFailAnImage() {
+        // MMB-495
         Map<String, String> originalParameters = breakImaging();
 
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
         Function f = node.getFunction("cache");
         Parameters p = f.createParameters();
-        p.set("template","s(31x31)");
-        Object icache = f.getFunctionValue(p);
+        p.set("template","s(32x32)");
+        int icacheNumber = (Integer) f.getFunctionValue(p);
+        assertEquals(3, countIcaches());
+        assertTrue(icacheNumber > 0);
+        Node icache = cloud.getNode(icacheNumber);
+        icache.getFunctionValue("wait", null); // this should fail.
+        assertTrue(icache.isNull("handle"));
+        assertEquals(3, countIcaches());
 
         restoreImaging(originalParameters);
+
+        assertEquals(new Integer(icacheNumber), (Integer) f.getFunctionValue(p));
+        assertEquals(3, countIcaches());
+
+        icache.getFunctionValue("wait", null); // should succeed now.
+        assertEquals(3, countIcaches());
+        assertFalse(icache.isNull("handle"));
 
 
     }
@@ -86,13 +119,16 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
             startLogging();
             cloud = getCloud();
         }
-        NodeManager nodeManager = cloud.getNodeManager("images");
-        Node jpegNode = nodeManager.createNode();
-        jpegNode.setStringValue("title", JPG_IMAGE_NAME);
-        byte[] bytes = getTextImageBytes(JPG_IMAGE_NAME);
-        jpegNode.setByteValue("handle", bytes);
-        jpegNode.commit();
-        jpegNode.createAlias("jpeg.test.image");
+        if (! cloud.hasNode("jpeg.test.image")) {
+
+            NodeManager nodeManager = cloud.getNodeManager("images");
+            Node jpegNode = nodeManager.createNode();
+            jpegNode.setStringValue("title", JPG_IMAGE_NAME);
+            byte[] bytes = getTextImageBytes(JPG_IMAGE_NAME);
+            jpegNode.setByteValue("handle", bytes);
+            jpegNode.commit();
+            jpegNode.createAlias("jpeg.test.image");
+        }
     }
 
 
@@ -101,8 +137,8 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
      */
     protected void tearDown() throws Exception {
         Cloud cloud = getCloud();
-        Node node = cloud.getNode("jpeg.test.image");
-        node.delete();
+        //Node node = cloud.getNode("jpeg.test.image");
+        //node.delete();
     }
     /**
      * read the test image from the file system and return it a byte[]
