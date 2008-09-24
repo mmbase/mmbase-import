@@ -173,7 +173,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
          String tmpEmail = result[2].toString();
          int tmpAuthenticationId = Integer.parseInt(result[3].toString());
          String tmpUserName = result[4].toString();
-         AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
+         addToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
       }
       return results;
    }
@@ -188,7 +188,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
     * @param email
     * @param authenticationId
     */
-   private void AddToSubscriptionMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
+   private void addToSubscriptionMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
          int authenticationId) {
       Map<Object, Object> result = new LinkedHashMap<Object, Object>();
       result.put("fullname", fullName);
@@ -252,7 +252,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
          String tmpEmail = result[2].toString();
          int tmpAuthenticationId = Integer.parseInt(result[3].toString());
          String tmpUserName = result[4].toString();
-         AddToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
+         addToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
       }
       return results;
    }

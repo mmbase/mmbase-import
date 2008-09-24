@@ -29,7 +29,7 @@ import com.finalist.newsletter.util.NewsletterUtil;
  */
 public class NewsletterCreate extends MMBaseFormlessAction {
    /**
-    * @param mapping goto jsp
+    * @param mapping
     * @param request
     * @param cloud
     * @return ActionForward , refresh the Newsletter List
