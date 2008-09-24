@@ -132,12 +132,15 @@ public abstract class SearchAction extends PagerAction {
    protected abstract void addConstraints(SearchForm searchForm, NodeManager nodeManager,
          QueryStringComposer queryStringComposer, NodeQuery query);
 
-
    protected void addField(NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query,
          String fieldname, String value) {
       if (StringUtils.isNotEmpty(value)) {
          Field field = nodeManager.getField(fieldname);
-         SearchUtil.addLikeConstraint(query, field, value);
+         if (field.getType() == Field.TYPE_BOOLEAN) {
+            Queries.addConstraints(query, fieldname + "=" + value);
+         } else {
+            SearchUtil.addLikeConstraint(query, field, value);
+         }
          queryStringComposer.addParameter(fieldname, value);
       }
    }
