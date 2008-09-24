@@ -4,6 +4,7 @@ if(!action.equals("print")) {
   if(!(nameId.equals("")
       &&firstnameId.equals("")
       &&lastnameId.equals("")
+      &&tasksId.equals("")
       &&descriptionId.equals("")
       &&departmentId.equals("default")
       &&locationId.equals("default")
@@ -35,6 +36,9 @@ if(!action.equals("print")) {
             employeeConstraint += "( UPPER(medewerkers.lastname) LIKE '%" + lastnameId.toUpperCase() + "%')";
             if(!nameId.equals("")) employeeConstraint += " ) ";
         }
+        if(!tasksId.equals("")) {
+           employeeConstraint += " AND (UPPER(CAST(medewerkers.omschrijving_de AS CHAR)) LIKE '%" + tasksId.toUpperCase() + "%')";
+        }        
         if(!descriptionId.equals("")) {
             employeeConstraint += " AND (UPPER(CAST(medewerkers.omschrijving AS CHAR)) LIKE '%" + descriptionId.toUpperCase() + "%')";
         }
