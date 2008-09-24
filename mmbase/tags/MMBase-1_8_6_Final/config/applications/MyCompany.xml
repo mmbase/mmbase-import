@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="MyCompany" maintainer="mmbase.org" version="1" auto-deploy="false">
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">people</builder>
+    <builder maintainer="mmbase.org" version="0">companies</builder>
+    <builder maintainer="mmbase.org" version="0">addresses</builder>
+    <builder maintainer="mmbase.org" version="0">urls</builder>
+    <builder maintainer="mmbase.org" version="0">biographies</builder>
+    <builder maintainer="mmbase.org" version="0">rolerel</builder>
+    <builder maintainer="mmbase.org" version="0">projects</builder>
+    <builder maintainer="mmbase.org" version="0">images</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+    <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="Rolerel" guitargetname="Rolerel" builder="rolerel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="companies" to="people" type="rolerel" />
+    <relation from="companies" to="addresses" type="related" />
+    <relation from="companies" to="projects" type="related" />
+    <relation from="companies" to="urls" type="related" />
+    <relation from="companies" to="images" type="related" />
+    <relation from="people" to="addresses" type="related" />
+    <relation from="people" to="biographies" type="related" />
+    <relation from="people" to="images" type="related" />
+    <relation from="people" to="projects" type="rolerel" />
+  </allowedrelationlist>
+
+  <datasourcelist />
+
+  <relationsourcelist />
+
+  <contextsourcelist/>
+
+  <description><![CDATA[Installs builders and relations for an example company structure. It doesn't have a taglib-example or data, but these will be added in future MMBase-releases.
+  This application uses the Resource-application.
+  ]]></description>
+
+  <install-notice><![CDATA[Company structure installed.
+  ]]></install-notice>
+</application>

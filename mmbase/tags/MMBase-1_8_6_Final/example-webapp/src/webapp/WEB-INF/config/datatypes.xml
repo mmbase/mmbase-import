@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes
+    http://www.mmbase.org/xmlns/datatypes.xsd">
+    <!--
+    This is a template datatypes.xml
+    You can add your own datatypes here.
+    The default data types can be found in jar:file:mmbase.jar!/org/mmbase/config/datatypes.xml, and
+    can be used as an example.
+    Every jar can contains its own data types in the same fashion.
+  -->
+</datatypes>

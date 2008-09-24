@@ -1,0 +1,73 @@
+# -----------------------------------------------------------------------------
+# build.properties.default
+#
+# This is the default build.properties file.
+# It contains all required packages.
+# If you'd like to customize some of the settings, create a build.properties in
+# the root of this directory.
+#
+# $Id: build.properties.default,v 1.8.2.3 2008-03-19 11:37:45 pierre Exp $
+# -----------------------------------------------------------------------------
+
+
+# ----- Proxy setup -----
+#proxy.host=proxy.domain
+#proxy.port=8080
+#proxy.use=on
+
+# ----- Default build dir -----
+documentation.build.dir=${basedir}/build
+
+# ----- Default Base Path for required Packages -----
+# download.dir=${documentation.build.dir}/download
+
+
+# --------------------------------------------------
+#                REQUIRED LIBRARIES
+# --------------------------------------------------
+
+# ---- Default Sourceforge Mirror ----
+sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
+# ---- Strange url needed to get around sun's download system ----
+sundownload.loc=http://java.sun.com/Download5?protocol=HTTP%20download&amp;platform=zip&amp;domain-checked=&amp;document=download&amp;mirror=http&amp;referer=
+
+
+# Nwalsh sucks, becuase depends on xalan.
+# ----- Xalan and Xerces ----------
+xalan.version=xalan-j_2_7_0
+xalan.fullversion=${xalan.version}
+xalan.file=${xalan.version}-bin.tar.gz
+xalan.dest=${download.dir}/${xalan.file}
+xalan.loc=${mmbase.loc}/xalan/${xalan.file}
+xalan.jar=${expand.dir}/${xalan.fullversion}/xalan.jar
+serializer.jar=${expand.dir}/${xalan.fullversion}/serializer.jar
+xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
+xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
+
+
+# ----- Docbook stylesheets ----------
+docbook-xsl.version=docbook-xsl-1.70.1
+docbook-xsl.file=${docbook-xsl.version}.tar.gz
+docbook-xsl.home=${download.dir}/${docbook-xsl.version}
+docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
+
+# ---- Fop is a terrible system to produce PDFs ----
+fop.version=fop-0.94
+fop.file=${fop.version}-bin-jdk1.4.tar.gz
+fop.loc=http://www.mmbase.org/download/${fop.file}
+fop.loc=http://archive.apache.org/dist/xmlgraphics/fop/binaries/${fop.file}
+fop.dest=${download.dir}/${fop.file}
+fop.exp=${expand.dir}/${fop.version}
+
+
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
+
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.home=${download.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai.codec.jar=${jai.home}/jre/lib/ext/jai_codec.jar
+jai.core.jar=${jai.home}/jre/lib/ext/jai_core.jar

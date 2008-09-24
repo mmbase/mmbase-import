@@ -1,0 +1,7 @@
+./applications/Poll.xml
+./applications/Poll/backup.xml
+./builders/poll/ip.xml
+./builders/poll/poll.xml
+./builders/poll/answer.xml
+./security/classauthentication.xml
+./components/poll.xml

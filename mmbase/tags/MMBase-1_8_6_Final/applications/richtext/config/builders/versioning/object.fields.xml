@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+
+  <!--
+      These fields can be used on objects which must be versioned.
+  -->
+  <!--
+      Essential is the 'version' field itself.
+  -->
+  <xi:include href="version.field.xml" />
+
+  <!--
+      A status field can also be added.
+  -->
+  <xi:include href="status.field.xml" />
+</fieldlist>

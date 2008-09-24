@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<insrel exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170725">
+	<node number="8530" owner="default" snumber="8498" dnumber="8508" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="8528" owner="default" snumber="8500" dnumber="8508" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="8526" owner="default" snumber="8504" dnumber="8508" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="8522" owner="default" snumber="8502" dnumber="8508" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="8518" owner="default" snumber="8506" dnumber="8508" rtype="related" dir="bidirectional">
+	</node>
+
+</insrel>

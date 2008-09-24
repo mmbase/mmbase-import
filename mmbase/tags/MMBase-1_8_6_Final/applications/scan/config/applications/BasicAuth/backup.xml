@@ -1,0 +1,10 @@
+<contextdepth>
+
+	<startnode>
+		<builder>people</builder>
+		<where>firstname=='admin'</where>
+	</startnode>
+
+	<depth>2</depth>
+
+</contextdepth>

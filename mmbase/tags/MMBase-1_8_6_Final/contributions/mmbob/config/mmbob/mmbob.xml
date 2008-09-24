@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mmbobconfig PUBLIC "-//MMBase//DTD mmbob config 1.0//EN" "http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd">
+<mmbobconfig>
+  <forums account="admin" password="admin2k" language="en">
+    <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
+    <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
+    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
+
+    <urls externalroot="[external url for creating links in email messages]" root="/mmbob/" />
+    <preloadchangedthreads  minutes="1129600" />
+    <swapoutunusedthreads  minutes="720" />
+    <accountcreation type="open" />
+    <accountremoval type="open" />
+
+    <loginsystem type="http" />
+    <loginmode type="open" />
+    <logoutmode type="open" />
+    <guestreadmode type="open" />
+    <guestwritemode type="open" />
+
+    <maxpostsize body="1000" subject="200"/>
+
+    <avatars>
+      <upload enable="true"/>
+      <gallery enable="true"/>
+    </avatars>
+
+    <email from="[forum administrator email]"/>
+
+    <!--
+        @TODO Not internationalized
+    -->
+    <emailtexts>
+      <emailtext role="updatethreadchange" >$lastposter heeft net een reactie gegeven op een onderwerp : '$lastsubject', waarvan je op de hoogte gehouden wilde worden.
+
+Je kan deze hier vinden : $url
+
+</emailtext>
+      <emailtext role="updatedivider" >----------------------------------------
+
+</emailtext>
+      <emailtext role="updatefooter" >
+
+De kennisnet forum beheerders
+</emailtext>
+      <emailtext role="updateheader" >
+Hallo, $account ($firstname $lastname),
+
+</emailtext>
+    </emailtexts>
+     <layout>
+      <header path="header.jsp"/>
+      <footer path="footer.jsp"/>
+    </layout>
+
+    <filters>
+      <filter type="content" replace="mmbase" with="MMBase" />
+      <filter type="content" replace="microsoft" with="micro$oft" />
+      <filter type="content" replace="shit" with="s**t" />
+      <filter type="content" replace="fuck" with="f***" />
+    </filters>
+
+    <xslts>
+      <postings odd="xslt/posting2xhtmlDark.xslt" even="xslt/posting2xhtmlLight.xslt" />
+    </xslts>
+
+    <contactinfo enable="true"/>
+    <smileys enable="true"/>
+    <privatemessages enable="false"/>
+    <postingsperpage value="4"/>
+
+    <postingsoverflowpostarea value="4"/>
+
+    <postingsoverflowthreadpage value="10"/>
+
+    <speedposttime value="10"/>
+
+    <replyoneachpage value="true"/>
+
+    <navigation method="list"/>
+  </forums>
+</mmbobconfig>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE providers PUBLIC "-//MMBase/DTD providers config 1.0//EN" "http://www.mmbase.org/dtd/providers_1_0.dtd">
+<providers>
+  <provider name="MMBase Package Server" maintainer="MMBase.org" method="http" >
+    <path>http://packages.mmbase.org/mmbase/packagemanager/sharing/sharedpackages.jsp</path>
+    <account>guest</account>
+    <password>guest</password>
+    <description></description>
+  </provider>
+  <provider name="import dir" maintainer="local" method="disk" >
+    <path>~import</path>
+    <description>webapp import dir</description>
+  </provider>
+  <provider name="build dir" maintainer="local" method="disk" >
+    <path>~build</path>
+    <description>webapp build dir</description>
+  </provider>
+</providers>

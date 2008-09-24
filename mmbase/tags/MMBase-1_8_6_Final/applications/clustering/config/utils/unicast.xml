@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <!-- Use separate thread for every incoming message. -->
+    <property name="spawnthreads">true</property>
+    <!--
+        name="unicastport" on what port does this multicast talking between nodes
+        take place, This can be set to any port but check if something else on
+        your network is allready using multicast when you have problems.
+    -->
+    <property name="unicastport">16080</property>
+
+    <!--
+        If you want to use the same config file for differnt servers on the same host, then you can
+        also set the port by prefixing it with the machine name.  This syntax can also be used, if
+        different ports for different servers must be used, because these settings are used for both
+        receiving and sending. 
+        E.g. like this:
+    -->
+    <property name="michiel.omroep.nl/mm18/.unicastport">16080</property>
+    <property name="michiel.omroep.nl/mm182/.unicastport">16081</property>
+
+    <!--
+        name="unicasttimeout"  the time another MMbase server has to respond.
+    -->
+    <property name="unicasttimeout">10000</property>
+
+
+  </properties>
+</util>

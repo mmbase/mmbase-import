@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Vwms" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="0">vwms</builder>
+		<builder maintainer="mmbase.org" version="0">vwmtasks</builder>
+		<builder maintainer="mmbase.org" version="0">mmservers</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+		<reldef source="related" target="related" direction="bidirectional" builder="insrel" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+		<relation from="mmservers" to="vwms" type="related" />
+	</allowedrelationlist>
+
+	<datasourcelist />
+
+	<relationsourcelist />
+
+	<contextsourcelist/>
+
+	<description><![CDATA[Installs builders and relations needed for using virtual webmasters. A little documentation about vwms is provided on the MMBase-website.
+	]]></description>
+
+	<install-notice><![CDATA[Vwms builders and relations installed.
+	]]></install-notice>
+</application>

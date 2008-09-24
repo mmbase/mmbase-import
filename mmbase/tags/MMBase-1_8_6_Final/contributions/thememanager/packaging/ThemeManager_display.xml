@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_display_html PUBLIC "-//MMBase/DTD packaging_display_html config 1.0//EN" "http://www.mmbase.org/dtd/packaging_display_html_1_0.dtd">
+<packaging_display_html>
+	<lastversion>7</lastversion>
+	<lastdate>Mon May 03 00:56:28 CEST 2004</lastdate>
+	<name>ThemeManager html</name>
+	<maintainer>Submarine</maintainer>
+	<description>Html editor tools for the thememanager, also created the needed support dirs that hold the installed stylesheets and imagesets.</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<basedir>templates/jsp/</basedir>
+	<include>*</include>
+	<exclude>CVS</exclude>
+	<packagedepends>
+		<package name="ThemeManager jars" maintainer="Submarine" type="java/jar" version="6" versionmode="atleast" />
+		<package name="ThemeManager functions" maintainer="Submarine" type="function/set" version="6" versionmode="atleast" />
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+		<supporter company="Submarine" />
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" />
+		<developer name="Gerard van Enk" company="EO" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs" mailto="daniel@submarine.nl" />
+		<contact name="Bruno Felix" reason="Sponser/Support questions" mailto="bruno@submarine.nl" />
+	</contacts>
+</packaging_display_html>

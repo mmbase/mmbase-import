@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <pomVersion>3</pomVersion>
+    <id>${pom.groupId}:${pom.artifactId}</id>
+    <artifactId>${pom.artifactId}</artifactId>
+    <name>${pom.artifactId}</name>
+    <groupId>mmbase</groupId>
+    <currentVersion>${mmbase.version}</currentVersion>
+    <organization>
+        <name>MMBase.org</name>
+        <url>http://www.mmbase.org</url>
+        <logo>http://www.mmbase.org/mmdocs/style/logo.png</logo>
+    </organization>
+    <inceptionYear>2000</inceptionYear>
+    <package>org.mmbase</package>
+    <logo>http://www.mmbase.org/mmdocs/style/logo.png</logo>
+    <shortDescription>MMBase, content management system</shortDescription>
+    <distributionSite>http://www.mmbase.org/download/</distributionSite>
+    <branches>
+        <branch>
+            <tag>MMBase-1_4</tag>
+        </branch>
+        <branch>
+            <tag>MMBase-1_5</tag>
+        </branch>
+        <branch>
+            <tag>MMBase-1_6</tag>
+        </branch>
+        <branch>
+            <tag>MMBase-1_7</tag>
+        </branch>
+        <branch>
+            <tag>MMBase-1_8</tag>
+        </branch>
+    </branches>
+    <licenses>
+        <license>
+            <name>Mozilla Public License 1.0 (MPL)</name>
+            <url>http://www.mmbase.org/license</url>
+        </license>
+    </licenses>
+    <description>MMBase is a Web Content Management System with strong multi media features. MMBase has a large installed base in The Netherlands, and is used by major Dutch broadcasters, publishers, educational institutes, national and local governments. MMBase is written in Java, it is Open Source Software (MPL) and all standards used are as 'open' as possible. The system can be used with all major operating systems, webservers and databases.</description>
+    <url>http://www.mmbase.org</url>
+    <issueTrackingUrl>http://www.mmbase.org/bug</issueTrackingUrl>
+    <siteAddress>http://www.mmbase.org</siteAddress>
+    <siteDirectory>/home/maven/site/mmbase</siteDirectory>
+    <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
+    <repository>
+        <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
+        <developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
+        <url>http://cvs.mmbase.org/viewcvs/</url>
+    </repository>
+    <mailingLists>
+        <mailingList>
+            <name>MMBase User List</name>
+            <subscribe>http://lists.mmbase.org/mailman/listinfo/users</subscribe>
+            <unsubscribe>http://lists.mmbase.org/mailman/listinfo/users</unsubscribe>
+            <archive>http://lists.mmbase.org/arc/users/threads.html</archive>
+        </mailingList>
+        <mailingList>
+            <name>MMBase Developer List</name>
+            <subscribe>http://lists.mmbase.org/mailman/listinfo/developers</subscribe>
+            <unsubscribe>http://lists.mmbase.org/mailman/listinfo/developers</unsubscribe>
+            <archive>http://lists.mmbase.org/arc/developers/threads.html</archive>
+        </mailingList>
+        <mailingList>
+            <name>MMBase Commiter List</name>
+            <subscribe>http://lists.mmbase.org/mailman/listinfo/committers</subscribe>
+            <unsubscribe>http://lists.mmbase.org/mailman/listinfo/committers</unsubscribe>
+            <archive>http://lists.mmbase.org/arc/committers/threads.html</archive>
+        </mailingList>
+        <mailingList>
+            <name>MMBase CVS List</name>
+            <subscribe>http://lists.mmbase.org/mailman/listinfo/cvs</subscribe>
+            <unsubscribe>http://lists.mmbase.org/mailman/listinfo/cvs</unsubscribe>
+            <archive>http://lists.mmbase.org/arc/cvs/index.html</archive>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <name>Andre van Toly</name>
+            <id>0</id>
+            <email>andre@toly.nl</email>
+            <timezone>1</timezone>
+            <roles>
+            	<role>Webmaster</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Daniel Ockeloen</name>
+            <id>1</id>
+            <email>daniel@submarine.nl</email>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Eduard Witteveen</name>
+            <id>2</id>
+            <email>eywitteveen@gmail.com</email>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Ernst Bunders</name>
+            <id>ernst</id>
+            <email>ernst@dynasol.nl</email>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Gerard van Enk</name>
+            <id>4</id>
+            <email>gvenk@xs4all.nl</email>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Jaco de Groot</name>
+            <id>5</id>
+            <email>jaco@dynasol.nl</email>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Johannes Verelst</name>
+            <id>johannes</id>
+            <email>jverelst@gmail.com</email>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Kees Jongenburger</name>
+            <id>keesj</id>
+            <email>keesj@dds.nl</email>
+            <organization>Exmachina</organization>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Marcel Maatkamp</name>
+            <id>7</id>
+            <email>M.Maatkamp@vpro.nl</email>
+            <organization>Vpro</organization>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Mark Huijser</name>
+            <id>8</id>
+            <email>mark.huijser@eo.nl</email>
+            <organization>EO</organization>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <name>Michiel Meeuwissen</name>
+            <id>michiel</id>
+            <email>Michiel.Meeuwissen@dynasol.nl</email>
+            <organization>Dynasol</organization>
+            <url>http://www.dynasol.nl</url>
+            <timezone>1</timezone>
+            <roles>
+            	<role>Release Manager</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Nico Klasens</name>
+            <id>nklasens</id>
+            <email>mmbase@klasens.net</email>
+            <organization>Finalist IT Group</organization>
+            <url>http://www.finalist.com</url>
+            <timezone>1</timezone>
+            <roles>
+            	<role>CVS monitor</role>
+            	<role>Patch manager</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Pierre van Rooden</name>
+            <id>10</id>
+            <email>Pierre.van.Rooden@omroep.nl</email>
+            <organization>Publieke Omroep</organization>
+            <timezone>1</timezone>
+            <roles>
+            	<role>Vote manager</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rico Jansen</name>
+            <id>11</id>
+            <email>R.Jansen@vpro.nl</email>
+            <organization>Vpro</organization>
+            <timezone>1</timezone>
+            <roles>
+            	<role>Hosting</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rob van Maris</name>
+            <id>12</id>
+            <email>robvanmaris@xs4all.nl</email>
+            <timezone>1</timezone>
+            <roles>
+            	<role>Project coordination</role>
+            	<role>Meeting coordination</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rob Vermeulen</name>
+            <id>13</id>
+            <email>r.vermeulen@vpro.nl</email>
+            <organization>Vpro</organization>
+            <timezone>1</timezone>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>servletapi</groupId>
+            <artifactId>servletapi</artifactId>
+            <version>2.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>1.1_01</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jai</groupId>
+            <artifactId>jai_codec</artifactId>
+            <version>1.1.2_01</version>
+            <type>jar</type>
+            <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jai</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>1.1.2_01</version>
+            <type>jar</type>
+            <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+        </dependency>
+        <!-- Source code uses org.apache.xpath.XPathAPI -->
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.6.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+
+        <!-- mmbase module plugin -->
+        <dependency>
+            <groupId>mmapps</groupId>
+            <artifactId>maven-mmbase-module-plugin</artifactId>
+            <version>1.2</version>
+            <type>plugin</type>
+            <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
+        </dependency>
+    </dependencies>
+    <build>
+        <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
+        <sourceDirectory>${basedir}/src</sourceDirectory>
+        <!-- J A R  R E S O U R C E S -->
+        <!-- Resources that are packaged up inside the JAR file -->
+        <resources>
+            <resource>
+                <directory>${basedir}/src</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>META-INF</targetPath>
+                <directory>META-INF</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                </excludes>
+            </resource>
+<!-- This does not work the same way as the ant build does.
+	We have to change more in the build to get it working -->
+            <resource>
+                <targetPath>org/mmbase/config</targetPath>
+                <directory>config</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                </excludes>
+            </resource>
+
+        </resources>
+        <!-- Unit test cases -->
+        <unitTestSourceDirectory>${basedir}/tests</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Tests.java</include>
+                <include>**/*Test.java</include>
+                <include>**/*Suite.java</include>
+            </includes>
+            <excludes>
+                <exclude>**/Abstract*Test.java</exclude>
+            </excludes>
+        </unitTest>
+    </build>
+    <reports>
+        <report>maven-changelog-plugin</report>
+      <!--
+        <report>maven-changes-plugin</report>
+        <report>maven-developer-activity-plugin</report>
+        <report>maven-file-activity-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-jdepend-plugin</report>
+        <report>maven-junit-report-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>
+        <report>maven-linkcheck-plugin</report>
+        <report>maven-jdiff-plugin</report>
+        <report>maven-checkstyle-plugin</report>
+        <report>maven-pmd-plugin</report>
+        <report>maven-tasklist-plugin</report>
+        <report>maven-simian-plugin</report>
+        -->
+    </reports>
+</project>
+

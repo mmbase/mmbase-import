@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="vwms" default="jar" basedir=".">
+  <property name="project.name"     value="vwms" />
+  <property name="project.package"   value="org/mmbase/applications/vwms" />
+  <property name="project.target.templates.dir"   value="vwms" />
+  &base;
+
+</project>
+
+
+

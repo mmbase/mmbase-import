@@ -1,0 +1,27 @@
+<div id="search" class="block ${param.class}"
+     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+     xmlns:jsp="http://java.sun.com/JSP/Page">  
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="vars.jspx" />
+  <mm:content type="appliation/xhtml+xml" language="$language">
+    <mm:cloud>
+      <mm:node number="${cat}" notfound="skip">
+        <jsp:directive.include file="rich.jspx" />
+      </mm:node>
+    </mm:cloud>
+    <mm:import externid="article" />
+    <mm:import externid="dosearch" id="search"/>
+    <mm:link referids="$vars,article?" page=".">
+      <mm:param name="template" value="search.results" />
+      <form  id="searchform" method="post" action="${_}">   
+        <p>
+          <input name="dosearch" value="${search}" type="text" size="15" maxlength="256" />
+          <a href="javascript:document.forms.searchform.submit()">
+            Search!
+          </a>
+        </p>
+      </form>
+    </mm:link>
+  </mm:content>
+</div>

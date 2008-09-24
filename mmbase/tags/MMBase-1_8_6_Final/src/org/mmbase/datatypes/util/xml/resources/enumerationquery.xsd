@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.mmbase.org/xmlns/searchquery"
+    xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
+    version="1.0">
+  <xsd:annotation>
+    <xsd:documentation>Enumeration search query redefinition</xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:redefine schemaLocation="http://www.mmbase.org/xmlns/searchquery.xsd">
+
+    <xsd:complexType name="SearchQuery">
+      <xsd:complexContent>
+        <xsd:extension base="mmsq:SearchQuery">
+          <xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+          <xsd:attribute name="display" type="xsd:string"></xsd:attribute>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+  </xsd:redefine>
+
+</xsd:schema>

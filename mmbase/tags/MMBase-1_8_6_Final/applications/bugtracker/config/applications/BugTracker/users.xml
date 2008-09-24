@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<users exportsource="mmbase://127.0.0.1/mmbase/install" timestamp="20030731153742">
+	<node number="125" owner="admin">
+		<firstname>Daniel</firstname>
+		<account>daniel</account>
+		<lastname>Ockeloen</lastname>
+		<email>daniel@xs4all.nl</email>
+		<description></description>
+		<password>mmbased</password>
+	</node>
+
+</users>

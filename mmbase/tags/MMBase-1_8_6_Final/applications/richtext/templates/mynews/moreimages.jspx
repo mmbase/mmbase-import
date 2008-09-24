@@ -1,0 +1,13 @@
+<mm:relatednodescontainer 
+ xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" role="posrel" type="images">
+  <mm:sortorder field="posrel.pos" />
+  <mm:offset value="1" />
+  <mm:context>
+    <mm:relatednodes>
+      <mm:first><hr style="clear: both;" /></mm:first>
+      <mm:import id="template">s(100x100)</mm:import>
+      <jsp:directive.include file="showimage.jspx" />
+    </mm:relatednodes>
+  </mm:context>
+</mm:relatednodescontainer>

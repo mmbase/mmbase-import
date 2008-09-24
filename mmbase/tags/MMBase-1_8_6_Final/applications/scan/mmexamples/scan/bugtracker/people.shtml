@@ -1,0 +1,37 @@
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Maintainer</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Submitter</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=2>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Interested</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<LIST MULTILEVEL NODE="$PARAM1" TYPE="bugreports,rolerel,users" PROCESSOR="MMBASE" FIELDS="rolerel.role,users.firstname,users.lastname" WHERE="rolerel.role=='maintainer'" MEMCACHE="NO">
+			$ITEM2 $ITEM3<BR>	
+			</LIST>
+			&nbsp;
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<LIST MULTILEVEL NODE="$PARAM1" TYPE="bugreports,rolerel,users" PROCESSOR="MMBASE" FIELDS="rolerel.role,users.firstname,users.lastname" WHERE="rolerel.role=='submitter'" MEMCACHE="NO">
+			$ITEM2 $ITEM3<BR>	
+			</LIST>
+			&nbsp;
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+			<LIST MULTILEVEL NODE="$PARAM1" TYPE="bugreports,rolerel,users" PROCESSOR="MMBASE" FIELDS="rolerel.role,users.firstname,users.lastname" WHERE="rolerel.role=='interested'" MEMCACHE="NO">
+			$ITEM2 $ITEM3<BR>	
+			</LIST>
+			&nbsp;
+		</TD>
+</TR>

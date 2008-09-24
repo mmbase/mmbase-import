@@ -1,0 +1,14 @@
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  @author Nico Klasens
+  @version  $Id: exception.css,v 1.2 2006-03-31 08:45:43 pierre Exp $
+*/
+
+@import url("base.css");
+
+.error {
+   color: red;
+}

@@ -1,0 +1,11 @@
+
+        &nbsp;&nbsp;
+        <A HREF="index.shtml?2+1+demos" TARGET="_top">
+        <IF $PARAM2==1>
+                <FONT COLOR="#FFFFFF" FACE="helvetica,arial,geneva" SIZE="2"><B>BASIC</B></FONT>
+        <ELSE>
+                <FONT COLOR="#42BDAD" FACE="helvetica,arial,geneva" SIZE="2"><B>BASIC</B></FONT>
+        </IF>
+        </A>
+
+        &nbsp;&nbsp;

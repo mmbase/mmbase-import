@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="principletracker" maintainer="mmcoder.nl" version="1" auto-deploy="true">
+
+  <requirements>
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmcoder.nl" version="0">principle</builder>
+    <builder maintainer="mmcoder.nl" version="0">principlesets</builder>
+    <builder maintainer="mmcoder.nl" version="0">principlerel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="principlerel" target="principlerel" direction="bidirectional" guisourcename="PrincipleRel" guitargetname="PrincipleRel" builder="principlerel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="principlesets" to="principle" type="principlerel" />
+  </allowedrelationlist>
+
+  <datasourcelist />
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description><![CDATA[Installs datamodel for the principletracker]]></description>
+
+  <install-notice><![CDATA[DataModel for principletracker created ]]></install-notice>
+
+</application>

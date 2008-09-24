@@ -1,0 +1,309 @@
+<!-- ===========================================================================
+
+Applications build file
+
+================= -->
+<project name="MMBase" default="all" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <!-- Default values for properties that can be customized -->
+
+  <property name="source.dir"   location=".." />
+  <property name="share.dir"    location="./share" />
+
+  <property file="${source.dir}/build.properties" />
+
+  <property name="build.dir"    value="${source.dir}/build" />
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
+  <property name="download.zip" value="mmbase-downloads.zip"  />
+  <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
+
+  <property name="applications.dir"       location="." />
+  <property name="applications.build.dir" value="${applications.dir}/build" />
+
+
+  <target name="init">
+    <mkdir dir="${applications.build.dir}" />
+    <available file="jumpers/build.xml" property="jumpers.exists"/>
+    <available file="notifications/build.xml" property="notifications.exists"/>
+  </target>
+
+  <target name="all16" depends="init,media,bugtracker,email" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
+  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,oscache-cache,largeobjects,jumpers,notifications" />
+
+  <target name="all"   depends="init,all18" />
+
+
+  <target name="jars" depends="all">
+    <copy todir="${applications.build.dir}/jars" flatten="true" preservelastmodified="true" >
+      <fileset dir=".">
+        <include name="**/*.jar" />
+      </fileset>
+    </copy>
+    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" overwrite="true" preservelastmodified="true" />
+  </target>
+
+  <target name="mmbase" depends="init">
+    <ant dir="${source.dir}" target="jar" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
+  </target>
+
+  <target name="media" depends="mmbase,editwizard">
+     <ant dir="media"      target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="scan" depends="mmbase">
+     <ant dir="scan"      target="dependent.package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="vwms" depends="mmbase">
+     <ant dir="vwms"      target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+
+  <target name="bugtracker" depends="init">
+     <ant dir="bugtracker"      target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="email" depends="mmbase">
+     <ant dir="email"      target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="rmmci" depends="mmbase">
+     <ant dir="rmmci" target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="editwizard" depends="dove,mmbase">
+     <ant dir="editwizard" target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+
+  <target name="dove" depends="mmbase">
+     <ant dir="dove" target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="cloudcontext" depends="mmbase">
+     <ant dir="cloudcontext"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="community" depends="mmbase,taglib">
+     <ant dir="community"  target="dependent.package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="taglib" depends="mmbase">
+     <ant dir="taglib"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="xmlimporter" depends="mmbase">
+     <ant dir="xmlimporter"  target="dependent.package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="crontab" depends="mmbase">
+     <ant dir="crontab"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="packaging" depends="mmbase">
+     <ant dir="packaging"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="clustering" depends="mmbase">
+     <ant dir="clustering"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="richtext" depends="mmbase">
+     <ant dir="richtext"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="oscache-cache" depends="mmbase">
+     <ant dir="oscache-cache"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="largeobjects" depends="mmbase">
+     <ant dir="largeobjects"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+  <target name="jumpers" depends="mmbase" if="jumpers.exists">
+     <ant dir="jumpers"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="notifications" depends="mmbase" if="notifications.exists">
+    <ant dir="notifications"  target="package" inheritAll="false">
+      <property name="project.zip.dir"        value="${applications.build.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
+  </target>
+
+  <target name="install">
+    <ant dir="taglib"        target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="editwizard"    target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="dove"          target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="oscache-cache"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="fullinstall" depends="install">
+    <ant dir="packaging"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="media"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="cloudcontext"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="email"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="crontab"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="community"     target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="bugtracker"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="vwms"        target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="scan"        target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="clustering"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="richtext"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
+    <ant dir="largeobjects"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="clean">
+     <ant dir="taglib"      target="clean" inheritAll="false" />
+     <ant dir="media"      target="clean" inheritAll="false" />
+     <ant dir="editwizard" target="clean" inheritAll="false" />
+     <ant dir="dove"      target="clean" inheritAll="false" />
+     <ant dir="rmmci"      target="clean" inheritAll="false" />
+     <ant dir="cloudcontext"    target="clean" inheritAll="false" />
+     <ant dir="bugtracker"      target="clean" inheritAll="false" />
+     <ant dir="community"      target="clean" inheritAll="false" />
+     <ant dir="email"      target="clean" inheritAll="false" />
+     <ant dir="packaging"      target="clean" inheritAll="false" />
+     <ant dir="xmlimporter"   target="clean" inheritAll="false" />
+     <ant dir="vwms"      target="clean" inheritAll="false" />
+     <ant dir="scan"      target="clean" inheritAll="false" />
+     <ant dir="crontab"      target="clean" inheritAll="false" />
+     <ant dir="clustering"      target="clean" inheritAll="false" />
+     <ant dir="richtext"      target="clean" inheritAll="false" />
+     <ant dir="oscache-cache"      target="clean" inheritAll="false" />
+     <ant dir="largeobjects"      target="clean" inheritAll="false" />
+
+     <delete dir="${applications.build.dir}" />
+  </target>
+
+
+  <target name="test">
+     <ant dir="cloudcontext"  target="test" />
+  </target>
+
+</project>
