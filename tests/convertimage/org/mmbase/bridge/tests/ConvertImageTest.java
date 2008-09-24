@@ -5,6 +5,8 @@ import org.mmbase.bridge.util.Queries;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.images.*;
+import org.mmbase.util.transformers.AbstractCommandStringTransformer;
+import org.mmbase.util.transformers.CharTransformer;
 
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.Parameters;
@@ -13,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.7 2008-09-24 06:14:58 michiel Exp $
+ * @version $Id: ConvertImageTest.java,v 1.8 2008-09-24 06:49:14 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -77,7 +79,6 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
     protected void restoreImaging(Map<String, String> parameters) {
         Factory.shutdown();
-        System.err.println("Restoring with " + parameters);
         Factory.init(parameters);
     }
 
@@ -109,6 +110,39 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
 
     }
+
+    /**
+     * Java api to get access times is only available in java 7. This is a quick and dirty hack, at
+     * least working in linux. It does not actually try to determin the access times of individual
+     * files, it simply returns a string containing the access times. For test cases 'equals' on the
+     * string should suffice.
+     */
+    public String getImagesAccessTimes() {
+        CharTransformer accessTimes = new AbstractCommandStringTransformer() {
+                public String[] getCommand() {
+                    return new String[] {"xargs", "ls", "-lu"};
+                }
+            };
+        return accessTimes.transform(System.getProperty("user.dir") + "/data/test/mmbasetests_images");
+    }
+
+    public void testAccessTime() throws InterruptedException {
+        if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
+            System.err.println("Pretty sure this test won't work in Windows. Skippig it.");
+        } else {
+            // MMB-1386
+            String accessTimesBefore = getImagesAccessTimes();
+            // make sure it is a minute later.
+            Thread.sleep(61000);
+            org.mmbase.cache.CacheManager.getCache("Nodes").clear();
+            Node node = cloud.getNode("jpeg.test.image");
+            assertEquals(accessTimesBefore, getImagesAccessTimes());
+            node.setStringValue("title", "the images title");
+            node.commit();
+            assertEquals(accessTimesBefore, getImagesAccessTimes());
+        }
+    }
+
     private static Cloud cloud;
     /**
      * Sets up before each test.
