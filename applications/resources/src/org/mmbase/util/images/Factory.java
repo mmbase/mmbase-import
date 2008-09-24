@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Factory.java,v 1.5 2008-09-23 07:42:48 michiel Exp $
+ * @version $Id: Factory.java,v 1.6 2008-09-24 05:54:30 michiel Exp $
  */
 
 public class Factory {
     private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
     private static ImageInformer imageInformer;
-    protected static Map<String, String> params = new HashMap<String, String>();
+    protected static final Map<String, String> params = new HashMap<String, String>();
 
     /**
      * The ImageConvertInterface implementation to be used (defaults to ConvertImageMagic)
@@ -52,6 +52,7 @@ public class Factory {
     protected static String defaultImageFormat = "jpeg";
 
     public static void init(Map<String, String> properties) {
+        params.clear();
         params.putAll(properties);
 
         String tmp = properties.get("MaxConcurrentRequests");
