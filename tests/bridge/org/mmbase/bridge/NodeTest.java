@@ -23,7 +23,7 @@ import org.mmbase.security.AuthenticationData;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected static String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
+    protected static String[] fieldTypes = {"binary", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
     //protected static String[] fieldTypes = {"datetime"};
 
     public NodeTest(String name) {
@@ -39,7 +39,7 @@ public abstract class NodeTest extends BridgeTest {
     public void testGetValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -52,11 +52,11 @@ public abstract class NodeTest extends BridgeTest {
         testGetListValue();
     }
 
-    abstract public void testGetByteValue();
+    abstract public void testGetBinaryValue();
 
-    public void testGetByteValueCache() {
+    public void testGetBinaryValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetByteValue();
+        testGetBinaryValue();
         testGetValue();
         testGetDoubleValue();
         testGetFloatValue();
@@ -76,7 +76,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetDoubleValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetFloatValue();
         testGetIntValue();
         testGetLongValue();
@@ -94,7 +94,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetFloatValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetIntValue();
         testGetLongValue();
@@ -109,7 +109,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetIntValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetLongValue();
@@ -127,7 +127,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetLongValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -145,7 +145,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetStringValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -163,7 +163,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetXMLValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -181,7 +181,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetNodeValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -199,7 +199,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetBooleanValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -217,7 +217,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetDateTimeValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
@@ -235,7 +235,7 @@ public abstract class NodeTest extends BridgeTest {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetListValue();
         testGetValue();
-        testGetByteValue();
+        testGetBinaryValue();
         testGetDoubleValue();
         testGetFloatValue();
         testGetIntValue();
