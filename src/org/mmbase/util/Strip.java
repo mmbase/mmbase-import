@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * </PRE>
  *
  * @author Rico Jansen
- * @version $Id: Strip.java,v 1.7 2004-09-30 14:07:13 pierre Exp $
+ * @version $Id: Strip.java,v 1.7.2.1 2008-09-24 09:59:57 michiel Exp $
  */
 public class Strip {
 
@@ -80,6 +80,9 @@ public class Strip {
      * @return the stripped String
      */
     public static String Whitespace(String str,int where) {
+        return Chars(str," \t\n\r",where);
+    }
+    public static String whitespace(String str,int where) {
         return Chars(str," \t\n\r",where);
     }
 
