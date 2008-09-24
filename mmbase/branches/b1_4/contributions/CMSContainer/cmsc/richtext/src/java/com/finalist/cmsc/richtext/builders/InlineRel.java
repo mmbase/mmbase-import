@@ -28,4 +28,20 @@ public class InlineRel extends InsRel {
 
       node.setValue("referid", mmbaseroot.getStorageManager().createKey() + "");
    }
+   
+   /**
+    * This method is here to solve
+    * MMB-1713  Bridge transaction always commits nodes even when not changed
+    *
+    * MMBase always commits nodes even when they are not changed or deleted.
+    * @see org.mmbase.module.core.MMObjectBuilder#commit(org.mmbase.module.core.MMObjectNode)
+    */
+   @Override
+   public boolean commit(MMObjectNode node) {
+      if (!node.isChanged()) {
+         return true;
+      }
+      return super.commit(node);
+   }
+
 }
