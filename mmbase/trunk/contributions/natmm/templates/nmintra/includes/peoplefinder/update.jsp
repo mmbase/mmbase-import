@@ -11,10 +11,10 @@
     <tr><td>Mobiel:&nbsp;</td>                      <td><input type="text" name="cellularphone" value="<mm:field name="cellularphone" />" style="width:300px;"></td></tr>
     <tr><td>Fax:&nbsp;</td>                         <td><input type="text" name="fax" value="<mm:field name="fax" />" style="width:300px;"></td></tr>
     <tr><td>Email (**):&nbsp;</td>                  <td><input type="text" name="email" value="<mm:field name="email" />" style="width:300px;"></td></tr>
-    <tr><td>Regio/afdeling en functie:&nbsp;</td>   <td><textarea name="omschrijving_eng" style="width:300px;height:50px;"><%= omschrijving_engId %></textarea></td></tr>
+    <tr><td>Lokatie, regio/afdeling en functie:&nbsp;</td>   <td><textarea name="omschrijving_eng" style="width:300px;height:50px;"><%= omschrijving_engId %></textarea></td></tr>
     <tr><td>Functie (visitekaartje):&nbsp;</td>     <td><input type="text" name="job" value="<mm:field name="job" />" style="width:300px;"></td></tr>
-    <tr><td>Lokatie:&nbsp;</td>                     <td><input type="text" name="omschrijving_de" value="<%= omschrijving_deId %>" style="width:300px;"></td></tr>
     <tr><td><%= specialDays %>:&nbsp;</td>         <td><textarea name="omschrijving_fra" style="width:300px;height:50px;"><mm:field name="omschrijving_fra" /></textarea></td></tr>
+    <tr><td>Werkzaamheden: &nbsp;</td>   <td><textarea name="omschrijving_de" style="width:300px;height:50px;"><%= omschrijving_deId %></textarea></td></tr>
     <% if(iRubriekLayout!=NMIntraConfig.SUBSITE1_LAYOUT) { 
       %>
       <tr><td>En verder:&nbsp;</td>                   <td><textarea name="omschrijving" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
