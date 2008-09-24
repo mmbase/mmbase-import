@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.8 2008-09-24 06:49:14 michiel Exp $
+ * @version $Id: ConvertImageTest.java,v 1.9 2008-09-24 07:01:59 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -139,7 +139,7 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
             assertEquals(accessTimesBefore, getImagesAccessTimes());
             node.setStringValue("title", "the images title");
             node.commit();
-            assertEquals(accessTimesBefore, getImagesAccessTimes());
+            assertEquals(accessTimesBefore, getImagesAccessTimes()); // FAILING!
         }
     }
 
