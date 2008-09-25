@@ -1,3 +1,5 @@
+mmbaseversion=1.9.0-SNAPSHOT
+
 version=`date -u '+%Y-%m-%d'`
 cvsversionoption="-D"
 cvsversion=`date  '+%Y-%m-%d %H:%M'`
@@ -11,3 +13,5 @@ revision="-A"
 dir=${version}
 builddir="/home/nightly/builds/${dir}"
 mkdir -p ${builddir}
+
+
