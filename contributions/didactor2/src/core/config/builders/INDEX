@@ -19,7 +19,6 @@
 ./didactor_component/components.xml
 ./didactor_component/settingrel.xml
 ./didactor_component/settings.xml
-./didactor_resources/flashobjects.xml
 ./didactor_resources/audiotapes.xml
 ./didactor_resources/descriptionrel.xml
 ./didactor_resources/mmevents.xml
