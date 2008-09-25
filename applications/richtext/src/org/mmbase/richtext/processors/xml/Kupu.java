@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.3 2008-09-19 16:03:21 michiel Exp $
+ * @version $Id: Kupu.java,v 1.4 2008-09-25 09:38:52 michiel Exp $
  */
 
 class Kupu {
@@ -87,7 +87,7 @@ class Kupu {
     private static Pattern crossElement  = Pattern.compile("a|img|div");
     private static Pattern divClasses    = Pattern.compile(".*\\bfloat (?:note left|note right|intermezzo|caption left|caption right|quote left|quote right)");
 
-    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type");
+    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type|height|width");
 
     private static void copyAllowedAttributes(Element source, Element destination) {
         NamedNodeMap attributes = source.getAttributes();
@@ -416,14 +416,34 @@ class Kupu {
         NodeManager flashobjects = cloud.getNodeManager("flashobjects");
         String flashIntro = request.getContextPath() + "/mmbase/kupu/mmbase/icons/flash.png?o=";
         if (! href.startsWith(flashIntro)) {
-            log.info("href " + href + " does not start with " + flashIntro + "hence this is not a flash object");
+            log.debug("href " + href + " does not start with " + flashIntro + "hence this is not a flash object");
             return false;
         }
-        log.info("Found flash " + href);
+        log.debug("Found flash " + href);
         String nodeNumber = href.substring(flashIntro.length());
         Node flash = cloud.getNode(nodeNumber);
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
+        {
+            String heightAttr = a.getAttribute("height");
+            if (! "".equals(heightAttr)) {
+                int height = Integer.parseInt(heightAttr);
+                flash.setValue("height", height);
+            } else {
+                log.warn("No height found on " + XMLWriter.write(a));
+            }
+        }
+        {
+            String widthAttr = a.getAttribute("width");
+            if (! "".equals(widthAttr)) {
+                int width = Integer.parseInt(widthAttr);
+                flash.setValue("width", width);
+            } else {
+                log.warn("No width found on " + XMLWriter.write(a));
+            }
+        }
+
+
         usedFlash.add(new Entry(id, flash));
         NodeList linkedFlash = Util.get(cloud, relatedFlash, "idrel.id", a.getAttribute("id"));
         if (! linkedFlash.isEmpty()) {
@@ -443,6 +463,7 @@ class Kupu {
             newIdRel.setStringValue("class", klass);
             newIdRel.commit();
         }
+
         a.removeAttribute("src");
         a.removeAttribute("height");
         a.removeAttribute("width");
