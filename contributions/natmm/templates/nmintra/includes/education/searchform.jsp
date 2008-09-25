@@ -23,7 +23,7 @@
       %>
       <%@include file="selectprovider.jsp"%>
       <% // @include file="includes/eduselectcompetencetypes.jsp" %>
-      <%@include file="selectcompetencies.jsp"%>
+      <%-- <%@include file="selectcompetencies.jsp"%> --%> 
 		<br/>
       <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
       	<tr>
