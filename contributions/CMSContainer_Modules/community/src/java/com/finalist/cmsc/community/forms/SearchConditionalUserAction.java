@@ -37,14 +37,23 @@ public class SearchConditionalUserAction extends DispatchAction {
    private AuthenticationService authenticationService;
    private AuthorityService authorityService;
 
+   /**
+    * @param personService need personService
+    */
    public void setPersonService(PersonService personService) {
       this.personService = personService;
    }
 
+   /**
+    * @param authenticationService need it
+    */
    public void setAuthenticationService(AuthenticationService authenticationService) {
       this.authenticationService = authenticationService;
    }
 
+   /**
+    * @param authorityService need it
+    */
    public void setAuthorityService(AuthorityService authorityService) {
       this.authorityService = authorityService;
    }
@@ -67,12 +76,12 @@ public class SearchConditionalUserAction extends DispatchAction {
 
    /**
     * Search groups according to some search conditions.
-    * @param actionMapping
-    * @param actionForm
-    * @param request
-    * @param httpServletResponse
-    * @return
-    * @throws Exception
+    * @param actionMapping goto jsp
+    * @param actionForm get paramate
+    * @param request setSharedAttributes
+    * @param httpServletResponse do nothing
+    * @return ActionForward chose jsp
+    * @throws Exception throw exception
     */
    public ActionForward listGroupMembers(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
@@ -113,19 +122,19 @@ public class SearchConditionalUserAction extends DispatchAction {
             Authentication authentication = (Authentication) iter.next();
             userNames.add(authentication.getUserId());
          }
-         String TransFormNames = StringUtils.join(userNames, "','");
-         map.put("strict", TransFormNames);
+         String transFormNames = StringUtils.join(userNames, "','");
+         map.put("strict", transFormNames);
       }
    }
 
    /**
     * searching for newsletter subscriber candidate list
-    * @param actionMapping
-    * @param actionForm
-    * @param request
-    * @param httpServletResponse
-    * @return showing newsletter subscriber candidate list
-    * @throws Exception
+    * @param actionMapping goto jsp
+    * @param actionForm get paramate
+    * @param request setSharedAttributes
+    * @param httpServletResponse do nothing
+    * @return ActionForward chose jsp
+    * @throws Exception throw exception
     */
    public ActionForward searchCandidateSubscriber(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
