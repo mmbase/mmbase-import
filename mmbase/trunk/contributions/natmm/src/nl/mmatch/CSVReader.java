@@ -581,6 +581,7 @@ public class CSVReader implements Runnable {
               Node destination = relatedNodes(cloud, thisPerson, personsNode, "afdelingen", "naam", "readmore", "readmore", "FUNC_OMS", logPerson);
               // this department is in use, so set to active
               destination.setValue("importstatus", "active");
+              destination.setValue("omschrijving", thisPerson.get("K_S_WAARDE")); 
               destination.commit();
           } else { // locatie, column KOSTEN equals E00375
               thisPerson.put("locations",thisPerson.get("K_S_WAARDE"));
