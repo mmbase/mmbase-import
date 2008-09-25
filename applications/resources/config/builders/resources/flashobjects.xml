@@ -93,7 +93,10 @@
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="100" />
+        <minInclusive value="1" />
+      </datatype>
     </field>
 
     <field name="height">
@@ -105,19 +108,23 @@
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="100" />
+        <minInclusive value="1" />
+      </datatype>
     </field>
 
     <field name="mimetype" state="system">
       <descriptions>
-        <description xml:lang="en">Mimetype of the file, default: application/octet-stream</description>
-        <description xml:lang="nl">Mimetype van het bestand, standaard: application/octet-stream</description>
+        <description xml:lang="en">Mimetype of the file, default: application/x-shockwave-flash</description>
+        <description xml:lang="nl">Mimetype van het bestand, standaard: application/x-shockwave-flash</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">MimeType</guiname>
         <guiname xml:lang="nl">MimeType</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="application/x-shockwave-flash" />
         <required value="true" enforce="never" />
         <maxLength value="32" />
       </datatype>
