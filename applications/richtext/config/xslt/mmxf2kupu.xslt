@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.15 2008-09-19 16:04:32 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.16 2008-09-25 10:18:05 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -262,7 +262,7 @@
     <xsl:param name="last" />
     <xsl:variable name="url"><xsl:value-of select="$formatter_requestcontext" />/mmbase/kupu/mmbase/icons/flash.png?o=<xsl:value-of select="o:field[@name='number']" /></xsl:variable>
     <img>
-      <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
+      <xsl:attribute name="class">flash <xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:attribute name="height">
         <xsl:choose>
           <xsl:when test="o:field[@name='height'] != ''">
