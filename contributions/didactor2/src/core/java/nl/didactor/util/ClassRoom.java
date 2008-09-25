@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: ClassRoom.java,v 1.9 2008-08-01 15:58:26 michiel Exp $
+ * @version $Id: ClassRoom.java,v 1.10 2008-09-25 16:26:56 michiel Exp $
  */
 public class ClassRoom extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassRoom.class);
@@ -123,7 +123,9 @@ public class ClassRoom extends FunctionProvider {
 
 
 
-
+    public static Collection<String> getRoles(Node personnode, int educationno) {
+        return getRoles(MMBase.getMMBase().getBuilder("people").getNode(personnode.getNumber()), educationno, personnode.getCloud());
+    }
 
     /**
      * Return the roles of the user based on the given context
