@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-autowire="byName"
+        xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+  <context:property-placeholder location="classpath:spring-community.properties"/>
+  
+  <!-- Post-processors for all standard config annotations (for @Required) -->
+  <context:annotation-config />
+
+  <!-- DriverManagerDataSource is a local DataSource that works in any environment (for testing) -->
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+      p:driverClassName="${jdbc.driverClassName}"
+      p:url="${jdbc.url}"
+      p:username="${jdbc.username}"
+      p:password="${jdbc.password}"/>
+
+  <!-- JNDI DataSource 
+  <jee:jndi-lookup id="dataSource" jndi-name="jdbc/Community"/>
+  -->
+
+  <!-- Hibernate SessionFactory -->
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+        <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+        <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+      </props>
+    </property>
+    <property name="annotatedClasses">
+      <list>
+        <value>com.finalist.cmsc.services.community.security.Authentication</value>
+        <value>com.finalist.cmsc.services.community.security.Authority</value>
+        <value>com.finalist.cmsc.services.community.security.Permission</value>
+        <value>com.finalist.cmsc.services.community.person.Person</value>
+        <value>com.finalist.cmsc.services.community.preferences.Preference</value>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- TransactionManager -->
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" 
+      p:sessionFactory-ref="sessionFactory"/>
+
+  <!-- Instruct Spring to perform declarative transaction management automatically on annotated classes. -->
+  <tx:annotation-driven />
+
+  <!-- Acegi Security -->
+
+  <!-- AuthenticationManager (our own Hibernate implementation of UserDetailsService. User Cache not yet implemented -->
+  <bean name="authenticationProvider" class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+    <property name="userDetailsService" ref="userDetailsService" />
+    <property name="passwordEncoder">
+      <bean class="org.acegisecurity.providers.encoding.PlaintextPasswordEncoder" />
+    </property>
+<!-- 
+    <property name="saltSource">
+      <bean class="org.acegisecurity.providers.dao.salt.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="username" />
+      </bean>
+    </property>
+ -->   
+  </bean>
+  <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+    <property name="providers">
+      <list>
+        <ref bean="authenticationProvider"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- AccessDecisionManager (unanimous based, allow access if ALL voters vote to grant access) -->
+  <bean id="accessDecisionManager" class="org.acegisecurity.vote.UnanimousBased">
+    <property name="decisionVoters">
+      <list>
+        <ref bean="roleVoter"/>
+        <ref bean="groupVoter"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- voters -->
+  <bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter" />
+
+  <bean id="groupVoter" class="org.acegisecurity.vote.RoleVoter">
+    <property name="rolePrefix" value="GROUP_" />
+  </bean>
+
+  <!-- filters -->
+  <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+    <property name="filterInvocationDefinitionSource">
+      <value>
+        CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+        PATTERN_TYPE_APACHE_ANT
+        /**=httpSessionIntegrationFilter
+      </value>
+    </property>
+  </bean>
+
+  <bean id="httpSessionIntegrationFilter" class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"/>
+    
+<!--
+  <bean id="authenticationEntryPoint" class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+    <property name="realmName" value="Community Module" />
+  </bean>
+
+
+  <bean id="authenticationProcessingFilter" class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+    <property name="authenticationManager" ref="authenticationManager"/>
+    <property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+  </bean>
+-->
+
+  <!-- Services -->
+  <bean name="userDetailsService" class="com.finalist.cmsc.services.community.security.UserDetailsHibernateService" /> 
+  <bean name="authenticationService" class="com.finalist.cmsc.services.community.security.AuthenticationHibernateService" />
+  <bean name="authorityService" class="com.finalist.cmsc.services.community.security.AuthorityHibernateService" />
+  <bean name="preferenceService" class="com.finalist.cmsc.services.community.preferences.PreferenceHibernateService" />
+  <bean name="personService" class="com.finalist.cmsc.services.community.person.PersonHibernateService" />
+
+</beans>

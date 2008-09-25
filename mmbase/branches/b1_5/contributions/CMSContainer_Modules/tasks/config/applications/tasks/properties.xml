@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/tasks" timestamp="20050101000000">
+
+	<node number="300" owner="admin">
+		<key>tasks,user.subject</key>
+		<value>Nieuwe taak in uw Takenlijst</value>
+	</node>
+	<node number="301" owner="admin">
+		<key>tasks,user.message</key>
+		<value>Beste {0},
+
+Er is een taak in uw takenlijst toegevoegd.
+Ga naar de beheer omgeving van de website om de taak te bekijken en uit te voeren.
+
+Titel: {2}
+Omschrijving: {3}
+
+Met vriendelijke groet,
+{1}</value>
+	</node>
+
+	<node number="302" owner="admin">
+		<key>tasks,expire.subject</key>
+		<value>Nieuwe taken in uw Takenlijst</value>
+	</node>
+	<node number="303" owner="admin">
+		<key>tasks,expire.message</key>
+		<value>Beste {0},
+
+Er zijn {2} taken in uw takenlijst toegevoegd.
+Ga naar de beheer omgeving van de website om deze taken te bekijken en uit te voeren.
+
+Met vriendelijke groet,
+{1}</value>
+	</node>
+
+</properties>

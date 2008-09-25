@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/ecard" timestamp="20060906000000">
+	<node number="44003" owner="default">
+		<title>EcardPortlet</title>
+		<description>EcardPortlet</description>
+		<definition>ecardportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/APPLICATION" timestamp="20040225000000">
+
+	<node number="33001" owner="admin">
+		<name>Article</name>
+		<description>Article </description>
+		<wizard>config/article/article</wizard>
+		<nodepath>article</nodepath>
+		<fields>title</fields>
+	</node>
+
+	<node number="33002" owner="admin">
+		<name>Faqitem</name>
+		<description>Faqitem </description>
+		<wizard>config/faqitem/faqitem</wizard>
+		<nodepath>faqitem</nodepath>
+		<fields>title</fields>
+	</node>
+
+	<node number="33003" owner="admin">
+		<name>Link</name>
+		<description>Link </description>
+		<wizard>config/link/link</wizard>
+		<nodepath>link</nodepath>
+		<fields>title</fields>
+	</node>
+
+	<node number="33006" owner="admin">
+		<name>Faqcategory</name>
+		<description>Faqcategory </description>
+		<wizard>config/faqcategory/faqcategory</wizard>
+		<nodepath>faqcategory</nodepath>
+		<fields>title</fields>
+	</node>
+
+	<node number="33007" owner="admin">
+		<name>Attachments</name>
+		<description>Attachments </description>
+		<wizard>config/attachments/attachments</wizard>
+		<nodepath>attachments</nodepath>
+		<fields>title</fields>
+		<search>yes</search>
+	</node>
+
+	<node number="33008" owner="admin">
+		<name>Images</name>
+		<description>Images </description>
+		<wizard>config/images/images</wizard>
+		<nodepath>images</nodepath>
+		<fields>handle,title</fields>
+		<search>yes</search>
+	</node>
+
+	<node number="33009" owner="admin">
+		<name>Urls</name>
+		<description>Urls </description>
+		<wizard>config/urls/urls</wizard>
+		<nodepath>urls</nodepath>
+		<fields>name, url</fields>
+		<search>yes</search>
+	</node>
+
+   <node number="33010" owner="admin">
+      <name>HTML Fragment</name>
+      <description>HTML Fragment</description>
+      <wizard>config/html/html</wizard>
+      <nodepath>html</nodepath>
+      <fields>code</fields>
+   </node>
+
+</editwizards>

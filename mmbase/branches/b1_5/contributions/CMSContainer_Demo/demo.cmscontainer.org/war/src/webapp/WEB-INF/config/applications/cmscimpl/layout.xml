@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout exportsource="cmsc file dumper" timestamp="20070324161134">
+	<node number="87326" owner="default">
+		<title>sitemap</title>
+		<resource>demo/sitemap_layout.jsp</resource>
+	</node>
+	<node number="543" owner="default">
+		<title>Landingspage</title>
+		<resource>demo/landingspage_layout.jsp</resource>
+	</node>
+	<node number="173753" owner="default">
+		<title>2 columns (right)</title>
+		<resource>demo/2_column_layout_right.jsp</resource>
+	</node>
+	<node number="539" owner="default">
+		<title>3 columns</title>
+		<description>3 columns layout</description>
+		<resource>demo/3_column_layout.jsp</resource>
+	</node>
+	<node number="124340" owner="default">
+		<title>1 column</title>
+		<description>1 column layout</description>
+		<resource>demo/1_column_layout.jsp</resource>
+	</node>
+	<node number="541" owner="default">
+		<title>2 columns</title>
+		<description>2 columns layout</description>
+		<resource>demo/2_column_layout.jsp</resource>
+	</node>
+</layout>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="delete">
+	<prompt xml:lang="nl">Weet u zeker dat u dit evenement wilt verwijderen?</prompt>
+	<prompt xml:lang="zh">您确定删除此事件?</prompt>
+	<description xml:lang="nl">Klik hier om dit evenement te verwijderen.</description>
+	<description xml:lang="zh">点击删除事件.</description>
+</action>

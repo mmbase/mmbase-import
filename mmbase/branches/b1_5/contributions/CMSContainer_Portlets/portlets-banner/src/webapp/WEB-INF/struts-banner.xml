@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+    <!-- ========== Data Sources Definitions =================================== -->
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+        <form-bean name="BannerForm" type="com.finalist.portlets.banner.search.BannerForm" />
+    </form-beans>
+
+    <!-- ========== Global Exceptions Definitions =================================== -->
+    <!-- ========== Global Forward Definitions =================================== -->
+    <!-- ========== Action Mapping Definitions =================================== -->
+    <action-mappings>
+
+        <action path="/editors/resources/SearchBannerInitAction" type="com.finalist.portlets.banner.search.SearchBannerInitAction"
+            name="BannerForm" scope="request" input="/editors/resources/banners_and_positions.jsp" unknown="false" validate="true">
+            <forward name="success" path="/editors/resources/banners_and_positions.jsp" redirect="false" />
+        </action>
+
+        <action path="/editors/resources/SearchBannerAction" type="com.finalist.portlets.banner.search.SearchBannerAction"
+            name="BannerForm" scope="request" input="/editors/resources/banners_and_positions.jsp" unknown="false" validate="true">
+            <forward name="searchLive" path="/editors/resources/SearchBannerInitAction.do?remote=true" redirect="false" />
+            <forward name="searchStaging" path="/editors/resources/SearchBannerInitAction.do?remote=false" redirect="false" />
+            <forward name="export" path="/editors/resources/export_positions.jsp" redirect="false" />
+        </action>
+
+        <action path="/editors/site/select/RemoteSelectorPage" type="com.finalist.portlets.banner.search.RemoteSelectorAction" 
+            unknown="false" validate="false"
+            className="com.finalist.cmsc.struts.SelectorActionMapping">
+            <set-property property="linkPattern" value="selectedpage.jsp?page={0}&amp;path={1}" />
+            <forward name="success" path="/editors/site/select/selectorpopup.jsp" redirect="false" />
+        </action>
+
+    </action-mappings>
+    <message-resources parameter="portlets-banner" key="PORTLETS-BANNER" />
+</struts-config>

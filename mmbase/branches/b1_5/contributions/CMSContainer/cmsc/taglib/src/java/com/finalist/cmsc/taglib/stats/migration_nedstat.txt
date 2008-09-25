@@ -1,0 +1,10 @@
+Migration document:
+
+Intro:
+This is a small remark about using the nedstat tag in a customerspecific environment. 
+
+When using the nedstat tag, please add an environment variable in the context file in the live environment to indicate whether or not this is the
+production environment. The nedstat tags are only added when in the live environment and when there is an environment variable called 'server/production'
+that is set to 'true':
+
+<Environment name="server/production" value="true" type="java.lang.String" />	

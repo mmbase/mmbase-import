@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_contentinfo">
+	<title xml:lang="nl">Extra informatie</title>
+	<title xml:lang="en">Extra information</title>
+	<title xml:lang="zh">扩展信息</title>
+	<field name="number" ftype="data">
+		<prompt xml:lang="en">Number</prompt>
+		<prompt xml:lang="nl">Nummer</prompt>
+		<prompt xml:lang="zh">编号</prompt>
+	</field>
+	<field name="creationdate" ftype="data">
+		<prompt xml:lang="en">Creationdate</prompt>
+		<prompt xml:lang="nl">Aangemaakt</prompt>
+		<prompt xml:lang="zh">创建时间</prompt>
+	</field>
+	<field name="lastmodifieddate" ftype="data">
+		<prompt xml:lang="en">Lastmodifieddate</prompt>
+		<prompt xml:lang="nl">Gewijzigd</prompt>
+		<prompt xml:lang="zh">最后修改时间</prompt>
+	</field>
+	<field name="creator" ftype="data">
+		<prompt xml:lang="en">Creator</prompt>
+		<prompt xml:lang="nl">Aangemaakt door</prompt>
+		<prompt xml:lang="zh">创建人</prompt>
+	</field>
+	<field name="lastmodifier" ftype="data">
+		<prompt xml:lang="en">Lastmodifier</prompt>
+		<prompt xml:lang="nl">Gewijzigd door</prompt>
+		<prompt xml:lang="zh">最后修改人</prompt>
+	</field>
+	<list role="creationrel" destination="contentchannel" minoccurs="0" maxoccurs="1" hidecommand="delete-item">
+		<title xml:lang="nl">Aangemaakt in</title>
+		<title xml:lang="en">Created in</title>
+		<title xml:lang="zh">创建中</title>
+		<item>
+			<field name="path" ftype="data">
+				<prompt xml:lang="en">Path</prompt>
+				<prompt xml:lang="nl">Pad</prompt>
+				<prompt xml:lang="zh">路径</prompt>
+			</field>
+		</item>
+	</list>
+	<list role="contentrel" destination="contentchannel" minoccurs="0" maxoccurs="*" hidecommand="delete-item">
+		<title xml:lang="nl">Gekoppeld aan</title>
+		<title xml:lang="en">Linked in</title>
+		<title xml:lang="zh">链接中</title>
+		<item>
+			<field name="path" ftype="data">
+				<prompt xml:lang="en">Path</prompt>
+				<prompt xml:lang="nl">Pad</prompt>
+				<prompt xml:lang="zh">路径</prompt>
+			</field>
+		</item>
+	</list>
+</form-schema>

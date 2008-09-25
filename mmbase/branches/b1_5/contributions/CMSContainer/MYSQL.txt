@@ -1,0 +1,59 @@
+mysql -u root -p mysql
+
+// Show all databases in server
+SHOW DATABASES;
+
+// create database
+CREATE DATABASE <database> CHARACTER SET latin1;
+CREATE DATABASE <database> CHARACTER SET utf8 collate utf8_unicode_ci;
+
+// After alter your database charset, you will need to remove all the tables and re-create them 
+ALTER DATABASE <database> CHARACTER SET utf-8 collate utf8_unicode_ci;
+
+// Show statement to recreate database
+SHOW CREATE DATABASE <database>;
+
+// Create user with priviliges
+GRANT ALL PRIVILEGES ON *.* TO <user>@localhost IDENTIFIED BY '<password>' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO <user>@"%" IDENTIFIED BY '<password>' WITH GRANT OPTION;
+
+// describe objects like tables
+DESCRIBE <table_name>;
+
+// Show all tables in database
+SHOW TABLES;
+
+// Show statement to recreate table
+SHOW CREATE TABLE <table_name>;
+
+// Rename table
+RENAME TABLE <table_name> TO <new_table_name>;
+
+// Alter columns
+ALTER TABLE <table_name> MODIFY <field_name> varchar(<size>);
+
+ALTER TABLE <table_name> CHANGE column <old_field_name> <new_field_name> varchar(<size>);
+
+ALTER TABLE <table_name> DROP column <field_name>;
+
+// Convert table to InnoDB
+alter table <table_name> ENGINE = INNODB;
+
+// Dump restore databases
+mysqldump --opt <database> > backup-file.sql
+
+// Taking the full backup of all the tables including the data.
+mysqldump -u admin -p <database> > backup-file.sql
+// Taking the backup of table structures only.
+mysqldump -u admin -p <database> --no-data > backup-file.sql
+// Taking the backup data only.
+mysqldump -u admin -p <database> --no-create-info --complete-insert > backup-file.sql
+
+// Restore databases
+mysql database < backup-file.sql
+
+show variables
+max_allowed_packet
+
+// update value with replacement string
+UPDATE <table> SET <field_name> = replace(<field_name>, 'old', 'new');

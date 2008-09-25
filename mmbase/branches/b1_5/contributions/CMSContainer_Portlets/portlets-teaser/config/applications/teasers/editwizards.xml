@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/teasers" timestamp="20040225000000">
+
+	<node number="33701" owner="admin">
+		<name>Banner</name>
+		<description>Banner</description>
+		<wizard>config/banners/banners</wizard>
+		<nodepath>banners</nodepath>
+		<fields>title</fields>
+	</node>
+
+</editwizards>
