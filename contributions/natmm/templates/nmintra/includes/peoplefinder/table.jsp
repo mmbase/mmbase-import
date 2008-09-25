@@ -67,10 +67,10 @@
                     } %></mm:field></td></tr>
         <%
         if(fullDescription) { 
-           %><mm:related path="readmore,afdelingen" 
-                   fields="afdelingen.naam,readmore.readmore">
+           %><mm:related path="readmore,afdelingen"
+                   fields="afdelingen.naam,afdelingen.omschrijving,readmore.readmore">
                <tr><td style="padding-bottom:3px;">Regio, eenheid of afdeling:&nbsp;</td>
-                   <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="afdelingen.naam" /></td></tr>
+                   <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="afdelingen.omschrijving" /> <mm:field name="afdelingen.naam" /></td></tr>
                <mm:field name="readmore.readmore"><mm:isnotempty><tr><td style="padding-bottom:3px;">Functie:&nbsp;</td>
                    <td style="padding-bottom:3px;vertical-align:bottom;"><mm:write /></td></tr></mm:isnotempty></mm:field>
            </mm:related
