@@ -1,0 +1,546 @@
+/* main block */
+
+.centerall {
+	margin: 0px auto 0px auto;
+}
+
+html, body
+{
+  height: 100%;
+}
+
+body 
+{
+  text-align: center;
+	padding:0px 0px 0px 0px;
+	margin: 0px auto 0px auto;
+	font:0.75em Arial, Helvetica, sans-serif;
+	line-height: 1.5em;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	color: #666666;
+}
+
+#holder 
+{
+  padding:0px 0px 0px 0px;
+  margin: 0px auto 0px auto;
+  width: 994px;
+  position: relative;
+  min-height: 100%;
+  height:auto !important;
+  height:100%;
+  text-align: left;
+  background: #fff;
+}
+
+/* also in stijl_ie.css! */
+/* CMSC-598 DISABLED THIS PART BECAUSE IT BREAKS THE INLINE EDITORS, (which of course sucks)
+ul 
+{
+  padding-left: 0px;
+  margin-left: 12px;
+}
+
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+*/
+.clear{
+	clear: both;
+}
+
+.hidden
+{
+  display: none;
+}
+
+a.readon
+{
+  display: block;
+}
+
+a 
+{
+  color: #777777;
+  text-decoration: none;
+}
+
+a:hover 
+{
+  text-decoration: underline;
+}
+
+a img 
+{
+  border: 0 none;
+}
+
+.space {
+	padding-left: 7px;
+	padding-right: 7px;
+}
+
+/* whitelines */
+
+.whiteline {
+	height: 7px;
+}
+
+.divider {
+	height: 35px;
+}
+
+.divider2 {
+	height: 25px;
+}
+
+.divider3 {
+	height: 18px;
+}
+
+.divider4 {
+	height: 15px;
+}
+
+.divider5 {
+	height: 10px;
+}
+
+/* divider */
+
+.divider_gray {
+	height: 37px;
+	background: transparent url(../gfx/divider_gray.gif) repeat-x 0 0;
+}
+
+.divider_white {
+	height: 20px;
+	background: transparent url(../gfx/divider_white.gif) repeat-x 0 0;
+}
+
+.divider_brown {
+	height: 20px;
+	background: transparent url(../gfx/divider_brown.gif) repeat-x 0 0;
+}
+
+/* list */
+
+.list .date {
+	font-weight: bold;
+	color: #000;
+	float: left;
+	width: 110px;
+}
+
+.list .content {
+	float: left;
+	display: block;
+	width: 415px; /* +- column width - 'date-width' */
+}
+
+.list li
+{
+	list-style: none;
+	list-style-image: none;
+}
+
+/* top_img */
+
+#top_img {
+	width: inherit;
+}
+
+/* site_menu */
+
+#menu {
+	color: #fff;
+	font-weight: bold;
+	margin: auto;
+	width:994px;
+	height:39px;
+}
+
+#menu .center {
+	top:50%;
+	left:50%;
+	margin: auto;
+}
+
+#menu ul {
+	list-style: none;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right: 0;
+	text-align:center;
+}
+
+#menu li {
+	display: block;
+	height: 39px;
+	float: left;
+}
+
+/* main */
+
+#breadcrumb {
+	width: 952px;
+	height: inherit;
+	padding-top: 20px;
+	padding-left: 42px;
+	color: #c6c6c6;
+}
+
+#breadcrumb a {
+	color: #c6c6c6;
+}
+
+#main {
+	width: 994px;
+	height: inherit;
+	float: left;
+	background: #fff;
+}
+
+/* nav_columm1 */
+
+#navleft {
+	width: 190px;
+	color: #fff;
+	font-weight: bold;
+}
+
+#navleft a 
+{
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  height: 22px;
+  display: block;
+  width: inherit;
+  margin: auto;
+  padding-top: 3px;
+  padding-left: 11px;
+  color: #fff;
+}
+
+#navleft a:hover,
+#navleft .sub a:hover
+{
+  text-decoration: none;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+#navleft .selected a,
+#navleft a:active,
+#navleft a:focus,
+#navleft .selected a:hover,
+#navleft .sub.selected a:hover
+{
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+#navleft .sub a 
+{
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  font-weight: normal;
+  padding-left: 20px;
+}
+
+#navleft .sub.selected a,
+#navleft .sub a:active,
+#navleft .sub a:focus
+{
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  font-weight: bold;
+}
+
+/* textstyle */
+.body a, .intro a
+{
+  text-decoration: underline;
+}
+
+.content h1 {
+	margin: 0;
+	font-size: 1.3em;
+	color: #000;
+}
+
+.content h2 {
+	margin: 0;
+	font-size: 1.1em;
+	color: #000;
+}
+
+.content h3 {
+	margin: 0;
+	font-size: 1.2em;
+	color: #000;
+}
+
+.content p {
+	margin: 0;
+}
+
+.content p.intro
+{
+  margin-bottom: 1em;
+}
+
+/* inline images (this does not work in IE6-) */
+.inline-left
+{
+  margin: 0px 20px 20px 0px;
+}
+
+.inline-right
+{
+  margin: 0px 0px 20px 20px;
+}
+
+.content .quote {
+	padding-top: 10px;
+	padding-bottom: 15px;
+	font-size: 0.8em;
+	line-height: normal;
+}
+
+.content .eventinfo {
+	color: #c5c5c5;
+}
+
+.content h1 a {
+	color: #000;
+	padding: 0;
+}
+
+.content h2 a {
+	color: #000;
+	padding: 0;
+}
+
+/* links */
+
+.linklist {
+	margin-left: 0;
+	margin: 0px 0px 20px 0px;
+}
+
+.linklist h2 {
+	padding: 0 0 7px 0;
+}
+
+.linklist ul {
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.linklist ul li
+{
+  margin-bottom: 3px;
+}
+
+.itemlist {
+	margin-left: 0;
+	padding-left: 0;
+	list-style: none;
+}
+
+.itemlist ul {
+	list-style: none;
+	margin-left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 0;
+}
+
+.itemlist li {
+	list-style: none;
+}
+
+/* photowrapper newslist */
+.photowrapper {
+  width: 220px;
+}
+
+/* block_column3 */
+
+.block {
+	background: #eaeaea url(../gfx/block_bg.gif) repeat-x 0 0;
+	padding-bottom: 25px;
+}
+
+.block .item {
+	width: inherit;
+	padding: 10px 10px 0 10px;
+}
+
+.block .center {
+	top:50%;
+	left:50%;
+	margin: auto;
+}
+
+.block h1 {
+	font-weight: normal;
+}
+
+/* footer */
+
+#footer {
+	background: #fff;
+	width: 952px;
+	height: 29px;
+	padding-left: 42px;
+	padding-top: 6px;
+	padding-bottom: 10px;
+	float: left;
+}
+
+/* checklists */
+
+.checklist {
+  list-style: none;
+	margin-left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 0;
+}
+
+.checklist label {
+    display: block;
+    text-indent: -25px;
+}
+
+#form
+{
+  background: #eaeaea url(../gfx/block_bg.gif) repeat-x 0 0;
+  min-height: 300px;
+  padding: 0px 0px 20px 0px;
+}
+
+#form form
+{
+  margin: 0;
+  padding: 10px 0px 0px 0px;
+}
+
+#form .titel
+{
+  color: #000;
+  font-weight: bold;
+  font-size: 1.25em;
+  padding: 10px;
+  border-bottom: 1px solid white;
+}
+
+#form label
+{
+  text-align: right;
+  font-weight: bold;
+  float: left;
+  display: block;
+  width: 151px;
+  padding-right: 20px;
+  padding-bottom: 8px;
+}
+
+#form input,
+#form select,
+#form textarea
+{
+  border: 1px solid #eaeaea;
+  float: left;
+  width: 190px;
+}
+
+#form input,
+#form textarea
+{
+  width: 190px;
+}
+
+
+#form select
+{
+  width: 192px;
+}
+#form input.validation-error,
+#form select.validation-error,
+#form textarea.validation-error,
+#form select.validation-error
+{
+  border-width: 1px;
+  border-color: red;
+}
+
+#form .button
+{
+  margin-left: 230px;
+  margin-top: 20px;
+  width: 130px;
+  height: 24px;
+}
+
+#form .button input.button
+{
+  display: block;
+  height: 24px;
+  font-weight: bold;
+  background-color: #000;
+  color: #fff;
+  padding-top: 3px;
+  text-align: center;
+  width: 100%;
+}
+
+#form a.tt
+{ 
+  position: relative; 
+  left: 5px;
+  text-decoration: none; 
+  z-index: 65; 
+}
+
+#form a.tt span
+{
+  display: none;
+}
+
+#form a.tt:hover
+{ 
+  z-index: 66;
+  background-color: transparent; /* for some reason IE6 needs this statement?? */
+}
+
+#form a.tt:hover span
+{ 
+  display: block; 
+  border: 1px solid #c1c1c1; 
+  background-color: #959595; 
+  color: #fff; 
+  font-weight: normal;
+  padding: 5px; 
+  position: absolute; 
+  top: 25px;
+  left: 15px; 
+  width: 130px; 
+}
+
+#form a.tt:hover span strong.label
+{ 
+  display: block;
+  color: #000;
+}

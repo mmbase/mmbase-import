@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!--
+ * MMBase Remote Publishing
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+-->
+<application name="Publisher" maintainer="mmbase.org" version="1" auto-deploy="true">
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="1">cloud</builder>
+		<builder maintainer="mmbase.org" version="1">remotenodes</builder>
+		<builder maintainer="mmbase.org" version="1">publishqueue</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	</allowedrelationlist>
+
+	<datasourcelist>
+		<datasource builder="cloud" path="Publisher/cloud.xml" />
+		<datasource builder="remotenodes" path="Publisher/remotenodes.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+	</relationsourcelist>
+
+	<contextsourcelist>
+		<contextsource path="Publisher/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
+
+	<description>Publisher</description>
+
+	<install-notice>Publisher installed</install-notice>
+</application>

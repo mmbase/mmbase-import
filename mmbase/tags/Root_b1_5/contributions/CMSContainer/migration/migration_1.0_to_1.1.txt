@@ -1,0 +1,54 @@
+
+
+
+Migration document:
+
+Part: core
+From version: 1.0
+To version: 1.1
+
+
+Execute the following steps below in the given order:
+
+Name: Add language to users.
+Goal: So seperate users can now store a prefered language
+Type: sql-script
+--- Start script ---
+alter table mm_user add language varchar(2);
+alter table live_user add language varchar(2);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
+
+
+
+Name:  
+Goal:
+Type:  sql-script
+--- Start script ---
+(paste script here)
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
+Name:  
+Goal:
+Type:  manual action
+Steps:
+*
+*
+*
+*
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+

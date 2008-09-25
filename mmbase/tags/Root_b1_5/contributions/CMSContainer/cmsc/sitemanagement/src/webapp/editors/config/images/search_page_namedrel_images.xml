@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="namedrel" destination="images" minoccurs="0" maxoccurs="*"
+	orderby="field[@name='name']" ordertype="string" hidecommand="move-up|move-down">
+	
+	<title xml:lang="nl">Afbeeldingen</title>
+	<title xml:lang="en">Images</title>
+
+	<item>
+	    <field name="handle" ftype="image">
+			<prompt xml:lang="en">Image</prompt>
+			<prompt xml:lang="nl">Afbeelding</prompt>
+		</field>
+		<field ftype="line" name="title">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+		</field>
+		<field fdatapath="field[@name=&apos;name&apos;]" ftype="line" dtmaxlength="255">
+			<prompt xml:lang="en">Name</prompt>
+			<prompt xml:lang="nl">Naam</prompt>
+		</field>
+	</item>
+	
+	<command name="search" nodepath="images" age="-1" fields="title" pagelength="20">
+		<prompt xml:lang="en">Search image</prompt>
+		<prompt xml:lang="nl">Zoek afbeelding</prompt>
+		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+	</command>
+	
+	<command name="insert" objectnumber="new">
+		<prompt xml:lang="en">New</prompt>
+		<prompt xml:lang="nl">Nieuw</prompt>
+	</command>
+	
+	<action type="create">
+		<relation role="namedrel">
+			<object type="images" />
+		</relation>
+	</action>
+</list>
