@@ -1,6 +1,7 @@
 package nl.didactor.component.assessment.education_menu.utils;
 
 import java.util.*;
+import nl.didactor.util.ClassRoom;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
@@ -8,7 +9,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @version $Id: LessonChecker.java,v 1.3 2008-09-05 09:59:15 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.4 2008-09-25 16:30:42 michiel Exp $
  */
 
 public class LessonChecker {
@@ -34,6 +35,13 @@ public class LessonChecker {
 
        Node assessment = cloud.getNode(nl.didactor.component.Component.getComponent("assessment").getNumber());
        if (! education.getRelatedNodes("components", "settingrel", "destination").contains(assessment)) {
+           return resultSet;
+       }
+
+       Collection<String> roles = ClassRoom.getRoles(user, education.getNumber());
+       if (roles.contains("teacher") ||
+           roles.contains("courseeditor") ||
+           roles.contains("systemadministrator")) {
            return resultSet;
        }
 
