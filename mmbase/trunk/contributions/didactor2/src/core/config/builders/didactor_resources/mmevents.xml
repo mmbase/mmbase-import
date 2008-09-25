@@ -104,11 +104,7 @@
         <guiname xml:lang="nl">Lengte</guiname>
         <guiname xml:lang="eo">Longo</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>4</list>
-        </positions>
-      </editor>
+      <editor><positions><list>4</list></positions></editor>
       <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
