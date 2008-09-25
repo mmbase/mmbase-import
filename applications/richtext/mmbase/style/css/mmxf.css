@@ -1,10 +1,13 @@
-.mmxf img.image-inline {
+.mmxf img.image-inline,
+.mmxf object.image-inline {
   float: none !important;
 }
-.mmxf img.image-left {
+.mmxf img.image-left,
+.mmxf object.image-left {
   float: left  !important;
 }
-.mmxf img.image-right {
+.mmxf img.image-right,
+.mmxf object.image-right {
   float: right !important;
 }
 .mmxf img.image-center {
