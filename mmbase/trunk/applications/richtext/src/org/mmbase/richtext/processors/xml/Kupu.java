@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.4 2008-09-25 09:38:52 michiel Exp $
+ * @version $Id: Kupu.java,v 1.5 2008-09-25 10:17:28 michiel Exp $
  */
 
 class Kupu {
@@ -85,7 +85,9 @@ class Kupu {
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
-    private static Pattern divClasses    = Pattern.compile(".*\\bfloat (?:note left|note right|intermezzo|caption left|caption right|quote left|quote right)");
+    private static Set<String> divClasses    = new HashSet<String>(Arrays.asList(new String[] {"float", "note", "left", "right", "intermezzo", "caption", "quote"}));
+    private static Set<String> imageClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right"}));
+    private static Set<String> flashClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right"}));
 
     private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type|height|width");
 
@@ -161,13 +163,13 @@ class Kupu {
                 Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "a");
                 copyAllowedAttributes((Element) node, imp);
                 if (name.equals("div")) {
-                    String cssClass = Util.getCssClass("div " + imp.getAttribute("class"));
-                    if (! divClasses.matcher(cssClass).matches()) {
+                    Set<String> cssClasses = Util.getCssClasses(imp.getAttribute("class"), divClasses);
+                    if (! cssClasses.contains("float")) {
                         // this is no div of ours (copy/pasting?), ignore it.
                         parse((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
                         continue;
                     } else {
-                        imp.setAttribute("class", Util.getCssClass("div " + imp.getAttribute("class")));
+                        imp.setAttribute("class", "div " + Util.getCssClass(cssClasses));
                     }
                 }
                 if (state.mode == MODE_SECTION) {
@@ -380,7 +382,7 @@ class Kupu {
             image = image.getNodeValue("id");
             log.debug("This is an icache for " + image.getNumber());
         }
-        String klass = a.getAttribute("class");
+        String klass = Util.getCssClass(a.getAttribute("class"), imageClasses);;
         String id = a.getAttribute("id");
         usedImages.add(new Entry(id, image));
         NodeList linkedImage = Util.get(cloud, relatedImages, "idrel.id", a.getAttribute("id"));
@@ -422,7 +424,7 @@ class Kupu {
         log.debug("Found flash " + href);
         String nodeNumber = href.substring(flashIntro.length());
         Node flash = cloud.getNode(nodeNumber);
-        String klass = a.getAttribute("class");
+        String klass = Util.getCssClass(a.getAttribute("class"), flashClasses);;
         String id = a.getAttribute("id");
         {
             String heightAttr = a.getAttribute("height");
@@ -580,7 +582,7 @@ class Kupu {
         // fill _its_ body, still in kupu-mode
         block.setStringValue("body", XMLWriter.write(blockDocument, false));
         block.commit();
-        String klass = a.getAttribute("class");
+        String klass = Util.getCssClass(a.getAttribute("class"), divClasses);;
         String id = a.getAttribute("id");
         usedBlocks.add(new Entry(id, block));
         NodeList linkedBlock = Util.get(cloud, relatedBlocks, "idrel.id", id);
