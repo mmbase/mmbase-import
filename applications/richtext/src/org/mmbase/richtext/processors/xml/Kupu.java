@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.5 2008-09-25 10:17:28 michiel Exp $
+ * @version $Id: Kupu.java,v 1.6 2008-09-25 16:00:02 michiel Exp $
  */
 
 class Kupu {
@@ -426,11 +426,13 @@ class Kupu {
         Node flash = cloud.getNode(nodeNumber);
         String klass = Util.getCssClass(a.getAttribute("class"), flashClasses);;
         String id = a.getAttribute("id");
+        boolean updated = false;
         {
             String heightAttr = a.getAttribute("height");
             if (! "".equals(heightAttr)) {
                 int height = Integer.parseInt(heightAttr);
                 flash.setValue("height", height);
+                updated = true;
             } else {
                 log.warn("No height found on " + XMLWriter.write(a));
             }
@@ -440,9 +442,13 @@ class Kupu {
             if (! "".equals(widthAttr)) {
                 int width = Integer.parseInt(widthAttr);
                 flash.setValue("width", width);
+                updated = true;
             } else {
                 log.warn("No width found on " + XMLWriter.write(a));
             }
+        }
+        if (updated) {
+            flash.commit();
         }
 
 
