@@ -7,9 +7,16 @@
           >
   <di:html
       styleClass="education"
+      type="text/html"
       title_key="education.learnenvironmenttitle"
       expires="0"
       component="education">
+    <!--
+         serving out as tex/html because of:
+         https://bugzilla.mozilla.org/show_bug.cgi?id=456008
+         Flash will not be visible then in FF 3.0.2. Bug is fixed. In a few months it can be removed again.
+
+    -->
 
     <!-- wtf -->
     <mm:hasnode number="component.drm">
