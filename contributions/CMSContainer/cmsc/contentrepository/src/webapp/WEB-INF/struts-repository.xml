@@ -170,6 +170,8 @@
 			<forward name="images" path="/editors/resources/imagesearch.jsp" redirect="false" />
 			<forward name="attachments" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
 			<forward name="urls" path="/editors/resources/urlsearch.jsp" redirect="false" />
+         <forward name="imagesupload" path="/editors/resources/imageupload.jsp?uploadAction=" redirect="false" />
+         <forward name="attachmentsupload" path="/editors/resources/attachmentupload.jsp?uploadAction=search" redirect="false" />
 		</action>
 
 		<action path="/editors/resources/SecondaryEditAction" type="com.finalist.cmsc.resources.forms.SecondaryEditAction"
