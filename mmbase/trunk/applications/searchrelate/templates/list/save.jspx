@@ -26,11 +26,12 @@
           <span class="status">
             <mm:valid inverse="true">
               <mm:log level="debug">Form not valid</mm:log>
-              Form not valid
+              <jsp:text>Form not valid</jsp:text>
             </mm:valid>
           </span>
         </mm:form>
       </mm:listnodes>
     </mm:listnodescontainer>
+
   </div>
 </mm:cloud>
