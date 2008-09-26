@@ -127,7 +127,6 @@ a.menuitemactive:hover {
                                  
                                        <mm:field name="naam" jspvar="navTitel" vartype="String" write="false">
                                           <% 
-                                          System.out.println("navTitel:" + navTitel);
                                           if (navTitel.toLowerCase().equals("home")) { %>
                                              <tr><td></td><td>&nbsp;</td></tr>
                                              <tr><td></td><td>&nbsp;</td></tr>
