@@ -16,7 +16,6 @@
     <title xml:lang="nl">Invoeren bestand</title>
     <title xml:lang="en">Enter file</title>
     <field name="title" />
-    <field name="showtitle" />
     <field name="description" />
     <field name="handle" />
     <field name="width" />
