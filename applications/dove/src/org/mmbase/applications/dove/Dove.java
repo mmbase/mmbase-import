@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.97 2008-08-07 20:04:19 michiel Exp $
+ * @version $Id: Dove.java,v 1.98 2008-09-26 14:57:02 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -688,6 +688,9 @@ public class Dove extends AbstractDove {
                             if (p.matcher("image/someimageformat").matches() &&
                                 ! p.matcher("application/nonimageformat").matches()) {
                                 specialization = "image";
+                            } else if (p.matcher("application/x-shockwave-flash").matches() ||
+                                       ! p.matcher("application/nonflashformat").matches()) {
+                                specialization = "flash";
                             } else {
                                 specialization = "file";
                             }
@@ -1027,10 +1030,7 @@ public class Dove extends AbstractDove {
                         if (CHANGES_WARN.equals(changes)) {
                             log.warn(message);
                         } else {
-                            log.debug(message);
-                            Element err = addContentElement(ERROR, message, out);
-                            err.setAttribute(ELM_TYPE, IS_SERVER);
-                            return false;
+                            throw new RuntimeException(message);
                         }
                     }
                 }
