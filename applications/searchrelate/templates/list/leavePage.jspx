@@ -1,0 +1,14 @@
+<mm:cloud
+    method="asis"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <seq>
+    <old>${sessionScope['mm_list_sequence']}</old>
+    <mm:write session="mm_list_sequence" value="0" />
+    <new>${sessionScope['mm_list_sequence']}</new>
+  </seq>
+</mm:cloud>
