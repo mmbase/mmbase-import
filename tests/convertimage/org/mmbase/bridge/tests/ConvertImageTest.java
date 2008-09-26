@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.9 2008-09-24 07:01:59 michiel Exp $
+ * @version $Id: ConvertImageTest.java,v 1.10 2008-09-26 05:05:22 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -135,11 +135,14 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
             // make sure it is a minute later.
             Thread.sleep(61000);
             org.mmbase.cache.CacheManager.getCache("Nodes").clear();
-            Node node = cloud.getNode("jpeg.test.image");
+            Node node = cloud.getNode("jpeg.test.image"); // just gettign the node, should not access the file
             assertEquals(accessTimesBefore, getImagesAccessTimes());
-            node.setStringValue("title", "the images title");
+            assertFalse(node.isNull("handle")); // checking for file existance only, should not access the file
+            assertEquals(accessTimesBefore, getImagesAccessTimes());
+            node.setStringValue("title", "the images title"); // setting another field, should not access the file
+            assertEquals(1, node.getChanged().size());
             node.commit();
-            assertEquals(accessTimesBefore, getImagesAccessTimes()); // FAILING!
+            assertEquals(accessTimesBefore, getImagesAccessTimes());
         }
     }
 
