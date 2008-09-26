@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.16 2008-08-30 09:18:16 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.17 2008-09-26 15:40:00 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -158,7 +158,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 Enumeration en = request.getHeaderNames();
                 while (en.hasMoreElements()) {
                     String name = (String) en.nextElement();
-                    msg.append(escape.transform(name + ": "+request.getHeader(name)+"\n"));
+                    msg.append(escape.transform(name + ": "+ escape.transform(request.getHeader(name)) + "\n"));
                 }
 
                 msg.append("\nAttributes\n----------\n");
