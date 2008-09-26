@@ -90,6 +90,10 @@ public class ContentAction extends MMBaseAction {
             createdNumbers.put(String.valueOf(createdElement.getNumber()), createdElement);
          }
          addToRequest(request, "createdNumbers", createdNumbers);
+         //cmsc-144 make reorder icon show up
+         if(elementCount==2){
+        	 request.setAttribute("refresh", true);
+         }
       }
       return mapping.findForward(SUCCESS);
    }
