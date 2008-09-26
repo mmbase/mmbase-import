@@ -79,6 +79,11 @@
         <guiname xml:lang="nl">Bestand</guiname>
         <guiname xml:lang="eo">Dosiero</guiname>
       </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <maxLength value="16777215" />
       </datatype>
