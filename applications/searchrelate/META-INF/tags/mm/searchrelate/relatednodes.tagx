@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.27 2008-09-04 13:07:53 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.28 2008-09-26 13:55:15 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -30,11 +30,11 @@
                            />
   <jsp:directive.attribute name="orderby"     type="java.lang.String"
                            description="Like orderby of mm:relatednodes, but default to &lt;role&gt;.pos"
-                             />
+                           />
 
   <jsp:directive.attribute name="direction"     type="java.lang.String"
                            description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
-                             />
+                           />
 
   <jsp:directive.attribute name="fields"      type="java.lang.String" />
 
@@ -63,8 +63,12 @@
 
   <jsp:directive.attribute name="load"      type="java.lang.Boolean"
                            description="Whether javascript must be loaded. Normally this default to the correct value (only on first use), but sometimes,
-                                        e.g. if you use this tag again in the 'li', then you may want to put this explicitely to false"
+                                        e.g. if you use this tag again in the 'item', then you may want to put this explicitely to false"
                            />
+
+  <!--
+
+  -->
 
   <mm:import id="itemjsp">
     <c:choose>
@@ -85,12 +89,16 @@
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
-  <mm:import from="parameters,request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
-  <mm:write request="mm_list_sequence" value="${seq + 1}" />
-  <c:if test="${(seq eq 0 and empty load) or load}">
+  <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
+
+  <mm:import from="session" id="seq" externid="org.mmbase.searchrelate.relatednodes.sequence" vartype="integer">0</mm:import>
+  <mm:write session="org.mmbase.searchrelate.relatednodes.sequence" value="${seq + 1}" />
+
+  <c:if test="${(empty javascript_loaded and empty load) or load}">
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <mm:write request="mm_list_javascript" value="yes" />
   </c:if>
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -126,7 +134,7 @@
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
-                referids="source,f@fields,icondir?,confirm?,itemjsp@item" />
+                referids="source,f@fields,icondir?,confirm?,itemjsp@item,seq" />
           </mm:relatednodes>
 
         </mm:relatednodescontainer>
