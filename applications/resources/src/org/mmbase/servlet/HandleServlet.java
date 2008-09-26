@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.cache.Cache;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.2 2008-09-03 17:18:05 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.3 2008-09-26 10:12:26 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -39,6 +40,8 @@ public class HandleServlet extends BridgeServlet {
     private long expires; // expires so many milliseconds after serving
 
     private boolean isIECompatibleJpeg = true;
+
+    private static Cache<Integer, Integer> jpegSizes = null;
 
     protected Map getAssociations() {
         Map a = super.getAssociations();
@@ -68,6 +71,18 @@ public class HandleServlet extends BridgeServlet {
         String ieCompat = getInitParameter("IECompatibleJpeg");
         if (ieCompat != null) {
             isIECompatibleJpeg = Boolean.valueOf(ieCompat).booleanValue();
+        }
+        if (isIECompatibleJpeg && jpegSizes == null) {
+            jpegSizes = new Cache<Integer, Integer>(5000) {
+                public String getName() {
+                    return "JPEGSizes";
+                }
+                public String getDescription() {
+                    return "HandleServlet may ditch some bytes from Jpeg-steams to please IE";
+                }
+
+            };
+            jpegSizes.putCache();
         }
     }
 
@@ -228,8 +243,6 @@ public class HandleServlet extends BridgeServlet {
         if (node.isNull("handle")) {
             return;
         }
-        InputStream bytes = node.getInputStreamValue("handle");
-
 
         //remove additional information left by PhotoShop 7 in jpegs
         //this information may crash Internet Exploder. that's why you need to remove it.
@@ -239,14 +252,23 @@ public class HandleServlet extends BridgeServlet {
         //However they break many applications, including Quark and, significantly,
         //various versions of Internet Explorer on various platforms.
 
-        boolean canSendLength = true;
+        int jpegLength = -1;
 
-        if (isIECompatibleJpeg) {
-        	if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-            	bytes = new IECompatibleJpegInputStream(bytes);
-            	canSendLength = false;
-            	//res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+        final InputStream bytes;
+        if (isIECompatibleJpeg && (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg"))) {
+            Integer l = jpegSizes.get(node.getNumber());
+            if (l == null) {
+                byte[] byteArray = IECompatibleJpegInputStream.process(node.getByteValue("handle"));
+                l = byteArray.length;
+                jpegSizes.put(node.getNumber(), l);
+                bytes = new ByteArrayInputStream(byteArray);
+            } else {
+                bytes = new IECompatibleJpegInputStream(node.getInputStreamValue("handle"));
             }
+            jpegLength = l;
+            res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
+        } else {
+            bytes = node.getInputStreamValue("handle");
         }
 
         if (!setContent(query, node, mimeType)) {
@@ -255,7 +277,7 @@ public class HandleServlet extends BridgeServlet {
         setExpires(res, node);
         setCacheControl(res, node);
 
-        if (canSendLength) {
+        if (jpegLength == -1) {
             int size = -1;
             if (manager.hasField("size")) {
                 size = node.getIntValue("size");
@@ -267,7 +289,8 @@ public class HandleServlet extends BridgeServlet {
             }
             log.debug("Serving node " + node.getNumber() + " with bytes " + size);
         } else {
-            log.debug("Serving node " + node.getNumber() + " with unknown size, because IE sucks");
+            res.setContentLength(jpegLength);
+            log.debug("Serving node " + node.getNumber() + " with bytes " + jpegLength);
         }
         sendBytes(res, bytes);
     }
