@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html;charset=utf-8" %>
-<%@ include file="globals.jsp" %>
-<%@ page import="com.finalist.cmsc.repository.RepositoryUtil" %>
-<%@ page import="com.finalist.cmsc.security.*" %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@ page language="java" contentType="text/html;charset=utf-8" 
+%><%@ include file="globals.jsp" 
+%><%@ page import="com.finalist.cmsc.repository.RepositoryUtil" 
+%><%@ page import="com.finalist.cmsc.security.*" 
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="content.title">
@@ -173,26 +173,16 @@
       <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
       </c:if>
     <% } %>
-    <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
-                                                                 title="<fmt:message key="content.info" />"
-                                                                 alt="<fmt:message key="content.info" />"/></a>
-    <a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="../gfx/icons/preview.png"
-                                                                         alt="<fmt:message key="content.preview.title" />"
-                                                                         title="<fmt:message key="content.preview.title" />"/></a>
-    <a href="javascript:callEditWizard('<mm:field name="number" />');"
+     <a href="javascript:callEditWizard('<mm:field name="number" />');"
        title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
                                                        title="<fmt:message key="content.edit" />"
                                                        alt="<fmt:message key="content.edit" />"/></a>
-    <% if (role != null && SecurityUtil.isWriter(role)) { %>
-    <a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
-       target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
-        <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
-
-    <a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');"
-       title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16"
-                                                         title="<fmt:message key="content.unlink" />"
-                                                         alt="<fmt:message key="content.unlink" />"/></a>
-    <% } %>
+    <a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="../gfx/icons/preview.png"
+                                                                         alt="<fmt:message key="content.preview.title" />"
+                                                                         title="<fmt:message key="content.preview.title" />"/></a>
+    <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
+                                                                 title="<fmt:message key="content.info" />"
+                                                                 alt="<fmt:message key="content.info" />"/></a>
     <mm:haspage page="/editors/versioning">
         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
             <c:param name="nodenumber"><mm:field name="number"/></c:param>
@@ -201,19 +191,31 @@
                 src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />"
                 alt="<fmt:message key="content.icon.versioning.title" />"/></a>
     </mm:haspage>
+    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+    <a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');"
+       title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16"
+                                                         title="<fmt:message key="content.unlink" />"
+                                                         alt="<fmt:message key="content.unlink" />"/></a>
+    <a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
+       target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
+        <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
+    <% } %>
     <% if (role != null && SecurityUtil.isEditor(role)) { %>
-    <mm:last inverse="true">
-        <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
-                src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
-                alt="<fmt:message key="content.move.down" />"/></a>
-    </mm:last>
-    <mm:first inverse="true">
-        <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
+      <mm:first inverse="true">
+
         <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
                 src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />"
                 alt="<fmt:message key="content.move.up" />"/></a>
     </mm:first>
+    <mm:last inverse="true">
+        <mm:first><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:first>
+        <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
+                src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
+                alt="<fmt:message key="content.move.down" />"/></a>
+    </mm:last>
+
     <% } %>
+
     <cmsc:hasfeature name="savedformmodule">
         <c:set var="typeval">
             <mm:nodeinfo type="type"/>
