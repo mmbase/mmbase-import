@@ -4,6 +4,9 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -366,12 +369,17 @@ public abstract class WorkflowManager {
    }
 
    protected void changeWorkflowFailPublished(Node wfItem, String status, String stacktrace) {
-	      wfItem.setStringValue(STATUS_FIELD, status);
-	      if (StringUtils.isNotEmpty(stacktrace)) {
-	          wfItem.setStringValue(STACKTRACE_FIELD, stacktrace);
-	       }
-	      wfItem.commit();
-	   }
+      // We need to bypass the MMBase bridge to change workflow items.
+      // The bridge causes the lastmodifier field to be changed, which is visible for the end user.
+      MMObjectBuilder wfBuilder = MMBase.getMMBase().getBuilder(WORKFLOW_MANAGER_NAME);
+      MMObjectNode mmNode = wfBuilder.getNode(wfItem.getNumber());
+
+      mmNode.setValue(STATUS_FIELD, status);
+      if (StringUtils.isNotEmpty(stacktrace)) {
+         wfItem.setValue(STACKTRACE_FIELD, stacktrace);
+      }
+      wfBuilder.commit(mmNode);
+   }
 
 
    /**
