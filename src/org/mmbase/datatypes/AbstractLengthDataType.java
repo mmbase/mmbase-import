@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.25 2008-09-08 08:59:56 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.26 2008-09-26 05:31:12 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
@@ -37,7 +37,6 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
      */
     public AbstractLengthDataType(String name, Class<E> classType) {
         super(name, classType);
-        minLengthRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
 
@@ -149,10 +148,12 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     static class MinRestriction extends StaticAbstractRestriction<Long> {
         MinRestriction(BasicDataType<?> dt, MinRestriction source) {
             super(dt, source);
+            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         MinRestriction(BasicDataType<?> dt, long min) {
             super(dt, "minLength", Long.valueOf(min));
+            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
@@ -165,10 +166,12 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
     static class MaxRestriction extends StaticAbstractRestriction<Long> {
         MaxRestriction(BasicDataType<?> dt, MaxRestriction source) {
             super(dt, source);
+            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         MaxRestriction(BasicDataType<?> dt, long max) {
             super(dt, "maxLength", Long.valueOf(max));
+            setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
