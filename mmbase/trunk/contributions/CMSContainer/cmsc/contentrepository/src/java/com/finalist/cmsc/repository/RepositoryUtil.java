@@ -999,5 +999,15 @@ public final class RepositoryUtil {
             return false;
         }
     }
+    
+    /**
+     * get all Content Channels
+     * @return  content channel list
+     */
+    public static NodeList getAllContentChannels(Cloud cloud){
+       NodeList contentChannels = getContentChannelOrderedChildren(getRootNode(cloud));
+       contentChannels.add(0, getRootNode(cloud));
+       return contentChannels;
+    }
 
 }
