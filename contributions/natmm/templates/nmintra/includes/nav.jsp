@@ -97,7 +97,7 @@ a.menuitemactive:hover {
 														<td style="letter-spacing:1px;">
 														<a href="<%= ph.createPaginaUrl(sThisPage,request.getContextPath()) 
 															%>" class="menuItem<mm:field name="number"><mm:compare value="<%= paginaID %>">Active</mm:compare></mm:field
-															>"><mm:field name="titel" /></a>
+															>"><mm:field name="titel"/></a>
 														</td>
 													</tr>
 												</table>
@@ -124,6 +124,16 @@ a.menuitemactive:hover {
 															} %>"><mm:field name="naam" /></a>
 												</td>
 											</tr>
+                                 
+                                       <mm:field name="naam" jspvar="navTitel" vartype="String" write="false">
+                                          <% 
+                                          System.out.println("navTitel:" + navTitel);
+                                          if (navTitel.toLowerCase().equals("home")) { %>
+                                             <tr><td></td><td>&nbsp;</td></tr>
+                                             <tr><td></td><td>&nbsp;</td></tr>
+                                          <% } %>
+                                       </mm:field>                                 
+                                 
 										</table>
 									</td>
 								</tr>
