@@ -2,7 +2,8 @@
   Editwizard cascading style sheet.
 */
 div.buttonscontent  {
-        text-align: right;
+	text-align: right;
+	height:39px;
 } 
 
 /* CMS Container style  */
