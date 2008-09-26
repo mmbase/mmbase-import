@@ -14,7 +14,7 @@
 <div id="bigdiv" style="position:relative;">
 
 <div id="skyscraper" style="visibility: hidden; position:absolute; left:-625px; top:-850px; width:2000; height:2000; color:#000000; z-index:101;">
-   <div style="position: absolute; left: 1220px; top:838px; z-index:102; display: block;">
+   <div style="position: absolute; left: 1220px; top:722px; z-index:102; display: block;">
       <img src="flash/cross.gif" onclick="closeSkyscraper();"/>
    </div>
    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="2000" height="2000" id="overlayerbanner_pop_600x600" align="middle">
