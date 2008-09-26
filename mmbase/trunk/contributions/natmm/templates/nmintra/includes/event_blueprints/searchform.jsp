@@ -56,10 +56,10 @@ public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle
 	   </table>
       <%= getSelect(cloud,log,"Type activiteit",iRubriekStyle,eTypeId,eventTypes,"evenement_type","naam",searchUrl,"evt") %>
       <%= getSelect(cloud,log,"Doelgroep",iRubriekStyle,pCategorieId,participantsCategories,"deelnemers_categorie","naam",searchUrl,"pc") %>
-      <%= getSelect(cloud,log,"Leeftijd",iRubriekStyle,pAgeId,participantsAges,"deelnemers_age","name",searchUrl,"pa") %>
+      <%-- getSelect(cloud,log,"Leeftijd",iRubriekStyle,pAgeId,participantsAges,"deelnemers_age","name",searchUrl,"pa") --%>
       <%= getSelect(cloud,log,"Type terrein",iRubriekStyle,nReserveId,natureReserveTypes,"natuurgebieden_type","name",searchUrl,"nr") %>
-      <%= getSelect(cloud,log,"Afstand",iRubriekStyle,eDistanceId,evenementDistances,"evenement_distance","name",searchUrl,"evl") %>
-      <%= getSelect(cloud,log,"Tijdsduur",iRubriekStyle,eDurationId,evenementDurations,"evenement_duration","name",searchUrl,"evd") %>
+      <%-- getSelect(cloud,log,"Afstand",iRubriekStyle,eDistanceId,evenementDistances,"evenement_distance","name",searchUrl,"evl") --%>
+      <%-- getSelect(cloud,log,"Tijdsduur",iRubriekStyle,eDurationId,evenementDurations,"evenement_duration","name",searchUrl,"evd") --%>
       <%= getSelect(cloud,log,"Bezoekerscentrum",iRubriekStyle,departmentId,departments,"afdelingen","naam",searchUrl,"department") %>
 	   <br/>
 		<table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
