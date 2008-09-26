@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.26 2008-09-26 13:40:42 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.27 2008-09-26 14:08:04 michiel Exp $
  */
 
 
@@ -257,10 +257,7 @@ List.prototype.status = function(message, fadeout) {
  * @param stale Number of millisecond the content may be aut of date. Defaults to 5 s. But on unload it is set to 0.
  */
 List.prototype.commit = function(stale, leavePage) {
-    if (leavePage && ! List.prototype.leftPage) {
-        List.prototype.leftPage = true;
-        $.ajax({ type: "GET", async: false, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
-    }
+    var result;
     if(this.needsCommit()) {
         if (this.valid) {
             var now = new Date();
@@ -291,17 +288,22 @@ List.prototype.commit = function(stale, leavePage) {
                          }
                        });
 
-                return true;
+                result = true;
             } else {
                 // not stale enough
-                return true;
+                result = false;
             }
         } else {
-            return false;
+            result = false;
         }
     } else {
-        return true;
+        result = true;
     }
+    if (leavePage && ! List.prototype.leftPage) {
+        List.prototype.leftPage = true;
+        $.ajax({ type: "GET", async: true, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+    }
+    return result;
 }
 
 

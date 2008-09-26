@@ -5,12 +5,12 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
-  <mm:content type="text/html" expires="0">
+  <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="true" />
     <seq>
-      <old>${sessionScope['org.mmbase.searchrelate.relatednodes']}</old>
-      <mm:write session="org.mmbase.searchrelate.relatednodes" value="0" />
-      <new>${sessionScope['org.mmbase.searchrelate.relatednodes']}</new>
+      <old>${sessionScope['org.mmbase.searchrelate.relatednodes.sequence']}</old>
+      <mm:write session="org.mmbase.searchrelate.relatednodes.sequence" value="0" />
+      <new>${sessionScope['org.mmbase.searchrelate.relatednodes.sequence']}</new>
     </seq>
   </mm:content>
 </mm:cloud>
