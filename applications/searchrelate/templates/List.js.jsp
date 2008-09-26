@@ -17,18 +17,18 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.25 2008-09-26 13:04:06 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.26 2008-09-26 13:40:42 michiel Exp $
  */
 
 
 $(document).ready(function() {
     $(document).find("div.list").each(function() {
-    if (this.list == null) {
-        this.list = new List(this);
-    }
+        if (this.list == null) {
+            this.list = new List(this);
+        }
     });
     $(document).find("div.list:last").each(function() {
-    List.seq = $(this).find("input[name = 'seq']")[0].value;
+        List.seq = $(this).find("input[name = 'seq']")[0].value;
     });
 });
 
@@ -58,19 +58,19 @@ function List(d) {
     this.validator.setup(this.div);
 
     this.validator.validateHook = function(valid) {
-    self.valid = valid;
-    self.lastChange = new Date();
+        self.valid = valid;
+        self.lastChange = new Date();
     }
 
     $.timer(1000, function(timer) {
-    self.commit();
+        self.commit();
     });
 
     this.find(this.div, "a.create").each(function() {
-    self.bindCreate(this);
+        self.bindCreate(this);
     });
     this.find(this.div, "a.delete").each(function() {
-    self.bindDelete(this);
+        self.bindDelete(this);
     });
 
 
@@ -80,45 +80,45 @@ function List(d) {
     //$(this.div).find("a.delete").each(function() { self.bindDelete(this); });
 
     $(window).bind("beforeunload",
-           function(ev) {
-               var result = self.commit(0, false);
-               if (!result) {
-               ev.returnValue = '<fmt:message key="invalid" />';
-               }
-               return result;
-           });
+                   function(ev) {
+                       var result = self.commit(0, true);
+                       if (!result) {
+                           ev.returnValue = '<fmt:message key="invalid" />';
+                       }
+                       return result;
+                   });
 
     // automaticly make the entries empty on focus if they evidently contain the default value only
     $(this.div).find("input[type='text']").filter(function() {
-    return this.value.match(/^<.*>$/); }).one("focus", function() {
-        this.value = "";
-        self.validator.validateElement(this);
-    });
+        return this.value.match(/^<.*>$/); }).one("focus", function() {
+            this.value = "";
+            self.validator.validateElement(this);
+        });
 
     this.setTabIndices();
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 }
 
-
+List.prototype.leftPage = false;
 
 /**
  * Finds all elements with given node name and class, but ignores everything in a child div.list.
  */
 List.prototype.find = function(el, selector, result) {
     if (result == null) {
-    result = [];
+        result = [];
     }
     var self = this;
     $(el).find("> *").each(function() {
-    if ($(this).hasClass("list") && this.nodeName == 'div') {
+        if ($(this).hasClass("list") && this.nodeName == 'div') {
 
-    } else {
-        if ($(this).filter(selector).length > 0) {
-        result[result.length] = this;
+        } else {
+            if ($(this).filter(selector).length > 0) {
+                result[result.length] = this;
+            }
+            self.find(this, selector, result);
+
         }
-        self.find(this, selector, result);
-
-    }
 
     });
     return $(result);
@@ -134,103 +134,102 @@ List.prototype.find = function(el, selector, result) {
 List.prototype.setTabIndices = function() {
     var i = 0;
     $(this.div).find("input").each(function() {
-    this.tabIndex = i;
-    i++;
+        this.tabIndex = i;
+        i++;
     });
     $(this.div).find("a").each(function() {
-    this.tabIndex = i;
-    i++;
+        this.tabIndex = i;
+        i++;
     });
 }
 
 List.prototype.bindCreate = function(a) {
     a.list = this;
     $(a).click(function(ev) {
-    var url = a.href;
-    var params = {};
-    if (this.item != undefined) {
-        params.item   = this.item;
-    }
-    params.mm_list_sequence  = List.seq++;
-    if (this.source != undefined) {
-        params.source = this.source;
-    }
-    params.createpos = this.parentNode.list.createpos;
-
-    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-        complete: function(res, status){
-            try {
-            if ( status == "success" || status == "notmodified" ) {
-                var r = $(res.responseText)[0];
-                // remove default value on focus
-                $(r).find("input").one("focus", function() {
-                this.value = "";
-                a.list.validator.validateElement(this);
-                });
-                if (params.createpos == 'top') {
-                    a.list.find(a.list.div, "ol").prepend(r);
-                } else {
-                    a.list.find(a.list.div, "ol").append(r);
-                }
-                a.list.validator.addValidation(r);
-                a.list.find(r, "a.delete").each(function() {
-                a.list.bindDelete(this);
-                });
-                $(r).find("* div.list").each(function() {
-                var div = this;
-                if (div.list == null) {
-                    div.list = new List(div);
-                }
-                });
-                a.list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
-                $(a.list.div).trigger("mmsrCreated", [r]);
-
-            } else {
-                alert(status + " with " + url);
-
-            }
-            } catch (ex) {
-            alert(ex);
-            }
-
+        var url = a.href;
+        var params = {};
+        if (this.item != undefined) {
+            params.item   = this.item;
         }
-           });
-    return false;
+        if (this.source != undefined) {
+            params.source = this.source;
+        }
+        params.createpos = this.parentNode.list.createpos;
+
+        $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+                complete: function(res, status){
+                    try {
+                        if ( status == "success" || status == "notmodified" ) {
+                            var r = $(res.responseText)[0];
+                            // remove default value on focus
+                            $(r).find("input").one("focus", function() {
+                                this.value = "";
+                                a.list.validator.validateElement(this);
+                            });
+                            if (params.createpos == 'top') {
+                                a.list.find(a.list.div, "ol").prepend(r);
+                            } else {
+                                a.list.find(a.list.div, "ol").append(r);
+                            }
+                            a.list.validator.addValidation(r);
+                            a.list.find(r, "a.delete").each(function() {
+                                a.list.bindDelete(this);
+                            });
+                            $(r).find("* div.list").each(function() {
+                                var div = this;
+                                if (div.list == null) {
+                                    div.list = new List(div);
+                                }
+                            });
+                            a.list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
+                            $(a.list.div).trigger("mmsrCreated", [r]);
+
+                        } else {
+                            alert(status + " with " + url);
+
+                        }
+                    } catch (ex) {
+                        alert(ex);
+                    }
+
+                }
+               });
+        return false;
     });
 }
 
 List.prototype.bindDelete = function(a) {
     a.list = this;
     $(a).click(function(ev) {
-    var really = true;
-    if ($(a).hasClass("confirm")) {
-        $($(a).parents("li")[0]).addClass("highlight");
-        really = confirm('<fmt:message key="really" />');
-        $($(a).parents("li")[0]).removeClass("highlight");
-    }
-    if (really) {
-        var url = a.href;
-        var params = {};
-        $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
-            complete: function(res, status){
-            if ( status == "success" || status == "notmodified" ) {
-                var li = $(a).parents("li")[0];
-                a.list.validator.removeValidation(li);
-                var ol = $(a).parents("ol")[0];
-                ol.removeChild(li);
-                a.list.executeCallBack("delete", li);
-            }
-            }
-           });
-    }
-    return false;
+        var really = true;
+        if ($(a).hasClass("confirm")) {
+            $($(a).parents("li")[0]).addClass("highlight");
+            really = confirm('<fmt:message key="really" />');
+            $($(a).parents("li")[0]).removeClass("highlight");
+        }
+        if (really) {
+            var url = a.href;
+            var params = {};
+            $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
+                    complete: function(res, status){
+                        if ( status == "success" || status == "notmodified" ) {
+                            var li = $(a).parents("li")[0];
+                            a.list.validator.removeValidation(li);
+                            var ol = $(a).parents("ol")[0];
+                            ol.removeChild(li);
+                            a.list.executeCallBack("delete", li);
+                        }
+                    }
+                   });
+        }
+        return false;
     });
 
 }
 
 List.prototype.executeCallBack = function(type, element) {
     if (this.callBack != null) {
-    this.callBack(self, type, element);
+        this.callBack(self, type, element);
     } else {
     }
 
@@ -238,28 +237,31 @@ List.prototype.executeCallBack = function(type, element) {
 
 List.prototype.needsCommit = function() {
     return this.lastChange != null &&
-    (this.validator == null || this.validator.isChanged()) &&
-    (this.lastCommit == null || this.lastCommit.getTime() < this.lastChange.getTime());
+        (this.validator == null || this.validator.isChanged()) &&
+        (this.lastCommit == null || this.lastCommit.getTime() < this.lastChange.getTime());
 }
 
 List.prototype.status = function(message, fadeout) {
     this.find(this.div, "span.status").each(function() {
-    $(this).fadeIn("fast");
-    $(this).empty();
-    $(this).append(message);
-    if (fadeout) {
-        var p = this;
-        $(this).fadeOut(4000, function() {$(p).empty()} );
-    }
+        $(this).fadeIn("fast");
+        $(this).empty();
+        $(this).append(message);
+        if (fadeout) {
+            var p = this;
+            $(this).fadeOut(4000, function() {$(p).empty()} );
+        }
     });
 }
 
 /**
  * @param stale Number of millisecond the content may be aut of date. Defaults to 5 s. But on unload it is set to 0.
  */
-List.prototype.commit = function(stale, async) {
+List.prototype.commit = function(stale, leavePage) {
+    if (leavePage && ! List.prototype.leftPage) {
+        List.prototype.leftPage = true;
+        $.ajax({ type: "GET", async: false, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+    }
     if(this.needsCommit()) {
-
         if (this.valid) {
             var now = new Date();
             if (stale == null) stale = this.defaultStale; //
@@ -271,6 +273,7 @@ List.prototype.commit = function(stale, async) {
                 params.source = this.source;
                 params.icondir = this.icondir;
                 params.createpos = this.createpos;
+                params.leavePage = leavePage ? true : false;
 
                 this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
                 .each(function() {
@@ -280,7 +283,7 @@ List.prototype.commit = function(stale, async) {
                 var self = this;
                 this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
                 $.ajax({ type: "POST",
-                         async: async == null ? true : async,
+                         async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
                          complete: function(req, textStatus) {
