@@ -18,10 +18,7 @@
     <!-- ========== Global Forward Definitions =================================== -->
     <!-- ========== Action Mapping Definitions =================================== -->
     <action-mappings>
-    	<!-- ========== Ajax Definitions =================================== -->
-	    <action path="/editors/site/SelectSiteName" type="com.finalist.cmsc.navigation.forms.SelectSiteNameAction"
-	                unknown="false" validate="false">
-	    </action>
+    	
         <!-- ==== Site management ==== -->
 
         <action path="/editors/site/SiteCreate" type="com.finalist.cmsc.navigation.forms.SiteCreate"
