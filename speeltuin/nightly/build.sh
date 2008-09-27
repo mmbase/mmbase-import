@@ -1,31 +1,10 @@
 #!/bin/bash
 
-
-echo setting PATH, JAVA HOME
-export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/home/nightly/bin
-
-echo $HOME
-
-export BUILD_HOME="/home/nightly"
-
-export JAVA_HOME=/home/nightly/jdk
-export JAVAC=${JAVA_HOME}/bin/javac
-
-export MAVEN_OPTS=-Xmx512m
-export MAVEN="/home/nightly/maven/bin/maven --nobanner --quiet"
-export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
-export ANT_HOME=/usr/ant
-antcommand="/usr/bin/ant"
-
-export FILTER="/home/nightly/bin/filterlog"
-
+source env.sh
 
 export MAILADDRESS="developers@lists.mmbase.org"
 #export MAILADDRESS="michiel.meeuwissen@gmail.com"
 export BUILD_MAILADDRESS=$MAILADDRESS
-
-echo generating version, and some directories
-
 
 source version.sh
 
@@ -38,8 +17,8 @@ if [ 1 == 1 ] ; then
 
     echo Cleaning
     echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
-# removes all 'target' directories
-# the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    # removes all 'target' directories
+    # the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
     find . -type d -name target -print | xargs rm -rf  >> ${builddir}/messages.log
 
     pwd
@@ -56,6 +35,8 @@ if [ 1 == 1 ] ; then
     echo all:install
     ((${MAVEN} all:install | tee -a ${builddir}/messages.log) 3>&1 1>&2 2>&3 | tee -a ${builddir}/errors.log) 3>&1 1>&2 2>&3
 
+    echo ====================================================================== |  tee -a ${builddir}/messages.log
+    echo creating RECENTCHANGES |  tee -a ${builddir}/messages.log
     ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
 fi
 
@@ -66,14 +47,12 @@ if [ 1 == 1 ] ; then
 fi
 
 
-copy-artifacts.sh
+$HOME/bin/copy-artifacts.sh
 
 
 if [ 1 == 1 ] ; then
     echo Now executing tests. Results in ${builder}/test-results. | tee -a ${builddir}/messages.log
     cd ${BUILD_HOME}/nightly-build/cvs/mmbase/tests
-    # Ant sucks incredibly. This classapth should not be necessary, but really, it is.
-    export CLASSPATH=${BUILD_HOME}/.ant/lib/ant-apache-log4j.jar:${BUILD_HOME}/.ant/lib/log4j-1.2.13.jar
     ${antcommand} -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:.  run.all  2>&1 | tee  ${builddir}/tests-results.log
 fi
 
@@ -81,23 +60,28 @@ fi
 echo Creating symlink for latest build | tee -a ${builddir}/messages.log
 rm /home/nightly/builds/latest
 cd /home/nightly/builds
-ln -s ${dir} latest
+ln -s ${builddir} latest
+
+ # Using one thread for all mail about failures
+parent="<20080906100002.GA1861@james.mmbase.org>";
+mutthdr="my_hdr In-Reply-To: $parent";
+
 
 showtests=1
 if [ 1 == 1 ] ; then
     if [ -f latest/messages.log ] ; then
         if (( `cat latest/messages.log  | grep -P '\[javac\]\s+[0-9]+\s+errors' | wc -l` > 0 )) ; then
-	          echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
-	          echo -e "Build on ${version} failed:\n\n" | \
-		            cat latest/messages.log latest/errors.log | grep -B 10 "\[javac\]" | \
-		            mutt -s "Build failed ${version}" ${BUILD_MAILADDRESS}
-	          showtests=0;
+	    echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
+	    echo -e "Build on ${version} failed:\n\n" | \
+		cat latest/messages.log latest/errors.log | grep -B 10 "\[javac\]" | \
+		mutt -e $mutthdr -s "Build failed ${version}" ${BUILD_MAILADDRESS}
+	    showtests=0;
         fi
     else
         echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
         echo -e "No build created on ${version}\n\n" | \
             tail -q -n 20 - latest/errors.log | \
-            mutt -s "Build failed ${version}" ${BUILD_MAILADDRESS}
+            mutt -e $mutthdr -s "Build failed ${version}" ${BUILD_MAILADDRESS}
 	showtests=0;
     fi
 fi
@@ -109,15 +93,12 @@ if [ 1 == $showtests ] ; then
     echo Test results | tee -a ${builddir}/messages.log
 
     if [ -f latest/tests-results.log ] ; then
-	      # Using one thread for all test-case failures
-	      parent="<20080906100002.GA1861@james.mmbase.org>";
-
-	      if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then
-	          echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
-	          (echo "Failures on build ${version}" ; echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
+	if (( `cat latest/tests-results.log  | grep 'FAILURES' | wc -l` > 0 )) ; then
+	    echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
+	    (echo "Failures on build ${version}" ; echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
                 cat latest/tests-results.log  | grep -P  '(^Tests run:|^[0-9]+\)|^\tat org\.mmbase|FAILURES|========================|OK)' ) | \
-		            mutt -e "my_hdr In-Reply-To: $parent" -s "Test cases failures" ${MAILADDRESS}
-	      fi
+		mutt -e $mutthdr -s "Test cases failures" ${MAILADDRESS}
+	fi
     fi
 fi
 
