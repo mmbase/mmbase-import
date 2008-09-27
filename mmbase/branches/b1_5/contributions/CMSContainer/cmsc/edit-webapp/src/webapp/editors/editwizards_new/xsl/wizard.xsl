@@ -97,8 +97,10 @@
   </xsl:template>
 
   <xsl:template name="extrajavascript">
+     <script type="text/javascript" src="{$ew_context}/js/prototype.js"><xsl:comment>help IE</xsl:comment></script>
     <script type="text/javascript" src="{$ew_context}{$templatedir}javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
-    <script type="text/javascript">
+    <script type="text/javascript" src="{$ew_context}{$templatedir}javascript/my-validator.js"><xsl:comment>help IE</xsl:comment></script>
+	<script type="text/javascript">
       var isWebmaster = "<xsl:value-of select="$WEBMASTER"/>";
     </script>
     <xsl:call-template name="extrajavascript-custom"/>

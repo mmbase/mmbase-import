@@ -6,7 +6,7 @@
 
 	<field name="stagingfragment" dtmaxlength="40"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
-		dtrequired="true">
+		dtrequired="true" hide="ajax">
 		<prompt xml:lang="en">Staging domain</prompt>
 		<prompt xml:lang="nl">Staging domein</prompt>
 	</field>
