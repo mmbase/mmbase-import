@@ -85,6 +85,7 @@
         </positions>
       </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <property name="validMimeTypes" value="application/x-shockwave-flash" />
         <maxLength value="16777215" />
       </datatype>
     </field>
