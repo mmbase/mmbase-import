@@ -34,11 +34,16 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.61 2008-08-20 11:17:02 michiel Exp $
+ * @version $Id: Indexer.java,v 1.62 2008-09-29 11:15:22 pierre Exp $
  **/
 public class Indexer {
 
     static private final Logger log = Logging.getLoggerInstance(Indexer.class);
+
+    /**
+     *  An empty index definition that can be used to obtain nodes from the cloud.
+     */   
+    protected static final MMBaseIndexDefinition nodeLoader = new MMBaseIndexDefinition();
 
     /**
      * @since MMBase-1.9
@@ -46,7 +51,6 @@ public class Indexer {
     public enum Multiple {
         ADD, FIRST, LAST;
     };
-
 
     /**
      * Adds a Field to a Document considering also a 'multiple' setting.
@@ -182,7 +186,7 @@ public class Indexer {
             Node n = id.getNode(userCloud, doc);
             if (n != null) return n;
         }
-        return null;
+        return nodeLoader.getNode(userCloud, doc);
     }
 
     protected Properties loadLastFullIndexTimes() {
