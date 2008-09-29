@@ -4,6 +4,7 @@
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     class="mm_c c_wiki b_edit ${requestScope['org.mmbase.componentClassName']}"
     id="${requestScope['org.mmbase.componentId']}">
   <jsp:output omit-xml-declaration="true" />
@@ -64,7 +65,7 @@
         <input type="submit" name="cancel" id="cancel" value="cancel" />
 
         <div class="show_node">
-          <p>[Hier wordt het object onder de cursor getoond]</p>
+          <p>[<fmt:message key="cursor_object" />]</p>
         </div>
 
         <!-- preview is a bit broken, so switched if off.
