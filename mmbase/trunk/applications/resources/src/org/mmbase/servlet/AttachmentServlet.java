@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.1 2007-09-25 12:29:54 michiel Exp $
+ * @version $Id: AttachmentServlet.java,v 1.2 2008-09-29 16:32:41 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet
@@ -30,8 +30,8 @@ public class AttachmentServlet extends HandleServlet {
         return "Serves MMBase nodes as attachments";
     }
 
-    protected Map getAssociations() {
-        Map a = super.getAssociations();
+    protected Map<String, Integer> getAssociations() {
+        Map<String, Integer> a = super.getAssociations();
         a.put("attachments", 50); // Is very good in attachments (determines mime-type
                                                // starting with 'attachments' builder fields),
 
@@ -51,11 +51,11 @@ public class AttachmentServlet extends HandleServlet {
     protected String getMimeType(Node node) {
         String mimeType = null;
         if (node.getNodeManager().hasField("mimetype")) mimeType = node.getStringValue("mimetype");
-        if (mimeType == null || mimeType.equals("")) { 
+        if (mimeType == null || mimeType.equals("")) {
             // mime-type missing, try to suppose that this is an image node, which has the mimetype
             // as a function.
-            mimeType = node.getFunctionValue("mimetype", null).toString(); 
-            if (mimeType == null || mimeType.equals("")) { 
+            mimeType = node.getFunctionValue("mimetype", null).toString();
+            if (mimeType == null || mimeType.equals("")) {
                 return super.getMimeType(node);
             }
         }
