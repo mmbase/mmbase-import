@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.14 2008-07-15 10:00:59 michiel Exp $
+ * @version $Id: Wiki.java,v 1.15 2008-09-29 08:55:17 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -166,6 +166,7 @@ class Wiki {
 
         // In a transaction, the query will not return our new nodes.
         // Administrate related idrels ourselves.
+        // This is also anticipated in body.tagx
         NodeList createdLinks = (NodeList) cloud.getProperty("createdlinks");
         if (createdLinks == null) {
             createdLinks = cloud.createNodeList();
