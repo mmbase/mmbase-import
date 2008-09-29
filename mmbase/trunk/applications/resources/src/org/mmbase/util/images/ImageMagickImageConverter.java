@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.12 2008-09-29 15:41:00 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.13 2008-09-29 16:05:40 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -308,7 +308,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
             ByteArrayInputStream in = new ByteArrayInputStream(input);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            convertImage(in, out, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
+            convertImage(in, out, sourceFormat, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
             pict = out.toByteArray();
 
             for (File tempFile : parsedCommands.temporaryFiles) {
@@ -605,10 +605,15 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      * @param format The picture format to output to (jpg, gif etc.).
      * @param cwd Directory for fonts
      */
-    private void convertImage(InputStream originalStream, OutputStream imageStream, List<String> cmd, String format, File cwd) {
+    private void convertImage(InputStream originalStream, OutputStream imageStream, String sourceFormat, List<String> cmd, String format, File cwd) {
 
         cmd.add(0, "-");
         cmd.add(0, converterPath);
+        if (! validFormats.contains(format.toUpperCase())) {
+            log.warn("format " + format + "' is not supported (" + validFormats + ") falling back to " + Factory.getDefaultImageFormat());
+            format = Factory.getDefaultImageFormat();
+            if ("asis".equals(format)) format = sourceFormat;
+        }
         cmd.add(format+ ":-");
         String command = cmd.toString(); // only for debugging.
 
