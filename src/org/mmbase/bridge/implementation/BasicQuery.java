@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.61.2.5 2008-09-23 12:01:43 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.61.2.6 2008-09-29 13:20:47 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -702,7 +702,7 @@ public class BasicQuery implements Query  {
 
     }
 
-    /*&
+    /**
      * Getter for use in EL. Returns {@link #toSql}.
      */
     public String getSql() {
