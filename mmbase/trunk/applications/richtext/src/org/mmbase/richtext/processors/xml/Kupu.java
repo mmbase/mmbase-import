@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.6 2008-09-25 16:00:02 michiel Exp $
+ * @version $Id: Kupu.java,v 1.7 2008-09-29 11:34:33 michiel Exp $
  */
 
 class Kupu {
@@ -434,7 +434,7 @@ class Kupu {
                 flash.setValue("height", height);
                 updated = true;
             } else {
-                log.warn("No height found on " + XMLWriter.write(a));
+                log.warn("No height found on " + XMLWriter.write(a, false));
             }
         }
         {
@@ -444,7 +444,7 @@ class Kupu {
                 flash.setValue("width", width);
                 updated = true;
             } else {
-                log.warn("No width found on " + XMLWriter.write(a));
+                log.warn("No width found on " + XMLWriter.write(a, false));
             }
         }
         if (updated) {
