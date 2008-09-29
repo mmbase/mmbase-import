@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -48,6 +48,13 @@ See http://www.MMBase.org/license
                     <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
+            </resource>
+            <resource>
+              <directory>${basedir}/html/WEB-INF/classes</directory>
+              <includes>
+                <include>**/*.properties</include>
+              </includes>
+              <filtering>false</filtering>
             </resource>
 <!-- This does not work the same way as the ant build does.
 	We have to change more in the build to get it working
