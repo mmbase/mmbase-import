@@ -5,17 +5,13 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="yes" />
   <!--
-
     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
-
-
-
   -->
   <mm:import externid="type" required="true" />
   <a class="toggle">
     <mm:nodeinfo nodetype="${type}" type="guinodemanager" />
   </a>
-  <div>
+  <div class="related_li">
 
     <mm:listnodescontainer type="${type}" id="repository">
       <mm:sortorder field="number" direction="down" />
