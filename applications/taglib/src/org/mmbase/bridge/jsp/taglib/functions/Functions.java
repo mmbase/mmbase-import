@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.30 2008-08-05 12:16:23 sdeboer Exp $
+ * @version $Id: Functions.java,v 1.31 2008-09-29 13:15:44 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -206,9 +206,11 @@ public class Functions {
     }
 
     /**
-     * @since MMBase-1.8.8
+     * @since MMBase-1.8.7
      */
-    public static Map applicationContext(String path) {
+    public static Map<String, String> applicationContext(String path) {
       return ApplicationContextReader.getCachedProperties(path);
     }
+
+
 }
