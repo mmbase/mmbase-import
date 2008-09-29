@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  ]]><pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FlashGuiFunction.java,v 1.1 2008-09-03 13:06:28 michiel Exp $
+ * @version $Id: FlashGuiFunction.java,v 1.2 2008-09-29 16:54:05 michiel Exp $
  * @since MMBase-1.9
  */
 public class FlashGuiFunction extends NodeFunction<String> {
@@ -62,19 +62,14 @@ public class FlashGuiFunction extends NodeFunction<String> {
         if (fieldName == null || "".equals(fieldName) || fieldName.equals(handleField)) {
             String name = "mm_flashobject_" + node.getNumber();
             String url = node.getFunctionValue("servletpath", null).toString();
-            StringBuilder buf = new StringBuilder("<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0\" ");
+            StringBuilder buf = new StringBuilder("<object  type=\"application/x-shockwave-flash\" ");
             buf.append("width='").append(guiWidth).append("' height='").append(guiHeight).append("' id=\"");
             buf.append(name);
-            buf.append("\" align=\"middle\"> <param name=\"allowScriptAccess\" value=\"sameDomain\" /> <param name=\"allowFullScreen\" value=\"true\" /> <param name=\"movie\" value=\"");
+            buf.append("\" data=\"").append(url).append("\">");
+            buf.append("<param name=\"movie\" value=\"");
             buf.append(url);
-            buf.append("\" /><param name=\"quality\" value=\"high\" /><param name=\"bgcolor\" value=\"#ffffff\" /> <embed src=\"");
-            buf.append(url);
-            buf.append("\" quality=\"high\" bgcolor=\"#ffffff\" ");
-            buf.append("width='").append(guiWidth).append("' height='").append(guiHeight).append("' name=\"");
-            buf.append(name);
-            buf.append("\" align=\"middle\" allowScriptAccess=\"sameDomain\" allowFullScreen=\"true\" type=\"");
-            buf.append(node.getStringValue("mimetype"));
-            buf.append("\"  pluginspage=\"http://www.macromedia.com/go/getflashplayer\" /></object>");
+            buf.append("\" />");
+            buf.append("</object>");
             return buf.toString();
         } else {
             MMObjectNode n = (MMObjectNode) parameters.get(Parameter.CORENODE);
