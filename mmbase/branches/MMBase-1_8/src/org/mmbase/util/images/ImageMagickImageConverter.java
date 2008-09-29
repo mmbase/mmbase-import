@@ -27,12 +27,13 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4.2.4 2008-07-14 12:30:14 nklasens Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4.2.5 2008-09-29 15:27:30 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
     private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
+    private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]+\\s*[r\\-]w[\\+\\-]\\s+.*");
 
     private int imVersionMajor = 5;
     private int imVersionMinor = 5;
@@ -51,6 +52,10 @@ public class ImageMagickImageConverter implements ImageConverter {
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
 
     protected List excludeFormats = new ArrayList();
+
+    private static final Set validFormats = new TreeSet();
+
+
 
     /**
      * This function initializes this class
@@ -120,32 +125,61 @@ public class ImageMagickImageConverter implements ImageConverter {
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
 
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            CommandLauncher launcher = new CommandLauncher("ConvertImage");
-            log.debug("Starting convert");
-            List cmd = new ArrayList();
-            cmd.add("-version");
-            launcher.execute(converterPath, (String[]) cmd.toArray(new String[] {}));
-            launcher.waitAndRead(outputStream, errorStream);
-        } catch (ProcessException e) {
-            log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
-                      + "' conv.command='" + converterCommand + "'", e);
+        {
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                CommandLauncher launcher = new CommandLauncher("ConvertImage");
+                log.debug("Starting convert");
+                List cmd = new ArrayList();
+                cmd.add("-version");
+                launcher.execute(converterPath, (String[]) cmd.toArray(new String[] {}));
+                launcher.waitAndRead(outputStream, errorStream);
+            } catch (ProcessException e) {
+                log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
+                          + "' conv.command='" + converterCommand + "'", e);
+            }
+
+            String imOutput = outputStream.toString();
+            Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
+            if (m.matches()) {
+                imVersionMajor = Integer.parseInt(m.group(1));
+                imVersionMinor = Integer.parseInt(m.group(2));
+                imVersionPatch = Integer.parseInt(m.group(3));
+                log.info("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+            } else {
+                log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
+                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+                log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+
+            }
         }
+        {
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                CommandLauncher launcher = new CommandLauncher("ConvertImage");
+                log.debug("Starting convert");
+                List cmd = new ArrayList();
+                cmd.add("-list");
+                cmd.add("format");
+                launcher.execute(converterPath, (String[]) cmd.toArray(new String[] {}));
+                launcher.waitAndRead(outputStream, errorStream);
+            } catch (ProcessException e) {
+                log.error("Convert -list format failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
+                          + "' conv.command='" + converterCommand + "'", e);
+            }
 
-        String imOutput = outputStream.toString();
-        Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
-        if (m.matches()) {
-            imVersionMajor = Integer.parseInt(m.group(1));
-            imVersionMinor = Integer.parseInt(m.group(2));
-            imVersionPatch = Integer.parseInt(m.group(3));
-            log.info("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
-        } else {
-            log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
-                       + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-            log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
-
+            String[] imOutput = outputStream.toString().split("\n");
+            for (int i = 0; i < imOutput.length; i++) {
+                String imLine = imOutput[i];
+                Matcher m = IM_FORMAT_PATTERN.matcher(imLine);
+                if (m.matches()) {
+                    String format = m.group(1);
+                    validFormats.add(format.toUpperCase());
+                }
+            }
+            log.info("Found ImageMagick supported formats " + validFormats);
         }
 
         // Cant do more checking then this, i think....
@@ -215,7 +249,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                     parsedCommands.args.add(0, "-coalesce");
                 }
             }
-            
+
             pict = convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
@@ -225,7 +259,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setDetermineImageNumber(true);
         ByteArrayInputStream inp = new ByteArrayInputStream(rawimage);
-        
+
         imageInfo.setInput(inp);
         imageInfo.check();
         return (imageInfo.getNumberOfImages() > 1);
@@ -449,7 +483,7 @@ public class ImageMagickImageConverter implements ImageConverter {
             }
         }
         if (result.format == null)  result.format = Factory.getDefaultImageFormat();
-            
+
         return result;
     }
 
@@ -491,6 +525,10 @@ public class ImageMagickImageConverter implements ImageConverter {
         return modCmd;
     }
 
+
+
+
+
     /**
      * Does the actual conversion.
      *
@@ -505,7 +543,11 @@ public class ImageMagickImageConverter implements ImageConverter {
         if (pict != null && pict.length > 0) {
             cmd.add(0, "-");
             cmd.add(0, converterPath);
-            cmd.add(format+ ":-");
+            if (! validFormats.contains(format.toUpperCase())) {
+                log.warn("format " + format + "' is not supported (" + validFormats + ") falling back to " + Factory.getDefaultImageFormat());
+                format = Factory.getDefaultImageFormat();
+            }
+            cmd.add(format + ":-");
 
             String command = cmd.toString(); // only for debugging.
             log.debug("Converting image(#" + pict.length + " bytes)  to '" + format + "' ('" + command + "')");
