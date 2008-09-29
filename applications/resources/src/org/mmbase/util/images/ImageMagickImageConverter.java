@@ -27,12 +27,13 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.11 2008-09-24 05:54:30 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.12 2008-09-29 15:41:00 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
 
     private static final Pattern IM_VERSION_PATTERN = Pattern.compile("(?is).*?\\s(\\d+)\\.(\\d+)\\.(\\d+)\\s.*");
+    private static final Pattern IM_FORMAT_PATTERN  = Pattern.compile("(?is)\\s*([A-Z0-9]+)\\*?\\s+[A-Z0-9]+\\s*[r\\-]w[\\+\\-]\\s+.*");
 
     private int imVersionMajor = 5;
     private int imVersionMinor = 5;
@@ -54,7 +55,73 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     protected String host = "localhost";
     protected int port = 1679;
 
-    protected List<String> excludeFormats = new ArrayList<String>();
+    protected Set<String> excludeFormats = new TreeSet<String>();
+    private  final Set<String> validFormats = new TreeSet<String>();
+
+
+
+
+
+    private OutputStream getOutput(String... args) {
+        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        switch (method) {
+        case METHOD_LAUNCHER: {
+            try {
+
+                CommandLauncher launcher = new CommandLauncher("ConvertImage");
+                log.debug("Starting convert");
+                List<String> cmd = new ArrayList<String>();
+                for (String arg : args) {
+                    cmd.add(arg);
+                }
+                launcher.execute(converterPath, cmd.toArray(EMPTY));
+                launcher.waitAndRead(outputStream, errorStream);
+            } catch (ProcessException e) {
+                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")");
+            }
+            break;
+        }
+        case METHOD_CONNECTOR: {
+            try {
+                java.net.Socket socket = new java.net.Socket(host, port);
+                final OutputStream os = socket.getOutputStream();
+                os.write(0); // version
+                final ObjectOutputStream stream = new ObjectOutputStream(os);
+                List<String> cmd = new ArrayList<String>();
+                cmd.add(converterPath);
+                for (String arg : args) {
+                    cmd.add(arg);
+                }
+                stream.writeObject((cmd.toArray(EMPTY)));
+                stream.writeObject(EMPTY);
+                Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
+
+                Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
+                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
+
+                copier.waitFor();
+                socket.shutdownOutput();
+                copier2.waitFor();
+                socket.close();
+            } catch (Exception ioe) {
+                log.error("" + host + ":" + port);
+                try {
+                    errorStream.write(("" + host + ":" + port).getBytes());
+                    errorStream.flush();
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            }
+            break;
+        }
+        default: log.error("unknown method " + method);
+        }
+        return outputStream;
+
+    }
+
 
     /**
      * This function initializes this class
@@ -145,72 +212,33 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
 
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        switch (method) {
-        case METHOD_LAUNCHER: {
-            try {
 
-                CommandLauncher launcher = new CommandLauncher("ConvertImage");
-                log.debug("Starting convert");
-                List<String> cmd = new ArrayList<String>();
-                cmd.add("-version");
-                launcher.execute(converterPath, cmd.toArray(EMPTY));
-                launcher.waitAndRead(outputStream, errorStream);
-            } catch (ProcessException e) {
-                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ") conv.root='" + converterRoot
-                          + "' conv.command='" + converterCommand + "'");
+        {
+            String imOutput = getOutput("-version").toString();
+            Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
+            if (m.matches()) {
+                imVersionMajor = Integer.parseInt(m.group(1));
+                imVersionMinor = Integer.parseInt(m.group(2));
+                imVersionPatch = Integer.parseInt(m.group(3));
+                log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+            } else {
+                log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
+                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+                log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
+
             }
-            break;
         }
-        case METHOD_CONNECTOR: {
-            try {
-                java.net.Socket socket = new java.net.Socket(host, port);
-                final OutputStream os = socket.getOutputStream();
-                os.write(0); // version
-                final ObjectOutputStream stream = new ObjectOutputStream(os);
-                List<String> cmd = new ArrayList<String>();
-                cmd.add(converterPath);
-                cmd.add("-version");
-                stream.writeObject((cmd.toArray(EMPTY)));
-                stream.writeObject(EMPTY);
-                Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
 
-                Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
-                org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
 
-                copier.waitFor();
-                socket.shutdownOutput();
-                copier2.waitFor();
-                socket.close();
-            } catch (Exception ioe) {
-                log.error("" + host + ":" + port);
-                try {
-                    errorStream.write(("" + host + ":" + port).getBytes());
-                    errorStream.flush();
-                } catch (Exception e) {
-                    log.error(e);
-                }
+        for (String imLine : getOutput("-list", "format").toString().split("\n")) {
+            Matcher m = IM_FORMAT_PATTERN.matcher(imLine);
+            if (m.matches()) {
+                String format = m.group(1);
+                validFormats.add(format.toUpperCase());
             }
-            break;
         }
-        default: log.error("unknown method " + method);
-        }
+        log.info("Found ImageMagick supported formats " + validFormats);
 
-        String imOutput = outputStream.toString();
-        Matcher m = IM_VERSION_PATTERN.matcher(imOutput);
-        if (m.matches()) {
-            imVersionMajor = Integer.parseInt(m.group(1));
-            imVersionMinor = Integer.parseInt(m.group(2));
-            imVersionPatch = Integer.parseInt(m.group(3));
-            log.service("Found ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
-        } else {
-            log.error( "converter from location " + converterPath + ", gave strange result: " + imOutput
-                       + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
-            log.info("Supposing ImageMagick version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch);
-
-        }
 
         // Cant do more checking then this, i think....
         tmp = params.get("ImageConvert.ColorizeHexScale");
