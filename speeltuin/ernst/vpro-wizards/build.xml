@@ -14,11 +14,14 @@
 
   <!--** create the jar **-->
     <target name="jar" description="Create the vpro-wizards jar"
-        depends="copy.resources,vpro-wizards.jars,project.manifest,buildbase.jar" />
+        depends="copy.resources,project.manifest,buildbase.jar" />
 
     <target name="init" depends="buildbase.init">
-        <available property="xerces.available"           file="${project.build.dir}/${xerces.file.noversion}"/>
+        <available property="xerces.available"
+          file="${project.build.dir}/${xerces.file.noversion}"/>
     </target>
+    
+    <target name="compile" depends="vpro-wizards.jars,buildbase.compile"/>
     
     
     <!--copy all the resources to the classes dir, so they become part of the jar-->
@@ -77,7 +80,7 @@
         </antcall>
         <copy file="${download.dir}/${nekohtml.file}" todir="${project.jar.dir}" preservelastmodified="true" />
 
-        <!--xerces: if not present yet. we rename this one, so we don't get 2 versions when mmbase has one too. this is a hack :-(-->
+        ch
         <antcall target="download.xerces"/>
 
         <!--oscache-->
@@ -94,10 +97,8 @@
       <echo message="download xerces" />
       <antcall target="download">
           <param name="sourcefile" value="${xerces.loc}"/>
-          <param name="destfile" value="${download.dir}/${xerces.file}"/>
+          <param name="destfile" value="${download.dir}/${xerces.file.noversion}"/>
       </antcall>
-      <!--rename to generic name (no version)-->
-      <move file="${download.dir}/${xerces.file}" tofile="${download.dir}/${xerces.file.noversion}"/>
       <copy file="${download.dir}/${xerces.file.noversion}" todir="${project.jar.dir}" preservelastmodified="false" />
   </target>
 
@@ -105,6 +106,7 @@
   <target name="test" depends="init">
         <echo message="build.dir: ${build.dir}"/>
         <echo message="webapp.dir: ${webapp.dir}"/>
+        <echo message="download.dir: ${download.dir}"/>
         <echo message="templates.dir: ${templates.dir}"/>
         <echo message="templates.available: ${templates.available}"/>
         <echo message="project.templates.dir: ${project.templates.dir}"/>
