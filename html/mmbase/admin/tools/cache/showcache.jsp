@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.Cache,java.util.*,java.util.regex.*,org.mmbase.storage.search.implementation.database.BasicSqlHandler,org.mmbase.storage.search.SearchQuery" 
+%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.Cache,java.util.*,java.util.regex.*,org.mmbase.storage.search.implementation.database.BasicSqlHandler,org.mmbase.storage.search.SearchQuery"
 %><%@include file="../../settings.jsp" %>
 <mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
@@ -12,7 +12,7 @@
   <mm:import externid="cache" jspvar="cacheName" vartype="String" required="true" />
   <mm:import externid="deleteentry" jspvar="deleteentry" vartype="integer">-1</mm:import>
   <mm:import externid="deletekey"   jspvar="deletekey" vartype="string" />
-  
+
 <body class="basic" >
 
 <form action="<mm:url referids="cache" />" method="post">
@@ -46,7 +46,7 @@ synchronized(cache) {
    int j = 0;
    Pattern keyPattern = Pattern.compile(key);
    Pattern valuePattern = Pattern.compile(value);
-   int deleted = 0;  
+   int deleted = 0;
    while(i.hasNext() && j < 500 + deleted) {
      Map.Entry entry = (Map.Entry) i.next();
      String k = entry.getKey() instanceof SearchQuery ? sqlHandler.toSql((SearchQuery)entry.getKey(), sqlHandler) : entry.getKey().toString();
@@ -59,7 +59,7 @@ synchronized(cache) {
          j++;
          continue;
        }
-     } catch (Exception e) { 
+     } catch (Exception e) {
      %>
      <tr><td class="data" colsan="5">ERROR<%=e.toString() %></td></tr>
 <%
@@ -72,7 +72,7 @@ synchronized(cache) {
 	<p><%=k%></p>
  </td>
   <td class="data"><%=v%></td>
-  <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
+  <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value='<%="" + j%>' /></mm:url>">remove</a></td>
   <% j++; %>
 </tr>
 <% } }%>
