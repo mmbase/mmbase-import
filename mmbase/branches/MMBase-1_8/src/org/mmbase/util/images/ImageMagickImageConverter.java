@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.4.2.5 2008-09-29 15:27:30 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.4.2.6 2008-09-29 16:02:39 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -250,7 +250,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                 }
             }
 
-            pict = convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
+            pict = convertImage(input, sourceFormat, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
     }
@@ -538,7 +538,7 @@ public class ImageMagickImageConverter implements ImageConverter {
      * @return      The result of the conversion (a picture).
      *
      */
-    private byte[] convertImage(byte[] pict, List cmd, String format, File cwd) {
+    private byte[] convertImage(byte[] pict, String sourceFormat, List cmd, String format, File cwd) {
 
         if (pict != null && pict.length > 0) {
             cmd.add(0, "-");
@@ -546,6 +546,7 @@ public class ImageMagickImageConverter implements ImageConverter {
             if (! validFormats.contains(format.toUpperCase())) {
                 log.warn("format " + format + "' is not supported (" + validFormats + ") falling back to " + Factory.getDefaultImageFormat());
                 format = Factory.getDefaultImageFormat();
+                if ("asis".equals(format)) format = sourceFormat;
             }
             cmd.add(format + ":-");
 
