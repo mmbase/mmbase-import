@@ -3,6 +3,7 @@
 <wizard-schema id="thema_plot_kaart">
    <title>Thema Plot Kaart</title>
    <action include="config/thema_plot_kaart/create.xml"/>
+   <action include="config/thema_plot_kaart/delete.xml" />
    <action include="config/thema_plot_kaart/load.xml"/>
    <lists>
       <optionlist include="config/option_lists/typen_gebied.xml" />
