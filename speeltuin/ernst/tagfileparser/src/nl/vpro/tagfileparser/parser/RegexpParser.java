@@ -9,7 +9,7 @@ import nl.vpro.util.StringUtil;
 /**
  * Matches the lines of the iterator with a regular expression, and calls
  * template methods according to the result. This class is not thread safe!
- * 
+ * TODO: test
  * @author Ernst Bunders
  * 
  */
@@ -31,7 +31,6 @@ public abstract class RegexpParser implements ElementParser {
 	protected TagInfo tag;
 
 	public RegexpParser(String startPattern, String endPattern, boolean findOne) {
-		super();
 		this.startPattern = startPattern;
 		this.endPattern = endPattern;
 		this.findOne = findOne;
@@ -50,7 +49,6 @@ public abstract class RegexpParser implements ElementParser {
 		boolean reading = false;
 		while (lines.hasNext()) {
 			this.tag = tag;
-			// TODO: do using startsWith() and endsWith() regular expressions?
 			String line = lines.next();
 			log.info("considering line: ["+line+"]");
 			if( reading == false){
@@ -72,8 +70,8 @@ public abstract class RegexpParser implements ElementParser {
 					}
 				}
 			}else{
-				//add this line to the construction
-				construction = construction + line;
+				//add this line to the construction, preserving the newline
+				construction = construction + "\n" + line;
 				if (StringUtil.endsWith(line, endPattern)) {
 					//construction complete
 					use(construction, tag);
