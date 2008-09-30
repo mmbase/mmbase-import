@@ -20,11 +20,24 @@ public class BasicTagParserTest extends TestBase {
 		
 		TagInfo tagInfo = tagParser.parseTag(tagFile);
 		
-		//test the attributes
-		assertEquals(1, tagInfo.getVariables().size());
-		//assertEquals("name", tagInfo.getAttributes().get(0).getName());
+		//test the tag directive
+		assertNotNull(tagInfo.getTagDirective());
+		assertEquals("empty", tagInfo.getTagDirective().getBodyContent());
+		assertEquals("This is a description.\nAnd there is a second line.\nAnd a third...", tagInfo.getTagDirective().getDescription());
+		assertNull(tagInfo.getTagDirective().getDisplayName());
+		System.out.println(tagInfo.getTagDirective().getDescription());
 		
-		//test the variables
+		//test the attribute directives
+		assertEquals("name", tagInfo.getAttributes().get(0).getName());
+		assertEquals("The title and so on", tagInfo.getAttributes().get(0).getDescription());
+		assertEquals("description", tagInfo.getAttributes().get(1).getName());
+		assertEquals("some describing words", tagInfo.getAttributes().get(1).getDescription());
+		
+		
+		
+		//test the variable directives
+		
+		//assertEquals(1, tagInfo.getVariables().size());
 		
 		//test the tag 
 	}
