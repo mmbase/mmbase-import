@@ -17,7 +17,7 @@
 	   	<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-sitemanagement</artifactId>
-			<version>${cmscmodules.version}</version>
+			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency>		
     </dependencies>
