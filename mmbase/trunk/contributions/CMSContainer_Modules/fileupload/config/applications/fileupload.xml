@@ -1,28 +1,35 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="fileupload" maintainer="finalist.com" version="1" auto-deploy="true">
-   <requirements>
-   </requirements>
+	<requirements>
+		<requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+		<requires name="sitemanagement" maintainer="finalist.com" version="1" type="application" />
+		<requires name="cmscportlets" maintainer="finalist.com" version="1" type="application" />
+		<requires name="basecontentelements" maintainer="finalist.com" version="1" type="application" />
+	</requirements>
 
-   <neededbuilderlist>
-   </neededbuilderlist>
+	<neededbuilderlist>
+		<builder maintainer="finalist.com" version="1">file</builder>
+	</neededbuilderlist>
 
-   <neededreldeflist>
-   </neededreldeflist>
+	<neededreldeflist>
+	</neededreldeflist>
 
-   <allowedrelationlist>
-   </allowedrelationlist>
+	<allowedrelationlist>
+		<relation from="contentelement" to="file" type="posrel" />
+		<relation from="file" to="images" type="imagerel" />
+	</allowedrelationlist>
 
-   <datasourcelist>
-      <datasource builder="properties" path="fileupload/properties.xml" />
-   </datasourcelist>
+	<datasourcelist>
+		<datasource builder="properties" path="fileupload/properties.xml" />
+	</datasourcelist>
 
-   <relationsourcelist>
-   </relationsourcelist>
+	<relationsourcelist>
+	</relationsourcelist>
 
-   <contextsourcelist>
-   </contextsourcelist>
+	<contextsourcelist>
+	</contextsourcelist>
 
-   <description></description>
-   <install-notice></install-notice>
+	<description></description>
+	<install-notice></install-notice>
 </application>
