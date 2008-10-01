@@ -1,12 +1,12 @@
 #!/bin/bash
 
-source env.sh
+source $HOME/bin/env.sh
 
-export MAILADDRESS="developers@lists.mmbase.org"
-#export MAILADDRESS="michiel.meeuwissen@gmail.com"
+#export MAILADDRESS="developers@lists.mmbase.org"
+export MAILADDRESS="michiel.meeuwissen@gmail.com"
 export BUILD_MAILADDRESS=$MAILADDRESS
 
-source version.sh
+source $HOME/bin/version.sh
 
 # UNSTABLE branch
 
@@ -58,13 +58,14 @@ fi
 
 
 echo Creating symlink for latest build | tee -a ${builddir}/messages.log
-rm /home/nightly/builds/latest
-cd /home/nightly/builds
-ln -s ${builddir} latest
+rm $HOME/builds/latest
+cd $HOME/builds
+echo 'ln -s ${dir} latest' in `pwd` | tee -a ${builddir}/messages.log
+ln -s ${dir} latest
 
  # Using one thread for all mail about failures
 parent="<20080906100002.GA1861@james.mmbase.org>";
-mutthdr="my_hdr In-Reply-To: $parent";
+mutthdr="my_hdr In-Reply-To: ${parent}";
 
 
 showtests=1
