@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29.2.5 2008-04-23 13:21:52 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.6 2008-10-01 09:22:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -205,6 +205,8 @@ public class DocumentReader  {
                     }
                 }
             }
+
+            //xmlReader.setFeature("http://apache.org/xml/features/validation/schema",  true);
             dfactory.setNamespaceAware(true);
 
             db = dfactory.newDocumentBuilder();
@@ -502,13 +504,15 @@ public class DocumentReader  {
             return null;
         } else {
             String root = st.nextToken();
-            if (e.getLocalName().equals("error")) {
+            String localname = e.getLocalName();
+            if (localname == null) localname = e.getNodeName();
+            if (localname.equals("error")) {
                 // path should start with document root element
                 log.error("Error occurred : (" + getElementValue(e) + ")");
                 return null;
-            } else if (!e.getLocalName().equals(root)) {
+            } else if (!localname.equals(root)) {
                 // path should start with document root element
-                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getLocalName()+"): incorrect xml file" +
+                log.error("path [" + path + "] with root (" + root + ") doesn't start with root element (" + localname + "): incorrect xml file" +
                           "("+getSystemId()+")");
                 return null;
             }
@@ -519,7 +523,9 @@ public class DocumentReader  {
                 for(int i = 0; i < nl.getLength(); i++) {
                     if (! (nl.item(i) instanceof Element)) continue;
                     e = (Element)nl.item(i);
-                    if (e.getLocalName().equals(tag)) continue OUTER;
+                    String ln = e.getLocalName();
+                    if (ln == null) ln = e.getNodeName();
+                    if (ln.equals(tag)) continue OUTER;
                 }
                 // Handle error!
                 return null;
@@ -587,9 +593,11 @@ public class DocumentReader  {
             NodeList nl = e.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
+                String localname = n.getLocalName();
+                if (localname == null) localname = n.getNodeName();
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
-                     ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
+                     localname.equalsIgnoreCase(tag))) {
                     v.add(n);
                 }
             }
