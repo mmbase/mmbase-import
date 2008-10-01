@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.166 2008-10-01 19:57:12 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.167 2008-10-01 20:08:14 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -280,11 +280,11 @@ public class MMAdmin extends ProcessorModule {
                 }
             }
         }
-        log.warn("No cloud specified, using class security");
+        log.debug("No cloud specified, using class security");
         Map<String, Object> loginInfo = new HashMap<String, Object>();
         loginInfo.put("rank", "administrator");
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", loginInfo);
-        log.warn("Found " + cloud);
+        log.debug("Found " + cloud);
         return cloud.getUser().getRank().getInt() >= Rank.ADMIN.getInt();
     }
 
