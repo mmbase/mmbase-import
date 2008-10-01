@@ -21,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.19 2008-03-21 09:03:04 nklasens Exp $
+ * @version $Id: Module.java,v 1.20 2008-10-01 19:23:52 michiel Exp $
  */
 public interface Module extends Descriptor, Comparable<Module> {
 
@@ -67,7 +67,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      *      commands make use of this parameter.
      * @param auxparameters additional parameters for this command.
      */
-    public void process(String command, Object parameter, Map auxparameters);
+    public void process(String command, Object parameter, Map<String, Object> auxparameters);
 
     /**
      * Runs the command with the given parameter(s).
@@ -78,7 +78,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp);
+    public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp);
 
     /**
      * Retrieve info from a module based on a command string.
@@ -106,7 +106,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param parameters a hashtable containing the named parameters of the list.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map parameters);
+    public NodeList getList(String command, Map<String, ?> parameters);
 
     /**
      * Retrieve info from a module based on a command string
@@ -118,7 +118,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
+    public NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Returns all the Function objects of this Module.
@@ -164,6 +164,6 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
-    public FieldValue getFunctionValue(String functionName, List parameters);
+    public FieldValue getFunctionValue(String functionName, List<?> parameters);
 
 }
