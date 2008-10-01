@@ -13,6 +13,7 @@
    <%@include file="includes/getresponse.jsp" %>
    <html>
    <head>
+      <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
       <link rel="stylesheet" type="text/css" href="css/main.css">
       <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
       <link rel="stylesheet" type="text/css" href="css/vastgoed.css" />
@@ -280,7 +281,7 @@ jsc_ClearUnselectedOptions();
 <% ArrayList kartTypes = (ArrayList) selKaartMap.get("Natuurgebied"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Natuurgebied' AND hidden = '0'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Natuurgebied' AND hidden = '0'" orderby="positie" directions="UP">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
