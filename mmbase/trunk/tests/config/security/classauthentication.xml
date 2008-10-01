@@ -12,6 +12,10 @@
     <property name="rank" value="administrator" />
   </authenticate>
 
+  <authenticate class="org\.mmbase\.module\.tools\.MMAdmin\.*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
   <!-- class-security through rmmci is not working quite nice yet -->
   <authenticate class="org\.mmbase\.bridge\.remote\..*">
     <property name="rank" value="basic user" />

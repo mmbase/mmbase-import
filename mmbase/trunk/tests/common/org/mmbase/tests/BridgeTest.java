@@ -23,13 +23,14 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  */
 public abstract class BridgeTest extends MMBaseTest {
-    private static final Logger log = Logging.getLoggerInstance(BridgeTest.class);
+    protected static final Logger log = Logging.getLoggerInstance(BridgeTest.class);
     public BridgeTest() {
         super();
     }
     public BridgeTest(String name) {
         super(name);
     }
+    static boolean ensuredDeployed = false;
 
     int tryCount = 0;
 
@@ -125,12 +126,14 @@ public abstract class BridgeTest extends MMBaseTest {
         };
 
     protected void ensureDeployed(Cloud cloud, String uri) {
+        if (ensuredDeployed) return;
         while(true) {
             // make sure basic app is deployed
             if (cloud.hasRelationManager("bb", "cc", "posrel") &&
                 cloud.hasRelationManager("aa", "bb", "related") &&
                 cloud.hasRelationManager("bb", "aa", "related")
                 ) {
+                ensuredDeployed = true;
                 return;
             }
             if (!cloud.hasRelationManager("bb", "cc", "posrel")) {
