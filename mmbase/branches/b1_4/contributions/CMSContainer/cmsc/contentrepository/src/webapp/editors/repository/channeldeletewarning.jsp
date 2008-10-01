@@ -59,9 +59,17 @@
 	               <fmt:message key="channeldelete.message.2">
 	                  <fmt:param >${relcount2}</fmt:param>
 	               </fmt:message>            
-	            </li>
+	            </li> 
             </c:if>
          </ul>
+         
+         <br />
+         <mm:node number="$parentchannel">
+         	<mm:countrelations role="childrel" searchdir="destination" id="childrelSize" write="false"/>
+			<mm:compare referid="childrelSize" value="0" inverse="true">
+				<fmt:message key="channeldelete.warning.subchannels" />
+			</mm:compare>
+         </mm:node>
       </p>
       <p>
          <fmt:message key="channeldelete.choice" />

@@ -218,6 +218,13 @@ public final class RepositoryUtil {
         return TreeUtil.getParentRelation(node, TreeUtil.convertToList(treeManagers), CHILDREL);
     }
 
+    /**
+     * check that the source item is not a parent of the destination item
+     * 
+     * @param sourceChannel - source item
+     * @param destChannel - destination item
+     * @return <code>true</code> when the source item is a parent
+     */
     public static boolean isParent(Node sourceChannel, Node destChannel) {
         return TreeUtil.isParent(sourceChannel, destChannel, TreeUtil.convertToList(treeManagers), CHILDREL);
     }
