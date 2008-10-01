@@ -32,7 +32,7 @@ optdir="/home/nightly/optional-libs"
 
 echo generating version, and some directories
 
-source version-stable.sh
+source $HOME/bin/version-stable.sh
 
 echo $cvsversion
 

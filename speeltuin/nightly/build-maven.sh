@@ -27,7 +27,7 @@ export BUILD_MAILADDRESS=$MAILADDRESS
 echo generating version, and some directories
 
 
-source version-stable.sh
+source $HOME/bin/version-stable.sh
 
 # UNSTABLE branch
 
