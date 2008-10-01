@@ -21,4 +21,9 @@
     <property name="rank" value="administrator" />
   </authenticate>
 
+  <authenticate class=".*" weight="-20000">
+    <property name="rank" value="anonymous" />
+  </authenticate>
+
+
 </security>
