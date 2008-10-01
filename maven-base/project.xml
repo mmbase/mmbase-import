@@ -309,6 +309,14 @@ See http://www.MMBase.org/license
         <type>plugin</type>
         <url>http://maven-plugins.sourceforge.net</url>
     </dependency>
+    
+    <dependency>
+      <groupId>docbook</groupId>
+      <artifactId>docbook-xsl</artifactId>
+      <version>1.73.2</version>
+      <url>http://docbook.sourceforge.net</url>
+      <type>zip</type>
+    </dependency>
   </dependencies>
   <build>
     <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
