@@ -5,9 +5,7 @@
 	<artifactId>cmsc-modules-fileupload</artifactId>
 	<name>File upload module</name>
 	<shortDescription>Create objects based on uploaded file.</shortDescription>
-	<description>
-		File upload module. Provides the option to create file objects based on an uploaded file.
-	</description>
+	<description>File upload module. Provides the option to create file objects based on an uploaded file.</description>
 
 	<dependencies>
 		<dependency>
@@ -26,6 +24,12 @@
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-servicemanagement</artifactId>
 			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>mmapps</groupId>
+			<artifactId>remotepublishing</artifactId>
+			<version>1.0.14</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>
