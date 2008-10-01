@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.39 2008-08-01 22:02:24 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.40 2008-10-01 19:24:28 michiel Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -168,39 +168,35 @@ public class ModuleHandler implements Module, InvocationHandler {
         process(command, parameter, null, null,null);
     }
 
-    public void process(String command, Object parameter, Map auxparameters) {
-        process(command, parameter, auxparameters, null,null);
+    public void process(String command, Object parameter, Map<String, Object> auxparameters) {
+        process(command, parameter, auxparameters, null, null);
     }
 
-    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
+    public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp){
         if (mmbaseModule instanceof ProcessorModule) {
-                Hashtable<String, Object> cmds = new Hashtable<String, Object>();
-                if (parameter == null) { parameter = "-1"; }
-                cmds.put(command,parameter);
-                // weird change. should be fixed soon in Module.process
-                Hashtable<String, Object> partab = null;
-                if (auxparameters != null) {
-                    partab = new Hashtable<String, Object>(auxparameters);
-                } else {
-                    partab = new Hashtable<String, Object>();
-                }
-                ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
-                if (auxparameters != null) auxparameters.putAll(partab);
+            Map<String, Object> cmds = new Hashtable<String, Object>();
+            if (parameter == null) { parameter = "-1"; }
+            cmds.put(command,parameter);
+            if (auxparameters == null) {
+                auxparameters = new Hashtable<String, Object>();
+            }
+            ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)), cmds, auxparameters);
+
         } else {
             throw new BridgeException("process() is not supported by this module.");
         }
     }
 
-    public NodeList getList(String command, Map parameters){
+    public NodeList getList(String command, Map<String, ?> parameters){
         return getList(command, parameters,null,null);
     }
 
-    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
+    public NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp){
         if (mmbaseModule instanceof ProcessorModule) {
             Cloud cloud = getCloud(parameters);
             log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
             try {
-                List<org.mmbase.module.core.MMObjectNode> v 
+                List<org.mmbase.module.core.MMObjectNode> v
                     = ((ProcessorModule)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
                 log.info("Got list " + v);
                 if (v.size() == 0) {
@@ -279,7 +275,7 @@ public class ModuleHandler implements Module, InvocationHandler {
         return getFunction(functionName).createParameters();
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
+    public FieldValue getFunctionValue(String functionName, List<?> parameters) {
         return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 
