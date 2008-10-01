@@ -2,12 +2,13 @@ package org.mmbase.module.corebuilders;
 
 import org.mmbase.bridge.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TypeRelTest.java,v 1.16 2008-10-01 19:59:03 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.17 2008-10-01 20:16:45 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -421,13 +422,30 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         testSourceManagers(objectManager);
     }
 
+    Pattern OK = Pattern.compile(".*loaded ok.*");
     public void testInstallBridge2() { // Trigger MMB-1728
         // try to install another role 'related'
         Module mmadmin = getCloud().getCloudContext().getModule("mmadmin");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("APPLICATION", "BridgeTest2");
         mmadmin.process("LOAD", "BridgeTest2", params);
+        String lastmsg = mmadmin.getInfo("LASTMSG");
+        assertTrue(OK + " did not match " + lastmsg, OK.matcher(lastmsg).matches());
     }
+
+    public void testInstallBridge3() {
+        // try to install another role 'related'
+        Module mmadmin = getCloud().getCloudContext().getModule("mmadmin");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("APPLICATION", "BridgeTest3");
+        mmadmin.process("LOAD", "BridgeTest3", params);
+
+        // could not deploy, because it defined an incompatible reldef (related with a different builder)
+        String lastmsg = mmadmin.getInfo("LASTMSG");
+        assertFalse(OK + " should not match " + lastmsg, OK.matcher(lastmsg).matches());
+    }
+
+
 
     private void testManagers(NodeManager manager) {
 
