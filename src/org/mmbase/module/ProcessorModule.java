@@ -42,7 +42,7 @@ public abstract class ProcessorModule extends Module {
     /**
      * @javadoc
      **/
-    public MMObjectBuilder getListBuilder(String command, Map<String,Object> params) {
+    public MMObjectBuilder getListBuilder(String command, Map<String, ?> params) {
         return new VirtualBuilder(null);
     }
 
@@ -142,14 +142,14 @@ public abstract class ProcessorModule extends Module {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public List<MMObjectNode> getNodeList(Object context, String command, Map<String,Object> params) {
+    public List<MMObjectNode> getNodeList(Object context, String command, Map<String, ?> params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
         } else {
             tagger = new StringTagger("");
             if (params != null) {
-                for (Entry<String, Object> entry : params.entrySet()) {
+                for (Entry<String, ?> entry : params.entrySet()) {
                     String key = entry.getKey();
                     Object o = entry.getValue();
                     if (o instanceof Vector) {

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.40 2008-10-01 19:24:28 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.41 2008-10-01 19:57:36 michiel Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -174,13 +174,23 @@ public class ModuleHandler implements Module, InvocationHandler {
 
     public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp){
         if (mmbaseModule instanceof ProcessorModule) {
-            Map<String, Object> cmds = new Hashtable<String, Object>();
+            Hashtable<String, Object> cmds = new Hashtable<String, Object>();
             if (parameter == null) { parameter = "-1"; }
             cmds.put(command,parameter);
+            Hashtable<String, Object> hashtable;
+            boolean put = false;
             if (auxparameters == null) {
-                auxparameters = new Hashtable<String, Object>();
+                hashtable = new Hashtable<String, Object>();
+            } else if (auxparameters instanceof  Hashtable) {
+                hashtable = (Hashtable) auxparameters;
+            } else {
+                put = true;
+                hashtable = new Hashtable(auxparameters);
             }
-            ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)), cmds, auxparameters);
+            ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)), cmds, hashtable);
+            if (put) {
+                auxparameters.putAll(hashtable);
+            }
 
         } else {
             throw new BridgeException("process() is not supported by this module.");
