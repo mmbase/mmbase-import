@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @see Action
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.9 2008-09-16 16:36:59 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.10 2008-10-01 16:57:21 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
@@ -29,7 +29,12 @@ public abstract class ActionRepository extends Configurable {
         if (bootstrap != null) {
             return bootstrap;
         } else {
-            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getActionRepository();
+            MMBaseCop mmbc = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
+            if (mmbc != null) {
+                return mmbc.getActionRepository();
+            } else {
+                return new MemoryActionRepository();
+            }
         }
     }
 
