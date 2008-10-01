@@ -14,128 +14,137 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.upload.FormFile;
 
+import com.finalist.cmsc.fileupload.Configuration;
+
 /**
  * Struts form-bean for the file upload.
- *
+ * 
  * @author Auke van Leeuwen
  */
 @SuppressWarnings("serial")
 public class UploadFileForm extends ActionForm {
-	private static final Log log = LogFactory.getLog(UploadFileForm.class);
 
-	private String title;
-	private String description;
-	private FormFile file;
+    private static final Log log = LogFactory.getLog(UploadFileForm.class);
 
-	/** {@inheritDoc} */
-	@Override
-	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
+    private String title;
 
-		String title = getTitle();
-		if (StringUtils.isBlank(title)) {
-			errors.add("title", new ActionMessage("fileupload.upload.error.title.empty"));
-		} else if (title != null && title.length() > 255) {
-			errors.add("title", new ActionMessage("fileupload.upload.error.title.toolong"));
-		}
+    private String description;
 
-		String description = getDescription();
-		if (description != null && description.length() > 2048) {
-			errors.add("description", new ActionMessage("fileupload.upload.error.description.toolong"));
-		}
+    private FormFile file;
 
-		FormFile file = getFile();
-		if ((file == null) || (file.getFileSize() == 0)) {
-			errors.add("file", new ActionMessage("fileupload.upload.error.file.empty"));
-		} else if (!isValidFileType(file)) {
-			errors.add("file", new ActionMessage("fileupload.upload.error.file.invalidtype"));
-		}
+    /** {@inheritDoc} */
+    @Override
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+        ActionErrors errors = new ActionErrors();
 
-		return errors;
-	}
+        String title = getTitle();
+        if (StringUtils.isBlank(title)) {
+            errors.add("title", new ActionMessage("fileupload.upload.error.title.empty"));
+        }
+        else
+            if (title != null && title.length() > 255) {
+                errors.add("title", new ActionMessage("fileupload.upload.error.title.toolong"));
+            }
 
-	private boolean isValidFileType(FormFile file) {
-		List<String> allowedFileTypes = Arrays.asList("video/x-flv", "video/mp4");
-		List<String> allowedExtensions = Arrays.asList(".flv");
-		String contentType = file.getContentType();
-		log.debug("file contentType: " + contentType);
+        String description = getDescription();
+        if (description != null && description.length() > 2048) {
+            errors.add("description", new ActionMessage("fileupload.upload.error.description.toolong"));
+        }
 
-		// contenttype checking
-		boolean isAllowed = allowedFileTypes.contains(contentType);
+        FormFile file = getFile();
+        if ((file == null) || (file.getFileSize() == 0)) {
+            errors.add("file", new ActionMessage("fileupload.upload.error.file.empty"));
+        }
+        else
+            if (!isValidFileType(file)) {
+                errors.add("file", new ActionMessage("fileupload.upload.error.file.invalidtype"));
+            }
 
-		// unfortunately I can't figure out how to correclty configure the flv
-		// mimetype, so I'll do an extension comparison here.
-		String fileName = file.getFileName();
-		for (String extension : allowedExtensions) {
-			isAllowed = isAllowed || fileName.endsWith(extension);
-		}
+        return errors;
+    }
 
-		return isAllowed;
-	}
+    private boolean isValidFileType(FormFile file) {
+        List<String> allowedFileTypes = Configuration.getAllowedMimeTypes();
+        List<String> allowedExtensions = Arrays.asList(".flv");
+        String contentType = file.getContentType();
+        log.debug("file contentType: " + contentType);
 
-	/**
-	 * Returns the title.
-	 *
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+        // contenttype checking
+        boolean isAllowed = allowedFileTypes.contains(contentType);
 
-	/**
-	 * Sets the title to the specified value.
-	 *
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+        // unfortunately I can't figure out how to correclty configure the flv
+        // mimetype, so I'll do an extension comparison here.
+        String fileName = file.getFileName();
+        for (String extension : allowedExtensions) {
+            isAllowed = isAllowed || fileName.endsWith(extension);
+        }
 
-	/**
-	 * Returns the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+        return isAllowed;
+    }
 
-	/**
-	 * Sets the description to the specified value.
-	 *
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * Returns the title.
+     * 
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * Returns the file.
-	 *
-	 * @return the file
-	 */
-	public FormFile getFile() {
-		return file;
-	}
+    /**
+     * Sets the title to the specified value.
+     * 
+     * @param title
+     *            the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	/**
-	 * Sets the file to the specified value.
-	 *
-	 * @param file
-	 *            the file to set
-	 */
-	public void setFile(FormFile file) {
-		this.file = file;
-	}
+    /**
+     * Returns the description.
+     * 
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		FormFile file = getFile();
-		String fileFilename = (file == null ? null : file.getFileName());
+    /**
+     * Sets the description to the specified value.
+     * 
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-		return String.format("%s: [title: '%s', filename: '%s']", this.getClass(), getTitle(), fileFilename);
-	}
+    /**
+     * Returns the file.
+     * 
+     * @return the file
+     */
+    public FormFile getFile() {
+        return file;
+    }
+
+    /**
+     * Sets the file to the specified value.
+     * 
+     * @param file
+     *            the file to set
+     */
+    public void setFile(FormFile file) {
+        this.file = file;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        FormFile file = getFile();
+        String fileFilename = (file == null ? null : file.getFileName());
+
+        return String.format("%s: [title: '%s', filename: '%s']", this.getClass(), getTitle(), fileFilename);
+    }
 }
