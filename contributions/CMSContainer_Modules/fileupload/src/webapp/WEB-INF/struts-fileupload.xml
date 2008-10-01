@@ -55,5 +55,5 @@
 		</action>
 	</action-mappings>
 
-	<message-resources parameter="modules-fileupload" key="MODULES-fileupload" />
+	<message-resources parameter="modules-fileupload" key="MODULES-FILEUPLOAD" />
 </struts-config>

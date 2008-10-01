@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+
+<list role="posrel" destination="file" minoccurs="0" maxoccurs="1" orderby="field[@name='pos']" ordertype="number">
+	<title xml:lang="nl">Bestand</title>
+	<title xml:lang="en">File</title>
+
+	<item>
+		<field name="title" ftype="line" dtrequired="true">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+		</field>
+		<field name="description" ftype="text" rows="4">
+			<prompt xml:lang="en">Description</prompt>
+			<prompt xml:lang="nl">Beschrijving</prompt>
+		</field>
+		<field name="filename" ftype="line" dtrequired="true">
+			<prompt xml:lang="en">Bronbestandsnaam</prompt>
+			<prompt xml:lang="nl">Source filename</prompt>
+		</field>
+	</item>
+
+	<command name="search" nodepath="file" age="-1" fields="title,description">
+		<prompt xml:lang="en">Search file</prompt>
+		<prompt xml:lang="nl">Zoek bestand</prompt>
+		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Description contains</name>
+			<name xml:lang="nl">Omschrijving bevat</name>
+			<search-fields>[description]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Filename contains</name>
+			<name xml:lang="nl">Bestandsnaam bevat</name>
+			<search-fields>[filename]</search-fields>
+		</search-filter>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="file" role="posrel">
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='file']/../field[@name='pos'])+{$pos}}</field>
+			<object type="file" />
+		</relation>
+	</action>
+</list>

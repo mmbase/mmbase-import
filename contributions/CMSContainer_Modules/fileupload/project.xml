@@ -17,12 +17,6 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>mmapps</groupId>
-			<artifactId>remotepublishing</artifactId>
-			<version>1.0.14</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-utilities</artifactId>
 			<version>${cmsc.version}</version>
