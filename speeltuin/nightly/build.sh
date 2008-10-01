@@ -2,8 +2,8 @@
 
 source $HOME/bin/env.sh
 
-#export MAILADDRESS="developers@lists.mmbase.org"
-export MAILADDRESS="michiel.meeuwissen@gmail.com"
+export MAILADDRESS="developers@lists.mmbase.org"
+#export MAILADDRESS="michiel.meeuwissen@gmail.com"
 export BUILD_MAILADDRESS=$MAILADDRESS
 
 source $HOME/bin/version.sh
