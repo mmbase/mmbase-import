@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.10 2008-09-26 05:05:22 michiel Exp $
+ * @version $Id: ConvertImageTest.java,v 1.11 2008-10-01 17:05:22 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -147,6 +147,26 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
     }
 
     private static Cloud cloud;
+    /**
+     * test what happens if template is errorneous
+     *
+     */
+    public void testErrorneousTemplate() {
+        Cloud cloud = getCloud();
+        Query q = cloud.getNodeManager("icaches").createQuery();
+
+        int count = Queries.count(q);
+        Node node = cloud.getNode("jpeg.test.image");
+        Function f = node.getFunction("cache");
+        Parameters p = f.createParameters();
+        p.set("template","s(30x30");
+        f.getFunctionValue(p);
+        // TODO, add some aaserts here, on about what it means to have used an errorneaous template?
+        // -Should the icache have been created?
+        // -if it should, it should of course not been created again if we ask it again
+        // etc.
+    }
+
     /**
      * Sets up before each test.
      */
