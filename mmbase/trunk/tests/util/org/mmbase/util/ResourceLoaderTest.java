@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  * </ul>
  *
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.6 2008-09-12 13:33:47 michiel Exp $
+ * @verion $Id: ResourceLoaderTest.java,v 1.7 2008-10-01 17:00:13 michiel Exp $
  */
 public class ResourceLoaderTest extends TestCase {
 
@@ -55,10 +55,24 @@ public class ResourceLoaderTest extends TestCase {
         assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
     }
 
+    public void testGetPropertiesBuilder3() throws java.io.IOException {
+        URL url = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("/properties.xml");
+        assertNotNull("did not find /properties.xml", url);
+        assertTrue("non existing resource should openable for input", url.openConnection().getDoInput());
+        System.out.println(url);
+    }
+
     public void testBuilders() throws java.io.IOException {
         Set<String> xmls = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourcePaths(ResourceLoader.XML_PATTERN, true);
         assertTrue("" + xmls + " did not contain  properties.xml", xmls.contains("properties.xml"));
         assertTrue("" + xmls + " did not contain  core/object.xml", xmls.contains("core/object.xml"));
+
+    }
+
+    public void testBuilders2() throws java.io.IOException {
+        List<URL> xmls1 = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourceList("/properties.xml");
+        List<URL> xmls2 = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResourceList("properties.xml");
+        assertEquals(xmls1, xmls2);
 
     }
 
