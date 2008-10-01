@@ -75,6 +75,12 @@ public class CloudTest extends BridgeTest {
         }
     }
 
+    public void testClassSecurity() {
+        assertEquals("admin", cloud.getUser().getIdentifier());
+        assertEquals("foo", getCloud("foo").getUser().getIdentifier());
+        assertEquals("admin", getCloud("admin").getUser().getIdentifier());
+    }
+
     public void testGetList() {
         NodeList nodeList;
         nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "aa.binaryfield", "", "", "", "", false);
