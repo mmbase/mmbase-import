@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.165 2008-09-03 23:18:01 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.166 2008-10-01 19:57:12 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -128,7 +128,7 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    public void init() {
+    @Override public void init() {
         String dtmp = System.getProperty("mmbase.kiosk");
         if (dtmp != null && dtmp.equals("yes")) {
             kioskmode = true;
@@ -158,7 +158,7 @@ public class MMAdmin extends ProcessorModule {
      * @param command the LIST command for which to retrieve the builder
      * @param params contains the attributes for the list
      */
-    public MMObjectBuilder getListBuilder(String command, Map<String,Object> params) {
+    @Override public MMObjectBuilder getListBuilder(String command, Map<String, ?> params) {
         return new VirtualBuilder(mmb);
     }
 
@@ -263,30 +263,36 @@ public class MMAdmin extends ProcessorModule {
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
 
-        HttpSession session = sp.req.getSession(false);
-        Enumeration e = session.getAttributeNames();
-        while (e.hasMoreElements()) {
-            String attribute = (String) e.nextElement();
-            Object o = session.getAttribute(attribute);
+        if (sp.req != null) {
+            HttpSession session = sp.req.getSession(false);
+            Enumeration e = session.getAttributeNames();
+            while (e.hasMoreElements()) {
+                String attribute = (String) e.nextElement();
+                Object o = session.getAttribute(attribute);
 
-            if (o instanceof Cloud) {
-                Cloud cloud = (Cloud) o;
-                Rank curRank = cloud.getUser().getRank();
-                if (curRank.getInt() >= Rank.ADMIN.getInt()) {
-                    // log.service("Found an administrator cloud in session key=" + attribute);
-                    return true;
+                if (o instanceof Cloud) {
+                    Cloud cloud = (Cloud) o;
+                    Rank curRank = cloud.getUser().getRank();
+                    if (curRank.getInt() >= Rank.ADMIN.getInt()) {
+                        // log.service("Found an administrator cloud in session key=" + attribute);
+                        return true;
+                    }
                 }
             }
         }
-
-        return false;
+        log.warn("No cloud specified, using class security");
+        Map<String, Object> loginInfo = new HashMap<String, Object>();
+        loginInfo.put("rank", "administrator");
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", loginInfo);
+        log.warn("Found " + cloud);
+        return cloud.getUser().getRank().getInt() >= Rank.ADMIN.getInt();
     }
 
     /**
      * Execute the commands provided in the form values
      * @javadoc
      */
-    public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
+    @Override public boolean process(PageInfo sp, Hashtable<String,Object> cmds, Hashtable<String,Object> vars) {
         String cmdline, token;
         for (Enumeration<String> h = cmds.keys(); h.hasMoreElements();) {
             cmdline = h.nextElement();
@@ -416,7 +422,7 @@ public class MMAdmin extends ProcessorModule {
      * Handle a $MOD command
      * @javadoc
      */
-    public String replace(PageInfo sp, String cmds) {
+    @Override public String replace(PageInfo sp, String cmds) {
         if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
