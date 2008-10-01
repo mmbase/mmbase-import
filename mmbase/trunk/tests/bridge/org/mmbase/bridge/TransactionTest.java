@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.13 2008-08-13 08:38:19 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.14 2008-10-01 17:17:30 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -48,6 +48,7 @@ public class TransactionTest extends BridgeTest {
             Node node = cloud.getNodeManager("news").createNode();
             node.setStringValue("title", "foo");
             node.createAlias("test.news." + seq);
+            node.setContext("default");
             node.commit();
             newNode2 = node.getNumber();
         }
@@ -310,6 +311,30 @@ public class TransactionTest extends BridgeTest {
         }
 
 
+
+    }
+
+    public void testGetNodeTwiceWhileChanged() {
+        Cloud cloud1 = getCloud();
+        {
+            Node node = cloud1.getNode(newNode2);
+            String title1 = node.getStringValue("title");
+            node.setStringValue("title", "bla bla");
+            // don't commit
+        }
+        // now change something by someone else
+        {
+            Cloud cloud2 = getCloud("foo");
+            assertTrue(cloud1 != cloud2);
+            Node node = cloud2.getNode(newNode2);
+            node.setStringValue("title", "new title value");
+            node.commit();
+        }
+        // now look to the original cloud
+        {
+            Node node = cloud1.getNode(newNode2);
+            assertEquals("new title value", node.getStringValue("title"));
+        }
 
     }
 
