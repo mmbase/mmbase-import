@@ -1,4 +1,4 @@
-source version-stable.sh
+source $HOME/bin/version-stable.sh
 export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
 BUILD_HOME="/home/nightly"
 
@@ -12,7 +12,7 @@ for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
     ${CVS} -q update -d -P -l ${cvsversionoption} "${cvsversion}" ${headrevision}  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
 done
 echo "Build from ${revision} ${cvsversionoption} ${cvsversion} against java 1.4 are" > ${builddir}/README
-for i in 'src' 'documentation' 'tests' 'config' 'html' \
+for i in 'src' 'maven-base' 'applications/app-base' 'documentation' 'tests' 'config' 'html' \
     'applications/resources' 'applications/cloudsecurity' 'applications/mynews' 'application/xmlimporter' 'contributions/calendar' \
     'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/cloudcontext' \
     'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
