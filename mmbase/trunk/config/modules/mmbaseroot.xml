@@ -219,6 +219,15 @@
   -->
   <!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
 
+
+  <!--
+      If you are sure that your builder XML correspond with your tables, you can set this property to false
+      and reduce start up time.
+  -->
+  <property name="verifyTables">true</property>
+
+
+
   </properties>
 </module>
 

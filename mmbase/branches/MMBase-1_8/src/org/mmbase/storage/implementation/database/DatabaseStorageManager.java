@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.12 2008-07-08 11:07:33 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.13 2008-10-01 20:55:35 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -68,6 +68,8 @@ public class DatabaseStorageManager implements StorageManager {
      * Whether the warning about blob on legacy location was given.
      */
     private static boolean legacyWarned = false;
+
+    private static boolean verifyTablesWarned = false;
 
     /**
      * Whether the warning about blobs located on disk was given.
@@ -164,6 +166,21 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
+    }
+    /**
+     * @since MMBase-1.8.7
+     */
+    protected boolean verifyTables() {
+        boolean verifyTables = ! "false".equals(factory.getMMBase().getInitParameter("verifyTables"));
+        if (!verifyTablesWarned) {
+            if (! verifyTables) {
+                log.info("Not verifying tables. No implicit synchronization of datatypes to matching db types is done. No warnings about that are logged.");
+            } else {
+                log.service("Verifying tables. Implicit synchronization of datatypes to matching db types will be  done. Warnings about that are logged.");
+            }
+            verifyTablesWarned = true;
+        }
+        return  verifyTables;
     }
 
     /**
@@ -1879,7 +1896,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
         }
         String tableName = (String) factory.getStorageIdentifier(builder);
         createTable(builder, tableFields, tableName);
-        if (!isVerified(builder)) {
+        if (verifyTables() && !isVerified(builder)) {
             verify(builder);
         }
     }
@@ -2197,7 +2214,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
         if (result) {
-            if (!isVerified(builder)) {
+            if (verifyTables() && !isVerified(builder)) {
                 verify(builder);
             }
         }
@@ -3088,7 +3105,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                 result.getBlob(index);
             }
             else {
-                result.getBinaryStream(index);                
+                result.getBinaryStream(index);
             }
             break;
         case Field.TYPE_DATETIME :
