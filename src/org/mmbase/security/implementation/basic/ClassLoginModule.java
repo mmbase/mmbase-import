@@ -18,7 +18,7 @@ import org.mmbase.security.Rank;
  * Support for authentication method 'class' for 'basic' authentication.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClassLoginModule.java,v 1.8 2008-09-23 16:29:07 michiel Exp $
+ * @version $Id: ClassLoginModule.java,v 1.9 2008-10-01 16:57:34 michiel Exp $
  * @since   MMBase-1.8
  */
 public class ClassLoginModule implements LoginModule {
@@ -34,13 +34,16 @@ public class ClassLoginModule implements LoginModule {
     }
 
     public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
-        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", loginInfo);
         if (li == null) {
             throw new SecurityException("Class authentication failed (class not authorized)");
         }
-        String userName = li.getMap().get("username");
+        String userName = li.getMap().get("username"); // specified
+        if (userName == null) userName = (String) loginInfo.get("username");
 
-        String r = ranks.get(userName);
+        String r = li.getMap().get("rank");
+        if (r == null) r = (String) loginInfo.get("rank");
+        if (r == null) r = ranks.get(userName);
         Rank rank = r == null ? Rank.BASICUSER : Rank.getRank(r);
         user.setIdentifier(userName);
         user.setRank(rank);
