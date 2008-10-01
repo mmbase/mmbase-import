@@ -28,6 +28,7 @@ echo generating version, and some directories
 
 
 source $HOME/bin/version-stable.sh
+source $HOME/bin/cvs-stable.sh
 
 # UNSTABLE branch
 
