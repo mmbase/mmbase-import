@@ -16,6 +16,12 @@
          <fmt:message key="channeldelete.subtitle" /> 
          <mm:node referid="number">
             <b><mm:field name="name" /></b>
+				
+				<br /><br />
+				<mm:countrelations role="childrel" searchdir="destination" id="childrelSize"  write="false"/>
+				<mm:compare referid="childrelSize" value="0" inverse="true">
+					<fmt:message key="channeldelete.warning.subchannels" />
+				</mm:compare>
          </mm:node>
       </p>
       <p>
