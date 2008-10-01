@@ -9,6 +9,7 @@ datatypes.xml  functions  security
 */
 package org.mmbase.tests;
 import junit.framework.*;
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.CloudThreadLocal;
 import org.mmbase.util.logging.Logger;
@@ -61,12 +62,18 @@ public abstract class BridgeTest extends MMBaseTest {
         return cc;
     }
 
-    protected Cloud getCloud() {
+    protected Cloud getCloud(String userName) {
         CloudThreadLocal.unbind();
-        Cloud c = getCloudContext().getCloud("mmbase", "class", null);
+        Map<String, Object> loginInfo = new HashMap<String, Object>();
+        loginInfo.put("username", userName);
+        Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
         ensureDeployed(c, "local cloud");
         CloudThreadLocal.bind(c);
+        log.warn("Found cloud of " + c.getUser().getIdentifier() + " with " + loginInfo);
         return c;
+    }
+    protected Cloud getCloud() {
+        return getCloud("admin");
     }
 
     /**
