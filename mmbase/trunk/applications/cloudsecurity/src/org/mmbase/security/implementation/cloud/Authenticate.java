@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.4 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.5 2008-10-01 16:59:05 michiel Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -90,7 +90,7 @@ public class Authenticate extends Authentication {
                 return null;
             }
         } else if ("class".equals(moduleName)) {
-            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", loginInfo);
             if (li == null) {
                 throw new SecurityException("Class authentication failed  (class not authorized)");
             }
@@ -115,7 +115,7 @@ public class Authenticate extends Authentication {
         log.debug(usercontext);
         return ((User)usercontext).getKey() == validKey;
     }
-    
+
     private void checkBuilder() throws org.mmbase.security.SecurityException {
         if(builder == null) {
             org.mmbase.module.core.MMBase mmb = MMBase.getMMBase();
@@ -136,26 +136,26 @@ public class Authenticate extends Authentication {
         private String user;
         private Rank rank;
         private long key;
-        
+
         User(String user, Rank rank, long key, String app) {
             super(app);
             this.user = user;
             this.rank = rank;
             this.key = key;
         }
-        
+
         public String getIdentifier() {
             return user;
         }
-        
+
         public Rank getRank() throws org.mmbase.security.SecurityException {
             return rank;
         }
-        
+
         public String toString() {
             return user + "[" + rank + "]";
         }
-        
+
         long getKey() {
             return key;
         }

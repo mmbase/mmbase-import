@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.20 2008-09-04 05:56:23 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.21 2008-10-01 16:57:34 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -130,8 +130,9 @@ public class ClassAuthentication {
      * @param application Only checks this 'authentication application'. Can be <code>null</code> to
      * check for every application.
      * @return A Login object if yes, <code>null</code> if not.
+     * @since MMBase-1.9
      */
-    public static Login classCheck(String application) {
+    public static LoginResult classCheck(String application, Map<String, ?> properties) {
         if (authenticatedClasses == null) {
             synchronized(ClassAuthentication.class) { // if load is running this locks
                 if (authenticatedClasses == null) { // if locked, load was running and this now skips, so load is not called twice.
@@ -153,8 +154,29 @@ public class ClassAuthentication {
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
 
+        LoginResult proposal = null;
+        CLASS:
         for (Login n : authenticatedClasses) {
+            Map<String, String> map = n.getMap();
             if (application == null || application.equals(n.application)) {
+                int propertyMatchCount = 0;
+                if (properties != null) {
+                    for (Map.Entry<String, ?> e: properties.entrySet()) {
+                        String v = map.get(e.getKey());
+                        if (v == null) continue;
+                        if (! v.equals(e.getValue())) {
+                            continue CLASS;
+                        } else {
+                            propertyMatchCount++;
+                        }
+                    }
+                    if (proposal != null && proposal.propertyMatchCount >= propertyMatchCount) {
+                        // proposal better than this one, whether the new one will match class or
+                        // not, never mind.
+                        continue CLASS;
+                    }
+                }
+
                 Pattern p = n.classPattern;
                 int depth = 0;
                 for (StackTraceElement element : stack) {
@@ -173,16 +195,29 @@ public class ClassAuthentication {
                         if (log.isDebugEnabled()) {
                             log.debug("" + className + " matches! ->" + n + " " + n.getMap());
                         }
-                        return n;
+                        proposal = new LoginResult(n, propertyMatchCount);
+                        if (properties == null || properties.size() == propertyMatchCount) {
+                            // cannot become any better
+                            break CLASS;
+                        }
                     }
                 }
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Failed to authenticate " + Arrays.asList(stack) + " with " + authenticatedClasses);
+            log.debug("With " + properties + " " + authenticatedClasses + " found " + proposal);
+            if (proposal == null) {
+                log.debug("Failed to authenticate " + Arrays.asList(stack));
+            }
         }
-        return null;
+        return proposal;
     }
+    public static Login classCheck(String application) {
+        return classCheck(application, null);
+    }
+
+
+
 
     /**
      * A structure to hold the login information.
@@ -195,7 +230,7 @@ public class ClassAuthentication {
         Login(Pattern p , String a, Map<String, String> m, int w) {
             classPattern = p;
             application = a;
-            map = m;
+            map = Collections.unmodifiableMap(m);
             weight = w;
         }
 
@@ -207,6 +242,20 @@ public class ClassAuthentication {
         }
         public int compareTo(Login o) {
             return o.weight - this.weight;
+        }
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public static class LoginResult extends Login {
+        final int    propertyMatchCount;
+        LoginResult(Login p, int propertyMatchCount) {
+            super(p.classPattern, p.application, p.map, p.weight);
+            this.propertyMatchCount = propertyMatchCount;
+        }
+        public String toString() {
+            return super.toString() + (propertyMatchCount > 0 ? (" (matched " + propertyMatchCount + " properties)") : "");
         }
     }
 
