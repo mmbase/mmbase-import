@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.16 2008-09-03 23:18:01 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.17 2008-10-01 20:07:52 michiel Exp $
  */
 class ApplicationInstaller {
 
@@ -769,11 +769,12 @@ class ApplicationInstaller {
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
     private boolean installRelDef(String sname, String dname, int dir, String sguiname,
-            String dguiname, int builder, ApplicationResult result) {
+                                  String dguiname, int builder, ApplicationResult result) {
 
         RelDef reldef = mmb.getRelDef();
         if (reldef != null) {
-            if (reldef.getNumberByName(sname + "/" + dname) == -1) {
+            int rnumber = reldef.getNumberByName(sname );
+            if (rnumber == -1) {
                 MMObjectNode node = reldef.getNewNode("system");
                 node.setValue("sname", sname);
                 node.setValue("dname", dname);
@@ -792,6 +793,18 @@ class ApplicationInstaller {
                     log.debug("RefDef (" + sname + "," + dname + ") installed");
                 } else {
                     return result.error("RelDef (" + sname + "," + dname + ") could not be installed");
+                }
+            } else {
+                MMObjectNode node = reldef.getNode(rnumber);
+                String foundDname = node.getStringValue("dname");
+                int foundBuilder = node.getIntValue("builder");
+                if (! foundDname.equals(dname)) {
+                    // MMB-1727
+                    log.warn("Found already an reldef with this sname ('" + sname + "') but with different dname ('" + foundDname + "'). So not using " + sname + "/" + dname + " but " + sname + "/" + foundDname + ".");
+                }
+                if (foundBuilder != builder) {
+                    result.error("Role '" + sname + "' already defined with different builder ('" + foundBuilder + "', while this application required it to be " + builder);
+                    return false;
                 }
             }
         } else {
