@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_file">
+	<title xml:lang="nl">Bestand</title>
+	<title xml:lang="en">File</title>
+
+	<field name="title" ftype="line" dtrequired="true">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+	</field>
+	<field name="description" ftype="text" rows="4">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Beschrijving</prompt>
+	</field>
+	<field name="filename" ftype="line" dtrequired="true">
+		<prompt xml:lang="en">Bronbestandsnaam</prompt>
+		<prompt xml:lang="nl">Source filename</prompt>
+	</field>
+
+</form-schema>

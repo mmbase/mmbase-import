@@ -6,15 +6,15 @@
 	<title xml:lang="en">File</title>
 
 	<item>
-		<field name="title" ftype="line" dtrequired="true">
+		<field name="title" ftype="data">
 			<prompt xml:lang="en">Title</prompt>
 			<prompt xml:lang="nl">Titel</prompt>
 		</field>
-		<field name="description" ftype="text" rows="4">
+		<field name="description" ftype="data">
 			<prompt xml:lang="en">Description</prompt>
 			<prompt xml:lang="nl">Beschrijving</prompt>
 		</field>
-		<field name="filename" ftype="line" dtrequired="true">
+		<field name="filename" ftype="data" rows="3">
 			<prompt xml:lang="en">Bronbestandsnaam</prompt>
 			<prompt xml:lang="nl">Source filename</prompt>
 		</field>
