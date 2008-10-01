@@ -16,8 +16,13 @@
   <block name="magazine"
          classification="mynews entrance mmbase.examples"
          mimetype="text/html">
+    <title xml:lang="en">MyNews</title>
+    <title xml:lang="nl">MyNews</title>
     <description xml:lang="en">
-      The famous 'mynews' example, but as a component.
+      The famous 'MyNews' example, but as a component.
+    </description>
+    <description xml:lang="en">
+      Het beroemde 'MyNews' voorbeeld, nu als een component.
     </description>
     <head jsp="head.jspx" />
     <body jsp="magazine.jspx">
@@ -28,11 +33,12 @@
   <block name="article"
          classification="mynews"
          mimetype="text/html">
+    <title xml:lang="en">MyNews article</title>
+    <title xml:lang="nl">MyNews artikel</title>
     <head jsp="head.jspx" />
     <body jsp="article.jspx">
       <param name="n" />
     </body>
   </block>
-
 
 </component>
