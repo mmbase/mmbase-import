@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.17 2008-10-01 20:07:52 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.18 2008-10-01 20:15:49 michiel Exp $
  */
 class ApplicationInstaller {
 
@@ -803,7 +803,7 @@ class ApplicationInstaller {
                     log.warn("Found already an reldef with this sname ('" + sname + "') but with different dname ('" + foundDname + "'). So not using " + sname + "/" + dname + " but " + sname + "/" + foundDname + ".");
                 }
                 if (foundBuilder != builder) {
-                    result.error("Role '" + sname + "' already defined with different builder ('" + foundBuilder + "', while this application required it to be " + builder);
+                    result.error("Role '" + sname + "' already defined with different builder (" + foundBuilder + "), while this application required it to be " + builder);
                     return false;
                 }
             }
