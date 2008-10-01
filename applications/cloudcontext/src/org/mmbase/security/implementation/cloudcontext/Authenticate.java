@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.23 2008-09-23 16:29:25 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.24 2008-10-01 16:58:23 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -159,7 +159,7 @@ public class Authenticate extends Authentication {
                 throw new SecurityException("Logged in an invalid user");
             }
         } else if ("class".equals(s)) {
-            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
+            ClassAuthentication.Login li = ClassAuthentication.classCheck("class", map);
             if (li == null) {
                 throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }

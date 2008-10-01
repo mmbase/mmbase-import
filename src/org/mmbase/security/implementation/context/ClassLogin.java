@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.8 2008-09-24 22:02:11 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.9 2008-10-01 16:57:34 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -28,7 +28,7 @@ public class ClassLogin extends ContextLoginModule {
 
     public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
-        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", userLoginInfo);
         if (li == null) {
             throw new SecurityException("Class authentication failed  '" + userLoginInfo + "' (class not authorized)");
         }
