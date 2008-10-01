@@ -20,31 +20,21 @@
 						
 						<p><fmt:message key="fileupload.confirm.intro" /></p>
 						
-						<mm:countrelations type="article" role="posrel" searchdir="source" jspvar="articleCount" write="false" />
-						<mm:countrelations type="blogpost" role="posrel" searchdir="source" jspvar="blogpostCount" write="false" />
+						<mm:countrelations type="contentelement" role="posrel" searchdir="source" jspvar="ceCount" write="false" />
 						
-						<c:if test="${(articleCount gt 0) or (blogpostCount gt 0)}">
+						<c:if test="${ ceCount gt 0 }">
 							<p>
 								<fmt:message key="fileupload.confirm.related" />
 							</p>
 						
-							<mm:relatednodes type="article" role="posrel" searchdir="source">
+							<mm:relatednodes type="contentelement" role="posrel" searchdir="source">
 								<mm:first>
-									<h2><fmt:message key="fileupload.confirm.articles" /></h2>
+									<h2><fmt:message key="fileupload.confirm.contentelements" /></h2>
 									<ul>
 								</mm:first>
 								<li><mm:field name="title" /></li>
 								<mm:last></ul></mm:last>	
-							</mm:relatednodes>				
-	
-							<mm:relatednodes type="blogpost" role="posrel" searchdir="source">
-								<mm:first>
-									<h2><fmt:message key="fileupload.confirm.blogposts" /></h2>
-									<ul>
-								</mm:first>
-								<li><mm:field name="title" /></li>
-								<mm:last></ul></mm:last>	
-							</mm:relatednodes>
+							</mm:relatednodes>	
 						</c:if>
 					</mm:node>
 					
