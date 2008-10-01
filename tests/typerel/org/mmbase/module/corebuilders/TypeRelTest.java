@@ -1,12 +1,13 @@
 package org.mmbase.module.corebuilders;
 
 import org.mmbase.bridge.*;
+import java.util.*;
 
 /**
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TypeRelTest.java,v 1.15 2008-09-09 07:25:28 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.16 2008-10-01 19:59:03 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -420,13 +421,22 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         testSourceManagers(objectManager);
     }
 
+    public void testInstallBridge2() { // Trigger MMB-1728
+        // try to install another role 'related'
+        Module mmadmin = getCloud().getCloudContext().getModule("mmadmin");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("APPLICATION", "BridgeTest2");
+        mmadmin.process("LOAD", "BridgeTest2", params);
+    }
 
     private void testManagers(NodeManager manager) {
+
         RelationManagerList managers  = manager.getAllowedRelations((NodeManager) null, null, null);
         RelationManagerIterator i = managers.relationManagerIterator();
         Cloud cloud = manager.getCloud();
         while(i.hasNext()) {
             RelationManager rm = i.nextRelationManager();
+            assertNotNull(rm);
             assertTrue("Both " + rm.getDestinationManager() + " and " + rm.getSourceManager() + " are not " + manager,
                        rm.getDestinationManager().equals(manager) || rm.getSourceManager().equals(manager));
 
@@ -454,7 +464,11 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
             System.out.print("D"); //eleting " + node);
             node.delete();
         }
-        shutdownMMBase();
+    }
+
+
+    public void testShutdown() {
+        getCloud("admin").shutdown();
     }
 
     /**
