@@ -69,7 +69,7 @@ public abstract class BridgeTest extends MMBaseTest {
         Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
         ensureDeployed(c, "local cloud");
         CloudThreadLocal.bind(c);
-        log.warn("Found cloud of " + c.getUser().getIdentifier() + " with " + loginInfo);
+        log.debug("Found cloud of " + c.getUser().getIdentifier() + " with " + loginInfo);
         return c;
     }
     protected Cloud getCloud() {
