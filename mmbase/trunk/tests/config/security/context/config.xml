@@ -53,6 +53,7 @@
       <possible context="imagesmodule"  />
       <possible context="system"  />
       <possible context="non_default"  />
+      <possible context="everyones"  />
     </context>
     <context name="default">
       <operation type="create">        <grant group="users" />        </operation>
@@ -64,6 +65,7 @@
       <possible context="admin"  />
       <possible context="default"  />
       <possible context="non_default"  />
+      <possible context="everyones"  />
     </context>
     <context name="system">
       <operation type="create">        <grant group="users" />        </operation>
@@ -74,6 +76,7 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="system"  />
+      <possible context="everyones"  />
     </context>
     <context name="imagesmodule">
       <operation type="read">          <grant group="everyone" />     </operation>
@@ -101,6 +104,17 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="import"  />
+      <possible context="everyones"  />
+    </context>
+
+    <context name="everyones">
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write">          <grant group="everyone" />     </operation>
+      <operation type="delete">        <grant group="everyone" />        </operation>
+      <operation type="change context"><grant group="everyone" /></operation>
+      <possible context="admin"  />
+      <possible context="import"  />
+      <possible context="default"  />
     </context>
   </contexts>
 </contextconfig>
