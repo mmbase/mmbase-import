@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.8.2.3 2007-10-02 12:15:34 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.4 2008-10-01 20:19:25 michiel Exp $
  */
 public class ApplicationInstaller {
 
@@ -79,8 +79,8 @@ public class ApplicationInstaller {
         }
 
         ApplicationReader reader = getApplicationReader(applicationName);
-        Versions ver = (Versions)mmb.getMMObject("versions");
         if (reader != null) {
+            Versions ver = (Versions)mmb.getMMObject("versions");
             // test autodeploy
             // test autodeploy
             if (autoDeploy) {
@@ -191,7 +191,7 @@ public class ApplicationInstaller {
                 }
             }
         } else {
-            result.error("Install error: can't find xml file: applications/" + applicationName + ".xml");
+            result.error("Install error: can't find xml resource: applications/" + applicationName + ".xml");
         }
         return result.isSuccess();
     }
@@ -241,15 +241,19 @@ public class ApplicationInstaller {
                     // XXX To do : we may want to load the node and check/change the fields
                     log.debug("node allready installed : " + exportnumber);
                 } else {
-                    newNode.setValue("number", -1);
-                    int localnumber = doKeyMergeNode(syncbul, newNode, exportsource, result);
-                    if (localnumber != -1) { // this node was not yet imported earlier
-                        createSyncnode(syncbul, exportsource, timestamp, exportnumber, localnumber);
-                        if (localnumber == newNode.getNumber()) {
-                            findFieldsOfTypeNode(nodeFieldNodes, exportsource, newNode);
+                    try {
+                        newNode.setValue("number", -1);
+                        int localnumber = doKeyMergeNode(syncbul, newNode, exportsource, result);
+                        if (localnumber != -1) { // this node was not yet imported earlier
+                            createSyncnode(syncbul, exportsource, timestamp, exportnumber, localnumber);
+                            if (localnumber == newNode.getNumber()) {
+                                findFieldsOfTypeNode(nodeFieldNodes, exportsource, newNode);
+                            }
                         }
+                        NodeCache.getCache().remove(new Integer(localnumber));
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
                     }
-                    NodeCache.getCache().remove(new Integer(localnumber));
                 }
                 n.remove();
             }
@@ -782,7 +786,8 @@ public class ApplicationInstaller {
 
         RelDef reldef = mmb.getRelDef();
         if (reldef != null) {
-            if (reldef.getNumberByName(sname + "/" + dname) == -1) {
+            int rnumber = reldef.getNumberByName(sname );
+            if (rnumber == -1) {
                 MMObjectNode node = reldef.getNewNode("system");
                 node.setValue("sname", sname);
                 node.setValue("dname", dname);
@@ -801,6 +806,18 @@ public class ApplicationInstaller {
                     log.debug("RefDef (" + sname + "," + dname + ") installed");
                 } else {
                     return result.error("RelDef (" + sname + "," + dname + ") could not be installed");
+                }
+            } else {
+                MMObjectNode node = reldef.getNode(rnumber);
+                String foundDname = node.getStringValue("dname");
+                int foundBuilder = node.getIntValue("builder");
+                if (! foundDname.equals(dname)) {
+                    // MMB-1727
+                    log.warn("Found already an reldef with this sname ('" + sname + "') but with different dname ('" + foundDname + "'). So not using " + sname + "/" + dname + " but " + sname + "/" + foundDname + ".");
+                }
+                if (foundBuilder != builder) {
+                    result.error("Role '" + sname + "' already defined with different builder (" + foundBuilder + "), while this application required it to be " + builder);
+                    return false;
                 }
             }
         } else {
