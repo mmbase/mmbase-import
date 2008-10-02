@@ -19,4 +19,12 @@
 		</description>
 		<module>fileupload</module>
 	</node>
+	<node number="34001" owner="admin">
+		<key>fileupload.allowedmimetypes</key>
+		<value></value>
+		<description>
+			This property indicates the MIME-types that may be uploaded
+		</description>
+		<module>fileupload</module>
+	</node>
 </properties>
