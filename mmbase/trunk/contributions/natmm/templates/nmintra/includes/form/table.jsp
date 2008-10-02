@@ -1,21 +1,64 @@
+<%@ page isELIgnored="false" %>
 <% // warning on using two times the same question should be added
 boolean timeFieldIsOpen = false;
 String buttonText = "verstuur je bericht";
 %>
-<form name="formulier" method="post"> 
+
+<table cellpadding="0" cellspacing="0" align="left">
+<tr><td>
+
 <table cellpadding="0" cellspacing="0" align="left">
 	<tr>
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
 		<td colspan="3"><img src="media/spacer.gif" width="400" height="1">
-      <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a></div>
-      <%@include file="../relatedteaser.jsp" %>
-    </td>
-	</tr>		
-	<mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier"	fields="formulier.number"	orderby="posrel.pos" directions="UP">
-    <mm:node element="formulier" jspvar="form">
+         <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a></div>
+         <%@include file="../relatedteaser.jsp" %>
+      </td>
+	</tr>
+</table>
+
+</td></tr>
+<tr><td><img src="media/spacer.gif" width="10" height="1"></td><td colspan="3">
+
+</td></tr>
+<tr><td colspan=3><br/></td></tr>
+<tr><td>
+
+
+   <mm:list nodes="<%= paginaID %>" id="forms" path="pagina,posrel,formulier" fields="formulier.number" orderby="posrel.pos" directions="UP" searchdir="destination">
+      <mm:size id="formulierCount" write="false"/>
+      <mm:isgreaterthan referid="formulierCount" value="1">
+         <mm:first>
+            </td></tr>
+            <tr><td colspan="3">Selecteer het formulier</td></tr>
+            <tr><td colspan=3>
+            <select id="selectform" onchange="showForm(this)">
+         </mm:first>
+         <mm:field name="formulier.titel" jspvar="titel" vartype="String" write="false"/>
+         <mm:field name="formulier.number" jspvar="number" vartype="String" write="false"/>
+         <option value="${number}">${titel}</option>
+      </mm:isgreaterthan>
+   </mm:list>
+   <mm:isgreaterthan referid="formulierCount" value="1">
+      </select><br/><br/>
+      </td></tr>
+      <tr><td>
+   </mm:isgreaterthan>
+
+<mm:list referid="forms">
+
+<mm:field name="formulier.number" jspvar="number" vartype="String" write="false"/>
+<script type="text/javascript">
+   forms.push("form${number}");
+</script>
+
+<form name="form${number}" id="form${number}" method="post" action="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" <mm:first inverse="true">style='display:none'</mm:first>>
+<mm:node element="formulier" jspvar="form">
+   <table cellpadding="0" cellspacing="0" align="left">
+     
       <tr>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
-        <td colspan=3>
+        <td colspan="3">
           <div class="pageheader"><mm:field name="titel" /></div><br/>
           <mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
             <% if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { %><mm:write /><br/><br/><% } %>
@@ -25,7 +68,7 @@ String buttonText = "verstuur je bericht";
       <% 
       String formulier_number = form.getStringValue("number"); 
       %>
-      <mm:related path="posrel,formulierveld" fields="formulierveld.number" orderby="posrel.pos" directions="UP">
+      <mm:related path="posrel,formulierveld" fields="formulierveld.number" orderby="posrel.pos" directions="UP" searchdir="destination">
         <mm:node element="formulierveld" jspvar="thisField"><% 
           
           String questions_type = thisField.getStringValue("type");
@@ -106,8 +149,7 @@ String buttonText = "verstuur je bericht";
                 <td colspan="3">
                 <select name="q<%= questions_number %>">
                 <option>...
-                <mm:related path="posrel,formulierveldantwoord" fields="formulierveldantwoord.waarde"
-                  orderby="posrel.pos" directions="UP">
+                <mm:related path="posrel,formulierveldantwoord" fields="formulierveldantwoord.waarde" orderby="posrel.pos" directions="UP">
                   <option value="<mm:field name="formulierveldantwoord.waarde" />"><mm:field name="formulierveldantwoord.waarde" />
                 </mm:related>
                 </select>
@@ -153,11 +195,26 @@ String buttonText = "verstuur je bericht";
       <tr>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
         <td colspan="3"><div align="right">
-        <a href="javascript:postIt();"><%= buttonText %></a><img src="media/spacer.gif" width="10" height="1"></div>
+        <a href="javascript:postIt(${number});"><%= buttonText %></a><img src="media/spacer.gif" width="10" height="1"></div>
         </td>
       </tr>
+
+   </table>
+
+</td></tr>
+<tr><td>
     </mm:node>
-	</mm:list>
+   </form>
+   </mm:list>
+
+
+
+<script type="text/javascript">
+   showForm(document.getElementById("selectform"));
+</script>
+ 
+ 
+<table cellpadding="0" cellspacing="0" align="left">
 	<tr>
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
 		<td colspan="3"><img src="media/spacer.gif" width="1" height="10"></td>
@@ -173,4 +230,6 @@ String buttonText = "verstuur je bericht";
 		<td colspan="3"><img src="media/spacer.gif" width="1" height="10"></td>
 	</tr>
 </table>
-</form>
+
+</td></tr>
+</table>

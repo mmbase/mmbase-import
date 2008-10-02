@@ -4,7 +4,7 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version  $Id: base.css,v 1.1 2006-03-05 21:46:44 henk Exp $
+  @version  $Id: base.css,v 1.2 2008-10-02 14:07:00 jkoster Exp $
 */
 body  {         
   font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
@@ -21,7 +21,7 @@ input, textarea, select  {
   text-align: left;
   letter-spacing: 0.05em;
 }
-input, textarea,  {         
+input, textarea  {         
   width: 100%;
 } 
 
@@ -50,7 +50,7 @@ a:active  {
   Header settings
 */
 h1, h2, h3, h4, h5, h6  {         
-        padding- left:3;
+        padding-left:3;
         text-align: left;
         font-weight: bold; 
 }
@@ -74,7 +74,7 @@ h6  {
 } 
 
 .tooltip  {         
-        borde-width: 1px;
+        border-width: 1px;
         border-style: solid;
         padding: 3;
         position: absolute;

@@ -1,4 +1,5 @@
 <%@include file="/taglibs.jsp" %>
+<mm:content type="text/html" escaper="none">
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
@@ -31,7 +32,7 @@ if(!postingStr.equals("|")) { expireTime = 0; }
         
         // ** hack: special functionality on page "Wat vind je ervan?"
         String sWvjePageId = ""; %>
-        <mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'">
+        <mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'" searchdir="destination">
           <mm:field name="pagina.number" jspvar="number" vartype="String" write="false">
             <% sWvjePageId = number; %>
           </mm:field>
@@ -57,3 +58,4 @@ if(!postingStr.equals("|")) { expireTime = 0; }
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
+</mm:content>
