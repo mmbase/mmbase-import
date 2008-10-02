@@ -11,13 +11,13 @@
   <jsp:directive.variable  name-given="_" />
   <jsp:directive.variable  name-given="org.mmbase.richtext.kupulink" />
 
-
   <mm:link
       page="/mmbase/kupu/mmbase"
-           referids="referrer,referrer@kupu_back,_node@origin,wizard">
+      referids="referrer,referrer@kupu_back,_node?@origin,wizard">
     <mm:param name="kupu_back">${empty kupu_back ? referrer : kupu_back}</mm:param>
     <mm:param name="objectnumber">${node}</mm:param>
-    <c:set var="org.mmbase.richtext.kupulink" value="${_}" />
+
+    <c:set var="org.mmbase.richtext.kupulink" value="${_}" scope="request"/>
     <jsp:doBody />
   </mm:link>
 </jsp:root>
