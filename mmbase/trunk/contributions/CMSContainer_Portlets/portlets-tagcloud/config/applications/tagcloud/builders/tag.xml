@@ -62,7 +62,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
 			<db>
 				<name>description</name>
-				<type key="false" notnull="false" size="512" state="persistent">STRING</type>
+				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
 			</db>
 		</field>	
 	</fieldlist>
