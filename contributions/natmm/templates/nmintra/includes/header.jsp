@@ -10,10 +10,10 @@
     %><mm:node number="<%= subsiteID %>" notfound="skipbody"><mm:field name="naam" /></mm:node
 			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
 		<meta http-equiv="imagetoolbar" content="no">
-		<script language="javascript" src="scripts/launchcenter.js"></script>
-		<script language="javascript" src="scripts/cookies.js"></script>
-		<script language="javaScript" src="scripts/screensize.js"></script>
-      <script language="javaScript">
+		<script type="text/javascript" src="scripts/launchcenter.js"></script>
+		<script type="text/javascript" src="scripts/cookies.js"></script>
+		<script type="text/javascript" src="scripts/screensize.js"></script>
+      <script type="text/javascript">
       function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
       var IE=(document.all?true:false);
