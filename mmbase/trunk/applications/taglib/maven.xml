@@ -41,20 +41,19 @@ See http://www.MMBase.org/license
     <!-- 1.5 TransformerFactory class -->
      ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
 
-<!-- Do not understand yet why the stylesheet does not compile
-	Error! Error checking type of the expression 'com.sun.org.apache.xalan.internal.xsltc.compiler.ApplyTemplates 
-    
+	<mkdir dir="${maven.sdocbook.target.dir}/frontenddevelopers/taglib/reference"/>
     <ant:xslt in="${basedir}/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"
         out="${maven.sdocbook.target.dir}/frontenddevelopers/taglib/reference.html" 
         style="${basedir}/../share/xslt/xml2html.xslt"
+        basedir="${basedir}/src/org/mmbase/bridge/jsp/taglib/"
         processor="trax">
       <param name="exampledir" expression="${basedir}/examples/"/>
+      <param name="basedir" expression="${maven.sdocbook.target.dir}/frontenddevelopers/taglib"/>
       <classpath>
          <path refid="maven.dependency.classpath"/>
          <pathelement path="${maven.build.dest}"/>
       </classpath>
     </ant:xslt>
- -->
+
   </postGoal>
-  
 </project>
