@@ -21,7 +21,7 @@ textarea {
 }
 
 /* Specify the scroll bars */
-body, {
+body {
   margin: 0;
   background-color: #a0b0c0;
   scrollbar-base-color: #ffffff;
@@ -41,7 +41,7 @@ input,textarea {
   border-style: solid;
   border-width: 1;
   border-color:Black;
-  overflow=auto;
+  overflow:auto;
 }
 
 /* title in the wizard page */

@@ -1,3 +1,4 @@
+<%@ page isELIgnored="false" %>
 <% 
 String responseText = "Deze email is verstuurd via een formulier uit het intranet.<br><br>";
 String subjectText = "";
@@ -10,12 +11,9 @@ Vector questions = new Vector();
 Vector answers = new Vector();
 String username =  ""; 
 
-%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" 
-    fields="formulier.number,formulier.titel,formulier.emailadressen" 
-    orderby="posrel.pos" directions="UP"
-
-    ><mm:node element="formulier" jspvar="thisForm"><% 
-    
+%>
+<mm:node number="${formnum}" jspvar="thisForm" notfound="skip">
+<% 
     String formulier_number = thisForm.getStringValue("number");
     String formulier_title = thisForm.getStringValue("titel");
     subjectText = formulier_title;
@@ -23,8 +21,8 @@ String username =  "";
     String formulier_subjectlist = ";" + thisForm.getStringValue("titel_de") + ";";
     String formulier_confirmtitle = thisForm.getStringValue("titel_fra"); 
     String formulier_omschrijving = thisForm.getStringValue("omschrijving"); 
-    
-	  %><mm:related path="posrel,formulierveld" orderby="posrel.pos" directions="UP"><% 
+
+	  %><mm:related path="posrel,formulierveld" orderby="posrel.pos" directions="UP" searchdir="destination"><% 
         
         // *** add the answers to the following questions to the subject
         boolean inSubject = false;
@@ -43,7 +41,7 @@ String username =  "";
             responseText += "<br>" + questions_title + ": "; 
             boolean hasSelected = false; 
             String csAnswers = "";
-            %><mm:related path="posrel,formulierantwoord" orderby="posrel.pos" directions="UP"
+            %><mm:related path="posrel,formulierantwoord" orderby="posrel.pos" directions="UP" searchdir="destination"
             ><mm:field name="formulierantwoord.number" jspvar="answer_number" vartype="String" write="false"><%
                 String answerValue = getResponseVal("q" + questions_number + "_" + answer_number,postingStr);
                 if(!answerValue.equals("")) { 
@@ -87,10 +85,10 @@ String username =  "";
           if(questions_title.toUpperCase().indexOf("EMAIL")>-1) { visitorAddress = answerValue; }
           questions.add(questions_title);
           answers.add(answerValue);
-          // *** hack: to send email about news to specific address ***
-          if(paginaID.equals(sWvjePageId)&&answerValue.indexOf("nieuws")>-1) {
-            formulier_emailaddresses = NMIntraConfig.getNewsEmailAddress();
-          }
+          //// *** Jj turned of the "hack: to send email about news to specific address" ***
+          //if(paginaID.equals(sWvjePageId)&&answerValue.indexOf("nieuws")>-1) {
+          //  formulier_emailaddresses = NMIntraConfig.getNewsEmailAddress();
+          //}
           q++;
         } 
         %></mm:node
@@ -176,5 +174,5 @@ String username =  "";
         String messageLinkParam = "";
     %><%@include file="../showmessage.jsp" %><% 
     } 
-    %></mm:node
-></mm:list>
+    %>
+</mm:node>
