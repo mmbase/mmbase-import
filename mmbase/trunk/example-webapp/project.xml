@@ -19,6 +19,7 @@ See http://www.MMBase.org/license
 			<properties>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
 				<mmbase.examples.path>mmexamples</mmbase.examples.path>
+				<mmbase.config.bundle>true</mmbase.config.bundle>
 			</properties>
 		</dependency>
    		<dependency>
@@ -29,6 +30,7 @@ See http://www.MMBase.org/license
 			<properties>
 				<mmbase.templates.bundle>true</mmbase.templates.bundle>
 				<mmbase.templates.path>mmbase/clustering</mmbase.templates.path>
+				<mmbase.config.bundle>true</mmbase.config.bundle>
 			</properties>
 		</dependency>
    		<dependency>
@@ -74,6 +76,7 @@ See http://www.MMBase.org/license
 				<war.bundle>${war.bundle}</war.bundle>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
 				<mmbase.examples.path>mmexamples/taglib</mmbase.examples.path>
+				<mmbase.config.bundle>true</mmbase.config.bundle>
 			</properties>
 		</dependency>
 
