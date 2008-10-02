@@ -69,7 +69,7 @@
 <%@include file="../repository/searchpages.jsp" %>
          <table>
             <tr class="listheader">
-               <th> </th>
+               <th width="55"> </th>
                <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
                <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
                <th nowrap="true"><a href="javascript:orderBy('itype')" class="headerlink" ><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
@@ -106,7 +106,7 @@
                        <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="itype"/></td>
-                       <td onMouseDown="objClick(this);"><img src="<mm:image template="s(100x100)"/>" alt="" /></td>
+                       <td onMouseDown="objClick(this);"><a href="javascript:showInfo(<mm:field name="number" />)"><img src="<mm:image template="s(100x100)"/>" alt="" /></a></td>
                     </tr>
                 <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
               </mm:listnodes>
