@@ -36,7 +36,7 @@
          color: black;
       }
       </style>
-      <script language="JavaScript">
+      <script type="text/javascript">
       <!--
       // please keep these lines on when you copy the source
       // made by: Nicolas - http://www.javascript-page.com

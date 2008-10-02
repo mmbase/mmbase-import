@@ -27,7 +27,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
 	<tr>
 	</form>
 </table>
-<script language="JavaScript">
+<script type="text/javascript">
 <%= "<!--" %>
 function searchIt() {
 	var href = "<mm:url page="<%= ph.createPaginaUrl("zoek",request.getContextPath()) %>" />";

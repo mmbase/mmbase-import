@@ -23,7 +23,7 @@
       <script language="javascript" src="scripts/launchcenter.js"></script>
       <script language="javascript" src="scripts/cookies.js"></script>
       <script language="javaScript" src="scripts/screensize.js"></script>
-      <script language="javaScript">
+      <script type="text/javascript">
       function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
       var IE=(document.all?true:false);
@@ -93,8 +93,7 @@
       request.setAttribute("nelis", nelis);
       %>
       
-      <SCRIPT LANGUAGE="JavaScript">
-<!--
+      <script type="text/javascript">
 function validationMessage() {
 	if((document.BestelForm.naam.value == "") || (document.BestelForm.email.value == "")) {
 		alert("Voer uw naam en email in.");
@@ -106,7 +105,6 @@ function validationMessage() {
 	}
 	return true;
 }
--->
       </script>
       
    </head>

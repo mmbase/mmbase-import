@@ -148,7 +148,7 @@ if(!sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT)) {
    <br/>
    <br/>
 </form>
-<script language="javascript"> 
+<script type="text/javascript"> 
 <!-- 
 function setOptionsN(chosen) 
 { 
