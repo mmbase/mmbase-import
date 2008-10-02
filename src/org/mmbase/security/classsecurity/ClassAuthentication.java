@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.21 2008-10-01 16:57:34 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.22 2008-10-02 12:31:17 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -39,7 +39,7 @@ public class ClassAuthentication {
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
     public static final String DTD_CLASSSECURITY_1_0       = "classsecurity_1_0.dtd";
 
-    private static int MAX_DEPTH = 10;
+    private static int MAX_DEPTH = 30;
     static {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
@@ -100,7 +100,7 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map), weight));
+                    authenticatedClasses.add(new Login(u, Pattern.compile(clazz), method, Collections.unmodifiableMap(map), weight, i));
                 }
             } catch (Exception e) {
                 log.error(u + " " + e.getMessage(), e);
@@ -112,7 +112,7 @@ public class ClassAuthentication {
         { // last fall back, everybody may get the 'anonymous' cloud.
             Map<String, String> map = new HashMap<String, String>();
             map.put("rank", "anonymous");
-            authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map), Integer.MIN_VALUE));
+            authenticatedClasses.add(new Login(null, Pattern.compile(".*"), "class", Collections.unmodifiableMap(map), Integer.MIN_VALUE, 0));
         }
 
         log.service("Class authentication: " + authenticatedClasses);
@@ -165,6 +165,7 @@ public class ClassAuthentication {
                         String v = map.get(e.getKey());
                         if (v == null) continue;
                         if (! v.equals(e.getValue())) {
+                            log.warn("Skipping " + n + " because " + v + " != " + e);
                             continue CLASS;
                         } else {
                             propertyMatchCount++;
@@ -175,6 +176,7 @@ public class ClassAuthentication {
                         // not, never mind.
                         continue CLASS;
                     }
+                    log.warn("" + n  + "matched on " + properties);
                 }
 
                 Pattern p = n.classPattern;
@@ -195,7 +197,7 @@ public class ClassAuthentication {
                         if (log.isDebugEnabled()) {
                             log.debug("" + className + " matches! ->" + n + " " + n.getMap());
                         }
-                        proposal = new LoginResult(n, propertyMatchCount);
+                        proposal = new LoginResult(n, (Map<String, String>) properties, propertyMatchCount);
                         if (properties == null || properties.size() == propertyMatchCount) {
                             // cannot become any better
                             break CLASS;
@@ -204,12 +206,12 @@ public class ClassAuthentication {
                 }
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("With " + properties + " " + authenticatedClasses + " found " + proposal);
+
+            log.warn("With " + properties + " " + authenticatedClasses + " found " + proposal);
             if (proposal == null) {
-                log.debug("Failed to authenticate " + Arrays.asList(stack));
+                log.warn("Failed to authenticate " + Arrays.asList(stack));
             }
-        }
+
         return proposal;
     }
     public static Login classCheck(String application) {
@@ -223,15 +225,19 @@ public class ClassAuthentication {
      * A structure to hold the login information.
      */
     public static class  Login implements Comparable<Login> {
+        final URL url;
         final Pattern classPattern;
         final String application;
         final Map<String, String>    map;
         final int    weight;
-        Login(Pattern p , String a, Map<String, String> m, int w) {
+        final int    position;
+        Login(URL u, Pattern p , String a, Map<String, String> m, int w, int pos) {
+            url = u;
             classPattern = p;
             application = a;
             map = Collections.unmodifiableMap(m);
             weight = w;
+            position = pos;
         }
 
         public Map<String, String> getMap() {
@@ -241,7 +247,11 @@ public class ClassAuthentication {
             return "" + weight + ":" + classPattern.pattern() + (application.equals("class") ? "" : ": " + application) + " " + map;
         }
         public int compareTo(Login o) {
-            return o.weight - this.weight;
+            int result = o.weight - this.weight;
+            if (result == 0 && (o.url == null ? url == null : o.url.equals(url))) {
+                result = this.position - o.position;
+            }
+            return result;
         }
     }
 
@@ -250,8 +260,8 @@ public class ClassAuthentication {
      */
     public static class LoginResult extends Login {
         final int    propertyMatchCount;
-        LoginResult(Login p, int propertyMatchCount) {
-            super(p.classPattern, p.application, p.map, p.weight);
+        LoginResult(Login p, Map<String, String> properties, int propertyMatchCount) {
+            super(p.url, p.classPattern, p.application, properties == null ? p.map : new LinkMap<String, String>(p.map, properties), p.weight, p.position);
             this.propertyMatchCount = propertyMatchCount;
         }
         public String toString() {
