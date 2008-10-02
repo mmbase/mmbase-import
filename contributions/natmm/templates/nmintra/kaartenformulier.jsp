@@ -27,7 +27,7 @@
       <script language="javascript" src="scripts/launchcenter.js"></script>
       <script language="javascript" src="scripts/cookies.js"></script>
       <script language="javaScript" src="scripts/screensize.js"></script>
-      <script language="javaScript">
+      <script type="text/javascript">
       function resizeBlocks() {	
       var MZ=(document.getElementById?true:false); 
       var IE=(document.all?true:false);
@@ -92,12 +92,12 @@
       <bean:define id="natGebMap" property="natGebMap" name="KaartenForm" type="java.util.Map" />
       <bean:define id="gebiedMap" property="gebiedMap" name="KaartenForm" type="java.util.Map" />
       <bean:define id="selKaartMap" property="selKaartMap" name="KaartenForm" type="java.util.Map" />
-      <SCRIPT LANGUAGE="JavaScript">
+      <script type="text/javascript">
 <!--
 <%@include file="includes/vastgoed/giveinfo.js" %>
 -->
       </script>
-      <SCRIPT LANGUAGE="JavaScript">
+      <script type="text/javascript">
 <!--
 arr_NatGeb = new Array
 (
@@ -163,9 +163,7 @@ arr_Areaal = new Array
       </script>
       
       
-      <SCRIPT LANGUAGE="JavaScript">
-<!--
-
+      <script type="text/javascript">
 function jsc_ClearUnselectedOptions()
 {
 	var selectCtrlArray = new Array(document.KaartenForm.sel_NatGeb, document.KaartenForm.sel_Areaal);
@@ -462,7 +460,6 @@ function doOnLoad() {
 	jsc_defaultOptie(); jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 	setScreenSize();
 }
--->
       </script>
       
       <style type="text/css">

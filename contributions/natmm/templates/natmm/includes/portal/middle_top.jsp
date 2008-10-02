@@ -11,7 +11,7 @@
    String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
    String sImageTemplate = "s(195)+part(0,0,195,140)";
 %>
-<script language="JavaScript">
+<script type="text/javascript">
 <!--
 function changeImages() {
   for (var i=0; i<changeImages.arguments.length; i+=2) {

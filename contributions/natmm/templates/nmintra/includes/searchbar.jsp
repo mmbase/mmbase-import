@@ -1,26 +1,24 @@
-<script language="JavaScript">
-<!--
-function startSearch() {
-    var href = document.searchform.action;
-    var search = escape(document.searchform.elements["search"].value);
-    href += "?search=" + search;
-    var adv = document.searchform.elements["adv"].value;
-	  if(adv != '') {
-        href += "&t=" + adv;
-    }
-	  document.location =  href;
-    return false; 
-}
-function startPhone() {
-    var href = document.phoneform.action;
-    var name = escape(document.phoneform.elements["name"].value);
-    if(name != '') {
-        href += "?name=" + name;
-    }
-    document.location =  href;
-    return false; 
-}
-//-->
+<script type="text/javascript">
+   function startSearch() {
+       var href = document.searchform.action;
+       var search = escape(document.searchform.elements["search"].value);
+       href += "?search=" + search;
+       var adv = document.searchform.elements["adv"].value;
+   	  if(adv != '') {
+           href += "&t=" + adv;
+       }
+   	  document.location =  href;
+       return false; 
+   }
+   function startPhone() {
+       var href = document.phoneform.action;
+       var name = escape(document.phoneform.elements["name"].value);
+       if(name != '') {
+           href += "?name=" + name;
+       }
+       document.location =  href;
+       return false; 
+   }
 </script>
 <% // *************************************** logo ******************************* %>
 <mm:node number="<%= subsiteID %>">
