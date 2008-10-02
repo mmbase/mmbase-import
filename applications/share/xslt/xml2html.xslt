@@ -2,7 +2,7 @@
 <xsl:stylesheet id="xml2html"
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
+  xmlns:xalan="http://xml.apache.org/xalan/redirect"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:rf="org.mmbase.bridge.jsp.taglib.util.ReadFile"
   extension-element-prefixes="xalan"
@@ -501,7 +501,6 @@
             <xsl:for-each select="example/include">
               <!-- The following will only work with xalan! -->
               <xsl:apply-templates select="rf:readExample(concat($exampledir, @href))" />
-
               <!--
                   The following will work in XSLT 2.0, but not yet :(
                   <xsl:value-of select="unparsed-text(@href)" />
@@ -583,7 +582,6 @@
             <xsl:for-each select="example/include">
               <!-- The following will only work with xalan! -->
               <xsl:apply-templates select="rf:readExample(concat($exampledir, @href))" />
-              
               <!--
                   The following will work in XSLT 2.0, but not yet :(
                   <xsl:value-of select="unparsed-text(@href)" />
