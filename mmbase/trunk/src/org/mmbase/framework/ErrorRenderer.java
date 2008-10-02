@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.17 2008-09-26 15:40:00 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.18 2008-10-02 12:09:41 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -37,6 +37,8 @@ public class ErrorRenderer extends AbstractRenderer {
 
     protected final Error error;
     protected final String url;
+
+    protected static int MAX_CAUSES = 4;
 
     public ErrorRenderer(Type t, Block parent, String u, int status, String m) {
         super(t, parent);
@@ -147,7 +149,11 @@ public class ErrorRenderer extends AbstractRenderer {
 
 
 
-        public Writer getErrorReport(Writer msg, final HttpServletRequest request, CharTransformer escape) throws IOException {
+        public Writer getErrorReport(Writer to, final HttpServletRequest request, CharTransformer escape) throws IOException {
+            final Writer logMsg = new StringWriter();
+            final Writer tee    = new org.mmbase.util.ChainedWriter(to, logMsg);
+            Writer msg = tee;
+
             LinkedList<Throwable> stack = getStack();
             String ticket = new Date().toString();
 
@@ -165,7 +171,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 Enumeration en2 = request.getAttributeNames();
                 while (en2.hasMoreElements()) {
                     String name = (String) en2.nextElement();
-                    msg.append(escape.transform(name+": "+request.getAttribute(name)+"\n"));
+                    msg.append(escape.transform(name + ": " + request.getAttribute(name) + "\n"));
                 }
             }
             msg.append("\n");
@@ -190,27 +196,41 @@ public class ErrorRenderer extends AbstractRenderer {
                     msg.append(name).append(": ").append(escape.transform(request.getParameter(name))).append("\n");
                 }
             }
-            msg.append("\nException\n----------\n\n" + (exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION") + ": ");
+            msg.append("\nException " + ticket + "\n----------\n\n" + (exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION") + ": ");
 
-
+            int wroteCauses = 0;
             while (! stack.isEmpty()) {
 
                 Throwable t = stack.removeFirst();
                 // add stack stacktraces
                 if (t != null) {
+                    if (stack.isEmpty()) { // write last message always
+                        msg = tee;
+                    }
                     String message = t.getMessage();
-                    msg.append(escape.transform(message)).append("\n");
-                    msg.append(escape.transform(org.mmbase.util.logging.Logging.stackTrace(t)));
+                    if (msg != tee) {
+                        to.append("\n=== skipped(see log)  : " + escape.transform(t.getClass().getName()) + ": " + message + "\n");
+                    }
+
+                    msg.append("\n\n").append(escape.transform(t.getClass().getName() + ": " + message));
+                    StackTraceElement[] stackTrace = t.getStackTrace();
+                    for (StackTraceElement e : stackTrace) {
+                        msg.append("\n        at ").append(escape.transform(e.toString()));
+                    }
                     if (! stack.isEmpty()) {
                         msg.append("\n-------caused:\n");
+                    }
+                    wroteCauses++;
+                    if (wroteCauses >= MAX_CAUSES ) {
+                        msg = logMsg;
                     }
                 }
             }
             // write errors to mmbase log
             if (status == 500) {
-                log.error(ticket + ":\n" + msg);
+                log.error("TICKET " + ticket + ":\n" + logMsg);
             }
-            return msg;
+            return to;
         }
     }
 
