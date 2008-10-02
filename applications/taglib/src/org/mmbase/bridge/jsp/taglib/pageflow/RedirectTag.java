@@ -25,13 +25,13 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: RedirectTag.java,v 1.9 2008-10-02 12:17:17 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class RedirectTag extends UrlTag  {
 
-    private static final Logger log = Logging.getLoggerInstance(RedirectTag.class); 
+    private static final Logger log = Logging.getLoggerInstance(RedirectTag.class);
 
 
     protected final String getAbsolute() throws JspTagException {
@@ -48,8 +48,9 @@ public class RedirectTag extends UrlTag  {
      * always skips the remainder of the JSP page.
      *
      * @return SKIP_PAGE
-     */ 
+     */
     public final int doEndTag() throws JspTagException {
+        super.doEndTag();
         try {
             // dont set value, but redirect.
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
