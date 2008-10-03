@@ -21,7 +21,6 @@
     <mm:param name="templates">/editwizards/data</mm:param>
     <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
 
-
     <c:if test="${node eq 'new'}">
       <mm:import externid="kupulink_seq" from="request" vartype="int">0</mm:import>
       <!-- determin the type it is going to have
@@ -64,7 +63,8 @@
         <mm:param name="tools">searchrelate</mm:param>
       </mm:hasrelationmanager>
     </c:if>
-
-   <jsp:doBody />
+    <mm:write value="${pageScope['org.mmbase.richtext.kupulink']}" escape="none">
+      <jsp:doBody />
+    </mm:write>
   </mm-r:kupulink>
 </jsp:root>
