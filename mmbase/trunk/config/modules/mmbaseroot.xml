@@ -223,8 +223,9 @@
   <!--
       If you are sure that your builder XML correspond with your tables, you can set this property to false
       and reduce start up time.
+      The property can also be consulted (MMBase#runStartupChecks) by other code, which would perform similar functionality.
   -->
-  <property name="verifyTables">true</property>
+  <property name="runStartupChecks">true</property>
 
 
 
