@@ -251,6 +251,80 @@ for (var i = 0; i < document.KaartenForm.sel_Kaart.length; i++) {
 }
 }
 
+function enable0()
+{
+  document.getElementById("sel_Beheereenheden").disabled = false;
+  document.getElementById("sel_Beheereenheden").selectedIndex = 0;
+  document.getElementById("sel_NatGeb").disabled = false;
+}
+
+function enable1()
+{
+  document.getElementById("sel_gebieden").disabled = false
+  document.getElementById("sel_gebieden").selectedIndex = 0;
+  document.getElementById("sel_Areaal").disabled = false
+}
+
+function enable2()
+{
+}
+
+function enable3()
+{
+  txtcolor = '#000000'
+  document.getElementById('td_Xlo').style.color=txtcolor
+  document.getElementById('td_Ylo').style.color=txtcolor
+  document.getElementById('td_Xrb').style.color=txtcolor
+  document.getElementById('td_Yrb').style.color=txtcolor
+  document.getElementById("linksX").disabled=false
+  document.getElementById("linksY").disabled=false
+  document.getElementById("rechtsX").disabled=false
+  document.getElementById("rechtsY").disabled=false
+}
+
+function deselect(id) 
+{
+// alert("before: selected="+id);
+   if (document.getElementById(id).multiple)
+    for (var i=0;i < document.getElementById(id).length; i++) 
+    {
+      //alert(document.getElementById(id).options[i].text)
+      document.getElementById(id).options[i].selected = false;
+    }
+    else
+    {
+     document.getElementById(id).selectedIndex = -1;
+    }
+}
+
+function disable0()
+{
+  txtcolor = '#999999'
+  deselect('sel_Areaal')
+  deselect('sel_NatGeb')
+  deselect('sel_Beheereenheden')
+  deselect('sel_gebieden')
+  document.getElementById('td_Xlo').style.color=txtcolor
+  document.getElementById('td_Ylo').style.color=txtcolor
+  document.getElementById('td_Xrb').style.color=txtcolor
+  document.getElementById('td_Yrb').style.color=txtcolor
+  document.getElementById("sel_Beheereenheden").disabled=true
+  document.getElementById("sel_NatGeb").disabled=true
+  document.getElementById("sel_NatGeb").length=0
+  document.getElementById("sel_gebieden").disabled=true
+  document.getElementById("sel_Areaal").disabled=true
+  document.getElementById("sel_Areaal").length=0
+  document.getElementById("linksX").disabled=true
+  document.getElementById("linksX").value=""
+  document.getElementById("linksY").disabled=true
+  document.getElementById("linksY").value=""
+  document.getElementById("rechtsX").disabled=true
+  document.getElementById("rechtsX").value=""  
+  document.getElementById("rechtsY").disabled=true
+  document.getElementById("rechtsY").value=""
+}
+
+
 function jsc_defaultOptie() {
   <logic:equal name="KaartenForm" property="rad_Gebied" value="Natuurgebied">
   	jsc_optie0();
@@ -273,6 +347,10 @@ var imagesCoor = new Array();
 
 function jsc_optie0()
 {
+//nieuw
+disable0()
+enable0()
+//einde nieuw
 jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
@@ -297,6 +375,10 @@ jsc_setPicture(null);
 
 function jsc_optie1()
 {
+//nieuw
+disable0()
+enable1()
+//einde nieuw
 jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
@@ -321,6 +403,10 @@ jsc_setPicture(null);
 
 function jsc_optie2()
 {
+//nieuw
+disable0()
+enable2()
+//einde nieuw
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
@@ -343,8 +429,12 @@ jsc_setPicture(null);
 
 function jsc_optie3()
 {
+//nieuw
+disable0()
+enable3()
+//einde nieuw
 jsc_ClearUnselectedOptions();
-<% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
+<% kartTypes = (ArrayList) selKaaratMap.get("Coordinaten"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Coordinaten' AND hidden = '0'">
@@ -361,6 +451,39 @@ document.KaartenForm.sel_Kaart.length=0;
 	</mm:field>
 </mm:listnodes>
 jsc_setPicture(null);
+}
+
+function enable4()
+{
+  document.getElementById("sel_Schaal").disabled = false;
+  document.getElementById("sel_Schaal").selectedIndex = 3;
+}
+
+function enable5()
+{
+  document.getElementById("sel_Formaat").disabled = false;
+  document.getElementById("sel_Formaat").selectedIndex = 0;
+}
+
+
+function disable1()
+{
+  deselect('sel_Schaal');
+  deselect('sel_Formaat');
+  document.getElementById("sel_Schaal").disabled = true;
+  document.getElementById("sel_Formaat").disabled = true;
+}
+
+function jsc_optie4()
+{
+  disable1();
+  enable4();
+}
+
+function jsc_optie5()
+{
+  disable1();
+  enable5();
 }
 
 function jsc_setPicture(selectedIndex) {
@@ -459,6 +582,7 @@ function validationMessage() {
 function doOnLoad() {
 	jsc_defaultOptie(); jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 	setScreenSize();
+   document.getElementById("sel_Formaat").disabled=true;
 }
       </script>
       
@@ -503,7 +627,7 @@ DIV.Schermuitleg
    
    <body <% 
          if(!printPage) { 
-         %>onLoad="javascript:resizeBlocks();doOnLoad();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
+         %>onLoad="javascript:resizeBlocks();jsc_optie0();jsc_optie4();doOnLoad();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
    >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
          } else {
    %>onLoad="self.print();"<% 
@@ -578,14 +702,14 @@ DIV.Schermuitleg
             <td rowspan="2" height="110">&nbsp;</td>
             <td></td>
             <td rowspan="2" width="249" valign="top">
-               <select NAME="sel_NatGeb" style="width:100%;" size="6" multiple="true">
+               <select id="sel_NatGeb" NAME="sel_NatGeb" style="width:100%;" size="6" multiple="true">
                </select>
             </td>
             
          </tr>
          <tr>
             <td height="70" valign="top">
-               <html:select style="width:100%;" property="sel_Beheereenheden" onclick="jsc_VulSelectUitArray(this.form.sel_NatGeb, arr_NatGeb[this.selectedIndex]);">
+               <html:select styleId="sel_Beheereenheden" style="width:100%;" property="sel_Beheereenheden" onclick="jsc_VulSelectUitArray(this.form.sel_NatGeb, arr_NatGeb[this.selectedIndex]);">
                   <html:options property="gebiedList"/>
                </html:select>
             </td>
@@ -612,13 +736,13 @@ DIV.Schermuitleg
             <td></td>
             <td rowspan="2" width="249" valign="top">
                
-               <select NAME="sel_Areaal" style="width:100%;" size="6">
+               <select id="sel_Areaal" NAME="sel_Areaal" style="width:100%;" size="6">
                </select>
             </td>
          </tr>
          <tr>
             <td height="70" valign="top">
-               <html:select style="width:100%;" property="sel_gebieden" onclick="jsc_VulSelectUitArray(this.form.sel_Areaal, arr_Areaal[this.selectedIndex]);">
+               <html:select styleId="sel_gebieden" style="width:100%;" property="sel_gebieden" onclick="jsc_VulSelectUitArray(this.form.sel_Areaal, arr_Areaal[this.selectedIndex]);">
                   <html:option value="Eenheid">Eenheid</html:option>
                   <html:option value="Provincie">Provincie</html:option>
                   <html:option value="Regio">Regio</html:option>
@@ -660,25 +784,25 @@ DIV.Schermuitleg
          
          <tr>
             <td>&nbsp;</td>
-            <td width="150" style="text-align:right;">linksonder X:&nbsp;</td>
+            <td id="td_Xlo" width="150" style="text-align:right;">linksonder X:&nbsp;</td>
             <td width="50">
-               <html:text style="width:100%;" property="linksX" size="7"/>
+               <html:text styleId="linksX" style="width:100%;" property="linksX" size="7"/>
             </td>
-            <td width="50" style="text-align:right;">Y:&nbsp;</td>
+            <td id="td_Ylo" width="50" style="text-align:right;">Y:&nbsp;</td>
             <td width="50">
-               <html:text style="width:100%;" property="linksY" size="7"/>
+               <html:text styleId="linksY" style="width:100%;" property="linksY" size="7"/>
             </td>
             <td>&nbsp;</td>
          </tr>
          <tr>
             <td>&nbsp;</td>
-            <td style="text-align:right;">rechtsboven X:&nbsp;</td>
+            <td id="td_Xrb" style="text-align:right;">rechtsboven X:&nbsp;</td>
             <td>
-               <html:text style="width:100%;" property="rechtsX" size="7"/>
+               <html:text styleId="rechtsX" style="width:100%;" property="rechtsX" size="7"/>
             </td>
-            <td style="text-align:right;">Y:&nbsp;</td>
+            <td id="td_Yrb" style="text-align:right;">Y:&nbsp;</td>
             <td>
-               <html:text style="width:100%;" property="rechtsY" size="7"/>    
+               <html:text styleId="rechtsY" style="width:100%;" property="rechtsY" size="7"/>    
             </td>
             <td>&nbsp;</td>
          </tr>
@@ -737,11 +861,11 @@ DIV.Schermuitleg
          
          <tr class="vastgoed_medium">
             <td width="20">
-               <html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_medium"/>
+               <html:radio property="rad_Schaal" value="schaal" style="background:vastgoed_medium" onclick="jsc_optie4();"/>
             </td>
             <td width="100" align="right">schaal:&nbsp;</td>
             <td width="100">
-               <html:select style="width:100%;" property="schaal">
+               <html:select styleId="sel_Schaal" style="width:100%;" property="schaal">
                   <html:option value="1:500">1:500</html:option>
                   <html:option value="1:1.000">1:1.000</html:option>
                   <html:option value="1:2.500">1:2.500</html:option>
@@ -767,11 +891,11 @@ DIV.Schermuitleg
             <td></td>
          </tr>
          <tr class="vastgoed_light">
-            <td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_light"/></td>
+            <td><html:radio property="rad_Schaal" value="formaat" style="background:vastgoed_light" onclick="jsc_optie5();"/></td>
             <td align="right">formaat:&nbsp;</td>
             
             <td>
-               <html:select style="width:100%;" property="formaat">
+               <html:select styleId="sel_Formaat" style="width:100%;" property="formaat">
                   <html:option value="A4">A4</html:option>
                   <html:option value="A3">A3</html:option>
                   <html:option value="A2">A2</html:option>
