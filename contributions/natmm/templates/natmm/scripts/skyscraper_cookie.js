@@ -17,18 +17,21 @@ function SetCookie(cookieName,cookieValue,nDays) {
 
 function loadSkyscraper() {
 	var skyscraperElement = document.getElementById('skyscraper');
-	if (skyscraperElement != null) document.getElementById('skyscraper').style.display = 'none';
 	
-	var skyscraperIsViewed = ReadCookie("skyscraper2_is_viewed");
-	//var skyscraperIsViewed = "yes";
-	//alert("skyscraperIsViewed: " + skyscraperIsViewed);
+	if (skyscraperElement != null) { 
+		document.getElementById('skyscraper').style.display = 'none';
 	
-	if ( skyscraperIsViewed == null || skyscraperIsViewed == "") {
-		//alert("showing skyscraper and setting cookie");
-		document.body.style.overflow = 'hidden';
-		document.getElementById('skyscraper').style.display = 'block';
-		document.getElementById('skyscraper').style.visibility = 'visible';
-		SetCookie("skyscraper2_is_viewed","yes",365);
+		var skyscraperIsViewed = ReadCookie("skyscraper2_is_viewed");
+		//var skyscraperIsViewed = "yes";
+		//alert("skyscraperIsViewed: " + skyscraperIsViewed);
+		
+		if ( skyscraperIsViewed == null || skyscraperIsViewed == "") {
+			//alert("showing skyscraper and setting cookie");
+			document.body.style.overflow = 'hidden';
+			document.getElementById('skyscraper').style.display = 'block';
+			document.getElementById('skyscraper').style.visibility = 'visible';
+			SetCookie("skyscraper2_is_viewed","yes",365);
+		}
 	}
 }
 
