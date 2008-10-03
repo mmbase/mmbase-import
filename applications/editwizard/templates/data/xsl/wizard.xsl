@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.183 2008-07-09 08:22:43 michiel Exp $
+    @version $Id: wizard.xsl,v 1.184 2008-10-03 10:38:33 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -618,6 +618,9 @@
       <xsl:when test="@ftype='image'">
         <xsl:call-template name="ftype-image"/>
       </xsl:when>
+      <xsl:when test="@ftype='flash'">
+        <xsl:call-template name="ftype-flash"/>
+      </xsl:when>
       <xsl:when test="@ftype='file'">
         <xsl:call-template name="ftype-file"/>
       </xsl:when>
@@ -1022,6 +1025,83 @@
               href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
               target="_new">
               <xsl:call-template name="prompt_image_full" />
+            </a>
+            <br/>
+          </span>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+    <xsl:if test="@maywrite='false'">
+      <span class="readonly">
+        <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0"/>
+      </span>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="ftype-flash">
+    <xsl:if test="@maywrite!='false'">
+      <xsl:choose>
+        <xsl:when test="@dttype='binary' and not(upload)">
+          <div class="imageupload">
+            <div>
+              <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="flash" >
+                <xsl:if test="@dtrequired='true' and @size &lt;= 0">
+                  <xsl:attribute name="dtrequired">true</xsl:attribute>
+                </xsl:if>
+              </input>
+              <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                <xsl:call-template name="prompt_do_upload"/>
+              </a>
+              <br/>
+              <xsl:if test="@size &gt; 0">
+                <object src="{node:saxonFunction($cloud, string(@number), 'url')}"
+                        data="{node:saxonFunction($cloud, string(@number), 'url')}"
+                        type="application/x-shockwave-flash"
+                        height="100" width="100"
+                         title="{field[@name='description']}">
+                  <param name="{node:saxonFunction($cloud, string(@number), 'url')}" />
+                </object>
+                <br/>
+                 <a
+                   href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+                   target="_new">
+                   <xsl:call-template name="prompt_do_download" />
+                 </a>
+                <br/>
+              </xsl:if>
+            </div>
+          </div>
+        </xsl:when>
+        <xsl:when test="@dttype='binary' and upload">
+          <div class="imageupload">
+            <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="image" >
+              <xsl:if test="@dtrequired='true'">
+                <xsl:attribute name="dtrequired">true</xsl:attribute>
+              </xsl:if>
+            </input>
+            <xsl:if test="contains(upload/path, '/') or contains(upload/path, '\')">
+              <object src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
+              <br/>
+            </xsl:if>
+            <span>
+              <xsl:value-of select="upload/@name"/>
+              <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+              (<xsl:value-of select="round((upload/@size) div 100) div 10"/>K)
+            </span>
+            <br/>
+            <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+              <xsl:call-template name="prompt_uploaded"/>
+            </a>
+          </div>
+        </xsl:when>
+        <xsl:otherwise>
+          <span>
+            <object src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <br/>
+            <a
+              href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+              target="_new">
+              <xsl:call-template name="prompt_do_download" />
             </a>
             <br/>
           </span>
