@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.14 2008-08-07 08:53:47 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.15 2008-10-03 09:45:53 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1545,6 +1545,15 @@ public class MMBase extends ProcessorModule {
         log.info("MMBase data dir: " + dataDir);
         return dataDir;
 
+    }
+
+    /**
+     * Whether to perform sanity checks during startup. Most prominently used by
+     * DatabaseStorageManager to check the database tables.
+     * @since MMBase-1.8.7
+     */
+    public boolean runStartupChecks() {
+        return ! "false".equals(getInitParameter("runStartupChecks"));
     }
 
 
