@@ -76,7 +76,7 @@
 				><% if(showEndLeaf) breadCrumPath = "<span " +  breadCrumClass + ">Projecten</span>"; 
 			%></mm:notpresent
 			><mm:present referid="endleaffound"
-				><%	breadCrumPath = "<a href=\"\\" + RubriekHelper.getSubDir(cloud.getNode(rootId)) + "websites.jsp\" " +  breadCrumClass + 
+				><%	breadCrumPath = "<a href=\"websites.jsp\" " +  breadCrumClass + 
 							">Projecten</a>&nbsp;<span " +  breadCrumClass + ">></span>&nbsp;" + breadCrumPath; 
 			%></mm:present
 		><% if(!showEndLeaf) { breadCrumPath = breadCrumPath.substring(0,breadCrumPath.lastIndexOf("<span")); }
