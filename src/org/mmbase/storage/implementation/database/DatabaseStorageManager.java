@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.198 2008-10-01 20:53:31 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.199 2008-10-03 09:44:20 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -173,10 +173,10 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.8.7
      */
     protected boolean verifyTables() {
-        boolean verifyTables = ! "false".equals(factory.getMMBase().getInitParameter("verifyTables"));
+        boolean verifyTables = factory.getMMBase().runStartupChecks();
         if (!verifyTablesWarned) {
             if (! verifyTables) {
-                log.info("Not verifying tables. No implicit synchronization of datatypes to matching db types is done. No warnings about that are logged.");
+                log.warn("Not verifying tables. No implicit synchronization of datatypes to matching db types is done. No warnings about that are logged.");
             } else {
                 log.service("Verifying tables. Implicit synchronization of datatypes to matching db types will be  done. Warnings about that are logged.");
             }
