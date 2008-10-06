@@ -77,6 +77,8 @@
                                                   <mm:param name="returnurl" value="<%="../editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
                                                </mm:url>">
                      <img src="../gfx/icons/page_edit.png" title="<fmt:message key="urlsearch.icon.edit" />" /></a>
+                      <a href="javascript:showInfo(<mm:field name="number" />,'<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>')">
+                            <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
                      <mm:hasrank minvalue="siteadmin">
                         <a href="<mm:url page="DeleteSecondaryContentAction.do" >
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
@@ -85,8 +87,7 @@
                         <img src="../gfx/icons/delete.png" title="<fmt:message key="urlsearch.icon.delete" />" /></a>
                      </mm:hasrank>
                     </c:if>
-                          <a href="javascript:showInfo(<mm:field name="number" />,'<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>')">
-                            <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
+
                   </td>
                   <mm:field name="name" jspvar="name" write="false"/>
                   <td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
