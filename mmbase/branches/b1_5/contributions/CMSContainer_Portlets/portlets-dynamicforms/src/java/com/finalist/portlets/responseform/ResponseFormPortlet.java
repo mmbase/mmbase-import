@@ -102,10 +102,10 @@ public class ResponseFormPortlet extends ContentPortlet {
                   errorMessages.put(fieldIdentifier, "view.formfield.empty");
                }
                if (!regex.equals("")
-                     && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value.toString()))) {
-                errorMessages.put(fieldIdentifier, "view.formfield.invalid");
+                       && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !value.toString().matches(regex))) {
+                  errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                }
-
+               
                if ((type == TYPE_TEXTBOX) && sendEmail) {   //If data is used as email address, then it should be valid
                    if (!isEmailAddress(userEmailAddress)) {
                      errorMessages.put(fieldIdentifier, "view.formfield.invalid");
