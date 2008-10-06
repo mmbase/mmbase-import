@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.45 2008-09-01 18:21:44 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.46 2008-10-06 17:06:45 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -196,8 +196,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String name = prefix(field.getName() + "_search");
         String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
-        if (searchi != null) {
-            handler.addParameter(name, "yes");
+        if (! "".equals(searchi)) {
+            handler.addParameter(name, "on");
         }
         super.paramHtmlInput(handler, field);
     }
