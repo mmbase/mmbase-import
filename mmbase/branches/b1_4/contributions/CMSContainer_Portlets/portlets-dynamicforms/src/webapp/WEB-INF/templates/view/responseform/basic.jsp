@@ -199,9 +199,9 @@
 		<c:otherwise>
 			<%
 				int eleId=Integer.parseInt((String)pageContext.getAttribute("elementId"));
-				CloudProvider mmprovider = CloudProviderFactory.getCloudProvider();
-				Cloud mmCloud = mmprovider.getCloud();
-				Node eleNode=mmCloud.getNode(eleId);
+				net.sf.mmapps.modules.cloudprovider.CloudProvider mmprovider = net.sf.mmapps.modules.cloudprovider.CloudProviderFactory.getCloudProvider();
+				org.mmbase.bridge.Cloud mmCloud = mmprovider.getCloud();
+				org.mmbase.bridge.Node eleNode=mmCloud.getNode(eleId);
 				String tkHtml=eleNode.getStringValue("thank_text").trim();
 				request.setAttribute("tkHtml",tkHtml);
 			%>

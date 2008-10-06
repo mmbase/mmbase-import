@@ -274,7 +274,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       }
       return sent;
    }
-   }
+
 
 
    private boolean sendResponseFormEmail(Node responseform, final String userEmailAddress, String responseformData,
