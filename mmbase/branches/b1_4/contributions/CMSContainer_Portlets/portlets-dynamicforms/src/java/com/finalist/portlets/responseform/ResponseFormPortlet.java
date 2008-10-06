@@ -107,7 +107,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                   errorMessages.put(fieldIdentifier, "view.formfield.empty");
                }
                if (!regex.equals("")
-                     && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value.toString()))) {
+                     && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !value.toString().matches(regex))) {
                 errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                }
                
