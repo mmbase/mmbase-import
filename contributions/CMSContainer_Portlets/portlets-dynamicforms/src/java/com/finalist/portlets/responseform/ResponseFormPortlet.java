@@ -254,19 +254,26 @@ public class ResponseFormPortlet extends ContentPortlet {
             sent = true;
          }
          catch (UnsupportedEncodingException e) {
+            getLogger().error("error in mail data: userEmailText = '" + userEmailText +"' " +
+                       " userEmailSenderName = '" + userEmailSenderName +"' " +
+                       " userEmailAddress = '" + userEmailAddress +"' " +
+                       " userEmailSenderAddress = '" + userEmailSenderAddress +"' ");
             getLogger().error("error sending email", e);
          }
          catch (MessagingException e) {
+            getLogger().error("error in mail data: userEmailText = '" + userEmailText +"' " +
+                       " userEmailSenderName = '" + userEmailSenderName +"' " +
+                       " userEmailAddress = '" + userEmailAddress +"' " +
+                       " userEmailSenderAddress = '" + userEmailSenderAddress +"' ");
             getLogger().error("error sending email", e);
          }
       }
       else {
-          getLogger().error("error in mail data: userEmailText = '" + userEmailText +"' " +
-                " userEmailSenderName = '" + userEmailSenderName +"' " +
-                " userEmailAddress = '" + userEmailAddress +"' " +
-                " userEmailSenderAddress = '" + userEmailSenderAddress +"' ");
+         // no need to send, but there is need to tell it was a success
+          sent = true;
       }
       return sent;
+
    }
 
 
