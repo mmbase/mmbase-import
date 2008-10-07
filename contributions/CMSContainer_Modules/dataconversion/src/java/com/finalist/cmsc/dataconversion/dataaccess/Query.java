@@ -1,7 +1,5 @@
 package com.finalist.cmsc.dataconversion.dataaccess;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
