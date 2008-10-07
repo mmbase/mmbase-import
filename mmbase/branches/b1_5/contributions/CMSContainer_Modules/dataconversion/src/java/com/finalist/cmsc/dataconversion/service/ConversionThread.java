@@ -4,13 +4,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
-import org.apache.struts.action.ActionForm;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 public class ConversionThread  extends Thread{
-   
-   private static final Logger log = Logging.getLoggerInstance(ConversionThread.class.getName());
    
    Properties properties;
    

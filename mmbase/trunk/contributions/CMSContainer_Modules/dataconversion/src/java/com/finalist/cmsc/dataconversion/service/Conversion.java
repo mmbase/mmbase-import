@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -22,7 +20,7 @@ import com.finalist.cmsc.dataconversion.dataaccess.DataHolder;
 import com.finalist.cmsc.dataconversion.dataaccess.DataSourceFactory;
 
 /**
- * the type used to converse ,
+ * the type used to convert
  * @author kevin
  *
  */
@@ -138,7 +136,7 @@ public class Conversion {
   /**
    * recur to get elements related 
    * @param element dom element 
-   * @param sources   a collection object which  hold Data Objects  
+   * @param sources a collection object which hold Data Objects  
    * @throws Exception
    */
    private void recur(Element element,List<Data> sources) throws Exception {
