@@ -16,7 +16,7 @@ import java.util.Map;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.11.2.1 2006-11-22 14:52:10 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.11.2.2 2008-10-07 17:22:41 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -27,7 +27,7 @@ public class StandaloneContextContainer extends ContextContainer {
      * A simple map, which besides to itself also registers to page-context.
      */
     protected BasicBacking backing;
-        
+
     /**
      * Since a ContextContainer can contain other ContextContainer, it
      * has to know which ContextContainer contains this. And it also
@@ -40,8 +40,8 @@ public class StandaloneContextContainer extends ContextContainer {
     }
 
 
-    protected  Backing getBacking() {
-        return backing;        
+    public  Backing getBacking() {
+        return backing;
     }
 
     public void release(PageContext pc, ContextContainer p) {
@@ -54,5 +54,5 @@ public class StandaloneContextContainer extends ContextContainer {
     protected boolean checkJspVar(String jspvar, String id) {
         return true;
     }
-    
+
 }

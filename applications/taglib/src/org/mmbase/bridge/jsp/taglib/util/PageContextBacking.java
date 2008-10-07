@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.11.2.1 2006-11-21 20:39:56 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.11.2.2 2008-10-07 17:22:41 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -35,7 +35,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
-    private final PageContext pageContext;
+    private final transient PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
     private final Set nulls = new HashSet();
@@ -146,9 +146,15 @@ public  class PageContextBacking extends AbstractMap implements Backing {
         return pageContext.findAttribute((String) key);
     }
     public Object getOriginal(Object key) {
+        if (key == null) return null; // pageContext cannot accept null keys
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        return pageContext.findAttribute((String) key);
+        if (pageContext.getRequest() == null) throw new IllegalArgumentException("PageContext " + pageContext + " has no request");
+        try {
+            return pageContext.findAttribute((String) key);
+        } catch (Exception e) {
+            throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
+        }
     }
     public boolean containsKey(Object key) {
         return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
@@ -165,7 +171,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     }
 
     public String toString() {
-        return "PAGECONTEXT BACKING " + super.toString();
+        return "PAGECONTEXT BACKING " + pageContext + " " + super.toString();
     }
 
 }

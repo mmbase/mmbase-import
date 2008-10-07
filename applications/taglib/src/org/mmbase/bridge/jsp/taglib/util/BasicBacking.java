@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.7.2.3 2007-05-16 23:22:56 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.7.2.4 2008-10-07 17:22:41 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap  implements Backing {
@@ -45,14 +45,14 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     private final Map b = new HashMap(); // the actual backing.
 
     private final boolean isELIgnored;
-    private  PageContext pageContext;
+    private transient PageContext pageContext;
 
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
      */
     public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
-        isELIgnored = ignoreEL || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
+        isELIgnored = ignoreEL || pageContext == null || "true".equals(pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (! isELIgnored) {
             originalPageContextValues = new HashMap();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
@@ -144,11 +144,13 @@ public  class BasicBacking extends AbstractMap  implements Backing {
             // log.debug("Storing pageContext key " + key);
             originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
         }
-        
-        if (value != null) {
-            pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-        } else {
-            pageContext.removeAttribute((String) key, SCOPE);
+
+        if (pageContext != null) {
+            if (value != null) {
+                pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+            } else {
+                pageContext.removeAttribute((String) key, SCOPE);
+            }
         }
     }
     public Object put(Object key, Object value) {
@@ -168,9 +170,9 @@ public  class BasicBacking extends AbstractMap  implements Backing {
         return b.containsKey(key);
     }
 
-        
+
     void release() {
-        if (originalPageContextValues != null) {
+        if (originalPageContextValues != null && pageContext != null) {
             //log.debug("Restoring pageContext with " + originalPageContextValues);
             // restore the pageContext
             Iterator i = originalPageContextValues.entrySet().iterator();
@@ -189,6 +191,6 @@ public  class BasicBacking extends AbstractMap  implements Backing {
     public String toString() {
         return "BASIC BACKING " + super.toString();
     }
-        
-        
-} 
+
+
+}
