@@ -26,92 +26,94 @@
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">search</mm:import><%-- either: search of select --%>
-
-      <div class="tabs">
-         <div class="tab_active">
-            <div class="body">
-               <div>
-                  <a href="#"><fmt:message key="images.title" /></a>
-               </div>
-            </div>
-         </div>
-         <div class="tab">
-            <div class="body">
-               <div>
-                  <a href="imageupload.jsp?uploadAction=${param.action}"><fmt:message key="images.upload.title" /></a>
-               </div>
+   <div class="tabs">
+      <div class="tab_active">
+         <div class="body">
+            <div>
+               <a href="#"><fmt:message key="images.title" /></a>
             </div>
          </div>
       </div>
-      
-     <div class="editor" style="height:500px">
-     <div class="body">
-
+      <div class="tab">
+         <div class="body">
+            <div>
+               <a href="imageupload.jsp?uploadAction=${param.action}"><fmt:message key="images.upload.title" /></a>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="editor" style="height:500px">
+      <div class="body">
          <mm:import id="searchinit"><c:url value='/editors/resources/ImageInitAction.do'/></mm:import>
-          <html:form action="/editors/resources/ImageAction" method="post">
-         <html:hidden property="action" value="${action}"/>
+         <html:form action="/editors/resources/ImageAction" method="post">
+            <html:hidden property="action" value="${action}"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
-
-         <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
-         <%@include file="imageform.jsp" %>
-
+            <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
+               <%@include file="imageform.jsp" %>
          </html:form>
-     </div>
-     
-<div class="ruler_green"><div><fmt:message key="images.results" /></div></div>
-<div class="body"> 
-<mm:import externid="results" jspvar="nodeList" vartype="List" />
-<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
-<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
-<c:if test="${resultCount > 0}">
-<%@include file="../repository/searchpages.jsp" %>
-         <table>
-            <tr class="listheader">
-               <th width="55"> </th>
-               <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
-               <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
-               <th nowrap="true"><a href="javascript:orderBy('itype')" class="headerlink" ><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
-               <th><fmt:message key="imagesearch.mimetypecolumn" /></th>
-               <th></th>
-            </tr>
-            <tbody class="hover">
-                <c:set var="useSwapStyle">true</c:set>
-                <mm:listnodes referid="results">
-
-               <mm:field name="description" escape="js-single-quotes" jspvar="description">
-                  <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); %>
-                       <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
-               </mm:field>
-
-                    <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
-                       <td style="white-space:nowrap;">
-                        <c:if test="${action != 'select'}">
-                             <a href="<mm:url page="../WizardInitAction.do">
-                                                     <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                     <mm:param name="returnurl" value="<%="../editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
-                                                  </mm:url>">
-                                 <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="imagesearch.icon.edit" />" title="<fmt:message key="imagesearch.icon.edit" />" /></a>
-                       <a href="javascript:showInfo(<mm:field name="number" />)">
-                              <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
-                       <mm:hasrank minvalue="administrator">
-                         <a href="<mm:url page="DeleteSecondaryContentAction.do" >
-                                                        <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                        <mm:param name="returnurl" value="<%="/editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
-                                                     </mm:url>">
-                                 <img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
-                        </mm:hasrank>
-                        </c:if>
-                       </td>
+      </div>
+      <div class="ruler_green"><div><fmt:message key="images.results" /></div></div>
+      <div class="body"> 
+         <mm:import externid="results" jspvar="nodeList" vartype="List"/>
+         <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+         <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
+         <c:if test="${resultCount > 0}">
+            <%@include file="../repository/searchpages.jsp" %>
+            <table>
+               <tr class="listheader">
+                  <th width="55"> </th>
+                  <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
+                  <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
+                  <th><fmt:message key="imagesearch.sizecolumn" /></th>
+                  <th nowrap="true"><a href="javascript:orderBy('itype')" class="headerlink" ><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
+                  <th></th>
+               </tr>
+               <tbody class="hover">
+                  <c:set var="useSwapStyle">true</c:set>
+                  <mm:listnodes referid="results">
+                     <mm:field name="description" escape="js-single-quotes" jspvar="description">
+                        <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); %>
+                        <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+                     </mm:field>
+                     <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
+                        <td style="white-space:nowrap;">
+                           <c:if test="${action != 'select'}">
+                              <a href="<mm:url page="../WizardInitAction.do">
+                                 <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                 <mm:param name="returnurl" value="<%="../editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
+                                 </mm:url>"><img src="../gfx/icons/page_edit.png" alt="<fmt:message key="imagesearch.icon.edit" />" title="<fmt:message key="imagesearch.icon.edit" />" /></a>
+                              <a href="javascript:showInfo(<mm:field name="number" />)">
+                                 <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
+                              <mm:hasrank minvalue="administrator">
+                                 <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                    <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                    <mm:param name="returnurl" value="<%="/editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
+                                 </mm:url>"><img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
+                              </mm:hasrank>
+                           </c:if>
+                        </td>
                        <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                        <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
-                       <td onMouseDown="objClick(this);"><mm:field name="filesize" jspvar="filesize" write="false"/><fmt:formatNumber value="${filesize div 1000}" pattern=".0"/> K </td>
+                       <td onMouseDown="objClick(this);"><mm:field name="filesize" jspvar="filesize" write="false"/>
+                           <c:choose>
+                              <c:when test="${filesize lt 2048}">
+                                 <fmt:formatNumber value="${filesize}" pattern=""/> byte </td>
+                              </c:when>
+                              <c:when test="${filesize ge 2048 && filesize le(2*1024*1024)}">
+                                 <fmt:formatNumber value="${filesize div 1024}" pattern=".0"/> K </td>
+                              </c:when>
+                              <c:otherwise>
+                                 <fmt:formatNumber value="${filesize div (1024 * 1024)}" pattern=".0"/> M </td>
+                              </c:otherwise>
+                           </c:choose>
+                        </td>
                        <td onMouseDown="objClick(this);"><mm:field name="itype"/></td>
                        <td onMouseDown="objClick(this);"><a href="javascript:showInfo(<mm:field name="number" />)"><img src="<mm:image template="s(100x100)"/>" alt="" /></a></td>
-                    </tr>
-                <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
-              </mm:listnodes>
+                     </tr>
+                  <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+               </mm:listnodes>
             </tbody>
          </table>
 </c:if>
@@ -120,9 +122,9 @@
 </c:if>
 <c:if test="${resultCount > 0}">
    <%@include file="../repository/searchpages.jsp" %>
-</c:if>   
+</c:if>
 </div>
-</div>   
+</div>
 </mm:cloud>
 </body>
 </html:html>
