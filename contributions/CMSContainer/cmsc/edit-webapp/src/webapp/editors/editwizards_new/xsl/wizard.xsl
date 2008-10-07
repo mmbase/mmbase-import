@@ -784,4 +784,75 @@
       <a href="#" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button" href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
       <div id="calendar-expression"></div>   	
   </xsl:template>
+
+  <xsl:template name="ftype-image">
+    <xsl:if test="@maywrite!=&apos;false&apos;">
+      <xsl:choose>
+        <xsl:when test="@dttype=&apos;binary&apos; and not(upload)">
+          <div class="imageupload">
+            <div>
+              <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
+                <xsl:if test="@dtrequired=&apos;true&apos; and @size &lt;= 0">
+                  <xsl:attribute name="dtrequired">true</xsl:attribute>
+                </xsl:if>
+              </input>
+              <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                <xsl:call-template name="prompt_image_upload"/>
+              </a>
+              <br/>
+              <xsl:if test="@size &gt; 0">
+                <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>(<xsl:value-of select="round((@size) div 100) div 10"/>K)
+                 <br/>
+                 <a
+                   href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
+                   target="_new">
+                   <xsl:call-template name="prompt_image_full" />
+                 </a>
+                <br/>
+              </xsl:if>
+            </div>
+          </div>
+        </xsl:when>
+        <xsl:when test="@dttype=&apos;binary&apos; and upload">
+          <div class="imageupload">
+            <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="image" >
+              <xsl:if test="@dtrequired=&apos;true&apos;">
+                <xsl:attribute name="dtrequired">true</xsl:attribute>
+              </xsl:if>
+            </input>
+            <xsl:if test="contains(upload/path, '/') or contains(upload/path, '\')">
+              <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
+            <br/>
+            </xsl:if>
+            <span>
+              <xsl:value-of select="upload/@name"/>
+              <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+              (<xsl:value-of select="round((upload/@size) div 100) div 10"/>K)
+            </span>
+            <br/>
+            <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+              <xsl:call-template name="prompt_image_replace"/>
+            </a>
+          </div>
+        </xsl:when>
+        <xsl:otherwise>
+          <span>
+            <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
+            <br/>
+            <a
+              href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
+              target="_new">
+              <xsl:call-template name="prompt_image_full" />
+            </a>
+            <br/>
+          </span>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+    <xsl:if test="@maywrite=&apos;false&apos;">
+      <span class="readonly">
+        <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+      </span>
+    </xsl:if>
+  </xsl:template>
 </xsl:stylesheet>
