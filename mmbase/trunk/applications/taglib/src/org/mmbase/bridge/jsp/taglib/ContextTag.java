@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.91 2008-10-07 09:52:42 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.92 2008-10-07 10:39:48 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -61,6 +61,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private int number;
 
     private CloudContext cloudContext;
+    private ContextContainer prevParent;
 
     private Attribute referid = Attribute.NULL;
     private Attribute scope   = Attribute.NULL;
@@ -137,6 +138,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("Start tag of ContextTag");
         ContextContainer container;
         int s = getScope();
+        prevParent = null;
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
@@ -156,6 +158,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
+                log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
+                prevParent = container.getParent();
                 container.setParent(pageContext, getContextProvider().getContextContainer());
                 pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
@@ -326,13 +330,15 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
-        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
+        getContextContainer().release(pageContext, prevParent != null ? prevParent : getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         cloudContext = null;
+        prevParent = null;
         return super.doEndTag();
     }
 
     public void doFinally() {
         cloudContext = null;
+        prevParent = null;
         super.doFinally();
     }
 
