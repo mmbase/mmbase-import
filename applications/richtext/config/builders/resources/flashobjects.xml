@@ -89,8 +89,8 @@
         </positions>
       </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <property name="validMimeTypes" value="application/x-shockwave-flash" />
         <maxLength value="16777215" />
+        <pattern  value="application/x-shockwave-flash" />
       </datatype>
     </field>
 
@@ -146,15 +146,16 @@
         <guiname xml:lang="en">File size</guiname>
         <guiname xml:lang="nl">Bestandsgrootte</guiname>
       </gui>
+        <editor>
+          <positions>
+             <list>5</list>
+          </positions>
+        </editor>
       <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
 
 
   </fieldlist>
-  <functionlist>
-    <function name="gui">
-      <class>org.mmbase.functions.FlashGuiFunction</class>
-    </function>
-  </functionlist>
+
 
 </builder>
