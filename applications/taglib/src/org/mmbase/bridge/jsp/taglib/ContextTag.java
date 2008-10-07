@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.87 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: ContextTag.java,v 1.87.2.1 2008-10-07 10:39:26 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -56,13 +56,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public static final String DEFAULTENCODING_KEY   = "org.mmbase.taglib.defaultencoding";
     public static final String ISELIGNORED_PARAM     = "mmbase.taglib.isELIgnored";
 
-    private ContextProvider  parent = null;
     private boolean    searchedParent = false;
     private static int  latestNumber = 0;
 
     private int number;
 
     private CloudContext cloudContext;
+    private ContextContainer prevParent;
 
     private Attribute referid = Attribute.NULL;
     private Attribute scope   = Attribute.NULL;
@@ -131,11 +131,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
-        parent = null;
         searchedParent = false;
 
         ContextContainer container;
         int s = getScope();
+        prevParent = null;
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
@@ -152,9 +152,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 container = createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
-                    throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
+                    throw new JspTagException("Found context var '" + o + "' is not of type ContextContainer but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
+                log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
+                prevParent = container.getParent();
                 container.setParent(pageContext, getContextProvider().getContextContainer());
                 pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
@@ -318,7 +320,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -333,14 +334,15 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
-        parent = null;
+        getContextContainer().release(pageContext, prevParent != null ? prevParent : getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
+        prevParent = null;
         cloudContext = null;
         return super.doEndTag();
     }
 
     public void doFinally() {
-        parent = null;
         cloudContext = null;
+        prevParent = null;
         super.doFinally();
     }
 
