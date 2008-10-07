@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.62 2008-06-26 10:28:29 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.63 2008-10-07 17:28:25 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -112,12 +112,12 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      *
      * @since MMBase-1.8
      */
-    protected abstract Backing getBacking();
+    public abstract Backing getBacking();
 
 
     public void release(PageContext pc, ContextContainer p) {
         getBacking().pullPageContext(pc);
-        // restore also the parent.xb
+        // restore also the parent.
         parent = p;
     }
 
@@ -239,11 +239,14 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        boolean result = getBacking().containsKey(key);
-        if (!result && checkParent && parent != null) {
-            result = parent.simpleContainsKey(key, true);
+        if (getBacking().containsKey(key)) {
+            return true;
+        } else if (checkParent && parent != null) {
+            log.debug("Checking " + parent + " for " + key);
+            return parent.simpleContainsKey(key, true);
+        } else {
+            return false;
         }
-        return result;
     }
 
     /**

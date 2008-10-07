@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.12 2007-05-16 23:24:49 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.13 2008-10-07 17:28:25 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -45,15 +45,14 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     private final Map<String, Object> b = new HashMap<String, Object>(); // the actual backing.
 
     private final boolean isELIgnored;
-    private  PageContext pageContext;
+    private  transient PageContext pageContext;
 
     /**
      * @param pc The page-context to which variables must be reflected or <code>null</code> if this must not happen.
      */
     public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
-        assert pc != null;
-        isELIgnored = ignoreEL || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
+        isELIgnored = ignoreEL || pageContext == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (log.isDebugEnabled()) {
             log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
         }
@@ -74,8 +73,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     public void pushPageContext(PageContext pc) {
-
-        PageContext origPageContext = pageContext;
+        final PageContext origPageContext = pageContext;
         pageContext = pc;
         if (isELIgnored) return; // never mind
 
@@ -197,7 +195,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     }
 
     void release() {
-        if (originalPageContextValues != null) {
+        if (originalPageContextValues != null && pageContext != null) {
             //log.debug("Restoring pageContext with " + originalPageContextValues);
             // restore the pageContext
             for (Map.Entry<String, Object> e : originalPageContextValues.entrySet()) {
@@ -215,4 +213,4 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         return "BASIC BACKING " + super.toString();
     }
 
-} 
+}
