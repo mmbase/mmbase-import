@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.17 2008-06-26 10:30:13 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.18 2008-10-07 17:28:25 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -35,7 +35,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
-    private final PageContext pageContext;
+    private final transient PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
     private final Set<String> nulls = new HashSet<String>();
@@ -49,8 +49,10 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
     public void pushPageContext(PageContext pc) {
-        assert pageContext == pc;
-        log.debug("Pushing " + pageContext + " --> " + pc);
+        assert pageContext == null || pageContext == pc;
+        if (log.isDebugEnabled()) {
+            log.debug("Pushing " + pageContext + " --> " + pc);
+        }
     }
 
     public void pullPageContext(PageContext pc) {
@@ -159,10 +161,17 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
     public Object getOriginal(String key) {
+        if (key == null) return null; // pageContext cannot accept null keys
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        return pageContext.findAttribute(key);
+        if (pageContext.getRequest() == null) throw new IllegalArgumentException("PageContext " + pageContext + " has no request");
+        try {
+            return pageContext.findAttribute((String) key);
+        } catch (Exception e) {
+            throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
+        }
     }
+
     public boolean containsKey(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
