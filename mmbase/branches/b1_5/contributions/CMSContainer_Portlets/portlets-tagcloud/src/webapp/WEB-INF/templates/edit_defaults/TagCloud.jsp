@@ -52,6 +52,16 @@
 		</cmsc:select></td>
 	</tr>
 	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.window" />:</td>
+		<td>
+			<cmsc:select var="relatedWindow">
+				<c:forEach var="position" items="${pagepositions}">
+					<cmsc:option value="${position}" />
+				</c:forEach>
+			</cmsc:select>
+		</td>
+	</tr>
+	<tr>
 		<td colspan="3">
 			<h4><fmt:message key="edit_defaults.clickpage" /></h4>
 		</td>

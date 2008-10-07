@@ -38,15 +38,19 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 		String elementId = getRelatedElementId(req, window);
 
 		if (elementId != null) {
-			List<Tag> tags = TagCloudUtil.getRelatedTags(Integer.parseInt(elementId));
 			req.setAttribute("elementId", elementId);
-			req.setAttribute("tags", tags);
+			if(req.getAttribute("loadTags") == null || req.getAttribute("loadTags").equals("true")) {
+				List<Tag> tags = TagCloudUtil.getRelatedTags(Integer.parseInt(elementId));
+				req.setAttribute("tags", tags);
+			}
 		} else {
 			String channelId = getIdFromScreen(req, window, "contentchannel");
 			if (channelId != null) {
-				List<Tag> tags = TagCloudUtil.getChannelRelatedTags(new Integer(channelId));
 				req.setAttribute("channelId", channelId);
-				req.setAttribute("tags", tags);
+				if(req.getAttribute("loadTags") == null || req.getAttribute("loadTags").equals("true")) {
+					List<Tag> tags = TagCloudUtil.getChannelRelatedTags(new Integer(channelId));
+					req.setAttribute("tags", tags);
+				}
 			} else {
 				String tag = getIdFromScreen(req, window, "tag");
 				if (tag == null) {
@@ -54,9 +58,12 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 				}
 				if(tag != null) {
 					tag = tag.replaceAll("0x8", " ");
-					List<Tag> tags = TagCloudUtil.getTagRelatedTags(tag);
 					req.setAttribute("tag", tag);
-					req.setAttribute("tags", tags);
+
+					if(req.getAttribute("loadTags") == null || req.getAttribute("loadTags").equals("true")) {
+						List<Tag> tags = TagCloudUtil.getTagRelatedTags(tag);
+						req.setAttribute("tags", tags);
+					}
 				}
 			}
 		}

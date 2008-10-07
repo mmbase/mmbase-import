@@ -9,11 +9,10 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import com.finalist.cmsc.portlets.AbstractContentPortlet;
 import com.finalist.portlets.tagcloud.Tag;
 import com.finalist.portlets.tagcloud.util.TagCloudUtil;
 
-public class TagCloudPortlet extends AbstractContentPortlet {
+public class TagCloudPortlet extends TagRelatedPortlet {
 
 	@Override
 	protected void doView(RenderRequest req, RenderResponse res)
@@ -26,6 +25,8 @@ public class TagCloudPortlet extends AbstractContentPortlet {
 
 		List<Tag> tags = TagCloudUtil.getTags(max, orderBy, "up");
 		req.setAttribute("tags", tags);
+		req.setAttribute("loadTags", "false");
+
 		super.doView(req, res);
 	}
 
@@ -33,6 +34,7 @@ public class TagCloudPortlet extends AbstractContentPortlet {
 	protected void saveParameters(ActionRequest request, String portletId) {
 		setPortletParameter(portletId, "param_max", request.getParameter("param_max"));
 		setPortletParameter(portletId, "param_orderBy", request.getParameter("param_orderBy"));
+		super.saveParameters(request, portletId);
 	}
 
 }
