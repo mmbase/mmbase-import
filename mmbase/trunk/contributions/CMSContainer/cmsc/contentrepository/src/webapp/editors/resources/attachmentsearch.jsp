@@ -71,6 +71,7 @@
                <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
                <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
                <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
+               <th><fmt:message key="attachmentsearch.mimetypecolumn" /></th>
             </tr>
             <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
@@ -97,6 +98,7 @@
                          </td>
                         <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                         <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
+                        <td onMouseDown="objClick(this);"><mm:field name="size" jspvar="size" write="false"/><fmt:formatNumber value="${size div 1000}" pattern=".0"/> K </td>
                         <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
                      </tr>
                   <c:set var="useSwapStyle">${!useSwapStyle}</c:set>

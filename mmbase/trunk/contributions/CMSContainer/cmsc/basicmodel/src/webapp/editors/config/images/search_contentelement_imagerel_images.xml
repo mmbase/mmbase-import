@@ -46,16 +46,6 @@
 			<prompt xml:lang="nl">Afsnijden</prompt>
 			<prompt xml:lang="zh">裁切</prompt>
 		</field>
-		<field fdatapath="field[@name=&apos;width&apos;]">
-			<prompt xml:lang="en">Width</prompt>
-			<prompt xml:lang="nl">Breedte</prompt>
-			<prompt xml:lang="zh">宽</prompt>
-		</field>
-		<field fdatapath="field[@name=&apos;height&apos;]">
-			<prompt xml:lang="en">Height</prompt>
-			<prompt xml:lang="nl">Hoogte</prompt>
-			<prompt xml:lang="zh">高</prompt>
-		</field>
 	</item>
 	
 	<command name="search" nodepath="images" age="-1" fields="title,description">

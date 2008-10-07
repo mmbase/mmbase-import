@@ -6,4 +6,7 @@
    <field name="handle"/>
    <field name="filename"/>
    <field name="filesize"/>
+   <field name="width"/>
+   <field name="height"/>
+   <field name="itype"/>
 </action>

@@ -20,19 +20,15 @@
 		<prompt xml:lang="nl">Bestandsnaam</prompt>
 		<prompt xml:lang="zh">文件名</prompt>
 	</field>
-<!-- These are not interesting to show
+
 	<field name="mimetype" ftype="data">
 		<prompt xml:lang="en">Mimetype</prompt>
 		<prompt xml:lang="nl">Mimetype</prompt>
 		<prompt xml:lang="zh">Mime类型</prompt>
 	</field>
-	<field name="size" ftype="data">
-		<prompt xml:lang="en">Size</prompt>
-		<prompt xml:lang="nl">Grootte</prompt>
-		<prompt xml:lang="zh">大小</prompt>
-	</field>
- -->
-   <field name="handle" ftype="file" dtmaxsize="16000000">
+
+
+	<field name="handle" ftype="file" dtmaxsize="16000000">
 		<prompt xml:lang="en">Attachment</prompt>
 		<prompt xml:lang="nl">Bijlage</prompt>
 		<prompt xml:lang="zh">附件</prompt>
