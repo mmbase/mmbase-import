@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.90 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.91 2008-10-07 09:52:42 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -312,7 +312,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -327,6 +326,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
+        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         cloudContext = null;
         return super.doEndTag();
     }
