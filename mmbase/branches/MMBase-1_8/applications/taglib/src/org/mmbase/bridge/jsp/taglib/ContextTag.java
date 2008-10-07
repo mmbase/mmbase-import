@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.87.2.1 2008-10-07 10:39:26 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.87.2.2 2008-10-07 16:58:54 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -157,6 +157,15 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 container = (ContextContainer)  o;
                 log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
                 prevParent = container.getParent();
+                if (prevParent instanceof PageContextContainer) {
+                    // if for some reason, the parent in the container is from a different
+                    // request. Do not accept that.
+                    PageContextContainer prevPc = (PageContextContainer) prevParent;
+                    if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
+                        log.warn("found a pagecontext container for a different request. Reparing");
+                        prevParent = new PageContextContainer(pageContext);
+                    }
+                }
                 container.setParent(pageContext, getContextProvider().getContextContainer());
                 pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
