@@ -35,7 +35,7 @@
                                 <mm:import id="offset"><mm:write vartype="Integer" jspvar="ps" referid="pageSize"><%=-ps.intValue()+ioffset.intValue()%></mm:write></mm:import>
                                 <c:set var="url"><mm:url referids="offset" />${searchurl}&${params}</c:set>
                                 <a onclick="return checkSearch(this);" href="${url}" class="previous">
-                                    <img src="${pageContext.request.contextPath}/edit/system/img/back.png" class="icon" border="0" alt="">
+                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/back.png" class="icon" border="0" alt="">
                                 </a>
                             </mm:context>
                         </mm:compare>
@@ -55,7 +55,7 @@
 
                                     <c:set var="url"><mm:url referids="offset" />${searchurl}&${params}</c:set>
                                     <a onclick="return checkSearch(this);" href="${url}" class="next">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/forward.png" class="icon" border="0" alt="">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/forward.png" class="icon" border="0" alt="">
                                     </a>
                                 </mm:isgreaterthan>
                             </mm:write>

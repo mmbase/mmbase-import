@@ -1,16 +1,18 @@
 package org.mmbase.applications.vprowizards.spring;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.applications.vprowizards.spring.util.URLParamMap;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 /**
  * This return page resolver will return the referrer url wiht a parameter 'nodenr' added when there is a new node in
@@ -27,16 +29,16 @@ public class ReferrerResolver implements ModelAndViewResolver {
 
 	public ModelAndView getModelAndView(HttpServletRequest request, ResultContainer result) {
 
-		String newPage;
+		String callerPage;
 		Map<String, Object> model = new HashMap<String, Object>();
+		ModelAndView errorMandv = new ModelAndView(errorPage);
 		
-		//mainly for testing?
-		model.put("idmap", result.getIdMap());
 
 		List<GlobalError> globalErrors = result.getGlobalErrors();
 		if (result.hasGlobalErrors()) {
-			model.put("globalerrors", globalErrors);
-			return new ModelAndView(errorPage, model);
+		    errorMandv.addObject("globalErrors", globalErrors);
+			log.debug("request has global errors, so the return page is: "+errorPage);
+			return errorMandv;
 		} 
 		
 		if (result.hasFieldErrors()) {
@@ -53,32 +55,34 @@ public class ReferrerResolver implements ModelAndViewResolver {
 		// log.debug("object number " + newObject);
 		// }
 		// }
-
-		newPage = request.getHeader("Referrer");
-		if(newPage == null){
+		callerPage = request.getHeader("referer");
+		if(callerPage == null){
 			//this is an error for this view resolver
 			globalErrors.add(new GlobalError("error.no.referrer.header", result.getLocale()));
-			model.put("globalerrors", globalErrors);
 			log.error("REFERRER NOT SET! This request's redirection wil fail.");
-			return new ModelAndView(errorPage, model);
+            errorMandv.addObject("globalErrors", globalErrors);
+			return errorMandv;
 		}
 		// add the node number of the new object to the referer url.
-		if (result.getNewObject().size() > 0) {
-			if (log.isDebugEnabled()) {
-				log.debug("new object created.");
-			}
-
-			// if (referer.indexOf('?') == -1) {
-			// newPage = referer + "?nodenr=" + result.getNewObject();
-			// } else {
-			// newPage = referer + "&nodenr=" + result.getNewObject();
-			// }
-
-			// if we put the new node in the model, it should be added to the query string for redirect views.
-			model.put("nodenr", result.getNewObject().get(0));
+		
+//		if (result.getNewObject().size() > 0) {
+//			if (log.isDebugEnabled()) {
+//				log.debug("new object created.");
+//			}
+//			String newNodeNr = result.getNewObject().get(0);
+//			//newPage = newPage.substring(0, newPage.indexOf("?") + 1) + "nodenr=" + newNodeNr;
+//			String newPage = new URLParamMap(callerPage).addParam("nodenr", newNodeNr, true).toString();
+//		}
+		
+		URLParamMap u = new URLParamMap(callerPage);
+		if(result.getExtraParams().size() > 0){
+		    for(String param: result.getExtraParams().keySet()){
+		        u.addParam(param, result.getExtraParams().get(param), true);
+		    }
 		}
-
-		return new ModelAndView(new RedirectView(newPage), model);
+		
+		RedirectView redirectView = new RedirectView(u.toString());
+        return new ModelAndView(redirectView, model);
 	}
 
 	public void setErrorPage(String errorPage) {

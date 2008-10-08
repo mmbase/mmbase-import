@@ -129,7 +129,7 @@
 		<!-- Unit test cases -->
 		<!--
 		-->
-		<unitTestSourceDirectory>test</unitTestSourceDirectory>
+		<unitTestSourceDirectory>tests</unitTestSourceDirectory>
 		<unitTest>
 			<includes>
 				<include>**/*Tests.java</include>

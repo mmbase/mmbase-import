@@ -6,17 +6,17 @@
         <c:set var="username" scope="request"><%= "" + cloud.getUser().getIdentifier() %></c:set>
         <div id="path">&nbsp;</div>
         <h6 style="margin-bottom: 5px;">
-            <img src="${pageContext.request.contextPath}/edit/system/img/heart0.png" id="__heartbeat_btn" enabled="false"/>
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/heart0.png" id="__heartbeat_btn" enabled="false"/>
             ${username}
             <i onclick="alert('Veel plezier met deze redactieomgeving!\nRob Vermeulen & Jerry Den Ambtman\nEn koop een spaarlamp!');">|</i>
-            <a href="${pageContext.request.contextPath}/edit/system/logout.jsp">uitloggen</a>
+            <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/logout.jsp">uitloggen</a>
         </h6>
     </div>
     
     <script type="text/javascript">
         //heartbeat code
-        var icon_enabled = "${pageContext.request.contextPath}/edit/system/img/heart1.png";
-        var icon_disabled = "${pageContext.request.contextPath}/edit/system/img/heart0.png";
+        var icon_enabled = "${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/heart1.png";
+        var icon_disabled = "${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/heart0.png";
         
         var __heartbeat1;
         var __heartbeat2;
@@ -69,7 +69,7 @@
         
         function refresh(state){
             $.ajax({
-               url: "${pageContext.request.contextPath}/edit/system/heartbeat.jsp",
+               url: "${pageContext.request.contextPath}/mmbase/vpro-wizards/system/heartbeat.jsp",
                type: "POST",
                data: "enabled=" + (state == undefined ? "" : state)
              });

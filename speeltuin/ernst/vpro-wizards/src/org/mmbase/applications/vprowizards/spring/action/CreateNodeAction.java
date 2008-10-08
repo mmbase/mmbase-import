@@ -25,10 +25,17 @@ import org.mmbase.util.logging.Logging;
 public class CreateNodeAction extends AbstractNodeAction {
 	private static final Logger log = Logging.getLoggerInstance(CreateNodeAction.class);
  	private String nodeType;
+ 	
+ 	private String nodeAsParam = ""; 
 
 	public final void setNodeType(String nodemanger) {
 		this.nodeType = nodemanger;
 	}
+	
+	public final void setNodeAsParam(String paramName){
+	    nodeAsParam = paramName;
+	}
+	
 
 	public final String getNodenType() {
 		return this.nodeType;
@@ -55,7 +62,14 @@ public class CreateNodeAction extends AbstractNodeAction {
 		}
 	}
 
-	/**
+	@Override
+    protected void processNode(Transaction transaction) {
+	    if(getNode() != null && ! StringUtils.isBlank(nodeAsParam)){
+	        addParam(nodeAsParam, getNode().getNumber()+"");
+	    }
+    }
+
+    /**
 	 * This is the default implementation for creating new nodes. Override this
 	 * if the node manager has to be derived in a different way.
 	 * 
@@ -67,7 +81,7 @@ public class CreateNodeAction extends AbstractNodeAction {
 		}
 		if (StringUtils.isBlank(nodeType)) {
 			log.debug("Can not create node manager instance: name field is empty");
-			addGlobalError("error.property.required", new String[] { "nodemanager", CreateNodeAction.class.getName() });
+			addGlobalError("error.property.required", new String[] { "nodeType", CreateNodeAction.class.getName() });
 			return null;
 		} else if (transaction.hasNodeManager(nodeType)) {
 			NodeManager nodeManager = transaction.getNodeManager(nodeType);

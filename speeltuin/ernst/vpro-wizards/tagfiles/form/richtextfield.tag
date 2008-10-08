@@ -17,8 +17,7 @@
     if(fieldValue == null){
         fieldValue = "";
     }
-    //out.write("<p>test:"+fieldValue+"</p>");
-    boolean isHTML = nl.vpro.dvt.communities.util.HTMLFilterUtils.isHTML(fieldValue);
+    boolean isHTML = org.mmbase.applications.vprowizards.spring.util.HTMLFilterUtils.isHTML(fieldValue);
     jspContext.setAttribute("textIsHtml",new Boolean(isHTML), PageContext.PAGE_SCOPE);
 %>
 <div class="inputBlock">
@@ -34,6 +33,7 @@
             </c:choose>
         </mm:import>
 
+        <input type="hidden" name="actions[${modifier}${action}][${actionnr}].htmlField" value="${field}" />
         <c:set var="_action" value="actions[${modifier}${action}][${actionnr}].fields[${field}]" />
         <textarea onchange="disableRelated();" id="field_${nodetype}_${field}" name="${_action}"><mm:write referid="temp" escape="trimmer"/></textarea>
     </div>
@@ -41,7 +41,7 @@
 
 <script type="text/javascript">
     var oFCKeditor = new FCKeditor( 'field_${nodetype}_${field}' ) ;
-    oFCKeditor.BasePath = '${pageContext.request.contextPath}/edit/system/javascript/FCKeditor/';
+    oFCKeditor.BasePath = '${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/';
     oFCKeditor.Config['ToolbarStartExpanded'] = true ;
     <%-- TODO deze check eruit halen --%>
     <c:choose>
