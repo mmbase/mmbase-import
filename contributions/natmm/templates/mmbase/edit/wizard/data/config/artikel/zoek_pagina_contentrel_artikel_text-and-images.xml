@@ -6,7 +6,7 @@
     <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
 		<field name="titel" ftype="line"><prompt>titel</prompt></field>
 		<field name="intro" ftype="html" rows="14"><prompt>tekst</prompt></field>
-		<list include="config/paragraaf/zoek_artikel_posrel_paragraaf_textonly.xml" />
+		<list include="config/paragraaf/zoek_artikel_posrel_paragraaf_images.xml" />
    </item>
    <command name="search" nodepath="artikel" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek artikel</prompt>
