@@ -37,7 +37,7 @@ public class WizardController implements Controller {
 	private Locale locale;
 	
 	public WizardController(){
-		setLocale(new Locale("nl-NL"));/*default*/
+		setLocale(new Locale("nl", "NL"));/*default*/
 	}
 	
 	
@@ -55,7 +55,6 @@ public class WizardController implements Controller {
 
 		Command command = commandFactory.getNewInstance();
 		Transaction transaction = cloudFactory.createTransaction(request);
-		Map<String, Node> nodeMap = new HashMap<String, Node>();
 		
 		if(log.isDebugEnabled()){
 			log.debug("*********************************");
@@ -88,12 +87,6 @@ public class WizardController implements Controller {
 			// set all the cache flush hints in the request.
 			request.setAttribute(CacheHandlerInterceptor.PARAM_NAME, resultContainer.getCacheFlushHints());
 
-			// Are there new objects?
-			//TODO: this is wrong. hard coding that the id for new nodes is 'new' that way only one new node can be created. So: for now we must create an error when there are more create actions than one.
-			if (nodeMap.containsKey("new")) {
-				int number = nodeMap.get("new").getNumber();
-				resultContainer.addNewObject("" + number);
-			}
 		}
 
 		// return the proper view.
@@ -123,8 +116,8 @@ public class WizardController implements Controller {
 		this.commandFactory = commandFactory;
 	}
 
-	public void setLocale(Locale locale2) {
-		this.locale = locale2;
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 

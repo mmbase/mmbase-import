@@ -4,6 +4,6 @@
     <h6>
         ${username}
         <i onclick="alert('Veel plezier met deze redactieomgeving!\nRob Vermeulen & Jerry Den Ambtman\nEn koop een spaarlamp!');">|</i>
-        <a href="${pageContext.request.contextPath}/edit/system/logout.jsp">uitloggen</a>
+        <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/logout.jsp">uitloggen</a>
     </h6>
 </div>

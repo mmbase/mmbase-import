@@ -27,7 +27,6 @@
  * File Authors:
  * 		Frederico Caldeira Knabben (www.fckeditor.net)
  */
-
 // Disable the custom Enter Key Handler (this configuration will be removed in
 // version 2.5).
 FCKConfig.DisableEnterKeyHandler = false ;
@@ -118,8 +117,9 @@ FCKConfig.ToolbarSets["Basic"] = [
 ] ;
 
 FCKConfig.ToolbarSets["Edit"] = [
-	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','Anchor','-','PasteWord']
+	['Bold','Italic','FontFormat','-','OrderedList','UnorderedList','-','Link','Unlink','Anchor','-','PasteWord','-','Source']
 ] ;
+
 
 FCKConfig.ToolbarSets["Talk"] = [
 	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink']

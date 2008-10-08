@@ -31,22 +31,25 @@
 </c:if>
 
 <mm:content expires="0" type="text/html"  encoding="utf-8">
-    <mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/edit/login.jsp" >
+    <mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
     <c:set var="requestcloud" scope="request" value="${cloud}"/>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
         <html>
         <head>
             <title>${title}</title>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/javascript.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/jquery/jquery.js"></script>
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
+             <script>
+                var contextPath='${pageContext.request.contextPath}';
+            </script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
             <jsp:invoke fragment="header"/>
         </head>
             <body>
                 <util:header/>
                 <jsp:doBody/>
                 <!--[if lt IE 7]>
-                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/pngfix.js"></script>
+                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/pngfix.js"></script>
                 <![endif]-->
             </body>
         </html>

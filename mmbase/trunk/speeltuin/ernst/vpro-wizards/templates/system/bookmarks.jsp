@@ -1,9 +1,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
-<%@taglib prefix="util"tagdir="/WEB-INF/tags/edit/util"%>
+<%@taglib prefix="util"tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
-<script type="text/javascript" src="/edit/system/javascript/javascript.js"></script>
+<script type="text/javascript" src=${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
 
 <%-- a comma separated list of bookmarkfolder nodes representing the three columns--%>
 <c:if test="${empty param.columns}">
@@ -23,12 +23,12 @@
             <c:choose>
                 <c:when test="${empty param.edit}">
                     <a id="bookmarksEdit" style="display:block" href="?edit=true" class="editButton">pas aan
-                        <img src="${pageContext.request.contextPath}/edit/system/img/edit_white.png" class="icon" border="0" alt="Edit" title="Edit"/>
+                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/edit_white.png" class="icon" border="0" alt="Edit" title="Edit"/>
                     </a>
                 </c:when>
                 <c:otherwise>
                     <a id="bookmarksReady" style="display:block" href="${pageContext.request.servletPath}" class="editButton">klaar
-                        <img src="${pageContext.request.contextPath}/edit/system/img/edit_white.png" class="icon" border="0" alt="Edit" title="Edit"/>
+                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/edit_white.png" class="icon" border="0" alt="Edit" title="Edit"/>
                     </a>
                 </c:otherwise>
             </c:choose>
@@ -38,7 +38,7 @@
         <div class="add">
         <a href="${pageContext.request.contextPath}/edit/desktop/categorie.jsp?folder=${_colmap[0]}" class="addButton">
             nieuwe categorie
-            <img src="${pageContext.request.contextPath}/edit/system/img/new2.png" class="icon" border="0" alt="">
+            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/new2.png" class="icon" border="0" alt="">
         </a>
         </div>
 
@@ -60,12 +60,12 @@
                             <%--edit and delete category--%>
                             <div class="icons">
                                 <a href="${pageContext.request.contextPath}/edit/desktop/categorie.jsp?nodenr=${_cat}">
-                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit_white.png" class="icon" border="0" alt="" title="Pas aan"/>
+                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/edit_white.png" class="icon" border="0" alt="" title="Pas aan"/>
                                 </a>
                                 <mm:link page="/wizard/post">
                                     <mm:param name="deleteNodeActions[1].number" value="${_cat}" />
                                     <a href="${_}" onclick="return doConfirm(true, 'Weet je zeker dat je deze container wilt weg gooien?');">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/delete_white.png" class="icon" border="0" alt="" title="Verwijder">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/delete_white.png" class="icon" border="0" alt="" title="Verwijder">
                                     </a>
                                 </mm:link>
                             </div>
@@ -73,22 +73,22 @@
                             <div class="move">
                                 <%--can't move the first column left--%>
                                 <c:if test="${counter gt 0}">
-                                    <a href="${pageContext.request.contextPath}/edit/system/changecontainer.jsp?oldPosrel=${_posrel}&amp;newContainer=${_colmap[counter - 1]}&amp;nodenr=${_cat}">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/arrow_left_white.png" class="icon" border="0" alt=""/>
+                                    <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/changecontainer.jsp?oldPosrel=${_posrel}&amp;newContainer=${_colmap[counter - 1]}&amp;nodenr=${_cat}">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/arrow_left_white.png" class="icon" border="0" alt=""/>
                                     </a>
                                 </c:if>
 
                                 <%-- can not move the first one up--%>
                                 <mm:first inverse="true">
                                 <%--
-                                    <a href="${pageContext.request.contextPath}/edit/system/changeposrelnew.jsp?container=${_colmap[counter]}&amp;node=${_cat}&amp;direction=down&amp;type=categories">
+                                    <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/changeposrelnew.jsp?container=${_colmap[counter]}&amp;node=${_cat}&amp;direction=down&amp;type=categories">
                                     --%>
                                     <mm:link page="/wizard/post">
                                         <mm:param name="posrelSortActions[0].number" value="${_cat}"/>
                                         <mm:param name="posrelSortActions[0].direction" value="up" />
                                         <mm:param name="posrelSortActions[0].containerNode" value="${_colmap[counter]}" />
                                         <a href="${_}">
-                                            <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up_white.png" class="icon" border="0" alt=""/>
+                                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/arrow_up_white.png" class="icon" border="0" alt=""/>
                                         </a>
                                     </mm:link>
                                 </mm:first>
@@ -100,18 +100,18 @@
                                         <mm:param name="posrelSortActions[0].direction" value="down" />
                                         <mm:param name="posrelSortActions[0].containerNode" value="${_colmap[counter]}" />
                                         <%--
-                                        <a href="${pageContext.request.contextPath}/edit/system/changeposrelnew.jsp?container=${_colmap[counter]}&amp;node=${_cat}&amp;direction=up&amp;type=categories">
+                                        <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/changeposrelnew.jsp?container=${_colmap[counter]}&amp;node=${_cat}&amp;direction=up&amp;type=categories">
                                         --%>
                                         <a href="${_}">
-                                            <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down_white.png" class="icon" border="0" alt=""/>
+                                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/arrow_down_white.png" class="icon" border="0" alt=""/>
                                         </a>
                                     </mm:link>
                                 </mm:last>
 
                                 <%--can not move the last column right--%>
                                 <c:if test="${counter lt 2}">
-                                    <a href="${pageContext.request.contextPath}/edit/system/changecontainer.jsp?oldPosrel=${_posrel}&amp;newContainer=${_colmap[counter + 1]}&amp;nodenr=${_cat}">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/arrow_right_white.png" class="icon" border="0" alt=""/>
+                                    <a href="${pageContext.request.contextPath}/mmbase/vpro-wizards/changecontainer.jsp?oldPosrel=${_posrel}&amp;newContainer=${_colmap[counter + 1]}&amp;nodenr=${_cat}">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/arrow_right_white.png" class="icon" border="0" alt=""/>
                                     </a>
                                     </c:if>
                             </div>
@@ -127,7 +127,7 @@
                                 </mm:related>
                                 <mm:related path="posrel,attachments" orderby="posrel.pos">
                                     <li class="bijlage">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/paperclip.png" class="icon" border="0" alt="" title="Bijlage">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/paperclip.png" class="icon" border="0" alt="" title="Bijlage">
                                         <mm:field name="attachments.number" jspvar="_at">
                                         <util:attachment nodenr="${_at}" urlvar="_url"/>
                                             <a href="${_url}"><mm:field name="attachments.title"/></a>
@@ -136,7 +136,7 @@
                                 </mm:related>
                                 <mm:related path="freetext">
                                     <li class="note">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/note.png" class="icon" border="0" alt="" title="Note">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/img/note.png" class="icon" border="0" alt="" title="Note">
                                         <mm:field name="freetext.title"/>
                                     </li>
                                 </mm:related>

@@ -47,11 +47,12 @@
         <%--set the default fields for this action in the form--%>
         <c:if test="${modifier == 'create'}">
             <input type="hidden" name="actions[${modifier}${action}][].id" value="new"/>
-            <input type="hidden" name="actions[${modifier}${action}][].type" value="${nodetype}"/>
+            <input type="hidden" name="actions[${modifier}${action}][].nodeType" value="${nodetype}"/>
+            <input type="hidden" name="actions[${modifier}${action}][].nodeAsParam" value="nodenr"/>
         </c:if>
         <%--if --%>
         <c:if test="${modifier == 'update'}">
-            <input type="hidden" name="actions[${modifier}${action}][${nodenr}].number" value="${nodenr}"/>
+            <input type="hidden" name="actions[${modifier}${action}][${nodenr}].nodenr" value="${nodenr}"/>
         </c:if>
 
         <c:out value="${body}" escapeXml="false"/>

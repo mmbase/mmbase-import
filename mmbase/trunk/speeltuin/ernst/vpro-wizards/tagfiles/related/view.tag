@@ -89,7 +89,7 @@
                                 <input type="hidden" name="nodenr" value="${_nodenr}" />
                                 --%>
 
-                                <input type="hidden" name="actions[updateNode][${_nodenr}].type" value="${nodetype}"/>
+                                <input type="hidden" name="actions[updateNode][${_nodenr}].nodeType" value="${nodetype}"/>
                                 <input type="hidden" name="actions[updateNode][${_nodenr}].number" value="${_nodenr}"/>
 
                                 <%--toon de velden die geedit kunnen worden--%>
@@ -156,17 +156,15 @@
                                         </c:set>
                                         <%--arrow down--%>
                                         <mm:last inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=up${params}" class="movedown" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:last>
 
                                         <%--arrow up--%>
                                         <mm:first inverse="true">
-                                            <%-- <a style="text-decoration:none" href="/edit/system/changeposrelnew.jsp?container=${nodenr}&node=${_nodenr}&direction=down${params}" class="moveup" onclick="return checkSearch(this);"> --%>
                                             <a style="text-decoration:none" href="${urlup}" class="moveup" onclick="return checkSearch(this);">
-                                                <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
+                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" title="Sorteer"/>
                                             </a>
                                         </mm:first>
                                     </c:if>
@@ -182,16 +180,16 @@
                                                 <mm:param name="flushname" value="${flushname}" />
                                             </mm:url>
                                         </c:set>
-                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/edit/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
+                                        <a href="${url}" class="delete" onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" title="Koppel los"/></a>
                                     </c:if>
                                     <c:remove var="maydelete"/>
                                     <%--edit button--%>
                                     <%--
                                     <c:if test="${edit}">
-                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                        <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
                                     </c:if>
                                     <c:if test="${not empty param.openwizard}">
-                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
+                                        <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit"><img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/></a>
                                     </c:if>
                                     --%>
                                     
@@ -200,12 +198,12 @@
                                         <c:choose>
                                             <c:when test="${not empty param.openwizard}">
                                                 <a href="${param.openwizard}?nodenr=${_nodenr}&${params}" class="edit">
-                                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
                                                 </a>
                                             </c:when>
                                             <c:otherwise>
                                                 <a href="${pageContext.request.contextPath}${pageContext.request.servletPath}?${params}&editnodenr=${_nodenr}" class="edit">
-                                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
+                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" title="Aanpassen!!"/>
                                                 </a>
                                             </c:otherwise>
                                         </c:choose>

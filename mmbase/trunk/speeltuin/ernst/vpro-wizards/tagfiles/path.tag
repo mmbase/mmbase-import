@@ -9,7 +9,7 @@
 <%@ attribute name="reset" type="java.lang.Boolean" description="when this is true, the list with session path elements is cleard." %>
 
 <c:if test="${empty url}">
-    <c:set var="url" >${pageContext.request.servletPath}<c:if test="${not empty pageContext.request.queryString}">?</c:if>${pageContext.request.queryString}</c:set>
+    <c:set var="url" >${pageContext.request.contextPath}${pageContext.request.servletPath}<c:if test="${not empty pageContext.request.queryString}">?</c:if>${pageContext.request.queryString}</c:set>
 </c:if>
 
 <%--

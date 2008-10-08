@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nl.vpro.dvt.communities.util;
+package org.mmbase.applications.vprowizards.spring.util;
 
 import java.util.regex.Pattern;
 
@@ -23,7 +23,6 @@ public class JavascriptUrlFilter extends DefaultFilter {
 				String localName = attributes.getLocalName(i);
 				String nonNormalizedValue = attributes.getNonNormalizedValue(i);
 				if(localName.equalsIgnoreCase("href") && javascript.matcher(nonNormalizedValue).find()){
-					System.out.println(localName + "=" + nonNormalizedValue);
 					attributes.setValue(i, "javascript:alert('javascript urls zijn niet toegestaan')");
 				}
 			}
