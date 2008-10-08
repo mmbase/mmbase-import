@@ -16,11 +16,11 @@
 		<br>
 		<fmt:message key="view.ecard.from"/>			
 		<br>
-		<fmt:message key="view.ecard.fromName"/>  <mm:field name="fromname"/> <br>
+		<fmt:message key="view.ecard.fromName"/>  <mm:field name="fromname" escape="text/xml"/> <br>
 		<fmt:message key="view.ecard.fromEmail"/> <mm:field name="fromemail"/> <br>
-		<fmt:message key="view.ecard.toName"/> <mm:field name="toname"/> <br>
+		<fmt:message key="view.ecard.toName"/> <mm:field name="toname" escape="text/xml"/> <br>
 		<fmt:message key="view.ecard.toEmail"/> <mm:field name="toemail"/> <br>
-		<fmt:message key="view.ecard.textBody"/> <mm:field name="body"/> <br>
+		<fmt:message key="view.ecard.textBody"/> <mm:field name="body" escape="text/xml"/> <br>
 	</c:if>		
 </mm:node>
 <cmsc:renderURL var="viewfunpage">
