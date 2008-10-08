@@ -92,7 +92,7 @@
    </td>
    <td align="left" style="white-space: nowrap;">
       <mm:field name="${type}.number" jspvar="number" write="false"/>
-      <mm:url page="../WizardInitAction.do" jspvar="url" write="false">
+      <mm:url page="../WizardInitAction.do" id="url" write="false">
          <mm:param name="objectnumber" value="${number}"/>
          <mm:param name="returnurl" value="workflow/${returnAction}?status=${param.status}"/>
       </mm:url>
