@@ -23,7 +23,7 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
 		<search-filter>
-			<name>alt tekst bevat</name>
+			<name>alt-tekst bevat</name>
 			<search-fields>alt_tekst</search-fields>
 		</search-filter>
       <search-filter>
