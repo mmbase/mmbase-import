@@ -1,10 +1,6 @@
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +25,8 @@ import org.mmbase.util.logging.Logging;
 public class ResultContainer {
 	private List<FieldError> fieldErrors = new ArrayList<FieldError>();
 	private List<GlobalError> globalErrors = new ArrayList<GlobalError>();
-	private List<String> newObjects = new ArrayList<String>(5);
     private List<CacheFlushHint> cacheFlushHints = new ArrayList<CacheFlushHint>();
+    private Map<String,String> extraParams = new LinkedHashMap<String, String>();  
     private Transaction transaction = null;
     private Locale locale;
     private static final Logger log = Logging.getLoggerInstance(ResultContainer.class);
@@ -55,13 +51,12 @@ public class ResultContainer {
 		return globalErrors;
 	}
 
-	public List<String> getNewObject() {
-		return newObjects;
+	public void addParamToReturnURL(String name, String value){
+	    extraParams.put(name, value);
 	}
-
-	public void addNewObject(String newObject) {
-		this.newObjects.add(newObject);
-
+	
+	public Map<String,String>getExtraParams(){
+	    return extraParams;
 	}
 	
 	public void addGlobalError(GlobalError e){

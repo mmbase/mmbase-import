@@ -41,20 +41,22 @@
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/edit/login.jsp" >
+<mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
     <c:set var="requestcloud" scope="request" value="${cloud}"/>
     <mm:content expires="0" type="text/html" encoding="utf-8" >
         <html>
             <head>
                 <title>${title}</title>
-                <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
-                <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.css">
-
-                <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/javascript.js"></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.js" ></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/clock.js" ></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/FCKeditor/fckeditor.js"></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/jquery/jquery.js"></script>
+                <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
+                <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.css">
+                 <script>
+                    var contextPath='${pageContext.request.contextPath}';
+                </script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/fckeditor.js"></script>
+                <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
                 <jsp:invoke fragment="header"/>
               </head>
             <body>
@@ -72,23 +74,8 @@
                         disableRelated();
                     </script>
                 </c:if>
-
-                <script type="text/javascript">
-                    // Standaard save & annuleerknop uit.
-                    //not a clue what it's for, and we don't seem to need it...
-                    /*
-                    var save = document.getElementById('save');
-                    var annuleren = document.getElementById('annuleren');
-                    var enableButtons = document.getElementById('enableButtons');
-                    enableButtons.style.display = 'block';
-                    enableButtons.style.left = getleft(save)+'px';
-                    enableButtons.style.top = gettop(save)+'px';
-                    enableButtons.style.height = save.offsetHeight+'px';
-                    enableButtons.style.width = annuleren.offsetLeft-save.offsetLeft + annuleren.offsetWidth+'px';
-                    */
-                </script>
                  <!--[if lt IE 7]>
-                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/pngfix.js"></script>
+                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/pngfix.js"></script>
                 <![endif]-->
             </body>
         </html>

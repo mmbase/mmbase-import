@@ -6,7 +6,7 @@
 
 <form:wizard title="Magazine" wizardfile="magazine" >
 
-    <edit:path name="magazine" node="${nodenr}" session="mags"/>
+    <edit:path name="magazine" node="${nodenr}" session="mag"/>
     <edit:sessionpath/>
 
 

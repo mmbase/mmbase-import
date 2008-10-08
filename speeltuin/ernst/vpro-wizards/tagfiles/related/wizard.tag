@@ -66,25 +66,27 @@
     <html>
         <head>
             <title>${title}</title>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/stylesheets/edit.css"/>
-            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.css">
-
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/javascript.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/calendar.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/calendar/clock.js" ></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/FCKeditor/fckeditor.js"></script>
-            <script type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/jquery/jquery.js"></script>
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/stylesheets/edit.css"/>
+            <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.css">
+            <script>
+                var contextPath='${pageContext.request.contextPath}';
+            </script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/calendar.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/calendar/clock.js" ></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/fckeditor.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/jquery/jquery.js"></script>
             <jsp:invoke fragment="header"/>
         </head>
         <body class="related">
-            <mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/edit/login.jsp" >
+            <mm:cloud jspvar="cloud" rank="basic user" method="loginpage" loginpage="/mmbase/vpro-wizards/system/login.jsp" >
                 <c:set var="requestcloud" scope="request" value="${cloud}"/>
                 <util:header/>
 
                 <c:if test="${showback}">
                     <div class="terug">
                         <a href="${back}">
-                            <img src="${pageContext.request.contextPath}/edit/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_back.png" class="icon" border="0" alt="0"/>
                             terug
                         </a>
                     </div>
@@ -101,7 +103,7 @@
                     function disableRelated(){ }
                 </script>
                 <!--[if lt IE 7]>
-                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/edit/system/javascript/pngfix.js"></script>
+                    <script defer type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/pngfix.js"></script>
                 <![endif]-->
             </mm:cloud>
         </body>

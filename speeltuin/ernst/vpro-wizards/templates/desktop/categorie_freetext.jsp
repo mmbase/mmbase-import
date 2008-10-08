@@ -1,7 +1,7 @@
 <%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
-<%@ taglib prefix="related" tagdir="/WEB-INF/tags/edit/related" %>
-<%@ taglib prefix="list" tagdir="/WEB-INF/tags/edit/list" %>
-<%@ taglib prefix="form" tagdir="/WEB-INF/tags/edit/form" %>
+<%@ taglib prefix="related" tagdir="/WEB-INF/tags/vpro-wizards/related" %>
+<%@ taglib prefix="list" tagdir="/WEB-INF/tags/vpro-wizards/list" %>
+<%@ taglib prefix="form" tagdir="/WEB-INF/tags/vpro-wizards/form" %>
 
 <related:wizard  title="Categorie : Notes" nodetype="freetext">
     <edit:sessionpath/>

@@ -1,4 +1,4 @@
-package nl.vpro.dvt.communities.util;
+package org.mmbase.applications.vprowizards.spring.util;
 
 import java.io.*;
 import java.util.regex.Matcher;

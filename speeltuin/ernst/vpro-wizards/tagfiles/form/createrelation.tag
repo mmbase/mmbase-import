@@ -43,16 +43,16 @@
 
 
     <c:if test="${not empty referSource}">
-        <input type="hidden" name="actions[createRelation][${relationid}].referSource" value="${referSource}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeRef" value="${referSource}" />
     </c:if>
     <c:if test="${not empty source}">
-        <input type="hidden" name="actions[createRelation][${relationid}].source" value="${source}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeNumberr" value="${source}" />
     </c:if>
     <c:if test="${not empty referDestination}">
-        <input type="hidden" name="actions[createRelation][${relationid}].referDestination" value="${referDestination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeRef" value="${referDestination}" />
     </c:if>
     <c:if test="${not empty destination}">
-        <input type="hidden" name="actions[createRelation][${relationid}].destination" value="${destination}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeNumber" value="${destination}" />
     </c:if>
     <c:if test="${not empty role}">
         <input type="hidden" name="actions[createRelation][${relationid}].role" value="${role}" />

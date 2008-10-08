@@ -17,7 +17,6 @@
 <%@ attribute name="create" type="java.lang.Boolean"%>
 <%@ attribute name="sortable" type="java.lang.Boolean" description="When this is true arrows are shown to push the nodes up and down in the list." %>
 <%@ attribute name="sortfield" description="when you want to sort on non-posrel relations. it defaults to 'pos'"%>
-<%@ attribute name="relationrole" description="when you want to sort on non-posrel relations. it defaults to 'posrel'"%>
 <%@ attribute name="newwizard" description="create a new object with a given wizard. If you dont give this a wizard name is created (assumed)."  %>
 <%@ attribute name="openwizard" %>
 <%@ attribute name="relatedpage" description="this value will override the generated url to the 'related' page. normally it is ${wizardfile}_$nodetype}. this forces you to put the reled page in the current dir, what prevents reuse."  %>
@@ -64,7 +63,7 @@
     <c:if test="${empty sortfield}">
         <c:set var="sortfield" value="pos" />
     </c:if>
-    <c:if test="${emtpy relationrole}">
+    <c:if test="${empty relationrole}">
         <c:set var="relationrole" value="posrel" />
     </c:if>
 </c:if>
@@ -111,13 +110,13 @@
                     <c:when test="${not empty newwizard}">
                         <c:set var="newwizardparam" ><c:if test="${not empty relationrole}">&relationrole=${relationrole}</c:if></c:set>
                         <a href="${newwizard}?parentnodenr=${nodenr}${newwizardparam}&${extra_params}" class="addButton">nieuw
-                            <img src="${pageContext.request.contextPath}/edit/system/img/new.png" class="icon" border="0" title="Nieuw">
+                            <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new.png" class="icon" border="0" title="Nieuw">
                         </a>
                     </c:when>
                 <c:otherwise>
                     <a href="${relatedpage}.jsp?nodenr=${nodenr}&amp;create=true&relationrole=${relationrole}&searchdir=${searchdir}&${extra_params}"
                     class="addButton">nieuw <img
-                        src="${pageContext.request.contextPath}/edit/system/img/new2.png"
+                        src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png"
                         class="icon" border="0" alt=""></a>
                 </c:otherwise>
                 </c:choose>
@@ -132,7 +131,7 @@
                 <c:if test="${edit == true && empty openwizard}"><c:set var="editparam" value="&edit=true"/></c:if>
                 <c:if test="${not empty openwizard}"><c:set var="editparam" value="&openwizard=${openwizard}"/></c:if>
                 <a href="${relatedpage}.jsp?nodenr=${nodenr}&search=true${editparam}&relationrole=${relationrole}&searchdir=${searchdir}&${extra_params}" class="searchButton">zoeken
-                    <img src="${pageContext.request.contextPath}/edit/system/img/new2.png" class="icon" border="0" alt="">
+                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/new2.png" class="icon" border="0" alt="">
                 </a>
             </c:if>
         </div>
@@ -185,7 +184,7 @@
                                 
                                 <mm:last inverse="true">
                                     <a style="text-decoration:none" href="${urldown}" class="movedown" onclick="return checkSearch(this);">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/arrow_down.png" class="icon" border="0" />
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_down.png" class="icon" border="0" />
                                     </a>
                                 </mm:last>
                                 
@@ -204,10 +203,10 @@
                                 </mm:first>
                                 <mm:first inverse="true">
                                     <%--
-                                    <a style="text-decoration:none" href="${pageContext.request.contextPath}/edit/system/changeposrelnew.jsp?container=${nodenr}&amp;node=${_nodenr}&amp;direction=down&amp;type=${type}#${anchor}" class="moveup" onclick="return checkSearch(this);">
+                                    <a style="text-decoration:none" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&amp;node=${_nodenr}&amp;direction=down&amp;type=${type}#${anchor}" class="moveup" onclick="return checkSearch(this);">
                                     --%>
                                     <a style="text-decoration:none" href="${urlup}" class="moveup" onclick="return checkSearch(this);">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/arrow_up.png" class="icon" border="0" />
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" />
                                     </a>
                                 </mm:first>
                                 
@@ -227,7 +226,7 @@
                                     <mm:param name="actions[deleteNode][1].number" value="${_relationnr}" />
                                     <mm:param name="flushname" value="${flushname}" />
                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
-                                        <img src="${pageContext.request.contextPath}/edit/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
                                     </a>
                                 </mm:link>
                             </c:if>
@@ -238,14 +237,14 @@
                                     <c:choose>
                                         <c:when test="${not empty openwizard}">
                                             <a href="${openwizard}?nodenr=${_nodenr}&parentnodenr=${param.nodenr}&relationrole=${relationrole}&searchdir=${searchdir}${extra_params}">
-                                                <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
+                                                <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
                                             </a>
                                         </c:when>
                                             <c:when test="${edit}">
                                                 <c:remove var="editparam" />
                                                 <c:if test="${empty openwizard}"><c:set var="editparam" value="&edit=true" /></c:if>
                                                 <a href="${relatedpage}.jsp?nodenr=${nodenr}${editparam}&parentnodenr=${param.nodenr}&relationrole=${relationrole}&editnodenr=${currentnode.number}&searchdir=${searchdir}&${extra_params}" class="edit">
-                                                    <img src="${pageContext.request.contextPath}/edit/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
+                                                    <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/edit.png" class="icon" border="0" alt="" title="Aanpassen"/>
                                                 </a>
                                             </c:when>
                                         <c:otherwise>
