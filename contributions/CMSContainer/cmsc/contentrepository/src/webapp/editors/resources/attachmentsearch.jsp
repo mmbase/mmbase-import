@@ -68,7 +68,7 @@
                      <th> </th>
                      <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
                      <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
-                     <th><fmt:message key="attachmentsearch.filesizecolumn" /></th>
+                     <th nowrap="true"><a href="javascript:orderBy('size')"><fmt:message key="attachmentsearch.filesizecolumn" /></a></th>
                      <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
                   </tr>
                   <tbody class="hover">
