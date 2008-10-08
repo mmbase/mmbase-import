@@ -66,7 +66,7 @@
                   <th width="55"> </th>
                   <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
                   <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
-                  <th><fmt:message key="imagesearch.sizecolumn" /></th>
+                  <th nowrap="true"><a href="javascript:orderBy('filesize')"><fmt:message key="imagesearch.sizecolumn" /></a></th>
                   <th nowrap="true"><a href="javascript:orderBy('itype')" class="headerlink" ><fmt:message key="imagesearch.mimetypecolumn" /></a></th>
                   <th></th>
                </tr>
