@@ -2,8 +2,7 @@ package com.finalist.cmsc.fileupload.actions;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
@@ -22,7 +21,7 @@ public class EditFileAction extends MMBaseFormlessAction {
 	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 		String action = getParameter(request, "action");
 
-		if (StringUtil.isEmptyOrWhitespace(action)) {
+		if (StringUtils.isBlank(action)) {
 			String objectnumber = getParameter(request, "id", true);
 
 			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="
