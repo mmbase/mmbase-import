@@ -81,6 +81,7 @@
                             <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
                      <mm:hasrank minvalue="siteadmin">
                         <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                                     <mm:param name="object_type" value="urls"/>
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                                      <mm:param name="returnurl" value="<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
                                                   </mm:url>">
