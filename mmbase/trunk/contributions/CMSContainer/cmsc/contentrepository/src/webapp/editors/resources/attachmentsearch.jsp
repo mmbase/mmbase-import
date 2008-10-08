@@ -85,6 +85,7 @@
                                  <a href="javascript:showInfo(<mm:field name="number" />)"><img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
                                  <mm:hasrank minvalue="administrator">
                                     <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                       <mm:param name="object_type" value="attachments"/>
                                        <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                                        <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
                                     </mm:url>"><img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
