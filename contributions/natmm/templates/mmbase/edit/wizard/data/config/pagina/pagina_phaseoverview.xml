@@ -29,12 +29,18 @@
        <relation destination="contentblocks" role="readmore"/>
        <relation destination="contentelement" role="contentrel">
         <object>
-           <relation destination="paragraaf" role="posrel" />
+           <relation destination="paragraaf" role="posrel">
+              <object>
+                 <relation destination="images" role="posrel"/>
+              </object>
+           </relation>
         </object>
-      </relation>
+       </relation>
+       
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
+      <optionlist include="config/option_lists/images_position_nmintra.xml" />
       <optionlist include="config/option_lists/pages_title.xml" />
    </lists>
    <steps>
@@ -48,7 +54,7 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-      <list include="config/artikel/zoek_pagina_contentrel_artikel_textonly.xml" />
+      <list include="config/artikel/zoek_pagina_contentrel_artikel_text-and-images.xml" />
       <list include="config/contentblocks/add_contentblocks_readmore.xml" />
    </form-schema> 
 </wizard-schema>
