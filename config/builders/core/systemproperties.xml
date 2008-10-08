@@ -14,6 +14,27 @@
       <plural xml:lang="zh">属性</plural>
    </names>
 
+  <descriptions>
+    <description xml:lang="en">
+     This object type facilitates the use of nodes as system properties.
+     The special property &quot;mmservers&quot; is used to switch between environments 
+     (production, acceptance, test and development).
+     The SystemProperties class will search for the mmbaseroot machinename in the fields of the 
+     &quot;mmservers&quot; property. The value of other properties is read from the field of the 
+     environment where the machinename is mentioned in. If the &quot;mmservers&quot; property is
+     missing or the machinename is not mentioned then the default value of the &quot;value&quot; field is used.
+    </description>
+    <description xml:lang="nl">
+     Dit object type wordt gebruikt om systeem instellingen te bewaren in nodes.
+     De speciale instelling &quot;mmservers&quot; wordt gebruikt om te wisselen tussen omgevingen
+     (production, acceptance, test en development). De SystemProperties class zoekt naar de mmbaseroot machinename
+     in de velden van de &quot;mmservers&quot; instelling. De waarde van de andere instellingen worden
+     bepaald op basis van de plek van de machinename in de &quot;mmservers&quot;. Als de &quot;mmservers&quot;
+     instelling niet aanwezig is of als de machinename niet genoemd wordt dan wordt de standaardwaarde uit het
+     &quot;waarde&quot; gebruikt.
+    </description>
+  </descriptions>
+
    <fieldlist>
      <field name="component" state="persistent">
        <gui>
