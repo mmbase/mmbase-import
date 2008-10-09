@@ -15,7 +15,7 @@ import javax.servlet.jsp.PageContext;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.14 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.15 2008-10-09 07:50:05 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -42,7 +42,7 @@ public class StandaloneContextContainer extends ContextContainer {
     }
 
 
-    protected  final Backing getBacking() {
+    public  final Backing getBacking() {
         return backing;
     }
 
