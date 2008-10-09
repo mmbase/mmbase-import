@@ -369,7 +369,7 @@ public abstract class WorkflowManager {
    }
 
    protected void changeWorkflowFailPublished(Node wfItem, String status, String stacktrace) {
-      // We need to bypass the MMBase bridge to change workflow items.
+      // Need to bypass the MMBase bridge to change workflow items.
       // The bridge causes the lastmodifier field to be changed, which is visible for the end user.
       MMObjectBuilder wfBuilder = MMBase.getMMBase().getBuilder(WORKFLOW_MANAGER_NAME);
       MMObjectNode mmNode = wfBuilder.getNode(wfItem.getNumber());
@@ -383,7 +383,7 @@ public abstract class WorkflowManager {
 
 
    /**
-    * Do rename the remark
+    * Rename the remark
     *
     * @param wfItem
     * @param remark
