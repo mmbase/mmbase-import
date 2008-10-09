@@ -59,6 +59,14 @@ public class Fields {
         }
         return new org.mmbase.module.corebuilders.FieldDefs(name, type, listItemType, state, dataType);
     }
+    /**
+     * Defaulting version of {@link #createField(name, int int, int, DataType)} (no list item type,
+     * because it is nearly always irrelevant).
+     * @since MMBase-1.9
+     */
+    public static CoreField createField(String name, int type, int state, DataType dataType) {
+        return createField(name, type, Field.TYPE_UNKNOWN, state, dataType);
+    }
 
     /**
      * Provide a description for the specified type.
