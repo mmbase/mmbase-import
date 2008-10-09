@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.30 2008-09-19 16:04:32 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.31 2008-10-09 13:38:20 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -168,7 +168,6 @@
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    INLINE
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -186,7 +185,6 @@
   <xsl:template match="o:object" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
-    INLINEBodY
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
@@ -250,7 +248,6 @@
   -->
   <xsl:template match="o:object" mode="in_a">
     <xsl:param name="relation" />
-    INA
     <xsl:apply-templates select="." mode="title" />
     <xsl:apply-templates select="." mode="inline">
       <xsl:with-param name="relation" select="$relation" />
