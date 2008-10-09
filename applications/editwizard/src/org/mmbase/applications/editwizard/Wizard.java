@@ -33,6 +33,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.transform.TransformerException;
 
@@ -45,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.169 2008-09-04 05:58:11 michiel Exp $
+ * @version $Id: Wizard.java,v 1.170 2008-10-09 14:21:30 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -55,6 +56,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     public static final String PUBLIC_ID_EDITWIZARD_1_0 = "-//MMBase//DTD editwizard 1.0//EN";
     public static final String PUBLIC_ID_EDITWIZARD_1_0_FAULT = "-//MMBase/DTD editwizard 1.0//EN";
     public static final String DTD_EDITWIZARD_1_0       = "wizard-schema_1_0.dtd";
+
+    public static final String RESPONSE_KEY = "org.mmbase.editwizard.response";
 
 
     static {
@@ -1099,7 +1102,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                                 String fname = Utils.getAttribute(field, "name", null);
 
                                 if (fname != null) {
-                                    throw new WizardException("Perhaps the field with name '" + fname + "' does not exist?");
+                                    throw new WizardException("Perhaps the field with name '" + fname + "' does not exist (no data node found with " + xpath + ")?");
                                 }
                             }
                         }
@@ -1164,31 +1167,36 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         List<URL> result = new ArrayList<URL>();
 
         Document targetdoc = node.getOwnerDocument();
-
         /// resolve blocks
         NodeList blocks= Utils.selectNodeList(node,
                                               "//blocks");
         if (blocks != null) {
+            log.debug("" + Collections.list(request.getAttributeNames()));
+            HttpServletResponse response = (HttpServletResponse) request.getAttribute(RESPONSE_KEY);
+
             for (int i = 0; i < blocks.getLength(); i++) {
                 Element blockElement = (Element) blocks.item(i);
                 Node parent = blockElement.getParentNode();
+                log.debug("Resolving blocks " + XMLWriter.write(blockElement));
 
                 for (Block.Type bt : ComponentRepository.getInstance().getBlockClassification(blockElement.getAttribute("classification"))) {
                     String render = blockElement.getAttribute("render").toUpperCase();
                     if ("".equals(render)) render = "BODY";
 
                     for (Block b : bt.getBlocks()) {
-                        log.info("Including " + b);
                         Renderer body = b.getRenderer(Renderer.Type.valueOf(render));
                         if (! body.equals(Renderer.Type.valueOf(render).getEmpty(b))) {
                             Parameters params = b.createParameters();
+                            log.debug("Including " + b + " " + params);
 
                             params.setIfDefined(Parameter.REQUEST, request);
+                            params.setIfDefined(Parameter.RESPONSE, response);
 
                             Framework fw = Framework.getInstance();
                             if (fw == null) throw new WizardException("No MMBase Framework found");
                             Parameters frameworkParams = fw.createParameters();
                             frameworkParams.setIfDefined(Parameter.REQUEST, request);
+                            frameworkParams.setIfDefined(Parameter.RESPONSE, response);
                             try {
                                 Document doc = org.mmbase.framework.Utils.renderToXml(fw, body, params, frameworkParams, WindowState.NORMAL, Wizard.class);
                                 parent.insertBefore(targetdoc.importNode(doc.getDocumentElement(), true), blockElement);
