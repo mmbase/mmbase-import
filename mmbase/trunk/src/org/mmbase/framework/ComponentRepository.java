@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.43 2008-09-08 19:50:47 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.44 2008-10-09 13:00:28 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -64,7 +64,7 @@ public class ComponentRepository {
 
     }
 
-    private final Map<String, Component> rep = new HashMap<String, Component>();
+    private final Map<String, Component> rep = new TreeMap<String, Component>();
     private final List<Component> failed     = new ArrayList<Component>();
 
     private ComponentRepository() { }
@@ -133,7 +133,7 @@ public class ComponentRepository {
         return component.getDefaultBlock();
     }
 
-    /** 
+    /**
      * Tries to resolve unsatisified dependencies, in all components, by calling {@link
      * Component#resolve(VirtualComponent, Component)} on all {@link
      * Component#getUnsatisfiedDependencies} of all components.
