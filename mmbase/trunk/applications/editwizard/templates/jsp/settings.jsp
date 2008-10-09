@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.46 2008-09-04 14:02:41 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.47 2008-10-09 14:21:43 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -33,6 +33,7 @@ session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
 sessionKey = request.getParameter("sessionkey");
+request.setAttribute(Wizard.RESPONSE_KEY, response);
 if (sessionKey == null) sessionKey = "editwizard";
 
 
