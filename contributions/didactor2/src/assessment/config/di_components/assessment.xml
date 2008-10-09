@@ -1,7 +1,7 @@
-<component 
+<component
     xmlns="http://www.mmbase.org/xmlns/didactor-component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
 
     name="assessment" templatepath="assessment" templatebar="provider" barposition="200">
 
@@ -9,6 +9,8 @@
 
   <scope name="providers" referid="provider"/>
 
-  <scope name="educations" referid="education"/>
+  <scope name="educations" referid="education">
+    <setting name="relate_learnblocks" type="boolean" default="false" />
+  </scope>
 
 </component>
