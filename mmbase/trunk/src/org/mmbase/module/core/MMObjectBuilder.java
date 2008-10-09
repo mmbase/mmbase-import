@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.434 2008-09-23 07:23:51 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.435 2008-10-09 13:13:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -316,10 +316,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     return func.getDescription();
                 }
             }
-            public Object getFunctionValue(Node node, Parameters parameters) {
-                return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
+            @Override public Object getFunctionValue(Node node, Parameters parameters) {
+                if (node.getNumber() > 0) {
+                    return getFunctionValue(MMObjectBuilder.this.getFunctions(getCoreNode(MMObjectBuilder.this, node)), parameters);
+                } else {
+                    return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
+                }
             }
-            public Object getFunctionValue(Parameters parameters) {
+            @Override public Object getFunctionValue(Parameters parameters) {
                 MMObjectNode node = (MMObjectNode) parameters.get(Parameter.CORENODE);
                 if (node == null) {
                     return getFunctionValue(MMObjectBuilder.this.getFunctions(), parameters);
@@ -1139,7 +1143,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public boolean checkAddTmpField(String field) {
         if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
-            CoreField fd = Fields.createField(field, Field.TYPE_STRING, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            CoreField fd = Fields.createField(field, Field.TYPE_STRING, Field.STATE_VIRTUAL, null);
             if (! fd.isTemporary()) {
                 fd.setStoragePosition(1000);
                 log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
@@ -2260,8 +2264,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public boolean    sendFieldChangeSignal(MMObjectNode node,String fieldName) {
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
-        int state=getDBState(fieldName);
-        log.debug("Changed field="+fieldName+" dbstate="+state);
+        int state = getDBState(fieldName);
+        log.debug("Changed field=" + fieldName + " dbstate=" + state);
 
         // still a large hack need to figure out remote changes
         if (state==0) {}
