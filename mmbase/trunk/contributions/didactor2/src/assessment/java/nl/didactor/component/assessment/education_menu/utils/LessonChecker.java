@@ -3,19 +3,33 @@ package nl.didactor.component.assessment.education_menu.utils;
 import java.util.*;
 import nl.didactor.util.ClassRoom;
 
+import nl.didactor.component.assessment.AssessmentField;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.Casting;
+import nl.didactor.component.Component;
 import org.mmbase.util.logging.*;
 
 
 /**
  * @javadoc
- * @version $Id: LessonChecker.java,v 1.4 2008-09-25 16:30:42 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.5 2008-10-09 16:07:24 michiel Exp $
  */
 
 public class LessonChecker {
 
 
-   private static final Logger log = Logging.getLoggerInstance(LessonChecker.class);
+    private static final Logger log = Logging.getLoggerInstance(LessonChecker.class);
+
+    protected static Component getComponent() {
+        return Component.getComponent("assessment");
+    }
+
+    protected static boolean checkRelated(Cloud cloud, Node education) {
+        Map wtf = new HashMap();
+        wtf.put("education", education);
+        return  Casting.toBoolean(getComponent().getSetting("relate_component", cloud, wtf));
+    }
 
    /**
     * Checks that learnblocks are blocked for this particular user.
@@ -33,7 +47,7 @@ public class LessonChecker {
 
        // Check whether this education indeeds needs 'assessment'.
 
-       Node assessment = cloud.getNode(nl.didactor.component.Component.getComponent("assessment").getNumber());
+       Node assessment = cloud.getNode(getComponent().getNumber());
        if (! education.getRelatedNodes("components", "settingrel", "destination").contains(assessment)) {
            return resultSet;
        }
@@ -42,6 +56,7 @@ public class LessonChecker {
        if (roles.contains("teacher") ||
            roles.contains("courseeditor") ||
            roles.contains("systemadministrator")) {
+           // nothing blocked
            return resultSet;
        }
 
@@ -51,6 +66,8 @@ public class LessonChecker {
                                                    null,
                                                    "posrel.pos",
                                                    null, null, true);
+
+       boolean checkRelated = checkRelated(cloud, education);
 
        int counter = 0;
        boolean statusBlocked = false;
@@ -63,7 +80,7 @@ public class LessonChecker {
 
            if (statusBlocked) {
                //It means the rest of learnblocks is closed.
-               previousOneHasGotNoFeedbackRelated(learnBlock);
+               log.debug("Learnblock=" + learnBlock.getNumber() + " is blocked because the previous one is blocked.");
                resultSet.add(learnBlock);
            } else {
                NodeList classRels = cloud.getList("" + learnBlock.getNumber(),
@@ -75,11 +92,16 @@ public class LessonChecker {
 
 
                if (classRels.size() == 0) {
-                   //blocked
-                   statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
+                   if (checkRelated) {
+                       if (Queries.count(AssessmentField.getRelationsQuery(learnBlock)) != 0) {
+                           statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
+                       }
+                   } else {
+                       //blocked
+                       statusBlocked = noFeedbackRelated(learnBlock, resultSet, counter, statusBlocked, firstHasFeedback);
+                   }
                } else {
                    if (cloud.getNode(classRels.getNode(0).getIntValue("classrel.number")).countRelatedNodes("popfeedback") > 0) {
-                       feedbackRelated(learnBlock);
                        if (counter == 0) {
                            firstHasFeedback = true;
                        }
@@ -101,37 +123,26 @@ public class LessonChecker {
 
 
     private static boolean noFeedbackRelated(Node nodeLearnBlock, Set<Node> resultSet, int counter, boolean statusBlocked, boolean firstHasFeedback){
-      if(counter == 0) {
-          log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
-      } else {
-          statusBlocked = true;
-      }
+        if(counter == 0) {
+            log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is open because it is the first one in the list");
+        } else {
+            statusBlocked = true;
+        }
 
-      if (counter == 1) {
-          if (!firstHasFeedback) {
-              //The first learnblock has got no feedback
-              previousOneHasGotNoFeedbackRelated(nodeLearnBlock);
-              resultSet.add(nodeLearnBlock);
-          }
-      }
+        if (counter == 1) {
+            if (!firstHasFeedback) {
+                //The first learnblock has got no feedback
+                log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is blocked because the previous one has got no feedback.");
+                resultSet.add(nodeLearnBlock);
+            }
+        }
 
-      log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got no feedback related.");
+        log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got no feedback related.");
 
-      return statusBlocked;
-   }
-
-
+        return statusBlocked;
+    }
 
 
-
-   private static void feedbackRelated(Node nodeLearnBlock){
-      log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " has got a feedback related.");
-   }
-
-
-   private static void previousOneHasGotNoFeedbackRelated(Node nodeLearnBlock){
-      log.debug("Learnblock=" + nodeLearnBlock.getNumber() + " is blocked because the previous one has got no feedback.");
-   }
 }
 
 

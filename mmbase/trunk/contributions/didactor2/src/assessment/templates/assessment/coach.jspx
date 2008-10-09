@@ -15,15 +15,21 @@
         <tr>
           <th class="listHeader">&amp;nbsp;</th>
           <mm:node number="$education">
-            <mm:relatednodes type="learnblocks" path="posrel,learnblocks" id="learnblocks" orderby="posrel.pos">
-              <th class="listHeader">
-                <mm:field name="name" />
-                <!--
-                    <br />
-                    <di:translate key="assessment.period" /><jsp:text> </jsp:text><mm:index />
-                -->
-              </th>
-            </mm:relatednodes>
+            <mm:relatednodescontainer element="learnblocks"  path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',components' : ''}">
+              <mm:sortorder field="posrel.pos" />
+              <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+                <mm:addnode element="components" number="component.assessment" />
+              </c:if>
+              <mm:relatednodes id="learnblocks">
+                <th class="listHeader">
+                  <mm:field name="name" />
+                  <!--
+                      <br />
+                      <di:translate key="assessment.period" /><jsp:text> </jsp:text><mm:index />
+                  -->
+                </th>
+              </mm:relatednodes>
+            </mm:relatednodescontainer>
           </mm:node>
         </tr>
         <mm:relatednodes type="classes" path="classrel,classes" id="class">
@@ -55,43 +61,42 @@
                 <td class="listItem">
                   <di:person />
                 </td>
-                <mm:node number="$education" notfound="skip">
-                  <mm:relatednodes id="learnblock" type="learnblocks" path="posrel,learnblocks" orderby="posrel.pos" >
-                    <td class="listItem">
-                      <mm:relation role="classrel" to="${student}">
-                        <mm:relatednodes type="popfeedback">
-                          <mm:node id="feedback" />
-                        </mm:relatednodes>
-                      </mm:relation>
+                <mm:relatednodes referid="learnblocks" id="learnblock">
+                  <td class="listItem">
+                    <mm:relation role="classrel" to="${student}">
+                      <mm:relatednodes type="popfeedback">
+                        <mm:node id="feedback" />
+                      </mm:relatednodes>
+                    </mm:relation>
 
-                      <c:choose>
-                        <c:when test="${empty feedback}">
-                          &amp;nbsp;
-                        </c:when>
-                        <c:otherwise>
-                          <mm:treefile
-                              page="/assessment/feedback.jspx" objectlist="$includePath"
-                              referids="$referids,feedback@feedback_n"
-                              write="false"
-                              >
-                            <mm:param name="coachmode" value="true" />
-                            <a href="${_}">
-                              <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
-                                      title="assessment.goto_feedback" />
-                            </a>
-                          </mm:treefile>
-                          <mm:remove referid="feedback" />
-                        </c:otherwise>
-                      </c:choose>
+                    <c:choose>
+                      <c:when test="${empty feedback}">
+                        &amp;nbsp;
+                      </c:when>
+                      <c:otherwise>
+                        <mm:treefile
+                            page="/assessment/feedback.jspx" objectlist="$includePath"
+                            referids="$referids,feedback@feedback_n"
+                            write="false"
+                            >
+                          <mm:param name="coachmode" value="true" />
+                          <a href="${_}">
+                            <di:img src="${feedback.status ge 0 ? '/assessment/gfx/todevelop.gif' : '/assessment/gfx/developed.gif'}"
+                                    title="assessment.goto_feedback" />
+                          </a>
+                        </mm:treefile>
+                        <mm:remove referid="feedback" />
+                      </c:otherwise>
+                    </c:choose>
 
-                      <mm:node number="$student">
-                        <di:copybook>
-                          <mm:node id="copybookNo" />
-                        </di:copybook>
-                      </mm:node>
+                    <mm:node number="$student">
+                      <di:copybook>
+                        <mm:node id="copybookNo" />
+                      </di:copybook>
+                    </mm:node>
 
-                      <mm:node number="${assessment_evaluationtest}" notfound="skip">
-                        <!-- get madetest -->
+                    <mm:node number="${assessment_evaluationtest}" notfound="skip">
+                      <!-- get madetest -->
                         <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
 
                           <mm:relatednodes>
@@ -128,7 +133,6 @@
                       </mm:link>
                     </mm:node>
                   </td>
-                </mm:node>
               </tr>
             </mm:relatednodes>
           </mm:relatednodescontainer>

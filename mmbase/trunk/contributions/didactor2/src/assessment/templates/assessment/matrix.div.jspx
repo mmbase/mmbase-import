@@ -36,12 +36,17 @@
 
   <!-- And, per lesson, how much trouble it gave -->
   <mm:node number="${education}">
-    <mm:relatednodes
-        id="learnBlock"
-        element="learnblocks" path="posrel,learnblocks" orderby="posrel.pos">
+    <mm:relatednodescontainer
+        element="learnblocks"
+        path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',components' : ''}">
+      <mm:sortorder field="posrel.pos" />
+      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+        <mm:addnode element="components" number="component.assessment" />
+      </c:if>
 
       <mm:size id="size" write="false" />
-      <span class="col" style="width: ${60 / size}%">
+      <mm:relatednodes id="learnBlock">
+        <span class="col" style="width: ${60 / size}%">
 
         <!--
             Create the relation problem-posrel->learnBlock if that does not exist yet.  The
@@ -112,7 +117,8 @@
       </span>
 
 
-    </mm:relatednodes>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
   </mm:node>
 
   <span class="col">
