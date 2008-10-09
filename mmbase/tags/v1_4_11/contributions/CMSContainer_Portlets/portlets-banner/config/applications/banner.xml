@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="banner" maintainer="finalist.com" version="1" auto-deploy="true">
+    <requirements>
+        <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application" />
+        <requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+    </requirements>
+    <neededbuilderlist>
+
+        <!-- These are the nijmegen specific builders -->
+        <builder maintainer="finalist.com" version="1">banner</builder>
+        <builder maintainer="finalist.com" version="1">bannercounter</builder>
+        <builder maintainer="finalist.com" version="1">customer</builder>
+    </neededbuilderlist>
+
+    <neededreldeflist></neededreldeflist>
+
+    <allowedrelationlist>
+        <relation from="banner" to="bannercounter" type="posrel" />
+        <relation from="banner" to="customer" type="posrel" />
+    </allowedrelationlist>
+
+    <datasourcelist>
+        <datasource builder="portletdefinition" path="banner/portletdefinition.xml" />
+        <datasource builder="view" path="banner/view.xml" />
+
+        <datasource builder="editwizards" path="banner/editwizards.xml" />
+        <datasource builder="properties" path="banner/properties.xml" />
+        <datasource builder="banner" path="banner/banner.xml" />
+        <datasource builder="bannercounter" path="banner/bannercounter.xml" />
+        <datasource builder="customer" path="banner/customer.xml" />
+    </datasourcelist>
+
+    <relationsourcelist>
+        <relationsource builder="allowrel" path="banner/allowrel.xml" />
+        <relationsource builder="posrel" path="banner/posrel.xml" />
+    </relationsourcelist>
+
+    <contextsourcelist></contextsourcelist>
+</application>
