@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.12 2008-07-23 05:12:09 michiel Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.13 2008-10-09 09:51:42 michiel Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -130,32 +130,30 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    public int change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
-            int res = 0;
             if (factory.hasOption("database-supports-update-triggers")) {
-                res = super.change(node, builder);
+                super.change(node, builder);
             } else {
                 do {
-                    res = changeObject(node,builder);
+                    changeObject(node,builder);
                     builder = builder.getParentBuilder();
                 } while (builder!=null);
             }
             if (localTransaction) {
                 commit();
             }
-            return res;
         } catch (StorageException se) {
             if (localTransaction && inTransaction) rollback();
             throw se;
         }
     }
 
-    private int changeObject(MMObjectNode node, MMObjectBuilder builder) {
+    private void changeObject(MMObjectNode node, MMObjectBuilder builder) {
         List<CoreField> changeFields = new ArrayList<CoreField>();
         // obtain the node's changed fields
         Collection<String> fieldNames = node.getChanged();
@@ -165,7 +163,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 changeFields.add(field);
             }
         }
-        return change(node, builder, getTableName(builder), changeFields);
+        change(node, builder, getTableName(builder), changeFields);
     }
 
     /**
@@ -390,7 +388,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             }
 
             long startTime = getLogStartTime();
-            PreparedStatement s = null; 
+            PreparedStatement s = null;
             try {
                 s = activeConnection.prepareStatement(query);
                 s.executeUpdate();
@@ -433,7 +431,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
 
                 long startTime2 = getLogStartTime();
-                PreparedStatement s2 = null; 
+                PreparedStatement s2 = null;
                 try {
                     s2 = activeConnection.prepareStatement(query);
                     s2.executeUpdate();
@@ -455,7 +453,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
 
                 long startTime2 = getLogStartTime();
-                PreparedStatement s3 = null; 
+                PreparedStatement s3 = null;
                 try {
                     s3 = activeConnection.prepareStatement(query);
                     s3.executeUpdate();
@@ -495,7 +493,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
 
                 long startTime2 = getLogStartTime();
-                PreparedStatement s4 = null; 
+                PreparedStatement s4 = null;
                 try {
                     s4 = activeConnection.prepareStatement(query);
                     s4.executeUpdate();

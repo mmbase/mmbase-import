@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.13 2008-07-23 05:12:09 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.14 2008-10-09 09:51:42 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -76,19 +76,17 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    public int change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
-            int res = 0;
             do {
-                res = super.change(node, builder);
+                super.change(node, builder);
                 builder = builder.getParentBuilder();
             } while (builder != null);
             if (localTransaction) commit();
-            return res;
         } catch (StorageException se) {
             if (localTransaction && inTransaction) rollback();
             throw se;
