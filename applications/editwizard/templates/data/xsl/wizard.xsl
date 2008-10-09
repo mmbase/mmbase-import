@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.184 2008-10-03 10:38:33 michiel Exp $
+    @version $Id: wizard.xsl,v 1.185 2008-10-09 10:50:42 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1053,7 +1053,7 @@
                 <xsl:call-template name="prompt_do_upload"/>
               </a>
               <br/>
-              <xsl:if test="@size &gt; 0">
+              <xsl:if test="@size != 0">
                 <object src="{node:saxonFunction($cloud, string(@number), 'url')}"
                         data="{node:saxonFunction($cloud, string(@number), 'url')}"
                         type="application/x-shockwave-flash"
@@ -1061,12 +1061,6 @@
                          title="{field[@name='description']}">
                   <param name="{node:saxonFunction($cloud, string(@number), 'url')}" />
                 </object>
-                <br/>
-                 <a
-                   href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
-                   target="_new">
-                   <xsl:call-template name="prompt_do_download" />
-                 </a>
                 <br/>
               </xsl:if>
             </div>
