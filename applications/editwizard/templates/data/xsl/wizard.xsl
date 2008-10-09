@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.185 2008-10-09 10:50:42 michiel Exp $
+    @version $Id: wizard.xsl,v 1.186 2008-10-09 16:05:09 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -518,6 +518,16 @@
         <xsl:text disable-output-escaping="yes"> </xsl:text>
       </xsl:for-each>
     </td>
+  </xsl:template>
+
+  <!--
+      If you don't use at least one prompt inside a fieldset, there is actually little
+      point in using it, besides if you use it only as a grouping
+      (e.g. the implemnentation of a 'block').
+      So, we simply ignore the 'fieldset' and simply apply the sub-elements if there are no prompts
+  -->
+  <xsl:template match="fieldset[count(prompt) = 0]">
+    <xsl:apply-templates select="field" />
   </xsl:template>
 
   <xsl:template match="field">
