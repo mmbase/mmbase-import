@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.199 2008-10-03 09:44:20 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.200 2008-10-09 09:46:24 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1070,7 +1070,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param fields updated fields
      * @throws SQLException if database connections failures occurs
      * @return The result of {@link PreparedStatement#executeUpdate}. That would normally be
-     * <code>1</code>, but <code>0</code> when upating a not that does not exists any more.
+     * <code>1</code>, but <code>0</code> when updating a not that does not exists any more.
      *
      * @since MMBase-1.7.1
      */
@@ -1111,17 +1111,20 @@ public class DatabaseStorageManager implements StorageManager {
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
-        if (change(node, builder) == 0) {
-            log.debug("Changed node " + node + " does not exists any more, but since we had to change it, we'll have to recrate it.");
-            log.service("Recreating node " + node.getNumber());
-            create(node, builder);
-        }
+        change(node, builder);
         commitChange(node, "c");
         unloadShortedFields(node, builder);
         // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
         // this make sure that the values are realistic reflections of the database:
-        // This can change after a commit e.g. if the database enforces a maximum length for certain fields.
-        refresh(node);
+        // This can change after a commit e.g. if the database enforces a maximum length for certain
+        // fields.
+        try {
+            refresh(node);
+        } catch( org.mmbase.storage.StorageNotFoundException se) {
+            log.debug("Changed node " + node + " probably does not exists any more, but since we had to change it, we'll have to recrate it.");
+            log.service("Recreating node " + node.getNumber());
+            create(node, builder);
+        }
     }
 
     /**
@@ -1149,6 +1152,10 @@ public class DatabaseStorageManager implements StorageManager {
         return change(node, builder, tablename, changeFields);
     }
 
+
+    /**
+     * Commits changes in node to table.
+     */
     protected int change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
         // Create a String that represents the fields to be used in the commit
         StringBuilder setFields = null;
@@ -1188,13 +1195,7 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         } else {
-            log.debug("Nothing changed, doing nothing");
-            try {
-                refresh(node);
-                return 1;
-            } catch (StorageNotFoundException snfe) {
-                return 0;
-            }
+            return 0;
         }
     }
 
@@ -1729,6 +1730,8 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
 
+
+
     /**
      * Reloads the data from a node from the database.
      * Use this after a create or change action, so the data in memory is consistent with
@@ -1768,6 +1771,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (result != null) result.close();
                 s.close();
             }
+            log.debug("Refreshed -> " + node);
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
