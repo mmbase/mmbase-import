@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.170 2008-10-09 14:21:30 michiel Exp $
+ * @version $Id: Wizard.java,v 1.171 2008-10-09 16:06:00 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -1614,7 +1614,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     try {
                         orderDbl = Double.parseDouble(orderByValue);
                     } catch (Exception e) {
-                        log.error("fieldvalue " + orderByValue + " is not numeric");
+                        log.error("fieldvalue '" + orderByValue + "'  is not numeric");
                         orderDbl = -1;
                     }
 
