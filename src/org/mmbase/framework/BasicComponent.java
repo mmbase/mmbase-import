@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.49 2008-08-14 20:19:26 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.50 2008-10-09 16:17:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -47,6 +47,13 @@ public class BasicComponent implements Component {
     public BasicComponent(String name) {
         this.name = name;
         this.description = new LocalizedString(name);
+        init();
+    }
+
+    /**
+     * Called on initializion. Default implementation is empty.
+     */
+    protected void init() {
     }
 
     public String getName() {
