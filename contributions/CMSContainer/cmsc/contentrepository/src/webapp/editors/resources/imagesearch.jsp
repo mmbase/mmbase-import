@@ -21,6 +21,22 @@
       function showInfo(objectnumber) {
          openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
         }
+      
+      function confirmDelete(){
+         var checkboxs = document.getElementsByTagName("input");
+         var num = 0;
+         for (i = 0; i < checkboxs.length; i++) {
+           if (checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+             num++;
+           }
+         }
+         if(num > 0){
+           del = confirm("<fmt:message key="secondaryedit.mass.sure"/> "+num+" <fmt:message key="secondaryedit.mass.elements"/> ?");
+           if(del){
+             document.forms['imageform'].submit();
+           }
+         }
+        }
    </script>
 </cmscedit:head>
 <body>
@@ -61,9 +77,17 @@
          <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
          <c:if test="${resultCount > 0}">
             <%@include file="../repository/searchpages.jsp" %>
+         <form action="SecondaryContentMassDeleteAction.do?object_type=images" method="post" name="imageform">
             <table>
+               <tr>
+                  <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+               </tr>
                <tr class="listheader">
-                  <th width="55"> </th>
+                  <th width="55">
+                     <c:if test="${fn:length(results) >1}">
+                        <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'imageform', 'chk_');" value="on"/>
+                     </c:if>
+                  </th>
                   <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
                   <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink"><fmt:message key="imagesearch.filenamecolumn" /></a></th>
                   <th nowrap="true"><a href="javascript:orderBy('filesize')"><fmt:message key="imagesearch.sizecolumn" /></a></th>
@@ -79,6 +103,9 @@
                      </mm:field>
                      <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                         <td style="white-space:nowrap;">
+                           <c:if test="${fn:length(results) >1}">
+                              <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['imageform'].elements.selectall.checked=false;"/>
+                           </c:if>
                            <c:if test="${action != 'select'}">
                               <a href="<mm:url page="../WizardInitAction.do">
                                  <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
@@ -117,6 +144,7 @@
                </mm:listnodes>
             </tbody>
          </table>
+          </form>
 </c:if>
 <c:if test="${resultCount == 0 && param.title != null}">
    <fmt:message key="imagesearch.noresult" />
