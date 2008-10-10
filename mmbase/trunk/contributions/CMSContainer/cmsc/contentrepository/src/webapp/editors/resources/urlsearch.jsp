@@ -17,6 +17,21 @@
    function showInfo(objectnumber,returnUrl) {
       openPopupWindow('urlinfo', '500', '500', 'urlinfo.jsp?objectnumber='+objectnumber+'&returnUrl='+returnUrl);
      }
+   function confirmDelete(){
+      var checkboxs = document.getElementsByTagName("input");
+      var num = 0;
+      for (i = 0; i < checkboxs.length; i++) {
+        if (checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+          num++;
+        }
+      }
+      if(num > 0){
+        del = confirm("<fmt:message key="secondaryedit.mass.sure"/> "+num+" <fmt:message key="secondaryedit.mass.elements"/> ?");
+        if(del){
+          document.forms['imageform'].submit();
+        }
+      }
+   }
 </script>
 </cmscedit:head>
 <body>
@@ -55,67 +70,78 @@
       externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import> <mm:import
       externid="offset" jspvar="offset" vartype="Integer">0</mm:import> <c:if test="${resultCount > 0}">
       <%@include file="../repository/searchpages.jsp"%>
-
-      <table border="0" width="100%" class="listcontent">
-         <tr class="listheader">
-            <th></th>
-            <th nowrap="true"><a href="javascript:orderBy('name')" class="headerlink"><fmt:message
-               key="urlsearch.namecolumn" /></a></th>
-            <th nowrap="true"><a href="javascript:orderBy('url')" class="headerlink" ><fmt:message key="urlsearch.urlcolumn" /></a></th>
-                 <th nowrap="true"><a href="javascript:orderBy('valid')" class="headerlink" ><fmt:message key="urlsearch.validcolumn" /></a></th>
-         </tr>
-         <tbody class="hover">
-            <c:set var="useSwapStyle">true</c:set>
-            <mm:listnodes referid="results">
-               <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                     name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
-               <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
-                  <td style="white-space:nowrap;">
-                        <c:if test="${action != 'select'}">
-                     <a href="<mm:url page="../WizardInitAction.do">
-                                                  <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                  <mm:param name="returnurl" value="<%="../editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
-                                               </mm:url>">
-                     <img src="../gfx/icons/page_edit.png" title="<fmt:message key="urlsearch.icon.edit" />" /></a>
-                      <a href="javascript:showInfo(<mm:field name="number" />,'<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>')">
-                            <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
-                     <mm:hasrank minvalue="siteadmin">
-                        <a href="<mm:url page="DeleteSecondaryContentAction.do" >
-                                                     <mm:param name="object_type" value="urls"/>
+      <form action="SecondaryContentMassDeleteAction.do?object_type=urls" method="post" name="urlform">
+         <table border="0" width="100%" class="listcontent">
+            <tr>
+               <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+            </tr>
+            <tr class="listheader">
+               <th>
+                  <c:if test="${fn:length(results) >1}">
+                     <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'urlform', 'chk_');" value="on"/>
+                  </c:if>
+               </th>
+               <th nowrap="true"><a href="javascript:orderBy('name')" class="headerlink"><fmt:message
+                  key="urlsearch.namecolumn" /></a></th>
+               <th nowrap="true"><a href="javascript:orderBy('url')" class="headerlink" ><fmt:message key="urlsearch.urlcolumn" /></a></th>
+                    <th nowrap="true"><a href="javascript:orderBy('valid')" class="headerlink" ><fmt:message key="urlsearch.validcolumn" /></a></th>
+            </tr>
+            <tbody class="hover">
+               <c:set var="useSwapStyle">true</c:set>
+               <mm:listnodes referid="results">
+                  <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
+                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
+                     <td style="white-space:nowrap;">
+                        <c:if test="${fn:length(results) >1}">
+                           <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['urlform'].elements.selectall.checked=false;"/>
+                        </c:if>
+                           <c:if test="${action != 'select'}">
+                        <a href="<mm:url page="../WizardInitAction.do">
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                     <mm:param name="returnurl" value="<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
+                                                     <mm:param name="returnurl" value="<%="../editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
                                                   </mm:url>">
-                        <img src="../gfx/icons/delete.png" title="<fmt:message key="urlsearch.icon.delete" />" /></a>
-                     </mm:hasrank>
-                    </c:if>
+                        <img src="../gfx/icons/page_edit.png" title="<fmt:message key="urlsearch.icon.edit" />" /></a>
+                         <a href="javascript:showInfo(<mm:field name="number" />,'<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>')">
+                               <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
+                        <mm:hasrank minvalue="siteadmin">
+                           <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                                        <mm:param name="object_type" value="urls"/>
+                                                        <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                                        <mm:param name="returnurl" value="<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>" />
+                                                     </mm:url>">
+                           <img src="../gfx/icons/delete.png" title="<fmt:message key="urlsearch.icon.delete" />" /></a>
+                        </mm:hasrank>
+                       </c:if>
 
-                  </td>
-                  <mm:field name="name" jspvar="name" write="false"/>
-                  <td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
-                  <mm:field name="url" jspvar="url" write="false"/>
-                  <td onMouseDown="objClick(this);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
-                         <mm:field name="valid" write="false" jspvar="isValidUrl"/>
-                         <td>
-                             <c:choose>
-                                 <c:when test="${empty isValidUrl}">
-                                     <fmt:message key="urlsearch.validurl.unknown" />
-                                 </c:when>
-                                 <c:when test="${isValidUrl eq false}">
-                                     <fmt:message key="urlsearch.validurl.invalid" />
-                                 </c:when>
-                                 <c:when test="${isValidUrl eq true}">
-                                     <fmt:message key="urlsearch.validurl.valid" />
-                                 </c:when>
-                                 <c:otherwise>
-                                     <fmt:message key="urlsearch.validurl.unknown" />
-                                 </c:otherwise>
-                             </c:choose>
-                         </td>
-               </tr>
-               <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
-            </mm:listnodes>
-         </tbody>
-      </table>
+                     </td>
+                     <mm:field name="name" jspvar="name" write="false"/>
+                     <td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
+                     <mm:field name="url" jspvar="url" write="false"/>
+                     <td onMouseDown="objClick(this);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
+                            <mm:field name="valid" write="false" jspvar="isValidUrl"/>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty isValidUrl}">
+                                        <fmt:message key="urlsearch.validurl.unknown" />
+                                    </c:when>
+                                    <c:when test="${isValidUrl eq false}">
+                                        <fmt:message key="urlsearch.validurl.invalid" />
+                                    </c:when>
+                                    <c:when test="${isValidUrl eq true}">
+                                        <fmt:message key="urlsearch.validurl.valid" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message key="urlsearch.validurl.unknown" />
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                  </tr>
+                  <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+               </mm:listnodes>
+            </tbody>
+         </table>
+      </form>
    </c:if>
 <c:if test="${resultCount == 0 && param.name != null}">
 <fmt:message key="urlsearch.noresult" />

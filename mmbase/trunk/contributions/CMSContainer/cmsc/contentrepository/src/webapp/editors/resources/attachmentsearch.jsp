@@ -19,6 +19,21 @@
       function showInfo(objectnumber) {
          openPopupWindow('attachmentinfo', '500', '500', 'attachmentinfo.jsp?objectnumber='+objectnumber);
         }
+      function confirmDelete(){
+         var checkboxs = document.getElementsByTagName("input");
+         var num = 0;
+         for (i = 0; i < checkboxs.length; i++) {
+           if (checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+             num++;
+           }
+         }
+         if(num > 0){
+           del = confirm("<fmt:message key="secondaryedit.mass.sure"/> "+num+" <fmt:message key="secondaryedit.mass.elements"/> ?");
+           if(del){
+             document.forms['imageform'].submit();
+           }
+         }
+        }
    </script>
 </cmscedit:head>
 <body>
@@ -63,57 +78,69 @@
             <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
             <c:if test="${resultCount > 0}">
                <%@include file="../repository/searchpages.jsp" %>
-               <table>
-                  <tr class="listheader">
-                     <th> </th>
-                     <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
-                     <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
-                     <th nowrap="true"><a href="javascript:orderBy('size')"><fmt:message key="attachmentsearch.filesizecolumn" /></a></th>
-                     <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
-                  </tr>
-                  <tbody class="hover">
-                     <c:set var="useSwapStyle">true</c:set>
-                     <mm:listnodes referid="results">
-                        <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment escape="js-single-quotes"/>');</mm:import>
-                        <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
-                           <td style="white-space:nowrap;">
-                              <c:if test="${action != 'select'}">
-                                 <a href="<mm:url page="../WizardInitAction.do">
-                                    <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                    <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
-                                    </mm:url>"><img src="../gfx/icons/page_edit.png" alt="<fmt:message key="attachmentsearch.icon.edit" />" title="<fmt:message key="attachmentsearch.icon.edit" />"/></a>
-                                 <a href="javascript:showInfo(<mm:field name="number" />)"><img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
-                                 <mm:hasrank minvalue="administrator">
-                                    <a href="<mm:url page="DeleteSecondaryContentAction.do" >
-                                       <mm:param name="object_type" value="attachments"/>
+               <form action="SecondaryContentMassDeleteAction.do?object_type=attachments" method="post" name="attachform">
+                  <table>
+                     <tr>
+                        <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+                     </tr>
+                     <tr class="listheader">
+                        <th>
+                           <c:if test="${fn:length(results) >1}">
+                              <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'attachform', 'chk_');" value="on"/>
+                           </c:if>
+                        </th>
+                        <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
+                        <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
+                        <th nowrap="true"><a href="javascript:orderBy('size')"><fmt:message key="attachmentsearch.filesizecolumn" /></a></th>
+                        <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
+                     </tr>
+                     <tbody class="hover">
+                        <c:set var="useSwapStyle">true</c:set>
+                        <mm:listnodes referid="results">
+                           <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment escape="js-single-quotes"/>');</mm:import>
+                           <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
+                              <td style="white-space:nowrap;">
+                                 <c:if test="${fn:length(results) >1}">
+                                    <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['attachform'].elements.selectall.checked=false;"/>
+                                 </c:if>
+                                 <c:if test="${action != 'select'}">
+                                    <a href="<mm:url page="../WizardInitAction.do">
                                        <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                       <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
-                                    </mm:url>"><img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
-                                 </mm:hasrank>
-                              </c:if>
-                           </td>
-                           <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
-                           <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
-                           <td onMouseDown="objClick(this);">
-                              <mm:field name="size" jspvar="filesize" write="false"/>
-                              <c:choose>
-                                 <c:when test="${filesize lt 2048}">
-                                    <fmt:formatNumber value="${filesize}" pattern=""/> byte 
-                                 </c:when>
-                                 <c:when test="${filesize ge 2048 && filesize le(2*1024*1024)}">
-                                    <fmt:formatNumber value="${filesize div 1024}" pattern=".0"/> K 
-                                 </c:when>
-                                 <c:otherwise>
-                                    <fmt:formatNumber value="${filesize div (1024 * 1024)}" pattern=".0"/> M 
-                                 </c:otherwise>
-                              </c:choose>
-                           </td>
-                           <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
-                        </tr>
-                        <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
-                     </mm:listnodes>
-                  </tbody>
-               </table>
+                                       <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                       </mm:url>"><img src="../gfx/icons/page_edit.png" alt="<fmt:message key="attachmentsearch.icon.edit" />" title="<fmt:message key="attachmentsearch.icon.edit" />"/></a>
+                                    <a href="javascript:showInfo(<mm:field name="number" />)"><img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
+                                    <mm:hasrank minvalue="administrator">
+                                       <a href="<mm:url page="DeleteSecondaryContentAction.do" >
+                                          <mm:param name="object_type" value="attachments"/>
+                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                                          <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                       </mm:url>"><img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
+                                    </mm:hasrank>
+                                 </c:if>
+                              </td>
+                              <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
+                              <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
+                              <td onMouseDown="objClick(this);">
+                                 <mm:field name="size" jspvar="filesize" write="false"/>
+                                 <c:choose>
+                                    <c:when test="${filesize lt 2048}">
+                                       <fmt:formatNumber value="${filesize}" pattern=""/> byte 
+                                    </c:when>
+                                    <c:when test="${filesize ge 2048 && filesize le(2*1024*1024)}">
+                                       <fmt:formatNumber value="${filesize div 1024}" pattern=".0"/> K 
+                                    </c:when>
+                                    <c:otherwise>
+                                       <fmt:formatNumber value="${filesize div (1024 * 1024)}" pattern=".0"/> M 
+                                    </c:otherwise>
+                                 </c:choose>
+                              </td>
+                              <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
+                           </tr>
+                           <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+                        </mm:listnodes>
+                     </tbody>
+                  </table>
+               </form>
             </c:if>
             <c:if test="${resultCount == 0 && param.title != null}">
                <fmt:message key="attachmentsearch.noresult" />
