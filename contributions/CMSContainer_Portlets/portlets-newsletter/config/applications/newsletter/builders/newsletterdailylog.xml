@@ -40,7 +40,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>post</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -62,7 +62,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>bounches</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -84,7 +84,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>subscribe</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -106,7 +106,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>unsubscribe</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -128,7 +128,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>removed</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -172,7 +172,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>newsletter</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
       <field>
@@ -194,7 +194,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>userid</name>
-            <type key="false" notnull="false" size="100" state="persistent">INTEGER</type>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
       </field>
    </fieldlist>
