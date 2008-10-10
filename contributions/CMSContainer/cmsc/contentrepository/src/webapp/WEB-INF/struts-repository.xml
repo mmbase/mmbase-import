@@ -179,6 +179,11 @@
 			<forward name="success" path="/editors/resources/secondaryedit.jsp" redirect="false" />
 		</action>
 
+		<action path="/editors/resources/SecondaryContentMassDeleteAction" type="com.finalist.cmsc.resources.forms.SecondaryContentMassDeleteAction">
+			<forward name="images" path="/editors/resources/imagesearch.jsp" redirect="false" />
+			<forward name="attachments" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
+			<forward name="urls" path="/editors/resources/urlsearch.jsp" redirect="false" />
+		</action>
 
 		<!-- ==== Recycle bin ==== -->
 
