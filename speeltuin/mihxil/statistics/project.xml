@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-statistics</artifactId>
   <name>Statistics</name>
+  <currentVersion>0.1</currentVersion>
   <description>
   </description>
   <properties>
@@ -19,7 +20,7 @@ See http://www.MMBase.org/license
   <dependencies>
     <dependency>
       <groupId>mmbase</groupId>
-      <artifactId>mmbase-crontab</artifactId>
+      <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <url>http://www.mmbase.org/</url>
       <properties>
