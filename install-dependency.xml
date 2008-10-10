@@ -228,7 +228,7 @@
   <target name="statistics">
     <antcall target="install.module">
       <param name="name" value="statistics" />
-      <param name="version" value="0.1" />
+      <param name="version" value="0.2-SNAPSHOT" />
     </antcall>
   </target>
 
