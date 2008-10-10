@@ -101,12 +101,12 @@ Exceptions/errors/other problems and what to do:
 *
 
 
-Name: Add the overwritable filed to the stylesheet table.
+Name: Add the overwriteable filed to the stylesheet table.
 Goal: .
 Type:  sql-script
 --- Start script ---
-ALTER TABLE mm_stylesheet ADD COLUMN overwritable bit(1);
-ALTER TABLE live_stylesheet ADD COLUMN overwritable bit(1);
+ALTER TABLE mm_stylesheet ADD COLUMN overwriteable bit(1);
+ALTER TABLE live_stylesheet ADD COLUMN overwriteable bit(1);
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
