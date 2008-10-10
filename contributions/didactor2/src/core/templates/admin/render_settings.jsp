@@ -17,8 +17,8 @@
           <tr>
             <td/>
             <td>
-              <input type="checkbox" name="<%=comps[i].getName()%>-<%=setting.getName()%>" 
-                <di:ifsetting component="<%=comps[i].getName()%>" setting="<%=setting.getName()%>">checked</di:ifsetting>
+              <input type="checkbox" name="<%=comps[i].getName()%>-<%=setting.getName()%>"
+                <di:ifsetting component="<%=comps[i].getName()%>" setting="<%=setting.getName()%>">checked="checked"</di:ifsetting>
               />
               <di:translate key="<%=setting.getPrompt()%>" />
             </td>
