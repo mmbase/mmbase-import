@@ -225,6 +225,13 @@
     </antcall>
   </target>
 
+  <target name="statistics">
+    <antcall target="install.module">
+      <param name="name" value="statistics" />
+      <param name="version" value="0.1" />
+    </antcall>
+  </target>
+
   <target name="rmmci-client">
     <antcall target="install.jar">
       <param name="name" value="mmbase-rmmci-client" />
