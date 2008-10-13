@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import javax.servlet.jsp.*;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestWrapper;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.logging.*;
@@ -43,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.87.2.2 2008-10-07 16:58:54 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.87.2.3 2008-10-13 11:42:57 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -129,6 +131,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 
+    protected ServletRequest unwrap(ServletRequest req) {
+        while (req instanceof ServletRequestWrapper) {
+            req = ((ServletRequestWrapper) req).getRequest();
+        }
+        return req;
+    }
+
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         searchedParent = false;
@@ -162,7 +171,12 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     // request. Do not accept that.
                     PageContextContainer prevPc = (PageContextContainer) prevParent;
                     if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
-                        log.warn("found a pagecontext container for a different request. Reparing");
+                        ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
+                        if (prevReq != unwrap(pageContext.getRequest())) {
+                            log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Reparing");
+                        } else {
+                            log.debug("found a pagecontext container for a different pageContext. Reparing");
+                        }
                         prevParent = new PageContextContainer(pageContext);
                     }
                 }
@@ -179,6 +193,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             if (id == null) {
                 id = referid.getString(this);
             }
+            //ContextContainer storedContainer =  new StandaloneContextContainer(null, id, null);
+            //storedContainer.getBacking().putAll(container.getBacking());
             pageContext.setAttribute(id, container, s);
         }
         setCloudContext(getContextTag().cloudContext);
