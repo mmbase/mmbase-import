@@ -20,6 +20,8 @@
           <mm:write referid="c" />
         </mm:context>
 
+        <mm:include page="mmb-1730-include.jspx" />
+
     </body>
   </html>
 </mm:content>
