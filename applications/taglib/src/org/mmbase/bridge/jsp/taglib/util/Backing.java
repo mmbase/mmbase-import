@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.8 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: Backing.java,v 1.9 2008-10-13 12:04:30 michiel Exp $
  */
 
 public interface Backing extends Map<String, Object> {
@@ -35,7 +35,7 @@ public interface Backing extends Map<String, Object> {
     public boolean containsOwnKey(String key);
 
     /**
-     * 
+     *
      */
     public void setJspVar(PageContext pc, String jspvar, int type, Object value);
 
@@ -55,4 +55,10 @@ public interface Backing extends Map<String, Object> {
      * @since MMBase-1.8.3
      */
     public PageContext getPageContext();
+
+    /**
+     * @since MMBase-1.9
+     */
+    public Map<String, Object> getOriginalMap();
 }
+
