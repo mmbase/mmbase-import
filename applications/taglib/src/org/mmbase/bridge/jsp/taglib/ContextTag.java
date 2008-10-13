@@ -11,6 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.*;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestWrapper;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -43,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.92 2008-10-07 10:39:48 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.93 2008-10-13 12:04:30 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -134,6 +136,18 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 
+
+    /**
+     * @since MMBase-1.9
+     */
+    protected static ServletRequest unwrap(ServletRequest req) {
+        while (req instanceof ServletRequestWrapper) {
+            req = ((ServletRequestWrapper) req).getRequest();
+        }
+        return req;
+    }
+
+
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         ContextContainer container;
@@ -160,6 +174,21 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 container = (ContextContainer)  o;
                 log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
                 prevParent = container.getParent();
+                if (prevParent instanceof PageContextContainer) {
+                    // if for some reason, the parent in the container is from a different
+                    // request. Do not accept that.
+                    PageContextContainer prevPc = (PageContextContainer) prevParent;
+                    if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
+                        ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
+                        if (prevReq != unwrap(pageContext.getRequest())) {
+                            log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Reparing");
+                        } else {
+                            log.debug("found a pagecontext container for a different pageContext. Reparing");
+                        }
+                        prevParent = new PageContextContainer(pageContext);
+                    }
+                }
+
                 container.setParent(pageContext, getContextProvider().getContextContainer());
                 pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
@@ -173,7 +202,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             if (id == null) {
                 id = referid.getString(this);
             }
-            pageContext.setAttribute(id, container, s);
+            ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap());
+            pageContext.setAttribute(id, storedContainer, s);
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
