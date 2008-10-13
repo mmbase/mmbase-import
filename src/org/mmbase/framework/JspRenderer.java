@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.29 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.30 2008-10-13 16:15:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -42,8 +42,7 @@ public class JspRenderer extends AbstractRenderer {
         return path.charAt(0) == '/' ? path : JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
-    @Override
-    public  Parameter[] getParameters() {
+    @Override public  Parameter[] getParameters() {
         return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
@@ -56,6 +55,7 @@ public class JspRenderer extends AbstractRenderer {
         try {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             HttpServletRequest request  = blockParameters.get(Parameter.REQUEST);
+            if (request == null) throw new NullPointerException("Request " + request + " Response " + response);
             final Status status = new Status();
             GenericResponseWrapper respw = new GenericResponseWrapper(response) {
                     public void setStatus(int s) {
