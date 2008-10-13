@@ -15,7 +15,7 @@ import javax.servlet.jsp.PageContext;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.15 2008-10-09 07:50:05 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.16 2008-10-13 12:04:31 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -37,7 +37,12 @@ public class StandaloneContextContainer extends ContextContainer {
         backing = createBacking(pc);
         // values must fall through to PageContext, otherwise you always must prefix by context, even in it.
     }
-    protected BasicBacking createBacking(PageContext pc) {
+    public StandaloneContextContainer(String i, java.util.Map<String, Object> values) {
+        super(i, null);
+        backing = new BasicBacking(values);
+
+    }
+    private BasicBacking createBacking(PageContext pc) {
         return new BasicBacking(pc, false);
     }
 

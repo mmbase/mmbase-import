@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.13 2008-10-07 17:28:25 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.14 2008-10-13 12:04:31 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -42,7 +42,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
     private final int uniqueNumber = ++uniqueNumbers;
 
     protected Map<String, Object> originalPageContextValues;
-    private final Map<String, Object> b = new HashMap<String, Object>(); // the actual backing.
+    private final Map<String, Object> b; // the actual backing.
 
     private final boolean isELIgnored;
     private  transient PageContext pageContext;
@@ -52,6 +52,7 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
      */
     public BasicBacking(PageContext pc, boolean ignoreEL) {
         pageContext = pc;
+        b = new HashMap<String, Object>();
         isELIgnored = ignoreEL || pageContext == null || "true".equals(pc.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
         if (log.isDebugEnabled()) {
             log.debug("Pushing page Context " + pc + " --> " + isELIgnored);
@@ -70,6 +71,11 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             }
         }
 
+    }
+    public BasicBacking(Map<String, Object> backing) {
+        pageContext = null;
+        b = backing;
+        isELIgnored = true;
     }
 
     public void pushPageContext(PageContext pc) {
@@ -189,6 +195,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
 
     public Object getOriginal(String key) {
         return b.get(key);
+    }
+
+    public Map<String, Object> getOriginalMap() {
+        return b;
     }
     public boolean containsOwnKey(String key) {
         return b.containsKey(key);
