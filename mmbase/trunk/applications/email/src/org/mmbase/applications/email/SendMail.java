@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.50 2008-08-13 08:19:53 pierre Exp $
+ * @version $Id: SendMail.java,v 1.51 2008-10-14 11:04:32 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -433,6 +433,7 @@ public class SendMail extends AbstractSendMail {
             }
         } else {
             log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
+            return true;
         }
         return false;
     }

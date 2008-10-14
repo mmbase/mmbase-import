@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.31 2008-08-01 12:33:06 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.32 2008-10-14 11:04:32 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -56,8 +56,6 @@ public class EmailBuilder extends MMObjectBuilder {
     // public final static int TYPE_REPEATMAIL  = 2; // Email will be sent and scheduled after sending for a next time (does not work?)
     public final static int TYPE_ONESHOTKEEP = 3; // Email will be sent and will not be removed.
 
-    public final static String EMAILTYPE_RESOURCE = "org.mmbase.applications.email.resources.mailtype";
-    public final static String EMAILSTATUS_RESOURCE = "org.mmbase.applications.email.resources.mailstatus";
 
     static String usersBuilder;
     static String usersEmailField;
@@ -115,31 +113,6 @@ public class EmailBuilder extends MMObjectBuilder {
         return true;
     }
 
-    /**
-     * Get the display string for a given field of this node.
-     * @param locale de locale voor de gui value
-     * @param field name of the field to describe.
-     * @param node Node containing the field data.
-     * @return A <code>String</code> describing the requested field's content
-     */
-    public String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
-        if (field.equals("mailstatus")) {
-            String val = node.getStringValue("mailstatus");
-            log.debug("val: " + val); // 0, 1, 2, 3
-            ResourceBundle bundle;
-            bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader() );
-            try {
-                return bundle.getString(val);
-            } catch (MissingResourceException e) {
-                return val;
-            }
-        } else if (field.equals("mailtype")){	// mailtype
-            String val = node.getStringValue("mailtype");
-            return getMailtypeResource(val,locale);
-        } else {
-            return super.getLocaleGUIIndicator(locale,field,node);
-        }
-    }
 
     {
         addFunction(new NodeFunction/*<Void>*/("mail", MAIL_PARAMETERS, ReturnType.VOID) {
@@ -241,22 +214,6 @@ public class EmailBuilder extends MMObjectBuilder {
         }
     }
 
-    /**
-     * Mailtype maps to an int in a resource, this method finds it,
-     * if possible and available the localized version of it.
-     *
-     * @param val	The int value that maps to a mailtype (1 = oneshot etc.)
-     * @param locale de locale voor de gui value
-     * @return A String from the resource file being a mailtype
-     */
-    private String getMailtypeResource(String val, Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader());
-        try {
-            return bundle.getString(val);
-        } catch (MissingResourceException e) {
-            return val;
-        }
-    }
 
 
     /**
