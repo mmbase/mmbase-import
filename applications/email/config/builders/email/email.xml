@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.13 2007-10-11 17:47:50 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.14 2008-10-14 11:04:32 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -199,8 +199,11 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
         <enumeration>
-          <entry basename="org.mmbase.applications.email.resources.mailtype" />
+          <entry
+              javaconstants="org.mmbase.applications.email.EmailBuilder"
+              basename="org.mmbase.applications.email.resources.mailtype" />
         </enumeration>
       </datatype>
     </field>
@@ -220,8 +223,11 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="-1" />
         <enumeration>
-          <entry basename="org.mmbase.applications.email.resources.mailstatus" />
+          <entry
+              javaconstants="org.mmbase.applications.email.EmailBuilder"
+              basename="org.mmbase.applications.email.resources.mailstatus" />
         </enumeration>
       </datatype>
     </field>
