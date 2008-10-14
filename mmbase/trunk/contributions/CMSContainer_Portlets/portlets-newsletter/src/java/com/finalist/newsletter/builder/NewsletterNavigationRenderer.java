@@ -18,8 +18,7 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
    public String getContentType() {
       if (null != threadLocal.get()) {
          return threadLocal.get();
-      }
-      else {
+      } else {
          return "text/html";
       }
    }
@@ -37,7 +36,7 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
          threadLocal.set(type);
          PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
          env.setRequestedMimetype(type);
-      }else{
+      } else {
          PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
          env.setRequestedMimetype("text/html");
       }

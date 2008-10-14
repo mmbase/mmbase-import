@@ -24,28 +24,35 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
 
-   /** the parameter of action */
+   /**
+    * the parameter of action
+    */
    private static final String ACTION = "action";
 
-   /** name of submit button in jsp to send email */
+   /**
+    * name of submit button in jsp to send email
+    */
    private static final String ACTION_SEND = "send";
-   
-   /** name of submit button in jsp to cancel removal */
+
+   /**
+    * name of submit button in jsp to cancel removal
+    */
    private static final String ACTION_CANCEL = "cancel";
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       int number = Integer.parseInt(getParameter(request, "number", true));
-      if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
+      if (NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
          request.setAttribute("isPaused", true);
          return mapping.findForward(SUCCESS);
       }
       if (isSendAction(request)) {
          String email = getParameter(request, "email");
          String mimeType = request.getParameter("mimetype");
-          NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
-         publicationService.deliver(number,email,mimeType);
+         NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+         ;
+         publicationService.deliver(number, email, mimeType);
          return mapping.findForward(SUCCESS);
       }
 
@@ -54,7 +61,7 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
          forwardPath = forwardPath.concat("?showpage=" + number);
          if (StringUtils.isNotBlank(request.getParameter("forward"))) {
             ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
-                  + request.getParameter("newsletterId"));
+                     + request.getParameter("newsletterId"));
             ret.setRedirect(true);
             return ret;
          }

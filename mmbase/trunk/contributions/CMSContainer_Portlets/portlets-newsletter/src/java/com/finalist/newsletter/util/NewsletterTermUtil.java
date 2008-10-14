@@ -14,20 +14,19 @@ import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
 
 /**
-  *   term util class.
-  *
-  *   @author  kevin    
-  */
+ * term util class.
+ *
+ * @author kevin
+ */
 public abstract class NewsletterTermUtil {
-   
+
    private static Log log = LogFactory.getLog(NewsletterTermUtil.class);
-   
+
    /**
-     *   delete a term by it's number.
-     *   
-     *   @param termNumber term number
-     *   
-     */
+    * delete a term by it's number.
+    *
+    * @param termNumber term number
+    */
    public static void deleteTerm(int termNumber) {
       if (!getCloud().hasNode(termNumber)) {
          return;
@@ -40,66 +39,67 @@ public abstract class NewsletterTermUtil {
       }
       termNode.delete();
    }
-   
+
    /**
-     *   add a new term
-     *   
-     *   @param name new term name
-     *
-     */
+    * add a new term
+    *
+    * @param name new term name
+    */
    public static void addTerm(String name) {
       NodeManager termNodeManager = getCloud().getNodeManager("term");
       Node termNode = termNodeManager.createNode();
       termNode.setStringValue("name", name);
       termNode.commit();
    }
-   
+
    /**
-     *   be sure that the them has existed or not.
-     *   
-     *   @param name term name 
-     *   @return <code>true</code> if the term has been in the application
-     *           <code>false</code> no term 
-     */
+    * be sure that the them has existed or not.
+    *
+    * @param name term name
+    * @return <code>true</code> if the term has been in the application
+    *         <code>false</code> no term
+    */
    public static boolean hasTerm(String name) {
       NodeManager termNodeManager = getCloud().getNodeManager("term");
       NodeQuery query = termNodeManager.createQuery();
       SearchUtil.addEqualConstraint(query, termNodeManager.getField("name"), name);
       NodeList terms = query.getList();
-      return terms != null && terms.size() > 0; 
+      return terms != null && terms.size() > 0;
    }
-   
+
    /**
-     *   update term name by it's number
-     *   
-     *   @param termNumber term number
-     *   @param name  the new name of the term
-     */
+    * update term name by it's number
+    *
+    * @param termNumber term number
+    * @param name       the new name of the term
+    */
    public static void updateTerm(int termNumber, String name) {
       Node termNode = getTermNodeById(termNumber);
       termNode.setStringValue("name", name);
       termNode.commit();
    }
+
    /**
-     *  get a term node by it's number.
-     *  
-     *  @param termNumber term number.
-     *  @return term node ojbect
-     */
+    * get a term node by it's number.
+    *
+    * @param termNumber term number.
+    * @return term node ojbect
+    */
    public static Node getTermNodeById(int termNumber) {
       if (!getCloud().hasNode(termNumber)) {
          return null;
       }
       return getCloud().getNode(termNumber);
    }
+
    /**
-     *  get results of term paging list
-     *  
-     *  @param name the name of a term
-     *  @param offset the position where get results from.
-     *  @param pageSize max size for per page.
-     *  @return Nodelist object ,contains terms objects 
-     */
+    * get results of term paging list
+    *
+    * @param name     the name of a term
+    * @param offset   the position where get results from.
+    * @param pageSize max size for per page.
+    * @return Nodelist object ,contains terms objects
+    */
    public static NodeList searchTerms(String name, int offset, int pageSize) {
 
       NodeManager termNodeManager = getCloud().getNodeManager("term");
@@ -109,16 +109,16 @@ public abstract class NewsletterTermUtil {
       }
       SearchUtil.addSortOrder(query, termNodeManager, "number", "down");
       query.setMaxNumber(pageSize);
-      query.setOffset(offset);      
+      query.setOffset(offset);
       return query.getList();
    }
+
    /**
-     *
-     * calculate the count of terms by term's name.
-     * @param name  term name
-     * @return the terms's count 
-     *
-     */
+    * calculate the count of terms by term's name.
+    *
+    * @param name term name
+    * @return the terms's count
+    */
    public static int countTotalTerms(String name) {
       int size = 0;
       NodeManager termNodeManager = getCloud().getNodeManager("term");
@@ -132,12 +132,13 @@ public abstract class NewsletterTermUtil {
       }
       return size;
    }
+
    /**
-     *    get cloud object
-     *    @param no
-     *    @return cloud object
-     *
-     */
+    * get cloud object
+    *
+    * @param no
+    * @return cloud object
+    */
    public static Cloud getCloud() {
       return CloudProviderFactory.getCloudProvider().getCloud();
    }

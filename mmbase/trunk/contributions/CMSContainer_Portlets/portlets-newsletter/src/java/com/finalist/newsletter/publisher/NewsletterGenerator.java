@@ -75,7 +75,7 @@ public class NewsletterGenerator {
          e.printStackTrace();
       }
 
-      inputString =  visitor.getBody().asHtml().trim();
+      inputString = visitor.getBody().asHtml().trim();
       inputString = inputString.replaceAll("(?m)^\\s*\r\n+", "").replaceAll("(?m)^\\s*\r+", "").replaceAll("(?m)^\\s*\n+", "");
       inputString = inputString.replaceAll("(?m)\r\n+", "").replaceAll("(?m)\r+", "").replaceAll("(?m)\n+", "");
       inputString = inputString.replaceAll("<br/>", "\r\n");

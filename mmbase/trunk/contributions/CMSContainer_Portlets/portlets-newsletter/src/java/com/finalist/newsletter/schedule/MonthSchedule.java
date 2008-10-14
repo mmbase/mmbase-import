@@ -1,7 +1,6 @@
 package com.finalist.newsletter.schedule;
 
 
-
 public class MonthSchedule extends AbstractSchedule {
 
    /**
@@ -15,22 +14,21 @@ public class MonthSchedule extends AbstractSchedule {
 
       StringBuffer expression = new StringBuffer("4");
 
-      if(getParameters() != null) {
+      if (getParameters() != null) {
          appendHourAndMin(expression);
 
-         if(getParameters().containsKey("strategy")) {
-            expression.append("|"+getParameters().get("strategy"));
+         if (getParameters().containsKey("strategy")) {
+            expression.append("|" + getParameters().get("strategy"));
 
-            if(getParameters().get("strategy").equals("0")) {
-               expression.append("|"+getParameters().get("day"));
-            }
-            else if(getParameters().get("strategy").equals("1")) {
-               expression.append("|"+getParameters().get("whichweek"));
-               expression.append("|"+getParameters().get("week"));
+            if (getParameters().get("strategy").equals("0")) {
+               expression.append("|" + getParameters().get("day"));
+            } else if (getParameters().get("strategy").equals("1")) {
+               expression.append("|" + getParameters().get("whichweek"));
+               expression.append("|" + getParameters().get("week"));
             }
          }
-         if(getParameters().containsKey("month")) {
-            expression.append("|"+getParameters().get("month"));
+         if (getParameters().containsKey("month")) {
+            expression.append("|" + getParameters().get("month"));
          }
       }
 

@@ -23,7 +23,7 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 
 /**
  * using for newsletter publication management.
- * 
+ *
  * @author Lisa
  */
 
@@ -45,7 +45,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
     * unspecified searching  of newsletter subscription with sorting, ordering, paging
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                       HttpServletResponse response) throws Exception {
       log.debug("No parameter specified,go to edit page ,show related publications");
 
       PagingUtils.initStatusHolder(request);
@@ -68,7 +68,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 
    @SuppressWarnings("deprecation")
    public ActionForward searchPublication(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                          HttpServletResponse response) {
       log.debug("parameter specified, search newsletterpublication ");
 
       PagingUtils.initStatusHolder(request);
@@ -84,47 +84,47 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
 
       switch (Integer.parseInt(tmpPeriod)) {
 
-      case 1:
-         calendar.add(Calendar.DAY_OF_YEAR, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 7:
-         calendar.add(Calendar.DAY_OF_YEAR, -7);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 14:
-         calendar.add(Calendar.DAY_OF_YEAR, -14);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 30:
-         calendar.add(Calendar.MONTH, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 365:
-         calendar.set(Calendar.YEAR, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      default:
-         break;
+         case 1:
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 7:
+            calendar.add(Calendar.DAY_OF_YEAR, -7);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 14:
+            calendar.add(Calendar.DAY_OF_YEAR, -14);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 30:
+            calendar.add(Calendar.MONTH, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 365:
+            calendar.set(Calendar.YEAR, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         default:
+            break;
       }
 
       int resultCount = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime,
-            false).size();
+               false).size();
       List<Publication> publications;
       publications = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, true);
       if (publications.size() > 0) {

@@ -179,7 +179,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    }
 
    public List<Publication> getPublicationsByNewsletterAndPeriod(
-         int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging) {
+            int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging) {
 
       NodeManager manager = cloud.getNodeManager("newsletterpublication");
       Node newsletterNode = cloud.getNode(newsletterId);
@@ -191,8 +191,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
       if (startDate != null) {
          SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), startDate.getTime(), endDate.getTime());
-      }
-      else {
+      } else {
          SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), Long.decode("1"), endDate.getTime());
       }
 
@@ -203,34 +202,34 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       return convertPublicationsToMap(nodeQuery.getList());
    }
 
-	public List<Publication> getPublications(String title, String subject,
-			String description, String intro, boolean paging) {
-		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
-		NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
-		NodeQuery query = cloud.createNodeQuery();
-		Step step = query.addStep(publicationManager);
-		query.setNodeStep(step);
-		if (StringUtils.isNotBlank(title)) {
-			SearchUtil.addLikeConstraint(query, publicationManager.getField("title"), title);
-		}
-		if (StringUtils.isNotBlank(subject)) {
-			SearchUtil.addLikeConstraint(query, publicationManager.getField("subject"), subject);
-		}
-		if (StringUtils.isNotBlank(description)) {
-			SearchUtil.addLikeConstraint(query, publicationManager.getField("description"), description);
-		}
-		if (StringUtils.isNotBlank(intro)) {
-			SearchUtil.addLikeConstraint(query, publicationManager.getField("intro"), intro);
-		}
-		if (paging) {
-			query.setMaxNumber(pagingHolder.getPageSize());
-			query.setOffset(pagingHolder.getOffset());
-		}
-		if (pagingHolder != null) {		
-			Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
-		}
-		NodeList list = query.getList();
-		return MMBaseNodeMapper.convertList(list, Publication.class);
-	}
+   public List<Publication> getPublications(String title, String subject,
+                                            String description, String intro, boolean paging) {
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+      NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(publicationManager);
+      query.setNodeStep(step);
+      if (StringUtils.isNotBlank(title)) {
+         SearchUtil.addLikeConstraint(query, publicationManager.getField("title"), title);
+      }
+      if (StringUtils.isNotBlank(subject)) {
+         SearchUtil.addLikeConstraint(query, publicationManager.getField("subject"), subject);
+      }
+      if (StringUtils.isNotBlank(description)) {
+         SearchUtil.addLikeConstraint(query, publicationManager.getField("description"), description);
+      }
+      if (StringUtils.isNotBlank(intro)) {
+         SearchUtil.addLikeConstraint(query, publicationManager.getField("intro"), intro);
+      }
+      if (paging) {
+         query.setMaxNumber(pagingHolder.getPageSize());
+         query.setOffset(pagingHolder.getOffset());
+      }
+      if (pagingHolder != null) {
+         Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+      }
+      NodeList list = query.getList();
+      return MMBaseNodeMapper.convertList(list, Publication.class);
+   }
 
 }

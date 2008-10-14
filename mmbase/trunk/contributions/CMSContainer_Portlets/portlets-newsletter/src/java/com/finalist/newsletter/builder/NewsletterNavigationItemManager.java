@@ -35,7 +35,7 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
          Node relatedPortletNode = relation.getDestination();
 
          log.debug("portlet='" + relatedPortletNode.getNumber() + "' :"
-               + relatedPortletNode.getNodeManager().getName());
+                  + relatedPortletNode.getNodeManager().getName());
          String layoutid = relation.getStringValue(PortletUtil.LAYOUTID_FIELD);
          newsletter.addPortlet(layoutid, relatedPortletNode.getNumber());
       }

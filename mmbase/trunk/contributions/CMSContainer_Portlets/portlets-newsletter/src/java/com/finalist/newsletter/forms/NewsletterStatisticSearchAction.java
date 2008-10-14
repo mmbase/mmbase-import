@@ -23,9 +23,8 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 
 /**
  * using for newsletter statistic searching
- * 
+ *
  * @author Lisa
- * 
  */
 
 public class NewsletterStatisticSearchAction extends DispatchActionSupport {
@@ -46,16 +45,15 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 
    /**
     * unspecified searching newsletter publication with sorting, ordering, paging
-    * 
+    *
     * @param mapping
     * @param form
     * @param request
     * @param response
     * @return ActionForward refresh Newsletter statistic list
-    * 
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                       HttpServletResponse response) throws Exception {
 
       log.debug("No parameter specified,go to edit page ,show related publications");
 
@@ -76,19 +74,14 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
    }
 
    /**
-    * 
-    * @param mapping
-    *           Description of Parameter
-    * @param form
-    *           Description of Parameter
-    * @param request
-    *           Description of Parameter
-    * @param response
-    *           Description of Parameter
+    * @param mapping  Description of Parameter
+    * @param form     Description of Parameter
+    * @param request  Description of Parameter
+    * @param response Description of Parameter
     * @return ActionForward Showing newsletter statistic list
     */
    public ActionForward searchPublicationStatistic(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                                   HttpServletResponse response) {
       log.debug("parameter specified, search newsletterpublication ");
       PagingUtils.initStatusHolder(request);
 
@@ -102,47 +95,47 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
       Date endTime = calendar.getTime();
       Date startTime = null;
       switch (Integer.parseInt(tmpPeriod)) {
-      case 1:
-         calendar.add(Calendar.DAY_OF_YEAR, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 7:
-         calendar.add(Calendar.DAY_OF_YEAR, -7);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 14:
-         calendar.add(Calendar.DAY_OF_YEAR, -14);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 30:
-         calendar.add(Calendar.MONTH, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      case 365:
-         calendar.set(Calendar.YEAR, -1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         startTime = calendar.getTime();
-         break;
-      default:
-         break;
+         case 1:
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 7:
+            calendar.add(Calendar.DAY_OF_YEAR, -7);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 14:
+            calendar.add(Calendar.DAY_OF_YEAR, -14);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 30:
+            calendar.add(Calendar.MONTH, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         case 365:
+            calendar.set(Calendar.YEAR, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startTime = calendar.getTime();
+            break;
+         default:
+            break;
       }
       List<Publication> publications;
       int resultCount = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime,
-            false).size();
+               false).size();
       publications = publicationService.searchPublication(newsletterId, tmpTitle, tmpSubject, startTime, endTime, true);
       List<Map<String, String>> results = convertPublicationsToMap(publications);
       if (results.size() > 0) {
@@ -155,9 +148,8 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
 
    /**
     * convert newsletter publication to map
-    * 
-    * @param publications
-    *           publication list used for containing the result of the searching.
+    *
+    * @param publications publication list used for containing the result of the searching.
     * @return List containing some information of newsletter publication and send time, subscriptions number, send
     *         successfully number, and bounced number
     */

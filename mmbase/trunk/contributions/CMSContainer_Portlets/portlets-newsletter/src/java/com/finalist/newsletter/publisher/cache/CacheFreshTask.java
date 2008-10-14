@@ -6,7 +6,6 @@ import java.util.TimerTask;
 
 /**
  * @author nikko
- * 
  */
 public class CacheFreshTask extends TimerTask {
    private DefaultCache cache;
@@ -20,13 +19,14 @@ public class CacheFreshTask extends TimerTask {
 
    /**
     * Start Thread
+    *
     * @see java.util.TimerTask#run()
     */
    public void run() {
       synchronized (cache.getDatas()) {
-         Iterator < Map.Entry < String , CacheInfo > > iterator = cache.getDatas().entrySet().iterator();
+         Iterator<Map.Entry<String, CacheInfo>> iterator = cache.getDatas().entrySet().iterator();
          while (iterator.hasNext()) {
-            Map.Entry < String , CacheInfo > entry = iterator.next();
+            Map.Entry<String, CacheInfo> entry = iterator.next();
             CacheInfo ci = entry.getValue();
             if (ci.getTotalSeconds() != ICache.FOREVER) {
                ci.setSecondsRemain(ci.getSecondsRemain() - 1);

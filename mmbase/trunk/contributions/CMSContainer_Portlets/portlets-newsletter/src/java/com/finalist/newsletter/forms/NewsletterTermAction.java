@@ -29,7 +29,7 @@ public class NewsletterTermAction extends DispatchAction {
    private static final String TERM_NUMBER = "id";
 
    public ActionForward add(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                            HttpServletResponse response) throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm) form;
       ActionMessages messages = new ActionMessages();
       if (StringUtils.isBlank(termForm.getName())) {
@@ -51,14 +51,14 @@ public class NewsletterTermAction extends DispatchAction {
    }
 
    public ActionForward addInit(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                HttpServletResponse response) throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm) form;
       termForm.clear();
       return mapping.findForward(ACTION_FORWORD_ADD);
    }
 
    public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                               HttpServletResponse response) throws Exception {
       String id = request.getParameter(TERM_NUMBER);
       String requestIds = request.getParameter("deleteRequest");
       if (StringUtils.isNotEmpty(requestIds)) {
@@ -77,7 +77,7 @@ public class NewsletterTermAction extends DispatchAction {
    }
 
    public ActionForward modify(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                               HttpServletResponse response) throws Exception {
       String id = request.getParameter(TERM_NUMBER);
       String nameValue = request.getParameter("name");
       if (StringUtils.isBlank(nameValue)) {
@@ -95,7 +95,7 @@ public class NewsletterTermAction extends DispatchAction {
    }
 
    public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                             HttpServletResponse response) throws Exception {
       NewsletterTermForm termForm = (NewsletterTermForm) form;
       Object lastAction = request.getAttribute("lastAction");
       if (lastAction != null && lastAction.equals("add")) {

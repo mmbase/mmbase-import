@@ -36,7 +36,7 @@ import java.util.Properties;
 public class NewsletterPublisher {
 
    private static Logger log = Logging
-         .getLoggerInstance(NewsletterPublisher.class.getName());
+            .getLoggerInstance(NewsletterPublisher.class.getName());
 
    private static String personaliser;
 
@@ -52,7 +52,7 @@ public class NewsletterPublisher {
    public void deliver(Publication publication, Subscription subscription) {
       try {
          NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-        // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
+         // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
          Newsletter newsletter = publication.getNewsletter();
          String replyAddress = newsletter.getReplyAddress();
          String toEmail = subscription.getEmail();
@@ -68,8 +68,8 @@ public class NewsletterPublisher {
 
          Transport.send(message);
          log.debug(String.format(
-               "mail send! publication %s to %s in %s format",
-               publication.getId(), subscription.getId(), subscription.getMimeType())
+                  "mail send! publication %s to %s in %s format",
+                  publication.getId(), subscription.getId(), subscription.getMimeType())
          );
       }
       catch (MessagingException e) {
@@ -122,11 +122,10 @@ public class NewsletterPublisher {
                MimeBodyPart messageBodyPart = new MimeBodyPart();
                if (mimeType.compareTo(MimeType.image) == 0) {
                   bads = new ByteArrayDataSource(bytes, "image/"
-                        + node.getStringValue("itype"));
-               }
-               else if (mimeType.compareTo(MimeType.attachment) == 0) {
+                           + node.getStringValue("itype"));
+               } else if (mimeType.compareTo(MimeType.attachment) == 0) {
                   bads = new ByteArrayDataSource(bytes, node
-                        .getStringValue("mimetype"));
+                           .getStringValue("mimetype"));
                }
                dh = new DataHandler(bads);
                messageBodyPart.setFileName(node.getStringValue("filename"));
@@ -141,41 +140,38 @@ public class NewsletterPublisher {
    }
 
    private String getBody(Publication publication, Subscription subscription)
-         throws MessagingException {
+            throws MessagingException {
 
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
-            .getTerms(), publication.getId());
+               .getTerms(), publication.getId());
       ICache cache = null;
       String expiration = PropertiesUtil.getProperty("publication.cache.expiration");
-      if(StringUtils.isEmpty(expiration)) {
+      if (StringUtils.isEmpty(expiration)) {
          cache = CacheFactory.getDefaultCache();
-      }
-      else {
+      } else {
          cache = CacheFactory.getDefaultCache(Long.parseLong(expiration));
       }
       String content = " ";
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
          int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-         if (articleCounts == 0&&publication.getNewsletter().getSendempty()) {
+         if (articleCounts == 0 && publication.getNewsletter().getSendempty()) {
             content = publication.getNewsletter().getTxtempty();
-         }
-         else {
-            log.info("url---->"+url);
+         } else {
+            log.info("url---->" + url);
             content = NewsletterGenerator.generate(url, subscription.getMimeType());
          }
          if (null != getPersonalise()) {
-            content = getPersonalise().personalise(content, subscription,publication);
+            content = getPersonalise().personalise(content, subscription, publication);
          }
          cache.add(url, content);
-      }
-      else{
-         content=(String) cache.get(url);
+      } else {
+         content = (String) cache.get(url);
       }
       return content + "\n";
    }
 
    private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
-         throws MessagingException, UnsupportedEncodingException {
+            throws MessagingException, UnsupportedEncodingException {
 
       String emailFrom = getHeaderProperties(fromAddress, "newsletter.default.fromaddress");
       String nameFrom = getHeaderProperties(fromName, "newsletter.default.fromname");
@@ -202,12 +198,12 @@ public class NewsletterPublisher {
    }
 
    private void setTitle(Message message, String title)
-         throws MessagingException {
+            throws MessagingException {
       message.setSubject(title);
    }
 
    private void setRecipient(Message message, String email)
-         throws MessagingException {
+            throws MessagingException {
       InternetAddress toAddress = new InternetAddress(email);
       message.setRecipient(MimeMessage.RecipientType.TO, toAddress);
    }
@@ -217,14 +213,14 @@ public class NewsletterPublisher {
          property = PropertiesUtil.getProperty(defaultKey);
 
          log.debug("get property:" + defaultKey + " from system property got:"
-               + property);
+                  + property);
       }
 
       if (StringUtils.isBlank(property)) {
          property = "newslettermodule@cmscontainer.org";
 
          log.debug("get property:" + defaultKey
-               + " from system property failed use default:" + property);
+                  + " from system property failed use default:" + property);
       }
 
       return property;
@@ -243,9 +239,9 @@ public class NewsletterPublisher {
          session = (javax.mail.Session) envCtx.lookup(datasource);
 
          Properties properties = new Properties();
-         if(senderEmail == null || senderEmail.indexOf("@") < 1){
+         if (senderEmail == null || senderEmail.indexOf("@") < 1) {
             senderEmail = "admin@finalist.com";
-         }  
+         }
          String[] sender = StringUtils.split(senderEmail, "@");
 
          String verpFrom = String.format("%s-%s@%s", sender[0], toEmail.replaceAll("@", "="), sender[1]);
@@ -254,15 +250,14 @@ public class NewsletterPublisher {
 //         properties.put("mail.smtp.from", senderEmail);
          properties.putAll(session.getProperties());
 
-
 /*
-         session = Session.getInstance(properties,
-               new javax.mail.Authenticator() {
-                  protected PasswordAuthentication getPasswordAuthentication() {
-                     return new PasswordAuthentication("dguo@cpier.pku.edu.cn", "lgs9000");
-                  }
-               });
-               */
+session = Session.getInstance(properties,
+new javax.mail.Authenticator() {
+   protected PasswordAuthentication getPasswordAuthentication() {
+      return new PasswordAuthentication("dguo@cpier.pku.edu.cn", "lgs9000");
+   }
+});
+*/
       }
       catch (NamingException e) {
          log.fatal("Configured dataSource '" + datasource + "' of context '" + context + "' is not a Session ");
@@ -274,7 +269,7 @@ public class NewsletterPublisher {
       Module sendmailModule = Module.getModule("sendmail");
       if (sendmailModule == null) {
          log
-               .fatal("Sendmail module not installed which is required for newsletter generation");
+                  .fatal("Sendmail module not installed which is required for newsletter generation");
          return null;
       }
 
@@ -282,7 +277,7 @@ public class NewsletterPublisher {
       if (parameter == null) {
          parameter = "java:comp/env";
          log.warn("The property " + parameter + " is missing, taking default "
-               + parameter);
+                  + parameter);
       }
       return parameter;
    }

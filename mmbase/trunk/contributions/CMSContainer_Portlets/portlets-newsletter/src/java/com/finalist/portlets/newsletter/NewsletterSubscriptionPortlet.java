@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.portlet.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -39,35 +40,33 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
       if (!CommunityModuleAdapter.isUserLogin() ||
-            (services.getActiveSubscription(userId).size()<1 && null == request.getParameter("action"))) {
+               (services.getActiveSubscription(userId).size() < 1 && null == request.getParameter("action"))) {
          request.setAttribute("isUserLogin", CommunityModuleAdapter.isUserLogin());
          doInclude("view", "/newsletter/subscription/introduction.jsp", request, response);
          return;
       }
-   
+
       String action = request.getParameter("action");
       log.debug(String.format("User %s start a subscribe with action %s", userId, action));
 
       if ("pause".equals(action)) {
          log.debug("Paused subscriptions ,need confrim");
 
-         List<Subscription> subscriptionsToBePause = getSubscriptionsFromParameter(request,Subscription.STATUS.ACTIVE);
+         List<Subscription> subscriptionsToBePause = getSubscriptionsFromParameter(request, Subscription.STATUS.ACTIVE);
          request.setAttribute("subscriptionsToBePause", subscriptionsToBePause);
          doInclude("view", "/newsletter/subscription/pauseform.jsp", request, response);
          return;
-      }
-      else if ("resume".equals(action)) {
+      } else if ("resume".equals(action)) {
          log.debug("Resume paused subscriptions ,need confrim");
 
          List<Subscription> subscriptionsToBeResume = getSubscriptionsFromParameter(request, Subscription.STATUS.PAUSED);
          request.setAttribute("subscriptionsToBeResume", subscriptionsToBeResume);
          doInclude("view", "/newsletter/subscription/confirmResume.jsp", request, response);
          return;
-      }
-      else if ("terminate".equals(action)) {
+      } else if ("terminate".equals(action)) {
          log.debug("Terminate subscriptions ,need confrim");
 
-         List<Subscription> subscriptionsToBeTerminate = getSubscriptionsFromParameter(request,null);
+         List<Subscription> subscriptionsToBeTerminate = getSubscriptionsFromParameter(request, null);
 
          request.setAttribute("subscriptionsToBeTerminate", subscriptionsToBeTerminate);
          doInclude("view", "/newsletter/subscription/confirmTerminate.jsp", request, response);
@@ -87,7 +86,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       if (null != request.getParameterValues("subscriptions")) {
          for (String sId : request.getParameterValues("subscriptions")) {
             Subscription subscription = services.getSubscription(sId);
-            if (null==status||status.equals(subscription.getStatus())) {
+            if (null == status || status.equals(subscription.getStatus())) {
                subscriptions.add(services.getSubscription(sId));
             }
          }
@@ -116,11 +115,9 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          response.setWindowState(WindowState.MAXIMIZED);
          if ("pause".equals(action)) {
             processPause(request, response);
-         }
-         else if ("terminate".equals(action)) {
+         } else if ("terminate".equals(action)) {
             processTermination(request, response);
-         }
-         else if ("resume".equals(action)) {
+         } else if ("resume".equals(action)) {
             processResume(request, response);
          }
       }
@@ -138,8 +135,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          for (String id : subscriptionIds) {
             services.terminateUserSubscription(id);
          }
-      }
-      else {
+      } else {
          response.setRenderParameters(request.getParameterMap());
       }
    }
@@ -155,8 +151,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          for (String id : subscriptionIds) {
             services.resume(id);
          }
-      }
-      else {
+      } else {
          response.setRenderParameters(request.getParameterMap());
       }
    }
@@ -177,13 +172,11 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          for (String id : subscriptionIds) {
             if (StringUtils.isBlank(resumeDate)) {
                services.pause(id, duration, durationunit);
-            }
-            else {
+            } else {
                services.pause(id, resumeDate);
             }
          }
-      }
-      else {
+      } else {
          response.setRenderParameters(request.getParameterMap());
       }
 

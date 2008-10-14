@@ -13,10 +13,8 @@ import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 /**
  * Adding relationship between newsletter and person
- * 
+ *
  * @author Lisa
- * @version
- * 
  */
 public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 
@@ -28,14 +26,14 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
    protected void onInit() {
       super.onInit();
       subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean(
-            "subscriptionServices");
+               "subscriptionServices");
    }
 
    /**
     * unspecified adding relationship between newsletter and person, refreshing the newsletter subscriber list
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                       HttpServletResponse response) throws Exception {
 
       log.debug("No parameter specified,go to dashboard");
 
@@ -51,7 +49,7 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
 
    /**
     * specified making selected person subscribing the newsletter ,refreshing the newsletter subscriber list
-    * 
+    *
     * @param mapping
     * @param form
     * @param request
@@ -60,12 +58,12 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
     * @throws Exception
     */
    public ActionForward subscribeNewsletters(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
-      
+                                             HttpServletResponse response) throws Exception {
+
       log.debug("With parameter subscribeNewsletters,go to search page");
-      
+
       String newsletterId = request.getParameter("newsletterId");
-      
+
       if (StringUtils.isNotBlank(newsletterId)) {
          String[] authIds = request.getParameterValues("chk_");
          for (String authId : authIds) {
@@ -75,7 +73,7 @@ public class NewsletterSubscriptionAddRelAction extends DispatchActionSupport {
          }
       }
       ActionForward ret = new ActionForward(mapping.findForward("success").getPath() + "?newsletterId="
-            + request.getParameter("newsletterId"));
+               + request.getParameter("newsletterId"));
       ret.setRedirect(true);
       return ret;
    }

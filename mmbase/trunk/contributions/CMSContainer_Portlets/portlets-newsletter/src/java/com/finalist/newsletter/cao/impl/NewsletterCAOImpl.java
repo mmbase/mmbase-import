@@ -54,7 +54,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
          query.setMaxNumber(pagingHolder.getPageSize());
          query.setOffset(pagingHolder.getOffset());
       }
-      if (pagingHolder != null) {		
+      if (pagingHolder != null) {
          Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
       }
       NodeList list = query.getList();

@@ -21,6 +21,7 @@ public class Subscription {
    private String newesletterId;
    private Date pausedTill;
    private String resumeDate;
+
    public void setResumeDate(String s) {
       this.resumeDate = s;
    }
@@ -100,8 +101,8 @@ public class Subscription {
    }
 
    public String getNewesletterId() {
-      if(null!=newsletter){
-         return Integer.toString(newsletter.getId());  
+      if (null != newsletter) {
+         return Integer.toString(newsletter.getId());
       }
       return newesletterId;
    }

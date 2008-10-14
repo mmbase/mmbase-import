@@ -27,9 +27,8 @@ import com.finalist.newsletter.services.SubscriptionHibernateService;
 
 /**
  * using for searching Newsletter Subscriber
- * 
+ *
  * @author Lisa
- * 
  */
 public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
@@ -61,7 +60,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
     * unspecified searching newsletter subscriber with sorting, ordering, paging
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                       HttpServletResponse response) throws Exception {
 
       log.debug("No parameter specified,go to subscriber page ,show related subscribers");
 
@@ -70,7 +69,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
       int resultCount = countsearchSubscribers(newsletterId, "", "", "", "");
       if (resultCount > 0) {
-         List<Map<Object,Object>> results = searchSubscribers(newsletterId, "", "", "", "");
+         List<Map<Object, Object>> results = searchSubscribers(newsletterId, "", "", "", "");
          request.setAttribute("results", results);
       }
       request.setAttribute("resultCount", resultCount);
@@ -84,7 +83,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
    /**
     * specified searching subscriber with form, showing some information of subscriber, and subscribed newsletter
     * names,subscribed terms
-    * 
+    *
     * @param mapping
     * @param form
     * @param request
@@ -92,7 +91,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
     * @return ActionForward showing newsletter subscriber List
     */
    public ActionForward subScriberSearch(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                         HttpServletResponse response) {
 
       log.debug("parameter action specified, go to the subscribers page, show related subscriber list");
       PagingUtils.initStatusHolder(request);
@@ -105,7 +104,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
       int resultCount = countsearchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
       if (resultCount > 0) {
-         List<Map<Object,Object>> results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
+         List<Map<Object, Object>> results = searchSubscribers(newsletterId, tmpTerm, tmpFullName, tmpUserName, tmpEmail);
          request.setAttribute("results", results);
       }
 
@@ -118,24 +117,17 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
    /**
     * convert newsletter subscribers to map
-    * 
-    * @param results
-    *           subscriber List, containing result information
-    * @param fullName
-    *           subscriber's full name
-    * @param userName
-    *           sbuscriber's user name
-    * @param email
-    *           subscriber's email address
-    * @param newsletters
-    *           newsletter name string subscribed by subscriber
-    * @param terms
-    *           newsletter's term name string subscribed by subscriber
-    * @param authenticationId
-    *           subscriber's authenticationId
+    *
+    * @param results          subscriber List, containing result information
+    * @param fullName         subscriber's full name
+    * @param userName         sbuscriber's user name
+    * @param email            subscriber's email address
+    * @param newsletters      newsletter name string subscribed by subscriber
+    * @param terms            newsletter's term name string subscribed by subscriber
+    * @param authenticationId subscriber's authenticationId
     */
    private void addToMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
-         String newsletters, String terms, int authenticationId) {
+                         String newsletters, String terms, int authenticationId) {
 
       Map<Object, Object> result = new LinkedHashMap<Object, Object>();
       result.put("fullname", fullName);
@@ -150,30 +142,25 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
    /**
     * getting subscriber's subscription information
-    * 
-    * @param newsletterId
-    *           Description of Parameter
-    * @param terms
-    *           Description of Parameter
-    * @param fullName
-    *           Description of Parameter
-    * @param userName
-    *           Description of Parameter
-    * @param email
-    *           Description of Parameter
+    *
+    * @param newsletterId Description of Parameter
+    * @param terms        Description of Parameter
+    * @param fullName     Description of Parameter
+    * @param userName     Description of Parameter
+    * @param email        Description of Parameter
     * @return newsletter Subscriber search result List
     */
    private List<Map<Object, Object>> searchSubscribers(int newsletterId, String terms, String fullName,
-         String userName, String email) {
-      
+                                                       String userName, String email) {
+
       Set<Long> authenticationIds = new HashSet<Long>();
       List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
-      
+
       authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
       List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName,
-            email, true);
+               email, true);
       for (Object[] result : qResults) {
-         
+
          String tmpFullName = result[0].toString() + " " + result[1].toString();
          String tmpEmail = result[2].toString();
          int tmpAuthenticationId = Integer.parseInt(result[3].toString());
@@ -187,30 +174,25 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
    /**
     * counting subscriber
-    * 
-    * @param newsletterId
-    *           subscribed newsletterId
-    * @param terms
-    *           subscribed newsletter term name list
-    * @param fullName
-    *           subscriber's full name
-    * @param userName
-    *           subscriber's user name
-    * @param email
-    *           subscriber's email
+    *
+    * @param newsletterId subscribed newsletterId
+    * @param terms        subscribed newsletter term name list
+    * @param fullName     subscriber's full name
+    * @param userName     subscriber's user name
+    * @param email        subscriber's email
     * @return subscriber totalCount
     */
    private int countsearchSubscribers(int newsletterId, String terms, String fullName, String userName, String email) {
-      
+
       int resultCount = 0;
       Set<Long> authenticationIds = new HashSet<Long>();
-      
+
       authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
       if (authenticationIds.size() > 0) {
          resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email,
-               false).size();
+                  false).size();
       }
       return resultCount;
    }
-   
+
 }
