@@ -31,37 +31,37 @@ public class TagCloudUtil {
 
 	public static final String ORDERBY_NAME = "name";
 
-	private static final String SQL_STAGING_SELECT_TAGS = "SELECT tag.number,tag.name,tag.description,tag.number FROM mm_tag tag";
-	private static final String SQL_LIVE_SELECT_TAGS = "SELECT tag.number,tag.name,tag.description,tag.number FROM live_tag tag";
+	private static final String SQL_STAGING_SELECT_TAGS = "SELECT tag.number,tag.name,tag.description,tag.number FROM mm_tag tag WHERE tag.name is not null ";
+	private static final String SQL_LIVE_SELECT_TAGS = "SELECT tag.number,tag.name,tag.description,tag.number FROM live_tag tag WHERE tag.name is not null ";
 /*
 
  */
 	private static final String SQL_STAGING_SELECT_TAGS_COUNT = "  SELECT tag.number,COUNT(insrel.number) AS cnt " 
 		+ "FROM mm_tag tag,mm_insrel insrel "
-		+ "WHERE (tag.number=insrel.dnumber) "
+		+ "WHERE (tag.number=insrel.dnumber) AND tag.name is not null "
 		+ "GROUP BY tag.number";
 	private static final String SQL_LIVE_SELECT_TAGS_COUNT = "SELECT tag.number,COUNT(contentelement.number) AS cnt "
 		+ "FROM live_tag tag,live_insrel insrel,live_contentelement contentelement "
-		+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) "
+		+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) AND tag.name is not null "
 		+ "GROUP BY tag.name";
 
 	private static final String SQL_STAGING_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.number,tag.name,tag.description "
 		+ "FROM mm_tag tag,mm_insrel insrel "
-		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) "
+		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) AND tag.name is not null "
 		+ "ORDER BY tag.name";
 	private static final String SQL_LIVE_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.number,tag.name,tag.description "
 		+ "FROM live_tag tag,live_insrel insrel "
-		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) "
+		+ "WHERE (tag.number=insrel.dnumber AND CONTENTELEMENT_NUMBER=insrel.snumber) AND tag.name is not null "
 		+ "ORDER BY tag.name";
 
 	private static final String SQL_STAGING_SELECT_CHANNEL_RELATED_TAGS = "	 SELECT tag.number, tag.name,tag.description,COUNT(contentelement.number) AS cnt "+ 
 		"FROM mm_tag tag,mm_insrel insrel,mm_contentelement contentelement, mm_contentrel contentrel "+ 
-		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER "+  
+		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER AND tag.name is not null "+  
 		"GROUP BY tag.name,tag.description";
 
 	private static final String SQL_LIVE_SELECT_CHANNEL_RELATED_TAGS = "	 SELECT tag.number, tag.name,tag.description,COUNT(contentelement.number) AS cnt "+ 
 		"FROM live_tag tag,live_insrel insrel,live_contentelement contentelement, live_contentrel contentrel "+ 
-		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER "+  
+		"WHERE tag.number=insrel.dnumber AND contentelement.number=insrel.snumber AND contentelement.number = contentrel.dnumber AND contentrel.snumber = CONTENTCHANNEL_NUMBER AND tag.name is not null "+  
 		"GROUP BY tag.name,tag.description";
 
 	
@@ -69,14 +69,14 @@ public class TagCloudUtil {
 		"FROM mm_tag source_tag,mm_insrel source_insrel,mm_contentelement contentelement, mm_insrel target_insrel, mm_tag target_tag   "+
 		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
 		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
-		"AND LOWER(source_tag.name) = 'TAG_NAME'  "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME' AND tag.name is not null  "+
 		"GROUP BY target_tag.name,target_tag.description ";
  
 	private static final String SQL_LIVE_SELECT_TAG_RELATED_TAGS = "SELECT target_tag.number,target_tag.name,target_tag.description,COUNT(contentelement.number) AS cnt "+  
 		"FROM live_tag source_tag,live_insrel source_insrel,live_contentelement contentelement, live_insrel target_insrel, live_tag target_tag   "+
 		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
 		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
-		"AND LOWER(source_tag.name) = 'TAG_NAME'  "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME' AND tag.name is not null  "+
 		"GROUP BY target_tag.name,target_tag.description ";
  
 	private static Connection getConnection() {
