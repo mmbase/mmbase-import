@@ -692,6 +692,8 @@ public class DownloadThread extends Thread {
       if(url.contains("/")){
          url = regularReplace(url,"/","\\\\");
       }
+      log.info("##########################-->  url="+url);
+      log.info("##########################-->  filepath="+filepath);
       int tagStart = filepath.indexOf(url);
       String u = filepath.substring(tagStart);
       int tagEnd = u.indexOf("\\" + str);
@@ -779,7 +781,7 @@ public class DownloadThread extends Thread {
                   }
                }
             }
-            String str = regularJudge("[\\s.]*background[-image]?:\\s*url.*",
+            String str = regularJudge("[\\s.]*background(-image)?:\\s*url.*",
                   tempString);
             if (StringUtils.isNotEmpty(str)) {
                String targetName = regularJudge("[\\w/]*\\." + suffix, str);
