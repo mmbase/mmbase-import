@@ -14,8 +14,8 @@ public class NewsletterPublicationNavigationItemManager extends NewsletterNaviga
    private NavigationTreeItemRenderer treeRenderer = new NewsletterPublicationTreeItemRenderer();
    private NavigationItemRenderer renderer = new PublicationNavigationRenderer();
 
-      @Override
-      public Class<? extends NavigationItem> getItemClass() {
+   @Override
+   public Class<? extends NavigationItem> getItemClass() {
       return Publication.class;
    }
 

@@ -3,9 +3,9 @@ package com.finalist.newsletter.domain;
 public class Schedule {
 
    private int id;
-   
+
    private String expression;
-   
+
    private String scheduleDescription;
 
    public int getId() {

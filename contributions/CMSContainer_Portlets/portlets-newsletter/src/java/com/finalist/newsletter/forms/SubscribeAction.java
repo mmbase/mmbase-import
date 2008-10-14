@@ -23,29 +23,29 @@ public class SubscribeAction extends DispatchActionSupport {
    }
 
    public ActionForward modifyStatus(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+            throws Exception {
 
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
-      log.debug(String.format("user %s modify status of newsletter %s",userId,newsletterId));
+      log.debug(String.format("user %s modify status of newsletter %s", userId, newsletterId));
 
       if (service.noSubscriptionRecord(userId, newsletterId)) {
          service.addNewRecord(userId, newsletterId);
-      }else{
-         service.changeStatus(userId,newsletterId);
+      } else {
+         service.changeStatus(userId, newsletterId);
       }
 
       return mapping.findForward("success");
    }
 
    public ActionForward modifyFormat(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+            throws Exception {
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
       String format = request.getParameter("format");
 
-      log.debug(String.format("user %s modify prefered MIME of newsletter %s to %s",userId,format,newsletterId));
+      log.debug(String.format("user %s modify prefered MIME of newsletter %s to %s", userId, format, newsletterId));
 
       service.modifyFormat(userId, newsletterId, format);
 
@@ -53,19 +53,18 @@ public class SubscribeAction extends DispatchActionSupport {
    }
 
    public ActionForward modifyTag(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+            throws Exception {
 
       Boolean hasSelect = Boolean.parseBoolean(request.getParameter("select"));
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
       int termId = Integer.parseInt(request.getParameter("termId"));
 
-      log.debug(String.format("user %s modify term %s in newsletter %s",userId,termId,newsletterId));
+      log.debug(String.format("user %s modify term %s in newsletter %s", userId, termId, newsletterId));
 
       if (hasSelect) {
          service.selectTermInLetter(userId, newsletterId, termId);
-      }
-      else {
+      } else {
          service.unSelectTermInLetter(userId, newsletterId, termId);
       }
 

@@ -23,7 +23,9 @@ import org.mmbase.util.logging.Logging;
 
 public class CloneUtil {
 
-   /** MMbase logging system */
+   /**
+    * MMbase logging system
+    */
    private static Logger log = Logging.getLoggerInstance(CloneUtil.class.getName());
 
    public static void cloneAliasses(Node localNode, Node destNode) {
@@ -36,9 +38,8 @@ public class CloneUtil {
    /**
     * Clone a node to a cloud, including any fields without keeping
     * administrative information
-    * 
-    * @param localNode
-    *           the node to clone
+    *
+    * @param localNode the node to clone
     * @return the newly created node in the other cloud
     */
    public static Node cloneNode(Node localNode) {
@@ -95,13 +96,10 @@ public class CloneUtil {
 
    /**
     * cloneNodeField copies node fields from one node to an other
-    * 
-    * @param sourceNode
-    *           the source node
-    * @param destinationNode
-    *           destination node
-    * @param field
-    *           the field to clone
+    *
+    * @param sourceNode      the source node
+    * @param destinationNode destination node
+    * @param field           the field to clone
     */
    public static void cloneNodeField(Node sourceNode, Node destinationNode, Field field) {
       String fieldName = field.getName();
@@ -109,44 +107,43 @@ public class CloneUtil {
 
       if (destinationNode.getNodeManager().hasField(fieldName) == true) {
          switch (fieldType) {
-         case Field.TYPE_BINARY:
-            destinationNode.setByteValue(fieldName, sourceNode.getByteValue(fieldName));
-            break;
-         case Field.TYPE_BOOLEAN:
-            destinationNode.setBooleanValue(fieldName, sourceNode.getBooleanValue(fieldName));
-            break;
-         case Field.TYPE_DATETIME:
-            destinationNode.setDateValue(fieldName, sourceNode.getDateValue(fieldName));
-            break;
-         case Field.TYPE_DOUBLE:
-            destinationNode.setDoubleValue(fieldName, sourceNode.getDoubleValue(fieldName));
-            break;
-         case Field.TYPE_FLOAT:
-            destinationNode.setFloatValue(fieldName, sourceNode.getFloatValue(fieldName));
-            break;
-         case Field.TYPE_INTEGER:
-            destinationNode.setIntValue(fieldName, sourceNode.getIntValue(fieldName));
-            break;
-         case Field.TYPE_LONG:
-            destinationNode.setLongValue(fieldName, sourceNode.getIntValue(fieldName));
-            break;
-         case Field.TYPE_NODE:
-            destinationNode.setNodeValue(fieldName, sourceNode.getNodeValue(fieldName));
-            break;
-         case Field.TYPE_STRING:
-            destinationNode.setStringValue(fieldName, sourceNode.getStringValue(fieldName));
-            break;
-         default:
-            destinationNode.setValue(fieldName, sourceNode.getValue(fieldName));
+            case Field.TYPE_BINARY:
+               destinationNode.setByteValue(fieldName, sourceNode.getByteValue(fieldName));
+               break;
+            case Field.TYPE_BOOLEAN:
+               destinationNode.setBooleanValue(fieldName, sourceNode.getBooleanValue(fieldName));
+               break;
+            case Field.TYPE_DATETIME:
+               destinationNode.setDateValue(fieldName, sourceNode.getDateValue(fieldName));
+               break;
+            case Field.TYPE_DOUBLE:
+               destinationNode.setDoubleValue(fieldName, sourceNode.getDoubleValue(fieldName));
+               break;
+            case Field.TYPE_FLOAT:
+               destinationNode.setFloatValue(fieldName, sourceNode.getFloatValue(fieldName));
+               break;
+            case Field.TYPE_INTEGER:
+               destinationNode.setIntValue(fieldName, sourceNode.getIntValue(fieldName));
+               break;
+            case Field.TYPE_LONG:
+               destinationNode.setLongValue(fieldName, sourceNode.getIntValue(fieldName));
+               break;
+            case Field.TYPE_NODE:
+               destinationNode.setNodeValue(fieldName, sourceNode.getNodeValue(fieldName));
+               break;
+            case Field.TYPE_STRING:
+               destinationNode.setStringValue(fieldName, sourceNode.getStringValue(fieldName));
+               break;
+            default:
+               destinationNode.setValue(fieldName, sourceNode.getValue(fieldName));
          }
       }
    }
 
    /**
     * Clone a node with all relations
-    * 
-    * @param localNode
-    *           the node to be cloned
+    *
+    * @param localNode the node to be cloned
     * @return the cloned copy of localNode
     */
    public static Node cloneNodeWithRelations(Node localNode) {
@@ -158,8 +155,8 @@ public class CloneUtil {
       } else {
          if (log.isDebugEnabled()) {
             log
-                  .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
-                        + ")");
+                     .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
+                              + ")");
          }
       }
       cloneRelations(localNode, newNode);
@@ -176,8 +173,8 @@ public class CloneUtil {
       } else {
          if (log.isDebugEnabled()) {
             log
-                  .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
-                        + ")");
+                     .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
+                              + ")");
          }
       }
       cloneRelations(localNode, newNode);
@@ -201,7 +198,7 @@ public class CloneUtil {
          Node relationTypeNode = localRelation.getNodeValue("rnumber");
          String relName = relationTypeNode.getStringValue("sname");
          relationManager = localRelation.getCloud().getRelationManager(sourceNode.getNodeManager().getName(),
-               destinationNode.getNodeManager().getName(), relName);
+                  destinationNode.getNodeManager().getName(), relName);
 
       }
       Relation newRelation = relationManager.createRelation(sourceNode, destinationNode);
@@ -212,7 +209,7 @@ public class CloneUtil {
 
          if (field.getState() == Field.STATE_PERSISTENT) {
             if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName.indexOf("_") == 0)
-                  || fieldName.equals("snumber") || fieldName.equals("dir") || fieldName.equals("dnumber") || fieldName.equals("rnumber"))) {
+                     || fieldName.equals("snumber") || fieldName.equals("dir") || fieldName.equals("dnumber") || fieldName.equals("rnumber"))) {
                cloneNodeField(localRelation, newRelation, field);
             }
          }
@@ -247,9 +244,8 @@ public class CloneUtil {
       while (ri.hasNext()) {
          Relation rel = ri.nextRelation();
          if (rel.getSource().getNumber() == localNode.getNumber()) {
-            cloneRelation(rel, newNode,  rel.getDestination());
-         } 
-         else {
+            cloneRelation(rel, newNode, rel.getDestination());
+         } else {
             if (rel.getDestination().getNumber() == localNode.getNumber()) {
                cloneRelation(rel, rel.getSource(), newNode);
             }
@@ -259,9 +255,8 @@ public class CloneUtil {
 
    /**
     * quick test to see if node is a relation by testing fieldnames
-    * 
-    * @param node
-    *           Possible relation
+    *
+    * @param node Possible relation
     * @return <code>true</code> when relation fields present
     */
    protected static boolean isRelation(Node node) {

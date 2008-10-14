@@ -16,9 +16,9 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
 
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
       element.addOption(
-            renderer.createTreeOption(
-                  "mail.png", "site.newsletter.new", "newsletter", op("NewsletterCreate", "parentnewsletter", parentId)
-            )
+               renderer.createTreeOption(
+                        "mail.png", "site.newsletter.new", "newsletter", op("NewsletterCreate", "parentnewsletter", parentId)
+               )
       );
    }
 
@@ -50,7 +50,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       }
 
       element.addOption(
-            renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id)
+               renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id)
       );
 
       return element;
@@ -61,27 +61,27 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
       element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
       element.addOption(
-            renderer.createTreeOption("switch.png", "site.newsletter.switchtoplain", "newsletter",
-                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/plain", id)
-            )
+               renderer.createTreeOption("switch.png", "site.newsletter.switchtoplain", "newsletter",
+                        String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/plain", id)
+               )
       );
       element.addOption(
-            renderer.createTreeOption("switch.png", "site.newsletter.switchtohtml", "newsletter",
-                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/html", id)
-            )
+               renderer.createTreeOption("switch.png", "site.newsletter.switchtohtml", "newsletter",
+                        String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/html", id)
+               )
       );
       element.addOption(
-            renderer.createTreeOption("switch.png", "site.newsletter.switchtowap", "newsletter",
-                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
-            )
+               renderer.createTreeOption("switch.png", "site.newsletter.switchtowap", "newsletter",
+                        String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
+               )
       );
    }
 
    private void addWebmasterOptions(NavigationRenderer renderer, String id, TreeElement element) {
       element.addOption(
-            renderer.createTreeOption("delete.png", "site.newsletter.remove", "newsletter",
-                  "../newsletter/NewsletterDelete.do?number=" + id
-            )
+               renderer.createTreeOption("delete.png", "site.newsletter.remove", "newsletter",
+                        "../newsletter/NewsletterDelete.do?number=" + id
+               )
       );
       //todo remove the code
       //This  has been implement in the wizard.
@@ -105,19 +105,19 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
 
    private void addEditorOptions(NavigationRenderer renderer, String id, TreeElement element) {
       element.addOption(
-            renderer.createTreeOption("edit_defaults.png", "site.newsletter.edit", "newsletter",
-                  "../newsletter/NewsletterEdit.do?number=" + id
-            )
+               renderer.createTreeOption("edit_defaults.png", "site.newsletter.edit", "newsletter",
+                        "../newsletter/NewsletterEdit.do?number=" + id
+               )
       );
       element.addOption(
-            renderer.createTreeOption("mail.png", "site.newsletterpublication.new.blank", "newsletter",
-                  "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=false"
-            )
+               renderer.createTreeOption("mail.png", "site.newsletterpublication.new.blank", "newsletter",
+                        "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=false"
+               )
       );
       element.addOption(
-            renderer.createTreeOption("mail.png", "site.newsletterpublication.new.withcontent", "newsletter",
-                  "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=true"
-            )
+               renderer.createTreeOption("mail.png", "site.newsletterpublication.new.withcontent", "newsletter",
+                        "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=true"
+               )
       );
    }
 

@@ -24,15 +24,19 @@ import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 /**
  * Newsletter Publication Delete Action
- * 
+ *
  * @author Lisa
  */
 public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
+   /**
+    * name of submit button in jsp to confirm removal
+    */
    private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
+   /**
+    * name of submit button in jsp to cancel removal
+    */
    private static final String ACTION_CANCEL = "cancel";
 
    /**
@@ -79,17 +83,14 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
    }
 
    /**
-    * 
     * @param mapping
     * @param request
-    * @param forwardType
-    *           use to distinguish different return back forward
-    * @param parent
-    *           use to record parent id
+    * @param forwardType use to distinguish different return back forward
+    * @param parent      use to record parent id
     * @return ActionForward turn to correct page
     */
    protected ActionForward actionReturn(ActionMapping mapping, HttpServletRequest request, String forwardType,
-         String parent) {
+                                        String parent) {
       ActionForward ret = null;
       if (StringUtils.isNotEmpty(forwardType)) {
          ret = new ActionForward(mapping.findForward(forwardType).getPath() + "?newsletterId=" + parent);

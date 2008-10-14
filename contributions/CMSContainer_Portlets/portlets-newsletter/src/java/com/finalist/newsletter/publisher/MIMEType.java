@@ -1,8 +1,8 @@
 package com.finalist.newsletter.publisher;
 
 public enum MIMEType {
-   HTML ("text/html"),
-   PLANTEXT ("text/plain");
+   HTML("text/html"),
+   PLANTEXT("text/plain");
 
    private String type;
 
@@ -10,7 +10,7 @@ public enum MIMEType {
       this.type = type;
    }
 
-   public String type(){
+   public String type() {
       return type;
    }
 }

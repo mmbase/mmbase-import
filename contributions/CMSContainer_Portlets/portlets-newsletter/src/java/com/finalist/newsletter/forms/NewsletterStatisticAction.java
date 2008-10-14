@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.*;
 import org.apache.struts.actions.MappingDispatchAction;
 
 /**
  * Show all newsletters when first come.
  * Search some newsletters according to these search conditions.
- * 
- * @author Eva
  *
+ * @author Eva
  */
 public class NewsletterStatisticAction extends MappingDispatchAction {
 
@@ -30,8 +30,8 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
    }
 
    public ActionForward show(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+                             HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
       PagingUtils.initStatusHolder(request);
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       List<Newsletter> newsletters = newsletterService.getAllNewsletter(false);
@@ -47,8 +47,8 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
    }
 
    public ActionForward search(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+                               HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       StatisticService service = (StatisticService) ApplicationContextFactory.getBean("statisticService");
@@ -60,33 +60,33 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
       request.setAttribute("searchForm", searchForm);
       PagingUtils.initStatusHolder(request);
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
-      
+
 
       boolean isAll = Integer.parseInt(searchForm.getNewsletters()) == 0;
       boolean isDetail = searchForm.getDetailOrSum().equals("2");
       boolean hasDate = searchForm.getEndDate() != ""
-            && searchForm.getStartDate() != "";
+               && searchForm.getStartDate() != "";
       String startDate = searchForm.getStartDate();
       String endDate = searchForm.getEndDate();
       int newsletterId = Integer.parseInt(searchForm.getNewsletters());
 
       if (isAll && hasDate && isDetail) {
          List<StatisticResult> records = service.statisticAllByPeriod(
-               startDate, endDate);
+                  startDate, endDate);
          transferShowingFromDB(records, newsletterService);
-         request.setAttribute("records", addPagingCondition(request,records,holder));
+         request.setAttribute("records", addPagingCondition(request, records, holder));
       } else if (isAll && !hasDate && isDetail) {
          List<StatisticResult> records = service.statisticAll();
          transferShowingFromDB(records, newsletterService);
-         request.setAttribute("records", addPagingCondition(request,records,holder));
+         request.setAttribute("records", addPagingCondition(request, records, holder));
       } else if (!isAll && !hasDate && isDetail) {
          List<StatisticResult> records = service
-               .statisticByNewsletter(newsletterId);
+                  .statisticByNewsletter(newsletterId);
          transferShowingFromDB(records, newsletterService);
-         request.setAttribute("records", addPagingCondition(request,records,holder));
+         request.setAttribute("records", addPagingCondition(request, records, holder));
       } else if (!isAll && hasDate && !isDetail) {
          result = service.statisticByNewsletterPeriod(newsletterId,
-               startDate, endDate);
+                  startDate, endDate);
          request.setAttribute("newsletterName", transToNewsName(request, newsletterService, newsletterId));
          request.setAttribute("result", result);
       } else if (!isAll && !hasDate && !isDetail) {
@@ -101,18 +101,18 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
          request.setAttribute("result", result);
       } else if (!isAll && hasDate && isDetail) {
          List<StatisticResult> records = service
-               .StatisticDetailByNewsletterPeriod(newsletterId, startDate,
-                     endDate);
+                  .StatisticDetailByNewsletterPeriod(newsletterId, startDate,
+                           endDate);
          transferShowingFromDB(records, newsletterService);
-         request.setAttribute("records", addPagingCondition(request,records,holder));
+         request.setAttribute("records", addPagingCondition(request, records, holder));
       }
       return mapping.findForward("result");
    }
 
    private String transToNewsName(HttpServletRequest request,
-         NewsletterService newsletterService, int newsletterId) {
+                                  NewsletterService newsletterService, int newsletterId) {
       return newsletterService.getNewsletterName(newsletterId);
-      
+
    }
 
    private void addBlankNewsletter(List<Newsletter> newsletters) {
@@ -120,11 +120,11 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
       Newsletter newsletter = new Newsletter();
       newsletter.setTitle("ALL");
       newsletter.setId(0);
-      newsletters.add(0,newsletter);
+      newsletters.add(0, newsletter);
    }
 
    private void transferShowingFromDB(List<StatisticResult> records,
-         NewsletterService newsletterService) {
+                                      NewsletterService newsletterService) {
 
       for (StatisticResult s : records) {
          s.setShowingdate(DateUtil.parser(s.getLogdate()));
@@ -132,12 +132,13 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
       }
 
    }
-   private List<StatisticResult> addPagingCondition(HttpServletRequest request,List<StatisticResult> records ,PagingStatusHolder holder){
-      
+
+   private List<StatisticResult> addPagingCondition(HttpServletRequest request, List<StatisticResult> records, PagingStatusHolder holder) {
+
       List<StatisticResult> recordsForShow = new ArrayList<StatisticResult>();
-      int totalCount = records.size();    
+      int totalCount = records.size();
       request.setAttribute("totalCount", totalCount);
-      for(int i=holder.getOffset();i<holder.getPageSize()+holder.getOffset()&&i<totalCount;i++){
+      for (int i = holder.getOffset(); i < holder.getPageSize() + holder.getOffset() && i < totalCount; i++) {
          recordsForShow.add(records.get(i));
       }
       return recordsForShow;

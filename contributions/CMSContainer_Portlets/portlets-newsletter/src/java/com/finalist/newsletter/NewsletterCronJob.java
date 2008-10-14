@@ -41,7 +41,7 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
             Date lastCreatedDateTime = newsletter.getDateValue("lastcreateddate");
             if (scheduleExpression != null) {
                createPublication(newslettersToPublish, newsletter, scheduleExpression,
-                     lastCreatedDateTime);
+                        lastCreatedDateTime);
             }
          }
       }
@@ -49,31 +49,32 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
    }
 
    private void createPublication(List<Node> newslettersToPublish, Node newsletter,
-         Object scheduleExpression, Date lastCreatedDateTime) {
-      String expression = (String)scheduleExpression;
+                                  Object scheduleExpression, Date lastCreatedDateTime) {
+      String expression = (String) scheduleExpression;
       String[] expressions = expression.split("\\|");
-      if(isPublish(expressions,lastCreatedDateTime)) {
+      if (isPublish(expressions, lastCreatedDateTime)) {
          newslettersToPublish.add(newsletter);
       }
    }
 
-   private boolean isPublish(String[] expressions,Date lastCreatedDateTime) {
+   private boolean isPublish(String[] expressions, Date lastCreatedDateTime) {
       boolean isPublish = false;
       DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-      Date minDate =  null;
+      Date minDate = null;
       try {
-         minDate =  df.parse("01-01-1970 00:00");
+         minDate = df.parse("01-01-1970 00:00");
       } catch (ParseException e) {
-         log.debug("--> Parse date Exception");;
+         log.debug("--> Parse date Exception");
+         ;
       }
       Date now = new Date();
       Calendar calender = Calendar.getInstance();
       //expressions[0] value: 1 once
-      if(expressions[0].equals("1")) {
-         String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
+      if (expressions[0].equals("1")) {
+         String startDatetime = expressions[1] + " " + expressions[2] + ":" + expressions[3];
          try {
             Date startDate = df.parse(startDatetime);
-            if(now.after(startDate) && (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime))) {
+            if (now.after(startDate) && (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime))) {
                isPublish = true;
             }
          }
@@ -82,30 +83,27 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
          }
       }//expressions[0] : 2 daily
       else if (expressions[0].equals("2")) {
-         String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
+         String startDatetime = expressions[1] + " " + expressions[2] + ":" + expressions[3];
 
          try {
             Date startDate = df.parse(startDatetime);
-            if(now.after(startDate)) {
-               if(expressions[4].equals("0")) {
+            if (now.after(startDate)) {
+               if (expressions[4].equals("0")) {
                   isPublish = compareDate(lastCreatedDateTime, isPublish,
-                        minDate, now);
-               }
-               else if(expressions[4].equals("1")) {
-                  if(calender.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && calender.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                     isPublish = compareDate(lastCreatedDateTime, isPublish,
                            minDate, now);
+               } else if (expressions[4].equals("1")) {
+                  if (calender.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && calender.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                     isPublish = compareDate(lastCreatedDateTime, isPublish,
+                              minDate, now);
                   }
-               }
-               else if(expressions[4].equals("2")) {
+               } else if (expressions[4].equals("2")) {
                   int interval = Integer.parseInt(expressions[5]);
-                  if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
-                     if(DateUtils.isSameDay(DateUtils.addDays(startDate, interval),now)) {
+                  if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                     if (DateUtils.isSameDay(DateUtils.addDays(startDate, interval), now)) {
                         isPublish = true;
                      }
-                  }
-                  else {
-                     if(DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval),now)) {
+                  } else {
+                     if (DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval), now)) {
                         isPublish = true;
                      }
                   }
@@ -116,82 +114,78 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
             log.debug("--> Parse date Exception");
          }
       }//expressions[0] : 3 weekly
-      else if(expressions[0].equals("3")) {
+      else if (expressions[0].equals("3")) {
          Calendar startTime = getStartCalendar(expressions);
          char[] weeks = expressions[4].toCharArray();
 
          for (char week2 : weeks) {
 
             String week = String.valueOf(week2);
-            if((calender.get(Calendar.DAY_OF_WEEK) != 1 && calender.get(Calendar.DAY_OF_WEEK) == (Integer.parseInt(week)+1)) || (calender.get(Calendar.DAY_OF_WEEK) == 1 && Integer.parseInt(week) == 7)) {
-               if(calender.after(startTime)) {
+            if ((calender.get(Calendar.DAY_OF_WEEK) != 1 && calender.get(Calendar.DAY_OF_WEEK) == (Integer.parseInt(week) + 1)) || (calender.get(Calendar.DAY_OF_WEEK) == 1 && Integer.parseInt(week) == 7)) {
+               if (calender.after(startTime)) {
                   try {
-                     if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
+                     if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
                         isPublish = true;
                         break;
-                     }
-                     else {
+                     } else {
                         int interval = Integer.parseInt(expressions[3]);
                         Date beCreate = DateUtils.addWeeks(lastCreatedDateTime, interval);
-                        if(DateUtils.isSameDay(new Date(),beCreate )) {
+                        if (DateUtils.isSameDay(new Date(), beCreate)) {
                            isPublish = true;
                            break;
                         }
                      }
                   }
                   catch (NumberFormatException e) {
-                     log.debug("-->NumberFormatException "+e.getMessage());
+                     log.debug("-->NumberFormatException " + e.getMessage());
                   }
                }
             }
          }
       }//expressions[0] : 4 monthly
-      else if(expressions[0].equals("4")) {
+      else if (expressions[0].equals("4")) {
          Calendar startTime = getStartCalendar(expressions);
-         if(expressions[3].equals("0")) {
+         if (expressions[3].equals("0")) {
             String dayOfMonth = expressions[4];
             char[] months = expressions[5].toCharArray();
             for (char month2 : months) {
                String month = String.valueOf(month2);
-               if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("b") && calender.get(Calendar.MONTH) == 11) || (month.equals("a") && calender.get(Calendar.MONTH) == 10)) {
-                  if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dayOfMonth)) {
-                     if(calender.after(startTime)) {
-                           if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
+               if (!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("b") && calender.get(Calendar.MONTH) == 11) || (month.equals("a") && calender.get(Calendar.MONTH) == 10)) {
+                  if (calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dayOfMonth)) {
+                     if (calender.after(startTime)) {
+                        if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                           isPublish = true;
+                           break;
+                        } else {
+                           if (!DateUtils.isSameDay(new Date(), lastCreatedDateTime)) {
                               isPublish = true;
                               break;
                            }
-                           else {
-                              if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
-                                 isPublish = true;
-                                 break;
-                              }
-                           }
+                        }
                      }
                   }
                }
             }
-         }
-         else if(expressions[3].equals("1")) {
+         } else if (expressions[3].equals("1")) {
             String weekOfMonth = expressions[4];
             String week = expressions[5];
 
             char[] months = expressions[6].toCharArray();
             for (char month2 : months) {
                String month = String.valueOf(month2);
-               if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("a") && calender.get(Calendar.MONTH) == 10) || (month.equals("b") && calender.get(Calendar.MONTH) == 11)) {
-                  if(calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(weekOfMonth)) {
-                     if(calender.get(Calendar.DAY_OF_WEEK)!= 1 && calender.get(Calendar.DAY_OF_WEEK)== (Integer.parseInt(week)+1)) {
-                        if(calender.after(startTime)) {
-                              if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
+               if (!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("a") && calender.get(Calendar.MONTH) == 10) || (month.equals("b") && calender.get(Calendar.MONTH) == 11)) {
+                  if (calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(weekOfMonth)) {
+                     if (calender.get(Calendar.DAY_OF_WEEK) != 1 && calender.get(Calendar.DAY_OF_WEEK) == (Integer.parseInt(week) + 1)) {
+                        if (calender.after(startTime)) {
+                           if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                              isPublish = true;
+                              break;
+                           } else {
+                              if (!DateUtils.isSameDay(new Date(), lastCreatedDateTime)) {
                                  isPublish = true;
                                  break;
                               }
-                              else {
-                                 if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
-                                    isPublish = true;
-                                    break;
-                                 }
-                              }
+                           }
                         }
                      }
                   }
@@ -210,12 +204,11 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
    }
 
    private boolean compareDate(Date lastCreatedDateTime, boolean isPublish,
-         Date minDate, Date now) {
-      if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                               Date minDate, Date now) {
+      if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
          isPublish = true;
-      }
-      else  {
-         if(!DateUtils.isSameDay(now, lastCreatedDateTime)) {
+      } else {
+         if (!DateUtils.isSameDay(now, lastCreatedDateTime)) {
             isPublish = true;
          }
       }

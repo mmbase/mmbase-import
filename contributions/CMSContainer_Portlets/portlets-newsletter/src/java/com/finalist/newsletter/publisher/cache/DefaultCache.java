@@ -8,12 +8,12 @@ import java.util.TimerTask;
 
 /**
  * @author nikko yin
- * implement the interface ICache
+ *         implement the interface ICache
  */
 public class DefaultCache implements ICache {
 
    private static final int FreshTimerIntervalSeconds = 1;
-   private Map < String , CacheInfo > datas;
+   private Map<String, CacheInfo> datas;
    private long time = 1800;
    private Timer timer;
 
@@ -22,7 +22,7 @@ public class DefaultCache implements ICache {
     * flush when every second
     */
    public DefaultCache() {
-      datas = Collections.synchronizedMap(new HashMap < String , CacheInfo > ());
+      datas = Collections.synchronizedMap(new HashMap<String, CacheInfo>());
       TimerTask task = new CacheFreshTask(this);
       timer = new Timer("Cache_Timer", true);
       timer.scheduleAtFixedRate(task, 1000, FreshTimerIntervalSeconds * 1000);
@@ -34,17 +34,17 @@ public class DefaultCache implements ICache {
    }
 
    /**
-    * @param key used to find value
+    * @param key   used to find value
     * @param value store the infoBean
     */
    public void add(Object key, Object value) {
       add(key, value, time);
    }
 
-  
+
    /**
-    * @param key used to find value
-    * @param value store the infoBean
+    * @param key               used to find value
+    * @param value             store the infoBean
     * @param slidingExpiration the life of infoBean
     */
    public void add(Object key, Object value, long slidingExpiration) {
@@ -65,7 +65,7 @@ public class DefaultCache implements ICache {
       return false;
    }
 
-   
+
    /**
     * @param key used get the value
     * @return Object is the infoBean
@@ -81,13 +81,13 @@ public class DefaultCache implements ICache {
    }
 
    /**
-    * @param key remove 
+    * @param key remove
     */
    public void remove(Object key) {
       datas.remove(key);
    }
 
-   
+
    /**
     * remove all exited infoBean in the cache
     */
@@ -102,7 +102,7 @@ public class DefaultCache implements ICache {
       this.time = time;
    }
 
-   public Map < String , CacheInfo > getDatas() {
+   public Map<String, CacheInfo> getDatas() {
       return datas;
    }
 }

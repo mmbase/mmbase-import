@@ -15,7 +15,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 /**
  * using for deleting relationship between newsletter and term
- * 
+ *
  * @author Lisa
  */
 public class NewsletterTermDeleteAction extends MMBaseFormlessAction {
@@ -25,7 +25,7 @@ public class NewsletterTermDeleteAction extends MMBaseFormlessAction {
     * @param request
     * @param cloud
     * @return ActionForward
-    * @throws Exception 
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

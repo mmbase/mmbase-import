@@ -15,6 +15,6 @@ public class SwitchMIMEAction extends Action {
 
       httpServletRequest.getSession(true).setAttribute("contentType", targetMIME);
 
-      return new ActionForward(String.format("/editors/site/NavigatorPanel.do?nodeId=%s",number));
+      return new ActionForward(String.format("/editors/site/NavigatorPanel.do?nodeId=%s", number));
    }
 }

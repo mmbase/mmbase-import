@@ -23,9 +23,10 @@ public class BounceChecker extends Thread {
    private static boolean stop = false;
    private NewsletterService newsletterService;
 
-   public BounceChecker (NewsletterService newsletterService) {
+   public BounceChecker(NewsletterService newsletterService) {
       this.newsletterService = newsletterService;
    }
+
    public void run() {
       log.debug("Start Bounce checking .....");
       BounceChecker.running = true;
@@ -37,7 +38,7 @@ public class BounceChecker extends Thread {
             ReceiveThread receiveThread = new ReceiveThread(server.accept());
             receiveThread.setNewsletterService(newsletterService);
             log.debug("Got a connection,start a thread to check it");
-            receiveThread.start();            
+            receiveThread.start();
          }
       } catch (IOException e) {
          e.printStackTrace();

@@ -24,9 +24,8 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 /**
  * Newsletter Edit Action
- * 
+ *
  * @author Lisa
- * 
  */
 public class NewsletterEdit extends MMBaseFormlessAction {
 
@@ -45,9 +44,9 @@ public class NewsletterEdit extends MMBaseFormlessAction {
       if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="
-               + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath()
-               + URLEncoder.encode("?forward") + "=" + forwardType + URLEncoder.encode("&objectnumber") + "="
-               + objectnumber);
+                  + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath()
+                  + URLEncoder.encode("?forward") + "=" + forwardType + URLEncoder.encode("&objectnumber") + "="
+                  + objectnumber);
          ret.setRedirect(true);
          return ret;
       } else {

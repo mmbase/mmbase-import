@@ -25,9 +25,8 @@ import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 /**
  * Newsletter Publication Create Action
- * 
+ *
  * @author Lisa
- * 
  */
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
    /**
@@ -56,11 +55,11 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
          ActionForward ret = null;
          if (StringUtils.isNotEmpty(forwardType)) {
             ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber
-                  + "&returnurl=" + mapping.findForward("publicationedit").getPath() + URLEncoder.encode("?forward")
-                  + "=" + forwardType + URLEncoder.encode("&newsletterId") + "=" + parent);
+                     + "&returnurl=" + mapping.findForward("publicationedit").getPath() + URLEncoder.encode("?forward")
+                     + "=" + forwardType + URLEncoder.encode("&newsletterId") + "=" + parent);
          } else {
             ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber
-                  + "&returnurl=" + mapping.findForward("returnurl").getPath());
+                     + "&returnurl=" + mapping.findForward("returnurl").getPath());
          }
          ret.setRedirect(true);
          return ret;
@@ -70,10 +69,10 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
       ActionForward ret;
       if (StringUtils.isNotEmpty(forwardType)) {
          ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
-               + request.getParameter("newsletterId"));
+                  + request.getParameter("newsletterId"));
       } else {
          ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited
-               + "&fresh=fresh");
+                  + "&fresh=fresh");
       }
       return ret;
    }

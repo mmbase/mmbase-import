@@ -19,13 +19,13 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
 
       StringBuffer strb = new StringBuffer(
-            "select person.firstName, person.lastName, person.email ,person.authenticationId, authentication1.userId"
-                  + " from people person, authentication authentication1 " + "where person.authenticationId = authentication1.id");
+               "select person.firstName, person.lastName, person.email ,person.authenticationId, authentication1.userId"
+                        + " from people person, authentication authentication1 " + "where person.authenticationId = authentication1.id");
       if (StringUtils.isNotBlank(fullName)) {
          String[] names = fullName.split(" ");
          if (names.length >= 2) {
             strb.append(" and (person.firstName like '%" + names[0] + "%' or person.firstName like '%" + fullName + "%')"
-                  + " and (person.lastName like '%" + names[1] + "%' or person.lastName like '%" + fullName + "%')");
+                     + " and (person.lastName like '%" + names[1] + "%' or person.lastName like '%" + fullName + "%')");
          } else if (names.length == 1) {
             strb.append(" and (person.firstName like '%" + names[0] + "%')");
          }

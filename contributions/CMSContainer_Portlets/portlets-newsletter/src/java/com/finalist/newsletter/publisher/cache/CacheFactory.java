@@ -13,7 +13,7 @@ public class CacheFactory {
 
    /**
     * @param caches this is a map
-    * @return interface 
+    * @return interface
     */
    public static ICache getCacheInstance(Class caches) {
       if (cache == null) {
@@ -31,7 +31,7 @@ public class CacheFactory {
 
    /**
     * get time
-    * 
+    *
     * @param null
     * @return ICache
     */
@@ -41,7 +41,7 @@ public class CacheFactory {
 
    /**
     * getDefaultCache
-    * 
+    *
     * @param time which control the life of cache
     * @return ICache
     */

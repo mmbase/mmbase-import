@@ -9,19 +9,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
-  *   date Util class 
-  *
-  */
+ * date Util class
+ */
 public class DateUtil {
    private static Log log = LogFactory.getLog(DateUtil.class);
 
    /**
-     *   parser string("yyyy-MM-dd") to date object
-     *
-     *   @param raw string object
-     *   @return Date object
-     *
-     */
+    * parser string("yyyy-MM-dd") to date object
+    *
+    * @param raw string object
+    * @return Date object
+    */
    public static Date parser(String raw) {
       Date date = null;
 
@@ -37,12 +35,11 @@ public class DateUtil {
    }
 
    /**
-     *   parser  date object to string ojbect("yyyy-MM-dd"),
-     *
-     *   @param date Date ojbect
-     *   @return a String object 
-     *
-     */
+    * parser  date object to string ojbect("yyyy-MM-dd"),
+    *
+    * @param date Date ojbect
+    * @return a String object
+    */
    public static String parser(Date date) {
 
       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -50,14 +47,13 @@ public class DateUtil {
    }
 
    /**
-     *   calculate  date ,
-     *
-     *   @param date Date ojbect
-     *   @param value  the value used to operate at
-     *   @param mode   m = month;w=week of year;d=date;
-     *   @return a Date object 
-     *
-     */
+    * calculate  date ,
+    *
+    * @param date  Date ojbect
+    * @param value the value used to operate at
+    * @param mode  m = month;w=week of year;d=date;
+    * @return a Date object
+    */
    public static Date calculateDateByDuration(Date date, int value, String mode) {
       Calendar calender = new GregorianCalendar();
       calender.setTime(date);
@@ -76,11 +72,10 @@ public class DateUtil {
 
       return calender.getTime();
    }
+
    /**
-     *
-     *   get current datetime by millins type
-     *
-     */
+    * get current datetime by millins type
+    */
    public static Date getCurrent() {
       return new Date(System.currentTimeMillis());
    }

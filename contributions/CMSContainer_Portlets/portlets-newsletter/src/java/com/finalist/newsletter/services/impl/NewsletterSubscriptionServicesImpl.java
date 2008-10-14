@@ -264,11 +264,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       return subscriptionCAO.getSubscription(Integer.parseInt(newsletterId));
    }
 
-   public Set<Newsletter> getNewslettersBySubscription(int subscriberId, String title, boolean paging){
+   public Set<Newsletter> getNewslettersBySubscription(int subscriberId, String title, boolean paging) {
       log.debug("Get Subscriptions of subscriberId" + subscriberId);
       List<Newsletter> newsletters = subscriptionCAO.getNewslettersByScription(subscriberId, title, paging);
       Set<Newsletter> results = new HashSet<Newsletter>();
-      for(Newsletter newsletter: newsletters){
+      for (Newsletter newsletter : newsletters) {
          String status = subscriptionCAO.getSubscription(newsletter.getId(), subscriberId).getStatus().toString();
          newsletter.setStatus(status);
          results.add(newsletter);
@@ -301,7 +301,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       Set<Integer> authenticationIds = new HashSet();
       for (Node subscription : subscriptions) {
          int authId = subscription.getIntValue("subscriber");
-            authenticationIds.add(authId);
+         authenticationIds.add(authId);
       }
       if (authenticationIds.size() > 0) {
          List<Person> persons = personService.getPersonsByAuthenticationIds(authenticationIds, name, email);
@@ -385,7 +385,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public Set<Long> getAuthenticationIdsByNewsletter(int newsletterId) {
       List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
       Set<Long> subscriberIds = new HashSet<Long>();
-      for(Subscription subscription: subscriptions){
+      for (Subscription subscription : subscriptions) {
          subscriberIds.add(new Long(Integer.parseInt(subscription.getSubscriberId())));
       }
       return subscriberIds;
@@ -394,7 +394,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public Set<Long> getAuthenticationIds() {
       List<Node> subscriptions = subscriptionCAO.getAllSubscriptions();
       Set<Long> subscriberIds = new HashSet<Long>();
-      for(Node subscription: subscriptions){
+      for (Node subscription : subscriptions) {
          subscriberIds.add(new Long(subscription.getIntValue("subscriber")));
       }
       return subscriberIds;

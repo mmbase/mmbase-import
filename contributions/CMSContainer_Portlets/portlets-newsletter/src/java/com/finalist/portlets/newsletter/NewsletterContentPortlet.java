@@ -43,7 +43,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    protected static final String ELEMENTS = "elements";
    protected static final String TYPES = "types";
    protected static final String MAX_ELEMENTS = "maxElements";
-   
+
 
    @Override
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
@@ -55,20 +55,19 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       String currentPath = getUrlPath(request);
       NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
       if (result != null) {
-            int itemNumber = result.getId();
-            if(!NewsletterUtil.isNewsletter(itemNumber)) {
-               if(NewsletterUtil.isNewsletterPublication(itemNumber)) {
-                  itemNumber = NewsletterPublicationUtil.getNewsletterByPublicationNumber(itemNumber).getNumber();
-               }
+         int itemNumber = result.getId();
+         if (!NewsletterUtil.isNewsletter(itemNumber)) {
+            if (NewsletterUtil.isNewsletterPublication(itemNumber)) {
+               itemNumber = NewsletterPublicationUtil.getNewsletterByPublicationNumber(itemNumber).getNumber();
             }
-            addContentElements(request,itemNumber);
-      } 
-      else {
+         }
+         addContentElements(request, itemNumber);
+      } else {
          throw new RuntimeException("The page number could not be found");
       }
-      super.doView(request,response);
-   }   
-   
+      super.doView(request, response);
+   }
+
    protected void addContentElements(RenderRequest req, int itemNumber) {
       String elementId = req.getParameter(ELEMENT_ID);
       if (StringUtils.isEmpty(elementId)) {
@@ -106,16 +105,15 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             // A live server will remove expired nodes.
             useLifecycleBool = false;
          }
-         int totalItems  = 0 ;
-         List<ContentElement> elements  = null;
+         int totalItems = 0;
+         List<ContentElement> elements = null;
          String termNumbers = req.getParameter(NEWSLETTER_TERMS_PARAM);
-         if(StringUtils.isEmpty(termNumbers)) {
+         if (StringUtils.isEmpty(termNumbers)) {
             totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber);
-            elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
-         }
-         else {
-            totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber,termNumbers);
-            elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,termNumbers,offset,elementsPerPage,orderBy,direction);
+            elements = NewsletterUtil.getArticlesByNewsletter(itemNumber, offset, elementsPerPage, orderBy, direction);
+         } else {
+            totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber, termNumbers);
+            elements = NewsletterUtil.getArticlesByNewsletter(itemNumber, termNumbers, offset, elementsPerPage, orderBy, direction);
          }
 
          if (startIndex > 0) {
@@ -149,26 +147,25 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          if (StringUtils.isEmpty(indexPosition)) {
             setAttribute(req, INDEX_POSITION, "bottom");
          }
-      }
-      else {
+      } else {
          setMetaData(req, elementId);
       }
-   }       
-  
+   }
+
    public int getOffset(int currentPage, int pageSize) {
       return ((currentPage - 1) * pageSize) + 1;
    }
-   
+
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
-      
+
       String orderBy = request.getParameter(ARTICLES_SORT_ORDERBY);
       String direction = request.getParameter(ARTICLES_SORT_DIRECTION);
       setPortletParameter(portletId, ARTICLES_SORT_ORDERBY, orderBy);
       setPortletParameter(portletId, ARTICLES_SORT_DIRECTION, direction);
-      
+
       setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
       setPortletParameter(portletId, ELEMENTS_PER_PAGE, request.getParameter(ELEMENTS_PER_PAGE));
       setPortletParameter(portletId, SHOW_PAGES, request.getParameter(SHOW_PAGES));

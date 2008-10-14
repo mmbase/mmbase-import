@@ -5,17 +5,17 @@ import java.util.Date;
 public class NewsletterBounce {
 
    private int userId;
-   
+
    private int newsletterId;
-   
+
    private String userName;
-   
+
    private String newsLetterTitle;
-   
+
    private int id;
-   
+
    private Date bounceDate;
-   
+
    private String bounceContent;
 
    public int getUserId() {
@@ -73,5 +73,5 @@ public class NewsletterBounce {
    public void setBounceContent(String bounceContent) {
       this.bounceContent = bounceContent;
    }
-   
+
 }

@@ -23,7 +23,7 @@ public abstract class NewsletterSubscriptionUtil {
    public static final int SUBSCRIPTION_STATUS_TERMINATED = 0;
    public static final int SUBSCRIPTION_STATUS_ACTIVE = 1;
    public static final int SUBSCRIPTION_STATUS_PAUSED = 2;
-   public static final int SUBSCRIPTION_STATUS_DEFAULT  = SUBSCRIPTION_STATUS_ACTIVE;
+   public static final int SUBSCRIPTION_STATUS_DEFAULT = SUBSCRIPTION_STATUS_ACTIVE;
    public static final String STATUS_OPTIONS = "statusoptions";
 
    private static List<Integer> statusOptions = new ArrayList<Integer>();
@@ -38,11 +38,11 @@ public abstract class NewsletterSubscriptionUtil {
       return (users);
    }
 
-   public static List<Integer > getStatusOptions() {
+   public static List<Integer> getStatusOptions() {
       return (statusOptions);
    }
 
-    public static Subscription convertFromNode(Node node) {
+   public static Subscription convertFromNode(Node node) {
       Subscription subscription = new Subscription();
       subscription.setId(node.getIntValue("number"));
       subscription.setMimeType(node.getStringValue("format"));
