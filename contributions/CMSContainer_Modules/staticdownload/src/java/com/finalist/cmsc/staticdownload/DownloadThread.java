@@ -779,7 +779,7 @@ public class DownloadThread extends Thread {
                   }
                }
             }
-            String str = regularJudge("[\\s.]*background-image:\\s*url.*",
+            String str = regularJudge("[\\s.]*background[-image]?:\\s*url.*",
                   tempString);
             if (StringUtils.isNotEmpty(str)) {
                String targetName = regularJudge("[\\w/]*\\." + suffix, str);
