@@ -57,7 +57,7 @@ public class NewsletterGenerator {
 
          return (inputString);
       } catch (Exception e) {
-         log.debug("Error when try to get content from" + urlPath, e);
+         log.error("Error when try to get content from" + urlPath, e);
       }
 
       return inputString;
