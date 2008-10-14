@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.51 2008-04-25 16:55:45 andre Exp $
+    @version $Id: list.xsl,v 1.52 2008-10-14 12:51:19 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -59,7 +59,7 @@
   <xsl:template name="javascript">
     <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
-    </script> 
+    </script>
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
@@ -402,17 +402,18 @@
   </xsl:template>
 
   <xsl:template match="field">
-    <td class="field">
-      <xsl:if test="position() &gt; 1">
-        <nobr>
+    <td class="field mm_{$objecttype}_{@fieldname} pos{position()}">
+      <xsl:choose>
+        <xsl:when test="position() &gt; 1">
           <xsl:call-template name="writeCurrentField" />
-        </nobr>
-      </xsl:if>
-      <xsl:if test="position()=1">
-        <xsl:call-template name="writeCurrentField" />
-        <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-      </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="writeCurrentField" />
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </td>
   </xsl:template>
+
 
 </xsl:stylesheet>
