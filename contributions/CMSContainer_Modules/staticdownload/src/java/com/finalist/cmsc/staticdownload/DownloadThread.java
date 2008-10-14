@@ -580,14 +580,13 @@ public class DownloadThread extends Thread {
                               }
                            }
                         }
-                        
+                        if(newUrl.indexOf(".") == -1) {
+                           newUrl += ".html";
+                        }
                         if(iCount > 0) {
                            for(int j = 0 ; j < iCount; j++) {
                               newUrl = "../"+newUrl;
                            }
-                        }
-                        if(newUrl.indexOf(".") == -1) {
-                           newUrl += ".html";
                         }
                         tempString = tempString.replace(urls, newUrl);
                         log.info("#################     newUrl=========>"+newUrl);
