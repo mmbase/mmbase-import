@@ -434,7 +434,7 @@ disable0()
 enable3()
 //einde nieuw
 jsc_ClearUnselectedOptions();
-<% kartTypes = (ArrayList) selKaaratMap.get("Coordinaten"); %>
+<% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
 <mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Coordinaten' AND hidden = '0'">
