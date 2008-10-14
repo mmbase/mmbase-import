@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.31 2008-08-08 08:05:48 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.32 2008-10-14 11:04:32 michiel Exp $
  * @since  MMBase-1.7
  */
 class EmailHandler {
@@ -314,7 +314,7 @@ class EmailHandler {
 
                 }
                 if (! mailResult) {
-                    log.debug("Email -> mail failed");
+                    log.warn("Mail to " + to.email + " failed", exception);
                     node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
                     // add one to the sendmail counter
                     // refix numberofmailsend++;
