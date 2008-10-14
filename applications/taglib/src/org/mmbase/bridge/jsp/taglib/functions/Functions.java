@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.10 2008-08-05 12:18:46 sdeboer Exp $
+ * @version $Id: Functions.java,v 1.15.2.11 2008-10-14 15:33:56 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -85,6 +85,15 @@ public class Functions {
     }
 
 
+    /**
+     * This version of {@link escape(String, Object} simply asks for a string. This often work
+     * better in XSL {taglib:escape('text/xml', @link)} may otherwise give e.g. the toString of a
+     * NodeIterator, which we cannot recognize withouth introducing dependencies.
+     * @since MMBase-1.8.7
+     */
+    public static String escapeString(String escaper, String string) {
+        return escape(escaper, string);
+    }
     /**
      * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
      *
