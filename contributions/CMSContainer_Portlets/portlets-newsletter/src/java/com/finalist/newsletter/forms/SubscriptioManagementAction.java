@@ -28,9 +28,7 @@ import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.SubscriptionHibernateService;
 
 /**
- * 
  * @author Lisa
- * 
  */
 public class SubscriptioManagementAction extends DispatchActionSupport {
 
@@ -78,7 +76,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
     * unspecified searching of newsletter subscription with sorting, ordering, paging
     */
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws Exception {
+                                       HttpServletResponse response) throws Exception {
 
       log.debug("No parameter specified,go to dashboard");
 
@@ -94,7 +92,6 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    }
 
    /**
-    * 
     * @param mapping
     * @param form
     * @param request
@@ -102,7 +99,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
     * @return ActionForward
     */
    public ActionForward newsletterOverview(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                           HttpServletResponse response) {
 
       log.debug("Show newsletterOverview");
 
@@ -121,7 +118,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
    /**
     * listing all subscription of one newsletter
-    * 
+    *
     * @param mapping
     * @param form
     * @param request
@@ -129,7 +126,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
     * @return subscription list
     */
    public ActionForward listSubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                         HttpServletResponse response) {
 
       int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
 
@@ -151,13 +148,10 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
    /**
     * get newsletter related newsletter subscription information List
-    * 
-    * @param newsletterId
-    *           subscribed newsletter's Id
-    * @param name
-    *           subscriber's name
-    * @param email
-    *           subscriber's email address
+    *
+    * @param newsletterId subscribed newsletter's Id
+    * @param name         subscriber's name
+    * @param email        subscriber's email address
     * @return newsletter subscription list with information subscriber's user name, email address, authenticationId,user
     *         name,
     */
@@ -167,7 +161,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       Set<Long> authenticationIds = new HashSet<Long>();
       authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
       List<Object[]> qResults = subscriptionHService
-            .getSubscribersRelatedInfo(authenticationIds, name, "", email, true);
+               .getSubscribersRelatedInfo(authenticationIds, name, "", email, true);
       for (Object[] result : qResults) {
          String tmpFullName = result[0].toString() + " " + result[1].toString();
          String tmpEmail = result[2].toString();
@@ -180,16 +174,15 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
    /**
     * convert related information to Map
-    * 
-    * @param results
-    *           result list with information of newsletter subscription
+    *
+    * @param results          result list with information of newsletter subscription
     * @param fullName
     * @param userName
     * @param email
     * @param authenticationId
     */
    private void addToSubscriptionMap(List<Map<Object, Object>> results, String fullName, String userName, String email,
-         int authenticationId) {
+                                     int authenticationId) {
       Map<Object, Object> result = new LinkedHashMap<Object, Object>();
       result.put("fullname", fullName);
       result.put("username", userName);
@@ -209,7 +202,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    }
 
    public ActionForward listSubscriptionByPerson(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                                 HttpServletResponse response) {
       PagingUtils.initStatusHolder(request);
       int subscriberId = Integer.parseInt(request.getParameter(PARAM_SUBSRIBERID));
       String title = request.getParameter(PARAM_TITLE);
@@ -225,7 +218,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    }
 
    public ActionForward listSubscribers(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                        HttpServletResponse response) {
       log.debug("Show persons who have newsletter subscription");
       PagingUtils.initStatusHolder(request);
       String fullname = request.getParameter(PARAM_NAME);
@@ -246,7 +239,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       Set<Long> authenticationIds = new HashSet<Long>();
       authenticationIds = subscriptionServices.getAuthenticationIds();
       List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email,
-            true);
+               true);
       for (Object[] result : qResults) {
          String tmpFullName = result[0].toString() + " " + result[1].toString();
          String tmpEmail = result[2].toString();
@@ -263,13 +256,13 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       authenticationIds = subscriptionServices.getAuthenticationIds();
       if (authenticationIds.size() > 0) {
          resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, false)
-               .size();
+                  .size();
       }
       return resultCount;
    }
 
    public ActionForward showImportPage(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                       HttpServletResponse response) {
       log.debug("Show import page");
       String importType = request.getParameter(PARAM_IMPORTTYPE);
       if (StringUtils.isNotEmpty(importType)) {
@@ -281,7 +274,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    }
 
    public ActionForward unsubscribe(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) {
+                                    HttpServletResponse response) {
       String[] newsletterIds = request.getParameterValues("ids");
       for (String id : newsletterIds) {
          subscriptionServices.unSubscribeAllInNewsletter(Integer.decode(id));

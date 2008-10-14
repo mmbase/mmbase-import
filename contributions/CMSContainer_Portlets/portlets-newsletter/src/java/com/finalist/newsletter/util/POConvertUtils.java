@@ -17,16 +17,16 @@ public class POConvertUtils<T> {
 
          for (Method method : targetFields) {
             String name = method.getName();
-            if("setId".equals(name)){
+            if ("setId".equals(name)) {
                BeanUtils.setProperty(target, "id", node.getNumber());
             }
             if (null != getNodeValue(node, name)) {
-               String propertyName = name.substring(3,4).toLowerCase()+name.substring(4, name.length());
+               String propertyName = name.substring(3, 4).toLowerCase() + name.substring(4, name.length());
                BeanUtils.setProperty(target, propertyName, getNodeValue(node, name));
             }
          }
       } catch (Exception e) {
-        log.error("Error when convert node to pojo",e);
+         log.error("Error when convert node to pojo", e);
       }
 
 
@@ -52,7 +52,7 @@ public class POConvertUtils<T> {
    private String[] getPropertieNames(String methodName) {
       methodName = methodName.substring(3, methodName.length());
 
-      String[] names = new String[]{methodName.toLowerCase(),""};
+      String[] names = new String[]{methodName.toLowerCase(), ""};
 
       StringBuffer buffer = new StringBuffer();
 

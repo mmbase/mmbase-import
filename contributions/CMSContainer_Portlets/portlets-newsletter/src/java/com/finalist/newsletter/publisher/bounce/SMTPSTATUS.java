@@ -43,8 +43,8 @@ public enum SMTPSTATUS {
       INIT.init("MAIL FROM:", "<MAILFROM", null, "503 That's not nice! Polite people say HELO first\r\n");
       INIT.init("MAIL FROM:", ">MAILFROM", null, "503 You cannot specify MAIL FROM after a RCPT TO\r\n");
       INIT.init("MAIL FROM:", "=MAILFROM", RCPTTO, "250 That address looks okay, I'll allow you to send mail.\r\n");
-      INIT.init("RCPT TO:", "<RCPTTO", null,"503 You should say MAIL FROM first\r\n");
-      INIT.init("RCPT TO:", ">=DATA", null,"503 You cannot use RCPT TO: at this state\r\n");
+      INIT.init("RCPT TO:", "<RCPTTO", null, "503 You should say MAIL FROM first\r\n");
+      INIT.init("RCPT TO:", ">=DATA", null, "503 You cannot use RCPT TO: at this state\r\n");
    }
 
    SMTPSTATUS(int index) {
@@ -53,10 +53,10 @@ public enum SMTPSTATUS {
 
    private void init(String command, String condition, SMTPSTATUS targetStatus, String response) {
       if (null == statusMap.get(command)) {
-         statusMap.put(command, new HashMap<String,Action>());
+         statusMap.put(command, new HashMap<String, Action>());
       }
 
-      Map<String,Action> conditionMap = statusMap.get(command);
+      Map<String, Action> conditionMap = statusMap.get(command);
 
       conditionMap.put(condition, new SMTPSTATUS.Action(targetStatus, response));
 
@@ -64,7 +64,7 @@ public enum SMTPSTATUS {
 
    public SMTPSTATUS.Action change(String command) {
 
-      Map<String,Action> conditionMap = new HashMap<String,Action>();
+      Map<String, Action> conditionMap = new HashMap<String, Action>();
 
       for (String key : statusMap.keySet()) {
          if (command.startsWith(key)) {
@@ -75,7 +75,7 @@ public enum SMTPSTATUS {
 
       for (String condition : conditionMap.keySet()) {
          if (veryfyCondition(condition)) {
-            
+
             Action action = conditionMap.get(condition);
             if (null == action.getStatus()) {
                action.setStatus(this);

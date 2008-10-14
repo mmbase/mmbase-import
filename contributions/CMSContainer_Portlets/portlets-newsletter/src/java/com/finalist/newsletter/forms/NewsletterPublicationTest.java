@@ -19,10 +19,14 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
-	/** name of submit button in jsp to confirm removal */
+   /**
+    * name of submit button in jsp to confirm removal
+    */
    private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
+   /**
+    * name of submit button in jsp to cancel removal
+    */
    private static final String ACTION_CANCEL = "cancel";
 
    @Override
@@ -54,7 +58,7 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
       if (isCancelAction(request)) {
          String forwardPath = mapping.findForward("cancel").getPath();
-         forwardPath = forwardPath.concat("?showpage=" + number);		
+         forwardPath = forwardPath.concat("?showpage=" + number);
          return new ActionForward(forwardPath);
       }
       // neither remove or cancel, show confirmation page

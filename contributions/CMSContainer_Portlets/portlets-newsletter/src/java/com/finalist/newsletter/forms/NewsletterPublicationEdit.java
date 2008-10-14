@@ -22,7 +22,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 /**
  * Newsletter Publication Edit Action
- * 
+ *
  * @author Lisa
  */
 public class NewsletterPublicationEdit extends MMBaseFormlessAction {
@@ -30,8 +30,8 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
     * @param mapping
     * @param request
     * @param cloud
-    * @throws Exception
     * @return ActionForward refresh NewsletterList
+    * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
@@ -43,9 +43,9 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
          String objectnumber = getParameter(request, "number", true);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="
-               + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath()
-               + URLEncoder.encode("?forward=") + forwardType + URLEncoder.encode("&number=") + objectnumber
-               + URLEncoder.encode("&parent=" + parent));
+                  + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath()
+                  + URLEncoder.encode("?forward=") + forwardType + URLEncoder.encode("&number=") + objectnumber
+                  + URLEncoder.encode("&parent=" + parent));
          ret.setRedirect(true);
          return ret;
       } else {
@@ -57,7 +57,7 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
             ret = new ActionForward(mapping.findForward(forwardType).getPath() + "?newsletterId=" + parent);
          } else {
             ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + ewnodelastedited
-                  + "&fresh=fresh");
+                     + "&fresh=fresh");
          }
          ret.setRedirect(true);
          return ret;

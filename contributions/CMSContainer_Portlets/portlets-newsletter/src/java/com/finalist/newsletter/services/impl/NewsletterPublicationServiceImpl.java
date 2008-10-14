@@ -77,9 +77,8 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
    /**
     * deliver specific publication.
-    * 
-    * @param publicationId
-    *            The id of the publication to be sent out
+    *
+    * @param publicationId The id of the publication to be sent out
     */
    public Map<String, List<String>> deliver(int publicationId) {
 
@@ -148,7 +147,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    }
 
    public List<Publication> searchPublication(String title, String subject,
-         String description, String intro, boolean paging) {
+                                              String description, String intro, boolean paging) {
       return publicationCAO.getPublications(title, subject, description, intro, paging);
    }
 

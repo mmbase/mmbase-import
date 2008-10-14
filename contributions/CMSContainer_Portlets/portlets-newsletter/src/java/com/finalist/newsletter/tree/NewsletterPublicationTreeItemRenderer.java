@@ -38,7 +38,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
       if (SecurityUtil.isEditor(role)) {
          element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletterpublication.edit", "newsletter",
-               "../newsletter/NewsletterPublicationEdit.do?number=" + id));
+                  "../newsletter/NewsletterPublicationEdit.do?number=" + id));
 
          boolean isSingleApplication = true;
          boolean isPublished;
@@ -47,8 +47,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
             NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
             Publication.STATUS status = publicationService.getStatus(parentNode.getNumber());
             isPublished = Publication.STATUS.DELIVERED.equals(status);
-         }
-         else {
+         } else {
             isPublished = Publish.isPublished(parentNode);
          }
 
@@ -56,11 +55,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished)) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter",
-                  "../newsletter/NewsletterPublicationDelete.do?number=" + id));
+                     "../newsletter/NewsletterPublicationDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
-                  "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+                     "../newsletter/NewsletterPublicationPublish.do?number=" + id));
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.test", "newsletter",
-                  "../newsletter/NewsletterPublicationTest.do?number=" + id));
+                     "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
@@ -69,7 +68,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
-                  "../workflow/publish.jsp?number=" + id));
+                     "../workflow/publish.jsp?number=" + id));
          }
       }
 

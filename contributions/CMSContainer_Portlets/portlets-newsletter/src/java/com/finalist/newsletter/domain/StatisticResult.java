@@ -5,11 +5,12 @@ import java.util.Date;
 public class StatisticResult {
 
    public enum HANDLE {
-      BOUNCE,ACTIVE,INACTIVE,REMOVE,POST
+      BOUNCE, ACTIVE, INACTIVE, REMOVE, POST
    }
+
    private int newsletterId = 0;
 
-   private int userId=0;
+   private int userId = 0;
 
    private String name;
 
@@ -27,92 +28,92 @@ public class StatisticResult {
 
    private String showingdate;
 
-   public String getShowingdate (){
+   public String getShowingdate() {
 
       return showingdate;
    }
 
-   public void setShowingdate (String showingdate){
+   public void setShowingdate(String showingdate) {
 
       this.showingdate = showingdate;
    }
 
-   public int getNewsletterId (){
+   public int getNewsletterId() {
 
       return newsletterId;
    }
 
-   public void setNewsletterId (int newsletterId){
+   public void setNewsletterId(int newsletterId) {
 
       this.newsletterId = newsletterId;
    }
 
-   public String getName (){
+   public String getName() {
 
       return name;
    }
 
-   public void setName (String name){
+   public void setName(String name) {
 
       this.name = name;
    }
 
-   public int getPost (){
+   public int getPost() {
 
       return post;
    }
 
-   public void setPost (int post){
+   public void setPost(int post) {
 
       this.post = post;
    }
 
-   public int getBounches (){
+   public int getBounches() {
 
       return bounches;
    }
 
-   public void setBounches (int bounches){
+   public void setBounches(int bounches) {
 
       this.bounches = bounches;
    }
 
-   public int getSubscribe (){
+   public int getSubscribe() {
 
       return subscribe;
    }
 
-   public void setSubscribe (int subscribe){
+   public void setSubscribe(int subscribe) {
 
       this.subscribe = subscribe;
    }
 
-   public int getUnsubscribe (){
+   public int getUnsubscribe() {
 
       return unsubscribe;
    }
 
-   public void setUnsubscribe (int unsubscribe){
+   public void setUnsubscribe(int unsubscribe) {
 
       this.unsubscribe = unsubscribe;
    }
 
-   public int getRemoved (){
+   public int getRemoved() {
 
       return removed;
    }
 
-   public void setRemoved (int removed){
+   public void setRemoved(int removed) {
 
       this.removed = removed;
    }
 
-   public Date getLogdate (){
+   public Date getLogdate() {
 
       return logdate;
    }
 
-   public void setLogdate (Date logdate){
+   public void setLogdate(Date logdate) {
 
       this.logdate = logdate;
    }
@@ -124,7 +125,6 @@ public class StatisticResult {
    public void setUserId(int userId) {
       this.userId = userId;
    }
-
 
 
 }

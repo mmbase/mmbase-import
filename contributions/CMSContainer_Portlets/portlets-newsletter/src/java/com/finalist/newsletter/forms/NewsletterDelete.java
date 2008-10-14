@@ -24,29 +24,27 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 /**
  * Newsletter Delete Action
- * 
+ *
  * @author Lisa Chen
- * 
  */
 public class NewsletterDelete extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
+   /**
+    * name of submit button in jsp to confirm removal
+    */
    private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
+   /**
+    * name of submit button in jsp to cancel removal
+    */
    private static final String ACTION_CANCEL = "cancel";
 
    /**
-    * 
-    * @param mapping
-    *           Description of Parameter
-    * @param request
-    *           Description of Parameter
-    * @param cloud
-    *           Description of Parameter
-    * @exception Exception
-    *               Description of Exception
+    * @param mapping Description of Parameter
+    * @param request Description of Parameter
+    * @param cloud   Description of Parameter
     * @return ActionForward refreshing newsletter list
+    * @throws Exception Description of Exception
     */
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 

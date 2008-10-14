@@ -4,7 +4,7 @@ import org.apache.struts.action.ActionForm;
 
 /**
  * ActionForm Bean of NewsletterPublicationManage
- * 
+ *
  * @author Lisa
  */
 
@@ -21,8 +21,7 @@ public class NewsletterPublicationManageForm extends ActionForm {
    }
 
    /**
-    * @param title
-    *           the title to set
+    * @param title the title to set
     */
    public void setTitle(String title) {
       this.title = title;
@@ -36,8 +35,7 @@ public class NewsletterPublicationManageForm extends ActionForm {
    }
 
    /**
-    * @param subject
-    *           the subject to set
+    * @param subject the subject to set
     */
    public void setSubject(String subject) {
       this.subject = subject;
@@ -51,8 +49,7 @@ public class NewsletterPublicationManageForm extends ActionForm {
    }
 
    /**
-    * @param period
-    *           the period to set
+    * @param period the period to set
     */
    public void setPeriod(String period) {
       this.period = period;

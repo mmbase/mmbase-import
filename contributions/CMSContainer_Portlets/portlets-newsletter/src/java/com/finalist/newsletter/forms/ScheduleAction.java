@@ -1,4 +1,5 @@
 package com.finalist.newsletter.forms;
+
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,58 +12,54 @@ import com.finalist.newsletter.domain.Schedule;
 import com.finalist.newsletter.schedule.*;
 import com.finalist.newsletter.util.NewsletterUtil;
 
-public class ScheduleAction  extends DispatchAction{
+public class ScheduleAction extends DispatchAction {
 
 
    public ActionForward transform(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
-      Map<String,Object> requestParameters = new HashMap<String,Object>();
+                                  HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+      Map<String, Object> requestParameters = new HashMap<String, Object>();
       AbstractSchedule schedule = null;
       //type calendar type , 1 once ,2 daily ,3 weekly ,4 monthly
       String type = request.getParameter("type");
       String hour = request.getParameter("hour");
       String minute = request.getParameter("minute");
-      if(type != null) {
+      if (type != null) {
          requestParameters.put("hour", hour);
          requestParameters.put("minute", minute);
-         if(type.equals("1")) {
+         if (type.equals("1")) {
             String date = request.getParameter("date");
 
             requestParameters.put("date", date);
             schedule = new SingleSchedule();
-         }
-         else if(type.equals("2")) {
+         } else if (type.equals("2")) {
             String date = request.getParameter("date");
             requestParameters.put("date", date);
 
             String strategy = request.getParameter("strategy");
             requestParameters.put("approach", strategy);
 
-            if(strategy != null && strategy.equals("2")) {
+            if (strategy != null && strategy.equals("2")) {
                String interval = request.getParameter("interval");
                requestParameters.put("interval", interval);
             }
             schedule = new DailySchedule();
 
-         }
-         else if(type.equals("3")) {
+         } else if (type.equals("3")) {
             String interval = request.getParameter("interval");
             requestParameters.put("interval", interval);
             String[] weeks = request.getParameterValues("weeks");
             requestParameters.put("weeks", getWeeks(weeks));
             schedule = new WeeklySchedule();
-         }
-         else {
+         } else {
             String strategy = request.getParameter("strategy");
             requestParameters.put("strategy", strategy);
 
-            if(strategy != null) {
-               if(strategy.equals("0")) {
+            if (strategy != null) {
+               if (strategy.equals("0")) {
                   String day = request.getParameter("day");
                   requestParameters.put("day", day);
-               }
-               else if (strategy.equals("1")) {
+               } else if (strategy.equals("1")) {
                   String whichweek = request.getParameter("whichweek");
                   requestParameters.put("whichweek", whichweek);
 
@@ -80,41 +77,41 @@ public class ScheduleAction  extends DispatchAction{
          String expression = Service.transform();
          response.setContentType("text/xml");
 
-         response.getWriter().print("<expression>"+expression+"</expression>");
+         response.getWriter().print("<expression>" + expression + "</expression>");
       }
       return null;
    }
 
    public ActionForward getSchedules(ActionMapping mapping, ActionForm form,
-      HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+                                     HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
       response.setContentType("text/xml");
       response.setCharacterEncoding("utf-8");
       StringBuffer sb = new StringBuffer();
       String newsletterId = request.getParameter("newsletterid");
       List<Schedule> schedules = NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(newsletterId));
-      for(Schedule schedule : schedules) {
+      for (Schedule schedule : schedules) {
          sb.append("<schedule>");
-         sb.append("<number>"+schedule.getId()+"</number>");
-         sb.append("<expression>"+schedule.getExpression()+"</expression>");
-         sb.append("<description>"+schedule.getScheduleDescription()+"</description>");
+         sb.append("<number>" + schedule.getId() + "</number>");
+         sb.append("<expression>" + schedule.getExpression() + "</expression>");
+         sb.append("<description>" + schedule.getScheduleDescription() + "</description>");
          sb.append("</schedule>");
       }
-      response.getWriter().print("<schedules>"+sb.toString()+"</schedules>");
+      response.getWriter().print("<schedules>" + sb.toString() + "</schedules>");
       return null;
    }
 
    public ActionForward deleteSchedule(ActionMapping mapping, ActionForm form,
-      HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+                                       HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
       String scheduleId = request.getParameter("scheduleid");
       NewsletterUtil.deleteSchedule(Integer.valueOf(scheduleId));
       return null;
    }
 
    public ActionForward restoreSchedule(ActionMapping mapping, ActionForm form,
-      HttpServletRequest request, HttpServletResponse response)
-         throws Exception {
+                                        HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
       String scheduleId = request.getParameter("scheduleid");
       NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(scheduleId));
       return null;
@@ -122,6 +119,7 @@ public class ScheduleAction  extends DispatchAction{
 
    /**
     * from array to String
+    *
     * @param args
     * @return
     */

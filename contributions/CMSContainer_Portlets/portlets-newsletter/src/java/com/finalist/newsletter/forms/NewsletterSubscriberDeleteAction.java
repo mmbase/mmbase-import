@@ -14,9 +14,8 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 /**
  * using for deleting newsletter subscriber from newsletter
- * 
+ *
  * @author Lisa
- * 
  */
 public class NewsletterSubscriberDeleteAction extends MMBaseFormlessAction {
 

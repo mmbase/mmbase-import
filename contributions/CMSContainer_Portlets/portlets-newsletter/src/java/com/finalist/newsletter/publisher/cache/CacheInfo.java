@@ -1,8 +1,8 @@
 package com.finalist.newsletter.publisher.cache;
 
 /**
- * @author nikko yin 
- * CacheInfo is infoBean has getter and setter
+ * @author nikko yin
+ *         CacheInfo is infoBean has getter and setter
  */
 public class CacheInfo {
 

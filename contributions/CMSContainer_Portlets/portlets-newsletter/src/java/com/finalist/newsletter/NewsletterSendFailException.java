@@ -1,6 +1,6 @@
 package com.finalist.newsletter;
 
-public class NewsletterSendFailException extends RuntimeException{
+public class NewsletterSendFailException extends RuntimeException {
    public NewsletterSendFailException() {
    }
 

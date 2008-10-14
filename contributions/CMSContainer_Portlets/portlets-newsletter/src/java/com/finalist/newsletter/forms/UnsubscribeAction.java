@@ -19,15 +19,14 @@ public class UnsubscribeAction extends Action {
 
    private static final String ACTION_REMOVE = "remove";
 
-   NewsletterSubscriptionServices service ;
-
+   NewsletterSubscriptionServices service;
 
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                 HttpServletResponse response) throws Exception {
       service = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-      log.debug("Excute unsubscribe");      
+      log.debug("Excute unsubscribe");
       int userId = Integer.parseInt(request.getParameter("userId"));
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 

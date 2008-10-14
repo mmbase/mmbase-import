@@ -4,9 +4,8 @@ import org.apache.struts.action.ActionForm;
 
 /**
  * Formbean of NewsletterPublication
- * 
+ *
  * @author Lisa
- * @version
  */
 public class NewsletterPublicationForm extends ActionForm {
 
@@ -23,8 +22,7 @@ public class NewsletterPublicationForm extends ActionForm {
    }
 
    /**
-    * @param title
-    *           the title to set
+    * @param title the title to set
     */
    public void setTitle(String title) {
       this.title = title;
@@ -38,8 +36,7 @@ public class NewsletterPublicationForm extends ActionForm {
    }
 
    /**
-    * @param description
-    *           the description to set
+    * @param description the description to set
     */
    public void setDescription(String description) {
       this.description = description;
@@ -53,8 +50,7 @@ public class NewsletterPublicationForm extends ActionForm {
    }
 
    /**
-    * @param subject
-    *           the subject to set
+    * @param subject the subject to set
     */
    public void setSubject(String subject) {
       this.subject = subject;
@@ -68,8 +64,7 @@ public class NewsletterPublicationForm extends ActionForm {
    }
 
    /**
-    * @param intro
-    *           the intro to set
+    * @param intro the intro to set
     */
    public void setIntro(String intro) {
       this.intro = intro;

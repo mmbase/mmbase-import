@@ -47,7 +47,7 @@ public class CommunityModuleAdapter {
          return -1;
       }
 
-     return person.getAuthenticationId().intValue();
+      return person.getAuthenticationId().intValue();
    }
 
    public static Person getUserById(String id) {
@@ -62,7 +62,7 @@ public class CommunityModuleAdapter {
    public static String getUserNameByAuthenticationId(int authenticationId) {
       AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory.getApplicationContext().getBean("authenticationService");
       com.finalist.cmsc.services.community.security.Authentication authentication = authenticationService.getAuthenticationById(new Long(authenticationId));
-      if(authentication != null) {
+      if (authentication != null) {
          return authentication.getUserId();
       }
       return null;

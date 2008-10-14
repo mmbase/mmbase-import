@@ -19,10 +19,10 @@ import com.finalist.newsletter.domain.NewsletterBounce;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 
 public class NewsletterBounceUtil {
-   
+
    private static Log log = LogFactory.getLog(NewsletterBounceUtil.class);
 
-   public static List<NewsletterBounce> getBounceRecord(int offset,int pageSize){
+   public static List<NewsletterBounce> getBounceRecord(int offset, int pageSize) {
       List<NewsletterBounce> bounces = new ArrayList<NewsletterBounce>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager bounceManager = cloud.getNodeManager("newsletterbounce");
@@ -33,61 +33,61 @@ public class NewsletterBounceUtil {
       bounces = convertNodeListToList(bounceNodes);
       return bounces;
    }
-   
+
    public static int getTotalCount() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeList bounces = SearchUtil.findNodeList(cloud, "newsletterbounce");
-      if(bounces != null) {
+      if (bounces != null) {
          return bounces.size();
       }
       return (0);
    }
-   
+
    public static List<NewsletterBounce> convertNodeListToList(NodeList bounceNodes) {
-      if(bounceNodes == null || bounceNodes.size() <1){
+      if (bounceNodes == null || bounceNodes.size() < 1) {
          return null;
       }
       List<NewsletterBounce> bounces = new ArrayList<NewsletterBounce>();
-      for(int i = 0 ; i < bounceNodes.size() ; i++) {
+      for (int i = 0; i < bounceNodes.size(); i++) {
          Node bounceNode = bounceNodes.getNode(i);
-         if(bounceNode == null){
+         if (bounceNode == null) {
             continue;
          }
          NewsletterBounce bounce = new NewsletterBounce();
-         copyProperties(bounceNode,bounce);
+         copyProperties(bounceNode, bounce);
          bounces.add(bounce);
       }
       return bounces;
    }
-   
-   public static void copyProperties(Node srcBounceNode,NewsletterBounce desBounce){
+
+   public static void copyProperties(Node srcBounceNode, NewsletterBounce desBounce) {
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       desBounce.setId(srcBounceNode.getNumber());
       desBounce.setNewsletterId(srcBounceNode.getIntValue("newsletter"));
       desBounce.setUserId(srcBounceNode.getIntValue("userid"));
 
-      if(srcBounceNode.getIntValue("newsletter") > 0){
+      if (srcBounceNode.getIntValue("newsletter") > 0) {
          Node publicationNode = cloud.getNode(srcBounceNode.getIntValue("newsletter"));
          desBounce.setNewsLetterTitle(publicationNode.getStringValue("title"));
       }
-      if(srcBounceNode.getIntValue("userid") > 0 ){
+      if (srcBounceNode.getIntValue("userid") > 0) {
          String userName = CommunityModuleAdapter.getUserNameByAuthenticationId(srcBounceNode.getIntValue("userid"));
-         if(userName != null){
+         if (userName != null) {
             desBounce.setUserName(userName);
          }
       }
 
       desBounce.setBounceDate(srcBounceNode.getDateValue("bouncedate"));
       desBounce.setBounceContent(srcBounceNode.getStringValue("content"));
-      
-   }   
-    
-   public static NewsletterBounce getNewsletterBounce(int number){
+
+   }
+
+   public static NewsletterBounce getNewsletterBounce(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node bounceNode = cloud.getNode(number);
       NewsletterBounce bounce = new NewsletterBounce();
-      copyProperties(bounceNode,bounce);
+      copyProperties(bounceNode, bounce);
       return bounce;
    }
 }

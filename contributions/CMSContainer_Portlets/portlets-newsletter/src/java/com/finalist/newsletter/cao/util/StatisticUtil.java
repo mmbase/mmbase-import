@@ -9,7 +9,7 @@ import com.finalist.newsletter.domain.StatisticResult;
 
 public class StatisticUtil {
 
-   public List<StatisticResult> convertFromNodeList (NodeList nodelist){
+   public List<StatisticResult> convertFromNodeList(NodeList nodelist) {
 
       List<StatisticResult> list = new ArrayList<StatisticResult>();
       for (int i = 0; i < nodelist.size(); i++) {

@@ -28,7 +28,7 @@ public class NewsletterPause extends MMBaseFormlessAction {
       Node newsletterNode = cloud.getNode(objectnumber);
 
       int number = newsletterNode.getNumber();
-      NewsletterUtil.pauseNewsletter(number);      
+      NewsletterUtil.pauseNewsletter(number);
 
       return mapping.findForward(SUCCESS);
    }

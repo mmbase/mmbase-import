@@ -323,21 +323,21 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       return newsletters;
    }
 
-   public List<Newsletter> getNewslettersByScription(int subscriberId, String title, boolean paging){
+   public List<Newsletter> getNewslettersByScription(int subscriberId, String title, boolean paging) {
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
-      
+
       NodeManager subscriptionNodeManager = cloud.getNodeManager("subscriptionrecord");
       NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
       NodeQuery query = cloud.createNodeQuery();
       Step subscriptionStep = query.addStep(subscriptionNodeManager);
       query.setNodeStep(subscriptionStep);
-      if(subscriberId>0){
+      if (subscriberId > 0) {
          SearchUtil.addEqualConstraint(query, subscriptionNodeManager.getField("subscriber"), Integer.toString(subscriberId));
       }
-      RelationStep newsletterRelStep = query.addRelationStep(newsletterNodeManager, "newslettered","source");
+      RelationStep newsletterRelStep = query.addRelationStep(newsletterNodeManager, "newslettered", "source");
       Step newsletterStep = newsletterRelStep.getNext();
       query.setNodeStep(newsletterStep);
-      if(StringUtils.isNotBlank(title)){
+      if (StringUtils.isNotBlank(title)) {
          SearchUtil.addLikeConstraint(query, newsletterNodeManager.getField("title"), title);
       }
       if (paging) {
