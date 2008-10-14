@@ -18,10 +18,10 @@ public class TagCloudPortlet extends TagRelatedPortlet {
 	protected void doView(RenderRequest req, RenderResponse res)
 			throws PortletException, IOException {
 		PortletPreferences preferences = req.getPreferences();
-		String maxString = preferences.getValue("max", null);
+		String maxString = preferences.getValue("param_max", null);
 
 		Integer max = (maxString == null) ? null : Integer.parseInt(maxString);
-		String orderBy = preferences.getValue("orderBy", null);
+		String orderBy = preferences.getValue("param_orderBy", null);
 
 		List<Tag> tags = TagCloudUtil.getTags(max, orderBy, "up");
 		req.setAttribute("tags", tags);
