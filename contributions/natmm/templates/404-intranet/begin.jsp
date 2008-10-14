@@ -40,8 +40,8 @@
 
 <html>
   <head>
-      <link rel="stylesheet" type="text/css" href="css/main.css">
-     <link rel="stylesheet" type="text/css" href="css/groene_boomrand.css" />
+      <link rel="stylesheet" type="text/css" href="/nmintra/css/main.css">
+      <link rel="stylesheet" type="text/css" href="/nmintra/css/groene_boomrand.css" />
       <title>Foutmelding - <%=pageTitle%>: <%=messageAboutError%></title>
       <meta http-equiv="imagetoolbar" content="no">
 
@@ -91,10 +91,10 @@
   </head>
   <body onLoad="javascript:resizeBlocks();" onResize="javascript:resizeBlocks();">
 
-   <table background="media/styles/groene_boomrand.jpg" cellspacing="0" cellpadding="0" border="0">
+   <table background="/nmintra/media/styles/groene_boomrand.jpg" cellspacing="0" cellpadding="0" border="0">
 <tr>
   <td rowspan="3">
-      <img src="media/styles/groene_boomrand_logo.gif" title="www.natuurmonumenten.nl" 
+      <img src="/nmintra/media/styles/groene_boomrand_logo.gif" title="www.natuurmonumenten.nl" 
         style="position:absolute;z-index:2;left:2px;top:1px;" border="0">
   </td>
   <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
@@ -124,21 +124,21 @@
    </td>
 </tr>
 <tr>
-   <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
-   <td style="width:251px;"><img src="media/spacer.gif" width="251" height="12"></td>
+   <td style="width:70%;"><img src="/nmintra/media/spacer.gif" width="1" height="12"></td>
+   <td style="width:251px;"><img src="/nmintra/media/spacer.gif" width="251" height="12"></td>
 </tr>
       <tr>
-         <td class="black"><img src="media/spacer.gif" width="195" height="1"></td>
+         <td class="black"><img src="/nmintra/media/spacer.gif" width="195" height="1"></td>
 
          <td class="black" style="width:70%;"><img src="media/spacer.gif" width="1" height="1"></td>
-         <td class="black"><img src="media/spacer.gif" width="251" height="1"></td>
+         <td class="black"><img src="/nmintra/media/spacer.gif" width="251" height="1"></td>
       </tr>
    <tr>
       <td rowspan="2">
 <div class="navlist" id="navlist">
   <table border="0" cellpadding="0" cellspacing="0">
       <tr>
-          <td><img src="media/spacer.gif" width="158" height="35"></td>
+          <td><img src="/nmintra/media/spacer.gif" width="158" height="35"></td>
 
       </tr>
       <tr>
@@ -162,7 +162,7 @@
 <td ></td>
 <td><table border="0" cellpadding="0" cellspacing="0">
     <tr>
-        <td style="padding-right:10px;"><img src="media/spacer.gif" width="241" height="6"><br>
+        <td style="padding-right:10px;"><img src="/nmintra/media/spacer.gif" width="241" height="6"><br>
         <div align="right"></div></td>
 
     </tr>
