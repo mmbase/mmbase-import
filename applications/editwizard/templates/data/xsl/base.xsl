@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.35.2.2 2007-05-31 11:57:38 michiel Exp $
+    @version $Id: base.xsl,v 1.35.2.3 2008-10-14 12:48:17 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -347,7 +347,7 @@
         <xsl:value-of select="$nodes[lang($language)]" disable-output-escaping="yes" />
       </xsl:when>
       <!-- default to english -->
-      <xsl:when test="$nodes[lang(&apos;en&apos;)]">
+      <xsl:when test="$nodes[lang('en')]">
         <xsl:value-of select="$nodes[lang(&apos;en&apos;)]" disable-output-escaping="yes" />
       </xsl:when>
       <xsl:otherwise>

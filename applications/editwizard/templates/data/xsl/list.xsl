@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43.2.7 2008-03-03 10:35:34 andre Exp $
+    @version $Id: list.xsl,v 1.43.2.8 2008-10-14 12:48:17 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -61,7 +61,7 @@
   <xsl:template name="javascript">
     <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
-    </script> 
+    </script>
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
@@ -211,7 +211,7 @@
                   <input type="hidden" name="sessionkey" value="{$sessionkey}" />
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
-                    
+
                     <a href="javascript:document.forms[0].submit();">
                       <xsl:call-template name="prompt_search" />
                     </a>
@@ -404,16 +404,16 @@
   </xsl:template>
 
   <xsl:template match="field">
-    <td class="field">
-      <xsl:if test="position() &gt; 1">
-        <nobr>
+    <td class="field mm_{$objecttype}_{@fieldname} pos{position()}">
+      <xsl:choose>
+        <xsl:when test="position() &gt; 1">
           <xsl:call-template name="writeCurrentField" />
-        </nobr>
-      </xsl:if>
-      <xsl:if test="position()=1">
-        <xsl:call-template name="writeCurrentField" />
-        <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-      </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="writeCurrentField" />
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </td>
   </xsl:template>
 
