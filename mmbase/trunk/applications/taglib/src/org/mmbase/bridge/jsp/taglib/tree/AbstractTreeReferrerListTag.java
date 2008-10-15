@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.9 2008-10-15 12:36:59 michiel Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 
@@ -63,7 +63,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
     // ContextProvider implementation
 
     public ContextContainer getContextContainer() throws JspTagException {
-        return collector.getContextContainer();
+        return collector;
     }
 
 

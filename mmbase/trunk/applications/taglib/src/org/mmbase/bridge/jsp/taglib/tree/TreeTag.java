@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.26 2008-02-29 13:19:35 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.27 2008-10-15 12:36:46 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -139,7 +139,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector.getContextContainer();
+        return collector;
     }
 
 
