@@ -86,7 +86,7 @@ public abstract class Component {
 
     /**
      * Initializes the component. This is called during startup
-     * of Di\dactor. This method will be called every time your Didactor
+     * of Didactor. This method will be called every time your Didactor
      * installation is restarted.
      */
     public void init() {
@@ -365,6 +365,7 @@ public abstract class Component {
         if (setting == null) {
             throw new RuntimeException("Setting with name '" + settingName + "' is not defined for component '" + getName() + "'");
         }
+        if (cloud == null) cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
 
         org.mmbase.bridge.NodeList settingNodes;
         if (id == node.getNumber()) {

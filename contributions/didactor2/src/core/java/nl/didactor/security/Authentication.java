@@ -286,7 +286,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             } catch (SecurityException se) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute(REASON_KEY, se.getMessage());
-                log.service(se.getMessage());
+                log.service("For ac " + se.getMessage());
             }
         }
 

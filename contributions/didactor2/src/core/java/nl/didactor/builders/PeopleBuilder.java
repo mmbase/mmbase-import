@@ -59,7 +59,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 String storedPassword = node.getStringValue("password");
                 String md5 = "{md5}" + MD5.encode(password);
                 if (storedPassword == null || ! storedPassword.equals(md5)) {
-                    log.debug("Invalid password " + storedPassword + "!=" + md5);
+                    log.debug("Invalid password " + storedPassword + " != " + md5);
                     return null;
                 }
                 return node;
