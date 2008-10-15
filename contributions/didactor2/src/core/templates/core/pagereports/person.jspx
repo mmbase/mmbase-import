@@ -45,9 +45,24 @@
               </mm:listnodescontainer>
             </mm:listnodes>
 
-            <di:translate key="core.pragereports_average" />
-            <jsp:text>:  ${mmstats:times(totalmean, 1 / 60000)} </jsp:text>
-            <di:translate key="core.pragereports_minperlesson" />
+            <p>
+              <di:translate key="core.pagereports_average" />
+              <jsp:text>:  ${mmstats:times(totalmean, 1 / 60000)} </jsp:text>
+              <di:translate key="core.pragereports_minperlesson" />
+            </p>
+
+
+            <p>
+            <mm:field name="lastactivity">
+              <mm:fieldinfo type="guiname" />:
+              <mm:time format=":FULL.MEDIUM" />
+            </mm:field>
+            </p>
+            <mm:listnodescontainer type="pagestays">
+              <mm:constraint field="user" value="${person}" />
+              <mm:listnodes id="p" />
+              <p><di:translate key="core.pagereports_total" />: <fmt:formatNumber value="${mmstats:sum(p, 'duration') / 60000}" pattern="0.##" /> min</p>
+            </mm:listnodescontainer>
 
           </mm:node>
         </mm:node>
