@@ -48,7 +48,7 @@
             <p>
               <di:translate key="core.pagereports_average" />
               <jsp:text>:  ${mmstats:times(totalmean, 1 / 60000)} </jsp:text>
-              <di:translate key="core.pragereports_minperlesson" />
+              <di:translate key="core.pagereports_minperlesson" />
             </p>
 
 
