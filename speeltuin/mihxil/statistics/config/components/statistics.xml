@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="statistics"
+    version="0.2"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Statistiek</title>
+  <title xml:lang="en">Statistics</title>
+
+
+  <block name="example"
+         classification="mmbase.examples"
+         mimetype="text/html">
+    <body jsp="examples.jspx" />
+  </block>
+
+
+</component>
