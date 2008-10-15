@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.1 2008-10-15 14:32:09 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.2 2008-10-15 14:47:40 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -39,11 +39,13 @@
     <div class="mm_c" >
       <h1><xsl:value-of select="articleinfo/title" /></h1>
       <xsl:for-each select="articleinfo/authorgroup/author">
-        <em>
+        <span class="surname">
           <xsl:value-of select="surname" />
+        </span>
+        <span class="firstname">
           <xsl:text> </xsl:text>
           <xsl:value-of select="firstname" />
-        </em>
+        </span>
       </xsl:for-each>
       <xsl:apply-templates select="section" />
     </div>
@@ -56,6 +58,7 @@
     <xsl:if test="$depth=2"><xsl:apply-templates select="." mode="h3" /></xsl:if>
     <xsl:if test="$depth>2"><xsl:apply-templates select="." mode="deeper" /></xsl:if>
   </xsl:template>
+
 
   <xsl:template match="title" mode="h2">
     <h2><xsl:value-of select="text()" /></h2>
@@ -70,9 +73,31 @@
 
   <xsl:template match="section">
     <div id="{@id}">
-      <xsl:apply-templates select="title" />
-      <xsl:apply-templates select="para|section" />
+      <xsl:apply-templates select="*" />
     </div>
+  </xsl:template>
+
+  <xsl:template match="programlisting">
+    <pre id="{@id}">
+      <xsl:apply-templates select="text()|*" />
+    </pre>
+  </xsl:template>
+
+  <xsl:template match="para">
+    <p>
+      <xsl:apply-templates select="text()|*" />
+    </p>
+  </xsl:template>
+
+  <xsl:template match="itemizedlist">
+    <ul>
+      <xsl:apply-templates select="*" />
+    </ul>
+  </xsl:template>
+  <xsl:template match="listitem">
+    <li>
+      <xsl:apply-templates select="*" />
+    </li>
   </xsl:template>
 
 </xsl:stylesheet>
