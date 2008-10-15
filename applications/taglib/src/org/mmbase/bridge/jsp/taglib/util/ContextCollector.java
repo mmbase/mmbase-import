@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.20 2006-11-22 14:47:38 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.21 2008-10-15 12:36:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
@@ -41,7 +41,7 @@ public class  ContextCollector extends StandaloneContextContainer {
         }
     }
 
-    protected BasicBacking createBacking(PageContext pc) {
+    @Override protected BasicBacking createBacking(PageContext pc) {
         return new BasicBacking(pc, parent instanceof PageContextContainer) {
                 public Object put(String key, Object value) {
                     if (log.isDebugEnabled()) {
@@ -63,24 +63,17 @@ public class  ContextCollector extends StandaloneContextContainer {
     }
 
 
-    public void unRegister(String key) throws JspTagException {
+    @Override public void unRegister(String key) throws JspTagException {
         super.unRegister(key);
         parent.unRegister(key);
 
     }
-    protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
+    @Override protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (! check) {
             parent.unRegister(newid);
         }
         super.register(newid, n, check, checkParent);
 
-    }
-
-    /**
-     * @deprecated
-     */
-    public ContextContainer getContextContainer() {
-        return this;
     }
 
 
@@ -89,7 +82,7 @@ public class  ContextCollector extends StandaloneContextContainer {
         clear();
     }
 
-    public void release(PageContext pc, ContextContainer p) {
+    @Override public void release(PageContext pc, ContextContainer p) {
         parentCheckedKeys.clear();
         super.release(pc, p);
     }
