@@ -14,21 +14,21 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class PortletRequestContext implements RequestContext {
-    private ActionRequest request;
+   private ActionRequest request;
 
-    public PortletRequestContext(ActionRequest request) {
-        this.request = request;
-    }
+   public PortletRequestContext(ActionRequest request) {
+      this.request = request;
+   }
 
-    public String getContentType() {
-        return request.getContentType();
-    }
+   public String getContentType() {
+      return request.getContentType();
+   }
 
-    public int getContentLength() {
-        return request.getContentLength();
-    }
+   public int getContentLength() {
+      return request.getContentLength();
+   }
 
-    public InputStream getInputStream() throws IOException {
-        return request.getPortletInputStream();
-    }
+   public InputStream getInputStream() throws IOException {
+      return request.getPortletInputStream();
+   }
 }

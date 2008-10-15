@@ -13,12 +13,12 @@ public class JForumSSO implements SSO {
       String user = null;
       if (requestContext.getSessionContext().getAttribute("username") != null) {
          user = (String) requestContext.getSessionContext().getAttribute(
-               "username");
+                  "username");
       }
       return user;
    }
 
-   public boolean isSessionValid(UserSession userSession,RequestContext requestContext) {
+   public boolean isSessionValid(UserSession userSession, RequestContext requestContext) {
 
       String remoteUser = null;
       if (requestContext.getSessionContext().getAttribute("username") != null)
@@ -29,13 +29,13 @@ public class JForumSSO implements SSO {
          return false;
 
          // user has since logged in
-      } 
-      else if (remoteUser != null && userSession.getUserId() == SystemGlobals.getIntValue(ConfigKeys.ANONYMOUS_USER_ID)) {
+      } else
+      if (remoteUser != null && userSession.getUserId() == SystemGlobals.getIntValue(ConfigKeys.ANONYMOUS_USER_ID)) {
          return false;
 
          // user has changed user
       } else if (remoteUser != null
-            && !remoteUser.equals(userSession.getUsername())) {
+               && !remoteUser.equals(userSession.getUsername())) {
          return false;
       }
       return true; // myapp user and forum user the same
