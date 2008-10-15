@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.3 2008-10-15 11:45:51 michiel Exp $
+ * @version $Id: Measurement.java,v 1.4 2008-10-15 11:54:30 michiel Exp $
  */
 
 
@@ -195,12 +195,13 @@ public class Measurement extends java.lang.Number {
      * A crude order of magnitude implemention
      */
     private int log10(double d) {
+        d = Math.abs(d);
         int result = 0;
         while (d > 1) {
             d /= 10;
             result++;
         }
-        while (d < 0.1) {
+        while (d > 0 && d < 0.1) {
             d *= 10;
             result--;
         }
