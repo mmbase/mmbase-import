@@ -143,6 +143,11 @@
                            <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                         </mm:listnodes>
                      </tbody>
+                     <tr>
+                        <c:if test="${fn:length(results) >1}">
+                           <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+                        </c:if>
+                     </tr>
                   </table>
                </form>
             </c:if>
