@@ -35,6 +35,8 @@
            if(del){
              document.forms['imageform'].submit();
            }
+         }else{
+             alert("<fmt:message key="secondaryedit.mass.atleast.delete"/> ");
          }
         }
    </script>
@@ -80,7 +82,9 @@
          <form action="SecondaryContentMassDeleteAction.do?object_type=images" method="post" name="imageform">
             <table>
                <tr>
-                  <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+                  <c:if test="${fn:length(results) >1}">
+                     <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
+                  </c:if>
                </tr>
                <tr class="listheader">
                   <th width="55">
