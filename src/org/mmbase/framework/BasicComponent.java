@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.50 2008-10-09 16:17:39 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.51 2008-10-15 13:03:53 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -80,7 +80,7 @@ public class BasicComponent implements Component {
         log.debug("Configuring " + this);
         description.fillFromXml("description", el);
 
-        version = Integer.parseInt(el.getAttribute("version"));
+        version = Float.parseFloat(el.getAttribute("version"));
 
         {
             NodeList depElements = el.getElementsByTagName("dependency");
