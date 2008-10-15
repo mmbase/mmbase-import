@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.72 2008-10-03 11:09:29 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.73 2008-10-15 13:58:34 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -841,18 +841,13 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
-     * Resources are actually InputStreams (byte arrays), but often they are quite text-oriented
-     * (like e.g. XML's or property-files), so this method may be useful.
-     * A resource is supposed to be a property-file if it's name ends in ".properties", it is
-     * supposed to be XML if it's content starts with &lt;?xml.
-     * @see #getResourceAsStream(String)
+     * A version of {@link #getReader(String)} which accepts the result of {@link #getResourceAsStream}.
+     * @since MMBase-1.9
      */
-    public Reader getReader(String name) throws IOException {
+    public  Reader getReader(InputStream is, String name) throws IOException {
         try {
-            InputStream is = getResourceAsStream(name);
             if (is == null) return null;
-            if (name.endsWith(".properties")) {
+            if (name != null && name.endsWith(".properties")) {
                 // todo \ u escapes must be escaped to decent Character's.
                 return new TransformingReader(new InputStreamReader(is, "UTF-8"), new InverseCharTransformer(new UnicodeEscaper()));
             }
@@ -883,6 +878,18 @@ public class ResourceLoader extends ClassLoader {
             // could not happen
             return null;
         }
+    }
+
+    /**
+     * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     * Resources are actually InputStreams (byte arrays), but often they are quite text-oriented
+     * (like e.g. XML's or property-files), so this method may be useful.
+     * A resource is supposed to be a property-file if it's name ends in ".properties", it is
+     * supposed to be XML if it's content starts with &lt;?xml.
+     * @see #getResourceAsStream(String)
+     */
+    public Reader getReader(String name) throws IOException {
+        return getReader(getResourceAsStream(name), name);
     }
 
     /**
