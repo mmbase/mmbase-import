@@ -14,9 +14,12 @@ import java.util.*;
 
 /**
  * Represents a set of measurement values. The value represents the average value.
+ * {@link #toString} presnent the current value, but only the relevant digits. The standard
+ * deviation {@link #getStandardDeviation} is used to determin what digits are relevant.
+ *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.2 2008-10-10 16:38:21 michiel Exp $
+ * @version $Id: Measurement.java,v 1.3 2008-10-15 11:45:51 michiel Exp $
  */
 
 
@@ -36,6 +39,9 @@ public class Measurement extends java.lang.Number {
         this.count = count;
     }
 
+    /**
+     * Enters a new value.
+     */
     public Measurement enter(double d) {
         sum += d;
         squareSum += d * d;
@@ -43,11 +49,11 @@ public class Measurement extends java.lang.Number {
         return this;
     }
 
-
-
     /**
-     * Assuming that this measurement is is from the same set, add it to the already existing
-     * statistics
+     * Assuming that the measurement <code>m</code> is from the same set, add it to the already existing
+     * statistics.
+     * See also {@link #add(Measurement)} which is something entirely different.
+     * @param d
      */
     public Measurement enter(Measurement m) {
         sum += m.sum;
@@ -112,16 +118,16 @@ public class Measurement extends java.lang.Number {
      */
     public Measurement add(Measurement m) {
         // think about this...
-        return new Measurement(m.count * sum + count + m.sum, 0,count * m.count);
+        return new Measurement(m.count * sum + count + m.sum, /* err */ 0, count * m.count);
     }
 
     private static NumberFormat SCIENTIFIC = new DecimalFormat("0.###############E0", new DecimalFormatSymbols(Locale.US));
 
     /**
-     * Returns 10 to the power i
+     * Returns 10 to the power i, a utility in java.lang.Math for that lacks.
      */
-    private static double pow10(int i) {
-        double result = 1.0;
+    public static double pow10(int i) {
+        double result = 1;
         while (i > 0) {
             result *= 10;
             i--;
@@ -161,69 +167,103 @@ public class Measurement extends java.lang.Number {
 
 
     /**
+     * Split a double up in 2 numbers, a double approximeately 1 (the 'coefficent'), and an integer
+     * indicating the order of magnitude (the 'exponent').
+     *
+     */
+    private static  class SplitNumber {
+        public double coefficient;
+        public int   exponent;
+        public SplitNumber(double in) {
+            try {
+                String[] sStd  = SCIENTIFIC.format(in).split("E");
+                coefficient = Double.valueOf(sStd[0]);
+                exponent = Integer.valueOf(sStd[1]);
+            } catch (Exception e) {
+                coefficient = in;
+                exponent = 0;
+            }
+        }
+        public String toString() {
+            return coefficient + "\u00B710" + superscript(exponent);
+            //return coefficient + "E" + exponent;
+        }
+
+    }
+
+    /**
+     * A crude order of magnitude implemention
+     */
+    private int log10(double d) {
+        int result = 0;
+        while (d > 1) {
+            d /= 10;
+            result++;
+        }
+        while (d < 0.1) {
+            d *= 10;
+            result--;
+        }
+        return result;
+    }
+
+
+    /**
      * Represents the mean value in a scientific notation (using unciode characters).
      * The value of the standard deviation is used to determin how many digits can sensibly be shown.
      */
     @Override public String toString() {
-        double stdCoefficient;
-        int stdExponent;
-        {
-            double std = getStandardDeviation();
 
-            String[] sStd  = SCIENTIFIC.format(std).split("E");
-            stdCoefficient = Double.valueOf(sStd[0]);
-            stdExponent = Integer.valueOf(sStd[1]);
-        }
-
-
-        int meanExponent;
-        float meanCoefficient;
-        {
-            double mean = getMean();
-            String[] sMean  = SCIENTIFIC.format(mean).split("E");
-            meanCoefficient = Float.valueOf(sMean[0]);
-            meanExponent = Integer.valueOf(sMean[1]);
-        }
+        SplitNumber std = new SplitNumber(getStandardDeviation());
+        SplitNumber mean = new SplitNumber(getMean());
 
         // use difference of order of magnitude of std to determin how mean digits of the mean are
         // relevant
-        int magnitudeDifference = meanExponent - stdExponent;
-        int meanDigits = Math.max(0, Math.abs(magnitudeDifference));
+        int magnitudeDifference = mean.exponent - std.exponent;
+        //System.out.println("Md: " + mean + " " + std + magnitudeDifference);
+        int meanDigits = Math.max(0, Math.abs(magnitudeDifference)) + 1;
+
+
+        // for std starting with '1' we allow an extra digit.
+        if (std.coefficient < 2) {
+            meanDigits++;
+        }
+
+        //System.out.println("number of relevant digits " + meanDigits + " (" + std + ")");
 
 
         // The exponent of the mean is leading, so we simply justify the 'coefficient' of std to
         // match the exponent of mean.
-        stdCoefficient /= pow10(magnitudeDifference);
+        std.coefficient /= pow10(magnitudeDifference);
+
 
         // For numbers close to 1, we don't use scientific notation.
-        if (Math.abs(meanExponent) < minimumExponent) {
-            double pow = pow10(meanExponent);
-            meanExponent = 0;
-            meanCoefficient *= pow;
-            stdCoefficient *= pow;
+        if (Math.abs(mean.exponent) < minimumExponent) {
+            double pow = pow10(mean.exponent);
+            mean.exponent = 0;
+            mean.coefficient *= pow;
+            std.coefficient  *= pow;
 
         }
-        System.out.println(meanDigits);
-        // for std starting with '1' we allow an extra digit.
-        if (stdCoefficient < 2) {
-            meanDigits++;
-        }
+        //System.out.println("me: " + mean);
 
-        System.out.println(meanDigits);
-        boolean useE = meanExponent != 0;
+
+        boolean useE = mean.exponent != 0;
 
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
-        nf.setMaximumFractionDigits(meanDigits);
-        nf.setMinimumFractionDigits(meanDigits);
+        int fd = meanDigits -  log10(mean.coefficient);
+        //System.out.println(meanDigits + " -> " + mean + " -> " + fd);
+        nf.setMaximumFractionDigits(fd);
+        nf.setMinimumFractionDigits(fd);
         nf.setGroupingUsed(false);
         return
             (useE ? "(" : "") +
-            nf.format(meanCoefficient) +
+            nf.format(mean.coefficient) +
             " \u00B1 " + /* +/- */
-            nf.format(stdCoefficient) +
+            nf.format(std.coefficient) +
             (useE ?
              (")\u00B710" + /* .10 */
-              superscript(meanExponent))
+              superscript(mean.exponent))
              : "");
     }
 
