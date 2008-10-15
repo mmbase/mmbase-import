@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.9 2008-10-15 13:59:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -38,6 +38,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
     protected String resource;
     protected String type = "web";
+    protected String xsl = null;
 
 
     public ResourceRenderer(String t, Block parent) {
@@ -52,6 +53,12 @@ public class ResourceRenderer extends AbstractRenderer {
     public void setType(String t) {
         type = t;
     }
+
+    public void setXslt(String x) throws MalformedURLException {
+        xsl = x;
+    }
+
+
     private String getResource() {
         if (type.equals("web")) {
             return resource.charAt(0) == '/' ? resource : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + resource;
@@ -65,16 +72,33 @@ public class ResourceRenderer extends AbstractRenderer {
                        Writer w, RenderHints hints) throws FrameworkException {
 
 
+        String name = getResource();
+        ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
         try {
-            Reader r = ResourceLoader.Type.valueOf(type.toUpperCase()).get().getReader(getResource());
-            if (r == null) throw new FrameworkException("No such resource " +  ResourceLoader.Type.valueOf(type.toUpperCase()).get().getResource(getResource()));
-            char[] buf = new char[1000];
-            int c;
-            while ((c = r.read(buf, 0, 1000)) > 0) {
-                w.write(buf, 0, c);
+            InputStream is = loader.getResourceAsStream(name);
+            if (is == null) throw new FrameworkException("No such resource " +  ResourceLoader.Type.valueOf(type.toUpperCase()).get().getResource(name));
+            if (xsl == null) {
+                Reader r = loader.getReader(is, name);
+                char[] buf = new char[1000];
+                int c;
+                while ((c = r.read(buf, 0, 1000)) > 0) {
+                    w.write(buf, 0, c);
+                }
+            } else {
+                /// convert using the xsl and spit out that.
+                Source xml = new StreamSource(is);
+                URL x = ResourceLoader.getConfigurationRoot().getResource(xsl);
+
+                Result res = new StreamResult(w);
+                XSLTransformer.transform(xml, x, res, new HashMap<String, Object>());
             }
         } catch (IOException ioe) {
             throw new FrameworkException(ioe);
+        } catch (javax.xml.transform.TransformerException te) {
+            throw new FrameworkException(te.getMessage(), te);
+        } catch (RuntimeException e) {
+            log.debug(e.getMessage(), e);
+            throw e;
         }
     }
 
