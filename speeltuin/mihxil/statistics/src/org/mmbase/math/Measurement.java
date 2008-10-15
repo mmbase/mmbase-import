@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.5 2008-10-15 13:05:41 michiel Exp $
+ * @version $Id: Measurement.java,v 1.6 2008-10-15 14:48:06 michiel Exp $
  */
 
 
@@ -164,7 +164,7 @@ public class Measurement extends java.lang.Number {
 
     /**
      * The minimum exponent defined how close a number must be to 1, to not use scientific notation
-     * for it. Defaults to 4, which means that numbers between 0.001 and 10000 (and -0.001 and
+     * for it. Defaults to 4, which means that numbers between 0.0001 and 10000 (and -0.0001 and
      * -10000) are presented without useage of scientific notation
      */
     public void setMinimumExponent(int m) {
@@ -173,7 +173,7 @@ public class Measurement extends java.lang.Number {
 
 
     /**
-     * Split a double up in 2 numbers, a double approximeately 1 (the 'coefficent'), and an integer
+     * Split a double up in 2 numbers: a double approximately 1 (the 'coefficent'), and an integer
      * indicating the order of magnitude (the 'exponent').
      */
     private static  class SplitNumber {
@@ -188,9 +188,10 @@ public class Measurement extends java.lang.Number {
                 exponent++;
             }
             while (coefficient > 0 && coefficient < 0.1) {
-                coefficient /=10;
+                coefficient *=10;
                 exponent--;
             }
+            if (negative) coefficient *= -1;
         }
         public String toString() {
             return coefficient + "\u00B710" + superscript(exponent);

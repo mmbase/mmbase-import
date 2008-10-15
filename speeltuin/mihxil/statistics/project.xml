@@ -60,6 +60,13 @@ See http://www.MMBase.org/license
         <targetPath>org/mmbase/config</targetPath>
         <filtering>false</filtering>
       </resource>
+      <resource>
+        <directory>${basedir}/documentation</directory>
+        <targetPath>org/mmbase/config/documentation</targetPath>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
     </resources>
   </build>
 </project>
