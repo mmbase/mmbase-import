@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.4 2008-10-15 11:54:30 michiel Exp $
+ * @version $Id: Measurement.java,v 1.5 2008-10-15 13:05:41 michiel Exp $
  */
 
 
@@ -115,13 +115,13 @@ public class Measurement extends java.lang.Number {
     /**
      * Assuming that this measurement is from a different set (the mean is <em>principally
      * different</em>)
+     * @todo Not yet correctly implemented
      */
     public Measurement add(Measurement m) {
         // think about this...
-        return new Measurement(m.count * sum + count + m.sum, /* err */ 0, count * m.count);
+        return new Measurement(m.count * sum + count + m.sum, /* er */ 0, count * m.count);
     }
 
-    private static NumberFormat SCIENTIFIC = new DecimalFormat("0.###############E0", new DecimalFormatSymbols(Locale.US));
 
     /**
      * Returns 10 to the power i, a utility in java.lang.Math for that lacks.
@@ -161,6 +161,12 @@ public class Measurement extends java.lang.Number {
         return bul.toString();
 
     }
+
+    /**
+     * The minimum exponent defined how close a number must be to 1, to not use scientific notation
+     * for it. Defaults to 4, which means that numbers between 0.001 and 10000 (and -0.001 and
+     * -10000) are presented without useage of scientific notation
+     */
     public void setMinimumExponent(int m) {
         minimumExponent = m;
     }
@@ -169,19 +175,21 @@ public class Measurement extends java.lang.Number {
     /**
      * Split a double up in 2 numbers, a double approximeately 1 (the 'coefficent'), and an integer
      * indicating the order of magnitude (the 'exponent').
-     *
      */
     private static  class SplitNumber {
         public double coefficient;
         public int   exponent;
         public SplitNumber(double in) {
-            try {
-                String[] sStd  = SCIENTIFIC.format(in).split("E");
-                coefficient = Double.valueOf(sStd[0]);
-                exponent = Integer.valueOf(sStd[1]);
-            } catch (Exception e) {
-                coefficient = in;
-                exponent = 0;
+            boolean negative = in < 0;
+            coefficient = Math.abs(in);
+            exponent    = 0;
+            while (coefficient > 10) {
+                coefficient /=10;
+                exponent++;
+            }
+            while (coefficient > 0 && coefficient < 0.1) {
+                coefficient /=10;
+                exponent--;
             }
         }
         public String toString() {
@@ -190,6 +198,7 @@ public class Measurement extends java.lang.Number {
         }
 
     }
+
 
     /**
      * A crude order of magnitude implemention
@@ -274,6 +283,7 @@ public class Measurement extends java.lang.Number {
             measurement.enter(Double.valueOf(arg));
         }
         System.out.println(measurement);
+
     }
 }
 
