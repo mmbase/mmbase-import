@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.16 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.17 2008-10-15 12:37:36 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -82,7 +82,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
 
     public ContextContainer getContextContainer() {
-        return collector.getContextContainer();
+        return collector;
     }
 
     public int doStartTag() throws JspTagException {
