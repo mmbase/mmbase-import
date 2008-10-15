@@ -10,22 +10,22 @@ import javax.portlet.PortletSession;
  * To change this template use File | Settings | File Templates.
  */
 public class HttpSessionWrapper extends portlet.wrappers.HttpSessionWrapper {
-    private PortletSession pSession;
+   private PortletSession pSession;
 
-    public HttpSessionWrapper(javax.portlet.PortletSession portletSession) {
-        super(portletSession);
-        this.pSession = portletSession;
-    }
+   public HttpSessionWrapper(javax.portlet.PortletSession portletSession) {
+      super(portletSession);
+      this.pSession = portletSession;
+   }
 
-    public void setAttribute(java.lang.String string, java.lang.Object object) {
-        pSession.setAttribute(string, object, PortletSession.APPLICATION_SCOPE);
-    }
+   public void setAttribute(java.lang.String string, java.lang.Object object) {
+      pSession.setAttribute(string, object, PortletSession.APPLICATION_SCOPE);
+   }
 
-    public java.lang.Object getAttribute(java.lang.String string) {
-        return pSession.getAttribute(string, PortletSession.APPLICATION_SCOPE);
-    }
+   public java.lang.Object getAttribute(java.lang.String string) {
+      return pSession.getAttribute(string, PortletSession.APPLICATION_SCOPE);
+   }
 
-    public void removeAttribute(java.lang.String string){
-       pSession.removeAttribute(string,PortletSession.APPLICATION_SCOPE);
-    }
+   public void removeAttribute(java.lang.String string) {
+      pSession.removeAttribute(string, PortletSession.APPLICATION_SCOPE);
+   }
 }
