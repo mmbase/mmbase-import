@@ -29,11 +29,9 @@
     <function-signature>org.mmbase.util.math.Measurement measure()</function-signature>
   </function>
 
-  <!--
   <tag-file>
     <name>enter</name>
     <path>/META-INF/tags/mm/statistics/enter.tagx</path>
   </tag-file>
-  -->
 
 </taglib>

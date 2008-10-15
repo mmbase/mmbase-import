@@ -12,6 +12,6 @@
   <jsp:directive.attribute name="value"   required="true" type="java.lang.Double"  />
   <jsp:directive.attribute name="measure" required="true" type="org.mmbase.util.math.Measurement" />
 
-  <jsp:scriptlet>measure.enter(value);</jsp:scriptlet>
+ <jsp:scriptlet>measure.enter(value);</jsp:scriptlet>
 
 </jsp:root>
