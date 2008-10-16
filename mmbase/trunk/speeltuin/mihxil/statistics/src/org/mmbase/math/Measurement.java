@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.6 2008-10-15 14:48:06 michiel Exp $
+ * @version $Id: Measurement.java,v 1.7 2008-10-16 11:22:00 michiel Exp $
  */
 
 
@@ -40,12 +40,14 @@ public class Measurement extends java.lang.Number {
     }
 
     /**
-     * Enters a new value.
+     * Enters new value(s).
      */
-    public Measurement enter(double d) {
-        sum += d;
-        squareSum += d * d;
-        count++;
+    public Measurement enter(double... ds) {
+        for(double d : ds) {
+            sum += d;
+            squareSum += d * d;
+            count++;
+        }
         return this;
     }
 
@@ -187,7 +189,7 @@ public class Measurement extends java.lang.Number {
                 coefficient /=10;
                 exponent++;
             }
-            while (coefficient > 0 && coefficient < 0.1) {
+            while (coefficient > 0 && coefficient < 1) {
                 coefficient *=10;
                 exponent--;
             }
@@ -207,7 +209,7 @@ public class Measurement extends java.lang.Number {
     private int log10(double d) {
         d = Math.abs(d);
         int result = 0;
-        while (d > 1) {
+        while (d >= 1) {
             d /= 10;
             result++;
         }
@@ -224,19 +226,22 @@ public class Measurement extends java.lang.Number {
      * The value of the standard deviation is used to determin how many digits can sensibly be shown.
      */
     @Override public String toString() {
-
-        SplitNumber std = new SplitNumber(getStandardDeviation());
-        SplitNumber mean = new SplitNumber(getMean());
+        double stdDouble = getStandardDeviation();
+        double meanDouble = getMean();
+        SplitNumber std  = new SplitNumber(stdDouble);
+        SplitNumber mean = new SplitNumber(meanDouble);
+        boolean largeError = Math.abs(stdDouble) > Math.abs(meanDouble);
 
         // use difference of order of magnitude of std to determin how mean digits of the mean are
         // relevant
         int magnitudeDifference = mean.exponent - std.exponent;
         //System.out.println("Md: " + mean + " " + std + magnitudeDifference);
-        int meanDigits = Math.max(0, Math.abs(magnitudeDifference)) + 1;
+        int meanDigits = Math.max(0, magnitudeDifference) + 1;
 
 
         // for std starting with '1' we allow an extra digit.
         if (std.coefficient < 2) {
+            //System.out.println("Extra digit");
             meanDigits++;
         }
 
@@ -249,7 +254,11 @@ public class Measurement extends java.lang.Number {
 
 
         // For numbers close to 1, we don't use scientific notation.
-        if (Math.abs(mean.exponent) < minimumExponent) {
+        if (Math.abs(mean.exponent) < minimumExponent ||
+            // neither do we do that if the precission is so high, that we'd show the complete
+            // number anyway
+            (mean.exponent > 0 && meanDigits > mean.exponent)) {
+
             double pow = pow10(mean.exponent);
             mean.exponent = 0;
             mean.coefficient *= pow;
@@ -262,7 +271,7 @@ public class Measurement extends java.lang.Number {
         boolean useE = mean.exponent != 0;
 
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
-        int fd = meanDigits -  log10(mean.coefficient);
+        int fd = meanDigits -  log10(largeError ? std.coefficient :  mean.coefficient);
         //System.out.println(meanDigits + " -> " + mean + " -> " + fd);
         nf.setMaximumFractionDigits(fd);
         nf.setMinimumFractionDigits(fd);
@@ -279,12 +288,29 @@ public class Measurement extends java.lang.Number {
     }
 
     public static void main(String[] argv) {
-        Measurement measurement = new Measurement();
-        for (String arg : argv) {
-            measurement.enter(Double.valueOf(arg));
+        if (argv.length == 0) {
+            test();
+        } else {
+            Measurement measurement = new Measurement();
+            for (String arg : argv) {
+                measurement.enter(Double.valueOf(arg));
+            }
+            System.out.println(measurement);
         }
-        System.out.println(measurement);
 
+    }
+
+    public static void test() {
+        System.out.println(new Measurement().enter(-10, 20));
+        System.out.println(new Measurement().enter(0, 0));
+        System.out.println(new Measurement().enter(0, 1));
+        System.out.println(new Measurement().enter(-0.001, -0.002));
+        System.out.println(new Measurement().enter(0.5, 1.5));
+        System.out.println(new Measurement().enter(20000, 20001, 20002, 20003));
+        System.out.println(new Measurement().enter(20000, 20010, 20020, 20030));
+        System.out.println(new Measurement().enter(20000, 20100, 20200, 20300));
+        System.out.println(new Measurement().enter(0.000002, 0.0000021, 0.0000022, 0.0000023));
+        System.out.println(new Measurement().enter(0.0000002, 0.000000201, 0.000000202, 0.000000203));
     }
 }
 

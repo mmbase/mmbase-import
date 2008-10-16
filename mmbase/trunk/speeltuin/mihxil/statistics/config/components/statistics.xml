@@ -17,10 +17,16 @@
          classification="mmbase.documentation"
          mimetype="text/html">
     <body>
-      <class name="org.mmbase.framework.ResourceRenderer">
-        <param name="resource">documentation/mmstatistics.xml</param>
-        <param name="type">config</param>
-        <param name="xslt">xslt/docbook2block.xslt</param>
+      <!--
+      This would be possible too
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://cvs.mmbase.org/viewcvs/*checkout*/speeltuin/mihxil/statistics/documentation/mmstatistics.xml</param>
+        -->
+
+       <class name="org.mmbase.framework.ResourceRenderer">
+         <param name="resource">documentation/mmstatistics.xml</param>
+         <param name="type">config</param>
+         <param name="xslt">xslt/docbook2block.xslt</param>
       </class>
     </body>
   </block>
