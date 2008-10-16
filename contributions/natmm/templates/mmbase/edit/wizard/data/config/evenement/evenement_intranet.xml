@@ -98,11 +98,11 @@
 		  <optionlist include="config/option_lists/images_position.xml" />
    </lists>     
    <steps>   
-      <step form-schema="edit_evenement"/>    
+      <step form-schema="edit_evenement_intranet"/>    
       <step form-schema="add_related"/>
       <step form-schema="feedback"/>
    </steps>     
-   <form-schema id="edit_evenement">
+   <form-schema id="edit_evenement_intranet">
        <title>Basisgegevens</title>
        <field name="titel" ftype="line"><prompt>naam</prompt></field>
        <field name="tekst" ftype="html" rows="20"><prompt>intro</prompt></field>
