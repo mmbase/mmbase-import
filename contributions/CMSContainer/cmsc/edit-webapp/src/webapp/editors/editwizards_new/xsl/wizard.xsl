@@ -939,4 +939,57 @@
    </xsl:otherwise>
    </xsl:choose>
    </xsl:template>
+   
+  <!--CMSC-1049 Time display in article creation author: Rain.Tang-->
+  <!--template new-loop-options is new added only used in hours and minutes display-->
+  <xsl:template name="new-loop-options">
+    <xsl:param name="value">0</xsl:param>
+    <xsl:param name="selected"/>
+    <xsl:param name="end">0</xsl:param>
+
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value" select="format-number($value,'00')" />
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$value" />
+    </xsl:call-template>
+
+    <xsl:if test="$value &lt; $end">
+      <xsl:call-template name="new-loop-options">
+        <xsl:with-param name="value" select="format-number($value + 1,'00')" />
+        <xsl:with-param name="selected" select="$selected" />
+        <xsl:with-param name="end" select="$end" />
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="ftype-datetime-time">
+    <select name="internal_{@fieldname}_hours" super="{@fieldname}">
+      <xsl:call-template name="new-loop-options">
+        <xsl:with-param name="value">00</xsl:with-param>
+        <xsl:with-param name="selected" select="date:getHours(string(value), string($timezone))" />
+        <xsl:with-param name="end" select="23" />
+      </xsl:call-template>
+    </select>
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
+    <select name="internal_{@fieldname}_minutes" super="{@fieldname}">
+      <xsl:call-template name="new-loop-options">
+        <xsl:with-param name="value">00</xsl:with-param>
+        <xsl:with-param name="selected" select="date:getMinutes(string(value), string($timezone))" />
+        <xsl:with-param name="end" select="59" />
+      </xsl:call-template>
+    </select>
+    <xsl:if test="@ftype=&apos;duration&apos;">
+      <xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
+      <select name="internal_{@fieldname}_seconds" super="{@fieldname}">
+        <xsl:call-template name="new-loop-options">
+          <xsl:with-param name="value">00</xsl:with-param>
+          <xsl:with-param name="selected" select="date:getSeconds(string(value), string($timezone))" />
+          <xsl:with-param name="end" select="59" />
+        </xsl:call-template>
+      </select>
+    </xsl:if>
+  </xsl:template>
+
+   <!--End of CMSC-1049-->
+   
 </xsl:stylesheet>
