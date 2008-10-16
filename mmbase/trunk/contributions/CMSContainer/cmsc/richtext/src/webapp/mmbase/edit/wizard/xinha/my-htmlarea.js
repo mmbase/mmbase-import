@@ -191,6 +191,7 @@ function setWidthForTables(editor) {
 	}
 }
 
+
 HTMLArea.prototype._insertInlineLink = function(link) {
         var editor = this;
         var outparam = null;
@@ -199,22 +200,38 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                 if (link && !/^a$/i.test(link.tagName))
                         link = null;
         }
+	
+		var sel = editor._getSelection();
+		
         if (link) outparam = {
                 f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
                 f_destination : HTMLArea.is_ie ? link.destination : link.getAttribute("destination"),
+				f_linkName : link.linkName?link.linkName:sel,
                 f_title  : link.title,
                 f_target : link.target
         };
+		
+		else
+			outparam = {
+                f_href   : "Click \"New Url\" to enter URL",
+                f_destination : null,
+				f_linkName : sel,
+                f_title  : null,
+                f_target : null
+        };
+		
         this._popupDialog("insertinline_link.html", function(param) {
                 if (!param)
                         return false;
                 var a = link;
                 if (!a) {
                         editor._doc.execCommand("createlink", false, param.f_href);
+						
                         a = editor.getParentElement();
                         var sel = editor._getSelection();
                         var range = editor._createRange(sel);
-                        if (!HTMLArea.is_ie) {
+
+						if (!HTMLArea.is_ie) {
                                 a = range.startContainer;
                                 if ( ! ( /^a$/i.test(a.tagName) ) ) {
                                       a = a.nextSibling;
@@ -223,9 +240,20 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                                       }
                                 }
                         }
-                } else a.href = param.f_href.trim();
-
-                a.title = param.f_title.trim();
+						if(sel == null || sel == ""){
+					       var  aLink = document.createElement('a');
+						   editor.insertNodeAtSelection(aLink);
+						   a = aLink;
+						   a.href = param.f_href.trim();
+						}
+                } 
+				else{
+					 a.href = param.f_href.trim();
+				}
+				a.innerHTML = param.f_linkName.trim();
+               	a.title = param.f_title.trim();
+			
+				
                 if (HTMLArea.is_ie) {
                   a.destination = param.f_destination.trim();
                   if (!a.destination && a.relationID) {
@@ -238,6 +266,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                     a.removeAttribute("relationID");
                   }
                 }
+					
                 a.target = param.f_target.trim();
                 editor.selectNodeContents(a);
                 editor.updateToolbar();
