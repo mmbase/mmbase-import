@@ -43,7 +43,7 @@
                   <mm:link page="/mmbase"><a class="selected" href="${_}">Welcome</a></mm:link>
                 </li>
                 <li class="weight_100">
-                  <mm:link page="/mmbase/edit"><a href="${_}">Generic editors</a></mm:link>
+                  <mm:link page="/mmbase/edit/basic"><a href="${_}">Basic editors</a></mm:link>
                 </li>
                 <li class="weight_100">
                   <mm:link page="/mmbase/edit/my_editors"><a href="${_}">my_editors</a></mm:link>
