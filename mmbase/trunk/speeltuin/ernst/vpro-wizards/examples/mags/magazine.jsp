@@ -15,7 +15,7 @@
         <form:textfield field="title"/>
         <form:textfield field="subtitle"/>
         <form:textareafield field="intro"/>
-        <form:richtextfield field="body"/>
+        <form:richtextfield field="body" size="medium"/>
     </form:container>
 
         <form:related>
