@@ -50,16 +50,6 @@
     </tr>
 
     <tr>
-      <td>My Yahoo</td>
-      <td>
-        Small example of a yahoo-like system
-      </td>
-      <td class="link" >
-        <a href="<mm:url page="myyahoo.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
-      </td>
-    </tr>
-
-    <tr>
       <td>Taglib</td>
       <td>
         A lot of different examples for the MMBase taglib.
@@ -98,16 +88,6 @@
     <tr>
       <th>Name demo</th>
       <th colspan="2">Description</th>
-    </tr>
-
-    <tr>
-      <td>Editwizard</td>
-      <td>
-        Different editwizard-examples.
-      </td>
-      <td class="link" >
-        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
-      </td>
     </tr>
 
 
