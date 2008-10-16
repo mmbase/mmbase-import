@@ -28,7 +28,9 @@
                 <entry key="org.mmbase.applications.vprowizards.spring.AuthenticationException" value="login" />
             </map>
         </property>
+        <!-- 
         <property name="defaultErrorView" value="general-error" />
+         -->
     </bean>
 	
     <bean name="redactieAuthenticationInterceptor" class="org.mmbase.applications.vprowizards.spring.AuthenticationInterceptor">

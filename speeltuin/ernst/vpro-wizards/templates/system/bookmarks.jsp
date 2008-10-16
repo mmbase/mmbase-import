@@ -3,7 +3,7 @@
 <%@taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"%>
 <%@taglib prefix="util"tagdir="/WEB-INF/tags/vpro-wizards/util"%>
 
-<script type="text/javascript" src=${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/javascript.js"></script>
 
 <%-- a comma separated list of bookmarkfolder nodes representing the three columns--%>
 <c:if test="${empty param.columns}">

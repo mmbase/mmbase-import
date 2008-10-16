@@ -20,6 +20,7 @@
 	</target>
 
 	<target name="compile" depends="vpro-wizards.jars,buildbase.compile" />
+	<target name="install.templates" depends="vpro-wizards.jars,buildbase.install.templates" />
 	
 	<!-- copy the web.xml fragment too-->
 	<target name="install" depends="buildbase.install" >
@@ -65,7 +66,18 @@
 			<param name="expandedfile" value="${commons.collections.jar}" />
 		</antcall>
 		<copy file="${commons.collections.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
-
+    
+    <!--
+      Download the fck richtext editor, and copy them to the templates directory 
+    -->
+    <echo message="downloading the FCK richtext editor "/>
+    <antcall target="downloadzip">
+			<param name="sourcefile" value="${fckeditor.url}" />
+			<param name="destfile" value="${download.dir}/${fckeditor.file}" />
+			<param name="destdir" value="templates/system/javascript/" />
+			<param name="expandedfile" value="templates/system/javascript/CFKeditor" />
+		</antcall>
+    <copy file="ext/fckconfig.js" todir="templates/system/javascript/fckeditor" overwrite="true"/>
 
 		<!--commons lang-->
 		<echo message="download commons-lang" />

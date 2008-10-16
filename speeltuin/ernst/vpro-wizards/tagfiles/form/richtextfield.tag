@@ -41,14 +41,16 @@
 
 <script type="text/javascript">
     var oFCKeditor = new FCKeditor( 'field_${nodetype}_${field}' ) ;
-    oFCKeditor.BasePath = '${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/FCKeditor/';
+    oFCKeditor.BasePath = '${pageContext.request.contextPath}/mmbase/vpro-wizards/system/javascript/fckeditor/';
     oFCKeditor.Config['ToolbarStartExpanded'] = true ;
     <%-- TODO deze check eruit halen --%>
     <c:choose>
         <c:when test="${empty param.extraoptions}">
-            oFCKeditor.ToolbarSet	= 'Edit' ;
+//            oFCKeditor.ToolbarSet	= 'VPROWizards' ;
+            oFCKeditor.ToolbarSet	= 'VPROWizards' ;
         </c:when>
         <c:otherwise>
+            oFCKeditor.ToolbarSet	= '${param.extraoptions}' ;
         </c:otherwise>
     </c:choose>
 

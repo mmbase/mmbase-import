@@ -19,7 +19,11 @@ public class URLParamMap extends LinkedHashMap<String, String> {
                 String[] params = queryString.split("&");
                 for (String param : params) {
                     String[] p = param.split("=");
-                    put(p[0], p[1]);
+                    if (p.length == 2) {
+                        put(p[0], p[1]);
+                    }else if(p.length == 1){
+                        put(p[0], "");
+                    }
                 }
             }
         } else {
