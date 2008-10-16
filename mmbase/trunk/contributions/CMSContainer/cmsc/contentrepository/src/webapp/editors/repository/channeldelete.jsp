@@ -28,11 +28,12 @@
          <fmt:message key="channeldelete.confirm" />
          <br/>
       </p>
-         <form action="?">
-            <input type="hidden" name="number" value="<mm:write referid="number"/>" /> 
-            <input type="submit" name="remove" value="<fmt:message key="channeldelete.yes" />" />
-           <input type="button" onClick="document.location.href='Content.do?parentchannel=<mm:write referid="number"/>&amp;direction=down'" value="<fmt:message key="channeldelete.no" />"/>
-         </form>
+      <form action="ChannelDelete.do" method="post">
+         <input type="hidden" name="number" value="<mm:write referid="number"/>" />
+         <input type="hidden" name="remove" value="delete" />
+         <input type="submit" value="<fmt:message key="channeldelete.yes" />" />
+         <input type="button" onClick="document.location.href='Content.do?parentchannel=<mm:write referid="number"/>&amp;direction=down'" value="<fmt:message key="channeldelete.no" />"/>
+      </form>
    </cmscedit:sideblock>
 </body>
 </mm:cloud>
