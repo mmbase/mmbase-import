@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
+import org.mmbase.applications.vprowizards.spring.util.NodeNumberResolver;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Transaction;
@@ -65,7 +66,7 @@ public class CreateNodeAction extends AbstractNodeAction {
 	@Override
     protected void processNode(Transaction transaction) {
 	    if(getNode() != null && ! StringUtils.isBlank(nodeAsParam)){
-	        addParam(nodeAsParam, getNode().getNumber()+"");
+	        addNodeParam(nodeAsParam);
 	    }
     }
 

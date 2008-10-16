@@ -39,6 +39,9 @@ xerces.loc=${mmbase.maven.repository}/xerces/jars/${xerces.file}
 oscache.file=oscache-2.4.1.jar
 oscache.loc=${mmbase.maven.repository}/opensymphony/jars/${oscache.file}
 
-### some compiler options ###
-
+#fck editor (javascript)
+fckeditor.name=FCKeditor
+fckeditor.version=2.6.3
+fckeditor.file=${fckeditor.name}_${fckeditor.version}.zip
+fckeditor.url=http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/${fckeditor.file}
 

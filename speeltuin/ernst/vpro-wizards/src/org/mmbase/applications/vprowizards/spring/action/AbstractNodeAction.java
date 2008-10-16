@@ -19,6 +19,7 @@ import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.applications.vprowizards.spring.util.HTMLFilterUtils;
+import org.mmbase.applications.vprowizards.spring.util.ParamValueResolver;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -553,6 +554,10 @@ public abstract class AbstractNodeAction extends Action {
         }
     }
 
+    protected final void addNodeParam(String name){
+        resultContainer.addParamToReturnURL(name, getNode());
+    }
+    
     protected final void addParam(String name, String value){
         resultContainer.addParamToReturnURL(name, value);
     }
