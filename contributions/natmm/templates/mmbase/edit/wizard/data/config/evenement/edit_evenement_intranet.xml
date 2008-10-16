@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_evenement">
+<form-schema id="edit_evenement_intranet">
    <field name="titel" ftype="line"><prompt>naam</prompt></field>
    <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
@@ -23,12 +23,12 @@
    <field name="einddatum"><prompt>einddatum</prompt></field>
    <field name="dagomschrijving"><prompt>dagomschrijving</prompt></field>
    <field name="tijd" ftype="line" ><prompt>tijd</prompt></field>
-   <field name="tekst" ftype="html" rows="20"  ><prompt>tekst</prompt></field>
+   <field name="tekst" ftype="html" rows="20"><prompt>tekst</prompt></field>
    <field name="lokatie" ftype="line" ><prompt>lokatie</prompt></field>
    <field name="soort" ftype="line" ><prompt>soort</prompt></field>
-   <field name="discipline" ftype="line" ><prompt>discipline</prompt></field>
-   <field name="doelgroep" ftype="line" ><prompt>doelgroep</prompt></field>
-   <field name="type" ftype="line" ><prompt>type</prompt></field>
+   <field name="discipline" ftype="line"><prompt>discipline</prompt></field>
+   <field name="doelgroep" ftype="line"><prompt>doelgroep</prompt></field>
+   <field name="type" ftype="line"><prompt>type</prompt></field>
    <list include="config/afdelingen/zoek_evenement_readmore_afdelingen.xml" />
    <list include="config/artikel/zoek_evenement_related_artikel.xml" />
    <list include="config/bevestigings_teksten/zoek_evenement_posrel_bevestigings_teksten.xml" />

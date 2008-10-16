@@ -15,7 +15,6 @@
       <description xml:lang="en">medewerker</description>
    </descriptions>
    <properties>
-      <property name="htmlFields">omschrijving</property>
    </properties>
     <fieldlist>
     <field>
