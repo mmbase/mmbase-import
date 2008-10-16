@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.14.2.3 2007-10-17 12:43:10 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.14.2.4 2008-10-16 13:56:59 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -302,8 +302,11 @@ public abstract class AbstractNode implements Node {
                 case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
                 case Field.TYPE_DATETIME:return getDateValue(fieldName);
                 case Field.TYPE_LIST:    return getListValue(fieldName);
+                case Field.TYPE_UNKNOWN:
+                    log.debug("Unknown fieldtype '" + type + "' for field " + fieldName + ": " + nm.getField(fieldName));
+                    return value;
                 default:
-                    log.error("Unknown fieldtype '" + type + "'");
+                    log.error("Unknown fieldtype '" + type + "' for field " + fieldName + ": " + nm.getField(fieldName));
                     return value;
             }
         } else {
