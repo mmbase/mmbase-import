@@ -12,7 +12,7 @@ package org.mmbase.statistics;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
-import org.mmbase.util.math.*;
+import org.mmbase.math.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

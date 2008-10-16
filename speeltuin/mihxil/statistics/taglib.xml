@@ -11,12 +11,12 @@
     </description>
     <name>average</name>
     <function-class>org.mmbase.statistics.Functions</function-class>
-    <function-signature>org.mmbase.util.math.Measurement average(java.util.Collection, java.lang.String)</function-signature>
+    <function-signature>org.mmbase.math.Measurement average(java.util.Collection, java.lang.String)</function-signature>
   </function>
   <function>
     <name>times</name>
     <function-class>org.mmbase.statistics.Functions</function-class>
-    <function-signature>org.mmbase.util.math.Measurement times(org.mmbase.util.math.Measurement, double)</function-signature>
+    <function-signature>org.mmbase.math.Measurement times(org.mmbase.math.Measurement, double)</function-signature>
   </function>
   <function>
     <name>sum</name>
@@ -26,7 +26,7 @@
   <function>
     <name>measurement</name>
     <function-class>org.mmbase.statistics.Functions</function-class>
-    <function-signature>org.mmbase.util.math.Measurement measure()</function-signature>
+    <function-signature>org.mmbase.math.Measurement measure()</function-signature>
   </function>
 
   <tag-file>
