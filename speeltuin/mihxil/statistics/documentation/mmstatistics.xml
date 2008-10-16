@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Statistics in Java</title>
     <date>2008-10-16</date>
-    <edition>$Id: mmstatistics.xml,v 1.1 2008-10-15 14:48:06 michiel Exp $</edition>
+    <edition>$Id: mmstatistics.xml,v 1.2 2008-10-16 11:22:00 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -49,10 +49,10 @@
 
       <mm:listnodes id="pages">
         <mm:tree id="subpages" /> <!-- or soemthing -->
-        <mmstats:enter measure="${totalmean}" enter="${mmstats:sum(subpages, 'duration')}" />
+        <mmstats:enter measure="${totalmean}" value="${mmstats:sum(subpages, 'duration')}" />
       </mm:listnodes
 
-      Averege sum: ${totalmean}
+      Average sum: ${totalmean}
 
       ]]>
       </programlisting>
