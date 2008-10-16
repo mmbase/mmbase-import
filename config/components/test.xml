@@ -28,7 +28,7 @@
 
 
   <block name="test"
-         classification="mmbase.test,mmbase.components"
+         classification="mmbase.test"
          mimetype="text/html">
     <description xml:lang="en">TEST</description>
     <head jsp="components/test.head.jspx" />
