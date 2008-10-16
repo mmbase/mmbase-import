@@ -215,6 +215,7 @@
 		<delete dir="${build.dir}/mmbase-webapp/nmintra" />
 		<delete dir="${build.dir}/mmbase-webapp/elle" />
 		<delete dir="${build.dir}/mmbase-webapp/mmexamples" />
+		<delete dir="${build.dir}/mmbase-webapp/mmdocs" />
 		<!-- End clean-up -->
 
 		<mkdir dir="${build.dir}/dist" />
@@ -286,6 +287,7 @@
 		<delete dir="${build.dir}/mmbase-webapp/elle" />
 		<delete dir="${build.dir}/mmbase-webapp/vanham" />
 		<delete dir="${build.dir}/mmbase-webapp/mmexamples" />
+		<delete dir="${build.dir}/mmbase-webapp/mmdocs" />
 		<!-- End clean-up -->
 
 		<!-- delete mysql connector from the lib directory -->
