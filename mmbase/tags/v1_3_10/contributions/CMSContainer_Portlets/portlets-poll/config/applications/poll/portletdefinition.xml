@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/poll" timestamp="20060906000000">
+	<node number="44002" owner="default">
+		<title>PollPortlet</title>
+		<description>PollPortlet</description>
+		<definition>pollportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>
