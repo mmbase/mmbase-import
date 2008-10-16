@@ -39,7 +39,7 @@
         <mm:link page="/mmbase/edit/my_editors/" absolute="true"><a href="${_}">${_}</a></mm:link>
        </dd>
        <dt>
-         <mm:link page="/mmbase/edit/my_editors/"><a href="${_}">The MMEditors</a></mm:link>
+         <mm:link page="/mmbase/edit/mmeditors/"><a href="${_}">The MMEditors</a></mm:link>
        </dt>
        <dd>
          Classic style generic editors ('mmeditors'). These are based on the lay-out of the very
@@ -47,7 +47,7 @@
         <mm:link page="/mmbase/edit/mmeditors/" absolute="true"><a href="${_}">${_}</a></mm:link>
       </dd>
       <dt>
-        <mm:link page="/mmbase/edit/my_editors/"><a href="${_}">The experimental x editors</a></mm:link>
+        <mm:link page="/mmbase/edit/x/"><a href="${_}">The experimental x editors</a></mm:link>
       </dt>
       <dd>
         'New technology' editors with JSPX, CSS, Javascript, MMBase taglib 2:
