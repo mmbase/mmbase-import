@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.util.math;
+package org.mmbase.math;
 import java.text.*;
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.7 2008-10-16 11:22:00 michiel Exp $
+ * @version $Id: Measurement.java,v 1.8 2008-10-16 11:26:08 michiel Exp $
  */
 
 
