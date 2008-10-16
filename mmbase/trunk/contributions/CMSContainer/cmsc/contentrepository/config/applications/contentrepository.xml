@@ -45,10 +45,6 @@
       <relation from="contentelement" to="attachments" type="posrel" />
       <relation from="contentelement" to="images" type="imagerel" />
       <relation from="contentelement" to="urls" type="posrel" />
-      
-      <!--Asset relation defination-->
-      <relation from="assetelement" to="contentelement" type="creationrel" />
-      <relation from="assetelement" to="contentelement" type="deletionrel" />
 
 		<!--  inline links -->
       <relation from="contentelement" to="contentelement" type="inlinerel" />
