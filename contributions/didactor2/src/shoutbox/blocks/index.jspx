@@ -42,8 +42,6 @@
             <mm:fieldinfo type="searchinput" />
           </mm:fieldlist>
 
-
-
           <mm-sr:relatednodes type="shouts"
                               role="posrel"
                               item="/mmbase/components/shoutbox/item.jspx" orderby="posrel.pos" direction="down"

@@ -58,7 +58,7 @@
     </field>
 
 
-    <field name="time">
+    <field name="time" readonly="true">
       <gui>
         <guiname xml:lang="en">Time</guiname>
         <guiname xml:lang="nl">Tijd</guiname>
