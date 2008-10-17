@@ -34,6 +34,7 @@ public class LinkFinder extends RegexpReplacer {
     public LinkFinder() {
         super(XMLTEXT_WORDS);
         onlyFirstPattern = true;
+        replaceInA = false;
     }
 
 
