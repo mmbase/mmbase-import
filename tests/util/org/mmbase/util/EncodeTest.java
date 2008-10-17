@@ -315,4 +315,10 @@ public class EncodeTest extends TestCase {
                      lf.transform("bla bla <a href=\"http://www.mmbase.org\">click here</a> bloe bloe"));
     }
 
+    public void testLinkFinder2() {
+        LinkFinder lf = new LinkFinder();
+        assertEquals("bla bla <a href=\"http://www.mmbase.org\">http://www.mmbase.org</a> bloe bloe",
+                     lf.transform("bla bla <a href=\"http://www.mmbase.org\">http://www.mmbase.org</a> bloe bloe"));
+    }
+
 }
