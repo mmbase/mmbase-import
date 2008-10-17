@@ -13,7 +13,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @version $Id: LessonChecker.java,v 1.5 2008-10-09 16:07:24 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.6 2008-10-17 14:28:18 michiel Exp $
  */
 
 public class LessonChecker {
@@ -28,7 +28,7 @@ public class LessonChecker {
     protected static boolean checkRelated(Cloud cloud, Node education) {
         Map wtf = new HashMap();
         wtf.put("education", education);
-        return  Casting.toBoolean(getComponent().getSetting("relate_component", cloud, wtf));
+        return  Casting.toBoolean(getComponent().getSetting("relate_learnblocks", cloud, wtf));
     }
 
    /**
