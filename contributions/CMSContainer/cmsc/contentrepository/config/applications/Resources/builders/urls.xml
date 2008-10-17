@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="urls" maintainer="www.mmbase.org" version="1" extends="object">
+    name="urls" maintainer="www.mmbase.org" version="1" extends="assetelement">
   <status>active</status>
   <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
@@ -67,111 +67,6 @@
         <type state="persistent" size="2000" notnull="true" key="false">STRING</type>
       </db>
     </field>
-    
-    <field>
-      <descriptions>
-        <description xml:lang="en">A short description of the website of page</description>
-        <description xml:lang="nl">Een korte omschrijving van de website of pagina</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Description</guiname>
-        <guiname xml:lang="nl">Omschrijving</guiname>
-      </gui> 
-     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>description</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-    
-	<field>
-		<descriptions>
-			<description xml:lang="nl"></description>
-			<description xml:lang="en"></description>
-		</descriptions>
-		<gui>
-			<guiname xml:lang="nl">Aangemaakt</guiname>
-			<guiname xml:lang="en">Creationdate</guiname>
-		</gui>
-		<editor>
-			<positions>
-				<input>10</input>
-				<list>-1</list>
-				<search>-1</search>
-			</positions>
-		</editor>
-		<datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-		<db>
-			<name>creationdate</name>
-			<type key="false" notnull="false" state="system">DATETIME</type>
-		</db>
-	</field>
-	<field>
-		<descriptions>
-			<description xml:lang="nl"></description>
-			<description xml:lang="en"></description>
-		</descriptions>
-		<gui>
-			<guiname xml:lang="nl">Gewijzigd</guiname>
-			<guiname xml:lang="en">Lastmodifieddate</guiname>
-		</gui>
-		<editor>
-			<positions>
-				<input>11</input>
-				<list>-1</list>
-				<search>-1</search>
-			</positions>
-		</editor>
-		<datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-		<db>
-			<name>lastmodifieddate</name>
-			<type key="false" notnull="false" state="system">DATETIME</type>
-		</db>
-	</field>
-	<field>
-		<descriptions>
-			<description xml:lang="nl"></description>
-			<description xml:lang="en"></description>
-		</descriptions>
-		<gui>
-			<guiname xml:lang="nl">Gewijzigd door</guiname>
-			<guiname xml:lang="en">Lastmodifier</guiname>
-		</gui>
-		<editor>
-			<positions>
-				<input>12</input>
-				<list>-1</list>
-				<search>-1</search>
-			</positions>
-		</editor>
-		<datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-		<db>
-			<name>lastmodifier</name>
-			<type key="false" notnull="false" size="1024" state="system">STRING</type>
-		</db>
-	</field>
-	<field>
-		<descriptions>
-			<description xml:lang="nl"></description>
-			<description xml:lang="en"></description>
-		</descriptions>
-		<gui>
-			<guiname xml:lang="nl">Aangemaakt door</guiname>
-			<guiname xml:lang="en">Creator</guiname>
-		</gui>
-		<editor>
-			<positions>
-				<input>13</input>
-				<list>-1</list>
-				<search>-1</search>
-			</positions>
-		</editor>
-		<datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-		<db>
-			<name>creator</name>
-			<type key="false" notnull="false" size="1024" state="system">STRING</type>
-		</db>
-	</field>
     <field>
       <descriptions>
         <description xml:lang="en">Validated link</description>
@@ -181,20 +76,20 @@
         <guiname xml:lang="en">Valid</guiname>
         <guiname xml:lang="nl">Geldig</guiname>
       </gui>
-    	<editor>
-    		<positions>
-    			<input>9</input>
-    			<list>-1</list>
-    			<search>-1</search>
-    		</positions>
-    	</editor>
-    	<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
-    	  <default value="1"/>
-    	</datatype>
-    	<db>
-    		<name>valid</name>
-    		<type key="false" required="true" state="persistent">BOOLEAN</type>
-    	</db>
+       <editor>
+          <positions>
+             <input>9</input>
+             <list>-1</list>
+             <search>-1</search>
+          </positions>
+       </editor>
+       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <default value="1"/>
+       </datatype>
+       <db>
+          <name>valid</name>
+          <type key="false" required="true" state="persistent">BOOLEAN</type>
+       </db>
     </field>
   </fieldlist>
 
