@@ -93,9 +93,15 @@ var ajaxTreeHandler = {
 	},
 	makeDraggable : function (oItem){
 		if(!oItem) return;
+		//if document.onmousedown is not null, it means that oItem is copyObject but not
+		//dargObject. Then do nothing and return
+		if(document.onmousedown) return;
 		document.onmousedown = function(ev){
+		//if document.onmouseup is not null, it means that document.onmousedown has not
+		//been destroyed.If you down another mouse button here, it should do nothing and return		
+		if(document.onmouseup) return;
 		document.onmousemove = alldragObject.mouseMove(ev);
-		document.onmouseup   = alldragObject.mouseUp(ev);
+		document.onmouseup = alldragObject.mouseUp(ev);
 		oItem.onclick = ajaxTreeHandler.isclick;
 		alldragObject.dragObject = ajaxTreeHandler.all[oItem.id.replace('-icon','')];
 		alldragObject.copyObject = ajaxTreeHandler.initcopy(ajaxTreeHandler.all[oItem.id.replace('-icon','')]);
@@ -1051,8 +1057,8 @@ function mouseAction(){
 
 mouseAction.prototype.mouseCoords = function (ev){
 
-	if(ev.clientX || ev.clientY){
-		return {x:ev.clientX, y:ev.clientY};
+	if(ev.pageX || ev.pageY){
+		return {x:ev.pageX, y:ev.pageY};
 	}
 	return {
 		x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
@@ -1103,10 +1109,12 @@ mouseAction.prototype.mouseUp = function (ev){
 			alldragObject.insertitem = ajaxTreeHandler.all[dropTarget.replace('-anchor','')];
 		}
 	}
-
+	
 	alldragObject.dragObject = null;
 	alldragObject.iMouseDown = false;
 	document.onmousemove = null;
+	document.onmouseup = null;
+	document.onmousedown = null;
 	alldragObject.copyObject.style.display = 'none';
 	alldragObject.pastenode();
 	alldragObject.insertitem = null;
