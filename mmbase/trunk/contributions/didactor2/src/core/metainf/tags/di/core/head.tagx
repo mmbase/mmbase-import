@@ -11,6 +11,13 @@
     <di:script src="/core/js/utils.js" />
     <di:script src="/core/js/jquery.query.js" />
     <di:script src="/core/js/Didactor.js" />
+    <mm:treefile page="/core/js/specific.js"
+                 objectlist="$includePath" write="false">
+      <script type="text/javascript" src="${_}">
+        <jsp:text><!-- help IE --> </jsp:text>
+      </script>
+    </mm:treefile>
+
 
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
 
