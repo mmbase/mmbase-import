@@ -41,7 +41,11 @@
                 <jsp:invoke fragment="beforefirst" />
               </mm:first>
               <jsp:doBody />
-              <mm:component name="${_.component.name}" block="${_.name}" />
+              <mm:setting id="np" component="${_.component.name}" name="didactor_nodeprovider" write="false" />
+              <mm:node number="${requestScope[np]}">
+                <mm:component name="${_.component.name}" block="${_.name}" />
+              </mm:node>
+
               <mm:last inverse="true">
                 <jsp:invoke fragment="separator" />
               </mm:last>
