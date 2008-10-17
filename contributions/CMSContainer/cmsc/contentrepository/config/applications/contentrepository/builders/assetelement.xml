@@ -9,7 +9,6 @@
       
    -->
    <status>active</status>
-   <class>com.finalist.cmsc.richtext.builders.RichTextBuilder</class>
    <searchage>70</searchage>
    <names>
       <singular xml:lang="nl">assetelement</singular>
@@ -37,7 +36,7 @@
          <gui>
             <guiname xml:lang="nl">Aangemaakt</guiname>
             <guiname xml:lang="en">Creationdate</guiname>
-            <guiname xml:lang="zh">创建时间</guiname>
+            <guiname xml:lang="zh">创建日期</guiname>
          </gui>
          <editor>
             <positions>
@@ -61,7 +60,7 @@
          <gui>
             <guiname xml:lang="nl">Gewijzigd</guiname>
             <guiname xml:lang="en">Lastmodifieddate</guiname>
-            <guiname xml:lang="zh">最后修改时间</guiname>
+            <guiname xml:lang="zh">最后修改日期</guiname>
          </gui>
          <editor>
             <positions>
@@ -85,7 +84,7 @@
          <gui>
             <guiname xml:lang="nl">Gewijzigd door</guiname>
             <guiname xml:lang="en">Lastmodifier</guiname>
-            <guiname xml:lang="zh">最后修改人</guiname>
+            <guiname xml:lang="zh">最后修改者</guiname>
          </gui>
          <editor>
             <positions>
@@ -109,7 +108,7 @@
          <gui>
             <guiname xml:lang="nl">Aangemaakt door</guiname>
             <guiname xml:lang="en">Creator</guiname>
-            <guiname xml:lang="zh">创建人</guiname>
+            <guiname xml:lang="zh">创建者</guiname>
          </gui>
          <editor>
             <positions>
@@ -145,7 +144,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>title</name>
-            <type key="false" notnull="true" size="512" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="512" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -172,10 +171,5 @@
             <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
          </db>
       </field>
-   </fieldlist>   
-  <indexlist>
-    <index name="title">
-      <indexfield name="title" />
-    </index>
-  </indexlist>
+   </fieldlist>
 </builder>
