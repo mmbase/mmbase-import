@@ -57,6 +57,16 @@
       </datatype>
     </field>
 
+
+    <field name="time">
+      <gui>
+        <guiname xml:lang="en">Time</guiname>
+        <guiname xml:lang="nl">Tijd</guiname>
+      </gui>
+      <editor><positions><list>4</list></positions></editor>
+      <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
     <field name="body">
       <gui>
         <guiname xml:lang="en">Text</guiname>
