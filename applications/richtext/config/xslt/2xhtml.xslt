@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.31 2008-10-09 13:38:20 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.32 2008-10-17 14:12:06 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -462,6 +462,7 @@
     <xsl:param name="position" />
     <xsl:param name="last" />
     <a>
+      <xsl:attribute name="class">mm_nm_<xsl:value-of select="@type" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
