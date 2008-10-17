@@ -178,6 +178,7 @@ function requestContent(href) {
                            alert(ex);
                        }
                        usedFrames[href] = array;
+                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl });
                    }
                }
            });
