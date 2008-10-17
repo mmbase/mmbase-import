@@ -88,7 +88,7 @@
           </mm:url>">&laquo;&laquo;</a></strong>
         </c:if>
         
-        <c:forEach var="index" begin="0" end="${(size / max)}">
+        <c:forEach var="index" begin="1" end="${(size / max)}">
           <c:choose>
             <c:when test="${(index * max) == offset}">
               <strong>${(index + 1)}</strong>
@@ -96,7 +96,7 @@
             <c:otherwise>
               <a href="<mm:url referid="search_str">
                 <mm:param name="offset">${(index * max)}</mm:param>
-              </mm:url>">${(index + 1)}</a>
+              </mm:url>">${(index)}</a>
             </c:otherwise>
           </c:choose>
         </c:forEach>
