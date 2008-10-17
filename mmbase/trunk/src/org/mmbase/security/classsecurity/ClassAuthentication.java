@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.22 2008-10-02 12:31:17 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.23 2008-10-17 11:52:22 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -39,7 +39,8 @@ public class ClassAuthentication {
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
     public static final String DTD_CLASSSECURITY_1_0       = "classsecurity_1_0.dtd";
 
-    private static int MAX_DEPTH = 30;
+    private static int MAX_DEPTH = 40;
+
     static {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
@@ -176,7 +177,7 @@ public class ClassAuthentication {
                         // not, never mind.
                         continue CLASS;
                     }
-                    log.warn("" + n  + "matched on " + properties);
+                    log.debug("" + n  + "matched on " + properties);
                 }
 
                 Pattern p = n.classPattern;
@@ -207,10 +208,10 @@ public class ClassAuthentication {
             }
         }
 
-            log.warn("With " + properties + " " + authenticatedClasses + " found " + proposal);
-            if (proposal == null) {
-                log.warn("Failed to authenticate " + Arrays.asList(stack));
-            }
+        log.debug("debug " + properties + " " + authenticatedClasses + " found " + proposal);
+        if (proposal == null) {
+            log.warn("Failed to authenticate " + Arrays.asList(stack));
+        }
 
         return proposal;
     }
