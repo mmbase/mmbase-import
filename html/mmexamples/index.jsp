@@ -18,11 +18,14 @@
     <tr>
       <td colspan="3">
         <p>
-          Here's a list of all working examples. Most of them require you to deploy an application, with
-          the same name as the example.
-        </p>
-        <p>
-          <a href="<mm:url page="install.jsp" />">Demo-application installation page</a> (default name/password is admin/admin2k)
+          This page is deprecated. Please refer to
+          <mm:link>
+            <mm:frameworkparam name="component">mmexamples</mm:frameworkparam>
+            <mm:frameworkparam name="category">examples</mm:frameworkparam>
+            <a href="${_}">the new Examples page</a>.
+          </mm:link>
+          since most of them are rewritten to be used as components for the MMBase Component Framework.
+          The links to the older JSP examples on this page, which are as of yet not rewritten, still work.
         </p>
         <p>
           It is adviced to remove the complete /mmexamples directory, which contains these demos, from a production environment.
@@ -37,16 +40,6 @@
     <tr>
       <th>Name demo</th>
       <th colspan="2">Description</th>
-    </tr>
-
-    <tr>
-      <td>My News</td>
-      <td>
-        Small example of a news/magazine system
-      </td>
-      <td class="link" >
-        <a href="<mm:url page="mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
-      </td>
     </tr>
 
     <tr>
@@ -102,17 +95,7 @@
     </tr>
 
 
-    <tr>
-      <td>DataTypes</td>
-      <td>
-        MMBase 1.8 has powerful support for datatypes.
-      </td>
-      <td class="link" >
-        <a href="<mm:url page="/mmbase/validation/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
-      </td>
-    </tr>
-
-  </table>
+   </table>
   <div class="link">
     <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a>
   </div>
