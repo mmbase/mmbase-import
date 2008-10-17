@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.Entry;
 import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 
@@ -23,10 +24,12 @@ import org.mmbase.bridge.jsp.taglib.util.Referids;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.17 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.18 2008-10-17 12:02:22 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
+
+    private Object prevParamHandler;
 
     private  List<Entry<String, Object>> parameters ;
 
@@ -34,7 +37,7 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
     public void addParameter(String key, Object value) {
         parameters.add(new Entry<String, Object>(key, value));
     }
-    
+
 
     // javadoc inherited (from FunctionContainer)
     public List<Entry<String, Object>>  getParameters() {
@@ -47,11 +50,14 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
     }
 
     public int doStartTag() throws JspTagException {
+        prevParamHandler = pageContext.getAttribute(ParamHandler.KEY, ParamHandler.SCOPE);
+        pageContext.setAttribute(ParamHandler.KEY, this, ParamHandler.SCOPE);
+
         parameters = new ArrayList<Entry<String, Object>>();
         if (referids != Attribute.NULL) {
             for (Map.Entry<String, Object> entry : Referids.getReferids(referids, this).entrySet()) {
-                addParameter(entry.getKey(), entry.getValue());    
-            } 
+                addParameter(entry.getKey(), entry.getValue());
+            }
         }
         return EVAL_BODY;
     }
@@ -70,6 +76,8 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
     }
     public int doEndTag() throws JspTagException {
         parameters = null;
+        pageContext.setAttribute(ParamHandler.KEY, prevParamHandler, ParamHandler.SCOPE);
+        prevParamHandler = null;
         return super.doEndTag();
     }
 
