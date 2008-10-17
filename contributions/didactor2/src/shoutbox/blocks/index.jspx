@@ -30,7 +30,23 @@
           });
         </script>
 
-        <mm:node number="${source}">
+
+        <mm:node number="${source}"> <!-- source may be empty, in which case it will be the current node, as provided by the framework. -->
+
+          <mm:hasnodemanager name="properties">
+            <mm:import id="key">shouts.last_check</mm:import>
+            <mm:functioncontainer nodemanager="properties">
+              <mm:param name="node" referid="_node" />
+              <mm:param name="value"><mm:function name="get" referids="key" /></mm:param>
+              <mm:param name="key">shouts.previous_check</mm:param>
+              <mm:function name="set" write="false" />
+            </mm:functioncontainer>
+            <mm:functioncontainer nodemanager="properties">
+              <mm:param name="node" referid="_node" />
+              <mm:param name="value"><mm:time time="now" /></mm:param>
+              <mm:function name="set" referids="key" write="false" />
+            </mm:functioncontainer>
+          </mm:hasnodemanager>
 
           <h2>
             <fmt:message key="title">

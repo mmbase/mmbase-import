@@ -9,6 +9,17 @@
     <mm:link page="index" >
       <a href="${_}" class="menubar">
         <fmt:message key="menu" />
+        <mm:hasnodemanager name="properties">
+          <mm:functioncontainer  nodemanager="properties">
+            <mm:param name="node" value="${_node}" />
+            <mm:param name="key">shouts.last_check</mm:param>
+            <mm:function name="get" id="lastcheck" write="false" />
+          </mm:functioncontainer>
+          <mm:relatednodescontainer type="shouts">
+            <mm:constraint field="time" operator="GT" value="${lastcheck}" />
+            <jsp:text> (<mm:size />)</jsp:text>
+          </mm:relatednodescontainer>
+        </mm:hasnodemanager>
       </a>
     </mm:link>
   </div>
