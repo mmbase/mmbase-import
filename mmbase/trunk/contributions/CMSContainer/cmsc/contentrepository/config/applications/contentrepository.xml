@@ -15,12 +15,11 @@
       <builder maintainer="finalist.com" version="1">creationrel</builder>
       <builder maintainer="finalist.com" version="1">deletionrel</builder>
       <builder maintainer="finalist.com" version="1">ownerrel</builder>
-
       <builder maintainer="finalist.com" version="1">imagerel</builder>
-
       <builder maintainer="finalist.com" version="1">collectionchannel</builder>      
       <builder maintainer="finalist.com" version="1">contentchannel</builder>
       <builder maintainer="finalist.com" version="1">contentelement</builder>
+      <builder maintainer="finalist.com" version="1">assetelement</builder>
     </neededbuilderlist>
     <neededreldeflist>
         <reldef source="childrel" target="childrel" direction="bidirectional" guisourcename="childrel" guitargetname="childrel" builder="childrel" />
@@ -46,11 +45,14 @@
       <relation from="contentelement" to="images" type="imagerel" />
       <relation from="contentelement" to="urls" type="posrel" />
 
-		<!--  inline links -->
+      <!--  inline links -->
       <relation from="contentelement" to="contentelement" type="inlinerel" />
       <relation from="contentelement" to="attachments" type="inlinerel" />
       <relation from="contentelement" to="urls" type="inlinerel" />
       <relation from="contentelement" to="images" type="imageinlinerel" />
+      <!--assets-->
+      <relation from="assetelement" to="contentchannel" type="creationrel" />
+      <relation from="assetelement" to="contentchannel" type="deletionrel" />
    </allowedrelationlist>
 
    <datasourcelist>
