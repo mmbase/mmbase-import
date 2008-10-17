@@ -201,7 +201,7 @@
     <field name="filesize" state="system">
       <descriptions>
         <description xml:lang="en">Filesize of the image</description>
-        <description xml:lang="nl">Filegrootte van het plaatje</description>
+        <description xml:lang="nl">Filegrootte van de afbeelding</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Size</guiname>
@@ -220,7 +220,7 @@
     <field name="width" state="system">
       <descriptions>
         <description xml:lang="en">Width of the image in pixels</description>
-        <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+        <description xml:lang="nl">Breedte van de afbeelding in pixels</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Width</guiname>
@@ -234,7 +234,7 @@
     <field name="height" state="system">
       <descriptions>
         <description xml:lang="en">Height of the image in pixels</description>
-        <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+        <description xml:lang="nl">Hoogte van de afbeelding in pixels</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Height</guiname>
@@ -267,7 +267,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">Checksum of byte array, which allows for uniqueness checking</description>
-        <description xml:lang="nl">Checksum van de bytes, hiermee kan men controleren of een plaatje al bestaat</description>
+        <description xml:lang="nl">Checksum van de bytes, hiermee kan men controleren of een afbeelding al bestaat</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Checksum</guiname>

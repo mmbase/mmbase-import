@@ -30,8 +30,8 @@
 
     <field name="name">
       <descriptions>
-        <description xml:lang="en">The name of the site or page this url links to</description>
-        <description xml:lang="nl">De naam van de pagina of website waar deze link naar wijst</description>
+        <description xml:lang="en">The name of the site or page this url links to (linktext)</description>
+        <description xml:lang="nl">De naam van de pagina of website waarnaar deze link verwijst (linktekst)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Name</guiname>
@@ -50,7 +50,7 @@
     <field name="url">
       <descriptions>
         <description xml:lang="en">The link or site internet address</description>
-        <description xml:lang="nl">Het internet adres avnd e link of website</description>
+        <description xml:lang="nl">Het internet adres van de link of website</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Url</guiname>
