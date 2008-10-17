@@ -90,6 +90,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     protected class Status {
         int replaced = 0;
+        boolean inA = false;
         final Set<P> used = onlyFirstMatch ? new HashSet<P>() : null;
     }
     protected Status newStatus() {
@@ -167,17 +168,20 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
                 if (c == -1) break;
                 if (!replace(status)) {
                     w.write(c);
-                } else
-                if (c == '<') {  // don't do it in existing tags and attributes
+                } else if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
                     replaceWord(word, w, status);
+                    word.setLength(0);
                     w.write(c);
                 } else if (c == '>') {
                     translating = true;
+                    w.write(word.toString());
+                    w.write(c);
+                    String tag = word.toString();
+                    status.inA  = tag.equals("a") || tag.startsWith("a ");
                     word.setLength(0);
-                    w.write(c);
                 } else if (! translating) {
-                    w.write(c);
+                    word.append((char) c);
                 } else {
                     if (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' ) {
                         replaceWord(word, w, status);
@@ -190,7 +194,12 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
             }
             // write last word
             if (replace(status)) {
-                if (translating) replaceWord(word, w, status);
+                if (translating) {
+                    replaceWord(word, w, status);
+                } else {
+                    w.write(word.toString());
+                }
+                word.setLength(0);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Finished  replacing. Replaced " + status.replaced + " words");

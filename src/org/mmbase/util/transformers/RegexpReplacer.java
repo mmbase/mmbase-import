@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacer.java,v 1.27 2008-07-25 11:44:02 michiel Exp $
+ * @version $Id: RegexpReplacer.java,v 1.28 2008-10-17 14:08:35 michiel Exp $
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {
@@ -55,6 +55,8 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
     static {
         new RegexpReplacer().readPatterns(regexps);
     }
+
+    protected boolean replaceInA = false;
 
 
     public RegexpReplacer(int i) {
@@ -144,82 +146,88 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
     @Override
     protected boolean replace(String string, Writer w, Status status) throws IOException {
+        if (! (status.inA && ! replaceInA)) {
 
-        boolean r = false; // result value
+            boolean r = false; // result value
 
-        List<Chunk> chunks;
-        if (onlyFirstPattern) {
-            // linked list while we're going to do a lot of changing:
-            chunks = new LinkedList<Chunk>();
-        } else {
-            // will not make additions
-            chunks = new ArrayList<Chunk>(1);
-        }
-        chunks.add(new Chunk(string));
-
-
-        for (Map.Entry<Pattern, String> entry : getPatterns()) {
-            Pattern p = entry.getKey();
+            List<Chunk> chunks;
+            if (onlyFirstPattern) {
+                // linked list while we're going to do a lot of changing:
+                chunks = new LinkedList<Chunk>();
+            } else {
+                // will not make additions
+                chunks = new ArrayList<Chunk>(1);
+            }
+            chunks.add(new Chunk(string));
 
 
-            if (onlyFirstMatch && status.used.contains(p)) continue;
+            for (Map.Entry<Pattern, String> entry : getPatterns()) {
+                Pattern p = entry.getKey();
 
-            ListIterator<Chunk> i = chunks.listIterator();
-            while (i.hasNext()) {
-                Chunk chunk = i.next();
-                if (onlyFirstPattern && chunk.replaced) {
-                    continue;
-                }
-                Matcher m = p.matcher(chunk.string);
-                String replacement = entry.getValue();
-                boolean result = false;
-                if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
-                    result = m.matches(); // try for a full match, as string is one word.
-                } else {
-                    result = m.find();
-                }
-                if (result) {
-                    r = true;
-                    StringBuffer sb = new StringBuffer();
-                    do {
+
+                if (onlyFirstMatch && status.used.contains(p)) continue;
+
+                ListIterator<Chunk> i = chunks.listIterator();
+                while (i.hasNext()) {
+                    Chunk chunk = i.next();
+                    if (onlyFirstPattern && chunk.replaced) {
+                        continue;
+                    }
+                    Matcher m = p.matcher(chunk.string);
+                    String replacement = entry.getValue();
+                    boolean result = false;
+                    if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
+                        result = m.matches(); // try for a full match, as string is one word.
+                    } else {
+                        result = m.find();
+                    }
+                    if (result) {
+                        r = true;
+                        StringBuffer sb = new StringBuffer();
+                        do {
                         status.replaced++;
                         m.appendReplacement(sb, replacement);
                         if (onlyFirstMatch || onlyFirstPattern ||
                             to == ChunkedTransformer.XMLTEXT_WORDS ||
                             to == ChunkedTransformer.WORDS) break;
                         result = m.find();
-                    } while (result);
+                        } while (result);
 
-                    if (onlyFirstPattern) {
-                        // make a new chunk.
-                        i.remove();
-                        int s = m.start();
-                        if (s > 0) {
-                            i.add(new Chunk(sb.toString().substring(0, s)));
-                            sb.delete(0, s);
+                        if (onlyFirstPattern) {
+                            // make a new chunk.
+                            i.remove();
+                            int s = m.start();
+                            if (s > 0) {
+                                i.add(new Chunk(sb.toString().substring(0, s)));
+                                sb.delete(0, s);
+                            }
+                            i.add(new Chunk(sb.toString(), true));
+                            sb.setLength(0);
+                            m.appendTail(sb);
+                            i.add(new Chunk(sb.toString()));
+                            i.previous();
+                        } else {
+                            m.appendTail(sb);
+                            i.set(new Chunk(sb.toString()));
                         }
-                        i.add(new Chunk(sb.toString(), true));
-                        sb.setLength(0);
-                        m.appendTail(sb);
-                        i.add(new Chunk(sb.toString()));
-                        i.previous();
-                    } else {
-                        m.appendTail(sb);
-                        i.set(new Chunk(sb.toString()));
-                    }
-                    if (onlyFirstMatch ||
-                        to == ChunkedTransformer.XMLTEXT_WORDS ||
-                        to == ChunkedTransformer.WORDS) {
-                        // next pattern
-                        break;
+                        if (onlyFirstMatch ||
+                            to == ChunkedTransformer.XMLTEXT_WORDS ||
+                            to == ChunkedTransformer.WORDS) {
+                            // next pattern
+                            break;
+                        }
                     }
                 }
             }
+            for (Chunk s : chunks) {
+                w.write(s.string);
+            }
+
+            return r;
+        } else {
+            w.write(string);
+            return false;
         }
-        for (Chunk s : chunks) {
-            w.write(s.string);
-        }
-        return r;
 
     }
     protected final String base() {
