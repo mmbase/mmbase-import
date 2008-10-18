@@ -11,10 +11,10 @@ package org.mmbase.util;
 
 /**
  *
- * @deprecated Use org.mmbase.util.xml.EntityResolver
+ * @deprecated Use {@link org.mmbase.util.xml.EntityResolver}
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.72 2008-09-03 23:41:47 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.73 2008-10-18 10:25:06 michiel Exp $
  */
 public class XMLEntityResolver extends org.mmbase.util.xml.EntityResolver {
 

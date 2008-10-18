@@ -20,6 +20,22 @@ import java.util.*;
  * date could be an argument of an 'after' or 'before' method, it is better to wrap it with {@link
  * DynamicDate#eval} first.
  *
+ * Basicly the following dynamic dates are possible:
+ * <ul>
+ * <li>&lt;an integer number&gt;: seconds since january 1 1970</li>
+ * <li>&lt;integer&gt;-&lt;integer&gt;: year-daynumber</li>
+ * <li>&lt;integer&gt;-W&lt;integer&gt;: year-weeknumber</li>
+ * <li>&lt;integer&gt;-&lt;integer&gt;-&lt;integer&gt;
+ * [&lt;integer&gt;:&lt;:integer&gt;:&lt;:float&gt;: year-month-day [hour:minute:seconds]</li>
+ * <li>today, yesterday, tomonth, etc. : many strings are recognized</li>
+ * </ul>
+ * The then found (absolute) date/time can then be offsetted with aditions like "- 1 minute", "+ 5
+ * week". I.e. one of the binary operators '-' or '+' an integer and a time unit (in the
+ * singular). This process can be repeated so things like 'now + 5 minute + 3 second' will be
+ * correctly parsed.
+ *
+ * {@link #getDemo} returns a list of several strings which can be parsed.
+ *
  * @author  Michiel Meeuwissen
  * @since MMBase-1.8
  */
