@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.47 2008-08-13 22:23:38 michiel Exp $
+ * @version $Id: Logging.java,v 1.48 2008-10-18 10:25:06 michiel Exp $
  */
 
 
@@ -377,7 +377,7 @@ public class Logging {
         }
         Throwable t = e.getCause();
         if (t != null) {
-            buf.append(stackTrace(t, max));
+            buf.append("\n").append(stackTrace(t, max));
         }
         return buf.toString();
     }
