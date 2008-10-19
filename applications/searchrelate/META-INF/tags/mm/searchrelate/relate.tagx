@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.34 2008-08-26 10:07:04 michiel Exp $
+      @version $Id: relate.tagx,v 1.35 2008-10-19 14:07:01 andre Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -43,9 +43,11 @@
   <jsp:directive.attribute name="maxpages"           type="java.lang.Integer"
                            description="Max number of pages to show in the pager" />
 
+  <jsp:directive.attribute name="fields"             type="java.lang.String" 
+                           description="Fields to show in both lists. Searching still occurs with 'fieldlist type=search' " />
+
   <jsp:directive.attribute name="styleClass"
                            description="Extra classes to be added to outer div"/>
-
 
   <jsp:directive.attribute name="context"
                            description="The MMBase security context for new nodes (defaults to unset, which will normally result in nodes in the default context of the current user)" />
@@ -94,7 +96,8 @@
             return $("#mm_related_${seq}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${seq}").each(function() {
       if (this.relater != null) {
-    <c:if test="${! empty pagesize}">  this.relater.setPageSize(${pagesize}); </c:if>
+    <c:if test="${! empty fields}"> this.relater.setFields('${fields}'); </c:if>
+    <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
     <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
     <c:if test="${! empty current}">
@@ -144,6 +147,9 @@
             <c:if test="${! empty maxpages}">
               <mm:param name="maxpages" referid="maxpages" />
             </c:if>
+            <c:if test="${!empty fields}">
+              <mm:param name="fields" referid="fields" />
+            </c:if>
             <mm:param name="id">mm_related_${seq}_current</mm:param>
           </mm:include>
         </div>
@@ -176,7 +182,7 @@
           </c:otherwise>
         </c:choose>
 
-        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?">
+        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
           </c:if>
