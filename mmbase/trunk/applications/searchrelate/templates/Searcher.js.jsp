@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.35 2008-10-06 12:12:26 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.36 2008-10-19 14:06:52 andre Exp $
  */
 
 
@@ -333,6 +333,15 @@ MMBaseRelater.prototype.setContext = function(context) {
     }
 }
 
+MMBaseRelater.prototype.setFields = function(fields) {
+    if (this.current != null) {
+        this.current.searcher.setFields(fields);
+    }
+    if (this.repository != null) {
+        this.repository.searcher.setFields(fields);
+    }
+}
+
 MMBaseRelater.prototype.setPageSize = function(pagesize) {
     if (this.current != null) {
         this.current.searcher.setPageSize(pagesize);
@@ -361,6 +370,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.div.searcher = this;
     this.relater = r;
     this.type    = type;
+    this.fields = "";
     this.pagesize = 10;
     this.maxpages = 20;
     this.logger  = logger != null ? logger : new MMBaseLogger();
@@ -384,6 +394,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.logger.debug("found url to use: " + this.searchUrl);
     this.maxNumber = -1;
 
+}
+
+MMBaseSearcher.prototype.setFields = function(fields) {
+    this.fields = fields;
 }
 
 MMBaseSearcher.prototype.setPageSize = function(pagesize) {
@@ -431,7 +445,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
 
     var rep = this.getResultDiv();
-    var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, pagesize: this.pagesize, maxpages: this.maxpages};
+    var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, fields: this.fields, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
     this.logger.debug("Searching " + this.searchUrl + " " + params);
@@ -551,7 +565,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node};
+    var params = {id: this.getQueryId(), node: node, fields: fields};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
