@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.36 2008-10-19 14:06:52 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.37 2008-10-19 18:28:23 andre Exp $
  */
 
 
@@ -26,7 +26,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -453,11 +453,16 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     $(rep).empty();
     if (result == null) {
         var self = this;
-        $.ajax({url: this.searchUrl, type: "GET", dataType: "xml", data: params,
-                complete: function(res, status){
+        $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
+                 beforeSend: function() { 
+                    $("input.search").addClass("searching"); 
+                    $(rep).append($('<p><fmt:message key="searching" /></p>'));
+                 },
+                 complete: function(res, status) {
                     if ( status == "success" || status == "notmodified" ) {
                         result = res.responseText;
                         $(rep).empty();
+                        $("input.search").removeClass("searching");
                         //console.log($(result).find("*").length);
                         $(rep).append($(result).find("> *"));
                         self.searchResults["" + offset] = result;
@@ -468,7 +473,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                     }
                 }
                });
-        $(rep).append($('<p><fmt:message key="searching" /></p>'));
+       
     } else {
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
