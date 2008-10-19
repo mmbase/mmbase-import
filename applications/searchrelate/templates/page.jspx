@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.18 2008-09-02 15:58:54 michiel Exp $
+      @version $Id: page.jspx,v 1.19 2008-10-19 14:15:46 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />
@@ -21,6 +21,7 @@
       <mm:import externid="maxpages">20</mm:import>
       <mm:import externid="offset" vartype="integer">0</mm:import>
       <mm:import externid="customizedir" />
+      <mm:import externid="fields" />
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
         <c:if test="${! empty search}">
@@ -60,12 +61,23 @@
           &lt;!-- <jsp:expression>bq.toSql()</jsp:expression> --&gt;
           <thead>
             <tr class="${query.nodeManager.name}">
-              <th class="node number">#</th>
-              <th class="node"> </th>
-              <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
-                <th class="fields ${field.current.name}"><mm:fieldinfo type="guiname" /></th>
-                <mm:last><mm:index write="false" id="colcount" /></mm:last>
-              </mm:fieldlist>
+              <c:choose>
+                <c:when test="${!empty fields}">
+                  <th class="node number">#</th>
+                  <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$fields" varStatus="field">
+                    <th class="fields ${field.current.name}"><mm:fieldinfo type="guiname" /></th>
+                    <mm:last><mm:index write="false" id="colcount" /></mm:last>
+                  </mm:fieldlist>
+                </c:when>
+                <c:otherwise>
+                  <th class="node number">#</th>
+                  <th class="node"> </th>
+                    <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
+                      <th class="fields ${field.current.name}"><mm:fieldinfo type="guiname" /></th>
+                      <mm:last><mm:index write="false" id="colcount" /></mm:last>
+                    </mm:fieldlist>
+                </c:otherwise>
+              </c:choose>
               <th class="node action"> </th>
             </tr>
           </thead>
@@ -98,7 +110,7 @@
           <!--  ACTUAL SEARCHRESULT -->
           <tbody>
             <mm:listnodes varStatus="status">
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?" />
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,fields?" />
             </mm:listnodes>
           </tbody>
         </table>

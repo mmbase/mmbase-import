@@ -8,20 +8,26 @@
 
       <mm:import externid="status" from="request" />
       <mm:import externid="id"     required="true" from="request,parameters" />
-      <mm:import externid="node"     required="true" from="request,parameters" />
-      <mm:import externid="customizedir"   from="request,parameters" />
+      <mm:import externid="node"   required="true" from="request,parameters" />
+      <mm:import externid="fields" from="request,parameters" />
+      <mm:import externid="customizedir" from="request,parameters" />
       <mm:node referid="node">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
         <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
-          <td class="node number">
-            <mm:field name="number" />
-          </td>
-          <td class="node">
-            <mm:nodeinfo type="gui" />
-          </td>
-          <mm:fieldlist type="list" varStatus="field">
-            <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
-          </mm:fieldlist>
+          <td class="node number"><mm:field name="number" /></td>
+          <c:choose>
+            <c:when test="${!empty fields}">
+              <mm:fieldlist fields="$fields" varStatus="field">
+                <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
+              </mm:fieldlist>
+            </c:when>
+            <c:otherwise>
+              <td class="node"><mm:nodeinfo type="gui" /></td>
+              <mm:fieldlist type="list" varStatus="field">
+                <td class="fields ${field.current.name}"><mm:fieldinfo type="guivalue" /></td>
+              </mm:fieldlist>
+            </c:otherwise>
+          </c:choose>
           <td class="node action">
             <mm:haspage page="${customizedir}action.td.jspx">
               <mm:include page="${customizedir}action.td.jspx" />
