@@ -18,6 +18,14 @@ table.searchform {
 
 }
 
+input.searching
+{
+	background-image: url("${mm:link('/mmbase/style/ajax-loader-16.gif')}");
+	background-color: #fff;
+	background-position: right 1px;
+	background-repeat: no-repeat;
+}
+
 .searchresult table {
   border: solid 1px #000;
 }
