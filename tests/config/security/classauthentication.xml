@@ -21,5 +21,9 @@
     <property name="rank" value="basic user" />
   </authenticate>
 
+  <authenticate class="org\.mmbase\.bridge\.remote\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
 
 </security>
