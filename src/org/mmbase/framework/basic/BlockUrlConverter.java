@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.1 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.2 2008-10-20 17:03:31 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -66,17 +66,23 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * Framework#BLOCK} framework parameters to determin the explicit block for {@link #getUrl},
      * which may often be what you want.
      */
-    protected Block getExplicitBlock(Parameters frameworkParameters) throws FrameworkException {
+    protected Block getExplicitBlock(String path, Parameters frameworkParameters) throws FrameworkException {
         String componentName = frameworkParameters.get(Framework.COMPONENT);
         if (componentName != null) {
+            log.debug("Found component " + componentName);
             Component component = ComponentRepository.getInstance().getComponent(componentName);
             if (component == null) throw new FrameworkException("No such component " + componentName);
             String blockName = frameworkParameters.get(Framework.BLOCK);
             if (blockName == null) {
                 log.debug("found explicit component " + component);
-                return component.getDefaultBlock();
+                if (path != null && ! "".equals(path)) {
+                    return component.getBlock(path);
+                } else {
+                    return component.getDefaultBlock();
+                }
             } else {
                 Block block = component.getBlock(blockName);
+                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument ('" + path + "') and 'block' parameter ('" + frameworkParameters + "' -> " + block + ")");
                 if (block == null) throw new FrameworkException("No such block " + blockName);
                 log.debug("found explicit block " + block);
                 return block;
@@ -98,13 +104,12 @@ public abstract class BlockUrlConverter implements UrlConverter {
         State state = State.getState(request);
 
         // First explore
-        Block block = getExplicitBlock(frameworkParameters);
+        Block block = getExplicitBlock(path, frameworkParameters);
         if (block != null) {
             if (components != null && ! components.contains(block.getComponent())) {
                 log.debug("Explicit block, but not mine one");
                 return null;
             }
-            if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
             return block;
         }
 
