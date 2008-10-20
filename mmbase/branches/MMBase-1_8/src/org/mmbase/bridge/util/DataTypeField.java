@@ -22,7 +22,7 @@ import org.mmbase.datatypes.LengthDataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.1.2.3 2008-09-01 16:59:41 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.1.2.4 2008-10-20 08:41:41 michiel Exp $
  * @since   MMBase-1.8.7
  */
 
@@ -41,6 +41,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
                 }
             };
         field = null;
+        setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
     /**
      * This constructor only wraps the given field to have another datatype.
@@ -50,6 +51,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
         nodeManager = field.getNodeManager();
         this.field = field;
+        setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
     public NodeManager getNodeManager() {
         return nodeManager;

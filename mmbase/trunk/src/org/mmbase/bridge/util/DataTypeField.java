@@ -27,7 +27,7 @@ import org.mmbase.datatypes.LengthDataType;
  * as the essence of being a {@link org.mmbase.bridge.Field}).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.9 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.10 2008-10-20 08:44:17 michiel Exp $
  * @since   MMBase-1.8.7
  */
 
@@ -47,6 +47,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
                 }
             };
         field = null;
+        setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
     /**
      * This constructor only wraps the given field to have another datatype.
@@ -56,29 +57,26 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
         nodeManager = field.getNodeManager();
         this.field = field;
+        setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
-    @Override
-    public NodeManager getNodeManager() {
+
+    @Override public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    @Override
-    public int getSearchPosition() {
+    @Override public int getSearchPosition() {
         return field == null ? -1 : field.getSearchPosition();
     }
 
-    @Override
-    public int getListPosition() {
+    @Override public int getListPosition() {
         return field == null ? -1 : field.getListPosition();
     }
 
-    @Override
-    public int getEditPosition() {
+    @Override public int getEditPosition() {
         return field == null ? 1 : field.getEditPosition();
     }
 
-    @Override
-    public int getStoragePosition() {
+    @Override public int getStoragePosition() {
         return field == null ? -1 : field.getStoragePosition();
     }
 
@@ -99,13 +97,11 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         }
     }
 
-    @Override
-    public boolean isReadOnly() {
+    @Override public boolean isReadOnly() {
         return field == null ? false : field.isReadOnly();
     }
 
-    @Override
-    public String getGUIType() {
+    @Override public String getGUIType() {
         return dataType.getName();
     }
     public Collection<String> validate(Object value) {
