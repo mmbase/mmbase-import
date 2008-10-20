@@ -48,11 +48,11 @@ input.searching
   background-color: #ffb;
 }
 
-.searchresult tbody tr.even {
+.searchresult table tbody tr.even {
   color: #000;
   background-color: #ddd;
 }
-.searchresult tbody tr.odd {
+.searchresult table tbody tr.odd {
   color: #000;
   background-color: #fff;
 }
