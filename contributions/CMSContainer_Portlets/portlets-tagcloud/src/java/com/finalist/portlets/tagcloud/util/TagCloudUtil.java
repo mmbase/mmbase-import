@@ -69,14 +69,14 @@ public class TagCloudUtil {
 		"FROM mm_tag source_tag,mm_insrel source_insrel,mm_contentelement contentelement, mm_insrel target_insrel, mm_tag target_tag   "+
 		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
 		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
-		"AND LOWER(source_tag.name) = 'TAG_NAME' AND tag.name is not null  "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME' "+
 		"GROUP BY target_tag.name,target_tag.description ";
  
 	private static final String SQL_LIVE_SELECT_TAG_RELATED_TAGS = "SELECT target_tag.number,target_tag.name,target_tag.description,COUNT(contentelement.number) AS cnt "+  
 		"FROM live_tag source_tag,live_insrel source_insrel,live_contentelement contentelement, live_insrel target_insrel, live_tag target_tag   "+
 		"WHERE source_tag.number=source_insrel.dnumber AND contentelement.number=source_insrel.snumber  "+
 		"AND target_tag.number=target_insrel.dnumber AND contentelement.number=target_insrel.snumber "+
-		"AND LOWER(source_tag.name) = 'TAG_NAME' AND tag.name is not null  "+
+		"AND LOWER(source_tag.name) = 'TAG_NAME' "+
 		"GROUP BY target_tag.name,target_tag.description ";
  
 	private static Connection getConnection() {
