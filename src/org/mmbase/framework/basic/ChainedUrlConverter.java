@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.9 2008-09-01 21:05:02 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.10 2008-10-20 16:45:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -61,12 +61,34 @@ public class ChainedUrlConverter implements UrlConverter {
     }
 
 
-    public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
+
+//     public static class Link {
+//         public final static Link NULL = new Link(null, null);
+//         public final Block block;
+//         public final UrlConverter converter;
+//         public Link(UrlConverter converter, Block b) {
+//             this.block = b;
+//             this.converter = converter;
+//         }
+//         public String getUrl() {
+//         }
+//     }
+
+//     public Link chain(String path, Parameters frameworkParameters) throws FrameworkException {
+//         for (UrlConverter uc : uclist) {
+//             Block b = uc.getBlock(path, frameworkParameters);
+//             if (b != null) {
+//                 return new Link(uc, b);
+//             }
+//         }
+//         return Link.NULL;
+//     }
+
+    public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
         for (UrlConverter uc : uclist) {
-            Block b = uc.getBlock(path, frameworkParameters);
-            if (b != null) return b;
+            if (uc.isFilteredMode(frameworkParameters)) return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -82,7 +104,7 @@ public class ChainedUrlConverter implements UrlConverter {
             if (b != null) {
                 UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
                 if (current != null && uc != current) {
-                    log.debug("Explicit block, but not currently rendering is done by other UrlConverter");
+                    log.debug("Explicit block, but not currently rendering. That is done by other UrlConverter " + current);
                     return null;
                 } else {
                     log.debug("No current urlconverter ");

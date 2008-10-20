@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.35 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.36 2008-10-20 16:45:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -68,14 +68,17 @@ public class BasicFramework extends Framework {
     }
 
 
-    public String getUrl(String path, Map<String, Object> parameters,
+    public String getUrl(String path,
+                         Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        String url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
-        if (url == null) {
+        String link =  urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        log.debug("got " + link + " from " + urlConverter);
+        if (link == null) {
             return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
         } else {
-            return url;
+            return link;
         }
+
     }
 
 
@@ -152,9 +155,10 @@ public class BasicFramework extends Framework {
     }
 
 
-    public Block getBlock(Parameters frameworkParameters) throws FrameworkException {
+    /*public Block getBlock(Parameters frameworkParameters) throws FrameworkException {
         return urlConverter.getBlock(null, frameworkParameters);
     }
+    */
 
 
     /**
@@ -292,7 +296,7 @@ public class BasicFramework extends Framework {
                             public Map.Entry<String, Object> next() {
                                 Map.Entry<String, Object> e = i.next();
                                 return new org.mmbase.util.Entry<String, Object>(getPrefix(state) + e.getKey(), e.getValue());
-                                }
+                            }
                             public void remove() { throw new UnsupportedOperationException(); }
 
                         };
