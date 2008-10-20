@@ -97,7 +97,9 @@ public abstract class BridgeTest extends MMBaseTest {
         Cloud c = null;
         while(c == null) {
             try {
-                c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
+                Map<String, Object> loginInfo = new HashMap<String, Object>();
+                loginInfo.put("rank", "administrator");
+                c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", loginInfo);
                 break;
             } catch (BridgeException be) {
                 System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
