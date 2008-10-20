@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.23 2008-10-17 11:52:22 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.24 2008-10-20 14:12:22 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -166,7 +166,7 @@ public class ClassAuthentication {
                         String v = map.get(e.getKey());
                         if (v == null) continue;
                         if (! v.equals(e.getValue())) {
-                            log.warn("Skipping " + n + " because " + v + " != " + e);
+                            log.debug("Skipping " + n + " because " + v + " != " + e);
                             continue CLASS;
                         } else {
                             propertyMatchCount++;
