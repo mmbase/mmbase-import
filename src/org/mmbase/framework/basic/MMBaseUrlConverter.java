@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.14 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.15 2008-10-20 17:03:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -104,7 +104,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
                     }
                 }
                 if (! categoryOk) {
-                    log.debug("No sBuch component clasification, ignoring this");
+                    log.debug("No such component clasification, ignoring this");
                     return null;
                 }
             }
