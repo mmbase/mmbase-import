@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.37 2008-10-19 18:28:23 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.38 2008-10-20 08:16:10 andre Exp $
  */
 
 
@@ -26,7 +26,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
