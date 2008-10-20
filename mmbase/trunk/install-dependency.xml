@@ -12,6 +12,7 @@
   <property name="remote.repository"      value="http://www.mmbase.org/maven" />
   <property name="remote.repository2"     value="http://repo1.maven.org/maven/" />
 
+
   <property name="mmbase.ignorefiles"     value="templates/index.jsp" />
 
   <target name="unzipdownloadzip" if="download.zip.present"
@@ -51,10 +52,15 @@
     <available file="${expandedfile}" property="expanded"/>
   </target>
 
-  <target name="get"  depends="setproxy">
+  <target name="get"  depends="local.get,remote.get">
+  </target>
+  <target name="local.get">
     <mkdir dir="${download.dir}" />
     <copy file="${local.repository}/${file}" tofile="${download.dir}/${destfile}" preservelastmodified="true" overwrite="false" failonerror="false" />
-    <get src="${remote.repository}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"  ignoreerrors="true" />
+  </target>
+
+  <target name="remote.get"  depends="setproxy" unless="noconnection">
+    <get src="${remote.repository}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"   ignoreerrors="true" />
     <get src="${remote.repository2}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"  ignoreerrors="true" />
   </target>
 
