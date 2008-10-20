@@ -31,6 +31,12 @@
 
     <ant:available property="blocksSourcesPresent" type="dir"
       file="${maven.mmbasemodule.blocks}"/>
+      
+      <ant:available property="tagfilesSourcesPresent" type="dir"
+      file="${maven.mmbasemodule.tagfiles}"/>
+      
+      <ant:available property="webinfSourcesPresent" type="dir"
+      file="${maven.mmbasemodule.webinf}"/>
  
     <ant:echo message="mmbase module: ${maven.mmbasemodule.final.name}"/>
   </goal>
@@ -106,6 +112,11 @@
     <j:set var="webapp.build.templates" value="${maven.mmbasemodule.webapp.dir}/${maven.mmbasemodule.templates.dir}"/>
     <j:set var="webapp.build.examples" value="${maven.mmbasemodule.webapp.dir}/${maven.mmbasemodule.examples.dir}"/>
     <j:set var="webapp.build.blocks" value="${maven.mmbasemodule.webapp.dir}/${maven.mmbasemodule.blocks.dir}"/>
+    <j:set var="webapp.build.webinf" value="${maven.mmbasemodule.webapp.dir}/${maven.mmbasemodule.webinf.dir}"/>
+    <j:set var="webapp.build.tagfiles" value="${maven.mmbasemodule.webapp.dir}/${maven.mmbasemodule.tagfiles.dir}"/>
+    
+    <ant:echo>webapp.build.tagfiles = ${webapp.build.tagfiles}</ant:echo>
+    <ant:echo >webapp.build.webinf = ${webapp.build.webinf}</ant:echo>
 
     <j:if test="${templatesSourcesPresent == 'true'}">
       <ant:mkdir dir="${webapp.build.templates}"/>
@@ -116,6 +127,7 @@
         </ant:fileset>
       </ant:copy>
     </j:if>
+    
 
     <j:if test="${examplesSourcesPresent == 'true'}">
       <ant:mkdir dir="${webapp.build.examples}"/>
@@ -146,6 +158,26 @@
         </ant:fileset>
       </ant:copy>
     </j:if>
+    
+    <j:if test="${webinfSourcesPresent == 'true'}">
+      <ant:mkdir dir="${webapp.build.webinf}"/>
+      <ant:copy todir="${webapp.build.webinf}" preservelastmodified="true">
+        <ant:fileset dir="${maven.mmbasemodule.webinf}"
+          includes="${maven.mmbasemodule.webinf.includes}"
+          excludes="${maven.mmbasemodule.webinf.excludes}">
+        </ant:fileset>
+      </ant:copy>
+    </j:if>
+    
+    <j:if test="${tagfilesSourcesPresent == 'true'}">
+      <ant:mkdir dir="${webapp.build.tagfiles}"/>
+      <ant:copy todir="${webapp.build.tagfiles}" preservelastmodified="true">
+        <ant:fileset dir="${maven.mmbasemodule.tagfiles}"
+          includes="${maven.mmbasemodule.tagfiles.includes}"
+          excludes="${maven.mmbasemodule.tagfiles.excludes}">
+        </ant:fileset>
+      </ant:copy>
+    </j:if>    
 
   <!-- What to do with dependencies? -->
     
@@ -187,13 +219,21 @@
     <ant:mkdir dir="${build.temp.config}"/>
     <j:set var="build.temp.blocks" value="${maven.mmbasemodule.build.dir}/temp/blocks"/>
     <ant:mkdir dir="${build.temp.blocks}"/>
+    <j:set var="build.temp.tagfiles" value="${maven.mmbasemodule.build.dir}/temp/tagfiles"/>
+    <ant:mkdir dir="${build.temp.tagfiles}"/>
+    <j:set var="build.temp.webinf" value="${maven.mmbasemodule.build.dir}/temp/WEB-INF"/>
+    <ant:mkdir dir="${build.temp.webinf}"/>
 
     <j:set var="build.temp.webapp.dir" value="${maven.mmbasemodule.build.dir}/temp/webapp"/>
     <ant:mkdir dir="${build.temp.webapp.dir}"/>
     
+    <!--
+      Iterate over all the dependencies in the pom, and pick out the ones that are of type 'mmbase-module'
+    -->
     <j:forEach var="lib" items="${pom.artifacts}">
       <j:set var="dep" value="${lib.dependency}"/>     
       <j:if test="${dep.type == 'mmbase-module'}">
+        <!--what is this for?-->
         <j:choose>
           <j:when test="${dep.groupId != 'mmbase' and dep.artifactId != 'mmbase'}">
             <j:set var="overwriteSources" value="true"/>
@@ -203,6 +243,9 @@
           </j:otherwise>
         </j:choose>
         
+        <!--
+          Add the templates  if not specifically blocked with property 'mmbase.templates.bundle'
+        -->
         <j:if test="${dep.getProperty('mmbase.templates.bundle')!='false'}">
           <j:set var="templatesPath" value="${dep.getProperty('mmbase.templates.path')}"/> 
           <ant:unjar src="${lib.path}" dest="${build.temp.templates}">
@@ -217,10 +260,13 @@
               <ant:fileset dir="${build.temp.templates}/${maven.mmbasemodule.templates.dir}"/>
             </ant:move>
           
-            <ant:delete dir="${build.temp.templates}/${maven.mmbasemodule.templates.dir}" />  
+            <ant:delete dir="${build.temp.templates}/${maven.mmbasemodule.templates.dir}" />
           </util:available>
         </j:if>
     
+        <!--
+          Add the examples: only  if the property 'mmbase.examples.bundle' is set to 'true' 
+        -->
         <j:if test="${dep.getProperty('mmbase.examples.bundle')=='true'}">
           <j:set var="examplesPath" value="${dep.getProperty('mmbase.examples.path')}"/> 
           <ant:unjar src="${lib.path}" dest="${build.temp.examples}">
@@ -237,7 +283,53 @@
             <ant:delete dir="${build.temp.examples}/${maven.mmbasemodule.examples.dir}" />
           </util:available>
         </j:if>
+        
+        <!--
+          Add the tagfiles: only  if the property 'mmbase.tagfiles.bundle' is set to 'true' 
+        -->
+        <j:if test="${dep.getProperty('mmbase.tagfiles.bundle')!='false'}">
+          <j:set var="tagfilesPath" value="${maven.mmbasemodule.webapp.dir}/WEB-INF/tagfiles/${dep.artifactId.substring(7)}"/> 
+          <ant:unjar src="${lib.path}" dest="${build.temp.tagfiles}">
+            <patternset>
+              <include name="${maven.mmbasemodule.tagfiles.dir}/*"/>
+            </patternset>
+          </ant:unjar>
+          
+          <util:available file="${build.temp.tagfiles}/${maven.mmbasemodule.tagfiles.dir}">
+            <ant:move todir="${tagfilesPath}" 
+                      overwrite="${overwriteSources}" preservelastmodified="true" includeEmptyDirs="no">
+              <ant:fileset dir="${build.temp.tagfiles}/${maven.mmbasemodule.tagfiles.dir}"/>
+            </ant:move>  
+            <ant:delete dir="${build.temp.tagfiles}/${maven.mmbasemodule.tagfiles.dir}" />
+          </util:available>
+        </j:if>
 
+
+  <!--
+          Add the WEB-INF content: only  if the property 'mmbase.webinf.bundle' is set to 'true' 
+        -->
+        <j:if test="${dep.getProperty('mmbase.webinf.bundle')!='false'}">
+          <j:set var="webinfPath" value="${maven.mmbasemodule.webapp.dir}/WEB-INF"/> 
+          <ant:unjar src="${lib.path}" dest="${build.temp.webinf}">
+            <patternset>
+              <include name="${maven.mmbasemodule.webinf.dir}/*"/>
+            </patternset>
+          </ant:unjar>
+          
+          <util:available file="${build.temp.webinf}/${maven.mmbasemodule.webinf.dir}">
+            <ant:move todir="${webinfPath}" 
+                      overwrite="${overwriteSources}" preservelastmodified="true" includeEmptyDirs="no">
+              <ant:fileset dir="${build.temp.webinf}/${maven.mmbasemodule.webinf.dir}"/>
+            </ant:move>  
+            <ant:delete dir="${build.temp.webinf}/${maven.mmbasemodule.webinf.dir}" />
+          </util:available>
+        </j:if>        
+        
+        
+
+        <!--
+          Add the blocks if not specifically blocked with property 'mmbase.blocks.bundle'
+        -->
         <j:if test="${dep.getProperty('mmbase.blocks.bundle')!='false'}">
           <j:choose>
             <j:when test="${dep.getProperty('mmbase.blocks.path') and dep.getProperty('mmbase.blocks.path') != ''}">
@@ -271,6 +363,9 @@
         </j:if>
 
 
+        <!--
+          Add the configuration. Only if 'mmbase.config.bundle' is set to true.
+        -->
         <j:if test="${dep.getProperty('mmbase.config.bundle')=='true'}">
           <ant:unjar src="${lib.path}" dest="${build.temp.config}">
             <patternset>
@@ -312,12 +407,14 @@
       </ant:move>
     </util:available>
 
+    <ant:echo>We're not deleting the temp dirs!!</ant:echo>
     <ant:delete dir="${build.temp.blocks}" />
     <ant:delete dir="${build.temp.templates}" />
     <ant:delete dir="${build.temp.examples}" />
     <ant:delete dir="${build.temp.config}" />
+    <ant:delete dir="${build.temp.webinf}" />
+    <ant:delete dir="${build.temp.tagfiles}" />
     <ant:delete dir="${build.temp.webapp.dir}" />
-
     <util:available file="${maven.build.dir}/${maven.final.name}.jar">
       <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${webapp.build.lib}"/>
     </util:available>
