@@ -53,6 +53,12 @@
         <type size="255" notnull="false">STRING</type>
       </db>
     </field>
+    <field name="email">
+      <descriptions>
+        <description>Example of String pattern.</description>
+      </descriptions>
+      <datatype base="emailaddress" />
+    </field>
     <field name="stringrange">
       <descriptions>
         <description>Example of String range</description>
