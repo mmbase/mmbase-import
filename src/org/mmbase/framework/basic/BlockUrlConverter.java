@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.2 2008-10-20 17:03:31 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.3 2008-10-20 17:10:53 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -76,7 +76,9 @@ public abstract class BlockUrlConverter implements UrlConverter {
             if (blockName == null) {
                 log.debug("found explicit component " + component);
                 if (path != null && ! "".equals(path)) {
-                    return component.getBlock(path);
+                    Block block =  component.getBlock(path);
+                    if (block == null) throw new FrameworkException("No such block " + path);
+                    return block;
                 } else {
                     return component.getDefaultBlock();
                 }
