@@ -11,7 +11,7 @@
     <mm:notpresent referid="server">
       <table summary="servers" border="0" cellspacing="0" cellpadding="3">
         <caption>
-	      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+	      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
         </caption>
         <tr>
           <th>Machine</th>
@@ -27,11 +27,9 @@
             <td>
               <mm:field name="name">
                 <mm:compare value="${mmbase.machineName}">
-                  <mm:log>aaaaaaa</mm:log>
-                  <mm:link referids="_@server">
+                  <mm:link page="servers" referids="_@server">
                     <a href="${_}"><mm:field name="name" /></a>
                   </mm:link>
-                  <mm:log>bbbbbbbb</mm:log>
                 </mm:compare>
                 <mm:compare value="${mmbase.machineName}" inverse="true">
                   <mm:write />
