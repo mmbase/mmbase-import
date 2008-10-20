@@ -88,15 +88,16 @@
           </mm:url>">&laquo;&laquo;</a></strong>
         </c:if>
         
-        <c:forEach var="index" begin="1" end="${(size / max)}">
+        <fmt:formatNumber var="iend" type="number" pattern="#" value="${(size / max) - 0.51}" />
+        <c:forEach var="i" begin="0" end="${iend}">
           <c:choose>
-            <c:when test="${(index * max) == offset}">
-              <strong>${(index + 1)}</strong>
+            <c:when test="${(i * max) == offset}">
+              <strong>${(i + 1)}</strong>
             </c:when>
             <c:otherwise>
               <a href="<mm:url referid="search_str">
-                <mm:param name="offset">${(index * max)}</mm:param>
-              </mm:url>">${(index)}</a>
+                <mm:param name="offset">${(i * max)}</mm:param>
+              </mm:url>">${(i + 1)}</a>
             </c:otherwise>
           </c:choose>
         </c:forEach>
