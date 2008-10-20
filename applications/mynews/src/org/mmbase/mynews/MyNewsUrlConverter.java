@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.20 2008-09-02 12:19:46 andre Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.21 2008-10-20 16:45:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -59,16 +59,17 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
 
     protected String getNiceUrl(Block block,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
+                                Parameters parameters,
+                                Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("" + block + parameters + frameworkParameters);
         }
 
         log.debug("Found mynews block " + block);
-        Node n = (Node) parameters.get(Framework.N.getName());
         StringBuilder b = new StringBuilder(directory);
         if(block.getName().equals("article")) {
+            Node n = parameters.get(Framework.N);
+            parameters.set(Framework.N.getName(), null);
             if (dateDepth > 0) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(n.getDateValue("date"));
@@ -94,7 +95,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    public String getFilteredInternalUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    public String getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() > 0) {
             // article mode

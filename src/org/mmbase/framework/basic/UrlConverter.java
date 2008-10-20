@@ -22,8 +22,9 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.9 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.10 2008-10-20 16:45:11 michiel Exp $
  * @since MMBase-1.9
+ * @todo EXPERIMENTAL
  */
 public interface UrlConverter {
 
@@ -37,18 +38,16 @@ public interface UrlConverter {
 
 
     /**
-     * The UrlConverter can indicate whether given framework parameters would for it define a
-     * specific block.
-     * @return Explicitely defined block, or <code>null</code> if no block defined according to this UrlConverter.
+     * The state of rendering will be determined (request.getRequestUri) and we will return if the
+     * current URL is managed by <em>this</em> UrlConverter
      */
-
-    Block getBlock(String path, Parameters urlConvererParameters) throws FrameworkException;
+    boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException;
 
     /**
      * See {@link org.mmbase.framework.Framework#getUrl(String, Map, Parameters, boolean)}.
      * But it can also return <code>null</code> which mean, 'I don't know.'
      * @param path The path (generally a relative URL) to create an URL for.
-     * @param parameters Parameters The parameters to be passed to the page
+     * @param parameters Parameters The parameters to be passed to the page, as specified e.g. with  mm:param -tags
      * @param frameworkParameters The parameters that are required by the framework
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;).
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is

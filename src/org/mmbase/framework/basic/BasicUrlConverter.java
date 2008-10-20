@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.18 2008-09-01 08:12:40 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.19 2008-10-20 16:45:11 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -112,6 +112,12 @@ public final class BasicUrlConverter implements UrlConverter {
     public BasicUrlConverter(BasicFramework fw) {
         framework = fw;
 
+    }
+    /**
+     * This URLConverter can work on any url, so is wlays in 'filtered' mode'.
+     */
+    public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
+        return true;
     }
 
     /**

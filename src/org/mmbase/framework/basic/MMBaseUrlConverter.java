@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.13 2008-09-01 07:06:12 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.14 2008-10-20 16:45:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -66,91 +66,22 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         }
     }
 
-    protected String getNiceUrl(Block block,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
+    @Override protected String getNiceUrl(Block block, Parameters blockParameters, Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
-            log.debug("block '" + block  + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
+            log.debug("block '" + block  + "'  framework parameters " + frameworkParameters);
         }
-        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-
+        State state = getState(frameworkParameters);
         String category = frameworkParameters.get(CATEGORY);
-        State state = State.getState(request);
 
         if (category == null && state.isRendering()) {
             category = state.getFrameworkParameters().get(CATEGORY);
         }
+        return directory + (category == null ? "_" : category) + "/" + block.getComponent().getName() + "/" + block.getName();
 
-        Component component = block.getComponent();
-
-        // @TODO
-        // Stuff happening with map, and processorUrl and things like that, seems to have no place
-        // here.
-        // Refactor it away
-
-
-        Map<String, Object> map = new TreeMap<String, Object>();
-        if (log.isDebugEnabled()) {
-            log.debug("Generating URL to " + block + " State " + state + " category " + category);
-        }
-        boolean processUrl = frameworkParameters.get(BasicFramework.ACTION) != null;
-        if (processUrl) {
-            // get current components ids
-            if (state.isRendering()) {
-                map.put(BasicFramework.ACTION.getName(), state.getId());
-            } else {
-                map.put(BasicFramework.ACTION.getName(), state.getUpcomingId());
-            }
-        }
-
-
-        if (! processUrl && state.isRendering()) {
-            // copy all current parameters of the request.
-            for (Object e : request.getParameterMap().entrySet()) {
-                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                String k = entry.getKey();
-                if (k.equals(Framework.BLOCK.getName())) continue;
-                if (k.equals(Framework.COMPONENT.getName())) continue;
-                if (k.equals(CATEGORY.getName())) continue;
-                log.debug("putting " + entry);
-                map.put(k, entry.getValue());
-            }
-        } else {
-            //log.debug("Now processing " + processor);
-        }
-
-        if (! processUrl) {
-            Parameters blockParameters = block.createParameters();
-            blockParameters.setAutoCasting(true);
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                blockParameters.set(entry.getKey(), entry.getValue());
-            }
-            map.putAll(framework.prefix(state, blockParameters.toMap()));
-        }
-
-        // TODO, if no category specified somehow, then guess when, using the avaiable
-        // classifications for the specified block.
-
-        if (category == null) {
-            Block.Type[] classification = block.getClassification();
-        }
-        //boolean subComponent = state.getDepth() > 0;
-
-
-        String page;
-        if (state.isRendering() && state.getBlock().equals(block)) {
-            page = FrameworkFilter.getPath(request);
-        } else {
-            page = directory + (category == null ? "_" : category) + "/" + component.getName() + "/" + block.getName() ;
-        }
-
-        //path == null || subComponent ?
-
-        String sb = BasicUrlConverter.getUrl(page, map , request, escapeAmps);
-        return sb;
     }
 
-    public String getFilteredInternalUrl(List<String> path, Map<String, Object> params, Parameters frameworkParameters) {
+
+    @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) {
         if (path.size() == 0) {
             // nothing indicated after /mmbase/, don't know what to do, leaving unfiltered
             return null;
@@ -173,7 +104,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
                     }
                 }
                 if (! categoryOk) {
-                    log.debug("No such component clasification, ignoring this");
+                    log.debug("No sBuch component clasification, ignoring this");
                     return null;
                 }
             }
