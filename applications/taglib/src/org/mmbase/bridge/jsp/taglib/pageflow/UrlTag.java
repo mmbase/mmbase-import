@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.118 2008-09-04 15:03:48 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.119 2008-10-21 18:28:02 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -224,7 +224,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      */
     protected boolean doMakeRelative() {
         if (makeRelative == null) {
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makereltive");
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
         return makeRelative.booleanValue();
