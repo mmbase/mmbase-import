@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.6 2008-10-21 14:38:41 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.7 2008-10-21 16:24:33 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -39,21 +39,19 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
         return null;
     }
 
-    @Override protected String getNiceUrl(Block block,
-                                         Parameters blockParameters,
-                                         Parameters frameworkParameters,
-                                         boolean action) throws FrameworkException {
+    @Override protected void getNiceDirectoryUrl(StringBuilder b,
+                                                   Block block,
+                                                   Parameters blockParameters,
+                                                   Parameters frameworkParameters,
+                                                   boolean action) throws FrameworkException {
         log.debug("Found block " + block);
         //Node n = (Node) parameters.get(Framework.N.getName());
-        StringBuilder b = new StringBuilder(directory);
-        b.append('/');
         b.append(block.getComponent().getName());
         b.append('/');
         if (! block.getComponent().getDefaultBlock().equals(block)) {
             b.append(block.getName());
             b.append('/');
         }
-        return b.toString();
     }
 
 
@@ -83,9 +81,7 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
         return result.toString();
     }
 
-    public String toString() {
-        return directory;
-    }
+
 
 
 }
