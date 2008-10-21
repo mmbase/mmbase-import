@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.80 2008-07-28 16:10:52 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.81 2008-10-21 17:24:07 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -654,13 +654,13 @@ public class TypeRel extends MMObjectBuilder {
 
         VirtualTypeRel(TypeRel t) {
             mmb = t.getMMBase();
-            CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
-            field = Fields.createField("dnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            field = Fields.createField("dnumber", Field.TYPE_NODE, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
-            field = Fields.createField("rnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+            field = Fields.createField("rnumber", Field.TYPE_NODE, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
             tableName = "virtual_typerel";
