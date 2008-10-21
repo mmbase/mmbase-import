@@ -69,7 +69,7 @@
       </db>
     </field>
 
-    <field>
+    <field name="email">
       <descriptions>
         <description xml:lang="en">Person's email address</description>
         <description xml:lang="nl">Het electronich postadres van de persoon</description>
@@ -81,18 +81,14 @@
       </gui>
       <editor>
         <positions>
-          <input>3</input>
           <list>3</list>
-          <search>3</search>
         </positions>
       </editor>
       <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="you@example.com" />
+        <required value="false" />
+        <maxLength value="255" />
       </datatype>
-      <db>
-        <name>email</name>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
-      </db>
     </field>
 
     <field>
