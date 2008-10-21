@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.22 2008-10-21 14:55:48 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.23 2008-10-21 15:17:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -58,18 +58,25 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    protected String getNiceUrl(Block block,
-                                Parameters parameters,
-                                Parameters frameworkParameters,  boolean action) throws FrameworkException {
+    /**
+     * Generates a nice url for 'mynews'. This basicly looks like
+     * &lt;directory&gt;/[&lt;year&gt;[/&lt;month&gt;[&lt;day of month&gt;]]][/&lt;identifier of
+     * news article (number or title)&gt;]
+     *
+     * How many elements of the 'date' are produces depends on the 'date depth', and can be 0, 1, 2
+     * or 3.
+     */
+    @Override protected String getNiceDirectoryUrl(StringBuilder b,
+                                                   Block block,
+                                                   Parameters parameters,
+                                                   Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("" + parameters + frameworkParameters);
             log.debug("Found mynews block " + block);
         }
-
-        StringBuilder b = new StringBuilder(directory);
         if(block.getName().equals("article")) {
             Node n = parameters.get(Framework.N);
-            parameters.set(Framework.N.getName(), null);
+            parameters.set(Framework.N, null);
             if (dateDepth > 0) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(n.getDateValue("date"));
@@ -95,7 +102,10 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    public String getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    /**
+     * Translates the result of {@link #getNiceUrl} back to an actual JSP which can render the block
+     */
+    @Override public String getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() == 0) {
             result.append("&block=magazine");
