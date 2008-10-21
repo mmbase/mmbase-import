@@ -17,7 +17,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.criterion.Order;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +37,16 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    /** {@inheritDoc} */
    @Transactional(readOnly = true)
    @SuppressWarnings("unchecked")
-   public Map < Long , Map < String , String >> getPreferencesByModule(String module) {
+   public Map<Long, Map<String, String>> getPreferencesByModule(String module) {
       Criteria criteria = getSession().createCriteria(Preference.class);
       criteria.add(Restrictions.eq("module", module));
       List preferenceList = criteria.list();
-      Map < Long , Map < String , String >> userPreferenceMap = new HashMap < Long , Map < String , String >>();
+      Map<Long, Map<String, String>> userPreferenceMap = new HashMap<Long, Map<String, String>>();
       for (Iterator iter = preferenceList.iterator(); iter.hasNext();) {
          Preference p = (Preference) iter.next();
-         Map < String , String > preferenceMap = userPreferenceMap.get(p.getAuthenticationId());
+         Map<String, String> preferenceMap = userPreferenceMap.get(p.getAuthenticationId());
          if (preferenceMap == null) {
-            preferenceMap = new HashMap < String , String >();
+            preferenceMap = new HashMap<String, String>();
             userPreferenceMap.put(p.getAuthenticationId(), preferenceMap);
          }
          preferenceMap.put(p.getKey(), p.getValue());
@@ -57,17 +57,17 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    /** {@inheritDoc} */
    @Transactional(readOnly = true)
    @SuppressWarnings("unchecked")
-   public Map < String , Map < String , String >> getPreferencesByUserId(String userId) {
+   public Map<String, Map<String, String>> getPreferencesByUserId(String userId) {
       Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
       Criteria criteria = getSession().createCriteria(Preference.class);
       criteria.add(Restrictions.eq("authenticationId", authenticationId));
       List preferenceList = criteria.list();
-      Map < String , Map < String , String >> modulePreferenceMap = new HashMap < String , Map < String , String >>();
+      Map<String, Map<String, String>> modulePreferenceMap = new HashMap<String, Map<String, String>>();
       for (Iterator iter = preferenceList.iterator(); iter.hasNext();) {
          Preference p = (Preference) iter.next();
-         Map < String , String > preferenceMap = modulePreferenceMap.get(p.getModule());
+         Map<String, String> preferenceMap = modulePreferenceMap.get(p.getModule());
          if (preferenceMap == null) {
-            preferenceMap = new HashMap < String , String >();
+            preferenceMap = new HashMap<String, String>();
             modulePreferenceMap.put(p.getModule(), preferenceMap);
          }
          preferenceMap.put(p.getKey(), p.getValue());
@@ -77,12 +77,12 @@ public class PreferenceHibernateService extends HibernateService implements Pref
 
    /** {@inheritDoc} */
    @Transactional(readOnly = true)
-   public List < Preference > getListPreferencesByUserId(String userId) {
+   public List<Preference> getListPreferencesByUserId(String userId) {
       Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
       Criteria criteria = getSession().createCriteria(Preference.class);
       criteria.add(Restrictions.eq("authenticationId", authenticationId));
       List List = criteria.list();
-      List < Preference > preferenceList = new ArrayList < Preference >();
+      List<Preference> preferenceList = new ArrayList<Preference>();
       for (Iterator iter = List.iterator(); iter.hasNext();) {
          Preference p = new Preference();
          p = (Preference) iter.next();
@@ -93,7 +93,7 @@ public class PreferenceHibernateService extends HibernateService implements Pref
 
    /** {@inheritDoc} */
    @Transactional(readOnly = true)
-   public Map < String , String > getPreferences(String module, String userId) {
+   public Map<String, String> getPreferences(String module, String userId) {
       Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
       Criteria criteria = getSession().createCriteria(Preference.class);
       criteria.add(Restrictions.eq("module", module));
@@ -104,14 +104,14 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    /** {@inheritDoc} */
    @SuppressWarnings("unchecked")
    @Transactional(readOnly = true)
-   public List < String > getPreferenceValues(String module, String userId, String key) {
+   public List<String> getPreferenceValues(String module, String userId, String key) {
       Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
       Criteria criteria = getSession().createCriteria(Preference.class);
       criteria.add(Restrictions.eq("module", module));
       criteria.add(Restrictions.eq("authenticationId", authenticationId));
       criteria.add(Restrictions.eq("key", key));
 
-      List < String > result = new ArrayList < String >();
+      List<String> result = new ArrayList<String>();
       for (Iterator iter = criteria.list().iterator(); iter.hasNext();) {
          Preference p = (Preference) iter.next();
          result.add(p.getValue());
@@ -120,9 +120,9 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    }
 
    @SuppressWarnings("unchecked")
-   private Map < String , String > gePreferencesMap(Criteria criteria) {
+   private Map<String, String> gePreferencesMap(Criteria criteria) {
       List userPreferenceList = criteria.list();
-      Map < String , String > preferenceMap = new HashMap < String , String >();
+      Map<String, String> preferenceMap = new HashMap<String, String>();
       for (Iterator iter = userPreferenceList.iterator(); iter.hasNext();) {
          Preference p = (Preference) iter.next();
          preferenceMap.put(p.getKey(), p.getValue());
@@ -183,56 +183,54 @@ public class PreferenceHibernateService extends HibernateService implements Pref
       this.authenticationService = authenticationService;
    }
 
+   @SuppressWarnings("unchecked")
    @Transactional(readOnly = true)
-   public List < PreferenceVO > getPreferences(PreferenceVO preference, int offset, int pageSize, String orderBy,
+   public List<PreferenceVO> getPreferences(PreferenceVO preference, int offset, int pageSize, String orderBy,
          String direction) {
 
-      List < PreferenceVO > preferences = new ArrayList < PreferenceVO >();
-      Criteria criteria = getSession().createCriteria(Preference.class);
+      List<PreferenceVO> preferences = new ArrayList<PreferenceVO>();
+      StringBuffer queryString = new StringBuffer(
+            "select new com.finalist.cmsc.services.community.domain.PreferenceVO(p.id,a.userId,p.authenticationId,p.module,p.key,p.value) from Preference as p , Authentication as a where a.id=p.authenticationId ");
       if (preference != null) {
-
          if (StringUtils.isNotBlank(preference.getUserId())) {
-            Criteria authentication = getSession().createCriteria(Authentication.class);
-            authentication.add(Restrictions.ilike("userId", "%" + preference.getUserId() + "%"));
-            List < Authentication > authentications = authentication.list();
-            List < Long > authenticationIds = new ArrayList < Long >();
-            for (Authentication authe : authentications) {
-               authenticationIds.add(authe.getId());
-            }
-            if (authenticationIds.size() > 0) {
-               criteria.add(Restrictions.in("authenticationId", authenticationIds));
-            }
-
+            queryString.append("and a.userId like '%" + preference.getUserId() + "%' ");
          }
-
          if (StringUtils.isNotBlank(preference.getModule())) {
-            criteria.add(Restrictions.ilike("module", "%" + preference.getModule() + "%"));
+            queryString.append("and p.module like '%" + preference.getModule() + "%' ");
          }
          if (StringUtils.isNotBlank(preference.getKey())) {
-            criteria.add(Restrictions.ilike("key", "%" + preference.getKey() + "%"));
+            queryString.append("and p.key like '%" + preference.getKey() + "%' ");
          }
          if (StringUtils.isNotBlank(preference.getValue())) {
-            criteria.add(Restrictions.ilike("value", "%" + preference.getValue() + "%"));
+            queryString.append("and p.value like '%" + preference.getValue() + "%' ");
          }
       }
-      criteria.setFirstResult(offset);
-      criteria.setMaxResults(pageSize);
-
       if (StringUtils.isNotEmpty(orderBy)) {
-         if (StringUtils.isEmpty(direction) || direction.equalsIgnoreCase("down")) {
-            criteria.addOrder(Order.desc(orderBy));
+         if (StringUtils.isEmpty(direction) || direction.equalsIgnoreCase("down") || direction.equalsIgnoreCase("desc")) {
+            if (StringUtils.equalsIgnoreCase(orderBy, "userId")) {
+               queryString.append("order by a.userId desc");
+            } else {
+               queryString.append("order by p." + orderBy + " desc");
+            }
          } else {
-            criteria.addOrder(Order.asc(orderBy));
+            if (StringUtils.equalsIgnoreCase(orderBy, "userId")) {
+               queryString.append("order by a.userId asc");
+            } else {
+               queryString.append("order by p." + orderBy + " asc");
+            }
          }
       } else {
-         criteria.addOrder(Order.desc("id"));
+         queryString.append("order by p.id desc");
       }
-      copyPropertiesToVO(preferences, criteria.list());
+      Query query = getSession().createQuery(queryString.toString());
+      query.setFirstResult(offset).setMaxResults(pageSize);
+      preferences = query.list();
+
       return preferences;
    }
 
    @Transactional(readOnly = true)
-   public List < PreferenceVO > getPreferences(int offset, int pageSize, String orderBy, String direction) {
+   public List<PreferenceVO> getPreferences(int offset, int pageSize, String orderBy, String direction) {
       return getPreferences(null, offset, pageSize, orderBy, direction);
    }
 
@@ -270,9 +268,9 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    }
 
    @Transactional(readOnly = true)
-   public List < String > getAllUserIds() {
-      List < Authentication > authentications = authenticationService.findAuthentications();
-      List < String > userIds = new ArrayList < String >();
+   public List<String> getAllUserIds() {
+      List<Authentication> authentications = authenticationService.findAuthentications();
+      List<String> userIds = new ArrayList<String>();
       for (Authentication authentication : authentications) {
          userIds.add(authentication.getUserId());
       }
@@ -287,8 +285,8 @@ public class PreferenceHibernateService extends HibernateService implements Pref
          if (StringUtils.isNotBlank(preference.getUserId())) {
             Criteria authentication = getSession().createCriteria(Authentication.class);
             authentication.add(Restrictions.ilike("userId", "%" + preference.getUserId() + "%"));
-            List < Authentication > authentications = authentication.list();
-            List < Long > authenticationIds = new ArrayList < Long >();
+            List<Authentication> authentications = authentication.list();
+            List<Long> authenticationIds = new ArrayList<Long>();
             for (Authentication authe : authentications) {
                authenticationIds.add(authe.getId());
             }
@@ -309,21 +307,21 @@ public class PreferenceHibernateService extends HibernateService implements Pref
       return criteria.list().size();
    }
 
-   private void copyPropertiesToVO(List < PreferenceVO > dest, List < Preference > src) {
-      if (src == null || src.size() == 0) {
-         return;
-      }
-      for (Preference preference : src) {
-         PreferenceVO preferenceVO = new PreferenceVO();
-         preferenceVO.setId(String.valueOf(preference.getId()));
-         preferenceVO.setKey(preference.getKey());
-         preferenceVO.setValue(preference.getValue());
-         preferenceVO.setModule(preference.getModule());
-         preferenceVO.setUserId(getUserIdByAuthenticationId(preference.getAuthenticationId()));
-         preferenceVO.setAuthenticationId(String.valueOf(preference.getAuthenticationId()));
-         dest.add(preferenceVO);
-      }
-   }
+    private void copyPropertiesToVO(List < PreferenceVO > dest, List < Preference > src) {
+       if (src == null || src.size() == 0) {
+          return;
+       }
+       for (Preference preference : src) {
+          PreferenceVO preferenceVO = new PreferenceVO();
+          preferenceVO.setId(String.valueOf(preference.getId()));
+          preferenceVO.setKey(preference.getKey());
+          preferenceVO.setValue(preference.getValue());
+          preferenceVO.setModule(preference.getModule());
+          preferenceVO.setUserId(getUserIdByAuthenticationId(preference.getAuthenticationId()));
+          preferenceVO.setAuthenticationId(String.valueOf(preference.getAuthenticationId()));
+          dest.add(preferenceVO);
+       }
+    }
 
    @Transactional
    private String getUserIdByAuthenticationId(Long authenticationId) {

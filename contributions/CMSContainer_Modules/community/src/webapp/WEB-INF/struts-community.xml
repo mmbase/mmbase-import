@@ -85,7 +85,7 @@
       <action path="/editors/community/PreferenceAction" name="preferenceForm" type="org.springframework.web.struts.DelegatingActionProxy"  scope="session"
          validate="false" unknown="true" parameter="method">
          <forward name="success" path="/editors/community/preferencesearch.jsp" redirect="false" />
-         <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="false" />
+         <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="true" />
          <forward name="init" path="/editors/community/preferenceadd.jsp" redirect="false" />
       </action>
       <!-- ======export====== -->
