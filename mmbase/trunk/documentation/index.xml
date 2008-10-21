@@ -7,7 +7,7 @@
 
     <date>2007-08-05</date>
 
-    <edition>$Id: index.xml,v 1.68 2008-10-21 16:39:32 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.69 2008-10-21 16:51:15 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -320,6 +320,12 @@
     section.</para>
 
     <itemizedlist>
+
+      <listitem>
+        <para><ulink url="frontenddevelopers/codingstandards.html">Proposal
+        Coding Standards from Michiel</ulink></para>
+      </listitem>
+
       <listitem>
         <para><ulink
         url="cloudcontextsecurity.html">Cloud
