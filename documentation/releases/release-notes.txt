@@ -62,6 +62,11 @@ Known API incompatibilities of bridge, between 1.8 to 1.9.
 
 - org.mmbase.storage.search.implementation.*. StringBuilders are used in API.
 
+- org.mmbase.util was cleaned up a bit.
+  e.g.
+  org.mmbase.util.xml.ApplicationReader ->   org.mmbase.util.xml.applicationdata.ApplicationReader
+  and similar changes
+
 
 ========================
 Know Issues and Problems:
@@ -129,14 +134,14 @@ Java compilers
 -------------
 
 - Sun's javac 1.5
-  
-  When altering line 115 in org.mmbase.cache.CacheManager from 
+
+  When altering line 115 in org.mmbase.cache.CacheManager from
     Cache cache = getCache(cacheName);
   to
     Cache<?,?> cache = getCache(cacheName);
-  the compiler will run into a bug in Sun's javac regarding the casting of 
+  the compiler will run into a bug in Sun's javac regarding the casting of
   generic types. See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
-  
+
 ------------------
 Servlet engines /
 Application servers
@@ -151,7 +156,7 @@ These are the applications servers on which MMBase was tested.
 Databases
 ---------
 
-- Mysql 
+- Mysql
 - Hsqldb 1.8.0 (shipped with distro)
 - Postgresql
 - PostgreSQL 8.1.3
