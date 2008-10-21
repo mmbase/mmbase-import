@@ -72,16 +72,16 @@
                <img src="../gfx/icons/delete.png" title="<fmt:message key="community.preference.delete" />"/></a>
          </mm:hasrank>
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.preference.user.upper">
+         <edit:ui-tcolumn titlekey="community.preference.user.upper" sort="userId">
          <a href="${userActionUrl}?authid=${preference.authenticationId}&forward=communitypreference&path=${forward}">${preference.userId}</a>
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.preference.module.upper">
+         <edit:ui-tcolumn titlekey="community.preference.module.upper" sort="module">
             ${preference.module}
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.preference.key.upper">
+         <edit:ui-tcolumn titlekey="community.preference.key.upper" sort="key">
          <input type="text" name="key" id="key_${preference.id}" value="${preference.key}"/>
          </edit:ui-tcolumn>
-         <edit:ui-tcolumn titlekey="community.preference.value.upper">
+         <edit:ui-tcolumn titlekey="community.preference.value.upper" sort="value">
          <input type="text" name="value" id="value_${preference.id}" value="${preference.value}"/>
          </edit:ui-tcolumn>
          <edit:ui-tcolumn titlekey="community.preference.action.upper">

@@ -1,5 +1,7 @@
 package com.finalist.cmsc.services.community.domain;
 
+import org.apache.commons.lang.StringUtils;
+
 public class PreferenceVO {
 
    private String id;
@@ -15,6 +17,10 @@ public class PreferenceVO {
    private String value;
 
    private String method;
+
+   public PreferenceVO() {
+      super();
+   }
 
    public String getUserId() {
       return userId;
@@ -70,6 +76,26 @@ public class PreferenceVO {
 
    public void setAuthenticationId(String authenticationId) {
       this.authenticationId = authenticationId;
+   }
+
+   public PreferenceVO(Long id, String userId, Long authenticationId, String module, String key, String value){
+      super();
+      this.id = String.valueOf(id);
+      this.userId = userId;
+      this.authenticationId = String.valueOf(authenticationId);
+      this.module = module;
+      this.key = key;
+      this.value = value;
+      
+   }
+   public void clean(){
+      this.authenticationId = null;
+      this.id = null;
+      this.key = null;
+      this.method = null;
+      this.module = null;
+      this.userId = null;
+      this.value = null;
    }
 
 }
