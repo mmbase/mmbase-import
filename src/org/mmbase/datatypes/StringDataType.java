@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.47 2008-09-08 08:59:56 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.48 2008-10-21 17:24:41 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -230,26 +230,26 @@ public class StringDataType extends ComparableDataType<String> implements Length
         isPassword = pw;
     }
 
-    public void toXml(org.w3c.dom.Element parent) {
+    @Override public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
         addRestriction(parent, "minLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
         addRestriction(parent, "maxLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
         addRestriction(parent, "pattern",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
     }
 
-    public int getEnforceStrength() {
+    @Override public int getEnforceStrength() {
         int enforceStrength = Math.max(super.getEnforceStrength(), minLengthRestriction.getEnforceStrength());
         enforceStrength =  Math.max(enforceStrength, maxLengthRestriction.getEnforceStrength());
         return Math.max(enforceStrength, patternRestriction.getEnforceStrength());
     }
 
-    protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+    @Override protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValueOrNull(errors, castValue, value,  node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         return errors;
 
     }
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = patternRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
