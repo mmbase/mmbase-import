@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  * Component}. See {@link Component#getUnsatisfiedDependencies}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualComponent.java,v 1.7 2008-09-04 21:20:02 michiel Exp $
+ * @version $Id: VirtualComponent.java,v 1.8 2008-10-21 18:11:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class VirtualComponent {
@@ -36,5 +36,9 @@ public class VirtualComponent {
     }
     public float getVersion() {
         return version;
+    }
+
+    public String toString() {
+        return getName() + " v." + getVersion();
     }
 }
