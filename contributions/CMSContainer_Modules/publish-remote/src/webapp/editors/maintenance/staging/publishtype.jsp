@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="../publish-remote/globals.jsp"%>
+<%@include file="../globals.jsp"%>
 <%@ page import="org.mmbase.remotepublishing.PublishManager"%>
 <%@ page import="org.mmbase.remotepublishing.util.PublishUtil"%>
 <%@ page import="org.mmbase.remotepublishing.CloudManager"%>

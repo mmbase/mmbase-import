@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="../publish-remote/globals.jsp"%>
+<%@include file="../../publish-remote/globals.jsp"%>
 <mm:cloud method="http">
 <html>
 <head>
