@@ -1,5 +1,6 @@
 package com.finalist.cmsc.community.forms;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,7 @@ public class PreferenceAction extends DispatchAction {
       preferenceForm.clear();
       preferenceService.createPreference(preference);
       request.setAttribute("isAddSuccess", "true");
+      preference.clean();
       return mapping.findForward(FORWARD_LIST);
    }
 
@@ -86,13 +88,17 @@ public class PreferenceAction extends DispatchAction {
 
       int offset = pagingHolder.getOffset();
       int pagesize = pagingHolder.getPageSize();
-
+      String sortName = pagingHolder.getSort();
       /*
        * pagingHolder.getSort(); pagingHolder.getDir();
        */
-
-      List < PreferenceVO > preferences = preferenceService.getPreferences(preference, offset, pagesize, preferenceForm
+      List < PreferenceVO > preferences = new ArrayList < PreferenceVO >();
+      if(StringUtils.isEmpty(sortName)){
+         preferences = preferenceService.getPreferences(preference, offset, pagesize, preferenceForm
             .getOrder(), preferenceForm.getDirection());
+      }else{
+         preferences = preferenceService.getPreferences(preference, offset, pagesize, sortName, pagingHolder.getDir());
+      }
       int totalCount = preferenceService.getTotalCount(preference);
       if (preferences == null || preferences.size() == 0) {
          if (pagingHolder.getPage() >= 1) {
