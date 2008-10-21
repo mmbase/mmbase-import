@@ -35,7 +35,7 @@
         <xsd:element ref="block"       minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
       <xsd:attribute name="name" type="xsd:Name" />
-      <xsd:attribute name="version" type="xsd:integer" default="0" />
+      <xsd:attribute name="version" type="xsd:float" default="0" />
       <xsd:attribute name="defaultblock" type="xsd:IDREF" />
     </xsd:complexType>
   </xsd:element>
@@ -108,7 +108,7 @@
   <xsd:element name="dependency">
     <xsd:complexType>
       <xsd:attribute name="component" use="required" type="xsd:Name" />
-      <xsd:attribute name="version" use="required" type="xsd:integer" />
+      <xsd:attribute name="version" use="required" type="xsd:float" />
     </xsd:complexType>
   </xsd:element>
 
