@@ -61,7 +61,7 @@
                   <mm:param name="logout" value="ok" />
                   <a href="${_}">logout</a>
                 </mm:link>
-                <mm:import externid="languages" vartype="list">nl,en,zh,fr,eo</mm:import>
+                <mm:import externid="languages" vartype="list">nl_NL,en,zh,fr,eo</mm:import>
                 <form method="post">
                   <select name="mmbase_adminpages_language" onchange="this.form.submit()">
                     <mm:option value="client" compare="${mmbase_adminpages_language}">-AUTO-</mm:option>
