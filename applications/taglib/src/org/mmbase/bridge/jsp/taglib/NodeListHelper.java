@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.39 2008-06-24 10:49:05 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.40 2008-10-21 18:28:53 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -229,7 +229,7 @@ public class NodeListHelper implements ListProvider {
         }
         if (retain != Attribute.NULL) {
             Object retainObject = thisTag.getObjectConditional(retain.getString(thisTag));
-            if (retainObject != null) {
+            if (retainObject != null && ! "".equals(retainObject)) {
                 if (retainObject instanceof Collection) {
                     nodes.retainAll((Collection<Node>) retainObject);
                 } else {
@@ -240,7 +240,7 @@ public class NodeListHelper implements ListProvider {
         }
         if (remove != Attribute.NULL) {
             Object removeObject = thisTag.getObjectConditional(remove.getString(thisTag));
-            if (removeObject != null) {
+            if (removeObject != null && ! "".equals(removeObject)) {
                 if (removeObject instanceof Collection) {
                     nodes.removeAll((Collection<Node>) removeObject);
                 } else {
