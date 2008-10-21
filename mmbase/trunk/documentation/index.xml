@@ -7,7 +7,7 @@
 
     <date>2007-08-05</date>
 
-    <edition>$Id: index.xml,v 1.67 2008-08-05 19:20:31 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.68 2008-10-21 16:39:32 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -113,7 +113,7 @@
   <section id="introduction">
     <title>Introduction</title>
 
-<!-- 
+<!--
     <para>If you ran the documentation build with PDF's enabled then the PDF
     versions of these documents can be accessed via the <ulink
     url="index-pdf.html">PDF index page</ulink>.</para>
@@ -299,7 +299,7 @@
 
       <listitem>
         <para><ulink
-        url="applications/oscache-cache/build/javadoc/oscache/index.html">Javadocs
+                  url="multiproject/mmbase-oscache/apidocs/index.html">Javadocs
         of OSCache Cache</ulink> An implementation of the MMBase
         'CacheImplementationInterface' interface, which delegates all calls to
         an OSCache implementation.</para>
@@ -322,54 +322,50 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/cloudcontext/cloudcontextsecurity.html">Cloud
+        url="cloudcontextsecurity.html">Cloud
         Context Security</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/crontab/crontab.html">MMBase
+        <para><ulink url="crontab.html">MMBase
         Crontab</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/email/email.html">Email
+        <para><ulink url="email.html">Email
         application</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/notifications/notifications.html">MMBase
+        <para><ulink url="notifications.html">MMBase
         Notifications and SMS</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/media/applications/media/index.html">Media project
+        url="applications/media/index.html">Media project
         documentation</ulink></para>
       </listitem>
 
-      <listitem>
-        <para><ulink
-        url="applications/packaging/build/javadoc/packaging/index.html">Javadocs
-        of Packaging</ulink> the package
-        org.mmbase.applications.packaging</para>
-      </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/richtext/frontenddevelopers/richtext/richtext.html">The
+        url="frontenddevelopers/richtext/richtext.html">The
         Richtext Functional Reference</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
+        url="backenddevelopers/rmmci/index.html">Remote
         MMBase Cloud Interface</ulink></para>
       </listitem>
 
+      <!--
       <listitem>
         <para><ulink url="applications/scan/SCAN1_0.html">SCAN</ulink> the
         deprecated template language of MMBase</para>
       </listitem>
+      -->
     </itemizedlist>
 
     <para>MMBase taglib</para>
@@ -377,20 +373,20 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">Taglib
+        url="frontenddevelopers/taglib/taglib-tutorial.html">Taglib
         Tutorial</ulink> - a tutorial for page designers and JSP developers to build web
         pages using the MMBase Tag Library</para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/taglib/frontenddevelopers/taglib/include.html">MMBase
+        url="frontenddevelopers/taglib/include.html">MMBase
         Include / TreeInclude / LeafInclude (HTML</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/taglib/build/frontenddevelopers/taglib/reference.html">MMBase
+        url="frontenddevelopers/taglib/reference.html">MMBase
         taglib reference</ulink> - documentation about all the MMBase tags</para>
       </listitem>
     </itemizedlist>
@@ -400,32 +396,34 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/index.html">Editwizards</ulink></para>
+                  url="frontenddevelopers/editwizard/index.html">Editwizards</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.html">Editwizard
+                  url="frontenddevelopers/editwizard/editwizard-reference.html">Editwizard
         Syntax Reference</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.html">Editwizard
+                  url="frontenddevelopers/editwizard/editwizard-frontend.html">Editwizard
         Front end</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/dove/build/frontenddevelopers/dove/index.html">Dove
+        url="frontenddevelopers/dove/index.html">Dove
         XML API</ulink></para>
       </listitem>
 
+      <!--
       <listitem>
         <para><ulink
         url="applications/editwizard/build/javadoc/editwizard/index.html">Editwizards
         Javadoc</ulink> org.mmbase.applications.editwizard</para>
       </listitem>
+      -->
     </itemizedlist>
 
     <para>XML Importer (TCP 2.0)</para>
@@ -433,18 +431,18 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
+        url="frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.html">Quick
+        url="frontenddevelopers/xmlimporter/quickstart.html">Quick
         Start</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.html">Cook
+        url="frontenddevelopers/xmlimporter/cookbook.html">Cook
         Book</ulink></para>
       </listitem>
     </itemizedlist>
