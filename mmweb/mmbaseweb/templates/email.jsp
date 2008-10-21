@@ -1,17 +1,13 @@
-﻿<%-- template with links, to become the new 'Build with MMBase page'
---%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+﻿<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page language="java" contentType="text/html; charset=utf-8"
-%><mm:cloud
-><%@ include file="/includes/getids.jsp" 
-%><%@ include file="/includes/alterheader.jsp" %>
-<%@ include file="/includes/relatedpages.jsp" %>
+%><mm:cloud><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp" 
+%><%@ include file="/includes/relatedpages.jsp" %>
 <div id="pagecontent">
-  <mm:import externid="page" reset="true" />
   <mm:list nodes="$page" path="pages,posrel,articles" searchdir="destination"
     orderby="posrel.pos" directions="UP">
     <mm:node element="articles"><%@ include file="/includes/article.jsp" %></mm:node>
   </mm:list>
-  
 <%@ include file="/includes/secretww.jsp" %>
 <%!
 public boolean isValidEmailAddress(String address) {
@@ -67,6 +63,7 @@ if (errMsg.length() > 0) {
   <mm:setfield name="from"><mm:write referid="naam" /> <<mm:write referid="email" />></mm:setfield>
   <mm:setfield name="replyto"><mm:write referid="email" /></mm:setfield>
   <mm:setfield name="to">${tomail}</mm:setfield>
+  <mm:setfield name="bcc">andre@mmbase.org</mm:setfield>
   <mm:setfield name="subject">Contactform MMBase website</mm:setfield>
 <mm:setfield name="body">
 <mm:write referid="bericht" />
@@ -108,15 +105,15 @@ email:  <mm:write referid="email" />
     <fieldset>
       <p>
         <label for="naam">Name</label>
-        <input name="naam" id="naam" value="<mm:write referid="naam" />" type="text" size="42" maxlength="255" />
+        <input name="naam" id="naam" value="${naam}" type="text" size="46" maxlength="255" />
       </p>
       <p>
         <label for="email">E-mail</label>
-        <input name="email" id="email" value="${email}" type="text" size="42" maxlength="255" />
+        <input name="email" id="email" value="${email}" type="text" size="46" maxlength="255" />
       </p>
       <p>
         <label for="bericht">Message</label>
-        <textarea id="bericht" name="bericht" rows="12" cols="42">${bericht}</textarea>
+        <textarea id="bericht" name="bericht" rows="12" cols="68">${bericht}</textarea>
       </p>
       <p>
         <input name="action" type="submit" value="Send" />
