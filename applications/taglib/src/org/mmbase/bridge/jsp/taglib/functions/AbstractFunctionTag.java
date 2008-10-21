@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.32 2008-02-23 15:54:27 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.33 2008-10-21 18:29:18 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -303,6 +303,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
             if (functionContainer != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Using parameters " + functionContainer.getParameters() + " of functioncontainer " + functionContainer.getId());
+                }
                 Iterator<Entry<String, Object>> i = functionContainer.getParameters().iterator();
                 while (i.hasNext()) {
                     Map.Entry<String, Object> entry = i.next();
