@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.23 2008-10-21 15:17:47 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.24 2008-10-21 16:18:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -66,10 +66,10 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
      * How many elements of the 'date' are produces depends on the 'date depth', and can be 0, 1, 2
      * or 3.
      */
-    @Override protected String getNiceDirectoryUrl(StringBuilder b,
-                                                   Block block,
-                                                   Parameters parameters,
-                                                   Parameters frameworkParameters,  boolean action) throws FrameworkException {
+    @Override protected void getNiceDirectoryUrl(StringBuilder b,
+                                                 Block block,
+                                                 Parameters parameters,
+                                                 Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("" + parameters + frameworkParameters);
             log.debug("Found mynews block " + block);
@@ -98,7 +98,6 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
                 b.append(n);
             }
         }
-        return b.toString();
     }
 
 
