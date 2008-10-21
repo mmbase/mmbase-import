@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.191 2008-09-23 16:31:20 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.192 2008-10-21 17:23:01 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -912,39 +912,22 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     /**
      * Compares this cloud to the passed object.
-     * Returns 0 if they are equal, -1 if the object passed is a Cloud and larger than this cloud,
-     * and +1 if the object passed is a Cloud and smaller than this cloud.
+
      * @todo There is no specific order in which clouds are ordered at this moment.
      *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
-     * @return compare number
      */
     public int compareTo(Cloud o) {
-        int h1 = o.getCloudContext().hashCode();
-        int h2 = cloudContext.hashCode();
-
-        // mm: why not simply return h2 - h1?
-
-        if (h1 > h2) {
-            return -1;
-        } else if (h1 < h2) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return cloudContext.hashCode() - o.getCloudContext().hashCode();
     }
 
     /**
      * Compares this cloud to the passed object, and returns true if they are equal.
-     * @todo Add checks for multiple clouds in the same cloudcontext
-     *       Currently, all clouds within one CloudContext are treated as being equal.
+     * Two clouds are equal, if the have the same cloud context, and the same user.
      * @param o the object to compare it with
      * @return is equal
      */
-    @Override
-    public boolean equals(Object o) {
-        // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
-        // are treated as the 'same' cloud. This may change in future implementations
+    @Override public boolean equals(Object o) {
         if (o instanceof Cloud) {
             Cloud oc = (Cloud) o;
             return cloudContext.equals(oc.getCloudContext()) && userContext.equals(oc.getUser());
