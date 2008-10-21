@@ -4,8 +4,10 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.springframework.beans.BeansException;
 
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
@@ -47,14 +49,26 @@ public class CommunityModuleAdapter {
          return -1;
       }
 
-     return person.getAuthenticationId().intValue();
+      return person.getAuthenticationId().intValue();
    }
 
    public static Person getUserById(String id) {
 
-      PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
-      Person person = personService.getPersonByAuthenticationId(Long.decode(id));
-      log.debug("Get user(Person) " + id + " from community module,get " + person);
+      Person person = null;
+      if(StringUtils.isEmpty(id)) {
+         return person;
+      }
+      try {
+         PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
+         person = personService.getPersonByAuthenticationId(Long.parseLong(id));
+         log.debug("Get user(Person) " + id + " from community module,get " + person);
+      }
+      catch (BeansException e) {
+         log.error("BeansException when get the instance of PersonService");
+      }
+      catch (NumberFormatException e) {
+         log.error("NumberFormatException ; parse [" + id + "]  to Number exception");
+      }
       return person;
 
    }
@@ -62,7 +76,7 @@ public class CommunityModuleAdapter {
    public static String getUserNameByAuthenticationId(int authenticationId) {
       AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory.getApplicationContext().getBean("authenticationService");
       com.finalist.cmsc.services.community.security.Authentication authentication = authenticationService.getAuthenticationById(new Long(authenticationId));
-      if(authentication != null) {
+      if (authentication != null) {
          return authentication.getUserId();
       }
       return null;
