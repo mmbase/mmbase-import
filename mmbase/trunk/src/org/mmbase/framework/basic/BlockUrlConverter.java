@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.4 2008-10-21 15:17:37 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.5 2008-10-21 15:56:53 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -171,12 +171,16 @@ public abstract class BlockUrlConverter implements UrlConverter {
             }
 
             HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-            // conserve other parameters which happen to be on the request
-
-            for (Object e : request.getParameterMap().entrySet()) {
-                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                map.put(entry.getKey(), entry.getValue());
+            if (niceUrl.startsWith(request.getServletPath())) {
+                // conserve other parameters which happen to be on the request
+                for (Object e : request.getParameterMap().entrySet()) {
+                    Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                    map.put(entry.getKey(), entry.getValue());
+                }
+            } else {
+                log.debug("" + niceUrl + " does not start with " + request.getServletPath());
             }
+
             Map<String, Object> params = framework.prefix(getState(frameworkParameters),
                                                           blockParameters.toMap());
             if (log.isDebugEnabled()) {
