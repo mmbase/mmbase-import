@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.21 2008-10-20 16:45:21 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.22 2008-10-21 14:55:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -62,10 +62,10 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
                                 Parameters parameters,
                                 Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
-            log.debug("" + block + parameters + frameworkParameters);
+            log.debug("" + parameters + frameworkParameters);
+            log.debug("Found mynews block " + block);
         }
 
-        log.debug("Found mynews block " + block);
         StringBuilder b = new StringBuilder(directory);
         if(block.getName().equals("article")) {
             Node n = parameters.get(Framework.N);
@@ -97,7 +97,10 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
     public String getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
-        if (path.size() > 0) {
+        if (path.size() == 0) {
+            result.append("&block=magazine");
+        } else {
+            result.append("&block=article&n=");
             // article mode
             String id = path.get(path.size() - 1); // last element in the list identifies the article
             String n;
@@ -145,8 +148,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
                 // node was specified by number. Date spec can be ignored.
                 n = id;
             }
-            result.append("&block=article&n=" + n);
-            return result.toString();
+
+            result.append(n);
         }
         return result.toString();
     }
