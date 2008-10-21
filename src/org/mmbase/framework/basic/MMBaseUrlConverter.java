@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.15 2008-10-20 17:03:31 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.16 2008-10-21 15:56:53 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -38,7 +38,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
 
     public MMBaseUrlConverter(BasicFramework fw) {
         super(fw);
-        setDirectory("/mmbase/");
+        setDirectory("mmbase");
     }
 
 
@@ -66,7 +66,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         }
     }
 
-    @Override protected String getNiceUrl(Block block, Parameters blockParameters, Parameters frameworkParameters,  boolean action) throws FrameworkException {
+    @Override protected void getNiceDirectoryUrl(StringBuilder b, Block block, Parameters blockParameters, Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("block '" + block  + "'  framework parameters " + frameworkParameters);
         }
@@ -76,7 +76,11 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         if (category == null && state.isRendering()) {
             category = state.getFrameworkParameters().get(CATEGORY);
         }
-        return directory + (category == null ? "_" : category) + "/" + block.getComponent().getName() + "/" + block.getName();
+        b.append((category == null ? "_" : category));
+        b.append('/');
+        b.append(block.getComponent().getName());
+        b.append('/');
+        b.append(block.getName());
 
     }
 
