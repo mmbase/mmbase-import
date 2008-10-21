@@ -5,7 +5,7 @@
     type="application/xhtml+xml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
-  <html  xmlns="http://www.w3.org/1999/xhtml">
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Test</title>
       <jsp:directive.include file="javascript.jspxf" />
@@ -28,7 +28,7 @@
            document.getElementById('submit').disabled = ! valid;
         }
         validator.lang = '${param.lang}';
-        validator.prefetchNodeManager("object"); // not actually used on this page, just an example
+	//validator.prefetchNodeManager("object"); // not actually used on this page, just an example
         validator.setup(window);
       </script>
 
