@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.36 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.37 2008-10-21 16:18:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -179,13 +179,19 @@ public class BasicFramework extends Framework {
     protected void setBlockParametersForRender(State state, Parameters blockParameters) {
         ServletRequest request = state.getRequest();
         String prefix = getPrefix(state);
+        log.debug("prefix " + prefix);
         blockParameters.setAutoCasting(true);
         for (Map.Entry<String, String[]> entry : ((Map<String, String[]>)request.getParameterMap()).entrySet()) {
             String key = entry.getKey();
             if (key.startsWith(prefix)) {
+                log.trace("setting" + entry);
                 blockParameters.setIfDefined(key.substring(prefix.length()), entry.getValue());
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Set " + blockParameters);
+        }
+
     }
 
     /**
