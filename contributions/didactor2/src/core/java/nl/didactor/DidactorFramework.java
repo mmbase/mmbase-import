@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorFramework.java,v 1.4 2008-08-08 14:44:05 michiel Exp $
+ * @version $Id: DidactorFramework.java,v 1.5 2008-10-22 08:37:18 michiel Exp $
  * @since Didactor-2.3
  */
 public class DidactorFramework extends BasicFramework {
@@ -70,7 +70,7 @@ public class DidactorFramework extends BasicFramework {
                     }
 
                 }
-                log.service("No blocks classified as didactor found for " + comp);
+                log.debug("No blocks classified as didactor found for " + comp);
             } else {
 
             }
