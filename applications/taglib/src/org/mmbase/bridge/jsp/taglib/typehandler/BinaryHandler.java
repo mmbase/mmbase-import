@@ -33,13 +33,13 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.13 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.14 2008-10-22 09:31:12 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
     private static final Logger log = Logging.getLoggerInstance(BinaryHandler.class);
     /**
-     * Constructor 
+     * Constructor
      * @param tag
      */
     public BinaryHandler(FieldInfoTag tag) {
@@ -94,7 +94,7 @@ public class BinaryHandler extends AbstractTypeHandler {
                 // do actually set the field, because some datatypes need cross-field checking
                 // also in an mm:form, you can simply commit.
                 if (node != null && ! field.isReadOnly()) {
-                    setValue(node, field, (FileItem) fieldValue);
+                    setValue(node, field.getName(), (FileItem) fieldValue);
                 }
                 if (errors) {
                     return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
@@ -129,58 +129,6 @@ public class BinaryHandler extends AbstractTypeHandler {
         }
     }
 
-    /**
-     * Sets the binary value. Also tries to set some fields which are generaly associated with the binary.
-     * This could actually be moved to commit-processors of those fields.
-     */
-    protected void setValue(Node node, Field field, FileItem bytes) throws JspTagException {
-        if (bytes.getSize() > 0) {
-            String fileName = bytes.getName();
-            int pos1 = fileName.lastIndexOf("/");
-            int pos2 = fileName.lastIndexOf("\\");
-            int pos = pos1 > pos2 ? pos1 : pos2;
-            if (pos > 0) {
-                fileName = fileName.substring(pos + 1);
-                if ("".equals(fileName)) {
-                    fileName = bytes.getName();
-                }
-            }
-            String fileType = bytes.getContentType();
-
-            try {
-                node.setInputStreamValue(field.getName(), bytes.getInputStream(), bytes.getSize());
-            } catch (java.io.IOException ioe) {
-                throw new TaglibException(ioe);
-            }
-            ContextContainer cc = tag.getContextProvider().getContextContainer();
-            log.debug("Filename : " + fileName);
-            NodeManager nm = node.getNodeManager();
-            // follwing stuff should probably be moved to commit-processors of the fields themselves.
-            if (nm.hasField("mimetype") && (fileType != null) && (fileType.length() != 0) &&
-                cc.find(tag.getPageContext(), prefix("mimetype")) == null
-                ) {
-                node.setValueWithoutProcess("mimetype", fileType);
-            }
-            Object specFileName = cc.find(tag.getPageContext(), prefix("filename"));
-            if (nm.hasField("filename") && 
-                fileName != null && 
-                (fileName.length() != 0) &&
-                (specFileName == null || specFileName.equals("") || specFileName.equals(node.getStringValue("filename")))
-                ) {
-                node.setValueWithoutProcess("filename", fileName);
-            }
-            if (nm.hasField("size") &&
-                cc.find(tag.getPageContext(), prefix("size")) == null
-                ) {
-                node.setLongValue("size", bytes.getSize());
-            }
-            if (nm.hasField("filesize") &&
-                cc.find(tag.getPageContext(), prefix("filesize")) == null
-                ) {
-                node.setLongValue("filesize", bytes.getSize());
-            }
-        } 
-    }
 
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
@@ -190,9 +138,7 @@ public class BinaryHandler extends AbstractTypeHandler {
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
-        setValue(node, field, bytes);
-
-
+        node.setValue(field.getName(), bytes);
         return true;
     }
 
