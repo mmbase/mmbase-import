@@ -61,6 +61,7 @@
    </div>
    <div class="editor">
    <br />
+      <div class="body">
          <%-- If we want to link content: --%>
          <mm:compare referid="action" value="link">
             <div class="ruler_green"><div><fmt:message key="searchform.link.title"/></div></div>
@@ -80,223 +81,224 @@
             <hr />
          </mm:compare>
 
-      <html:form action="/editors/repository/SearchAction" method="post">
-         <html:hidden property="action" value="${action}"/>
-         <html:hidden property="mode"/>
-         <html:hidden property="search" value="true"/>
-         <html:hidden property="linktochannel"/>
-         <html:hidden property="offset"/>
-         <html:hidden property="order"/>
-         <html:hidden property="direction"/>
-         <input type="hidden" name="deleteContentRequest"/>
-         <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
+         <html:form action="/editors/repository/SearchAction" method="post">
+            <html:hidden property="action" value="${action}"/>
+            <html:hidden property="mode"/>
+            <html:hidden property="search" value="true"/>
+            <html:hidden property="linktochannel"/>
+            <html:hidden property="offset"/>
+            <html:hidden property="order"/>
+            <html:hidden property="direction"/>
+            <input type="hidden" name="deleteContentRequest"/>
+            <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
 
-         <table>
-            <tr>
-               <td style="width:105px"><fmt:message key="searchform.title" /></td>
-               <td colspan="3"><html:text property="title" style="width:200px"/></td>
-            </tr>
-            <tr>
-               <td><fmt:message key="searchform.keywords" /></td>
-               <td  style="width:210px"><html:text property="keywords" style="width:200px"/></td>
-               <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
-               <td>
-                  <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
-                     <html:option value="contentelement">&lt;<fmt:message key="searchform.contenttypes.all" />&gt;</html:option>
-                     <html:optionsCollection name="typesList" value="value" label="label"/>
-                  </html:select>
-                  <mm:compare referid="mode" value="advanced" inverse="true">
-                     <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
-                  </mm:compare>
-               </td>
-            </tr>
-
-            <mm:compare referid="mode" value= "advanced">
+            <table>
                <tr>
-                  <td></td>
-                  <td><b><fmt:message key="searchform.dates" /></b></td>
-                  <td></td>
-                  <td><b><fmt:message key="searchform.users" /></b></td>
-                  <td></td>
+                  <td style="width:105px"><fmt:message key="searchform.title" /></td>
+                  <td colspan="3"><html:text property="title" style="width:200px"/></td>
+               </tr>
+               <tr>
+                  <td><fmt:message key="searchform.keywords" /></td>
+                  <td  style="width:210px"><html:text property="keywords" style="width:200px"/></td>
+                  <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
                   <td>
-                     <mm:compare referid="contenttypes" value="contentelement" inverse="true">
-                        <fmt:message key="searchform.searchfor">
-                           <fmt:param><mm:nodeinfo nodetype="${contenttypes}" type="guitype"/></fmt:param>
-                        </fmt:message>
+                     <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
+                        <html:option value="contentelement">&lt;<fmt:message key="searchform.contenttypes.all" />&gt;</html:option>
+                        <html:optionsCollection name="typesList" value="value" label="label"/>
+                     </html:select>
+                     <mm:compare referid="mode" value="advanced" inverse="true">
+                        <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
                      </mm:compare>
                   </td>
                </tr>
-               <tr valign="top">
-                  <td><fmt:message key="searchform.creationdate" /></td>
-                  <td>
-                     <html:select property="creationdate" size="1">
-                        <html:option value="0"> - </html:option>
-                        <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
-                        <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
-                        <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
-                        <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
-                        <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
-                     </html:select>
-                  </td>
-                  <td><fmt:message key="searchform.personal" /></td>
-                  <td>
-                     <html:select property="personal" size="1">
-                        <html:option value=""> - </html:option>
-                        <html:option value="lastmodifier"><fmt:message key="searchform.personal.lastmodifier" /></html:option>
-                        <html:option value="author"><fmt:message key="searchform.personal.author" /></html:option>
-                     </html:select>
-                  </td>
-                  <td rowspan="5">
-                  <% ArrayList fields = new ArrayList(); %>
-                     <mm:compare referid="contenttypes" value="contentelement" inverse="true">
-                        <table>
-                           <mm:fieldlist nodetype="${contenttypes}">
-                              <%-- check if the field is from contentelement --%>
-                              <% boolean showField = true; %>
-                              <mm:fieldinfo type="name" id="fname">
-                                  <mm:fieldlist nodetype="contentelement">
-                                      <mm:fieldinfo type="name" id="cefname">
-                                         <mm:compare referid="fname" referid2="cefname">
-                                            <% showField=false; %>
-                                         </mm:compare>
-                                      </mm:fieldinfo>
-                                  </mm:fieldlist>
-                              </mm:fieldinfo>
-                              <% if (showField) { %>
-                                 <tr rowspan="5">
-                                    <td height="22">
-                                       <mm:fieldinfo type="guiname" jspvar="guiname"/>:
-                                       <mm:fieldinfo type="name" jspvar="name" write="false">
-                                          <% fields.add(contenttypes + "." + name); %>
-                                       </mm:fieldinfo>
+
+               <mm:compare referid="mode" value= "advanced">
+                  <tr>
+                     <td></td>
+                     <td><b><fmt:message key="searchform.dates" /></b></td>
+                     <td></td>
+                     <td><b><fmt:message key="searchform.users" /></b></td>
+                     <td></td>
+                     <td>
+                        <mm:compare referid="contenttypes" value="contentelement" inverse="true">
+                           <fmt:message key="searchform.searchfor">
+                              <fmt:param><mm:nodeinfo nodetype="${contenttypes}" type="guitype"/></fmt:param>
+                           </fmt:message>
+                        </mm:compare>
+                     </td>
+                  </tr>
+                  <tr valign="top">
+                     <td><fmt:message key="searchform.creationdate" /></td>
+                     <td>
+                        <html:select property="creationdate" size="1">
+                           <html:option value="0"> - </html:option>
+                           <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
+                           <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
+                           <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
+                           <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
+                           <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
+                        </html:select>
+                     </td>
+                     <td><fmt:message key="searchform.personal" /></td>
+                     <td>
+                        <html:select property="personal" size="1">
+                           <html:option value=""> - </html:option>
+                           <html:option value="lastmodifier"><fmt:message key="searchform.personal.lastmodifier" /></html:option>
+                           <html:option value="author"><fmt:message key="searchform.personal.author" /></html:option>
+                        </html:select>
+                     </td>
+                     <td rowspan="5">
+                     <% ArrayList fields = new ArrayList(); %>
+                        <mm:compare referid="contenttypes" value="contentelement" inverse="true">
+                           <table>
+                              <mm:fieldlist nodetype="${contenttypes}">
+                                 <%-- check if the field is from contentelement --%>
+                                 <% boolean showField = true; %>
+                                 <mm:fieldinfo type="name" id="fname">
+                                     <mm:fieldlist nodetype="contentelement">
+                                         <mm:fieldinfo type="name" id="cefname">
+                                            <mm:compare referid="fname" referid2="cefname">
+                                               <% showField=false; %>
+                                            </mm:compare>
+                                         </mm:fieldinfo>
+                                     </mm:fieldlist>
+                                 </mm:fieldinfo>
+                                 <% if (showField) { %>
+                                    <tr rowspan="5">
+                                       <td height="22">
+                                          <mm:fieldinfo type="guiname" jspvar="guiname"/>:
+                                          <mm:fieldinfo type="name" jspvar="name" write="false">
+                                             <% fields.add(contenttypes + "." + name); %>
+                                          </mm:fieldinfo>
+                                    </tr>
+                                 <% } %>
+                              </mm:fieldlist>
+                           </table>
+                        </mm:compare>
+                     </td>
+                     <td rowspan="5">
+                        <mm:compare referid="contenttypes" value="contentelement" inverse="true">
+                           <table>
+                              <% for (int i = 0; i < fields.size(); i++) {
+                                 String field = (String) fields.get(i); %>
+                                 <tr>
+                                    <td>
+                                       <input type="text" name="<%= field %>" value="<%= (request.getParameter(field) == null)? "" :request.getParameter(field) %>" />
+                                    </td>
                                  </tr>
                               <% } %>
-                           </mm:fieldlist>
-                        </table>
-                     </mm:compare>
-                  </td>
-                  <td rowspan="5">
-                     <mm:compare referid="contenttypes" value="contentelement" inverse="true">
-                        <table>
-                           <% for (int i = 0; i < fields.size(); i++) {
-                              String field = (String) fields.get(i); %>
-                              <tr>
-                                 <td>
-                                    <input type="text" name="<%= field %>" value="<%= (request.getParameter(field) == null)? "" :request.getParameter(field) %>" />
-                                 </td>
-                              </tr>
-                           <% } %>
-                        </table>
-                     </mm:compare>
-                  </td>
-               </tr>
-               <tr>
-                  <td><fmt:message key="searchform.lastmodifieddate" /></td>
-                  <td>
-                     <html:select property="lastmodifieddate" size="1">
-                        <html:option value="0"> - </html:option>
-                        <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
-                        <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
-                        <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
-                        <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
-                        <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
-                     </html:select>
-                  </td>
-                  <td>
-                     <mm:hasrank minvalue="siteadmin">
-                        <fmt:message key="searchform.useraccount" />
-                     </mm:hasrank>
-                  </td>
-                  <td>
-                     <mm:hasrank minvalue="siteadmin">
-                        <html:select property="useraccount" size="1">
-                           <html:option value=""> - </html:option>
-                            <mm:listnodes type='user' orderby='username'>
-                                <mm:field name="username" id="useraccount" write="false"/>
-                               <html:option value="${useraccount}"> <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /> </html:option>
-                            </mm:listnodes>
+                           </table>
+                        </mm:compare>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td><fmt:message key="searchform.lastmodifieddate" /></td>
+                     <td>
+                        <html:select property="lastmodifieddate" size="1">
+                           <html:option value="0"> - </html:option>
+                           <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
+                           <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
+                           <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
+                           <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
+                           <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
                         </html:select>
-                     </mm:hasrank>
-                  </td>
-               </tr>
-               <tr>
-                  <td><fmt:message key="searchform.publishdate" /></td>
-                  <td>
-                     <html:select property="publishdate" size="1">
-                        <html:option value="365"><fmt:message key="searchform.futureyear" /></html:option>
-                        <html:option value="120"><fmt:message key="searchform.futurequarter" /></html:option>
-                        <html:option value="31"><fmt:message key="searchform.futuremonth" /></html:option>
-                        <html:option value="7"><fmt:message key="searchform.futureweek" /></html:option>
-                        <html:option value="1"><fmt:message key="searchform.futureday" /></html:option>
-                        <html:option value="0"> - </html:option>
-                        <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
-                        <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
-                        <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
-                        <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
-                        <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
-                     </html:select>
-                  </td>
-                  <td></td>
-                  <td><b><fmt:message key="searchform.other" /></b></td>
-               </tr>
-               <tr>
-                  <td><fmt:message key="searchform.expiredate" /></td>
-                  <td>
-                     <html:select property="expiredate" size="1">
-                        <html:option value="365"><fmt:message key="searchform.futureyear" /></html:option>
-                        <html:option value="120"><fmt:message key="searchform.futurequarter" /></html:option>
-                        <html:option value="31"><fmt:message key="searchform.futuremonth" /></html:option>
-                        <html:option value="7"><fmt:message key="searchform.futureweek" /></html:option>
-                        <html:option value="1"><fmt:message key="searchform.futureday" /></html:option>
-                        <html:option value="0"> - </html:option>
-                        <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
-                        <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
-                        <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
-                        <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
-                        <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
-                     </html:select>
-                  </td>
-                  <td><fmt:message key="searchform.number" /></td>
-                  <td><html:text property="objectid"/></td>
-               </tr>
-               <tr>
-                  <td>
-                  </td>
-                  <td></td>
-                  <td nowrap>
-                     <mm:compare referid="action" value="link">
-                        <mm:write write="false" id="showTreeOption" value="true" />
-                     </mm:compare>
+                     </td>
+                     <td>
+                        <mm:hasrank minvalue="siteadmin">
+                           <fmt:message key="searchform.useraccount" />
+                        </mm:hasrank>
+                     </td>
+                     <td>
+                        <mm:hasrank minvalue="siteadmin">
+                           <html:select property="useraccount" size="1">
+                              <html:option value=""> - </html:option>
+                               <mm:listnodes type='user' orderby='username'>
+                                   <mm:field name="username" id="useraccount" write="false"/>
+                                  <html:option value="${useraccount}"> <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /> </html:option>
+                               </mm:listnodes>
+                           </html:select>
+                        </mm:hasrank>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td><fmt:message key="searchform.publishdate" /></td>
+                     <td>
+                        <html:select property="publishdate" size="1">
+                           <html:option value="365"><fmt:message key="searchform.futureyear" /></html:option>
+                           <html:option value="120"><fmt:message key="searchform.futurequarter" /></html:option>
+                           <html:option value="31"><fmt:message key="searchform.futuremonth" /></html:option>
+                           <html:option value="7"><fmt:message key="searchform.futureweek" /></html:option>
+                           <html:option value="1"><fmt:message key="searchform.futureday" /></html:option>
+                           <html:option value="0"> - </html:option>
+                           <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
+                           <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
+                           <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
+                           <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
+                           <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
+                        </html:select>
+                     </td>
+                     <td></td>
+                     <td><b><fmt:message key="searchform.other" /></b></td>
+                  </tr>
+                  <tr>
+                     <td><fmt:message key="searchform.expiredate" /></td>
+                     <td>
+                        <html:select property="expiredate" size="1">
+                           <html:option value="365"><fmt:message key="searchform.futureyear" /></html:option>
+                           <html:option value="120"><fmt:message key="searchform.futurequarter" /></html:option>
+                           <html:option value="31"><fmt:message key="searchform.futuremonth" /></html:option>
+                           <html:option value="7"><fmt:message key="searchform.futureweek" /></html:option>
+                           <html:option value="1"><fmt:message key="searchform.futureday" /></html:option>
+                           <html:option value="0"> - </html:option>
+                           <html:option value="-1"><fmt:message key="searchform.pastday" /></html:option>
+                           <html:option value="-7"><fmt:message key="searchform.pastweek" /></html:option>
+                           <html:option value="-31"><fmt:message key="searchform.pastmonth" /></html:option>
+                           <html:option value="-120"><fmt:message key="searchform.pastquarter" /></html:option>
+                           <html:option value="-365"><fmt:message key="searchform.pastyear" /></html:option>
+                        </html:select>
+                     </td>
+                     <td><fmt:message key="searchform.number" /></td>
+                     <td><html:text property="objectid"/></td>
+                  </tr>
+                  <tr>
+                     <td>
+                     </td>
+                     <td></td>
+                     <td nowrap>
+                        <mm:compare referid="action" value="link">
+                           <mm:write write="false" id="showTreeOption" value="true" />
+                        </mm:compare>
 
-                     <mm:compare referid="action" value="selectforwizard">
-                        <mm:write write="false" id="showTreeOption" value="true" />
-                     </mm:compare>
-                     <mm:present referid="showTreeOption">
-                        <fmt:message key="searchform.select.channel" />
+                        <mm:compare referid="action" value="selectforwizard">
+                           <mm:write write="false" id="showTreeOption" value="true" />
+                        </mm:compare>
+                        <mm:present referid="showTreeOption">
+                           <fmt:message key="searchform.select.channel" />
 
-                  <a href="<c:url value='/editors/repository/select/SelectorChannel.do' />"
-                     target="selectChannel" onclick="openPopupWindow('selectChannel', 340, 400)">
-                        <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="searchform.select.channel" />"/></a>
-                        <a href="#" onClick="selectChannel('', '');" ><img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="searchform.clear.channel.button" />" /></a>
-                     </mm:present>
-                  </td>
-                  <td>
-                     <mm:present referid="showTreeOption">
-                     <html:hidden property="parentchannel" />
-                       <html:hidden property="parentchannelpath"/>
-                     <input type="text" name="parentchannelpathdisplay" disabled value="${SearchForm.parentchannelpath}"/><br />
-                     </mm:present>
-                  </td>
-               </tr>
-               <tr>
-                  <td></td>
-                  <td>
-                     <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
-                  </td>
-               </tr>
-            </mm:compare>
-         </table>
-      </html:form>
+                     <a href="<c:url value='/editors/repository/select/SelectorChannel.do' />"
+                        target="selectChannel" onclick="openPopupWindow('selectChannel', 340, 400)">
+                           <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="searchform.select.channel" />"/></a>
+                           <a href="#" onClick="selectChannel('', '');" ><img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="searchform.clear.channel.button" />" /></a>
+                        </mm:present>
+                     </td>
+                     <td>
+                        <mm:present referid="showTreeOption">
+                        <html:hidden property="parentchannel" />
+                          <html:hidden property="parentchannelpath"/>
+                        <input type="text" name="parentchannelpathdisplay" disabled value="${SearchForm.parentchannelpath}"/><br />
+                        </mm:present>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td>
+                        <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
+                     </td>
+                  </tr>
+               </mm:compare>
+            </table>
+         </html:form>
+      </div>
    </div>
 
 
