@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.2 2008-08-07 15:08:28 michiel Exp $
+      version: $Id: framework.xml,v 1.3 2008-10-22 08:36:50 michiel Exp $
   -->
   <!--
       In this file the classes of the UrlConverters need to be listed in the order
@@ -17,15 +17,18 @@
   </description>
 
 
+  <urlconverter class="nl.didactor.filter.DidactorUrlConverter" />
+
   <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
     <description xml:lang="en">
       The MMBase urlconverter handles about pretty URL's in /mmbase/.
     </description>
-    <param name="dir">/mmbase/</param>
+    <param name="directory">/mmbase/</param>
     <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
   </urlconverter>
 
-  <urlconverter class="nl.didactor.filter.DidactorUrlConverter" />
+
+
 
 
 </framework>
