@@ -333,6 +333,7 @@
     </body>
   </block>
 
+<!-- 
   <block name="sqltool"
          classification="mmbase.tools"
          mimetype="text/html">
@@ -342,6 +343,7 @@
 
     </body>
   </block>
+ -->
 
   <block name="events"
          classification="mmbase.tools"
@@ -368,6 +370,7 @@
   <block name="entities"
          classification="mmbase.tools"
          mimetype="text/html">
+    <title xml:lang="en">Entities</title>
     <description xml:lang="en">A tool to view all 'mmbase entities' which are avaiable in config-files.</description>
     <body jsp="/mmbase/admin/entities.div.jspx" />
   </block>
