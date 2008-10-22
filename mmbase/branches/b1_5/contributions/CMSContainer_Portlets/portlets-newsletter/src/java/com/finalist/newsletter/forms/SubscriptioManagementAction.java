@@ -1,6 +1,8 @@
 package com.finalist.newsletter.forms;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -19,6 +21,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.web.struts.DispatchActionSupport;
 
+import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Newsletter;
@@ -26,11 +29,10 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.SubscriptionHibernateService;
+import com.finalist.newsletter.util.ComparisonUtil;
 
 /**
- * 
  * @author Lisa
- * 
  */
 public class SubscriptioManagementAction extends DispatchActionSupport {
 
@@ -68,7 +70,8 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    protected void onInit() {
       super.onInit();
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
-      subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
+      subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext()
+            .getBean("subscriptionServices");
       personServices = (PersonService) getWebApplicationContext().getBean("personService");
       publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
       subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
@@ -94,7 +97,6 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
    }
 
    /**
-    * 
     * @param mapping
     * @param form
     * @param request
@@ -109,11 +111,11 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       PagingUtils.initStatusHolder(request);
       String title = request.getParameter(PARAM_TITLE);
       String subscriber = request.getParameter(PARAM_SUBSCRIBER);
-
       int resultCount = newsletterService.getNewsletters(subscriber, title, false).size();
-      List<Newsletter> newsletters = newsletterService.getNewsletters(subscriber, title, true);
-      List<Map<Object, Object>> results = convertToMap(newsletters);
-
+      List<Newsletter> newsletters;
+      List<Map<Object, Object>> results;
+      newsletters = newsletterService.getNewsletters(subscriber, title, true);
+      results = convertToOderedMap(newsletters);
       request.setAttribute(RESULTS, results);
       request.setAttribute(RESULTCOUNT, resultCount);
       return mapping.findForward(FORWARD_OVERVIEW);
@@ -300,6 +302,35 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
          result.put("countSentPublicatons", publicationService.countSentPublications(newsletterId));
          result.put("countSubscriptions", subscriptionServices.countSubscriptionByNewsletter(newsletterId));
          results.add(result);
+      }
+      return results;
+   }
+
+   private List<Map<Object, Object>> convertToOderedMap(List<Newsletter> newsletters) {
+      List<Map<Object, Object>> results = convertToMap(newsletters);
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+      String order = pagingHolder.getSort();
+      if (!"title".equals(order) && null != order) {
+         results = pseudoRanking(results, pagingHolder, order);
+      }
+      return results;
+   }
+
+   private List<Map<Object, Object>> pseudoRanking(List<Map<Object, Object>> results, PagingStatusHolder pagingHolder,
+         String order) {
+      String oderby = pagingHolder.getDir();
+      int offset = pagingHolder.getOffset();
+      int size = pagingHolder.getPageSize();
+      ComparisonUtil comparator = new ComparisonUtil();
+      comparator.setFields_user(new String[] { order });
+      Collections.sort(results, comparator);
+      if ("desc".equals(oderby)) {
+         Collections.reverse(results);
+      }
+      if (size + offset < results.size()) {
+         results = results.subList(offset, size + offset);
+      } else {
+         results = results.subList(offset, results.size());
       }
       return results;
    }
