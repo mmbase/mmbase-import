@@ -42,7 +42,7 @@
       <td style="text-align:right;width:50%;">
          <fmt:message key="searchpages.page"/>:
          <c:if test="${page + 1> 1}">
-            <a href="<%=request.getContextPath()%>${link}page=${page-1}">
+            <a href="<%=request.getContextPath()%>${link}page=${page-1}&sortby=${param.sortby}&dir=${param.dir}">
                <fmt:message key="pages.previous"/>&gt;&gt;
             </a>
             &nbsp;
@@ -83,7 +83,7 @@
          <c:set var="targetfield" value="${now.time}"/>
          <c:if test="${page+1 < pages}">
             &nbsp;
-            <a href="<%=request.getContextPath()%>${link}page=${page+1}">
+            <a href="<%=request.getContextPath()%>${link}page=${page+1}&sortby=${param.sortby}&dir=${param.dir}">
                <fmt:message key="pages.next"/>&gt;&gt;
             </a>
          </c:if>
