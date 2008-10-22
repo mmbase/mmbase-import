@@ -11,7 +11,8 @@
 <%@ attribute name="searchdir" description="this is the mmbase searchdir, the direction of the relation. default is 'destination'" %>
 
 <%@ attribute name="edit" type="java.lang.Boolean"%>
-<%@ attribute name="delete" type="java.lang.Boolean"%>
+<%@ attribute name="delete" type="java.lang.Boolean" description="Make it possible to delete the relation node" %>
+<%@ attribute name="harddelete" type="java.lang.Boolean" description="Make it possible to directly delete the related node" %>
 <%@ attribute name="confirmdelete" type="java.lang.Boolean" description="wether the user must confirm the deletion of the relation node. defaults to true" %>
 <%@ attribute name="search" type="java.lang.Boolean"%>
 <%@ attribute name="create" type="java.lang.Boolean"%>
@@ -202,9 +203,6 @@
                                    <span style="float:left; width: 18px;">&nbsp;</span>
                                 </mm:first>
                                 <mm:first inverse="true">
-                                    <%--
-                                    <a style="text-decoration:none" href="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/changeposrelnew.jsp?container=${nodenr}&amp;node=${_nodenr}&amp;direction=down&amp;type=${type}#${anchor}" class="moveup" onclick="return checkSearch(this);">
-                                    --%>
                                     <a style="text-decoration:none" href="${urlup}" class="moveup" onclick="return checkSearch(this);">
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/arrow_up.png" class="icon" border="0" />
                                     </a>
@@ -217,9 +215,11 @@
 
                         <%-- buttons--%>
                         <div class="icons">
-                            <mm:node number="${_relationnr}">
-                                <mm:maydelete><c:set var="maydelete" value="true"/></mm:maydelete>
-                            </mm:node>
+                            <c:remove var="maydelete" />
+                            <mm:node number="${_relationnr}"> <mm:maydelete><c:set var="maydelete" value="true"/></mm:maydelete> </mm:node>
+                                
+                            <c:remove var="mayharddelete" />
+                            <mm:node number="${_nodenr}"> <mm:maydelete><c:set var="mayharddelete" value="true"/></mm:maydelete> </mm:node>
 
                             <c:if test="${delete && not empty maydelete}">
                                 <mm:link page="/wizard/post">
@@ -227,6 +227,16 @@
                                     <mm:param name="flushname" value="${flushname}" />
                                     <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt loskoppelen?')">
                                         <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/unlink.png" class="icon" border="0" alt="" title="Koppel los"/>
+                                    </a>
+                                </mm:link>
+                            </c:if>
+                            
+                             <c:if test="${harddelete && not empty mayharddelete}">
+                                <mm:link page="/wizard/post">
+                                    <mm:param name="actions[deleteNode][1].number" value="${_nodenr}" />
+                                    <mm:param name="flushname" value="${flushname}" />
+                                    <a href="${_}" class="delete"  onclick="return doConfirm(${confirmdelete}, 'Weet je zeker dat je dit object wilt verwijderen? (kan niet hersteld worden)')">
+                                        <img src="${pageContext.request.contextPath}/mmbase/vpro-wizards/system/img/delete.png" class="icon" border="0" alt="" title="Verwijder"/>
                                     </a>
                                 </mm:link>
                             </c:if>
