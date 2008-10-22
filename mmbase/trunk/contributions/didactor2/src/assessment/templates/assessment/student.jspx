@@ -36,7 +36,7 @@
     -->
     <mm:node number="${education}">
       <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',components' : ''}">
+      <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
         <mm:sortorder field="posrel.pos" />
         <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
           <mm:addnode element="components" number="component.assessment" />
@@ -46,7 +46,7 @@
           <!--
                If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
           -->
-          <mm:relation to="${user}" role="classrel" notfound="null">
+          <mm:relation to="${user}" role="classrel" searchdir="destination" notfound="null">
             <c:if test="${empty _node and empty firstopenlesson}">
               <mm:node node="learnBlock" id="firstopenlesson" />
             </c:if>

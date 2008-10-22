@@ -38,7 +38,8 @@
   <mm:node number="${education}">
     <mm:relatednodescontainer
         element="learnblocks"
-        path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',components' : ''}">
+        searchdirs="destination"
+        path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}">
       <mm:sortorder field="posrel.pos" />
       <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
         <mm:addnode element="components" number="component.assessment" />
