@@ -18,6 +18,8 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -55,12 +57,13 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             Node layoutNode = PagesUtil.getLayout(newNewsletter);
             PagesUtil.linkPortlets(newNewsletter, layoutNode);
             request.getSession().removeAttribute("parentnewsletter");
-
+            if(ServerUtil.isStaging()) {
+               Publish.publish(newNewsletter);
+            }
             // Create a default term for this newsletter
 
             // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
-
             newNewsletter.setStringValue("scheduledescription", NewsletterUtil.getScheduleMessageByExpression(
                      newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
