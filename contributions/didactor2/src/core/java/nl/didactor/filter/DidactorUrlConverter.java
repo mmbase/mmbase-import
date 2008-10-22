@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.8 2008-10-22 08:37:18 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.9 2008-10-22 08:45:14 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -58,9 +58,15 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
     @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/shared/render.jspx");
         // article mode
-        if (path.size() == 0) throw new FrameworkException("No component in path");
+        if (path.size() == 0) {
+            log.debug("No component in path");
+            return null;
+        }
         Component component = ComponentRepository.getInstance().getComponent(path.get(0));
-        if (component == null) throw new FrameworkException("No didactor component in " + path);
+        if (component == null) {
+            log.debug("No didactor component in " + path);
+            return null;
+        }
         Setting<String> setting = (Setting<String>) component.getSetting("didactor_nodeprovider");
         String value = "education";
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
