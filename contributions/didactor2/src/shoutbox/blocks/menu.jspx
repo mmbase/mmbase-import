@@ -6,7 +6,9 @@
 
   <div class="menuSeperator"><jsp:text> </jsp:text></div>
   <div class="menuItem">
-    <mm:link page="index" >
+    <mm:link>
+      <mm:frameworkparam name="block" value="index" />
+      <mm:frameworkparam name="component" value="shoutbox" />
       <a href="${_}" class="menubar">
         <fmt:message key="menu" />
         <mm:hasnodemanager name="properties">
