@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.13 2008-09-01 07:09:50 michiel Exp $
+      version: $Id: framework.xml,v 1.14 2008-10-22 14:21:33 andre Exp $
   -->
   <!--
       In this file the classes of the UrlConverters need to be listed in the order
@@ -19,17 +19,20 @@
 
   <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
     <description xml:lang="en">
-      The MMBase urlconverter handles about pretty URL's in /mmbase/.
+      The MMBase urlconverter handles about pretty URL's in /mmbase.
     </description>
-    <param name="directory">/mmbase/</param>
+    <param name="directory">/mmbase</param>
     <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
   </urlconverter>
 
-  <!--
   <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter">
+    <description xml:lang="en">
+      The urlconverter that belongs to the MyNews example. It makes the example
+      magazine available at '/magazine' or another directory specified below.
+    </description>
     <param name="directory">/magazine</param>
     <param name="useTitle">true</param>
     <param name="dateDepth">2</param>
   </urlconverter>
-  -->
+  
 </framework>
