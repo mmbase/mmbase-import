@@ -38,7 +38,7 @@
               element="people">
             <mm:constraint field="roles.name" value="student" />
             <mm:distinct />
-            <mm:sortorder field="${di:setting('core', 'personorderfield')}" />
+            <mm:sortorder field="${di:setting('core', 'personorderfield')}" casesensitive="false" />
             <mm:relatednodes id="student">
 
               <mm:first>
