@@ -88,6 +88,7 @@
                         <ul>
                           <c:forEach var="b" items="${cat.blocks}">
                             <mm:link>
+                              <mm:frameworkparam name="urlconverter">org.mmbase.framework.basic.MMBaseUrlConverter</mm:frameworkparam>
                               <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                               <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
                               <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
