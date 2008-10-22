@@ -6,15 +6,7 @@
 <html:html xhtml="true">
 <cmscedit:head title="newsletter.bounce.title">
 <c:url var="actionUrl" value="/editors/newsletter/module/NewsletterBounceAction.do"/>
-<script type="text/javascript">
- function setOffset(offset) {
-    document.forms[0].offset.value = offset;
-    document.forms[0].submit();
- }
- function showItem(objectnumber) {
-    openPopupWindow("showItem", 500, 500, 'NewsletterBounceAction.do?method=getItem&objectnumber=' + objectnumber);
-}
-</script>
+<script type="text/javascript" src="../newsletter.js"></script>
 </cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp">
@@ -33,17 +25,21 @@
 <form action="${actionUrl}" name="termForm" method="post">
 <input type="hidden" name="method" value="list"/>
 <input type="hidden" name="offset" value="${offset}"/>
+<input type="hidden" name="direction" value="${direction}"/>
+<input type="hidden" name="order" value="${order}"/>
 
 <mm:import jspvar="resultCount" vartype="Integer">${resultCount}</mm:import>
 <mm:import externid="offset" jspvar="offset" vartype="Integer">${offset}</mm:import>
+<mm:import externid="direction" jspvar="direction" vartype="String">${direction}</mm:import>
+<mm:import externid="order" jspvar="order" vartype="String">${order}</mm:import>
 <c:if test="${resultCount > 0}">
 <%@include file="../../repository/searchpages.jsp" %>
    <table>
       <tr class="listheader">
-         <th> <fmt:message key="newsletter.bounce.subscriber" /> </th>
-         <th><fmt:message key="newsletter.bounce.newsletter" /></th>
-         <th><fmt:message key="newsletter.bounce.bouncedate" /></th>
-         <th><fmt:message key="newsletter.bounce.bouncecontent" /></th>
+         <th><a href="javascript:sortBy('userName')"> <fmt:message key="newsletter.bounce.subscriber" /></a> </th>
+         <th><a href="javascript:sortBy('newsLetterTitle')"><fmt:message key="newsletter.bounce.newsletter" /></a></th>
+         <th><a href="javascript:sortBy('bouncedate')"><fmt:message key="newsletter.bounce.bouncedate" /></a></th>
+         <th><a href="javascript:sortBy('content')"><fmt:message key="newsletter.bounce.bouncecontent" /></a></th>
       </tr>
       <tbody class="hover">
                 <c:set var="useSwapStyle">true</c:set>
