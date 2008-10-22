@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.7 2008-10-21 16:24:33 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.8 2008-10-22 08:37:18 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -55,10 +55,12 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) {
+    @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/shared/render.jspx");
         // article mode
+        if (path.size() == 0) throw new FrameworkException("No component in path");
         Component component = ComponentRepository.getInstance().getComponent(path.get(0));
+        if (component == null) throw new FrameworkException("No didactor component in " + path);
         Setting<String> setting = (Setting<String>) component.getSetting("didactor_nodeprovider");
         String value = "education";
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
@@ -74,7 +76,7 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
 
         result.append("?name=");
         result.append(component.getName());
-        Block block = path.size() > 0 ? component.getBlock(path.get(1)) : component.getDefaultBlock();
+        Block block = path.size() > 1 ? component.getBlock(path.get(1)) : component.getDefaultBlock();
         if (block == null) return null;
         result.append("&block=");
         result.append(block.getName());
