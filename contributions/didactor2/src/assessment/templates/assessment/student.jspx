@@ -46,7 +46,8 @@
           <!--
                If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
           -->
-          <mm:relation to="${user}" role="classrel" searchdir="destination" notfound="null">
+          <mm:relation to="${user}" role="classrel" searchdir="destination"
+                       notfound="null">
             <c:if test="${empty _node and empty firstopenlesson}">
               <mm:node node="learnBlock" id="firstopenlesson" />
             </c:if>
