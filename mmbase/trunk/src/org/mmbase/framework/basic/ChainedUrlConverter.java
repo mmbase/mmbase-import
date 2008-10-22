@@ -27,12 +27,15 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.10 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.11 2008-10-22 12:29:12 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
 
     private static final Logger log = Logging.getLoggerInstance(ChainedUrlConverter.class);
+
+
+    public static Parameter<Class> URLCONVERTER_PARAM = new Parameter<Class>("urlconverter", Class.class);
 
     public static String URLCONVERTER = "org.mmbase.urlconverter";
     /**
@@ -40,6 +43,9 @@ public class ChainedUrlConverter implements UrlConverter {
      */
     private final List<UrlConverter> uclist = new ArrayList<UrlConverter>();
     private final List<Parameter>   parameterDefinition = new ArrayList<Parameter>();
+    {
+        parameterDefinition.add(URLCONVERTER_PARAM);
+    }
 
     /**
      * Adds the UrlConverters to the list.
@@ -99,7 +105,9 @@ public class ChainedUrlConverter implements UrlConverter {
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
         for (UrlConverter uc : uclist) {
+            if (preferred != null && ! preferred.isInstance(uc)) continue;
             String b = uc.getUrl(path, params, frameworkParameters, escapeAmps);
             if (b != null) {
                 UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
@@ -119,7 +127,9 @@ public class ChainedUrlConverter implements UrlConverter {
                                 Map<String, Object> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
+        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
         for (UrlConverter uc : uclist) {
+            if (preferred != null && ! preferred.isInstance(uc)) continue;
             String b = uc.getProcessUrl(path, params, frameworkParameters, escapeAmps);
             if (b != null) {
                 return b;
@@ -135,7 +145,9 @@ public class ChainedUrlConverter implements UrlConverter {
     public String getInternalUrl(String path,
                                         Map<String, Object> params,
                                         Parameters frameworkParameters) throws FrameworkException {
+        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
         for (UrlConverter uc : uclist) {
+            if (preferred != null && ! preferred.isInstance(uc)) continue;
             String b = uc.getInternalUrl(path, params, frameworkParameters);
             if (b != null) {
                 log.debug("ChainedUrlConverter has: " + b);
