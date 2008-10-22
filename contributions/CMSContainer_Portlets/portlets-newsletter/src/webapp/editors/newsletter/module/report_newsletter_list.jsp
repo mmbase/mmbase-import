@@ -40,16 +40,16 @@
             <edit:ui-tcolumn title="" width="5%">
                <input type="checkbox" name="ids" value="${result.id}"/>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="newsletteroverview.newsletter" sort="title" width="15%">
+            <edit:ui-tcolumn titlekey="newsletteroverview.newsletter" sort="title" width="15%" >
                <a href="SubscriptionManagement.do?action=listSubscription&newsletterId=${result.id}">${result.title}</a>
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="globalstats.total.publications" width="15%">
+            <edit:ui-tcolumn titlekey="globalstats.total.publications" width="15%"  sort="countpublications" >
                ${result.countpublications}
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="globalstats.total.sentsubscriptions" width="15%">
+            <edit:ui-tcolumn titlekey="globalstats.total.sentsubscriptions" width="15%"  sort="countSentPublicatons" >
                ${result.countSentPublicatons}
             </edit:ui-tcolumn>
-            <edit:ui-tcolumn titlekey="globalstats.total.subscriptions" width="15%">
+            <edit:ui-tcolumn titlekey="globalstats.total.subscriptions" width="15%" sort="countSubscriptions" >
                ${result.countSubscriptions}
             </edit:ui-tcolumn>
          </edit:ui-table>
