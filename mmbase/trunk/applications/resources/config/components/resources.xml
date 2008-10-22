@@ -14,7 +14,7 @@
   <dependency component="core" version="9" />
 
   <block name="recent"
-         classification="mmbase.examples resources"
+         classification="mmbase.examples:90 resources"
          mimetype="text/html">
     <title xml:lang="en">Recent resources</title>
     <title xml:lang="nl">Recente resources</title>
@@ -32,9 +32,8 @@
     <body jsp="upload.jspx" />
   </block>
 
-
   <block name="captchamail"
-    classification="mmbase.examples resources">
+    classification="mmbase.examples:90 resources">
     <title xml:lang="en">Captcha e-mail</title>
     <title xml:lang="nl">Captcha e-mail</title>
     <description xml:lang="en">
@@ -49,15 +48,6 @@
       <param name="to" type="String" />
       <param name="title" type="String" />
     </body>
-  </block>
-
-
-  <block
-      name="demo"
-      classification="mmbase.examples resources"
-      >
-    <description xml:lang="en">Examples of how to use images an so on</description>
-    <body jsp="test.jspx" />
   </block>
 
 </component>
