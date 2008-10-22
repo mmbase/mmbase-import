@@ -1,0 +1,31 @@
+<project xmlns:ant="jelly:ant" xmlns:j="jelly:core" xmlns:u="jelly:util">
+  <postGoal name="mmbase-module:webapp">
+    
+      <!--test the download?-->
+      <u:available file="${fckeditor.download.destination}">
+        <j:set var="download" value="done"/>
+      </u:available>
+      
+      <!--download the editor-->
+      <j:if test="${maven.mode.online == 'true'}">
+        <j:if test="${download != 'done'}">
+          <ant:mkdir dir="${basedir}/target/download"/>
+          <ant:get src="${fckeditor.download.url}" dest="${basedir}/${fckeditor.download.destination}"/>
+        </j:if>
+      </j:if>
+      
+      <!--expand the editor (if download succeeded)-->
+      <u:available file="${basedir}/${fckeditor.download.destination}">
+        <ant:echo>Editor downloaded. Copy into templates dir and overwrite config</ant:echo>
+        <ant:unzip src="${basedir}/${fckeditor.download.destination}" dest="${basedir}/${fckeditor.expand.location}" overwrite="false"/>
+        <!--overwrite the config file-->
+        <ant:copy overwrite="true" file="${basedir}/ext/fckconfig.js" todir="${basedir}/${fckeditor.expand.location}/fckeditor"/>
+        <j:set var="expand" value="done"/>
+      </u:available>
+      
+      <j:if test="${expand != 'done'}">
+        <ant:fail message="Error: Could not download the FCK Editor at: ${fckeditor.download.name}"/> 
+      </j:if>
+  </postGoal>
+
+</project>
