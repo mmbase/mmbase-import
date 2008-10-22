@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.9 2008-10-22 08:45:14 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.10 2008-10-22 08:52:14 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -30,14 +30,6 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
         setDirectory("c");
     }
 
-
-    public Parameter[] getParameterDefinition() {
-        return new Parameter[] {};
-    }
-
-    public Block getBlock(String path, Parameters frameworkParameters) {
-        return null;
-    }
 
     @Override protected void getNiceDirectoryUrl(StringBuilder b,
                                                    Block block,
