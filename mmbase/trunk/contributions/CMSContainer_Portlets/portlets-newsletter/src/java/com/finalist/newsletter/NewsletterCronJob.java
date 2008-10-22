@@ -12,6 +12,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.publisher.bounce.BounceChecker;
@@ -219,23 +220,27 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
    public void init() {
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       BounceChecker checker = new BounceChecker(newsletterService);
-      if (!checker.isRunning()) {
+      if (!checker.isRunning() && ServerUtil.isLive()) {
          checker.start();
       }
    }
 
    @Override
    public void run() {
-      List<Node> newslettersToPublish = getNewslettersToPublish();
-      for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
-         Node newsletterNode = newslettersToPublish.get(newsletterIterator);
-         newsletterNode.setDateValue("lastcreateddate", new Date());
-         newsletterNode.commit();
-         int newsletterNumber = newsletterNode.getNumber();
-         log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
-         //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
-         Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
-         Publish.publish(publicationNode);
+      if(ServerUtil.isSingle() || ServerUtil.isStaging()) {
+         List<Node> newslettersToPublish = getNewslettersToPublish();
+         for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
+            Node newsletterNode = newslettersToPublish.get(newsletterIterator);
+            newsletterNode.setDateValue("lastcreateddate", new Date());
+            newsletterNode.commit();
+            int newsletterNumber = newsletterNode.getNumber();
+            log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
+            //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
+            Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
+            if(ServerUtil.isStaging()) {
+               Publish.publish(publicationNode);
+            }
+         }
       }
    }
 
