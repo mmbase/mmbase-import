@@ -13,7 +13,7 @@
     </tr>
     <tr>
       <td colspan="3">
-        <mm:link page="index">
+        <mm:link page="magazine">
           <mm:frameworkparam name="component" value="mynews" />
           <p>Lots of these examples edit data from the <a href="${_}">My News example</a>.</p>
         </mm:link>
