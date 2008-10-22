@@ -41,8 +41,8 @@
   </mm:present>
 
   <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
-  <h1>Testing for ${datatype} ${field}</h1>
-  <p>${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</p>
+  <h3>Testing for ${datatype} ${field}</h3>
+  <p>locale: ${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</p>
   <form id="myform" method="get">
     <mm:present referid="field">
       <input type="hidden" name="field"       value="${field}" />
@@ -63,20 +63,20 @@
         <mm:fieldinfo datatype="${datatype}" type="errors" />
       </mm:notpresent>
     </mm:cloud>
+    <p>
     <input type="button" onclick="validator.validatePage(true)" value="server-side validation" />
     <!--
         <input type="button" style="color: gray;" onclick="validator.logEnabled = ! validator.logEnabled;     this.style.color = validator.logEnabled ? 'black' : 'gray';" value="log" />
         <input type="button" style="color: gray;" onclick="validator.traceEnabled = ! validator.traceEnabled; this.style.color = validator.traceEnabled &amp;amp;&amp;amp; validator.logEnabled ? 'black' : 'gray';" value="trace" />
     -->
     <input type="submit" id="submit" />
+    </p>
   </form>
-  <hr />
+  
+  <p>
   <mm:link page="datatypes" referids="nodemanager?,field?">
-    <a href="${_}" class="navigate">
-      <img src="${back}" alt="back" class="navigate" />
-    </a>
+      <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" /></a>
+      <a href="${_}">Return to overview</a>
   </mm:link>
-
+  </p>
 </div>
-
-
