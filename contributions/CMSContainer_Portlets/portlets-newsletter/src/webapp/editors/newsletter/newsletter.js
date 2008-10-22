@@ -18,3 +18,32 @@ function massDelete(confirmmessage) {
         }
     }   
 }
+
+function setOffset(offset) {
+    document.forms[0].offset.value = offset;
+    document.forms[0].submit();
+ }
+ function showItem(objectnumber) {
+    openPopupWindow("showItem", 500, 500, 'NewsletterBounceAction.do?method=getItem&objectnumber=' + objectnumber);
+}
+ function sortBy(orderColumn){
+                var offset = document.forms[0].offset.value;
+                var oldOrderColumn = document.forms[0].order.value;
+                
+                if (oldOrderColumn == orderColumn) {
+                    // order column is not changed so change direction
+                    var oldDirection = document.forms[0].direction.value;
+                    
+                    if (oldDirection == 'down') {
+                        document.forms[0].direction.value = 'up';
+                    }
+                    else {
+                        document.forms[0].direction.value = 'down';
+                    }
+                }
+                else {
+                    document.forms[0].order.value = orderColumn;
+                    document.forms[0].direction.value = 'down';
+                }
+				 document.forms[0].submit();
+            }
