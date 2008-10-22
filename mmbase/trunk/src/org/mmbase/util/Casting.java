@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.118 2008-10-21 16:17:07 michiel Exp $
+ * @version $Id: Casting.java,v 1.119 2008-10-22 12:27:20 michiel Exp $
  */
 
 import java.util.*;
@@ -208,7 +208,19 @@ public class Casting {
             } else if (type.equals(Collection.class)) {
                 return (C) toCollection(value);
             } else if (type.equals(java.util.regex.Pattern.class)) {
+                if (java.util.regex.Pattern.class.isInstance(value)) {
+                    return (C) value;
+                }
                 return (C) java.util.regex.Pattern.compile(toString(value));
+            } else if (type.equals(Class.class)) {
+                if (Class.class.isInstance(value)) {
+                    return (C) value;
+                }
+                try {
+                    return (C) Class.forName(toString(value));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(e);
+                }
             } else {
                 log.error("Don't know how to convert to " + type);
                 if (value == null || "".equals(value)) {
