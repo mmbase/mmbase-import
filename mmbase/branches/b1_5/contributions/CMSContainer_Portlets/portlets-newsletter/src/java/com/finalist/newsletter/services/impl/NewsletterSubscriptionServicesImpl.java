@@ -242,7 +242,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    }
 
    public int countSubscriptionByNewsletter(int id) {
-      return subscriptionCAO.getSubscription(id).size();
+      return subscriptionCAO.CountSubscription(id);
    }
 
    public List<Subscription> getAllSubscription() {
