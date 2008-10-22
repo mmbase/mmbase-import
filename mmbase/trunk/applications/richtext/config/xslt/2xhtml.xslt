@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.32 2008-10-17 14:12:06 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.33 2008-10-22 13:07:10 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -401,6 +401,8 @@
       <param name="movie">
         <xsl:attribute name="value"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       </param>
+      <!-- lets default not loop for now -->
+      <param name="loop" value="false" />
     </object>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
