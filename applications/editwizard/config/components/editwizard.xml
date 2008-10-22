@@ -21,7 +21,7 @@
          classification="mmbase.examples"
          mimetype="text/html">
     <title xml:lang="en">Editwizard examples</title>
-    <title xml:lang="nl">Ediwizard voorbeelden</title>
+    <title xml:lang="nl">Editwizard voorbeelden</title>
     <body jsp="examples.jspx" />
   </block>
 
