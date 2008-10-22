@@ -39,7 +39,8 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
       return MMBaseNodeMapper.convertList(list, Term.class);
    }
 
-   public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value, boolean paging) {
+   public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value,
+         boolean paging) {
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
       NodeQuery query = cloud.createNodeQuery();
       NodeManager nodeManager = cloud.getNodeManager("newsletter");
@@ -50,13 +51,16 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
             SearchUtil.addLikeConstraint(query, nodeManager.getField(property), value);
          }
       }
+      if (pagingHolder != null && nodeManager.hasField(pagingHolder.getSort())) {
+         Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+      } else if (null != pagingHolder.getSort()) {
+         paging = false;
+      }
       if (paging) {
          query.setMaxNumber(pagingHolder.getPageSize());
          query.setOffset(pagingHolder.getOffset());
       }
-      if (pagingHolder != null) {		
-         Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
-      }
+
       NodeList list = query.getList();
       return MMBaseNodeMapper.convertList(list, Newsletter.class);
    }
@@ -109,7 +113,8 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
       NodeQuery query = cloud.createNodeQuery();
       Step newsletterStep = query.addStep(newsletterNodeManager);
       query.setNodeStep(newsletterStep);
-      Constraint idConstraint = SearchUtil.createEqualConstraint(query, newsletterNodeManager.getField("number"), newsletterId);
+      Constraint idConstraint = SearchUtil.createEqualConstraint(query, newsletterNodeManager.getField("number"),
+            newsletterId);
       SearchUtil.addConstraint(query, idConstraint);
 
       RelationStep relationStep = query.addRelationStep(termNodeManager, "posrel", "destination");
