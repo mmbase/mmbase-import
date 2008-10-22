@@ -1,7 +1,7 @@
 package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
@@ -13,6 +13,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.newsletter.domain.NewsletterBounce;
@@ -22,15 +23,37 @@ public class NewsletterBounceUtil {
 
    private static Log log = LogFactory.getLog(NewsletterBounceUtil.class);
 
-   public static List<NewsletterBounce> getBounceRecord(int offset, int pageSize) {
+   public static List<NewsletterBounce> getBounceRecord(int offset, int pageSize, String order, String direction) {
       List<NewsletterBounce> bounces = new ArrayList<NewsletterBounce>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager bounceManager = cloud.getNodeManager("newsletterbounce");
       NodeQuery query = bounceManager.createQuery();
-      query.setMaxNumber(pageSize);
-      query.setOffset(offset);
+      if (null == order || bounceManager.hasField(order)) {
+         query.setMaxNumber(pageSize);
+         query.setOffset(offset);
+         Queries.addSortOrders(query, order, direction);
+      }
       NodeList bounceNodes = query.getList();
       bounces = convertNodeListToList(bounceNodes);
+      if (null != order && !bounceManager.hasField(order)) {
+         bounces = nesletterSort(bounces, offset, pageSize, direction, order);
+      }
+      return bounces;
+   }
+
+   private static List<NewsletterBounce> nesletterSort(List<NewsletterBounce> bounces, int offset, int pageSize,
+         String direction, String order) {
+      ComparisonUtil comparator = new ComparisonUtil();
+      comparator.setFields_user(new String[] { order });
+      Collections.sort(bounces, comparator);
+      if ("down".equals(direction)) {
+         Collections.reverse(bounces);
+      }
+      if (pageSize + offset < bounces.size()) {
+         bounces = bounces.subList(offset, pageSize + offset);
+      } else {
+         bounces = bounces.subList(offset, bounces.size());
+      }
       return bounces;
    }
 
