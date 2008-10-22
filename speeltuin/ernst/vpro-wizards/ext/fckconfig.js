@@ -1,4 +1,6 @@
 ﻿/*
+* THIS CONFIG FILE HAS BEEN MODIFIED FOR THE VPRO-Wizards.
+*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2008 Frederico Caldeira Knabben
  *

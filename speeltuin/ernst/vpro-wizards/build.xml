@@ -24,8 +24,12 @@
 	
 	<!-- copy the web.xml fragment too-->
 	<target name="install" depends="buildbase.install" >
-		<copy tofile="${webapp.dir}/WEB-INF/vprowizards.web.xml" file="web.fragment.xml"/>
+		<copy tofile="${webapp.dir}/WEB-INF/vprowizards.web.xml" file="WEB-INF/web.fragment.xml" />
 	</target>
+  
+  <target name="clean" depends="buildbase.clean">
+    <delete dir="${fckeditor.destination}"/>
+  </target>
 
 
 	<!--copy all the resources to the classes dir, so they become part of the jar-->
@@ -77,7 +81,7 @@
 			<param name="destdir" value="templates/system/javascript/" />
 			<param name="expandedfile" value="templates/system/javascript/CFKeditor" />
 		</antcall>
-    <copy file="ext/fckconfig.js" todir="templates/system/javascript/fckeditor" overwrite="true"/>
+    <copy file="ext/fckconfig.js" todir="${fckeditor.destination}"/>
 
 		<!--commons lang-->
 		<echo message="download commons-lang" />
