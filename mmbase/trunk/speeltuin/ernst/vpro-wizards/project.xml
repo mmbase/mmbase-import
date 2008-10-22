@@ -18,7 +18,8 @@
 		editors like the editwizards. The big difference is that editors
 		are created with jsp's using tag libraries, and 'action' java
 		beans for performing tasks. Action beans are provided for the
-		common editing tasks.
+		common mmbase editing tasks, like creating, deleting and updating nods and relations, as
+		well as sorting lists of related nodes.
 	</description>
 	<properties>
 		<type>library</type>
