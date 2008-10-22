@@ -10,7 +10,10 @@
   <h1><di:translate key="core.validatelogin_any_error_header" /></h1>
   <p><mm:write value="${param.message}" /></p>
   <p>
-    <a href="login.jsp"><di:translate key="core.login"/></a>
+
+    <mm:link page="/login">
+      <a href="${_}"><di:translate key="core.login"/></a>
+    </mm:link>
   </p>
 </di:html>
 
