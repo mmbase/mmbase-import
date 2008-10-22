@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.31 2008-08-26 06:46:15 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.32 2008-10-22 09:51:52 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -165,6 +165,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
 
     public int doEndTag() throws JspTagException {
         int s = super.doEndTag();
+        helper.doEndTag();
         if (! used) { // should consider also write-attribute here
             getContent(pageContext.getOut());
         }
