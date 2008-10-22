@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.27 2008-09-26 14:08:04 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.28 2008-10-22 10:04:40 michiel Exp $
  */
 
 
@@ -301,7 +301,7 @@ List.prototype.commit = function(stale, leavePage) {
     }
     if (leavePage && ! List.prototype.leftPage) {
         List.prototype.leftPage = true;
-        $.ajax({ type: "GET", async: true, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+        $.ajax({ type: "GET", async: false, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
     }
     return result;
 }
