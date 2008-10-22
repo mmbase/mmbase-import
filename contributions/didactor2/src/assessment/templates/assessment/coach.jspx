@@ -15,7 +15,7 @@
         <tr>
           <th class="listHeader">&amp;nbsp;</th>
           <mm:node number="$education">
-            <mm:relatednodescontainer element="learnblocks"  path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',components' : ''}">
+            <mm:relatednodescontainer element="learnblocks"  path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}">
               <mm:sortorder field="posrel.pos" />
               <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
                 <mm:addnode element="components" number="component.assessment" />
@@ -38,7 +38,7 @@
               element="people">
             <mm:constraint field="roles.name" value="student" />
             <mm:distinct />
-            <mm:sortorder field="lastname" />
+            <mm:sortorder field="${di:setting('core', 'personorderfield')}" />
             <mm:relatednodes id="student">
 
               <mm:first>
