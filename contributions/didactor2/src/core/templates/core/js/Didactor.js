@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.10 2008-10-17 14:16:42 michiel Exp $
+ * @version $Id: Didactor.js,v 1.11 2008-10-23 10:20:38 michiel Exp $
  */
 
 
@@ -17,28 +17,28 @@ function Didactor() {
     this.pageReporter   = this.getSetting("Didactor-PageReporter") == "true";
     var self = this;
     $.timer(500, function(timer) {
-	self.reportOnline();
-	timer.reset(self.pageReporter ? 5000 : 1000 * 60 * 2);
+	    self.reportOnline();
+	    timer.reset(self.pageReporter ? 5000 : 1000 * 60 * 2);
     });
     if (this.pageReporter) {
-	$(window).bind("beforeunload", function() {
-	    self.reportOnline(null, false);
-	});
+	    $(window).bind("beforeunload", function() {
+	        self.reportOnline(null, false);
+	    });
     }
     this.content = null;
     for (var i = 0; i < Didactor.contentParameters.length; i++) {
-	var param = Didactor.contentParameters[i];
-	this.content = $.query.get(param);
-	$.query.REMOVE(param);
-	if (this.content != null) break;
+	    var param = Didactor.contentParameters[i];
+	    this.content = $.query.get(param);
+	    $.query.REMOVE(param);
+	    if (this.content != null) break;
     }
     for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
-	var param = Didactor.ignoredParameters[i];
-	$.query.REMOVE(param);
+	    var param = Didactor.ignoredParameters[i];
+	    $.query.REMOVE(param);
     }
     for (var i = 0; i < Didactor.welcomeFiles.length; i++) {
-	var welcomeFile = Didactor.welcomeFiles[i];
-	this.url = this.url.replace(new RegExp(welcomeFile + "$"), "");
+	    var welcomeFile = Didactor.welcomeFiles[i];
+	    this.url = this.url.replace(new RegExp(welcomeFile + "$"), "");
     }
 }
 
@@ -54,21 +54,24 @@ Didactor.prototype.reportOnline = function (timer, async) {
     var params;
     var thisCheck = new Date();
     if (this.getSetting("Didactor-PageReporter") == "true") {
-	params = {page: this.url + $.query.toString(), add: thisCheck.getTime() - this.lastCheck.getTime()};
-	if (this.content != undefined && this.content != null && this.content != "") {
-	    params.content = this.content;
-	}
+	    params = {page: this.url + $.query.toString(), add: thisCheck.getTime() - this.lastCheck.getTime()};
+	    if (this.content != undefined && this.content != null && this.content != "") {
+	        params.content = this.content;
+	    }
     } else {
-	params = {};
+	    params = {};
     }
 
-    $.ajax({async: (async == null ? true : async), url: this.onlineReporter, type: "GET", data: params});
+    $.ajax({async: (async == null ? true : async),
+            url: this.onlineReporter,
+            type: "GET",
+            data: params});
     this.lastCheck = thisCheck;
 }
 
 Didactor.prototype.setContent = function(c) {
     if (this.pageReporter) {
-	this.reportOnline(null, false);
+	    this.reportOnline();
     }
     this.content = c;
 }
