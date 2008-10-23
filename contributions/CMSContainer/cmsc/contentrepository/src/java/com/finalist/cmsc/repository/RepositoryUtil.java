@@ -47,6 +47,7 @@ public final class RepositoryUtil {
     public static final String CONTENTCHANNEL = "contentchannel";
     public static final String COLLECTIONCHANNEL = "collectionchannel";
     public static final String CONTENTELEMENT = ContentElementUtil.CONTENTELEMENT;
+    public static final String ASSETELEMENT = AssetElementUtil.ASSETELEMENT;
 
     public static final String CHILDREL = "childrel";
     public static final String COLLECTIONREL = "collectionrel";
@@ -493,6 +494,20 @@ public final class RepositoryUtil {
           creationrel.delete();
        }
     }
+    
+    /** Remove creation relations for the given assetelement
+     * @param content A assetelment
+     */
+    public static void removeCreationRelForAsset(Node asset) {
+       if (!AssetElementUtil.isAssetElement(asset)) {
+          throw new IllegalArgumentException("Only contentelements are allowed.");
+       }
+       RelationList list = asset.getRelations(CREATIONREL, null, DESTINATION);
+       for (int i = 0; i < list.size(); i++) {
+          Relation creationrel = list.getRelation(i);
+          creationrel.delete();
+       }
+    }
 
     /**
      * Create the relation to the creationchannel.
@@ -535,6 +550,38 @@ public final class RepositoryUtil {
            // remove delete relation with this channel, if any still exist
            RepositoryUtil.removeDeletionRels(content, channelNode);
        }
+    }
+    
+    /**
+     * Create the relation to the creationchannel.
+     * @param asset - Asset Node
+     * @param channelNumber - String channel number
+     */
+    public static void addAssetToChannel(Node asset, String channelNumber) {
+       Node channelNode = asset.getCloud().getNode(channelNumber);
+       addAssetToChannel(asset, channelNode);
+    }
+
+    public static void addAssetToChannel(Node asset, Node channelNode) {
+            Cloud cloud = asset.getCloud();
+
+            // set the creationchannel if it does not have one (it was an orphan)
+            // or if the creationchannel is the trash channel
+            Node creationNode = getCreationChannel(asset);
+            boolean isOrphan = (creationNode == null);
+            if(!isOrphan) {
+               if(isTrash(creationNode)) {
+                  isOrphan = true;
+                  removeCreationRelForAsset(asset);
+               }
+            }           
+            
+            if(isOrphan) {
+            	RelationManager creationChannel = cloud.getRelationManager(ASSETELEMENT, CONTENTCHANNEL, CREATIONREL);
+                asset.createRelation(channelNode, creationChannel).commit();
+            }
+            // remove delete relation with this channel, if any still exist
+            RepositoryUtil.removeDeletionRels(asset, channelNode);
     }
 
     public static boolean isLinkedToChannel(Node content, Node channelNode) {
@@ -579,6 +626,10 @@ public final class RepositoryUtil {
     public static NodeList getCreatedElements(Node channel) {
         return channel.getRelatedNodes(CONTENTELEMENT, CREATIONREL, SOURCE);
     }
+    
+    public static NodeList getCreatedAssets(Node channel) {
+        return channel.getRelatedNodes(ASSETELEMENT, CREATIONREL, SOURCE);
+    }
 
     public static boolean hasLinkedContent(Node channelNode) {
         // check if the content channel has related content elements
@@ -598,6 +649,22 @@ public final class RepositoryUtil {
 
     public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
         NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
+        return Queries.count(query);
+    }
+    
+    public static int countCreatedAsset(Node channelNode) {
+        int contentCount = channelNode.countRelatedNodes(channelNode.getCloud().getNodeManager(
+             ASSETELEMENT), CREATIONREL, SOURCE);
+        return contentCount;
+    }
+
+    public static int countCreatedAsset(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, null, offset, maxNumber, year, month, day);
+        return Queries.count(query);
+    }
+
+    public static int countCreatedAsset(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
         return Queries.count(query);
     }
 
@@ -689,6 +756,96 @@ public final class RepositoryUtil {
         	for(String key:extraParameters.keySet()) {
         		Object value = extraParameters.get(key);
         		Field field = query.getCloud().getNodeManager("contentelement").getField(key);
+                StepField basicStepField = query.getStepField(field);
+        		SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
+        	}
+        }
+
+        SearchUtil.addLimitConstraint(query, offset, maxNumber);
+        return query;
+    }
+    
+    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, null, offset, maxNumber, year, month, day);
+        return query.getNodeManager().getList(query);
+    }
+
+
+    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+        NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
+        return query.getNodeManager().getList(query);
+    }
+
+
+    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String, Object> extraParameters) {
+        NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, extraParameters);
+        return query.getNodeManager().getList(query);
+    }
+    
+    public static NodeQuery createCreatedAssetQuery(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+    	return createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, null);
+    }
+    
+    
+    public static NodeQuery createCreatedAssetQuery(Node channel, List<String> assettypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String, Object> extraParameters) {
+        String sourceManager = ASSETELEMENT;
+
+        if (assettypes != null && assettypes.size() == 1) {
+            sourceManager = assettypes.get(0);
+        }
+
+        NodeQuery query;
+        if (isContentChannel(channel)) {
+            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager,
+            		CREATIONREL, null, null, orderby, direction);
+        }
+        else {
+            NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
+            if (contentchannels.isEmpty()) {
+                throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
+            }
+            query = SearchUtil.createRelatedNodeListQuery(contentchannels, sourceManager,CREATIONREL);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, orderby, direction);
+        }
+
+        if (assettypes != null && assettypes.size() > 1) {
+            SearchUtil.addTypeConstraints(query, assettypes);
+        }
+
+        // Precision of now is based on minutes.
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Long date = cal.getTimeInMillis();
+
+        if (useLifecycle) {
+            AssetElementUtil.addLifeCycleConstraint(query, date);
+        }
+        if (StringUtils.isNotEmpty(archive)) {
+        	AssetElementUtil.addArchiveConstraint(channel, query, date, archive);
+        }
+
+        if(year != -1 || month != -1 || day != -1) {
+          Field field = query.getCloud().getNodeManager("assetelement").getField("publishdate");
+          StepField basicStepField = query.getStepField(field);
+           if(year != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(year), FieldValueDateConstraint.YEAR));
+           }
+           if(month != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(month), FieldValueDateConstraint.MONTH));
+           }
+           if(day != -1) {
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(day), FieldValueDateConstraint.DAY_OF_MONTH));
+           }
+        }
+
+        if(extraParameters != null) {
+        	for(String key:extraParameters.keySet()) {
+        		Object value = extraParameters.get(key);
+        		Field field = query.getCloud().getNodeManager("assetelement").getField(key);
                 StepField basicStepField = query.getStepField(field);
         		SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
         	}
@@ -793,6 +950,12 @@ public final class RepositoryUtil {
         RelationManager rm = contentNode.getCloud().getRelationManager(
                    CONTENTELEMENT, CONTENTCHANNEL, DELETIONREL);
         contentNode.createRelation(channel, rm).commit();
+    }
+    
+    public static void addAssetDeletionRelation(Node AssetNode, Node channel) {
+        RelationManager rm = AssetNode.getCloud().getRelationManager(
+                   ASSETELEMENT, CONTENTCHANNEL, DELETIONREL);
+        AssetNode.createRelation(channel, rm).commit();
     }
 
     public static void removeDeletionRels(Node contentNode, String channelNumber) {
@@ -1016,5 +1179,5 @@ public final class RepositoryUtil {
        contentChannels.add(0, getRootNode(cloud));
        return contentChannels;
     }
-
+    
 }
