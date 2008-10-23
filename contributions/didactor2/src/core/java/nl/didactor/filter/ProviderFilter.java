@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.17 2008-10-23 11:12:48 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.18 2008-10-23 12:11:22 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -233,14 +233,23 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws java.io.IOException, ServletException {
         HttpServletResponse res = (HttpServletResponse) response;
+        HttpServletRequest req = (HttpServletRequest) request;
+
+        String sp = req.getServletPath();
+        if (sp.endsWith(".css") ||
+            sp.endsWith(".png") ||
+            sp.endsWith(".gif") ||
+            sp.endsWith(".js"))
+            {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (mmbase == null || ! mmbase.getState()) {
             // if mmbase not yet.503.
             res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
             return;
         }
-        HttpServletRequest req = (HttpServletRequest) request;
 
-        String sp = req.getServletPath();
         if (sp.startsWith("/images/") ||
             sp.startsWith("/attachments/")) {
             // no jsps here, these are blobs.
@@ -425,6 +434,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
         assert request.getAttribute("provider") != null : "attributes" + attributes;
         for (Map.Entry<String, Object> entry : userAttributes.entrySet()) {
+            log.info("Putting " + entry + " " + (entry.getValue() == null ? "" : entry.getValue().getClass()));
             request.setAttribute(entry.getKey(), entry.getValue());
         }
 
