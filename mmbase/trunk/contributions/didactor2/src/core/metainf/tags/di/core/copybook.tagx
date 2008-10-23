@@ -22,7 +22,7 @@
       </c:when>
       <c:otherwise>
         <!-- people->classrel->class->related->education -->
-        <mm:relation role="classrel" to="${empty classNumber ? class : classNumber}">
+        <mm:relation role="classrel" to="${empty classNumber ? requestScope['class'].number : classNumber}">
           <mm:relatednodes type="copybooks">
             <jsp:doBody />
           </mm:relatednodes>
