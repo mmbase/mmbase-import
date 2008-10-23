@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
@@ -25,11 +26,15 @@ public class NewsletterGenerator {
       log.debug("generate newsletter from url:" + urlPath);
 
       String inputString = "";
+      String errorInfo="please check the system live-path variable, ";
       try {
 
          log.debug("Try to get content from URL:" + urlPath);
 
          URL url = new URL(urlPath);
+         if (!Pattern.matches("http://(\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*(\\ ?\\S*)?$",  urlPath)) {
+            errorInfo += "the path does not start with http:// ";
+         }
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
          connection.setRequestMethod("GET");
@@ -57,7 +62,7 @@ public class NewsletterGenerator {
 
          return (inputString);
       } catch (Exception e) {
-         log.error("Error when try to get content from" + urlPath, e);
+         log.error("Error when try to get content from" + urlPath+errorInfo, e);
       }
 
       return inputString;
@@ -75,7 +80,7 @@ public class NewsletterGenerator {
          e.printStackTrace();
       }
 
-      inputString =  visitor.getBody().asHtml().trim();
+      inputString = visitor.getBody().asHtml().trim();
       inputString = inputString.replaceAll("(?m)^\\s*\r\n+", "").replaceAll("(?m)^\\s*\r+", "").replaceAll("(?m)^\\s*\n+", "");
       inputString = inputString.replaceAll("(?m)\r\n+", "").replaceAll("(?m)\r+", "").replaceAll("(?m)\n+", "");
       inputString = inputString.replaceAll("<br/>", "\r\n");
