@@ -89,6 +89,7 @@
         </c:if>
         
         <fmt:formatNumber var="iend" type="number" pattern="#" value="${(size / max) - 0.51}" />
+        <c:if test="${iend < 0}"><c:set var="iend" value="0" /></c:if>
         <c:forEach var="i" begin="0" end="${iend}">
           <c:choose>
             <c:when test="${(i * max) == offset}">
