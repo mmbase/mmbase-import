@@ -1,8 +1,8 @@
 /* -*- mode: java -*- */
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
-%><mm:content  expires="0" type="text/javascript">
-    <mm:cloud>
+%><mm:content  expires="300" type="text/javascript" postprocessor="none">
+<m:cloud>
 
 // hmm
 
@@ -12,13 +12,13 @@ function toggle(number) {
     var org = img.src;
     img.src = img.src.replace("minus", "plus");
     if (img.src == org) {
-	img.src = img.src.replace("plus", "minus");
+        img.src = img.src.replace("plus", "minus");
     }
-}
+  }
 
 var toggleExtra = function() {
-                $(document).find(".col.problem .extra").hide();
-                $(this).find(".extra").show();
+    $(document).find(".col.problem .extra").hide();
+    $(this).find(".extra").show();
 };
 
 $(document).ready(function() {
