@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.28 2008-10-22 10:04:40 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.29 2008-10-23 15:16:15 michiel Exp $
  */
 
 
@@ -243,12 +243,13 @@ List.prototype.needsCommit = function() {
 
 List.prototype.status = function(message, fadeout) {
     this.find(this.div, "span.status").each(function() {
-        $(this).fadeIn("fast");
+        if (this.originalTextContent == null) this.originalTextContent = this.textContent;
+        $(this).fadeTo("fast", 1);
         $(this).empty();
         $(this).append(message);
         if (fadeout) {
             var p = this;
-            $(this).fadeOut(4000, function() {$(p).empty()} );
+            $(this).fadeTo(4000, 0.1, function() { $(p).empty(); $(p).append(p.originalTextContent); } );
         }
     });
 }
