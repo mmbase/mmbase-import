@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.16 2008-08-08 16:00:54 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.17 2008-10-23 11:12:48 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -223,7 +223,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
     }
 
 
-    private static CharTransformer escaper = new Xml(Xml.ESCAPE);
+    private static final CharTransformer escaper = new Xml(Xml.ESCAPE);
     /**
      * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the
      * request will be handled somewhere else in the filterchain.
@@ -232,11 +232,10 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
      * @param filterChain The FilterChain.
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws java.io.IOException, ServletException {
+        HttpServletResponse res = (HttpServletResponse) response;
         if (mmbase == null || ! mmbase.getState()) {
-            // if mmbase not yet running. Things not using mmbase can work, otherwise this may give
-            // 503.
-            log.debug("NO MMBASE member");
-            filterChain.doFilter(request, response);
+            // if mmbase not yet.503.
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
             return;
         }
         HttpServletRequest req = (HttpServletRequest) request;
@@ -368,7 +367,6 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 if (req.getServletPath().startsWith("/mmbase")) {
                     filterChain.doFilter(request, response);
                 } else {
-                    HttpServletResponse res = (HttpServletResponse) response;
                     request.setAttribute("org.mmbase.servlet.error.message", "No provider found for '" + key + "'");
                     res.sendError(HttpServletResponse.SC_NOT_FOUND, "No provider found for '" + key + "'");
                 }
@@ -428,6 +426,11 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         assert request.getAttribute("provider") != null : "attributes" + attributes;
         for (Map.Entry<String, Object> entry : userAttributes.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
+        }
+
+        if (request.getAttribute("includePath") == null) {
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Didactor not yet initialized");
+            return;
         }
 
         filterChain.doFilter(request, response);
