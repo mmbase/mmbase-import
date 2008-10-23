@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.18 2008-10-23 12:11:22 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.19 2008-10-23 13:47:32 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -434,7 +434,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
         assert request.getAttribute("provider") != null : "attributes" + attributes;
         for (Map.Entry<String, Object> entry : userAttributes.entrySet()) {
-            log.info("Putting " + entry + " " + (entry.getValue() == null ? "" : entry.getValue().getClass()));
+            //log.info("Putting " + entry + " " + (entry.getValue() == null ? "" : entry.getValue().getClass()));
             request.setAttribute(entry.getKey(), entry.getValue());
         }
 
