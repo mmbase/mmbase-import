@@ -3,44 +3,14 @@
 %><%@ page import="com.finalist.cmsc.repository.RepositoryUtil" 
 %><%@ page import="com.finalist.cmsc.security.*" 
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html:html xhtml="true">
-<cmscedit:head title="content.title">
-    <script src="content.js" type="text/javascript"></script>
-</cmscedit:head>
-<body>
-<script type="text/javascript">
-    <c:if test="${not empty param.message}">
-    addLoadEvent(alert('${param.message}'));
-    </c:if>
-    <c:if test="${not empty param.refreshchannel}">
-    addLoadEvent(refreshChannels);
-    </c:if>
-    <c:if test="${requestScope.refresh}">
-    addLoadEvent(refreshChannels);
-    </c:if>
-    addLoadEvent(alphaImages);
-</script>
+
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
-<mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write
+<mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?type=content&parentchannel=<mm:write
         referid="parentchannel"/>&direction=down</mm:import>
-
-<div class="tabs">
-    <!-- active TAB -->
-    <div class="tab_active">
-        <div class="body">
-            <div>
-                <a name="activetab"><fmt:message key="content.title"/></a>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="editor">
 <div class="body">
-
 <!-- check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
 <c:set var="hasWorkflow" value="false"/>
 <mm:haspage page="/editors/workflow">
@@ -143,15 +113,15 @@
         </c:if>
         <% } %>
         </th>
-        <th><a href="javascript:sortBy('otype','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Content','otype','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.typecolumn"/></a></th>
-        <th><a href="javascript:sortBy('title','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Content','title','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.titlecolumn"/></a></th>
-        <th><a href="javascript:sortBy('creator','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Content','creator','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.authorcolumn"/></a></th>
-        <th><a href="javascript:sortBy('lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Content','lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.lastmodifiedcolumn"/></a></th>
-        <th><a href="javascript:sortBy('number','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Content','number','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.numbercolumn"/></a></th>
         <th><fmt:message key="content.creationchannelcolumn"/></th>
         <th></th>
@@ -307,6 +277,4 @@
 </div>
 </mm:node>
 </mm:cloud>
-</body>
-</html:html>
 </mm:content>

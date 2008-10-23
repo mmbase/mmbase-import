@@ -41,7 +41,7 @@ function move(direction, objectNumber, channel) {
 
 
    
-function sortBy(orderColumn, channel) {
+function sortBy(action, orderColumn, channel) {
     var offset = document.forms[0].offset.value;
     var oldOrderColumn = document.forms[0].order.value;
     
@@ -62,7 +62,7 @@ function sortBy(orderColumn, channel) {
     }
     newDirection=document.forms[0].direction.value;
     type=document.forms[0].order.value;
-    var url = 'Content.do?orderby='+type+'&parentchannel=' + channel+'&direction='+newDirection+'&offset='+offset;
+    var url = action + '.do?orderby='+type+'&parentchannel=' + channel+'&direction='+newDirection+'&offset='+offset;
     
     document.location = url;
     
