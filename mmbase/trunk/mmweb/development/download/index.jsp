@@ -49,10 +49,9 @@
 
 <h3>Packages and other applications</h3>
 <h5>Packages</h5>
-<p>More about the MMBase package manager (apps2) and the packages you can install
-and download with it can be found at
-<a href="http://www.mmbase.org/packages">this page</a> and at
-<a href="http://packages.mmbase.org/mmbase/packagemanager/public/">packages.mmbase.org</a>.
+<p>
+  More about the MMBase package manager (apps2) and the packages you can install
+  and download with it can be found at <a href="http://www.mmbase.org/packages">this page</a>.
 </p>
 
 <h5>Other applications</h5>
