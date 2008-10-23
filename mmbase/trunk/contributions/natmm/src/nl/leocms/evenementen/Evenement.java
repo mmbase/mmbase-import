@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.14 $, $Date: 2008-09-18 12:04:02 $
+ * @version $Revision: 1.15 $, $Date: 2008-10-23 13:14:26 $
  *
  */
 
@@ -559,7 +559,7 @@ public class Evenement extends DoubleDateNode {
             parentNumber = parentEvent.getStringValue("number");
          }
          else {
-            log.info("Could not find parent for child " + thisEvent.getStringValue("number") + ", setting parent to child");
+            log.debug("Could not find parent for child " + thisEvent.getStringValue("number") + ", setting parent to child");
          }
       }
       return parentNumber;
