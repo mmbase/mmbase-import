@@ -1,231 +1,209 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeManagerList;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.mmbase.TypeUtil;
-import com.finalist.cmsc.security.SecurityUtil;
 
 public final class AssetElementUtil {
 
-	public static final String NUMBER_FIELD = "number";
-	public static final String TITLE_FIELD = "title";
-	public static final String CREATIONDATE_FIELD = "creationdate";
-	public static final String PUBLISHDATE_FIELD = "publishdate";
-	public static final String EXPIREDATE_FIELD = "expiredate";
-	public static final String USE_EXPIRY_FIELD = "use_expirydate";
-	public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
-	public static final String CREATOR_FIELD = "creator";
-	public static final String LASTMODIFIER_FIELD = "lastmodifier";
-	public static final String ARCHIVEDATE_FIELD = "archivedate";
-	
-	public static final String ASSETELEMENT = "assetelement";
-	
-	private static final String PROPERTY_HIDDEN_ASSET_TYPES = "system.assettypes.hide";
+   public static final String NUMBER_FIELD = "number";
+   public static final String TITLE_FIELD = "title";
+   public static final String CREATIONDATE_FIELD = "creationdate";
+   public static final String PUBLISHDATE_FIELD = "publishdate";
+   public static final String EXPIREDATE_FIELD = "expiredate";
+   public static final String USE_EXPIRY_FIELD = "use_expirydate";
+   public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
+   public static final String CREATOR_FIELD = "creator";
+   public static final String LASTMODIFIER_FIELD = "lastmodifier";
+   public static final String ARCHIVEDATE_FIELD = "archivedate";
 
-	public static List<NodeManager> getAssetTypes(Cloud cloud) {
-	List<NodeManager> result = new ArrayList<NodeManager>();
-	NodeManagerList nml = cloud.getNodeManagers();
-	Iterator<NodeManager> v = nml.iterator();
-	while (v.hasNext()) {
-		NodeManager nm = v.next();
-		if (AssetElementUtil.isAssetType(nm)) {
-			result.add(nm);
-		}
-	}
-	Collections.sort(result, new Comparator<NodeManager>() {
-		public int compare(NodeManager o1, NodeManager o2) {
-			return o1.getGUIName().compareTo(o2.getGUIName());
-		}
-	});
+   public static final String ASSETELEMENT = "assetelement";
 
-	return result;
-	}
+   private static final String PROPERTY_HIDDEN_ASSET_TYPES = "system.assettypes.hide";
 
-	/**
-	 * Is element from one of the asset types
-	 * 
-	 * @param element
-	 *            node to check
-	 * @return is asset type
-	 */
-	public static boolean isAssetElement(Node element) {
-		NodeManager nm = element.getNodeManager();
-		return isAssetType(nm);
-	}
+   public static List<NodeManager> getAssetTypes(Cloud cloud) {
+      List<NodeManager> result = new ArrayList<NodeManager>();
+      NodeManagerList nml = cloud.getNodeManagers();
+      Iterator<NodeManager> v = nml.iterator();
+      while (v.hasNext()) {
+         NodeManager nm = v.next();
+         if (AssetElementUtil.isAssetType(nm)) {
+            result.add(nm);
+         }
+      }
+      Collections.sort(result, new Comparator<NodeManager>() {
+         public int compare(NodeManager o1, NodeManager o2) {
+            return o1.getGUIName().compareTo(o2.getGUIName());
+         }
+      });
 
-	/**
-	 * Is ModeManager of the asset types
-	 * 
-	 * @param nm
-	 *            NodeManager to check
-	 * @return is content type
-	 */
-	public static boolean isAssetType(NodeManager nm) {
-		if (ASSETELEMENT.equals(nm.getName())) {
-			// assetelement manager is not a assettent type
-			return false;
-		}
-		try {
-			NodeManager nmTemp = nm.getParent();
-			while (!ASSETELEMENT.equals(nmTemp.getName())) {
-				nmTemp = nmTemp.getParent();
-			}
-			return true;
-		} catch (NotFoundException nfe) {
-			// Ran out of NodeManager parents
-		}
-		return false;
-	}
+      return result;
+   }
 
-	/**
-	 * Is type of asset type
-	 * 
-	 * @param type
-	 *            to check
-	 * @return is asset type
-	 */
-	public static boolean isAssetType(String type) {
-		NodeManager nm = CloudProviderFactory.getCloudProvider()
-				.getAnonymousCloud().getNodeManager(type);
-		return isAssetType(nm);
-	}
+   /**
+    * Is element from one of the asset types
+    * 
+    * @param element
+    *           node to check
+    * @return is asset type
+    */
+   public static boolean isAssetElement(Node element) {
+      NodeManager nm = element.getNodeManager();
+      return isAssetType(nm);
+   }
 
-	public static void addLifeCycleConstraint(NodeQuery query, long date) {
-		NodeManager assetManager = query.getCloud().getNodeManager(
-				ASSETELEMENT);
+   /**
+    * Is ModeManager of the asset types
+    * 
+    * @param nm
+    *           NodeManager to check
+    * @return is content type
+    */
+   public static boolean isAssetType(NodeManager nm) {
+      if (ASSETELEMENT.equals(nm.getName())) {
+         // assetelement manager is not a assettent type
+         return false;
+      }
+      try {
+         NodeManager nmTemp = nm.getParent();
+         while (!ASSETELEMENT.equals(nmTemp.getName())) {
+            nmTemp = nmTemp.getParent();
+         }
+         return true;
+      } catch (NotFoundException nfe) {
+         // Ran out of NodeManager parents
+      }
+      return false;
+   }
 
-		Constraint useExpire = getUseExpireConstraint(query, assetManager,
-				Boolean.FALSE);
-		Constraint expirydate = getExpireConstraint(query, date,
-				assetManager, true);
-		Constraint publishdate = getPublishConstraint(query, date,
-				assetManager, false);
+   /**
+    * Is type of asset type
+    * 
+    * @param type
+    *           to check
+    * @return is asset type
+    */
+   public static boolean isAssetType(String type) {
+      NodeManager nm = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNodeManager(type);
+      return isAssetType(nm);
+   }
 
-		Constraint lifecycleComposite = query.createConstraint(expirydate,
-				CompositeConstraint.LOGICAL_AND, publishdate);
+   public static void addLifeCycleConstraint(NodeQuery query, long date) {
+      NodeManager assetManager = query.getCloud().getNodeManager(ASSETELEMENT);
 
-		Constraint composite = query.createConstraint(useExpire,
-				CompositeConstraint.LOGICAL_OR, lifecycleComposite);
-		SearchUtil.addConstraint(query, composite);
-	}
+      Constraint useExpire = getUseExpireConstraint(query, assetManager, Boolean.FALSE);
+      Constraint expirydate = getExpireConstraint(query, date, assetManager, true);
+      Constraint publishdate = getPublishConstraint(query, date, assetManager, false);
 
-	public static void addLifeCycleInverseConstraint(NodeQuery query, long date) {
-		NodeManager assetManager = query.getCloud().getNodeManager(
-				ASSETELEMENT);
+      Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_AND, publishdate);
 
-		Constraint useExpire = getUseExpireConstraint(query, assetManager,
-				Boolean.TRUE);
-		Constraint expirydate = getExpireConstraint(query, date,
-				assetManager, false);
-		Constraint publishdate = getPublishConstraint(query, date,
-				assetManager, true);
+      Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_OR, lifecycleComposite);
+      SearchUtil.addConstraint(query, composite);
+   }
 
-		Constraint lifecycleComposite = query.createConstraint(expirydate,
-				CompositeConstraint.LOGICAL_OR, publishdate);
+   public static void addLifeCycleInverseConstraint(NodeQuery query, long date) {
+      NodeManager assetManager = query.getCloud().getNodeManager(ASSETELEMENT);
 
-		Constraint composite = query.createConstraint(useExpire,
-				CompositeConstraint.LOGICAL_AND, lifecycleComposite);
-		SearchUtil.addConstraint(query, composite);
-	}
+      Constraint useExpire = getUseExpireConstraint(query, assetManager, Boolean.TRUE);
+      Constraint expirydate = getExpireConstraint(query, date, assetManager, false);
+      Constraint publishdate = getPublishConstraint(query, date, assetManager, true);
 
-	public static Constraint getUseExpireConstraint(NodeQuery query,
-			NodeManager assetManager, Boolean value) {
-		Field useExpireField = assetManager.getField(USE_EXPIRY_FIELD);
-		Constraint useExpire = query.createConstraint(query
-				.getStepField(useExpireField), FieldCompareConstraint.EQUAL,
-				value);
-		return useExpire;
-	}
+      Constraint lifecycleComposite = query.createConstraint(expirydate, CompositeConstraint.LOGICAL_OR, publishdate);
 
-	public static Constraint getExpireConstraint(NodeQuery query, long date,
-			NodeManager assetManager, boolean greater) {
-		int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL
-				: FieldCompareConstraint.LESS_EQUAL);
+      Constraint composite = query.createConstraint(useExpire, CompositeConstraint.LOGICAL_AND, lifecycleComposite);
+      SearchUtil.addConstraint(query, composite);
+   }
 
-		Field expireField = assetManager.getField(EXPIREDATE_FIELD);
-		Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(
-				date)
-				: Long.valueOf(date);
-		Constraint expirydate = query.createConstraint(query
-				.getStepField(expireField), operator, expireDateObj);
-		return expirydate;
-	}
+   public static Constraint getUseExpireConstraint(NodeQuery query, NodeManager assetManager, Boolean value) {
+      Field useExpireField = assetManager.getField(USE_EXPIRY_FIELD);
+      Constraint useExpire = query.createConstraint(query.getStepField(useExpireField), FieldCompareConstraint.EQUAL,
+            value);
+      return useExpire;
+   }
 
-	public static Constraint getPublishConstraint(NodeQuery query, long date,
-			NodeManager assetManager, boolean greater) {
-		int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL
-				: FieldCompareConstraint.LESS_EQUAL);
+   public static Constraint getExpireConstraint(NodeQuery query, long date, NodeManager assetManager, boolean greater) {
+      int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
-		Field publishField = assetManager.getField(PUBLISHDATE_FIELD);
-		Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(
-				date)
-				: Long.valueOf(date);
-		Constraint publishdate = query.createConstraint(query
-				.getStepField(publishField), operator, publishDateObj);
-		return publishdate;
-	}
+      Field expireField = assetManager.getField(EXPIREDATE_FIELD);
+      Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
+      Constraint expirydate = query.createConstraint(query.getStepField(expireField), operator, expireDateObj);
+      return expirydate;
+   }
 
-	public static void addArchiveConstraint(Node channel, NodeQuery query,
-			Long date, String archive) {
-		if (StringUtils.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
-			return;
-		}
-		NodeManager contentManager = channel.getCloud().getNodeManager(
-				ASSETELEMENT);
+   public static Constraint getPublishConstraint(NodeQuery query, long date, NodeManager assetManager, boolean greater) {
+      int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
-		Field archiveDateField = contentManager.getField(ARCHIVEDATE_FIELD);
-		Object archiveDateObj = (archiveDateField.getType() == Field.TYPE_DATETIME) ? new Date(
-				date)
-				: Long.valueOf(date);
+      Field publishField = assetManager.getField(PUBLISHDATE_FIELD);
+      Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
+      Constraint publishdate = query.createConstraint(query.getStepField(publishField), operator, publishDateObj);
+      return publishdate;
+   }
 
-		Constraint archivedate = null;
-		if ("old".equalsIgnoreCase(archive)) {
-			archivedate = query.createConstraint(query
-					.getStepField(archiveDateField),
-					FieldCompareConstraint.LESS_EQUAL, archiveDateObj);
-		} else {
-			// "new".equalsIgnoreCase(archive)
-			archivedate = query.createConstraint(query
-					.getStepField(archiveDateField),
-					FieldCompareConstraint.GREATER_EQUAL, archiveDateObj);
-		}
-		SearchUtil.addConstraint(query, archivedate);
-	}
-	
-	/**
-	 * Helper method to get all hidden asset types
-	 * 
-	 * @return List of hidden types
-	 */
-	public static List<String> getHiddenAssetTypes() {
-		String property = PropertiesUtil.getProperty(PROPERTY_HIDDEN_ASSET_TYPES);
-		if (property == null) {
-			return new ArrayList<String>();
-		}
+   public static void addArchiveConstraint(Node channel, NodeQuery query, Long date, String archive) {
+      if (StringUtils.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
+         return;
+      }
+      NodeManager contentManager = channel.getCloud().getNodeManager(ASSETELEMENT);
 
-		ArrayList<String> list = new ArrayList<String>();
-		String[] values = property.split(",");
-		for (String value : values) {
-			list.add(value);
-		}
-		return list;
-	}
-	
+      Field archiveDateField = contentManager.getField(ARCHIVEDATE_FIELD);
+      Object archiveDateObj = (archiveDateField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
+
+      Constraint archivedate = null;
+      if ("old".equalsIgnoreCase(archive)) {
+         archivedate = query.createConstraint(query.getStepField(archiveDateField), FieldCompareConstraint.LESS_EQUAL,
+               archiveDateObj);
+      } else {
+         // "new".equalsIgnoreCase(archive)
+         archivedate = query.createConstraint(query.getStepField(archiveDateField),
+               FieldCompareConstraint.GREATER_EQUAL, archiveDateObj);
+      }
+      SearchUtil.addConstraint(query, archivedate);
+   }
+
+   /**
+    * Helper method to get all hidden asset types
+    * 
+    * @return List of hidden types
+    */
+   public static List<String> getHiddenAssetTypes() {
+      String property = PropertiesUtil.getProperty(PROPERTY_HIDDEN_ASSET_TYPES);
+      if (property == null) {
+         return new ArrayList<String>();
+      }
+
+      ArrayList<String> list = new ArrayList<String>();
+      String[] values = property.split(",");
+      for (String value : values) {
+         list.add(value);
+      }
+      return list;
+   }
+
 }
