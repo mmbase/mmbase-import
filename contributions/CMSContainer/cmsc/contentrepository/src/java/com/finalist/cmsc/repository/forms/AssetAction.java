@@ -1,11 +1,9 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.repository.forms;
 
@@ -34,7 +32,7 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 public class AssetAction extends MMBaseAction {
-   
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -59,31 +57,32 @@ public class AssetAction extends MMBaseAction {
          orderby = null;
       }
       if (StringUtils.isEmpty(direction)) {
-    	 direction = null;
+         direction = null;
       }
 
       // Set the offset (used for paging).
       String offsetString = request.getParameter("offset");
       int offset = 0;
       if (offsetString != null && offsetString.matches("\\d+")) {
-    	  offset = Integer.parseInt(offsetString);
+         offset = Integer.parseInt(offsetString);
       }
-      
+
       // Set the maximum result size.
       String resultsPerPage = PropertiesUtil.getProperty(AssetSearchAction.REPOSITORY_SEARCH_RESULTS_PER_PAGE);
       int maxNumber = 25;
       if (resultsPerPage != null && resultsPerPage.matches("\\d+")) {
-    	  maxNumber = Integer.parseInt(resultsPerPage);
+         maxNumber = Integer.parseInt(resultsPerPage);
       }
       addToRequest(request, "resultsPerPage", Integer.toString(maxNumber));
-      
+
       if (StringUtils.isNotEmpty(parentchannel)) {
          Node channel = cloud.getNode(parentchannel);
-         NodeList assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false, offset*maxNumber, maxNumber, -1, -1, -1);
+         NodeList assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false,
+               offset * maxNumber, maxNumber, -1, -1, -1);
          NodeList created = RepositoryUtil.getCreatedAssets(channel);
          int assetCount = 0;
-         if(!created.isEmpty()){
-        	 assetCount = created.size();
+         if (!created.isEmpty()) {
+            assetCount = created.size();
          }
          addToRequest(request, "direction", direction);
          addToRequest(request, "orderby", orderby);
