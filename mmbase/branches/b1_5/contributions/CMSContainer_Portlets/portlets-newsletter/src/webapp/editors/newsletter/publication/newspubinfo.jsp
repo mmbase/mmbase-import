@@ -26,7 +26,7 @@
                   <fmt:message key="newspubform.description" />: <mm:field name="description"/><br/>
                   <fmt:message key="newspubform.subject" />: <mm:field name="subject"/><br/>
                   <fmt:message key="newspubform.intro" />: <mm:field name="intro"/><br/>
-                  <fmt:message key="newspubinfo.satatus" />
+                  <fmt:message key="newspubinfo.status" />
                   <mm:field name="status" write="false" id="status"/>
                   <c:if test="${status eq 'DELIVERED'}">
                      <fmt:message key="newspubinfo.hassend" />

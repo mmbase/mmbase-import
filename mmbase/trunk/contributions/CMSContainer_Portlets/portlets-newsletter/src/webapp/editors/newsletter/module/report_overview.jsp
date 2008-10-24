@@ -42,7 +42,7 @@
          </td>
          <td width="33%">
             <h1 style="font-size:14px; font-weight:normal; text-transform:uppercase; letter-spacing:2px; color:#418001;">
-               <fmt:message key="index.link.title.publicationstats"/>
+               <fmt:message key="index.link.title.editionstats"/>
             </h1>
          </td>
       </tr>
@@ -64,7 +64,7 @@
             <p>&nbsp;</p>
          </td>
          <td>
-            <p><a href="NewsletterPublicationAction.do"><fmt:message key="index.link.allpublication"/></a></p>
+            <p><a href="NewsletterPublicationAction.do"><fmt:message key="index.link.alleditions"/></a></p>
             <p><a href="module/NewsletterBounceAction.do?method=list"><fmt:message key="index.link.bouncedemail"/></a></p>
          </td>
       </tr>

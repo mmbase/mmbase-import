@@ -40,7 +40,7 @@
                <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"/></a>
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="15%">
-               <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletterpublication.edit'/>">
+               <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletteredition.edit'/>">
                   ${result.title}
                </a>
             </edit:ui-tcolumn>
