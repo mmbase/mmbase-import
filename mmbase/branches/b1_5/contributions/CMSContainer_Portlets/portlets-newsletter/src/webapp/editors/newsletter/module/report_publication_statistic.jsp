@@ -37,7 +37,7 @@
       <div class="body">
          <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/NewsletterPublicationStatisticSearch.do">
             <edit:ui-tcolumn title="" width="5%">
-               <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletterpublication.remove'/>"/></a>
+               <a href="../newsletter/NewsletterPublicationDelete.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.remove'/>"/></a>
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="15%">
                <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=newsletterstatistics" title="<fmt:message key='site.newsletteredition.edit'/>">
