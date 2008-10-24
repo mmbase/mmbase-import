@@ -7,11 +7,9 @@ import org.mmbase.bridge.util.Queries;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
-
 public class PagingUtils {
 
    private static ThreadLocal<PagingStatusHolder> pool = new ThreadLocal<PagingStatusHolder>();
-
 
    public static PagingStatusHolder getStatusHolder() {
       return pool.get();
@@ -32,17 +30,21 @@ public class PagingUtils {
 
       StringBuffer href = href(pagecontext, Integer.toString(pagenumber - 1));
 
-
       String link = "<a href=\"%s\" class=\"%s\">%s</a>";
 
       return String.format(link, href, style, pagenumber);
    }
 
    private static StringBuffer href(PageContext pagecontext, String pageNumber) {
+      String type = (String) pagecontext.findAttribute("type");
       String status = (String) pagecontext.findAttribute("status");
       String orderby = (String) pagecontext.findAttribute("orderby");
       String extraparams = (String) pagecontext.findAttribute("extraparams");
       StringBuffer href = new StringBuffer("?fun=paging");
+      if (StringUtils.isNotEmpty(type)) {
+         href.append("&type=" + type);
+      }
+
       if (StringUtils.isNotEmpty(status)) {
          href.append("&status=" + status);
       }
@@ -61,14 +63,14 @@ public class PagingUtils {
 
    public static String nextPage(PageContext pagecontext) {
       Long currentPage = (Long) pagecontext.findAttribute("currentPage");
-      //the offset value is 1 lesser than current page.
+      // the offset value is 1 lesser than current page.
       Long nextPage = currentPage;
       return href(pagecontext, nextPage.toString()).toString();
    }
 
    public static String previousPage(PageContext pagecontext) {
       Long currentPage = (Long) pagecontext.findAttribute("currentPage");
-      //the offset value is 1 lesser than current page.
+      // the offset value is 1 lesser than current page.
       Long nextPage = currentPage - 2;
       return href(pagecontext, nextPage.toString()).toString();
    }
@@ -91,15 +93,13 @@ public class PagingUtils {
       PagingStatusHolder holder = new PagingStatusHolder();
       pool.set(holder);
 
-
       String page = request.getParameter("page");
       String sort = request.getParameter("sortby");
       String dir = request.getParameter("dir");
 
       if (StringUtils.isNotBlank(page)) {
          holder.setPage(Integer.parseInt(page));
-      }
-      else {
+      } else {
          holder.setPage(0);
       }
 
@@ -112,7 +112,8 @@ public class PagingUtils {
       }
    }
 
-   public static PagingStatusHolder getStatusHolderInSorting(String column, String direction) {
+   public static PagingStatusHolder getStatusHolderInSorting(String column,
+         String direction) {
       PagingStatusHolder holder = getStatusHolder();
 
       if (null != holder) {
@@ -126,6 +127,7 @@ public class PagingUtils {
       PagingStatusHolder pagingHolder = getStatusHolder();
       query.setOffset(pagingHolder.getOffset());
       query.setMaxNumber(pagingHolder.getPageSize());
-      Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+      Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder
+            .getMMBaseDirection());
    }
 }
