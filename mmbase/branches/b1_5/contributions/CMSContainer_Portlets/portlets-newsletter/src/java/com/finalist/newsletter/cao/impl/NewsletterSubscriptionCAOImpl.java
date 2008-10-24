@@ -435,7 +435,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       return subscriptions;
    }
 
-   public int CountSubscription(int newsletterId) {
+   public int countSubscription(int newsletterId) {
       List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
       log.debug("Get subscriptions of newsletter:" + newsletterId + " and get " + records.size() + " records in all");
       int subscribers = 0;
