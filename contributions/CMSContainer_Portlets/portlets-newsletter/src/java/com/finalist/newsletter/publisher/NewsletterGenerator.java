@@ -4,8 +4,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.regex.Pattern;
-
 import javax.mail.MessagingException;
 
 import org.htmlparser.Parser;
