@@ -32,8 +32,8 @@ public class NewsletterGenerator {
          log.debug("Try to get content from URL:" + urlPath);
 
          URL url = new URL(urlPath);
-         if (!Pattern.matches("http://(\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*(\\ ?\\S*)?$",  urlPath)) {
-            errorInfo += "the path does not start with http:// ";
+         if (urlPath.indexOf("http") < 0) {
+            errorInfo += "the path does not start with http: ";
          }
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
