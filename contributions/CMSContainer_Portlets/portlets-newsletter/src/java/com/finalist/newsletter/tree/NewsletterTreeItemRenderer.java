@@ -110,12 +110,12 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                )
       );
       element.addOption(
-               renderer.createTreeOption("mail.png", "site.newsletterpublication.new.blank", "newsletter",
+            renderer.createTreeOption("mail.png", "site.newsletteredition.new.blank", "newsletter",
                         "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=false"
                )
       );
       element.addOption(
-               renderer.createTreeOption("mail.png", "site.newsletterpublication.new.withcontent", "newsletter",
+            renderer.createTreeOption("mail.png", "site.newsletteredition.new.withcontent", "newsletter",
                         "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=true"
                )
       );

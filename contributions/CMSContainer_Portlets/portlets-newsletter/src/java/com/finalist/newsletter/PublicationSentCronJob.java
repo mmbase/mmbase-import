@@ -3,13 +3,12 @@ package com.finalist.newsletter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.applications.crontab.AbstractCronJob;
-import org.mmbase.applications.crontab.CronJob;
 
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 
-public class PublicationSentCronJob extends AbstractCronJob implements CronJob {
+public class PublicationSentCronJob extends AbstractCronJob {
    private static Log log = LogFactory.getLog(PublicationSentCronJob.class);
 
 
