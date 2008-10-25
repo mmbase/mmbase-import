@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.10 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.11 2008-10-25 08:32:02 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -56,7 +56,7 @@ public interface UrlConverter {
      * path). <code>null</code> if not determinable.
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
-    String getUrl(String path,
+    Url getUrl(String path,
                   Map<String, Object> parameters,
                   Parameters frameworkParameters,
                   boolean escapeAmps) throws FrameworkException;
@@ -64,7 +64,7 @@ public interface UrlConverter {
     /**
      * @return An URL relative to the root of this web application (i.e. without a context  path). Never <code>null</code>
      */
-    String getProcessUrl(String path,
+    Url getProcessUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters,
                          boolean escapeAmps) throws FrameworkException;
@@ -82,9 +82,9 @@ public interface UrlConverter {
      *         determined (this would make it possible to 'chain' frameworks).
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
-    String getInternalUrl(String path,
-                          Map<String, Object> params,
-                          Parameters frameworkParameters) throws FrameworkException;
+    Url getInternalUrl(String path,
+                       Map<String, Object> params,
+                       Parameters frameworkParameters) throws FrameworkException;
 
 
 }
