@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.8 2008-10-22 17:47:03 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.9 2008-10-25 08:32:02 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -202,16 +202,18 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
 
 
-    public String getUrl(String path,
+    public Url getUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+        String u = getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+        return u == null ? Url.NOT : new Url(u);
     }
 
-    public String getProcessUrl(String path,
+    public Url getProcessUrl(String path,
                                 Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
+        String u = getUrl(path, parameters, frameworkParameters, escapeAmps, true);
+        return u == null ? Url.NOT : new Url(u);
     }
 
 
@@ -233,11 +235,12 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
 
 
-    public  final String getInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    public  final Url getInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         if (isFilteredMode(frameworkParameters)) {
-            return getFilteredInternalUrl(path, params, frameworkParameters);
+            String u = getFilteredInternalUrl(path, params, frameworkParameters);
+            return u == null ? Url.NOT : new Url(u);
         } else {
-            return null;
+            return Url.NOT;
         }
     }
 

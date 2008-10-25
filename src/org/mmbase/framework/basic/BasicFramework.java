@@ -21,7 +21,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.core.util.SystemProperties;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -34,13 +33,12 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.37 2008-10-21 16:18:20 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.38 2008-10-25 08:32:01 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
     private static final Logger log = Logging.getLoggerInstance(BasicFramework.class);
 
-    private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
     public static final String XSD = "basicframework.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/basicframework";
@@ -71,12 +69,12 @@ public class BasicFramework extends Framework {
     public String getUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        String link =  urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        Url link =  urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
         log.debug("got " + link + " from " + urlConverter);
-        if (link == null) {
-            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        if (link == Url.NOT) {
+            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps).getUrl();
         } else {
-            return link;
+            return link.getUrl();
         }
 
     }
@@ -87,11 +85,11 @@ public class BasicFramework extends Framework {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
         frameworkParameters.set(ACTION, state.getId());
-        String url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
-        if (url == null) {
-            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        Url url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        if (url == Url.NOT) {
+            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps).getUrl();
         } else {
-            return url;
+            return url.getUrl();
         }
     }
 
@@ -99,7 +97,7 @@ public class BasicFramework extends Framework {
         if (log.isDebugEnabled()) {
             log.debug("calling urlConverter " + urlConverter);
         }
-        return urlConverter.getInternalUrl(page, params, frameworkParameters);
+        return urlConverter.getInternalUrl(page, params, frameworkParameters).getUrl();
     }
 
     public String getName() {
