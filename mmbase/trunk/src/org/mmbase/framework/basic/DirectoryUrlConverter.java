@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.11 2008-10-25 08:58:47 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.12 2008-10-25 09:34:29 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -53,7 +53,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
                                                 Parameters frameworkParameters,  boolean action) throws FrameworkException {
         StringBuilder b = new StringBuilder(directory);
         getNiceDirectoryUrl(b, block, parameters, frameworkParameters, action);
-        return new Url(b.toString());
+        return new Url(this, b.toString());
     }
 
     protected abstract void getNiceDirectoryUrl(StringBuilder b, Block block,
@@ -76,7 +76,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         }
         if (path.size() < 2) {
             log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
-            return null;
+            return Url.NOT;
         }
         return getFilteredInternalDirectoryUrl(path.subList(2, path.size()), params, frameworkParameters);
     }

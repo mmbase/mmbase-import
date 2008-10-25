@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.20 2008-10-25 08:32:02 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.21 2008-10-25 09:34:28 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -203,20 +203,22 @@ public final class BasicUrlConverter implements UrlConverter {
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
 
+    public int QUALITY = Integer.MIN_VALUE + 1000;
+
     public Url getUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return new Url(getUrl(path, parameters, frameworkParameters, escapeAmps, false));
+        return new Url(this, getUrl(path, parameters, frameworkParameters, escapeAmps, false), QUALITY);
     }
     public Url getProcessUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return new Url(getUrl(path, parameters, frameworkParameters, escapeAmps, true));
+        return new Url(this, getUrl(path, parameters, frameworkParameters, escapeAmps, true), QUALITY);
     }
 
     public Url getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        return new Url(BasicUrlConverter.getUrl(page, params, request, false));
+        return new Url(this, BasicUrlConverter.getUrl(page, params, request, false),  QUALITY);
     }
 
     public boolean equals(Object o) {
