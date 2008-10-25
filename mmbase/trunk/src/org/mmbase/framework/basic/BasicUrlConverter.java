@@ -15,7 +15,6 @@ import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,13 +25,13 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.19 2008-10-20 16:45:11 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.20 2008-10-25 08:32:02 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
 
-    private static final CharTransformer PARAM_ESCAPER= new Url(Url.ESCAPE);
+    private static final CharTransformer PARAM_ESCAPER= new org.mmbase.util.transformers.Url(org.mmbase.util.transformers.Url.ESCAPE);
 
 
 
@@ -204,20 +203,20 @@ public final class BasicUrlConverter implements UrlConverter {
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
 
-    public String getUrl(String path,
+    public Url getUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+        return new Url(getUrl(path, parameters, frameworkParameters, escapeAmps, false));
     }
-    public String getProcessUrl(String path,
+    public Url getProcessUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
+        return new Url(getUrl(path, parameters, frameworkParameters, escapeAmps, true));
     }
 
-    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+    public Url getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        return BasicUrlConverter.getUrl(page, params, request, false);
+        return new Url(BasicUrlConverter.getUrl(page, params, request, false));
     }
 
     public boolean equals(Object o) {
