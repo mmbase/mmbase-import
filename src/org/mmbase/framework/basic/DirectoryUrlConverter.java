@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.10 2008-10-22 17:53:16 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.11 2008-10-25 08:58:47 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -48,12 +48,12 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
     }
 
 
-    @Override protected final String getNiceUrl(Block block,
+    @Override protected final Url getNiceUrl(Block block,
                                                 Parameters parameters,
                                                 Parameters frameworkParameters,  boolean action) throws FrameworkException {
         StringBuilder b = new StringBuilder(directory);
         getNiceDirectoryUrl(b, block, parameters, frameworkParameters, action);
-        return b.toString();
+        return new Url(b.toString());
     }
 
     protected abstract void getNiceDirectoryUrl(StringBuilder b, Block block,
@@ -69,7 +69,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
 
 
-    @Override final public String getFilteredInternalUrl(String pa, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    @Override final public Url getFilteredInternalUrl(String pa, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         List<String> path = new ArrayList<String>();
         for (String p: pa.split("/")) {
             path.add(p);
@@ -81,7 +81,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return getFilteredInternalDirectoryUrl(path.subList(2, path.size()), params, frameworkParameters);
     }
 
-    protected abstract String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException;
+    protected abstract Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException;
 
 
 
