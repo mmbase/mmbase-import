@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.12 2008-10-25 08:32:02 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.13 2008-10-25 09:34:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -97,45 +97,48 @@ public class ChainedUrlConverter implements UrlConverter {
         return false;
     }
 
+    protected Url getProposal(Url u, Parameters frameworkParameters) {
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+        UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
+        Class preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
+        Url b = u;
+        if (preferred != null && ! preferred.isInstance(u.getUrlConverter())) {
+            b = new Url(b, b.getQuality() - 10000);
+        }
+        if (current != null && u.getUrlConverter() != current) {
+            b = new Url(b, b.getQuality() - 10000);
+        }
+        return b;
+    }
+
     /**
      * The URL to be printed in a page
      */
     public Url getUrl(String path,
                          Map<String, Object> params,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-
-        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
+        Url result = Url.NOT;
         for (UrlConverter uc : uclist) {
-            if (preferred != null && ! preferred.isInstance(uc)) continue;
-            Url b = uc.getUrl(path, params, frameworkParameters, escapeAmps);
-            if (b != Url.NOT) {
-                UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
-                if (current != null && uc != current) {
-                    log.debug("Explicit block, but not currently rendering. That is done by other UrlConverter " + current);
-                    return Url.NOT;
-                } else {
-                    log.debug("No current urlconverter ");
-                }
-                return b;
+            Url proposal = getProposal(uc.getUrl(path, params, frameworkParameters, escapeAmps), frameworkParameters);
+            if (proposal.getQuality() > result.getQuality()) {
+                result = proposal;
             }
+
         }
-        return Url.NOT;
+        return result;
     }
 
     public Url getProcessUrl(String path,
                                 Map<String, Object> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-
-        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
+        Url result = Url.NOT;
         for (UrlConverter uc : uclist) {
-            if (preferred != null && ! preferred.isInstance(uc)) continue;
-            Url b = uc.getProcessUrl(path, params, frameworkParameters, escapeAmps);
-            if (b != Url.NOT) {
-                return b;
+            Url proposal = getProposal(uc.getProcessUrl(path, params, frameworkParameters, escapeAmps), frameworkParameters);
+            if (proposal.getQuality() > result.getQuality()) {
+                result = proposal;
             }
         }
-        return Url.NOT;
+        return result;
     }
 
 
@@ -145,18 +148,15 @@ public class ChainedUrlConverter implements UrlConverter {
     public Url getInternalUrl(String path,
                               Map<String, Object> params,
                               Parameters frameworkParameters) throws FrameworkException {
-        Class preferred = frameworkParameters.get(URLCONVERTER_PARAM);
+        Url result = Url.NOT;
         for (UrlConverter uc : uclist) {
-            if (preferred != null && ! preferred.isInstance(uc)) continue;
-            Url b = uc.getInternalUrl(path, params, frameworkParameters);
-            if (b != Url.NOT) {
-                log.debug("ChainedUrlConverter has: " + b);
-                HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-                request.setAttribute(URLCONVERTER, uc);
-                return b;
+            Url proposal = getProposal(uc.getInternalUrl(path, params, frameworkParameters), frameworkParameters);
+            if (proposal.getQuality() > result.getQuality()) {
+                result = proposal;
             }
+
         }
-        return Url.NOT;
+        return result;
     }
 
     public String toString() {
