@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.9 2008-10-25 08:32:02 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.10 2008-10-25 08:58:47 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -156,13 +156,13 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * because they will probably be about the same.
      *
      */
-    protected final String getUrl(String path,
+    protected final Url getUrl(String path,
                                   Map<String, Object> parameters,
                                   Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         Block block = getBlock(path, frameworkParameters);
         if (block != null) {
             Map<String, Object> map = new HashMap<String, Object>();
-            String niceUrl;
+            Url niceUrl;
             Parameters blockParameters = block.createParameters();
             {
                 blockParameters.setAutoCasting(true);
@@ -174,7 +174,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
             }
 
             HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
-            if (niceUrl.startsWith(request.getServletPath())) {
+            if (niceUrl.getUrl().startsWith(request.getServletPath())) {
                 log.debug("servlet path not changing, also conservering parameters");
                 // conserve other parameters which happen to be on the request
                 for (Object e : request.getParameterMap().entrySet()) {
@@ -192,11 +192,11 @@ public abstract class BlockUrlConverter implements UrlConverter {
             }
             map.putAll(params);
 
-            String u = BasicUrlConverter.getUrl(niceUrl, map, request, escapeAmps);
+            String u = BasicUrlConverter.getUrl(niceUrl.getUrl(), map, request, escapeAmps);
             log.debug("Returning actual url " + u);
-            return u;
+            return new Url(u, niceUrl.getQuality());
         } else {
-            return null;
+            return Url.NOT;
         }
     }
 
@@ -205,15 +205,13 @@ public abstract class BlockUrlConverter implements UrlConverter {
     public Url getUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        String u = getUrl(path, parameters, frameworkParameters, escapeAmps, false);
-        return u == null ? Url.NOT : new Url(u);
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
 
     public Url getProcessUrl(String path,
                                 Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        String u = getUrl(path, parameters, frameworkParameters, escapeAmps, true);
-        return u == null ? Url.NOT : new Url(u);
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
 
 
@@ -228,7 +226,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * to <code>null</code> which were represented in the returning String.
      * @param
      */
-    protected abstract String getNiceUrl(Block block,
+    protected abstract Url getNiceUrl(Block block,
                                          Parameters blockParameters,
                                          Parameters frameworkParameters,
                                          boolean action) throws FrameworkException;
@@ -237,8 +235,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
     public  final Url getInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         if (isFilteredMode(frameworkParameters)) {
-            String u = getFilteredInternalUrl(path, params, frameworkParameters);
-            return u == null ? Url.NOT : new Url(u);
+            return getFilteredInternalUrl(path, params, frameworkParameters);
         } else {
             return Url.NOT;
         }
@@ -249,7 +246,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * <code>null</code>. IOW it is certain that the current URL is 'nice' according to this URL
      * Converter.
     */
-    protected  abstract String getFilteredInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException;
+    protected  abstract Url getFilteredInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException;
 
 
 }

@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.mynews;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-import org.mmbase.util.transformers.*;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.Identifier;
 import org.mmbase.util.DynamicDate;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -18,6 +19,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.framework.*;
 import org.mmbase.framework.basic.DirectoryUrlConverter;
 import org.mmbase.framework.basic.BasicFramework;
+import org.mmbase.framework.basic.Url;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
@@ -34,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.24 2008-10-21 16:18:54 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.25 2008-10-25 08:58:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -104,7 +106,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     /**
      * Translates the result of {@link #getNiceUrl} back to an actual JSP which can render the block
      */
-    @Override public String getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    @Override public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() == 0) {
             result.append("&block=magazine");
@@ -160,7 +162,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
             result.append(n);
         }
-        return result.toString();
+        return new Url(result.toString());
     }
 
 }

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.16 2008-10-21 15:56:53 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.17 2008-10-25 08:58:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -85,10 +85,10 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) {
+    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) {
         if (path.size() == 0) {
             // nothing indicated after /mmbase/, don't know what to do, leaving unfiltered
-            return null;
+            return Url.NOT;
         }
 
         StringBuilder url = new StringBuilder(renderJsp);
@@ -109,7 +109,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
                 }
                 if (! categoryOk) {
                     log.debug("No such component clasification, ignoring this");
-                    return null;
+                    return Url.NOT;
                 }
             }
 
@@ -123,7 +123,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
             Component comp = ComponentRepository.getInstance().getComponent(path.get(1));
             if (comp == null) {
                 log.debug("No such component, ignoring this too");
-                return null;
+                return Url.NOT;
             }
             url.append("&component=").append(comp.getName());
 
@@ -135,7 +135,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
                 }
                 if (block == null) {
                     log.debug("No block " + path.get(2) + " in component " + comp);
-                    return null;
+                    return Url.NOT;
 
                 }
                 url.append("&block=").append(block.getName());
@@ -145,7 +145,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         if (log.isDebugEnabled()) {
             log.debug("internal URL " + url);
         }
-        return url.toString();
+        return new Url(url.toString());
     }
 
 }
