@@ -17,19 +17,27 @@ import org.mmbase.util.functions.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Url.java,v 1.2 2008-10-25 08:58:47 michiel Exp $
+ * @version $Id: Url.java,v 1.3 2008-10-25 09:34:29 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
 
 public class Url {
     private final String url;
+    private final UrlConverter urlConverter;
     private int quality = 0;
-    public Url(String url) {
+    public Url(UrlConverter uc, String url) {
         this.url = url;
+        this.urlConverter = uc;
     }
-    public Url(String url, int q) {
+    public Url(UrlConverter uc, String url, int q) {
         this.url = url;
+        this.quality = q;
+        this.urlConverter = uc;
+    }
+    public Url(Url u, int q) {
+        this.url = u.url;
+        this.urlConverter = u.urlConverter;
         this.quality = q;
     }
     public String getUrl() {
@@ -38,8 +46,11 @@ public class Url {
     public int getQuality() {
         return quality;
     }
+    public UrlConverter getUrlConverter() {
+        return urlConverter;
+    }
 
-    public static final Url NOT = new Url(null, Integer.MIN_VALUE);
+    public static final Url NOT = new Url(null, null, Integer.MIN_VALUE);
 
 
     public String toString() {

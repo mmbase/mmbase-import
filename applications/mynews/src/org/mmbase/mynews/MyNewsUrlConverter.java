@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.25 2008-10-25 08:58:59 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.26 2008-10-25 09:34:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -162,7 +162,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
             result.append(n);
         }
-        return new Url(result.toString());
+        return new Url(this, result.toString(), 50000);
     }
 
 }
