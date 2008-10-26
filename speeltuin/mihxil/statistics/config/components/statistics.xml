@@ -7,10 +7,11 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
   <class name="org.mmbase.framework.BasicComponent" />
+  <description xml:lang="en">This component contains functionality to calculate average values and such</description>
 
   <title xml:lang="nl">Statistiek</title>
   <title xml:lang="en">Statistics</title>
-  <description xml:lang="en">This component contains functionality to calculate average values and such</description>
+
 
 
   <block name="Statistics"
