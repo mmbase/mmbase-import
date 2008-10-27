@@ -18,7 +18,7 @@
 
   <!-- use the build.properties.default from mmbase to define where
   jars are located -->
-	<property file="${mmbase.source.dir}/build.properties.default"/>
+    <property file="${mmbase.source.dir}/build.properties.default"/>
 
   <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
@@ -77,7 +77,48 @@
     <antcall target="install.jar">
       <param name="name" value="mmbase-clustering" />
     </antcall>
+    <antcall target="vprowizards"/>
   </target>
+  
+  <target name="vprowizards">
+  <!--get the (latest) vpro-wizards jar from the local maven repository-->
+    <antcall target="install.jar" >
+      <param name="name" value="mmbase-vpro-wizards" />
+    </antcall>
+    <!--copy the required jars to the lib dir-->
+    <antcall target="get" >
+      <param name="file" value="org.springframework/jars/spring-mock-2.0-rc3.jar" />
+      <param name="destfile" value="spring-mock-2.0-rc3.jar" />
+    </antcall>
+    <antcall target="get" >
+      <param name="file" value="org.springframework/jars/spring-2.0-rc3.jar" />
+      <param name="destfile" value="spring-2.0-rc3.jar" />
+    </antcall>
+    <antcall target="get" >
+      <param name="file" value="org.springframework/jars/spring-webmvc-2.0-m2.jar" />
+      <param name="destfile" value="spring-webmvc-2.0-m2.jar" />
+    </antcall>
+    <antcall target="get" >
+      <param name="file" value="commons-lang/jars/commons-lang-2.3.jar" />
+      <param name="destfile" value="commons-lang-2.3.jar" />
+    </antcall>
+    <antcall target="get" >
+      <param name="file" value="commons-logging/jars/commons-logging-1.0.4.jar" />
+      <param name="destfile" value="commons-logging-1.0.4.jar" />
+    </antcall>
+    <antcall target="get" >
+      <param name="file" value="net.sourceforge.collections/jars/collections-generic-4.01.jar" />
+      <param name="destfile" value="collections-generic-4.01.jar" />
+    </antcall>
+    <copy file="${download.dir}/commons-lang-2.3.jar" todir="${lib}"/>
+    <copy file="${download.dir}/spring-mock-2.0-rc3.jar" todir="${lib}"/>
+    <copy file="${download.dir}/spring-2.0-rc3.jar" todir="${lib}"/>
+    <copy file="${download.dir}/spring-webmvc-2.0-m2.jar" todir="${lib}"/>
+    <copy file="${download.dir}/commons-logging-1.0.4.jar" todir="${lib}"/>
+    <copy file="${download.dir}/collections-generic-4.01.jar" todir="${lib}"/>
+  </target>  
+    
+  
 
   <target name="download" unless="no" depends="local.download">
     <echo message="downloading" />
@@ -101,6 +142,10 @@
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
         <fileset dir="${lib}">
+          <include name="mmbase-vpro-wizards*.jar" />
+          <include name="spring*.jar" />
+          <include name="commons-*.jar" />
+          <include name="servletapi*.jar" />
           <include name="junit*.jar"/>
           <include name="mmbase-${version}.jar"/>
           <include name="hsqldb-*.jar"/>
@@ -121,6 +166,16 @@
           <include name="mmbase-test.jar" />
         </fileset>
       </classpath>
+    <classpath id="run.classpath.vpro-wizards">
+        <path refid="run.classpath" />
+        <fileset dir="${lib}">
+          <include name="mmbase-vpro-wizards*.jar" />
+          <include name="spring*.jar" />
+          <include name="servletapi*.jar" />
+          <include name="commons-*.jar" />
+          <include name="collections-generic*.jar" />
+      </fileset>
+    </classpath>
       <classpath id="run.classpath.rmmci">
         <path refid="run.classpath"/>
         <fileset dir="${lib}">
@@ -169,7 +224,7 @@
     <echo level="debug" message="copying" />
 
     <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
-      <fileset dir="${tests.source.dir}/dbsq" >
+      <fileset dir="${tests.source.dir}/vpro-wizards">
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
@@ -244,6 +299,7 @@
       <src path="${tests.source.dir}/util"/>
       <src path="${tests.source.dir}/clustering"/>
       <src path="${tests.source.dir}/releasestrategy"/>
+      <src path="${tests.source.dir}/vpro-wizards" />
       <include name="**/*.java"/>
     </javac>
     <property name="compiled" value="yes" />
@@ -285,7 +341,18 @@ Build-compiler: ${build.compiler}
 
     <delete file="${tests.build.dir}/manifest.mf" />
   </target>
-
+  
+    <target name="run.vprowizards" depends="init,jar" description="VPRO MMBase wizards tests">
+        <antcall target="clean.database" inheritRefs="true" />
+        <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
+            <arg value="org.mmbase.applications.vprowizards.AllTests" />
+            <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+            <jvmarg value="-Duser.dir=${tests.work.dir}" />
+            <assertions>
+                <enable />
+            </assertions>
+        </java>
+    </target>
 
   <target name="run.typerel" depends="jar,init" description="Allowed Relations tests">
     <antcall target="clean.database" inheritRefs="true" />
