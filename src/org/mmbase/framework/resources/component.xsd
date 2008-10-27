@@ -22,6 +22,14 @@
       />
 
 
+
+  <xsd:simpleType name="Name" id="Name">
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="\i\c*"/>
+      <xsd:maxLength value="255" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:element name="component">
     <xsd:complexType>
       <xsd:sequence>
@@ -34,7 +42,7 @@
         <xsd:element ref="action"      minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="block"       minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:Name" />
+      <xsd:attribute name="name" type="Name" />
       <xsd:attribute name="version" type="xsd:float" default="0" />
       <xsd:attribute name="defaultblock" type="xsd:IDREF" />
     </xsd:complexType>
@@ -46,7 +54,7 @@
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="dt:datatype"     minOccurs="1" maxOccurs="1" />
       </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:Name" />
+      <xsd:attribute name="name" type="Name" />
     </xsd:complexType>
   </xsd:element>
 
@@ -56,7 +64,7 @@
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:Name" />
+      <xsd:attribute name="name" type="Name" />
       <xsd:attribute name="rank" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
@@ -89,7 +97,7 @@
           <xsd:complexType>
             <xsd:simpleContent>
               <xsd:extension base="xsd:string">
-                <xsd:attribute name="name" type="xsd:Name" use="required" />
+                <xsd:attribute name="name" type="Name" use="required" />
               </xsd:extension>
             </xsd:simpleContent>
           </xsd:complexType>
@@ -107,7 +115,7 @@
 
   <xsd:element name="dependency">
     <xsd:complexType>
-      <xsd:attribute name="component" use="required" type="xsd:Name" />
+      <xsd:attribute name="component" use="required" type="Name" />
       <xsd:attribute name="version" use="required" type="xsd:float" />
     </xsd:complexType>
   </xsd:element>
@@ -136,7 +144,7 @@
       <xsd:element ref="class" minOccurs="0" maxOccurs="1" />
       <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
         <xsd:complexType>
-          <xsd:attribute name="name" type="xsd:Name" use="optional" />
+          <xsd:attribute name="name" type="Name" use="optional" />
           <xsd:attribute name="regex" type="xsd:string" use="optional" />
           <xsd:attribute name="type" type="xsd:token" use="optional" default="java.lang.Object" />
           <xsd:attribute name="required" type="xsd:boolean" use="optional" default="false" />
