@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.9 2008-10-27 09:38:10 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.10 2008-10-27 10:14:45 michiel Exp $
 
  */
 
@@ -106,6 +106,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
     public void setIncludeUrl(String u) {
         includeUrl = u;
+        log.service("Will include " + includeUrl);
     }
 
 
@@ -292,7 +293,10 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 StringBuilder include = new StringBuilder();
                 if (req != null) {
                     log.debug("Including " + includeUrl);
-                    req.setAttribute("_node", emailNode);
+                    CharTransformer escaper = (CharTransformer) req.getAttribute("org.mmbase.bridge.jsp.taglib.escaper");
+                    req.setAttribute("_node", Casting.wrap(emailNode, escaper));
+                    req.setAttribute("fieldNode", Casting.wrap(node, escaper));
+                    req.setAttribute("signature", encryptedKey);
                     if (includeUrl != null && ! "".equals(includeUrl)) {
                         try {
                             PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
@@ -311,7 +315,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                             requestDispatcher.include(requestWrapper, response);
                             include.append(response.toString());
                         } catch (Exception e) {
-                            log.error(e);
+                            log.error(e.getMessage(), e);
                         }
                     }
 
