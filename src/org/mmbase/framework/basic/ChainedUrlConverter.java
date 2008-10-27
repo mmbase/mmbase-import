@@ -13,6 +13,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.bridge.*;
 import org.mmbase.framework.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.Parameter;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.14 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.15 2008-10-27 17:42:31 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -35,7 +36,19 @@ public class ChainedUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(ChainedUrlConverter.class);
 
 
-    public static Parameter<Class> URLCONVERTER_PARAM = new Parameter<Class>("urlconverter", Class.class);
+    public static Parameter<Class> URLCONVERTER_PARAM = new Parameter<Class>("urlconverter", new org.mmbase.datatypes.BasicDataType<Class>("class", Class.class) {
+            protected Class cast(Object value, Cloud cloud, Node node, Field field) throws org.mmbase.datatypes.CastException {
+                try {
+                    Object preCast = preCast(value, cloud, node, field);
+                    if (preCast == null) return null;
+                    Class cast = org.mmbase.util.Casting.toType(Class.class, cloud, preCast);
+                    return cast;
+                } catch (IllegalArgumentException iae) {
+                    log.info(iae.getMessage());
+                    return null;
+                }
+            }
+        });
 
     public static String URLCONVERTER = "org.mmbase.urlconverter";
     /**
