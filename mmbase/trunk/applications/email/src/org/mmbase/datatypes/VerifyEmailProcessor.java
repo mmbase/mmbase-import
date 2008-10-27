@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.10 2008-10-27 10:14:45 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.11 2008-10-27 11:04:39 michiel Exp $
 
  */
 
@@ -87,16 +87,38 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     }
 
     public void setTextBundle(String b) {
+        if ("".equals(b)) b = null;
         emailTextBundle = b;
-        ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle);
-        try {
-            InternetAddress ia  = InternetAddress.parse(emailTemplate.getString("from"))[0];
-            verificationReceivers.add(ia.getAddress());
-        } catch (Exception e) {
-            log.error(e);
+        String from = getResourceBundle(Locale.US).getString("from");
+        if (! "".equals(from)) {
+            try {
+                InternetAddress ia  = InternetAddress.parse(getResourceBundle(null).getString("from"))[0];
+                verificationReceivers.add(ia.getAddress());
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
+
     }
 
+
+    protected ResourceBundle getResourceBundle(Locale locale) {
+        if (emailTextBundle != null) {
+            return ResourceBundle.getBundle(emailTextBundle, locale);
+        } else {
+            return  new ListResourceBundle() {
+                protected Object[][] getContents() {
+                    return new Object[][] {
+                        {"body", "{2}"},
+                        {"subject", "{0}"},
+                        {"from", ""}
+                    };
+                }
+            };
+        }
+
+
+    }
     public void setSuccessProcessor(String p) {
         successProcessor = p;
     }
@@ -246,7 +268,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 // Send an email.
                 Locale locale = cloud.getLocale();
 
-                ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle, locale);
+                ResourceBundle emailTemplate = getResourceBundle(locale);
 
                 Module emailModule   = cloud.getCloudContext().getModule("sendmail");
 
@@ -287,7 +309,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
 
                 String from = emailTemplate.getString("from");
-                emailNode.setStringValue(fromField, from);
+                if ("".equals(from)) {
+                    emailNode.setStringValue(fromField, from);
+                }
 
 
                 StringBuilder include = new StringBuilder();
@@ -297,6 +321,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     req.setAttribute("_node", Casting.wrap(emailNode, escaper));
                     req.setAttribute("fieldNode", Casting.wrap(node, escaper));
                     req.setAttribute("signature", encryptedKey);
+                    req.setAttribute("url", u.toString());
                     if (includeUrl != null && ! "".equals(includeUrl)) {
                         try {
                             PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
@@ -320,6 +345,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     }
 
                 }
+                String bodyTemplate = emailTemplate.getString("body");
                 String bodyHtml = MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString());
 
                 String body = "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">\n" +
