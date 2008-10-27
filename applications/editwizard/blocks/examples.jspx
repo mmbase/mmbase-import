@@ -15,6 +15,7 @@
       <td colspan="3">
         <mm:link page="magazine">
           <mm:frameworkparam name="component" value="mynews" />
+          <mm:frameworkparam name="urlconverter" value="org.mmbase.mynews.MyNewsUrlConverter" />
           <p>Lots of these examples edit data from the <a href="${_}">My News example</a>.</p>
         </mm:link>
       </td>
