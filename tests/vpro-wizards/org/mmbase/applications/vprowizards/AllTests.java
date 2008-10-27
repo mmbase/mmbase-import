@@ -1,13 +1,16 @@
 package org.mmbase.applications.vprowizards;
 
-import java.util.*;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.mmbase.applications.vprowizards.spring.ErrorTest;
 import org.mmbase.applications.vprowizards.spring.WizardControllerActionTest;
-import org.mmbase.applications.vprowizards.spring.action.*;
+import org.mmbase.applications.vprowizards.spring.action.CreateNodeActionTest;
+import org.mmbase.applications.vprowizards.spring.action.CreateRelationActionTest;
+import org.mmbase.applications.vprowizards.spring.action.DeleteNodeActionTest;
+import org.mmbase.applications.vprowizards.spring.action.SortRelationActionTest;
+import org.mmbase.applications.vprowizards.spring.action.ToggleRelationActionTest;
+import org.mmbase.applications.vprowizards.spring.action.UpdateNodeActionTest;
 import org.mmbase.applications.vprowizards.spring.util.PathBuilderTest;
 import org.mmbase.tests.MMBaseTest;
 import org.mmbase.util.logging.Logger;

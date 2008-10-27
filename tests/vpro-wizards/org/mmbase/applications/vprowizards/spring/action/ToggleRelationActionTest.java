@@ -1,16 +1,11 @@
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.*;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.applications.vprowizards.spring.WizardController;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import junit.framework.TestCase;
 
 public class ToggleRelationActionTest extends AbstractRelationActionTest {
 	private static final Logger log = Logging.getLoggerInstance(ToggleRelationActionTest.class);

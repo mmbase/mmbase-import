@@ -6,7 +6,6 @@ import org.mmbase.applications.vprowizards.spring.WizardController;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
-import org.w3c.dom.Node;
 
 public class DeleteNodeActionTest extends AbstractActionTest{
 
