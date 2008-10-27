@@ -28,7 +28,7 @@
 <% if (role != null && SecurityUtil.isWriter(role)) { %>
 <ul class="shortcuts">
     <li class="new" style="text-decoration: none;"><fmt:message key="content.new"/>
-        <form action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
+        <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
             <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
@@ -91,6 +91,7 @@
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}"/>
 <c:set var="orderby" value="${param.orderby}" scope="page" />
+<c:set var="type" value="content" scope="page" />
 <%@ include file="../pages.jsp" %>
 
 <form action="contentMassDelete.do" name="contentForm">
