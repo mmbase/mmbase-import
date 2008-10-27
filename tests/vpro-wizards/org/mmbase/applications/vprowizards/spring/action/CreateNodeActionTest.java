@@ -1,19 +1,11 @@
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.*;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.mmbase.applications.vprowizards.spring.FieldError;
-import org.mmbase.applications.vprowizards.spring.GlobalError;
-import org.mmbase.applications.vprowizards.spring.ReferrerResolver;
-import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.WizardController;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.tests.MMBaseTest;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.mock.web.MockHttpServletRequest;

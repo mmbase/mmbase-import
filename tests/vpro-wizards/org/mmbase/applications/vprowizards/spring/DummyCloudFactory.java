@@ -35,6 +35,8 @@ public class DummyCloudFactory implements CloudFactory {
 
 	public Transaction createTransaction(HttpServletRequest request) {
 		return new Transaction() {
+		    
+		    public void shutdown(){}
 
 			public void cancel() {
 
