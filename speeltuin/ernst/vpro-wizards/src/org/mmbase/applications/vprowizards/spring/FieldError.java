@@ -19,6 +19,7 @@ import java.util.Locale;
 public class FieldError extends GlobalError {
 	private static final long serialVersionUID = 1L;
 	private String field;
+	public static final String MODEL_MAPPING_KEY="fieldErrors";
 
 	public FieldError(String field, String messageKey, Locale locale) {
 		super(messageKey, locale);

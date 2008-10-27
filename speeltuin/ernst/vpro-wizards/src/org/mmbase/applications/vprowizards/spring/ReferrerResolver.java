@@ -40,18 +40,19 @@ public class ReferrerResolver implements ModelAndViewResolver {
 
 		String callerPage;
 		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("idmap", result.getIdMap());
 		ModelAndView errorMandv = new ModelAndView(errorPage);
 		
 
 		List<GlobalError> globalErrors = result.getGlobalErrors();
 		if (result.hasGlobalErrors()) {
-		    errorMandv.addObject("globalErrors", globalErrors);
+		    errorMandv.addObject(GlobalError.MODEL_MAPPING_KEY, globalErrors);
 			log.debug("request has global errors, so the return page is: "+errorPage);
 			return errorMandv;
 		} 
 		
 		if (result.hasFieldErrors()) {
-			model.put("fielderrors", result.getFieldErrors());
+			model.put(FieldError.MODEL_MAPPING_KEY, result.getFieldErrors());
 			// Field errors are not displayed in the error page but in the referrer page (the form)
 		}
 
@@ -69,7 +70,7 @@ public class ReferrerResolver implements ModelAndViewResolver {
 			//this is an error for this view resolver
 			globalErrors.add(new GlobalError("error.no.referrer.header", result.getLocale()));
 			log.error("REFERRER NOT SET! This request's redirection wil fail.");
-            errorMandv.addObject("globalErrors", globalErrors);
+            errorMandv.addObject(GlobalError.MODEL_MAPPING_KEY, globalErrors);
 			return errorMandv;
 		}
 		// add the node number of the new object to the referer url.
