@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.57 2008-09-24 09:56:31 rico Exp $
+ * @version $Id: Users.java,v 1.58 2008-10-27 18:24:22 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -265,7 +265,7 @@ public class Users extends MMObjectBuilder {
         }
     }
     /**
-     * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
+     * Gets the usernode by userName (the 'identifier'). Or a securityException if not found.
      */
     public MMObjectNode getUser(String userName)  {
         if (userName == null ) return null;
