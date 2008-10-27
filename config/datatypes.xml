@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.71 2008-08-12 21:00:09 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.72 2008-10-27 17:58:55 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -264,7 +264,7 @@
       </description>
       <class name="org.mmbase.datatypes.ComponentNamesDataType" />
       <required value="true"/>
-      <maxLength value="1024"/>
+      <maxLength value="255"/>
     </specialization>
 
     <specialization id="nodemanagers">
@@ -526,6 +526,7 @@
         Durations are positive longs, which present a number of seconds. (for other units, we may have to introduce other datatypes).
       </description>
       <class name="org.mmbase.datatypes.processors.Duration$DataType" />
+      <required value="false" />
       <minInclusive value="0" />
       <!-- I have no idea how to do this -->
       <setprocessor type="string">
