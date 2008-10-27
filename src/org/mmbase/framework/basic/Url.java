@@ -15,27 +15,26 @@ import org.mmbase.util.functions.*;
 
 /**
  * An Url object is the result of {@link UrlConverter}s. It basicly bundles a String ({@link
- * #getUrl}) with a 'quality' of this string.  
+ * #getUrl}) with a 'quality' of this string.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Url.java,v 1.4 2008-10-27 17:16:34 michiel Exp $
+ * @version $Id: Url.java,v 1.5 2008-10-27 17:27:37 michiel Exp $
  * @since MMBase-1.9
- * @todo EXPERIMENTAL
  */
 
 public abstract class Url {
     private final UrlConverter urlConverter;
     private int quality = 0;
     public Url(UrlConverter uc) {
-        this.url = url;
         this.urlConverter = uc;
+        this.quality = uc.getDefaultQuality();
     }
     public Url(UrlConverter uc, int q) {
         this.quality = q;
         this.urlConverter = uc;
     }
     /**
-     * The actuall url as a String. 
+     * The actuall url as a String.
      */
     public abstract String getUrl();
 
@@ -48,15 +47,12 @@ public abstract class Url {
 
 
     public String toString() {
-        return url == null ? "NULL" : url;
+        String url = getUrl();
+        return url  == null ? "NULL" : url;
     }
     public static final Url NOT = new Url(null, Integer.MIN_VALUE) {
             public String getUrl() { return null; }
         };
 
-    public static Url createUrl(UrlConverter uc, final String url, int quality) {
-        return new Url(uc, quality) {
-            public String getUrl() { return url; }
-        };
-    }
+
 }
