@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.57 2008-09-18 10:41:24 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.58 2008-10-27 16:40:44 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -539,11 +539,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             });
 
 
-    }
-
-
-
-    {
         /**
          * @since MMBase-1.8
          */
