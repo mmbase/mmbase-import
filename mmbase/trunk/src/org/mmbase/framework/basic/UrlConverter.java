@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.11 2008-10-25 08:32:02 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.12 2008-10-27 17:27:37 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -42,6 +42,8 @@ public interface UrlConverter {
      * current URL is managed by <em>this</em> UrlConverter
      */
     boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException;
+
+    int getDefaultQuality();
 
     /**
      * See {@link org.mmbase.framework.Framework#getUrl(String, Map, Parameters, boolean)}.

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.21 2008-10-25 09:34:28 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.22 2008-10-27 17:27:37 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -119,6 +119,10 @@ public final class BasicUrlConverter implements UrlConverter {
         return true;
     }
 
+    public int getDefaultQuality() {
+        return Integer.MIN_VALUE + 1000;
+    }
+
     /**
      * The BasicUrlConverter is unable to explicitely define a block and hence returns  <code>null</code>.
      */
@@ -203,22 +207,21 @@ public final class BasicUrlConverter implements UrlConverter {
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
 
-    public int QUALITY = Integer.MIN_VALUE + 1000;
 
     public Url getUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return new Url(this, getUrl(path, parameters, frameworkParameters, escapeAmps, false), QUALITY);
+        return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, false));
     }
     public Url getProcessUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
-        return new Url(this, getUrl(path, parameters, frameworkParameters, escapeAmps, true), QUALITY);
+        return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, true));
     }
 
     public Url getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        return new Url(this, BasicUrlConverter.getUrl(page, params, request, false),  QUALITY);
+        return new BasicUrl(this, BasicUrlConverter.getUrl(page, params, request, false));
     }
 
     public boolean equals(Object o) {
