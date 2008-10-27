@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -24,24 +23,22 @@ import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 
-public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
+public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLetterStatisticCAO {
 
-   private Cloud cloud;
+
    private static Logger log = Logging.getLoggerInstance(NewsLetterStatisticCAOImpl.class.getName());
-
-   public void setCloud(Cloud cloud) {
-      this.cloud = cloud;
-   }
 
    public List<StatisticResult> getAllRecords() {
 
-      NodeQuery query = cloud.createNodeQuery();
-      Step step = query.addStep(cloud.getNodeManager("newsletterdailylog"));
+      NodeQuery query = getCloud().createNodeQuery();
+      Step step = query.addStep(getCloud().getNodeManager("newsletterdailylog"));
       query.setNodeStep(step);
       NodeList list = query.getList();
       StatisticUtil util = new StatisticUtil();
@@ -49,8 +46,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
    }
 
    public List<StatisticResult> getRecordsByNewsletter(int newsletter) {
-      NodeQuery query = cloud.createNodeQuery();
-      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       StepField field1 = query.addField(step1, manager.getField("newsletter"));
       query.addField(step1, manager.getField("subscribe"));
@@ -68,8 +65,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
    }
 
    public List<StatisticResult> getAllRecordsByPeriod(Date start, Date end) {
-      NodeQuery query = cloud.createNodeQuery();
-      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       query.addField(step1, manager.getField("subscribe"));
       query.addField(step1, manager.getField("post"));
@@ -144,8 +141,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       Date now = new Date();
       Date startDate = DateUtils.addHours(now, -23);
       Date endDate = DateUtils.addDays(now, 0);
-      NodeQuery query = cloud.createNodeQuery();
-      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
       Step step = query.addStep(manager);
       StepField field = query.addField(step, manager.getField("logdate"));
       StepField field1 = query.addField(step, manager.getField("post"));
@@ -186,8 +183,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
    }
 
    public List<StatisticResult> getRecordsByNewsletterAndPeriod(Date start, Date end, int newsletter) {
-      NodeQuery query = cloud.createNodeQuery();
-      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       query.addField(step1, manager.getField("subscribe"));
       query.addField(step1, manager.getField("post"));
@@ -221,8 +218,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
          logNode.setDateValue("logdate", new Date());
          logNode.commit();
       } else {
-         NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
-         // Node newsletter = cloud.getNode(newsletterId);
+         NodeManager logManager = getCloud().getNodeManager("newsletterdailylog");
+         // Node newsletter = getRemoteCloud().getNode(newsletterId);
          logNode = logManager.createNode();
          logNode.setIntValue("newsletter", newsletterId);
          logNode.setIntValue("post", 0);
@@ -255,8 +252,8 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       }
 
       boolean isLog = false;
-      NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
-      NodeQuery query = cloud.createNodeQuery();
+      NodeManager logNodeManager = getCloud().getNodeManager("newsletterdailylog");
+      NodeQuery query = getCloud().createNodeQuery();
       Step parameterStep = query.addStep(logNodeManager);
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
@@ -285,9 +282,9 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
    public Node getLogNode(int userId, int newsletterId) {
       log.info("-------------------logPubliction   -in process...getLogNode....:   ");
-      NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
+      NodeManager logNodeManager = getCloud().getNodeManager("newsletterdailylog");
       Node logNode = null;
-      NodeQuery query = cloud.createNodeQuery();
+      NodeQuery query = getCloud().createNodeQuery();
       Step parameterStep = query.addStep(logNodeManager);
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
@@ -312,7 +309,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
     */
    public int insertSumedLogs(List<StatisticResult> logsList) {
       int i = 0;
-      NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
+      NodeManager logManager = getCloud().getNodeManager("newsletterdailylog");
       Node logNode;
       Date now = new Date();
       Date start = DateUtils.addHours(now, -12);

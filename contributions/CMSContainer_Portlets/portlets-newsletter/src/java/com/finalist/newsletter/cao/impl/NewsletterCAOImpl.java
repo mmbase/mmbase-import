@@ -27,13 +27,13 @@ import com.finalist.newsletter.domain.Term;
 
 public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    private static Logger log = Logging.getLoggerInstance(NewsletterCAOImpl.class.getName());
-
+   
    public NewsletterCAOImpl() {
    }
 
    public List<Term> getALLTerm() {
-      NodeQuery query = cloud.createNodeQuery();
-      Step step = query.addStep(cloud.getNodeManager("term"));
+      NodeQuery query = getCloud().createNodeQuery();
+      Step step = query.addStep(getCloud().getNodeManager("term"));
       query.setNodeStep(step);
       NodeList list = query.getList();
       return MMBaseNodeMapper.convertList(list, Term.class);
@@ -42,8 +42,8 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value,
          boolean paging) {
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
-      NodeQuery query = cloud.createNodeQuery();
-      NodeManager nodeManager = cloud.getNodeManager("newsletter");
+      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager nodeManager = getCloud().getNodeManager("newsletter");
       Step step = query.addStep(nodeManager);
       query.setNodeStep(step);
       if (StringUtils.isNotBlank(property)) {
@@ -67,7 +67,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
 
    public int getNewsletterIdBySubscription(int id) {
       log.debug("Get newsletter by subsription " + id);
-      Node subscriptionNode = cloud.getNode(id);
+      Node subscriptionNode = getCloud().getNode(id);
       NodeList nodes = subscriptionNode.getRelatedNodes("newsletter");
 
       if (nodes.size() > 0) {
@@ -78,11 +78,11 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    }
 
    public Node getNewsletterNodeById(int newsletterId) {
-      return cloud.getNode(newsletterId);
+      return getCloud().getNode(newsletterId);
    }
 
    public Newsletter getNewsletterById(int id) {
-      Node newsletterNode = cloud.getNode(id);
+      Node newsletterNode = getCloud().getNode(id);
       Newsletter newsletter = convertFromNode(newsletterNode);
 
       NodeList terms = newsletterNode.getRelatedNodes("term");
@@ -107,10 +107,10 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    public List<Term> getNewsletterTermsByName(int newsletterId, String name, boolean paging) {
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
 
-      NodeManager termNodeManager = cloud.getNodeManager("term");
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
+      NodeManager termNodeManager = getCloud().getNodeManager("term");
+      NodeManager newsletterNodeManager = getCloud().getNodeManager("newsletter");
 
-      NodeQuery query = cloud.createNodeQuery();
+      NodeQuery query = getCloud().createNodeQuery();
       Step newsletterStep = query.addStep(newsletterNodeManager);
       query.setNodeStep(newsletterStep);
       Constraint idConstraint = SearchUtil.createEqualConstraint(query, newsletterNodeManager.getField("number"),
@@ -143,7 +143,7 @@ public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    }
 
    public void processBouncesOfPublication(String publicationId, String userId, String bounceContent) {
-      NodeManager bounceManager = cloud.getNodeManager("newsletterbounce");
+      NodeManager bounceManager = getCloud().getNodeManager("newsletterbounce");
       Node node = bounceManager.createNode();
       if (StringUtils.isNotEmpty(publicationId)) {
          node.setIntValue("newsletter", Integer.parseInt(publicationId));

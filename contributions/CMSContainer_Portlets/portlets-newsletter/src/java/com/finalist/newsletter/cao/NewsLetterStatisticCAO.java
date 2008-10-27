@@ -27,4 +27,6 @@ public interface NewsLetterStatisticCAO {
     * @return List which sumLogs about StatisticResult
     */
    public List<StatisticResult> getLogs();
+   
+   public void setLocal();
 }
