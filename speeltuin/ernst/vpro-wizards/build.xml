@@ -4,7 +4,7 @@
 	<property name="project.package" value="org/mmbase/applications/vpro-wizards" />
 	<property name="project.comment" value="The VPRO wizard toolkit for MMBase" />
 
-	<property name="project.jars.includes" value="spring.jar,spring-webmvc.jar,spring-test.jar,collections-generic*.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
+	<property name="project.jars.includes" value="spring.jar,spring-webmvc.jar,collections-generic*.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
 	<property name="project.jars.dir" location="build" />
 	<property name="java.source.version" value="1.5" />
 
@@ -20,18 +20,20 @@
 	</target>
 
 	<target name="compile" depends="vpro-wizards.jars,buildbase.compile" />
-	<target name="install.templates" depends="vpro-wizards.jars,buildbase.install.templates" />
 	
 	<!-- copy the web.xml fragment too-->
 	<target name="install" depends="buildbase.install" >
 		<copy tofile="${webapp.dir}/WEB-INF/vprowizards.web.xml" file="WEB-INF/web.fragment.xml" />
 	</target>
   
-  <target name="clean" depends="buildbase.clean">
-    <delete dir="${fckeditor.destination}"/>
-  </target>
-
-
+  <!-- copy thefck editors into the templates folder fragment too-->
+	<target name="install.templates" depends="vpro-wizards.jars,buildbase.install.templates" >
+    <copy todir="${fckeditor.destination}" preservelastmodified="true">
+      <fileset dir="${expand.dir}/fckeditor" />
+    </copy>
+		<copy file="ext/fckconfig.js" todir="${fckeditor.destination}"/>
+	</target>
+  
 	<!--copy all the resources to the classes dir, so they become part of the jar-->
 	<target name="copy.resources">
 		<copy todir="${project.build.dir}/classes">
@@ -78,10 +80,10 @@
     <antcall target="downloadzip">
 			<param name="sourcefile" value="${fckeditor.url}" />
 			<param name="destfile" value="${download.dir}/${fckeditor.file}" />
-			<param name="destdir" value="templates/system/javascript/" />
-			<param name="expandedfile" value="templates/system/javascript/CFKeditor" />
+			<param name="destdir" value="${expand.dir}" />
+			<param name="expandedfile" value="${expand.dir}/${fckeditor.file}" />
 		</antcall>
-    <copy file="ext/fckconfig.js" todir="${fckeditor.destination}"/>
+    
 
 		<!--commons lang-->
 		<echo message="download commons-lang" />
