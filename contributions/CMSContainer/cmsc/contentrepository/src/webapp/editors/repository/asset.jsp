@@ -30,7 +30,7 @@
 <% if (role != null && SecurityUtil.isWriter(role)) { %>
 <ul class="shortcuts">
     <li class="new" style="text-decoration: none;"><fmt:message key="asset.new"/>
-        <form action="../AssetInitAction.do" method="post" style="display:inline;text-decoration:none">
+        <form name="initForm" action="../AssetInitAction.do" method="post" style="display:inline;text-decoration:none">
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
             <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
@@ -60,6 +60,7 @@
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}"/>
 <c:set var="orderby" value="${param.orderby}" scope="page" />
+<c:set var="type" value="asset" scope="page" />
 <%@ include file="../pages.jsp" %>
 
 <form action="assetMassDelete.do" name="assetForm">
@@ -77,19 +78,19 @@
     <tr>
         <th><% if (role != null && SecurityUtil.isWriter(role)) { %>
         <c:if test="${fn:length(elements) >1}">
-        <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/>
+        <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'assetForm', 'chk_');" value="on"/>
         </c:if>
         <% } %>
         </th>
-        <th><a href="javascript:sortBy('asset', 'otype','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Asset', 'otype','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="asset.typecolumn"/></a></th>
-        <th><a href="javascript:sortBy('asset', 'title','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Asset', 'title','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="asset.titlecolumn"/></a></th>
-        <th><a href="javascript:sortBy('asset', 'creator','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Asset', 'creator','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="asset.authorcolumn"/></a></th>
-        <th><a href="javascript:sortBy('asset', 'lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Asset', 'lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="asset.lastmodifiedcolumn"/></a></th>
-        <th><a href="javascript:sortBy('asset', 'number','<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('Asset', 'number','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="asset.numbercolumn"/></a></th>
         <th></th>
     </tr>
