@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.51 2008-10-14 11:04:32 michiel Exp $
+ * @version $Id: SendMail.java,v 1.52 2008-10-27 12:20:10 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -44,7 +44,9 @@ public class SendMail extends AbstractSendMail {
     public static long emailSent = 0;
     public static long emailFailed = 0;
 
-    private Pattern onlyToPattern = Pattern.compile(".*");
+    private static final Pattern MATCH_ALL = Pattern.compile(".*");
+
+    private Pattern onlyToPattern = MATCH_ALL;
 
     public SendMail() {
         this(null);
@@ -208,10 +210,27 @@ public class SendMail extends AbstractSendMail {
         log.debug("Finished processing local mails");
     }
 
+    /**
+     * Like InternetAddress#parse but leaves out the addresses not matching 'onlyTo'.
+     */
+    protected InternetAddress[] parseOnly(String to) throws MessagingException {
+        List<InternetAddress> res = new ArrayList<InternetAddress>();
+        InternetAddress[] parsed = InternetAddress.parse(to);
+        for( InternetAddress a : parsed) {
+            if (onlyToPattern.matcher(a.getAddress()).matches()) {
+                res.add(a);
+            } else {
+                log.service("Skipping " + a + " because it does not match " + onlyToPattern);
+            }
+
+        }
+        return res.toArray(parsed);
+    }
+
 
     /**
      */
-    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws javax.mail.MessagingException {
+    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws MessagingException {
         if (log.isServiceEnabled()) {
             log.service("Sending (multipart) mail from " + from + " to " + to);
             if (log.isDebugEnabled()) {
@@ -219,10 +238,11 @@ public class SendMail extends AbstractSendMail {
             }
 
         }
-        if (onlyToPattern.matcher(to).matches())  {
+        InternetAddress[] onlyTo = parseOnly(to);
+        if (onlyTo.length > 0)  {
 
             try {
-                MimeMessage msg = constructMessage(from, to, headers);
+                MimeMessage msg = constructMessage(from, onlyTo, headers);
                 if (mmpart == null) throw new NullPointerException();
                 msg.setContent(mmpart);
 
@@ -369,24 +389,24 @@ public class SendMail extends AbstractSendMail {
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
-    protected MimeMessage constructMessage(String from, String to, Map<String, String> headers) throws MessagingException {
+    protected final MimeMessage constructMessage(String from, InternetAddress[] to, Map<String, String> headers) throws MessagingException {
         // construct a message
         MimeMessage msg = new MimeMessage(session);
         if (from != null && !from.equals("")) {
             msg.addFrom(InternetAddress.parse(from));
         }
 
-        msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        msg.addRecipients(Message.RecipientType.TO, to);
 
         String cc = headers.get("CC");
         if (cc != null) {
             log.info("Adding cc " + cc);
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+            msg.addRecipients(Message.RecipientType.CC, parseOnly(cc));
         }
         String bcc = headers.get("BCC");
         if (bcc != null) {
             log.info("Adding bcc " + cc);
-            msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
+            msg.addRecipients(Message.RecipientType.BCC, parseOnly(bcc));
         }
 
         String replyTo = headers.get("Reply-To");
@@ -414,26 +434,28 @@ public class SendMail extends AbstractSendMail {
     /**
      * Send mail with headers, withouth using any explicit nodes.
      */
-    public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
+    public boolean sendMail(String from, String to, String data, Map<String, String> headers)  {
         if (log.isServiceEnabled()) {
             log.service("Sending mail to " + to + " Headers " + headers + " " + session);
         }
-        if (onlyToPattern.matcher(to).matches()) {
-            try {
-                MimeMessage msg = constructMessage(from, to, headers);
+        try {
+
+            InternetAddress[] onlyTo = parseOnly(to);
+            if (onlyTo.length > 0) {
+                MimeMessage msg = constructMessage(from, onlyTo, headers);
                 msg.setText(data, mailEncoding);
                 Transport.send(msg);
                 log.debug("SendMail done.");
                 return true;
-            } catch (MessagingException e) {
-                log.error("SendMail failure: " + e.getClass() + " " + e.getMessage() + " from: " + from + " to: " + to + " " + (e.getCause() != null ? e.getCause() : ""));
-                if (log.isDebugEnabled()) {
-                    log.debug("because: ", new Exception());
-                }
+            } else {
+                log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
+                return true;
             }
-        } else {
-            log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
-            return true;
+        } catch (MessagingException e) {
+            log.error("SendMail failure: " + e.getClass() + " " + e.getMessage() + " from: " + from + " to: " + to + " " + (e.getCause() != null ? e.getCause() : ""));
+            if (log.isDebugEnabled()) {
+                log.debug("because: ", new Exception());
+            }
         }
         return false;
     }
@@ -484,14 +506,7 @@ public class SendMail extends AbstractSendMail {
             }
             msg.setHeader("X-mmbase-node", n.getNodeManager().getName() + "/" + n.getNumber());
             try {
-                InternetAddress[] toRecipients = InternetAddress.parse(to);
-                for (InternetAddress toRecipient : toRecipients) {
-                    if (onlyToPattern.matcher(toRecipient.getAddress()).matches()) {
-                        msg.addRecipient(Message.RecipientType.TO, toRecipient);
-                    } else {
-                        log.service("Not sending to " + toRecipient + " because it does not match " + onlyToPattern);
-                    }
-                }
+                msg.addRecipients(Message.RecipientType.TO, parseOnly(to));
             } catch (javax.mail.internet.AddressException ae) {
                 log.warn(ae);
                 errors.append("\nTo: " + to + ": " + ae.getMessage());
@@ -499,14 +514,7 @@ public class SendMail extends AbstractSendMail {
 
             if (cc != null) {
                 try {
-                    InternetAddress[] ccRecipients = InternetAddress.parse(cc);
-                    for (InternetAddress ccRecipient : ccRecipients) {
-                        if (onlyToPattern.matcher(ccRecipient.getAddress()).matches()) {
-                            msg.addRecipient(Message.RecipientType.CC, ccRecipient);
-                        } else {
-                            log.service("Not cc-sending to " + ccRecipient + " because it does not match " + onlyToPattern);
-                        }
-                    }
+                    msg.addRecipients(Message.RecipientType.CC, parseOnly(cc));
                 } catch (javax.mail.internet.AddressException ae) {
                     log.warn(ae);
                     errors.append("\nCc: " + cc  + " " + ae.getMessage());
@@ -515,14 +523,7 @@ public class SendMail extends AbstractSendMail {
 
             if (bcc != null) {
                 try {
-                    InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
-                    for (InternetAddress bccRecipient : bccRecipients) {
-                        if (onlyToPattern.matcher(bccRecipient.getAddress()).matches()) {
-                            msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
-                        } else {
-                            log.service("Not cc-sending to " + bccRecipient + " because it does not match " + onlyToPattern);
-                        }
-                    }
+                    msg.addRecipients(Message.RecipientType.BCC, parseOnly(bcc));
                 } catch (javax.mail.internet.AddressException ae) {
                     log.warn(ae);
                     errors.append("\nBcc: " + bcc + " " + ae.getMessage());
