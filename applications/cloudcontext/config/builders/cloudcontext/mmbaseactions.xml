@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
   name="mmbaseactions" maintainer="www.mmbase.org" version="0" extends="object">
   <class>org.mmbase.security.implementation.cloudcontext.builders.Actions</class>
   <names>
@@ -44,7 +44,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
   </fieldlist>
   <indexlist>
