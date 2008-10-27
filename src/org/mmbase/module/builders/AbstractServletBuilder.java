@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.42.2.4 2008-06-10 11:10:30 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42.2.5 2008-10-27 17:00:41 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -511,11 +511,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
             });
 
-    }
 
+        addFunction(new NodeFunction("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }, ReturnType.STRING) {
+                public Object getFunctionValue(Node node, Parameters a) {
+                    Function spFunction = node.getFunction("servletpath");
+                    Parameters p = spFunction.createParameters();
+                    p.setAll(a);
+                    return  node.getFunctionValue("servletpath", p).toString();
+                }
+            });
 
-
-    {
         /**
          * @since MMBase-1.8
          */
