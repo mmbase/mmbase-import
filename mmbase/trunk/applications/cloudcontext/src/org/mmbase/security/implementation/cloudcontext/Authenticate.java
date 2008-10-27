@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.24 2008-10-01 16:58:23 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.25 2008-10-27 18:24:22 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -172,12 +172,18 @@ public class Authenticate extends Authentication {
                 return user;
             } else {
                 if (userName != null) {
-                    node = users.getUser(userName);
-                    if (rank != null) {
+                    try {
+                        node = users.getUser(userName);
+                    } catch (SecurityException se) {
+                        log.service(se);
+                        return new LocalAdmin(userName, s, rank == null ? Rank.ADMIN : Rank.getRank(rank));
                     }
                 } else if (rank != null) {
                     node = users.getUserByRank(rank, userName);
                     log.debug("Class authentication to rank " + rank + " found node " + node);
+                    if (node == null) {
+                        return new LocalAdmin(rank, s, Rank.getRank(rank));
+                    }
                 }
             }
         } else {
@@ -258,14 +264,19 @@ public class Authenticate extends Authentication {
 
         private String userName;
         private long   l;
+        private Rank   r = Rank.ADMIN;
         LocalAdmin(String user, String app) {
             super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
+        LocalAdmin(String user, String app, Rank r) {
+            this(user, app);
+            this.r = r;
+        }
         public String getIdentifier() { return userName; }
         public String  getOwnerField() { return userName; }
-        public Rank getRank() throws SecurityException { return Rank.ADMIN; }
+        public Rank getRank() throws SecurityException { return r; }
         public boolean isValidNode() { return l == extraAdminsUniqueNumber; }
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             userName = in.readUTF();
