@@ -753,12 +753,12 @@ public final class RepositoryUtil {
         }
 
         if(extraParameters != null) {
-        	for(String key:extraParameters.keySet()) {
-        		Object value = extraParameters.get(key);
-        		Field field = query.getCloud().getNodeManager("contentelement").getField(key);
-                StepField basicStepField = query.getStepField(field);
-        		SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
-        	}
+           for(String key:extraParameters.keySet()) {
+              Object value = extraParameters.get(key);
+              Field field = query.getCloud().getNodeManager("contentelement").getField(key);
+              StepField basicStepField = query.getStepField(field);
+              SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
+           }
         }
 
         SearchUtil.addLimitConstraint(query, offset, maxNumber);
@@ -797,7 +797,7 @@ public final class RepositoryUtil {
         NodeQuery query;
         if (isContentChannel(channel)) {
             query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager,
-            		CREATIONREL, null, null, orderby, direction);
+                     CREATIONREL, null, null, orderby, direction, SOURCE);
         }
         else {
             NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
@@ -822,7 +822,7 @@ public final class RepositoryUtil {
             AssetElementUtil.addLifeCycleConstraint(query, date);
         }
         if (StringUtils.isNotEmpty(archive)) {
-        	AssetElementUtil.addArchiveConstraint(channel, query, date, archive);
+           AssetElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
 
         if(year != -1 || month != -1 || day != -1) {
@@ -843,12 +843,12 @@ public final class RepositoryUtil {
         }
 
         if(extraParameters != null) {
-        	for(String key:extraParameters.keySet()) {
-        		Object value = extraParameters.get(key);
-        		Field field = query.getCloud().getNodeManager("assetelement").getField(key);
-                StepField basicStepField = query.getStepField(field);
-        		SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
-        	}
+           for(String key:extraParameters.keySet()) {
+              Object value = extraParameters.get(key);
+              Field field = query.getCloud().getNodeManager("assetelement").getField(key);
+              StepField basicStepField = query.getStepField(field);
+              SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
+           }
         }
 
         SearchUtil.addLimitConstraint(query, offset, maxNumber);

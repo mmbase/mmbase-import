@@ -42,27 +42,27 @@ function move(direction, objectNumber, channel) {
 
    
 function sortBy(action, orderColumn, channel) {
-    var offset = document.forms[0].offset.value;
-    var oldOrderColumn = document.forms[0].order.value;
+    var offset = document.forms['initForm'].offset.value;
+    var oldOrderColumn = document.forms['initForm'].order.value;
     
     if (oldOrderColumn == orderColumn) {
        // order column is not changed so change direction
-       var oldDirection = document.forms[0].direction.value;
+       var oldDirection = document.forms['initForm'].direction.value;
        
        if (oldDirection == 'down') {
-          document.forms[0].direction.value = 'up';
+          document.forms['initForm'].direction.value = 'up';
        }
        else {
-          document.forms[0].direction.value = 'down';
+          document.forms['initForm'].direction.value = 'down';
        }
     }
     else {
-       document.forms[0].order.value = orderColumn;
-       document.forms[0].direction.value = 'down';
+       document.forms['initForm'].order.value = orderColumn;
+       document.forms['initForm'].direction.value = 'down';
     }
-    newDirection=document.forms[0].direction.value;
-    type=document.forms[0].order.value;
-    var url = action + '.do?orderby='+type+'&parentchannel=' + channel+'&direction='+newDirection+'&offset='+offset;
+    newDirection=document.forms['initForm'].direction.value;
+    type=document.forms['initForm'].order.value;
+    var url = action + '.do?' + 'type=' + action.toLowerCase() + '&orderby='+type+'&parentchannel=' + channel+'&direction='+newDirection+'&offset='+offset;
     
     document.location = url;
     
