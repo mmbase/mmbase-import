@@ -13,6 +13,8 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
 
+import com.finalist.cmsc.services.publish.Publish;
+
 /**
  * term util class.
  *
@@ -50,6 +52,7 @@ public abstract class NewsletterTermUtil {
       Node termNode = termNodeManager.createNode();
       termNode.setStringValue("name", name);
       termNode.commit();
+      Publish.publish(termNode);
    }
 
    /**
@@ -77,6 +80,7 @@ public abstract class NewsletterTermUtil {
       Node termNode = getTermNodeById(termNumber);
       termNode.setStringValue("name", name);
       termNode.commit();
+      Publish.publish(termNode);
    }
 
    /**

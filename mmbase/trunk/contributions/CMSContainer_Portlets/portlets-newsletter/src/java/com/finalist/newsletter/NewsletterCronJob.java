@@ -237,7 +237,7 @@ public class NewsletterCronJob extends AbstractCronJob implements CronJob {
             log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
             //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
             Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
-            if(ServerUtil.isStaging()) {
+            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
                Publish.publish(publicationNode);
             }
          }

@@ -1,16 +1,30 @@
 package com.finalist.newsletter.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.FieldValueConstraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
 
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.ContentElement;
@@ -34,6 +48,7 @@ public abstract class NewsletterUtil {
    public static final String THEMETYPE_NEWSLETTERPUBLICATION = "newsletterpublicationtheme";
 
    public static int countNewsletters() {
+
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeList newsletterList = SearchUtil.findNodeList(cloud, "newsletter");
       if (newsletterList != null) {
