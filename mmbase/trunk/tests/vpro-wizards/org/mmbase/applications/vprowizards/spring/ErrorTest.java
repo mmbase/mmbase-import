@@ -1,6 +1,6 @@
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.*;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 

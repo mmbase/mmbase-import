@@ -1,6 +1,8 @@
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
