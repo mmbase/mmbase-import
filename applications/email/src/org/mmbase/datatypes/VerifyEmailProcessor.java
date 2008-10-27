@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.8 2008-08-12 09:15:18 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.9 2008-10-27 09:38:10 michiel Exp $
 
  */
 
@@ -79,7 +79,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     private String emailTextBundle = "org.mmbase.datatypes.resources.verifyemailtemplate";
     private String successProcessor;
     private String url = "/mmbase/email/verify/";
-    private String includeUrl = "/core/mail.jsp";
+    private String includeUrl = null; //"/core/mail.jsp";
 
 
     public void setEmailField(String ef) {
@@ -261,7 +261,8 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
                 HttpServletRequest req = (HttpServletRequest) cloud.getProperty("request");
                 StringBuilder u = new StringBuilder();
-                StringBuffer include = new StringBuffer();
+
+
                 if (req != null) {
                     String scheme = req.getScheme();
                     u.append(scheme).append("://");
@@ -271,7 +272,27 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                              (port == 443 && "https".equals(scheme))
                              ? "" : ":" + port);
                     u.append(req.getContextPath());
-                    log.info("Including " + includeUrl);
+
+
+                }
+                u.append(url);
+                String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
+                u.append(sep);
+                u.append("signature=" + encryptedKey);
+
+                emailNode.setStringValue(toField, email);
+
+                emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
+
+
+                String from = emailTemplate.getString("from");
+                emailNode.setStringValue(fromField, from);
+
+
+                StringBuilder include = new StringBuilder();
+                if (req != null) {
+                    log.debug("Including " + includeUrl);
+                    req.setAttribute("_node", emailNode);
                     if (includeUrl != null && ! "".equals(includeUrl)) {
                         try {
                             PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
@@ -295,12 +316,6 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     }
 
                 }
-                u.append(url);
-                String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
-                u.append(sep);
-                u.append("signature=" + encryptedKey);
-
-                emailNode.setStringValue(toField, email);
                 String bodyHtml = MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString());
 
                 String body = "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">\n" +
@@ -309,13 +324,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     "<multipart alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">\n" +
                     bodyHtml +
                     "\n</multipart>\n";
-
                 emailNode.setStringValue(bodyField, body);
-                emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
 
 
-                String from = emailTemplate.getString("from");
-                emailNode.setStringValue(fromField, from);
 
                 try {
                     emailNode.commit();
