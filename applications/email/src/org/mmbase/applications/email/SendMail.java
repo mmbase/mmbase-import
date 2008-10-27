@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.52 2008-10-27 12:20:10 michiel Exp $
+ * @version $Id: SendMail.java,v 1.53 2008-10-27 12:48:05 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -210,21 +210,27 @@ public class SendMail extends AbstractSendMail {
         log.debug("Finished processing local mails");
     }
 
+    private static final InternetAddress[] EMPTY = new InternetAddress[] {};
     /**
      * Like InternetAddress#parse but leaves out the addresses not matching 'onlyTo'.
      */
     protected InternetAddress[] parseOnly(String to) throws MessagingException {
-        List<InternetAddress> res = new ArrayList<InternetAddress>();
-        InternetAddress[] parsed = InternetAddress.parse(to);
-        for( InternetAddress a : parsed) {
-            if (onlyToPattern.matcher(a.getAddress()).matches()) {
-                res.add(a);
-            } else {
-                log.service("Skipping " + a + " because it does not match " + onlyToPattern);
-            }
+        if (to != null && ! "".equals(to)) {
+            List<InternetAddress> res = new ArrayList<InternetAddress>();
+            InternetAddress[] parsed = InternetAddress.parse(to);
+            for( InternetAddress a : parsed) {
+                if (onlyToPattern.matcher(a.getAddress()).matches()) {
+                    res.add(a);
+                } else {
+                    log.service("Skipping " + a + " because it does not match " + onlyToPattern);
+                }
 
+            }
+            return res.toArray(EMPTY);
+        } else {
+            return EMPTY;
         }
-        return res.toArray(parsed);
+
     }
 
 
@@ -400,12 +406,12 @@ public class SendMail extends AbstractSendMail {
 
         String cc = headers.get("CC");
         if (cc != null) {
-            log.info("Adding cc " + cc);
+            log.debug("Adding cc " + cc);
             msg.addRecipients(Message.RecipientType.CC, parseOnly(cc));
         }
         String bcc = headers.get("BCC");
         if (bcc != null) {
-            log.info("Adding bcc " + cc);
+            log.debug("Adding bcc " + bcc);
             msg.addRecipients(Message.RecipientType.BCC, parseOnly(bcc));
         }
 
