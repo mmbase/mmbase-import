@@ -31,4 +31,5 @@ public interface NewsletterPublicationCAO {
 
    public List<Publication> getPublications(String title, String subject, String description, String intro, boolean paging);
 
+   public void setLocal();
 }

@@ -126,4 +126,9 @@ public class NewsletterServiceImpl implements NewsletterService {
       newsletterCAO.processBouncesOfPublication(publicationId, userId, bounceContent);
    }
 
+   public void useLocalCloud() {
+      publicationCAO.setLocal();
+      subscriptionCAO.setLocal();
+      statisticCAO.setLocal(); 
+   }
 }

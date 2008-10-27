@@ -32,4 +32,6 @@ public interface StatisticService {
    public int pushSumedLogs(List<StatisticResult> listRecorder);
 
    public List<StatisticResult> getLogs();
+   
+   public void useLocalCloud();
 }

@@ -148,4 +148,9 @@ public class StatisticServiceImpl implements StatisticService {
 
       return statisticCAO.insertSumedLogs(listRecorder);
    }
+   
+   public void useLocalCloud() {
+      newsletterCAO.setLocal();
+      statisticCAO.setLocal();
+   }
 }

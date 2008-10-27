@@ -57,16 +57,15 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             Node layoutNode = PagesUtil.getLayout(newNewsletter);
             PagesUtil.linkPortlets(newNewsletter, layoutNode);
             request.getSession().removeAttribute("parentnewsletter");
-            if(ServerUtil.isStaging()) {
-               Publish.publish(newNewsletter);
-            }
-            // Create a default term for this newsletter
 
             // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
             newNewsletter.setStringValue("scheduledescription", NewsletterUtil.getScheduleMessageByExpression(
                      newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
+            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+               Publish.publish(newNewsletter);
+            }
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId="
                      + ewnodelastedited + "&fresh=fresh");

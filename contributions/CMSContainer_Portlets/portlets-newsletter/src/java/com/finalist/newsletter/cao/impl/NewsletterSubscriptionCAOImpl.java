@@ -51,14 +51,10 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       this.cloud = cloud;
    }
 
-   public void setCloud(Cloud cloud) {
-      this.cloud = cloud;
-   }
-
    public List<Node> querySubcriptionByUser(int userId) {
 
-      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
-      NodeQuery query = cloud.createNodeQuery();
+      NodeManager recordManager = getCloud().getNodeManager("subscriptionrecord");
+      NodeQuery query = getCloud().createNodeQuery();
       String subscriber = "subscriber";
 
       Step theStep = null;
@@ -73,7 +69,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public void addSubscriptionRecord(Subscription subscription, int userId) {
       String nodeType = "subscriptionrecord";
-      NodeManager subscriptionrecordNodeManager = cloud.getNodeManager(nodeType);
+      NodeManager subscriptionrecordNodeManager = getCloud().getNodeManager(nodeType);
       Node subscriptionrecordNode = subscriptionrecordNodeManager.createNode();
 
       subscriptionrecordNode.setIntValue("subscriber", userId);
@@ -83,8 +79,8 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
       // add Relation to newsletter
       int nodeNumber = subscription.getNewsletter().getId();
-      Node newsletternode = cloud.getNode(nodeNumber);
-      RelationManager insrel = cloud.getRelationManager("subscriptionrecord", "newsletter", "newslettered");
+      Node newsletternode = getCloud().getNode(nodeNumber);
+      RelationManager insrel = getCloud().getRelationManager("subscriptionrecord", "newsletter", "newslettered");
       subscriptionrecordNode.createRelation(newsletternode, insrel).commit();
       subscription.setId(subscriptionrecordNode.getNumber());
    }
@@ -93,7 +89,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       log.debug("Modify subscription status " + subscription.getId() + " to " + subscription.getStatus());
       String stauts = subscription.getStatus().toString();
 
-      Node record = cloud.getNode(subscription.getId());
+      Node record = getCloud().getNode(subscription.getId());
       record.setStringValue("status", stauts);
       record.commit();
 
@@ -105,14 +101,14 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public void pause(int subscriptionId) {
-      Node record = cloud.getNode(subscriptionId);
+      Node record = getCloud().getNode(subscriptionId);
       record.setStringValue("status", "PAUSED");
       record.commit();
    }
 
    public void modifySubscriptionFormat(Subscription subscription) {
       int recordId = subscription.getId();
-      Node record = cloud.getNode(recordId);
+      Node record = getCloud().getNode(recordId);
 
       String format = subscription.getMimeType();
       record.setStringValue("format", format);
@@ -121,16 +117,16 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public void addSubscriptionTerm(Subscription subscription, int termId) {
       int recordId = subscription.getId();
-      Node record = cloud.getNode(recordId);
-      Node term = cloud.getNode(termId);
+      Node record = getCloud().getNode(recordId);
+      Node term = getCloud().getNode(termId);
 
-      RelationManager insrel = cloud.getRelationManager("subscriptionrecord", "term", "termed");
+      RelationManager insrel = getCloud().getRelationManager("subscriptionrecord", "term", "termed");
       record.createRelation(term, insrel).commit();
    }
 
    public void removeSubscriptionTerm(Subscription subscription, int termId) {
       int recordId = subscription.getId();
-      Node record = cloud.getNode(recordId);
+      Node record = getCloud().getNode(recordId);
 
       List<Node> terms = record.getRelatedNodes("term");
       Iterator<Node> termsit = terms.iterator();
@@ -138,7 +134,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       for (int i = 0; i < terms.size(); i++) {
          Node term = termsit.next();
          if (termId != term.getNumber()) {
-            RelationManager insrel = cloud.getRelationManager("subscriptionrecord", "term", "termed");
+            RelationManager insrel = getCloud().getRelationManager("subscriptionrecord", "term", "termed");
             record.createRelation(term, insrel).commit();
          }
       }
@@ -148,7 +144,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       log.debug("getSubscriptionrecord that newsletterId=" + newsletterId);
 
       Node subscriptionNode = null;
-      List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
+      List<Node> records = getCloud().getNode(newsletterId).getRelatedNodes("subscriptionrecord");
       for (Node record : records) {
          if (record.getStringValue("subscriber").equals(Integer.toString(userId))) {
             subscriptionNode = record;
@@ -182,7 +178,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public Set<Term> getTerms(int subscriptionId) {
 
-      List<Node> termList = cloud.getNode(subscriptionId).getRelatedNodes("term");
+      List<Node> termList = getCloud().getNode(subscriptionId).getRelatedNodes("term");
       Set<Term> terms = new HashSet<Term>();
 
       for (Node termNode : termList) {
@@ -198,7 +194,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public List<Subscription> getSubscription(int newsletterId) {
 
-      List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
+      List<Node> records = getCloud().getNode(newsletterId).getRelatedNodes("subscriptionrecord");
       log.debug("Get subscriptions of newsletter:" + newsletterId + " and get " + records.size() + " records in all");
       List<Subscription> subscribers = new ArrayList<Subscription>();
       for (Node record : records) {
@@ -214,8 +210,8 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    public void createSubscription(int userId, int newsletterId) {
       log.debug("Create subscription user:" + userId + " newsletter:" + newsletterId);
 
-      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
-      Node newsletter = cloud.getNode(newsletterId);
+      NodeManager recordManager = getCloud().getNodeManager("subscriptionrecord");
+      Node newsletter = getCloud().getNode(newsletterId);
 
       Node recordNode = recordManager.createNode();
       recordNode.setStringValue("status", Subscription.STATUS.ACTIVE.toString());
@@ -223,13 +219,13 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       recordNode.setStringValue("format", "text/html");
       recordNode.commit();
 
-      RelationManager insrel = cloud.getRelationManager("subscriptionrecord", "newsletter", "newslettered");
+      RelationManager insrel = getCloud().getRelationManager("subscriptionrecord", "newsletter", "newslettered");
       recordNode.createRelation(newsletter, insrel).commit();
 
    }
 
    public Subscription getSubscriptionById(int id) {
-      Node subscriptionNode = cloud.getNode(id);
+      Node subscriptionNode = getCloud().getNode(id);
       Subscription subscription = convertFromNode(subscriptionNode);
       List<Node> newsletterNodes = subscriptionNode.getRelatedNodes("newsletter");
 
@@ -241,7 +237,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public void updateSubscription(Subscription subscription) {
-      Node node = cloud.getNode(subscription.getId());
+      Node node = getCloud().getNode(subscription.getId());
       node.setStringValue("status", subscription.getStatus().toString());
       node.setDateValue("pausetill", subscription.getPausedTill());
       node.commit();
@@ -250,7 +246,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public List<Subscription> getSubscriptionByUserIdAndStatus(int userId, STATUS status) {
 
-      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+      NodeManager recordManager = getCloud().getNodeManager("subscriptionrecord");
 
       Query query = recordManager.createQuery();
       if (null != status) {
@@ -270,8 +266,8 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
 
    public List<Node> getAllSubscriptions() {
 
-      NodeQuery query = cloud.createNodeQuery();
-      Step step = query.addStep(cloud.getNodeManager("subscriptionrecord"));
+      NodeQuery query = getCloud().createNodeQuery();
+      Step step = query.addStep(getCloud().getNodeManager("subscriptionrecord"));
       query.setNodeStep(step);
       List<Node> list = query.getList();
 
@@ -279,8 +275,8 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public Set<Node> getRecordByNewsletterAndName(int newsletterId, String termName) {
-      NodeManager manager = cloud.getNodeManager("term");
-      Node newsletterNode = cloud.getNode(newsletterId);
+      NodeManager manager = getCloud().getNodeManager("term");
+      Node newsletterNode = getCloud().getNode(newsletterId);
       NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "term", "posrel");
 
       if (StringUtils.isNotBlank(termName)) {
@@ -308,7 +304,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public Set<Node> getNewslettersByScriptionRecord(int authenticationId) {
-      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+      NodeManager recordManager = getCloud().getNodeManager("subscriptionrecord");
       Query query = recordManager.createQuery();
       SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), Integer.toString(authenticationId));
       List<Node> subscriptions = query.getList();
@@ -326,9 +322,9 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    public List<Newsletter> getNewslettersByScription(int subscriberId, String title, boolean paging) {
       PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
 
-      NodeManager subscriptionNodeManager = cloud.getNodeManager("subscriptionrecord");
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
-      NodeQuery query = cloud.createNodeQuery();
+      NodeManager subscriptionNodeManager = getCloud().getNodeManager("subscriptionrecord");
+      NodeManager newsletterNodeManager = getCloud().getNodeManager("newsletter");
+      NodeQuery query = getCloud().createNodeQuery();
       Step subscriptionStep = query.addStep(subscriptionNodeManager);
       query.setNodeStep(subscriptionStep);
       if (subscriberId > 0) {
@@ -353,7 +349,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public Set<Node> getTermsByScriptionRecord(int authenticationId) {
-      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+      NodeManager recordManager = getCloud().getNodeManager("subscriptionrecord");
       Query query = recordManager.createQuery();
       SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), Integer.toString(authenticationId));
       List<Node> subscriptions = query.getList();
@@ -381,13 +377,13 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    private Node getSubscriptionNodeById(int subscriptionId) {
-      return cloud.getNode(subscriptionId);
+      return getCloud().getNode(subscriptionId);
    }
 
    public Node getSubscriptionNode(int newsletterId, int userId) {
       Node subscriptionNode = null;
 
-      List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
+      List<Node> records = getCloud().getNode(newsletterId).getRelatedNodes("subscriptionrecord");
       for (Node record : records) {
          if (record.getStringValue("subscriber").equals(Integer.toString(userId))) {
             subscriptionNode = record;
@@ -404,11 +400,11 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
    }
 
    public List<Node> getSubscriptionsByTerms(int newsletterId, String terms) {
-      NodeManager termNodeManager = cloud.getNodeManager("term");
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
-      NodeManager subscriptionNodeManger = cloud.getNodeManager("subscriptionrecord");
+      NodeManager termNodeManager = getCloud().getNodeManager("term");
+      NodeManager newsletterNodeManager = getCloud().getNodeManager("newsletter");
+      NodeManager subscriptionNodeManger = getCloud().getNodeManager("subscriptionrecord");
 
-      NodeQuery query = cloud.createNodeQuery();
+      NodeQuery query = getCloud().createNodeQuery();
       List<Node> subscriptions;
       if (StringUtils.isNotBlank(terms)) {
          Step termStep = query.addStep(termNodeManager);
@@ -428,7 +424,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
          query.setNodeStep(subscriptionStep);
          subscriptions = query.getList();
       } else {
-         Node newsletterNode = cloud.getNode(newsletterId);
+         Node newsletterNode = getCloud().getNode(newsletterId);
          subscriptions = newsletterNode.getRelatedNodes(subscriptionNodeManger, "newslettered", "destination");
       }
 

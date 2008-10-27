@@ -75,4 +75,6 @@ public interface NewsletterSubscriptionServices {
    public String getNewsletterNameList(int authenticationId);
 
    public String getTermsNameList(int authenticationId);
+   
+   public void useLocalCloud();
 }
