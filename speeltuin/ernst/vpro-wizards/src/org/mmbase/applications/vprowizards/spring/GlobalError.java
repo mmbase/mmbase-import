@@ -25,6 +25,7 @@ public class GlobalError {
     private static ResourceBundle bundle = null;
     private String messageKey = "";
     private String[] properties = null;
+    public static final String MODEL_MAPPING_KEY="globalErrors";
 
     /**
      * @param messageKey

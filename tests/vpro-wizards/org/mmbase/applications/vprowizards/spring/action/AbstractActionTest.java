@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.applications.vprowizards.spring.CloudFactory;
+import org.mmbase.applications.vprowizards.spring.FieldError;
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.WizardController;
 import org.mmbase.bridge.Cloud;
@@ -33,7 +34,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 
 public abstract class AbstractActionTest extends BridgeTest  {
@@ -61,7 +61,7 @@ public abstract class AbstractActionTest extends BridgeTest  {
 		}
 		if (setReferrer) {
 			log.debug("setting referrer header");
-			mreqest.addHeader("Referrer", DUMMY_LOCAL_URL);
+			mreqest.addHeader("referer", DUMMY_LOCAL_URL);
 		}
 		return mreqest;
 	}
@@ -96,8 +96,9 @@ public abstract class AbstractActionTest extends BridgeTest  {
 	
 	protected List<GlobalError> getGlobalErrors(Map<String, Object> model) {
 		List<GlobalError> result = new ArrayList<GlobalError>();
-		if(model.get("globalerrors") != null){
-			for(Object o: (List<?>)model.get("globalerrors")){
+		log.debug(">>> should find global errors  with key "+GlobalError.MODEL_MAPPING_KEY+" in map: "+model);
+		if(model.get(GlobalError.MODEL_MAPPING_KEY) != null){
+			for(Object o: (List<?>)model.get(GlobalError.MODEL_MAPPING_KEY)){
 				result.add((GlobalError) o);
 			}
 		}
@@ -106,8 +107,8 @@ public abstract class AbstractActionTest extends BridgeTest  {
 	
 	protected List<FieldError> getFieldErrors(Map<String, Object> model) {
 		List<FieldError> result = new ArrayList<FieldError>();
-		if(model.get("fielderrors") != null){
-			for(Object o: (List<?>)model.get("fielderrors")){
+		if(model.get(FieldError.MODEL_MAPPING_KEY) != null){
+			for(Object o: (List<?>)model.get(FieldError.MODEL_MAPPING_KEY)){
 				result.add((FieldError) o);
 			}
 		}
