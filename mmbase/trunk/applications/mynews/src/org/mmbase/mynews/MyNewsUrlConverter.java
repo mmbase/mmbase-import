@@ -20,6 +20,7 @@ import org.mmbase.framework.*;
 import org.mmbase.framework.basic.DirectoryUrlConverter;
 import org.mmbase.framework.basic.BasicFramework;
 import org.mmbase.framework.basic.Url;
+import org.mmbase.framework.basic.BasicUrl;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.26 2008-10-25 09:34:39 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.27 2008-10-27 17:27:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -59,6 +60,9 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
         dateDepth = d;
     }
 
+    public int getDefaultQuality() {
+        return super.getDefaultQuality() + 10000;
+    }
 
     /**
      * Generates a nice url for 'mynews'. This basicly looks like
@@ -162,7 +166,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
 
             result.append(n);
         }
-        return new Url(this, result.toString(), 50000);
+        return new BasicUrl(this, result.toString(), 50000);
     }
 
 }
