@@ -44,5 +44,5 @@ fckeditor.name=FCKeditor
 fckeditor.version=2.6.3
 fckeditor.file=${fckeditor.name}_${fckeditor.version}.zip
 fckeditor.url=http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/${fckeditor.file}
-fckeditor.destination=templates/system/javascript/fckeditor
+fckeditor.destination=${templates.dir}/${project.target.templates.dir}/system/javascript/fckeditor
 
