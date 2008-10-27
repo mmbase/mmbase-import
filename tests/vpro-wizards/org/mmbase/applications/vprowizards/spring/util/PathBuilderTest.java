@@ -1,7 +1,5 @@
 package org.mmbase.applications.vprowizards.spring.util;
 
-import java.util.*;
-
 import junit.framework.TestCase;
 
 public class PathBuilderTest extends TestCase {

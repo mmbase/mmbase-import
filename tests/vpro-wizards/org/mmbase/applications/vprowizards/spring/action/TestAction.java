@@ -1,13 +1,10 @@
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
-import org.mmbase.bridge.Node;
 
 /**
  * This is a test action bean. It is created to test the databinding.
