@@ -18,7 +18,7 @@ import org.mmbase.util.functions.*;
  * #getUrl}) with a 'quality' of this string.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Url.java,v 1.5 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: Url.java,v 1.6 2008-10-28 17:40:26 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -48,10 +48,12 @@ public abstract class Url {
 
     public String toString() {
         String url = getUrl();
-        return url  == null ? "NULL" : url;
+        return getClass() + " " + getUrlConverter() + " " + (url  == null ? "NULL" : url) + ":" + getQuality();
     }
     public static final Url NOT = new Url(null, Integer.MIN_VALUE) {
-            public String getUrl() { return null; }
+            public String getUrl() {
+                return null;
+            }
         };
 
 
