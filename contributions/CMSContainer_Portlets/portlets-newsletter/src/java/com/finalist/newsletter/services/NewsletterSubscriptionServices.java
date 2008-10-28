@@ -1,13 +1,10 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.cmsc.services.community.person.Person;
-
 import java.util.List;
 import java.util.Set;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 
 public interface NewsletterSubscriptionServices {
@@ -76,5 +73,4 @@ public interface NewsletterSubscriptionServices {
 
    public String getTermsNameList(int authenticationId);
    
-   public void useLocalCloud();
 }

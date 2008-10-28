@@ -13,6 +13,7 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
 
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.publish.Publish;
 
 /**
@@ -52,7 +53,9 @@ public abstract class NewsletterTermUtil {
       Node termNode = termNodeManager.createNode();
       termNode.setStringValue("name", name);
       termNode.commit();
-      Publish.publish(termNode);
+      if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+         Publish.publish(termNode);
+      }
    }
 
    /**
@@ -80,7 +83,9 @@ public abstract class NewsletterTermUtil {
       Node termNode = getTermNodeById(termNumber);
       termNode.setStringValue("name", name);
       termNode.commit();
-      Publish.publish(termNode);
+      if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+         Publish.publish(termNode);
+      }
    }
 
    /**

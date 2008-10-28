@@ -28,5 +28,4 @@ public interface NewsLetterStatisticCAO {
     */
    public List<StatisticResult> getLogs();
    
-   public void setLocal();
 }

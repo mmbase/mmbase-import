@@ -400,10 +400,5 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       return subscriberIds;
    }
    
-   public void useLocalCloud() {
-      subscriptionCAO.setLocal();
-      subscriptionCAO.setLocal();
-      statisticCAO.setLocal();
-      newsletterService.useLocalCloud();
-   }
+
 }

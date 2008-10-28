@@ -55,8 +55,6 @@ public interface NewsletterSubscriptionCAO {
 
    public Set<Node> getTermsByScriptionRecord(int authenticationId);
 
-   public void setLocal();
-
    public int countSubscription(int id);
 
 }

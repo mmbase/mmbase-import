@@ -36,6 +36,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
+
       int userId = CommunityModuleAdapter.getCurrentUserId();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 

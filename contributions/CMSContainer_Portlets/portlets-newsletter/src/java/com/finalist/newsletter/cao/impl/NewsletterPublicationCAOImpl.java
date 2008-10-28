@@ -1,31 +1,9 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.Step;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
-import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
@@ -33,15 +11,33 @@ import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.util.POConvertUtils;
 
-public class NewsletterPublicationCAOImpl  extends AbstractCAO implements NewsletterPublicationCAO {
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import java.util.*;
+
+public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublicationCAOImpl.class.getName());
 
+   Cloud cloud;
+
+   public void setCloud(Cloud cloud) {
+      this.cloud = cloud;
+   }
+
    public List<Integer> getIntimePublicationIds() {
 
-      NodeQuery query = getCloud().createNodeQuery();
+      NodeQuery query = cloud.createNodeQuery();
 
-      NodeManager pubManager = getCloud().getNodeManager("newsletterpublication");
+      NodeManager pubManager = cloud.getNodeManager("newsletterpublication");
       Step theStep = query.addStep(pubManager);
       query.setNodeStep(theStep);
 
@@ -60,13 +56,13 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    }
 
    public void setStatus(int publicationId, Publication.STATUS status) {
-      Node publicationNode = getCloud().getNode(publicationId);
+      Node publicationNode = cloud.getNode(publicationId);
       publicationNode.setStringValue("status", status.toString());
       publicationNode.commit();
    }
 
    public Publication getPublication(int number) {
-      Node newsletterPublicationNode = getCloud().getNode(number);
+      Node newsletterPublicationNode = cloud.getNode(number);
 
       List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
       log.debug("Get " + relatedNewsletters.size() + " related newsletter");
@@ -88,19 +84,19 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    }
 
    public Node getPublicationNode(int number) {
-      return getCloud().getNode(number);
+      return cloud.getNode(number);
    }
 
    public String getPublicationURL(int publciationId) {
 
-      Node publicationNode = getCloud().getNode(publciationId);
+      Node publicationNode = cloud.getNode(publciationId);
       String hostUrl = NewsletterUtil.getServerURL();
       String newsletterPath = getNewsletterPath(publicationNode);
       return "".concat(hostUrl).concat(newsletterPath);
    }
 
    public int getNewsletterId(int publicationId) {
-      Node newsletterPublicationNode = getCloud().getNode(publicationId);
+      Node newsletterPublicationNode = cloud.getNode(publicationId);
       NodeList relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
 
       log.debug("Get " + relatedNewsletters.size() + " related newsletter");
@@ -109,15 +105,15 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    }
 
    public List<Publication> getAllPublications() {
-      NodeQuery query = getCloud().createNodeQuery();
-      Step step = query.addStep(getCloud().getNodeManager("newsletterpublication"));
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(cloud.getNodeManager("newsletterpublication"));
       query.setNodeStep(step);
       NodeList list = query.getList();
       return MMBaseNodeMapper.convertList(list, Publication.class);
    }
 
    public List<Publication> getPublicationsByNewsletter(int id, Publication.STATUS status) {
-      Node newsletterNode = getCloud().getNode(id);
+      Node newsletterNode = cloud.getNode(id);
       List<Node> publicationNodes = newsletterNode.getRelatedNodes("newsletterpublication");
 
       Set<Publication> publications = new HashSet<Publication>();
@@ -141,7 +137,7 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    }
 
    public Set<Term> getTermsByPublication(int publicationId) {
-      Node newsletterPublicationNode = getCloud().getNode(publicationId);
+      Node newsletterPublicationNode = cloud.getNode(publicationId);
       NodeList relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
       NodeList terms = relatedNewsletters.getNode(0).getRelatedNodes("term");
 
@@ -158,7 +154,7 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    public void renamePublicationTitle(int publicationId) {
 
       String now = DateFormatUtils.format(new Date(), "dd-MM-yyyy hh:mm");
-      Node publicationNode = getCloud().getNode(publicationId);
+      Node publicationNode = cloud.getNode(publicationId);
       String oldTitle = publicationNode.getStringValue("title");
       String newTile = oldTitle;
       String dateTime = "";
@@ -183,10 +179,10 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
    }
 
    public List<Publication> getPublicationsByNewsletterAndPeriod(
-            int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging) {
+         int newsletterId, String title, String subject, Date startDate, Date endDate, boolean paging) {
 
-      NodeManager manager = getCloud().getNodeManager("newsletterpublication");
-      Node newsletterNode = getCloud().getNode(newsletterId);
+      NodeManager manager = cloud.getNodeManager("newsletterpublication");
+      Node newsletterNode = cloud.getNode(newsletterId);
 
       NodeQuery nodeQuery = SearchUtil.createRelatedNodeListQuery(newsletterNode, "newsletterpublication", "related");
 
@@ -195,7 +191,8 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
 
       if (startDate != null) {
          SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), startDate.getTime(), endDate.getTime());
-      } else {
+      }
+      else {
          SearchUtil.addDatetimeConstraint(nodeQuery, manager.getField("creationdate"), Long.decode("1"), endDate.getTime());
       }
 
@@ -206,34 +203,34 @@ public class NewsletterPublicationCAOImpl  extends AbstractCAO implements Newsle
       return convertPublicationsToMap(nodeQuery.getList());
    }
 
-   public List<Publication> getPublications(String title, String subject,
-                                            String description, String intro, boolean paging) {
-      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
-      NodeManager publicationManager = getCloud().getNodeManager("newsletterpublication");
-      NodeQuery query = getCloud().createNodeQuery();
-      Step step = query.addStep(publicationManager);
-      query.setNodeStep(step);
-      if (StringUtils.isNotBlank(title)) {
-         SearchUtil.addLikeConstraint(query, publicationManager.getField("title"), title);
-      }
-      if (StringUtils.isNotBlank(subject)) {
-         SearchUtil.addLikeConstraint(query, publicationManager.getField("subject"), subject);
-      }
-      if (StringUtils.isNotBlank(description)) {
-         SearchUtil.addLikeConstraint(query, publicationManager.getField("description"), description);
-      }
-      if (StringUtils.isNotBlank(intro)) {
-         SearchUtil.addLikeConstraint(query, publicationManager.getField("intro"), intro);
-      }
-      if (paging) {
-         query.setMaxNumber(pagingHolder.getPageSize());
-         query.setOffset(pagingHolder.getOffset());
-      }
-      if (pagingHolder != null) {
-         Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
-      }
-      NodeList list = query.getList();
-      return MMBaseNodeMapper.convertList(list, Publication.class);
-   }
+	public List<Publication> getPublications(String title, String subject,
+			String description, String intro, boolean paging) {
+		PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+		NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
+		NodeQuery query = cloud.createNodeQuery();
+		Step step = query.addStep(publicationManager);
+		query.setNodeStep(step);
+		if (StringUtils.isNotBlank(title)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("title"), title);
+		}
+		if (StringUtils.isNotBlank(subject)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("subject"), subject);
+		}
+		if (StringUtils.isNotBlank(description)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("description"), description);
+		}
+		if (StringUtils.isNotBlank(intro)) {
+			SearchUtil.addLikeConstraint(query, publicationManager.getField("intro"), intro);
+		}
+		if (paging) {
+			query.setMaxNumber(pagingHolder.getPageSize());
+			query.setOffset(pagingHolder.getOffset());
+		}
+		if (pagingHolder != null) {		
+			Queries.addSortOrders(query, pagingHolder.getSort(), pagingHolder.getMMBaseDirection());
+		}
+		NodeList list = query.getList();
+		return MMBaseNodeMapper.convertList(list, Publication.class);
+	}
 
 }

@@ -22,5 +22,4 @@ public interface NewsletterCAO {
 
    public void processBouncesOfPublication(String publicationId, String userId, String bounceContent);
 
-   public void setLocal();
 }
