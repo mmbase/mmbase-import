@@ -453,7 +453,7 @@
                         </c:url>
                         <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" alt="<fmt:message key="searchform.icon.versioning.title" />" title="<fmt:message key="searchform.icon.versioning.title" />" /></a>
                      </mm:haspage>
-                     <cmsc:hasfeature name="savedformmodule">
+                     <cmsc:hasfeature name="responseform">
                         <c:set var="typeval">
                                <mm:nodeinfo type="type" />
                             </c:set>
