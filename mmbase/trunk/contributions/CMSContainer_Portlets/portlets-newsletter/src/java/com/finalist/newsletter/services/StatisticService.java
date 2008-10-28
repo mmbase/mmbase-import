@@ -33,5 +33,4 @@ public interface StatisticService {
 
    public List<StatisticResult> getLogs();
    
-   public void useLocalCloud();
 }

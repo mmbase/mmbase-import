@@ -17,5 +17,4 @@ public interface NewsletterStatisticService {
 
    public StatisticResult statisticSummeryPeriod(String start, String end) throws ServiceException;
    
-   public void useLocalCloud();
 }

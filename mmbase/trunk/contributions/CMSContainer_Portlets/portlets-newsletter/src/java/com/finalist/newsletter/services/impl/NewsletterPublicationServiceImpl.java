@@ -151,9 +151,4 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       return publicationCAO.getPublications(title, subject, description, intro, paging);
    }
 
-   public void useLocalCloud() {
-      publicationCAO.setLocal();
-      subscriptionCAO.setLocal();
-      statisticCAO.setLocal();
-   }
 }

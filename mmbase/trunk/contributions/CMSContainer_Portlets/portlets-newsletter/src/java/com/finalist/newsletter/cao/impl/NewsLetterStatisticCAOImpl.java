@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang.time.DateUtils;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -23,31 +23,33 @@ import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 
-public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLetterStatisticCAO {
+public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
-
+   private Cloud cloud;
    private static Logger log = Logging.getLoggerInstance(NewsLetterStatisticCAOImpl.class.getName());
 
-   public List<StatisticResult> getAllRecords() {
+   public void setCloud(Cloud cloud) {
+      this.cloud = cloud;
+   }
 
-      NodeQuery query = getCloud().createNodeQuery();
-      Step step = query.addStep(getCloud().getNodeManager("newsletterdailylog"));
+   public List < StatisticResult > getAllRecords() {
+
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(cloud.getNodeManager("newsletterdailylog"));
       query.setNodeStep(step);
       NodeList list = query.getList();
       StatisticUtil util = new StatisticUtil();
       return util.convertFromNodeList(list);
    }
 
-   public List<StatisticResult> getRecordsByNewsletter(int newsletter) {
-      NodeQuery query = getCloud().createNodeQuery();
-      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
+   public List < StatisticResult > getRecordsByNewsletter(int newsletter) {
+      NodeQuery query = cloud.createNodeQuery();
+      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       StepField field1 = query.addField(step1, manager.getField("newsletter"));
       query.addField(step1, manager.getField("subscribe"));
@@ -64,9 +66,9 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       return util.convertFromNodeList(list);
    }
 
-   public List<StatisticResult> getAllRecordsByPeriod(Date start, Date end) {
-      NodeQuery query = getCloud().createNodeQuery();
-      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
+   public List < StatisticResult > getAllRecordsByPeriod(Date start, Date end) {
+      NodeQuery query = cloud.createNodeQuery();
+      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       query.addField(step1, manager.getField("subscribe"));
       query.addField(step1, manager.getField("post"));
@@ -84,16 +86,16 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
    }
 
    /**
-    * @return List which sumLogs about StatisticResult
+    * @return List which sumLogs about StatisticResult 
     */
-   public List<StatisticResult> getLogs() {
+   public List < StatisticResult > getLogs() {
       NodeList nodelist = getNodelist();
       synchronized (this) {
-         List<StatisticResult> logsList = new ArrayList<StatisticResult>();
-         List<StatisticResult> resultList = getLogsByNode(nodelist);
+         List < StatisticResult > logsList = new ArrayList < StatisticResult >();
+         List < StatisticResult > resultList = getLogsByNode(nodelist);
          if (null != resultList) {
             // use newsletterId and userId as key to take the logic
-            Map<String, StatisticResult> sumedMap = new HashMap<String, StatisticResult>();
+            Map < String , StatisticResult > sumedMap = new HashMap < String , StatisticResult >();
             for (StatisticResult r : resultList) {
                String uniteKey = r.getNewsletterId() + "H" + r.getUserId();
                StatisticResult freq = (StatisticResult) sumedMap.get(uniteKey);
@@ -141,8 +143,8 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       Date now = new Date();
       Date startDate = DateUtils.addHours(now, -23);
       Date endDate = DateUtils.addDays(now, 0);
-      NodeQuery query = getCloud().createNodeQuery();
-      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
+      NodeQuery query = cloud.createNodeQuery();
+      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
       Step step = query.addStep(manager);
       StepField field = query.addField(step, manager.getField("logdate"));
       StepField field1 = query.addField(step, manager.getField("post"));
@@ -163,7 +165,7 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       return list;
    }
 
-   private List<StatisticResult> getLogsByNode(NodeList list) {
+   private List < StatisticResult > getLogsByNode(NodeList list) {
       StatisticUtil util = new StatisticUtil();
       return util.convertFromNodeList(list);
    }
@@ -182,9 +184,9 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
 
    }
 
-   public List<StatisticResult> getRecordsByNewsletterAndPeriod(Date start, Date end, int newsletter) {
-      NodeQuery query = getCloud().createNodeQuery();
-      NodeManager manager = getCloud().getNodeManager("newsletterdailylog");
+   public List < StatisticResult > getRecordsByNewsletterAndPeriod(Date start, Date end, int newsletter) {
+      NodeQuery query = cloud.createNodeQuery();
+      NodeManager manager = cloud.getNodeManager("newsletterdailylog");
       Step step1 = query.addStep(manager);
       query.addField(step1, manager.getField("subscribe"));
       query.addField(step1, manager.getField("post"));
@@ -200,7 +202,7 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       constraints.addChild(constraint2);
       query.setConstraint(constraints);
       query.setNodeStep(step1);
-      List<Node> list = query.getList();
+      List < Node > list = query.getList();
       StatisticUtil util = new StatisticUtil();
       return util.convertFromNodeList((NodeList) list);
    }
@@ -218,8 +220,8 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
          logNode.setDateValue("logdate", new Date());
          logNode.commit();
       } else {
-         NodeManager logManager = getCloud().getNodeManager("newsletterdailylog");
-         // Node newsletter = getRemoteCloud().getNode(newsletterId);
+         NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
+         // Node newsletter = cloud.getNode(newsletterId);
          logNode = logManager.createNode();
          logNode.setIntValue("newsletter", newsletterId);
          logNode.setIntValue("post", 0);
@@ -252,8 +254,8 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       }
 
       boolean isLog = false;
-      NodeManager logNodeManager = getCloud().getNodeManager("newsletterdailylog");
-      NodeQuery query = getCloud().createNodeQuery();
+      NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = cloud.createNodeQuery();
       Step parameterStep = query.addStep(logNodeManager);
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
@@ -269,7 +271,7 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
          for (int i = 0; i < logs.size(); i++) {
             Node log = logs.getNode(i);
             if (DateUtils.isSameDay(new Date(), log.getDateValue("logdate"))
-                     && (log.getIntValue("subscribe") > 0 || log.getIntValue("unsubscribe") > 0)) {
+                  && (log.getIntValue("subscribe") > 0 || log.getIntValue("unsubscribe") > 0)) {
                count++;
             }
          }
@@ -282,9 +284,9 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
 
    public Node getLogNode(int userId, int newsletterId) {
       log.info("-------------------logPubliction   -in process...getLogNode....:   ");
-      NodeManager logNodeManager = getCloud().getNodeManager("newsletterdailylog");
+      NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
       Node logNode = null;
-      NodeQuery query = getCloud().createNodeQuery();
+      NodeQuery query = cloud.createNodeQuery();
       Step parameterStep = query.addStep(logNodeManager);
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
@@ -292,7 +294,7 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
       SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), new Integer(newsletterId));
       SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"), new Integer(userId));
       FieldValueConstraint liConstraint = query.createConstraint((query.getStepField(logNodeManager
-               .getField("bounches"))), FieldCompareConstraint.GREATER, new Integer(0));
+            .getField("bounches"))), FieldCompareConstraint.GREATER, new Integer(0));
       SearchUtil.addConstraint(query, liConstraint);
       NodeList logs = query.getList();
       if (logs != null && logs.size() > 0) {
@@ -307,9 +309,9 @@ public class NewsLetterStatisticCAOImpl  extends AbstractCAO implements NewsLett
     * @param listRecorder which get from data
     * @return how many SumedLogs insert
     */
-   public int insertSumedLogs(List<StatisticResult> logsList) {
+   public int insertSumedLogs(List < StatisticResult > logsList) {
       int i = 0;
-      NodeManager logManager = getCloud().getNodeManager("newsletterdailylog");
+      NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
       Node logNode;
       Date now = new Date();
       Date start = DateUtils.addHours(now, -12);

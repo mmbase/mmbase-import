@@ -58,9 +58,7 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          Node newsletterNode = cloud.getNode(ewnodelastedited);
          NewsletterUtil.addScheduleForNewsletter(newsletterNode);
          addToRequest(request, "showpage", ewnodelastedited);
-         Cloud remoteCloud = Publish.getRemoteCloud(cloud);
 
-         
          if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
             Publish.publish(newsletterNode);
          }
