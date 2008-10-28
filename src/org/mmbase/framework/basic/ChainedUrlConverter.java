@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.15 2008-10-27 17:42:31 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.16 2008-10-28 17:40:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -120,10 +120,10 @@ public class ChainedUrlConverter implements UrlConverter {
         Class preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
         Url b = u;
         if (preferred != null && ! preferred.isInstance(u.getUrlConverter())) {
-            b = new BasicUrl(b, b.getQuality() - 10000);
+            b = new BasicUrl(b, Math.min(Integer.MIN_VALUE, b.getQuality() - 10000));
         }
         if (current != null && u.getUrlConverter() != current) {
-            b = new BasicUrl(b, b.getQuality() - 10000);
+            b = new BasicUrl(b, Math.min(Integer.MIN_VALUE, b.getQuality() - 10000));
         }
         return b;
     }
@@ -132,15 +132,20 @@ public class ChainedUrlConverter implements UrlConverter {
      * The URL to be printed in a page
      */
     public Url getUrl(String path,
-                         Map<String, Object> params,
-                         Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+                      Map<String, Object> params,
+                      Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         Url result = Url.NOT;
+        if (log.debugEnabled()) {
+            log.debug("Producing " + path + " " + params + " " + frameworkParameters);
+        }
         for (UrlConverter uc : uclist) {
             Url proposal = getProposal(uc.getUrl(path, params, frameworkParameters, escapeAmps), frameworkParameters);
             if (proposal.getQuality() > result.getQuality()) {
                 result = proposal;
             }
-
+        }
+        if (result == Url.NOT) {
+            log.warn("Could not produce URL for " + path + " " + params + " " + frameworkParameters);
         }
         return result;
     }
