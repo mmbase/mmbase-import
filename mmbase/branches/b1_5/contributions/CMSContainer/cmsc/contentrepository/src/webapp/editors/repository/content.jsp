@@ -197,6 +197,22 @@
        target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
         <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
     <% } %>
+
+    <cmsc:hasfeature name="responseform">
+        <c:set var="typeval">
+            <mm:nodeinfo type="type"/>
+        </c:set>
+        <c:if test="${typeval == 'responseform'}">
+            <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+                <mm:param name="nodenumber"><mm:field name="number"/></mm:param>
+                <mm:param name="initreturnurl" value="${returnurl}"/>
+            </mm:url>
+            <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png"
+                                                                title="<fmt:message key="content.icon.savedform.title" />"
+                                                                alt="<fmt:message key="content.icon.savedform.title" />"/></a>
+        </c:if>
+    </cmsc:hasfeature>
+    
     <% if (role != null && SecurityUtil.isEditor(role)) { %>
       <mm:first inverse="true">
 
@@ -213,20 +229,6 @@
 
     <% } %>
 
-    <cmsc:hasfeature name="savedformmodule">
-        <c:set var="typeval">
-            <mm:nodeinfo type="type"/>
-        </c:set>
-        <c:if test="${typeval == 'responseform'}">
-            <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
-                <mm:param name="nodenumber"><mm:field name="number"/></mm:param>
-                <mm:param name="initreturnurl" value="${returnurl}"/>
-            </mm:url>
-            <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png"
-                                                                title="<fmt:message key="content.icon.savedform.title" />"
-                                                                alt="<fmt:message key="content.icon.savedform.title" />"/></a>
-        </c:if>
-    </cmsc:hasfeature>
 </td>
 <td onMouseDown="objClick(this);">
     <mm:nodeinfo type="guitype"/>
