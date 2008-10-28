@@ -31,7 +31,13 @@
         <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
-            <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
+	        <mm:haspage page="/editors/versioning">
+	            <input type="hidden" name="returnurl" value="picktags.jsp"/>
+	            <c:set var="hasTags" value="true"/>
+	        </mm:haspage>
+	        <c:if test="${empty hasTags}">
+	            <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
+	        </c:if>
             <input type="hidden" name="order" value="${orderby}" />
             <input type="hidden" name="direction" value="${direction}"/>
             <input type="hidden" name="offset" value="${param.offset}"/>
@@ -154,6 +160,14 @@
     <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
                                                                  title="<fmt:message key="content.info" />"
                                                                  alt="<fmt:message key="content.info" />"/></a>
+
+	1<% if (role != null && SecurityUtil.isWriter(role)) { %>                                                                 
+	    2<mm:haspage page="/editors/picktags.jsp">
+	        3<a href="/editors/picktags.jsp?ewnodelastedited=<mm:field name="number"/>"><img
+	                src="../gfx/icons/tagcloud.png" title="tags" alt="tags"/></a>
+	    </mm:haspage>
+	<% } %>
+                                                                     
     <mm:haspage page="/editors/versioning">
         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
             <c:param name="nodenumber"><mm:field name="number"/></c:param>
@@ -171,6 +185,22 @@
        target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
         <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
     <% } %>
+
+    <cmsc:hasfeature name="responseform">
+        <c:set var="typeval">
+            <mm:nodeinfo type="type"/>
+        </c:set>
+        <c:if test="${typeval == 'responseform'}">
+            <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+                <mm:param name="nodenumber"><mm:field name="number"/></mm:param>
+                <mm:param name="initreturnurl" value="${returnurl}"/>
+            </mm:url>
+            <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png"
+                                                                title="<fmt:message key="content.icon.savedform.title" />"
+                                                                alt="<fmt:message key="content.icon.savedform.title" />"/></a>
+        </c:if>
+    </cmsc:hasfeature>
+    
     <% if (role != null && SecurityUtil.isEditor(role)) { %>
       <mm:first inverse="true">
 
@@ -187,20 +217,6 @@
 
     <% } %>
 
-    <cmsc:hasfeature name="savedformmodule">
-        <c:set var="typeval">
-            <mm:nodeinfo type="type"/>
-        </c:set>
-        <c:if test="${typeval == 'responseform'}">
-            <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
-                <mm:param name="nodenumber"><mm:field name="number"/></mm:param>
-                <mm:param name="initreturnurl" value="${returnurl}"/>
-            </mm:url>
-            <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png"
-                                                                title="<fmt:message key="content.icon.savedform.title" />"
-                                                                alt="<fmt:message key="content.icon.savedform.title" />"/></a>
-        </c:if>
-    </cmsc:hasfeature>
 </td>
 <td onMouseDown="objClick(this);">
     <mm:nodeinfo type="guitype"/>
