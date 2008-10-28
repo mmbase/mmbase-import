@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.12 2008-10-28 12:52:00 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.13 2008-10-28 15:20:55 michiel Exp $
 
  */
 
@@ -90,7 +90,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
         if ("".equals(b)) b = null;
         emailTextBundle = b;
         String from = getResourceBundle(Locale.US).getString("from");
-        if (! "".equals(from)) {
+        if (from != null && ! "".equals(from)) {
             try {
                 InternetAddress ia  = InternetAddress.parse(from)[0];
                 verificationReceivers.add(ia.getAddress());
