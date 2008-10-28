@@ -20,17 +20,19 @@
 
    <!-- Cloud Access Object -->
    <bean name="subscriptionCAO" class="com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl" lazy-init="true">
-
+      <property name="cloud" ref="cloud"/>
    </bean>
 
 
    <bean name="publicationCAO" class="com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl"
          lazy-init="true">
-
+      <property name="cloud" ref="cloud"/>
    </bean>
    <bean name="newsletterCAO" class="com.finalist.newsletter.cao.impl.NewsletterCAOImpl" lazy-init="true">
+      <property name="cloud" ref="cloud"/>
    </bean>
    <bean name="statisticCAO" class="com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl" lazy-init="true">
+      <property name="cloud" ref="cloud"/>
    </bean>
    <bean name="publisher" class="com.finalist.newsletter.publisher.NewsletterPublisher" lazy-init="true"/>
    <!-- Services -->

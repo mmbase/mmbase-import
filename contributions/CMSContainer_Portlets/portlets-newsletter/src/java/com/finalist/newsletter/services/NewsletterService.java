@@ -25,5 +25,4 @@ public interface NewsletterService {
 
    void processBouncesOfPublication(String publicationId, String userId);
 
-   public void useLocalCloud();
 }
