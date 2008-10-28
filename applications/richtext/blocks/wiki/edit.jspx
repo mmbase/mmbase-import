@@ -11,6 +11,7 @@
 
   <mm:import externid="n" required="true" />
   <mm:import externid="relationsClass" />
+
   <mm:cloud method="asis" jspvar="cloud">
 
 
@@ -22,7 +23,8 @@
 
     <mm:param name="org.mmbase.xml-mode" value="wiki" />
     <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
-    <mm:param name="org.mmbase.richtext.wiki.load_relations" value="false" />
+    <mm:param name="org.mmbase.richtext.wiki.load_relations" value="true" />
+    <mm:param name="org.mmbase.richtext.wiki.load_related"   value="false" />
     <mm:param name="org.mmbase.richtext.wiki.undecorateids"  value="true" />
     <mm:form id="transaction"  commitonclose="false">
 
