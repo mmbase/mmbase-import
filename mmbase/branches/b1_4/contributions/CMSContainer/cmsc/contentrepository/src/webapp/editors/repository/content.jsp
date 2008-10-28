@@ -173,20 +173,7 @@
                 src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />"
                 alt="<fmt:message key="content.icon.versioning.title" />"/></a>
     </mm:haspage>
-    <% if (role != null && SecurityUtil.isWriter(role)) { %>
-    <mm:last inverse="true">
-        <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
-                src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
-                alt="<fmt:message key="content.move.down" />"/></a>
-    </mm:last>
-    <mm:first inverse="true">
-        <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
-        <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
-                src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />"
-                alt="<fmt:message key="content.move.up" />"/></a>
-    </mm:first>
-    <% } %>
-    <cmsc:hasfeature name="savedformmodule">
+    <cmsc:hasfeature name="responseform">
         <c:set var="typeval">
             <mm:nodeinfo type="type"/>
         </c:set>
@@ -200,6 +187,19 @@
                                                                 alt="<fmt:message key="content.icon.savedform.title" />"/></a>
         </c:if>
     </cmsc:hasfeature>
+    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+    <mm:last inverse="true">
+        <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
+                src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />"
+                alt="<fmt:message key="content.move.down" />"/></a>
+    </mm:last>
+    <mm:first inverse="true">
+        <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
+        <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img
+                src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />"
+                alt="<fmt:message key="content.move.up" />"/></a>
+    </mm:first>
+    <% } %>
 </td>
 <td onMouseDown="objClick(this);">
     <mm:nodeinfo type="guitype"/>
