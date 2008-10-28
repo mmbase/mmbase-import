@@ -122,12 +122,14 @@ MMWiki.prototype.getSelectionStart = function(input) {
         return input.selectionStart;
     } else {
         input.focus();
-        var range = document.selection.createRange();
-        var drange = range.duplicate();
-        drange.moveToElementText(input);
-        drange.setEndPoint("EndToEnd", range);
-        input._currentPosition = drange.text.length - range.text.length;
-        return input._currentPosition;
+        if (document.selection) {
+            var range = document.selection.createRange();
+            var drange = range.duplicate();
+            drange.moveToElementText(input);
+            drange.setEndPoint("EndToEnd", range);
+            input._currentPosition = drange.text.length - range.text.length;
+            return input._currentPosition;
+        }
     }
 }
 
