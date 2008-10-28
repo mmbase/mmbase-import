@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.19 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.20 2008-10-28 17:40:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -43,7 +43,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
 
 
     public int getDefaultQuality() {
-        return super.getDefaultQuality() + 1000;
+        return Math.max(Integer.MAX_VALUE, super.getDefaultQuality() + 1000);
     }
 
     public void setRenderJsp(String j) {
