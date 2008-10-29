@@ -158,11 +158,17 @@
 		</attribute>
 		<attribute>
 			<name>width</name>
+         <description>
+            The preferred width of linked images (in pixels). This attribute is ignored when a custom template is provided.
+         </description>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>	
 		<attribute>
 			<name>height</name>
+         <description>
+            The preferred height of linked images (in pixels). This attribute is ignored when a custom template is provided.
+         </description>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>	
@@ -176,6 +182,14 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+      <attribute>
+         <name>template</name>
+         <description>
+            A template String representing the way linked images should be treated by the underlying converter application (e.g. ImageMagick).
+         </description>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
 	</tag>
 	<tag>
 		<description>This tag creates a list of related content elements.</description>
