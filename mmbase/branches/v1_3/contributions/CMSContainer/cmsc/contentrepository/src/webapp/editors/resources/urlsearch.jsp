@@ -58,12 +58,13 @@
 			<%@include file="../repository/searchpages.jsp"%>
 
 			<table border="0" width="100%" class="listcontent">
-				<tr class="listheader">
-					<th></th>
-					<th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
+            <tr class="listheader">
+               <th></th>
+               <th nowrap="true"><a href="#" class="headerlink" onclick="orderBy('name');"><fmt:message
 						key="urlsearch.namecolumn" /></a></th>
-					<th><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
-                    <th><fmt:message key="urlsearch.validcolumn" /></th>
+               <th><a href="#" class="headerlink" onclick="orderBy('url');"><fmt:message key="urlsearch.urlcolumn" /></a></th>
+               <th><a href="#" class="headerlink" onclick="orderBy('creationdate')"><fmt:message key="locate.lastmodifiedcolumn" /></a></th>
+               <th><fmt:message key="urlsearch.validcolumn" /></th>
 				</tr>
 				<tbody class="hover">
 					<c:set var="useSwapStyle">true</c:set>
@@ -93,6 +94,7 @@
 							<td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
 							<mm:field name="url" jspvar="url" write="false"/>
 							<td onMouseDown="objClick(this);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
+							<td><mm:field name="creationdate"><mm:time format=":MEDIUM"/></mm:field></td>
                             <mm:field name="valid" write="false" jspvar="isValidUrl"/>
                             <td>
                                 <c:choose>
