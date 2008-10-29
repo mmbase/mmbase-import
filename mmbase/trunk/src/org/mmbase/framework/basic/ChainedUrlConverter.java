@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.19 2008-10-29 19:42:42 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.20 2008-10-29 19:59:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -120,10 +120,12 @@ public class ChainedUrlConverter implements UrlConverter {
         Class preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
         Url b = u;
         if (preferred != null && ! preferred.isInstance(u.getUrlConverter())) {
-            b = new BasicUrl(b, Math.min(Integer.MIN_VALUE, b.getWeight() - 10000));
+            int q = b.getWeight();
+            b = new BasicUrl(b, Math.min(q, q - 10000));
         }
         if (current != null && u.getUrlConverter() != current) {
-            b = new BasicUrl(b, Math.min(Integer.MIN_VALUE, b.getWeight() - 10000));
+            int q = b.getWeight();
+            b = new BasicUrl(b, Math.min(q, q - 10000));
         }
         return b;
     }
