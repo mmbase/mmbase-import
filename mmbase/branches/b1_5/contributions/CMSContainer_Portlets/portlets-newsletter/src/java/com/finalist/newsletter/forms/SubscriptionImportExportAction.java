@@ -6,6 +6,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.cmsc.services.community.security.Authentication;
@@ -41,12 +42,12 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    protected void onInit() {
       super.onInit();
       subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean(
-            "subscriptionServices");
+               "subscriptionServices");
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
    }
 
    public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws IOException {
+                               HttpServletResponse response) throws IOException {
 
       log.debug("Export Susbscriptions");
 
@@ -62,7 +63,12 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       } else {
          subscriptions = subscriptionServices.getAllSubscription();
       }
-
+      for(Subscription subscription:subscriptions) {
+         String subscriberId = subscription.getSubscriberId();
+         if(StringUtils.isNotEmpty(subscriberId)) {
+            subscription.setSubscriber(CommunityModuleAdapter.getUserById(subscriberId));
+         }
+      }
       String xml = getXStream().toXML(subscriptions);
       byte[] bytes = xml.getBytes();
 
@@ -81,7 +87,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    }
 
    public ActionForward importsubscription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws IOException {
+                                           HttpServletResponse response) throws IOException {
       SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
 
       FormFile myFile = myForm.getDatafile();
@@ -114,7 +120,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    }
 
    public ActionForward importUserSubScription(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws FileNotFoundException, IOException {
+                                               HttpServletResponse response) throws FileNotFoundException, IOException {
 
       SubscriptionImportUploadForm myForm = (SubscriptionImportUploadForm) form;
       ActionMessages messages = new ActionMessages();
@@ -128,7 +134,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
          String tmpLinsStr = br.readLine();
          PersonService personService = (PersonService) ApplicationContextFactory.getBean("personService");
          NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean(
-               "subscriptionServices");
+                  "subscriptionServices");
 
          while (tmpLinsStr != null) {
             String tmpUserInfo = tmpLinsStr.replaceAll("\"", "");
