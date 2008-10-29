@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.22 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.23 2008-10-29 19:42:42 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -119,7 +119,7 @@ public final class BasicUrlConverter implements UrlConverter {
         return true;
     }
 
-    public int getDefaultQuality() {
+    public int getDefaultWeight() {
         return Integer.MIN_VALUE + 1000;
     }
 

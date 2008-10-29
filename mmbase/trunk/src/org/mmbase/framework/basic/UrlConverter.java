@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.12 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.13 2008-10-29 19:42:42 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -43,7 +43,7 @@ public interface UrlConverter {
      */
     boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException;
 
-    int getDefaultQuality();
+    int getDefaultWeight();
 
     /**
      * See {@link org.mmbase.framework.Framework#getUrl(String, Map, Parameters, boolean)}.
@@ -55,7 +55,7 @@ public interface UrlConverter {
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is
      *                   for some reason called directly.
      * @return An URL relative to the root of this web application (i.e. without a context
-     * path). <code>null</code> if not determinable.
+     * path). {@link Url.NOT} if not determinable.
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     Url getUrl(String path,
@@ -80,7 +80,7 @@ public interface UrlConverter {
      * @param params Extra parameters for that path
      * @param frameworkParameters The parameters that are required by the framework, such as the
      *                            'request' and 'cloud' objects
-     * @return A valid internal URL, or <code>null</code> if nothing framework specific could be
+     * @return A valid internal URL, or {@link Url.NOT} if nothing framework specific could be
      *         determined (this would make it possible to 'chain' frameworks).
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
