@@ -47,7 +47,7 @@ public abstract class NewsletterSubscriptionUtil {
       subscription.setId(node.getIntValue("number"));
       subscription.setMimeType(node.getStringValue("format"));
       subscription.setStatus(Subscription.STATUS.valueOf(node.getStringValue("status")));
-      subscription.setSubscriber(CommunityModuleAdapter.getUserById(node.getStringValue("subscriber")));
+      //subscription.setSubscriber(CommunityModuleAdapter.getUserById(node.getStringValue("subscriber")));
       subscription.setSubscriberId(node.getStringValue("subscriber"));
       return subscription;
    }

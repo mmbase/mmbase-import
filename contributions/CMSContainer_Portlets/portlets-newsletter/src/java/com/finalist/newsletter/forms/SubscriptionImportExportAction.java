@@ -6,6 +6,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.cmsc.services.community.security.Authentication;
@@ -62,7 +63,12 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       } else {
          subscriptions = subscriptionServices.getAllSubscription();
       }
-
+      for(Subscription subscription:subscriptions) {
+         String subscriberId = subscription.getSubscriberId();
+         if(StringUtils.isNotEmpty(subscriberId)) {
+            subscription.setSubscriber(CommunityModuleAdapter.getUserById(subscriberId));
+         }
+      }
       String xml = getXStream().toXML(subscriptions);
       byte[] bytes = xml.getBytes();
 
