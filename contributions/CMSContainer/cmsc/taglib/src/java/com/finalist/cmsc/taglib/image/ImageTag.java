@@ -156,6 +156,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
          return " alt=\"\"";
       }
       alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"');
+      alt = org.mmbase.util.transformers.Xml.XMLEscape(alt);
       return " alt=\"" + alt + "\" title=\"" + alt + "\"";
    }
 
