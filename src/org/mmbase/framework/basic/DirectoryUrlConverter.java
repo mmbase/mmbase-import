@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.17 2008-10-29 19:59:36 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.18 2008-10-29 20:22:12 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -47,6 +47,12 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         if (! directory.startsWith("/")) directory = "/" + directory;
     }
 
+    /**
+     * The 'directory' used for thie UrlConverter. A String which begins and ends with '/'.
+    public String getDirectory() {
+        return directory;
+    }
+
     @Override public int getDefaultWeight() {
         int q = super.getDefaultWeight();
         return Math.max(q, q + 1000);
@@ -60,6 +66,9 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return new BasicUrl(this, b.toString());
     }
 
+    /**
+     * This is the method you must implement. Append the nice URL to b. b already ends with &lt;directory&gt;/
+     */
     protected abstract void getNiceDirectoryUrl(StringBuilder b, Block block,
                                          Parameters parameters,
                                          Parameters frameworkParameters,  boolean action) throws FrameworkException;
