@@ -18,19 +18,19 @@ import org.mmbase.util.functions.*;
  * #getUrl}) with a 'quality' of this string.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Url.java,v 1.6 2008-10-28 17:40:26 michiel Exp $
+ * @version $Id: Url.java,v 1.7 2008-10-29 19:42:42 michiel Exp $
  * @since MMBase-1.9
  */
 
 public abstract class Url {
     private final UrlConverter urlConverter;
-    private int quality = 0;
+    private int weight = 0;
     public Url(UrlConverter uc) {
         this.urlConverter = uc;
-        this.quality = uc.getDefaultQuality();
+        this.weight = uc.getDefaultWeight();
     }
-    public Url(UrlConverter uc, int q) {
-        this.quality = q;
+    public Url(UrlConverter uc, int w) {
+        this.weight = w;
         this.urlConverter = uc;
     }
     /**
@@ -38,8 +38,8 @@ public abstract class Url {
      */
     public abstract String getUrl();
 
-    public int getQuality() {
-        return quality;
+    public int getWeight() {
+        return weight;
     }
     public UrlConverter getUrlConverter() {
         return urlConverter;
@@ -48,8 +48,12 @@ public abstract class Url {
 
     public String toString() {
         String url = getUrl();
-        return getClass() + " " + getUrlConverter() + " " + (url  == null ? "NULL" : url) + ":" + getQuality();
+        return getClass() + " " + getUrlConverter() + " " + (url  == null ? "NULL" : url) + ":" + getWeight();
     }
+
+    /**
+     * NOT is the return value for an UrlConverter which cannot produce an URL for given parameters.
+     */
     public static final Url NOT = new Url(null, Integer.MIN_VALUE) {
             public String getUrl() {
                 return null;

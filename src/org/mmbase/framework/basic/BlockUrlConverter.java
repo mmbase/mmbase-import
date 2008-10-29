@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.13 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.14 2008-10-29 19:42:42 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -139,7 +139,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
         return null;
     }
 
-    public int getDefaultQuality() {
+    public int getDefaultWeight() {
         return 0;
     }
 
@@ -198,7 +198,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
             String u = BasicUrlConverter.getUrl(niceUrl.getUrl(), map, request, escapeAmps);
             log.debug("Returning actual url " + u);
-            return new BasicUrl(this, u, niceUrl.getQuality());
+            return new BasicUrl(this, u, niceUrl.getWeight());
         } else {
             return Url.NOT;
         }

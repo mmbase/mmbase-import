@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.28 2008-10-28 17:42:52 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.29 2008-10-29 19:44:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -60,8 +60,8 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
         dateDepth = d;
     }
 
-    public int getDefaultQuality() {
-        return Math.max(Integer.MAX_VALUE, super.getDefaultQuality() + 1000);
+    @Override public int getDefaultWeight() {
+        return Math.max(Integer.MAX_VALUE, super.getDefaultWeight() + 1000);
     }
 
     /**
