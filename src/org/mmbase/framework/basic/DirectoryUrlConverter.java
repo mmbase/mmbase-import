@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.15 2008-10-29 14:35:49 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.16 2008-10-29 19:42:42 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -47,8 +47,8 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         if (! directory.startsWith("/")) directory = "/" + directory;
     }
 
-    public int getDefaultQuality() {
-        return Math.max(Integer.MAX_VALUE, super.getDefaultQuality() + 1000);
+    @Override public int getDefaultWeight() {
+        return Math.max(Integer.MAX_VALUE, super.getDefaultWeight() + 1000);
     }
 
     @Override protected final Url getNiceUrl(Block block,
