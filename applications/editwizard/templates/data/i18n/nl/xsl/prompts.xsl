@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.28 2008-06-18 11:00:29 andre Exp $
+  @version $Id: prompts.xsl,v 1.29 2008-10-29 13:04:06 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -50,7 +50,7 @@
 <xsl:variable name="time_at">om</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Bestand uploaden</xsl:template>
-<xsl:template name="prompt_uploaded">geuploaded</xsl:template>
+<xsl:template name="prompt_uploaded">Geüpload</xsl:template>
 <xsl:template name="prompt_image_upload" >Upload nieuwe afbeelding</xsl:template>
 <xsl:template name="prompt_image_replace">Vervang afbeelding</xsl:template>
 <xsl:template name="prompt_do_download">Huidig bestand bekijken</xsl:template>
