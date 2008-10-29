@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.187 2008-10-29 13:04:06 michiel Exp $
+    @version $Id: wizard.xsl,v 1.188 2008-10-29 14:11:11 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1158,6 +1158,12 @@
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
             (<xsl:value-of select="round((upload/@size) div 100) div 10"/> K)
             <br/>
+            <!--
+                target=_blank
+                Does not seem to make much sense, because we don't do that for already saved documents either.
+                But it seems to be that windows will always open e.g. PDF _in the browser_ otherwise (regardless
+                of the setting for that in windows explorer).
+            -->
             <a  href="file://{upload/path}">
               <xsl:call-template name="prompt_do_download"/>
             </a>
