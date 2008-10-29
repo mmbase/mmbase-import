@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.186 2008-10-09 16:05:09 michiel Exp $
+    @version $Id: wizard.xsl,v 1.187 2008-10-29 13:04:06 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1153,6 +1153,7 @@
               </xsl:if>
             </input>
             <xsl:call-template name="prompt_uploaded"/>
+            <xsl:text> </xsl:text>
             <xsl:value-of select="upload/@name"/>
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
             (<xsl:value-of select="round((upload/@size) div 100) div 10"/> K)
