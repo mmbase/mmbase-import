@@ -316,7 +316,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    }
 
    public Subscription getSubscription(int userId, int newsletterId) {
-      return subscriptionCAO.getSubscription(newsletterId, userId);
+      if (isAbleSubscrip(userId,newsletterId)) {
+         return subscriptionCAO.getSubscription(newsletterId, userId);
+      }else{
+         return null;
+      }
    }
 
    public void unSubscribeAllInNewsletter(int newsletterId) {
@@ -398,6 +402,16 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          subscriberIds.add(new Long(subscription.getIntValue("subscriber")));
       }
       return subscriberIds;
+   }
+
+   public boolean isAbleSubscrip(int userId, int newsletterId) {
+      
+      if (null == personService.getPersonByUserId(String.valueOf(userId))
+            || null == newsletterService.getNewsletterName(newsletterId)) {
+         return false;
+      } else {
+         return true;
+      }
    }
    
 

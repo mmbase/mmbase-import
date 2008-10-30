@@ -56,6 +56,8 @@ public interface NewsletterSubscriptionServices {
    public List<Subscription> getSubscriptionBySubscriber(String subscriberId);
 
    public Subscription getSubscription(int sbId, int nId);
+   
+   public boolean isAbleSubscrip(int sbId, int nId);
 
    void unSubscribeAllInNewsletter(int integer);
 
