@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.10 2008-10-22 08:52:14 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.11 2008-10-30 08:53:15 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -47,17 +47,17 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    @Override protected String getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) throws FrameworkException {
+    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/shared/render.jspx");
         // article mode
         if (path.size() == 0) {
             log.debug("No component in path");
-            return null;
+            return Url.NOT;
         }
         Component component = ComponentRepository.getInstance().getComponent(path.get(0));
         if (component == null) {
             log.debug("No didactor component in " + path);
-            return null;
+            return Url.NOT;
         }
         Setting<String> setting = (Setting<String>) component.getSetting("didactor_nodeprovider");
         String value = "education";
@@ -78,7 +78,7 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
         if (block == null) return null;
         result.append("&block=");
         result.append(block.getName());
-        return result.toString();
+        return new BasicUrl(this, result.toString());
     }
 
 
