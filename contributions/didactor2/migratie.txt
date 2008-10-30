@@ -14,6 +14,14 @@ and restart Tomcat.
 
 ----
 
+2008
+  -  Some refactoring was done. And some overriden treeincludes may be broken, they have to be moved
+     too.
+     - /login_plain.jsp -> /login/index.jspx
+     - /cockpit.jsp     -> /cockpit/big/index.jspx
+     ...
+
+
 2007
   -   smptmodule.xml -> smtp.xml
 
