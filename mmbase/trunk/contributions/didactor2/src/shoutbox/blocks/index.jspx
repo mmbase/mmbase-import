@@ -26,6 +26,7 @@
           $("#mm_reference_search").hide();
           $("#mm_reference").change(function() {
           document.location.href = "<mm:url page="." />?source=${source}&amp;amp;reference=" + this.value;
+          return false;
           });
           });
         </script>

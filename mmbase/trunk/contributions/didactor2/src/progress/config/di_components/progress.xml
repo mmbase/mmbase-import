@@ -1,8 +1,9 @@
-<component 
+<component
     xmlns="http://www.mmbase.org/xmlns/didactor-component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
-    name="progress" templatepath="progress" templatebar="education" barposition="10">
+    name="progress" templatepath="progress"
+    templatebar="education" barposition="10">
   <scope name="component" referid="component">
     <setting name="showeducationplan" type="boolean" default="true"/>
     <setting name="showquestionamount" type="boolean" default="true"/>
