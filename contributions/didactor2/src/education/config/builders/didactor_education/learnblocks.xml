@@ -49,11 +49,7 @@
         <guiname xml:lang="nl">Layout</guiname>
         <guiname xml:lang="en">Layout</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>3</list>
-        </positions>
-      </editor>
+      <editor><positions><list>3</list></positions></editor>
       <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
     <field name="imagelayout">
@@ -75,10 +71,7 @@
           <guiname xml:lang="nl">Path</guiname>
           <guiname xml:lang="en">Path</guiname>
        </gui>
-       <editor>
-         <positions>
-           <list>4</list>
-         </positions>
+       <editor><positions><list>4</list></positions>
        </editor>
        <!-- this used to have a guitype 'integer' but I suppose that was a mistake -->
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
