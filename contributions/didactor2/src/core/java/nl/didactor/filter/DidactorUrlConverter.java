@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.12 2008-10-30 12:57:56 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.13 2008-10-30 15:30:21 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -80,7 +80,7 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
         result.append("?name=");
         result.append(component.getName());
         Block block = path.size() > 1 ? component.getBlock(path.get(1)) : component.getDefaultBlock();
-        if (block == null) return null;
+        if (block == null) return Url.NOT;
         result.append("&block=");
         result.append(block.getName());
         return new BasicUrl(this, result.toString());
