@@ -4,6 +4,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     version="2.0">
 
+  <mm:cloud jspvar="cloud" method="asis">
+    <jsp:scriptlet>
+      // TODO, there should be an easier way to get the current user.
+      // Didactor of course provides requestScope.user, but we want these jsps to be didactor independent.
+
+      org.mmbase.framework.Framework fw = org.mmbase.framework.Framework.getInstance();
+      org.mmbase.util.functions.Parameters params = fw.createParameters();
+      params.setIfDefined(org.mmbase.util.functions.Parameter.CLOUD, cloud);
+      pageContext.setAttribute("currentuser", fw.getUserNode(params));
+    </jsp:scriptlet>
+  </mm:cloud>
   <div class="menuSeperator"><jsp:text> </jsp:text></div>
   <div class="menuItem">
     <mm:link>
@@ -19,6 +30,7 @@
           </mm:functioncontainer>
           <mm:relatednodescontainer type="shouts">
             <mm:constraint field="time" operator="GT" value="${lastcheck}" />
+            <mm:constraint field="from" operator="NE" value="${currentuser.number}" />
             <jsp:text> (<mm:size />)</jsp:text>
           </mm:relatednodescontainer>
         </mm:hasnodemanager>
