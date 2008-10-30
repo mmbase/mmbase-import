@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title>Navigation Nodes Editor</title>
+
+  <action type="create">
+    <object type="navigationnodes"/>
+  </action>
+
+  <action type="load">
+    <object type="navigationnodes"/>
+    <relation destinationtype="simplecontents" role="related"/>
+  </action>
+
+  <action type="delete" />
+
+  <form-schema id="step1">
+    <title>Name</title>
+    <field name="name"  />
+    <field name="active"  />
+    <field name="body" ftype="html" />
+    <field name="order_number" />
+    <list role="related" destination="simplecontents" minoccurs="0" maxoccurs="*">
+      <title>Simple Content Page</title>
+      <!-- Show the 'item' in a list (the object) -->
+      <item>
+        <field name="title">
+          <prompt>Simple Content Title</prompt>
+          <description>Here you can see the title of the related simple content page</description>
+        </field>
+      </item>
+      <command name="startwizard" inline="true" wizardname="config/portalpages/simplecontents" objectnumber="new" />
+
+      <command name="search" nodepath="simplecontents" fields="title" age="-1">
+        <prompt>Search Simple Content Pages</prompt>
+        <!-- Search on title -->
+        <search-filter>
+          <name>title</name>
+          <search-fields>title</search-fields>
+        </search-filter>
+
+      </command>
+
+      <action type="create">
+        <relation destinationtype="simplecontents" role="related" >
+          <object type="simplecontents"/>
+        </relation>
+      </action>
+      <action type="add">
+        <relation destinationtype="simplecontents" role="related" />
+      </action>
+    </list>
+
+
+  </form-schema>
+</wizard-schema>

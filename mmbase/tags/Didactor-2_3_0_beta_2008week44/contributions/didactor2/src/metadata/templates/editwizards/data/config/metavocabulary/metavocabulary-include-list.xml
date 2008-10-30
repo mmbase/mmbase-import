@@ -1,0 +1,30 @@
+<!-- used in config/metastandard/metastandard.xml -->
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="metavocabulary" role="include">
+  <title xml:lang="en">Include metadatavocabulary for this metastandard</title>
+  <title xml:lang="nl">Deze metadata waarden toevoegen voor deze metadatastandaard</title>
+  <item>
+    <field name="value" ftype="data">
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
+    </field>
+    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
+  </item>
+
+  <action type="create">
+    <relation destinationtype="metavocabulary" role="include" />
+  </action>
+
+  <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
+
+  <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar waarden</prompt>
+    <prompt xml:lang="en">Search for values</prompt>
+    <search-filter>
+      <name xml:lang="nl">Waarde bevat</name>
+      <name xml:lang="en">Value contains</name>
+      <search-fields>value</search-fields>
+    </search-filter>
+  </command>
+
+</list>

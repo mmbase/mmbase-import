@@ -1,0 +1,3 @@
+        <relation destinationtype="tests" role="related">
+          <object type="tests"/>
+        </relation>

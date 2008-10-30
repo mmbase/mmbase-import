@@ -1,0 +1,35 @@
+<mm:cloud
+    rank="administrator"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.page buffer="none" />
+  <mm:content
+      type="text/html"
+      postprocessor="none"
+      unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
+      >
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <link rel="stylesheet" href="${mm:url('/mmbase/style/css/mmbase.css', pageContext)}" type="text/css" />
+      </head>
+      <body>
+        <p>
+          <em>You may have to run this page several times, until nothing happens. Because the query can be killed of by MMBase when it takes to long.</em>
+        </p>
+        <mm:jdbc  throwexception="true" mode="nodes" query="select e.number from $PREFIX_emails e left join $PREFIX_insrel i on e.number = i.dnumber left join  $PREFIX_mailboxes b  on i.snumber = b.number where b.number is null">
+          <p>
+
+            <mm:node number="${_node.number}">
+              <mm:log>Deleting mail with number <mm:field name="number" /></mm:log>
+              <mm:field name="number" />
+              <mm:deletenode deleterelations="true" />
+            </mm:node>
+          </p>
+        </mm:jdbc>.
+      </body>
+    </html>
+  </mm:content>
+</mm:cloud>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="email" maintainer="mmbase.org" version="0" extends="object">
+  <!-- @version $Id: email.xml,v 1.1 2007-07-26 14:47:37 michiel Exp $ -->
+
+  <!-- just overridden the one in mmbase-email.jar to avoid having _2_ email builders -->
+  <status>inactive</status>
+
+</builder>
+

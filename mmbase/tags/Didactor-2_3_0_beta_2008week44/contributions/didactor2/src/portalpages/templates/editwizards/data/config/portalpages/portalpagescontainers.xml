@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title>Portal Pages Nodes</title>
+
+  <action type="load">
+    <object type="portalpagescontainers"/>
+    <relation destinationtype="portalpagesnodes" role="related"/>
+  </action>
+
+  <form-schema id="step1">
+    <list role="related" destination="portalpagesnodes" minoccurs="0" maxoccurs="*">
+      <title>Root Portal Pages Nodes</title>
+      <!-- Show the 'item' in a list (the object) -->
+      <item>
+        <field name="name">
+          <prompt>Name</prompt>
+          <description>Portal Pages Node Name</description>
+        </field>
+        <field wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
+      </item>
+      <command name="startwizard" inline="true" wizardname="config/portalpages/portalpagesnodes" objectnumber="new" />
+      <command name="search" nodepath="portalpagesnodes" fields="name" age="-1" orderby="number" directions="down" >
+        <prompt>Zoeken naar portalpages nodes</prompt>
+        <search-filter>
+          <name>Naam bevat</name>
+          <search-fields>name</search-fields>
+        </search-filter>
+      </command>
+      <action type="create">
+        <relation destinationtype="portalpagesnodes" role="related" >
+          <object type="portalpagesnodes"/>
+        </relation>
+      </action>
+    </list>
+  </form-schema>
+</wizard-schema>
