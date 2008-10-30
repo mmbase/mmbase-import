@@ -1,13 +1,10 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.cmsc.services.community.person.Person;
-
 import java.util.List;
 import java.util.Set;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 
 public interface NewsletterSubscriptionServices {
@@ -59,6 +56,8 @@ public interface NewsletterSubscriptionServices {
    public List<Subscription> getSubscriptionBySubscriber(String subscriberId);
 
    public Subscription getSubscription(int sbId, int nId);
+   
+   public boolean isAbleSubscrip(int sbId, int nId);
 
    void unSubscribeAllInNewsletter(int integer);
 
@@ -75,4 +74,5 @@ public interface NewsletterSubscriptionServices {
    public String getNewsletterNameList(int authenticationId);
 
    public String getTermsNameList(int authenticationId);
+   
 }
