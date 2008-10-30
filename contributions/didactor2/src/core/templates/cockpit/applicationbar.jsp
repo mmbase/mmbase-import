@@ -1,4 +1,5 @@
 <jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
@@ -90,17 +91,22 @@
               <a title="${di:translate('core.configuration')}"
                  href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
             </mm:treefile>
+            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
           </mm:hasnode>
+
           <mm:hasnode number="component.portfolio" inverse="true">
-            <mm:treefile page="/admin/index.jsp"
-                         objectlist="$includePath" referids="$referids" write="false">
-              <a title="${di:translate('core.configuration')}"
-                 href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
-            </mm:treefile>
+            <c:if test="${di:setting('core', 'show_configuration')}">
+              <mm:treefile page="/admin/index.jsp"
+                           objectlist="$includePath" referids="$referids" write="false">
+                <a title="${di:translate('core.configuration')}"
+                   href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
+              </mm:treefile>
+              <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+            </c:if>
           </mm:hasnode>
         </div>
 
-        <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+
         <div class="menuItemApplicationMenubar">
           <a title="${di:translate('core.print')}"
              href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
