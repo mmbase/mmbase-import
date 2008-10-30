@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.30 2008-10-30 12:45:58 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.31 2008-10-30 12:50:22 michiel Exp $
  */
 
 
@@ -110,8 +110,8 @@ List.prototype.find = function(el, selector, result) {
     var childNodes = el.childNodes;
     for (var i = 0; i < childNodes.length; i++) {
         var childNode = childNodes[i];
-        var cn = childNode.nodeName;
-        if (cn == '#text' || cn== 'option' || (cn == 'div' && $(childNode).hasClass("list"))) {
+        var cn = childNode.nodeName.toUpperCase();
+        if (cn == '#TEXT' || cn == 'OPTION' || (cn == 'DIV' && $(childNode).hasClass("list"))) {
 
         } else {
             if ($(childNode).filter(selector).length > 0) {
