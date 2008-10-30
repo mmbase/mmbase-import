@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.11 2008-10-30 08:53:15 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.12 2008-10-30 12:57:56 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -28,6 +28,11 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
     public DidactorUrlConverter(BasicFramework fw) {
         super(fw);
         setDirectory("c");
+    }
+
+    @Override public int getDefaultWeight() {
+        int q = super.getDefaultWeight();
+        return Math.max(q, q + 10000);
     }
 
 
