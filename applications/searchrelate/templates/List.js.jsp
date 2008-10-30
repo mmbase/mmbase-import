@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.31 2008-10-30 12:50:22 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.32 2008-10-30 12:53:43 michiel Exp $
  */
 
 
@@ -235,7 +235,9 @@ List.prototype.bindDelete = function(a) {
                             var li = $(a).parents("li")[0];
                             a.list.validator.removeValidation(li);
                             var ol = $(a).parents("ol")[0];
-                            ol.removeChild(li);
+                            if (ol != null) { // seems to happen in IE sometimes?
+                                ol.removeChild(li);
+                            }
                             a.list.executeCallBack("delete", li);
                         }
                     }
