@@ -16,7 +16,7 @@
 
         <form method="get">
           <mm:import externid="maxage">1 year</mm:import>
-          <p><di:translate key="core.pagereports_magage" />: <input onchange="this.form.commit()" value="${maxage}" name="maxage" /></p>
+          <p><di:translate key="core.pagereports_magage" />: <input onchange="this.form.submit()" value="${maxage}" name="maxage" /></p>
         </form>
 
 
