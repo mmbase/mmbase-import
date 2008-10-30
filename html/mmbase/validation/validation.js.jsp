@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.55 2008-10-23 14:42:06 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.56 2008-10-30 12:43:01 michiel Exp $
  */
 
 
@@ -807,6 +807,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
     if (this.validateHook) {
         this.validateHook(valid, element);
     }
+    $(this).trigger("mmValidate", [valid, element]);
 }
 
 /**
@@ -896,12 +897,14 @@ MMBaseValidator.prototype.addValidation = function(el) {
         if (this.validateHook) {
             this.validateHook(valid, entry);
         }
+        $(this).trigger("mmValidate", [valid, entry]);
 
     }
     if (els.length == 0) {
         if (this.validateHook) {
             this.validateHook(this.invalidElements == 0);
         }
+        $(this).trigger("mmValidate", [this.invalidElements == 0]);
     }
     el = null;
 }
