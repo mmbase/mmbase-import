@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.32 2008-10-30 12:53:43 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.33 2008-10-30 15:21:58 michiel Exp $
  */
 
 
@@ -57,7 +57,7 @@ function List(d) {
 
     this.valid = true;
     this.validator = new MMBaseValidator();
-
+    this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
     this.validator.prefetchNodeManager(this.type);
     this.validator.setup(this.div);
     this.validator.validateHook =  function(valid, element) {
