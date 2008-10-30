@@ -4,6 +4,7 @@ import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
@@ -189,11 +190,20 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       }
 
       for (Subscription subscription : subscriptionList) {
-         Person subscrier = subscription.getSubscriber();
-         int sbId = subscrier.getId().intValue();
-         int nId = subscription.getNewsletter().getId();
-
-         if (null == subscriptionServices.getSubscription(sbId, nId)) {
+         Person subscrier = new Person();
+         Newsletter newsletter= new Newsletter();
+         int sbId=0;
+         int nId=0;
+         if (null!=subscription) {
+            subscrier = subscription.getSubscriber();
+            newsletter=subscription.getNewsletter();
+            if (null!=subscrier&&null!=newsletter) {
+               //there will be add method to extend
+               sbId = subscrier.getId().intValue();
+               nId = subscription.getNewsletter().getId();
+            }
+         }   
+         if (subscriptionServices.isAbleSubscrip(sbId, nId)&&null == subscriptionServices.getSubscription(sbId, nId)) {
 
             log.debug(String.format("try to import user %s's subscription of %s which is not exist", sbId, nId));
 
