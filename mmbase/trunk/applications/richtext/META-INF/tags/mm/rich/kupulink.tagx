@@ -21,7 +21,7 @@
         <c:when test="${empty kupu_back}">
           <mm:url page="${referrer}" />
         </c:when>
-        <c:otherwise>kupu_back</c:otherwise>
+        <c:otherwise>${kupu_back}</c:otherwise>
       </c:choose>
     </mm:param>
     <mm:param name="objectnumber">${node}</mm:param>
