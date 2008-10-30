@@ -4,7 +4,7 @@
   <!-- =================================================================== -->
 
   <property name="download.dir"           location="download" />
-  <property name="version"                value="1.9.0-SNAPSHOT" />
+  <property name="version"                value="1.9.0" />
   <property name="prefix"                 value="mmbase-" />
   <property name="mmbase.templates.path"  value="mmbase/" />
   <property name="base"                   value="mmbase" />
