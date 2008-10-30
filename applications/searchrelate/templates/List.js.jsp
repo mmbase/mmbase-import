@@ -17,18 +17,19 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.29 2008-10-23 15:16:15 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.30 2008-10-30 12:45:58 michiel Exp $
  */
 
 
 $(document).ready(function() {
+    var l = List; // hoping to make IE a bit faster
     $(document).find("div.list").each(function() {
         if (this.list == null) {
-            this.list = new List(this);
+            this.list = new l(this);
         }
     });
     $(document).find("div.list:last").each(function() {
-        List.seq = $(this).find("input[name = 'seq']")[0].value;
+        l.seq = $(this).find("input[name = 'seq']")[0].value;
     });
 });
 
@@ -41,27 +42,31 @@ function List(d) {
 
     this.callBack = null; // called on delete and create
 
-    this.type = this.find(this.div, ".listinfo").find("input[name = 'type']")[0].value;
-    this.item = this.find(this.div, ".listinfo").find("input[name = 'item']")[0].value;
-    this.source = this.find(this.div, ".listinfo").find("input[name = 'source']")[0].value;
-    this.icondir = this.find(this.div, ".listinfo").find("input[name = 'icondir']")[0].value;
-    this.createpos = this.find(this.div, ".listinfo").find("input[name = 'createpos']")[0].value;
 
-    this.lastChange = null;
+    var listinfos  = this.findByClass(this.div, "listinfo");
+
+    this.type      = listinfos.find("input[name = 'type']")[0].value;
+    this.item      = listinfos.find("input[name = 'item']")[0].value;
+    this.source    = listinfos.find("input[name = 'source']")[0].value;
+    this.icondir   = listinfos.find("input[name = 'icondir']")[0].value;
+    this.createpos = listinfos.find("input[name = 'createpos']")[0].value;
+
     this.lastCommit = null;
 
     this.defaultStale = 1000;
 
     this.valid = true;
     this.validator = new MMBaseValidator();
+
     this.validator.prefetchNodeManager(this.type);
     this.validator.setup(this.div);
-
-    this.validator.validateHook = function(valid) {
+    this.validator.validateHook =  function(valid, element) {
         self.valid = valid;
         self.lastChange = new Date();
-    }
-
+        if (self.lastCommit == null && element == null) {
+            self.lastCommit = self.lastChange;
+        }
+    };
     $.timer(1000, function(timer) {
         self.commit();
     });
@@ -74,11 +79,6 @@ function List(d) {
     });
 
 
-    //console.log($(this.div).find("div.list").remove().find("a.create").end());
-
-    //$(this.div).find("*").not("div.list").not("div.list *").find("a.create").each(function() {
-    //$(this.div).find("a.delete").each(function() { self.bindDelete(this); });
-
     $(window).bind("beforeunload",
                    function(ev) {
                        var result = self.commit(0, true);
@@ -87,14 +87,12 @@ function List(d) {
                        }
                        return result;
                    });
-
     // automaticly make the entries empty on focus if they evidently contain the default value only
     $(this.div).find("input[type='text']").filter(function() {
         return this.value.match(/^<.*>$/); }).one("focus", function() {
             this.value = "";
             self.validator.validateElement(this);
         });
-
     this.setTabIndices();
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 }
@@ -109,18 +107,39 @@ List.prototype.find = function(el, selector, result) {
         result = [];
     }
     var self = this;
-    $(el).find("> *").each(function() {
-        if ($(this).hasClass("list") && this.nodeName == 'div') {
+    var childNodes = el.childNodes;
+    for (var i = 0; i < childNodes.length; i++) {
+        var childNode = childNodes[i];
+        var cn = childNode.nodeName;
+        if (cn == '#text' || cn== 'option' || (cn == 'div' && $(childNode).hasClass("list"))) {
 
         } else {
-            if ($(this).filter(selector).length > 0) {
-                result[result.length] = this;
+            if ($(childNode).filter(selector).length > 0) {
+                result[result.length] = childNode;
             }
-            self.find(this, selector, result);
-
+            self.find(childNode, selector, result);
         }
+    }
+    return $(result);
+}
+List.prototype.findByClass = function(el, clazz, result) {
+    if (result == null) {
+        result = [];
+    }
+    var self = this;
+    var childNodes = el.childNodes;
+    for (var i = 0; i < childNodes.length; i++) {
+        var childNode = childNodes[i];
+        var cn = childNode.nodeName;
+        if (cn == '#text' || cn== 'option' || (cn == 'div' && $(childNode).hasClass("list"))) {
 
-    });
+        } else {
+            if ($(childNode).hasClass(clazz)) {
+                result[result.length] = childNode;
+            }
+            self.findByClass(childNode, clazz, result);
+        }
+    }
     return $(result);
 }
 
@@ -237,7 +256,6 @@ List.prototype.executeCallBack = function(type, element) {
 
 List.prototype.needsCommit = function() {
     return this.lastChange != null &&
-        (this.validator == null || this.validator.isChanged()) &&
         (this.lastCommit == null || this.lastCommit.getTime() < this.lastChange.getTime());
 }
 
