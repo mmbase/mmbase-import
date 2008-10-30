@@ -33,14 +33,9 @@
 
 
   <if>
-    <or>
-      <not>
-        <available file="install-dependency.xml" />
-      </not>
-      <not>
-        <equals arg1="${noconnection}" arg2="true" />
-      </not>
-    </or>
+    <not>
+      <available file="install-dependency.xml" />
+    </not>
     <then>
       <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml?pathrev=MMBase-1_9_0_Final"
            dest="install-dependency.xml"
