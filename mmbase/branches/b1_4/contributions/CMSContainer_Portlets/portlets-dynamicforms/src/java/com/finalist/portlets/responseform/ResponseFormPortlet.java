@@ -66,6 +66,9 @@ public class ResponseFormPortlet extends ContentPortlet {
       Map<String, Object> parameterMap = new HashMap<String, Object>();
       DataSource attachment = processUserRequest(request, errorMessages, parameterMap);
 
+      // Add extensibility for extra parameters
+      addParameterProcessor(request, response, parameterMap, errorMessages);
+      
       PortletPreferences preferences = request.getPreferences();
       String contentelement = preferences.getValue(CONTENTELEMENT, null);
 
@@ -168,6 +171,12 @@ public class ResponseFormPortlet extends ContentPortlet {
       else {
          getLogger().error("No contentelement");
       }
+   }
+
+
+   protected void addParameterProcessor(ActionRequest request, ActionResponse response, Map<String, Object> parameterMap,
+         Map<String, String> errorMessages) {
+      // Add extensibility for extra parameters, nothing to do now
    }
 
 
