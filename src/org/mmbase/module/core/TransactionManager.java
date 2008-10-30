@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.45 2008-07-28 17:49:01 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.46 2008-10-30 13:16:03 michiel Exp $
  */
 public class TransactionManager {
 
@@ -124,7 +124,12 @@ public class TransactionManager {
         MMObjectNode node = getTemporaryNodeManager().getNode(owner, tmpnumber);
         if (node != null) {
             if (!transaction.contains(node)) {
-                transaction.add(node);
+                try {
+                    transaction.add(node);
+                } catch (UnsupportedOperationException uoe) {
+                    transactions.remove(transactionName);
+                    throw new TransactionManagerException("Cannot add node " + node + " to transaction '" + transactionName + "'. It probably was committed already. This transaction is removed now.", uoe);
+                }
 //            } else {
 //                throw new TransactionManagerException(
 //                    "Node " + tmpnumber + " not added as it was already in transaction " + transactionName);
@@ -197,7 +202,7 @@ public class TransactionManager {
                 throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes)", te);
             }
         } else {
-            log.service("Resolved already");
+            log.service("Resolved already " + transaction.getClass());
             return false;
         }
         return true;
