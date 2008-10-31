@@ -9,8 +9,10 @@
 	<class>com.finalist.cmsc.richtext.builders.RichTextBuilder</class>
 	<searchage>70</searchage>
 	<names>
-		<singular xml:lang="nl">tag</singular>
-		<singular xml:lang="en">tag</singular>
+		<singular xml:lang="nl">term</singular>
+		<singular xml:lang="en">term</singular>
+      <plural xml:lang="nl">termen</plural>
+      <plural xml:lang="en">terms</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>

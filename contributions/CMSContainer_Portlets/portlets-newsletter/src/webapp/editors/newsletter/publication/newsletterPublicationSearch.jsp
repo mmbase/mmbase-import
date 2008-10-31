@@ -69,7 +69,7 @@
                      <c:otherwise>
                         <img src="../gfx/icons/edit_gray.gif"/>
                      </c:otherwise>
-                  </c:choose><a href="javascript:showInfo(${result.id})"><img src="../gfx/icons/info.png" title="<fmt:message key="newsletter.subscriber.info" />"/></a>
+                  </c:choose><a href="javascript:showInfo(${result.id})"><img src="../gfx/icons/info.png" title="<fmt:message key="newsletter.edition.info" />"/></a>
                </edit:ui-tcolumn>
                <edit:ui-tcolumn titlekey="newspubsearch.titlecolumn" sort="title" width="20%">
                   ${result.title}
