@@ -10,13 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.magicfile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * This Parser translates the configuration file of UNIX's file to a
  * list of Detectors (and to a magic.xml)
  *
- * @version $Id: MagicParser.java,v 1.13 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: MagicParser.java,v 1.14 2008-10-31 10:26:49 michiel Exp $
  */
 public class MagicParser implements DetectorProvider {
     /**
@@ -33,9 +28,9 @@ public class MagicParser implements DetectorProvider {
      * DEFAULT_MAGIC_FILE = "/etc/mime-magic"
      */
     public final static String DEFAULT_MAGIC_FILE = "/etc/mime-magic";
-    
+
     private static final Logger log = Logging.getLoggerInstance(MagicParser.class);
-    private List<Detector> detectors;
+    private final List<Detector> detectors = new ArrayList<Detector>();
 
     private int offset;
     private String type;
@@ -58,8 +53,6 @@ public class MagicParser implements DetectorProvider {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
             String line;
-            detectors = new Vector<Detector>();
-
             while ((line = br.readLine()) != null) {
                 Detector d = createDetector(line);
                 if (d != null) {
@@ -131,7 +124,7 @@ public class MagicParser implements DetectorProvider {
     /**
      * Parse the type string from the magic file
      *   -- nothing to be done: the found string is already atomic :-)
-     * 
+     *
      * @param s Line to process
      * @param startIndex index to start from in the line
      * @return new offset after processing
@@ -156,7 +149,7 @@ public class MagicParser implements DetectorProvider {
     /**
      * Parse the test string from the magic file
      *   -- determine: a.) the test comparator, and b.) the test value
-     *   
+     *
      * @param s Line to process
      * @param startIndex index to start from in the line
      * @return new offset after processing
