@@ -1,4 +1,5 @@
 <%@include file="/taglibs.jsp" %>
+<mm:content type="text/html" escaper="none">
 <mm:cloud jspvar="cloud">
    <%@include file="includes/templateheader.jsp" %>
    <%@include file="includes/cacheparams.jsp" %>
@@ -260,9 +261,9 @@ function enable0()
 
 function enable1()
 {
-  document.getElementById("sel_gebieden").disabled = false
+  document.getElementById("sel_gebieden").disabled = false;
   document.getElementById("sel_gebieden").selectedIndex = 0;
-  document.getElementById("sel_Areaal").disabled = false
+  document.getElementById("sel_Areaal").disabled = false;
 }
 
 function enable2()
@@ -271,15 +272,15 @@ function enable2()
 
 function enable3()
 {
-  txtcolor = '#000000'
-  document.getElementById('td_Xlo').style.color=txtcolor
-  document.getElementById('td_Ylo').style.color=txtcolor
-  document.getElementById('td_Xrb').style.color=txtcolor
-  document.getElementById('td_Yrb').style.color=txtcolor
-  document.getElementById("linksX").disabled=false
-  document.getElementById("linksY").disabled=false
-  document.getElementById("rechtsX").disabled=false
-  document.getElementById("rechtsY").disabled=false
+  txtcolor = '#000000';
+  document.getElementById('td_Xlo').style.color=txtcolor;
+  document.getElementById('td_Ylo').style.color=txtcolor;
+  document.getElementById('td_Xrb').style.color=txtcolor;
+  document.getElementById('td_Yrb').style.color=txtcolor;
+  document.getElementById("linksX").disabled=false;
+  document.getElementById("linksY").disabled=false;
+  document.getElementById("rechtsX").disabled=false;
+  document.getElementById("rechtsY").disabled=false;
 }
 
 function deselect(id) 
@@ -299,29 +300,29 @@ function deselect(id)
 
 function disable0()
 {
-  txtcolor = '#999999'
-  deselect('sel_Areaal')
-  deselect('sel_NatGeb')
-  deselect('sel_Beheereenheden')
-  deselect('sel_gebieden')
-  document.getElementById('td_Xlo').style.color=txtcolor
-  document.getElementById('td_Ylo').style.color=txtcolor
-  document.getElementById('td_Xrb').style.color=txtcolor
-  document.getElementById('td_Yrb').style.color=txtcolor
-  document.getElementById("sel_Beheereenheden").disabled=true
-  document.getElementById("sel_NatGeb").disabled=true
-  document.getElementById("sel_NatGeb").length=0
-  document.getElementById("sel_gebieden").disabled=true
-  document.getElementById("sel_Areaal").disabled=true
-  document.getElementById("sel_Areaal").length=0
-  document.getElementById("linksX").disabled=true
-  document.getElementById("linksX").value=""
-  document.getElementById("linksY").disabled=true
-  document.getElementById("linksY").value=""
-  document.getElementById("rechtsX").disabled=true
-  document.getElementById("rechtsX").value=""  
-  document.getElementById("rechtsY").disabled=true
-  document.getElementById("rechtsY").value=""
+  txtcolor = '#999999';
+  deselect('sel_Areaal');
+  deselect('sel_NatGeb');
+  deselect('sel_Beheereenheden');
+  deselect('sel_gebieden');
+  document.getElementById('td_Xlo').style.color=txtcolor;
+  document.getElementById('td_Ylo').style.color=txtcolor;
+  document.getElementById('td_Xrb').style.color=txtcolor;
+  document.getElementById('td_Yrb').style.color=txtcolor;
+  document.getElementById("sel_Beheereenheden").disabled=true;
+  document.getElementById("sel_NatGeb").disabled=true;
+  document.getElementById("sel_NatGeb").length=0;
+  document.getElementById("sel_gebieden").disabled=true;
+  document.getElementById("sel_Areaal").disabled=true;
+  document.getElementById("sel_Areaal").length=0;
+  document.getElementById("linksX").disabled=true;
+  document.getElementById("linksX").value="";
+  document.getElementById("linksY").disabled=true;
+  document.getElementById("linksY").value="";
+  document.getElementById("rechtsX").disabled=true;
+  document.getElementById("rechtsX").value="";
+  document.getElementById("rechtsY").disabled=true;
+  document.getElementById("rechtsY").value="";
 }
 
 
@@ -348,8 +349,8 @@ var imagesCoor = new Array();
 function jsc_optie0()
 {
 //nieuw
-disable0()
-enable0()
+disable0();
+enable0();
 //einde nieuw
 jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]);
 jsc_ClearUnselectedOptions();
@@ -376,8 +377,8 @@ jsc_setPicture(null);
 function jsc_optie1()
 {
 //nieuw
-disable0()
-enable1()
+disable0();
+enable1();
 //einde nieuw
 jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 jsc_ClearUnselectedOptions();
@@ -404,8 +405,8 @@ jsc_setPicture(null);
 function jsc_optie2()
 {
 //nieuw
-disable0()
-enable2()
+disable0();
+enable2();
 //einde nieuw
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
@@ -430,8 +431,8 @@ jsc_setPicture(null);
 function jsc_optie3()
 {
 //nieuw
-disable0()
-enable3()
+disable0();
+enable3();
 //einde nieuw
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
@@ -1064,3 +1065,4 @@ DIV.Schermuitleg
    
    <%@include file="includes/footer.jsp" %>
 </mm:cloud>
+</mm:content>
