@@ -1,5 +1,5 @@
-<%@include file="/taglibs.jsp" %><%
-
+<%@include file="/taglibs.jsp" %><mm:content type="text/html" escaper="none">
+<%
 String imageId = request.getParameter("image") ; 
 if(imageId!=null) {
 
@@ -14,8 +14,8 @@ if(imageId!=null) {
     </head>
     <body bgcolor="#FFF8E8">
         <div align="center">
-        <br><br><% String imageTemplate="s(725x525)"; %>
-        <a href="javascript:self.close();"><img src=<%@include file="includes/imagessource.jsp" %> alt="sluit dit venster" border="0"></a>
+        <br><br><% String imageTemplate="s(725x525)(>)"; %>
+        <a href="javascript:self.close();"><img src=<%@include file="includes/imagessource.jsp" %> alt="sluit dit venster" title="sluit dit venster" border="0"></a>
         <br><br>
         <a href="javascript:self.close();">sluit</a>
         </div>
@@ -25,3 +25,4 @@ if(imageId!=null) {
     ></mm:cloud><% 
 } 
 %>
+</mm:content>
