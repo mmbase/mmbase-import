@@ -10,12 +10,13 @@
   <html xmlns="http://www.w3.org/1999/xhtml">
     <body>
 
+      <p>
+        Should write: 'CC':
         <mm:context id="a" scope="request">
           <mm:import id="c">C</mm:import>
           <mm:context id="b" />
         </mm:context>
 
-        <mm:import id="list" vartype="list">x,y,z</mm:import>
 
         <mm:context referid="a" scope="request">
           <mm:context referid="b" />
@@ -23,18 +24,20 @@
         </mm:context>
 
         <mm:include page="mmb-1730-include.jspx" />
+      </p>
 
-        <p>
-          should write 'xx,yy,zz':
-          <mm:stringlist referid="list">
-            <mm:context id="W" scope="request">
-              <mm:remove referid="w" />
-              <mm:write id="w" write="false" />
-              <mm:write referid="w" />${w}
-              <mm:last inverse="true">,</mm:last>
-            </mm:context>
-          </mm:stringlist>
-        </p>
+      <p>
+        <mm:import id="list" vartype="list">x,y,z</mm:import>
+        Should write 'xx,yy,zz':
+        <mm:stringlist referid="list">
+          <mm:context id="W" scope="request">
+            <mm:remove referid="w" />
+            <mm:write id="w" write="false" />
+            <mm:write referid="w" />${w}
+            <mm:last inverse="true">,</mm:last>
+          </mm:context>
+        </mm:stringlist>
+      </p>
 
 
     </body>
