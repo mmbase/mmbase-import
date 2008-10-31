@@ -135,13 +135,11 @@ if(!action.equals("print")) {
         </tr>
       </table>
     </form>
-    <script language="JavaScript" type="text/javascript">
-    <%= "<!--" %>
+    <script type="text/javascript">
       function clearForm() {
          document.location = "<%= thisPage %>"; 
          return false; 
       }
-    <%= "//-->" %>
     </script>
    <% 
 } %>
