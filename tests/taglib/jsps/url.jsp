@@ -1,4 +1,4 @@
-<%@page session="false" import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,java.util.*" 
+<%@page session="false" import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,java.util.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:content type="text/html">
 <html>
@@ -20,6 +20,11 @@
   </p>
   <p>
     <mm:url page="index.jsp" referids="b,c,a" />
+  </p>
+  <p>
+    <mm:url page="index.jsp" referids="b,c,a">
+      <mm:param name="a">AA</mm:param>
+    </mm:url>
   </p>
 </body>
 </html>

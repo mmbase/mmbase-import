@@ -21,11 +21,11 @@
   </p>
   <mm:offset    value="$offset" />
   <mm:maxnumber value="$max" />
-  <mm:previousbatches indexoffset="$indexoffset"> 
-    <mm:first>first page: <mm:index /> ----</mm:first> 
+  <mm:previousbatches indexoffset="$indexoffset">
+    <mm:first>first page: <mm:index /> ----</mm:first>
   </mm:previousbatches>
 
-  <mm:previousbatches max="5"  indexoffset="$indexoffset"> 
+  <mm:previousbatches max="5"  indexoffset="$indexoffset">
     <mm:first> ---</mm:first><mm:index /><mm:last inverse="true">, </mm:last>
   </mm:previousbatches>
 
@@ -34,8 +34,8 @@
     <mm:index /><mm:last inverse="true">, </mm:last>
   </mm:nextbatches>
 
-  <mm:nextbatches indexoffset="$indexoffset"> 
-    <mm:last>---last page: <mm:index /></mm:last> 
+  <mm:nextbatches indexoffset="$indexoffset">
+    <mm:last>---last page: <mm:index /></mm:last>
   </mm:nextbatches>
 
   <p>
@@ -45,7 +45,7 @@
   <p>
     paging with mm:write:
   </p>
-  
+
   <mm:previousbatches max="5">
     <mm:write /><mm:last inverse="true">, </mm:last>
   </mm:previousbatches>
@@ -53,7 +53,7 @@
   <mm:nextbatches max="5">
     <mm:write /><mm:last inverse="true">, </mm:last>
   </mm:nextbatches>
-  
+
   <hr />
   <p>
     General demo of mm:stringlist
@@ -61,13 +61,11 @@
   <mm:stringlist referid="list">
     <mm:index />: <mm:write /><mm:last inverse="true">, </mm:last>
   </mm:stringlist>
-  
-  <p>
-    Problem: mm:index of batches tags have offset 0. This is logical because the actual offset for
-    the query can be calculated very easily then. But people like the first page to be 1, not 0.
-    - 'indexoffset' attribute on batches tag? - offset attribute on index-tag should work differently?
-  </p>
-  
+
+  <hr />
+  <a href=".">Back</a>
+
+
 </mm:listnodescontainer>
 
 </mm:cloud>
