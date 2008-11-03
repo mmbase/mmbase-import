@@ -20,24 +20,24 @@ import org.mmbase.util.logging.Logging;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.12 2008-11-03 17:35:00 michiel Exp $
+ * @version $Id: ContextUserContext.java,v 1.11 2006-07-18 12:46:05 michiel Exp $
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
     private static final Logger   log = Logging.getLoggerInstance(ContextUserContext.class);
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 1L;
 
     private String  username;
     private Rank    rank;
     private long    key;
     /** The SecurityManager, who (eventually) created this instance */
-    protected transient MMBaseCop manager;
+    protected MMBaseCop manager;
 
     public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager, String app) {
         super(app);
         this.rank = rank;
         this.username = username;
         this.key = key;
-        this.manager = manager;
+        this.manager=manager;
     }
 
     public String getIdentifier() {
@@ -65,6 +65,17 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         return key;
     }
 
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        username = in.readUTF();
+        rank = (Rank)in.readObject();
+        key = in.readLong();
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        out.writeUTF(username);
+        out.writeObject(rank);
+        out.writeLong(key);
+    }
 
     public boolean equals(Object o) {
         if (o instanceof ContextUserContext) {

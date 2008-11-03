@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20060403170724">
-    <node number="20060403" owner="system" alias="component.reports">
-        <name>reports</name>
-        <classname>nl.didactor.component.reports.DidactorReports</classname>
-    </node>
-</components>

@@ -1,1 +1,0 @@
-<p><a href="../subsite/PersonalPageCreate.do?parentpage=${subsite}" style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="site.personal.new.page" /></a></p>

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-	<prompt xml:lang="nl">Weet u zeker dat u dit HTML fragment wilt verwijderen?</prompt>
-   <prompt xml:lang="en">Are you sure to delete this HTML fragment?</prompt>
-	<description xml:lang="nl">Klik hier om dit HTML fragment te verwijderen.</description>
-   <description xml:lang="en">Click here to delete this HTML fragment.</description>
-</action>

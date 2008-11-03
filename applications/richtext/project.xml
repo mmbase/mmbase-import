@@ -20,22 +20,16 @@ See http://www.MMBase.org/license
     <status>stable</status>
   </properties>
 
+  <!--
   <dependencies>
     <dependency>
-      <!--
-          kupu/common/kupu.pox.jspx used jslt x:tags.
-
-          ****ing x-tags have a dependency on xalan.
-      -->
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>2.7.1</version>
-      <type>jar</type>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <groupId>kupu</groupId>
+      <artifactId>kupu-mmbase</artifactId>
+      <version>1.3.5</version>
+      <url>http://kupu.oscom.org/</url>
     </dependency>
   </dependencies>
+  -->
 
 </project>
 

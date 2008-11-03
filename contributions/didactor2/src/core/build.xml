@@ -1,8 +1,0 @@
-<project name="didactor2_core" default="install" basedir=".">
-
-
-  <import file="../../install-dependency.xml" />
-  <target name="install" depends="searchrelate,editwizard,jumpers,resources,oscache,crontab,email,clustering,statistics" />
-
-
-</project>

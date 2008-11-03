@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE security PUBLIC '-//MMBase/DTD security config 1.0//EN' 'http://www.mmbase.org/dtd/security_1_0.dtd'>
-<security active="true">
-   <authentication class="nl.leocms.mmbase.security.cloud.Authenticate" url="" />
-   <authorization class="nl.leocms.mmbase.security.cloud.Verify" url="" />
-   <sharedsecret>appelflap</sharedsecret>
-</security>

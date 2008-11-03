@@ -1,1 +1,0 @@
-change customer's profile and  module preferences
