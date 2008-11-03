@@ -172,7 +172,9 @@ public abstract class AbstractActionTest extends BridgeTest  {
 	
 	public final class MyCloudFactory implements CloudFactory{
 		public Transaction createTransaction(HttpServletRequest request) {
-			return (Transaction) getTransaction();
+			Transaction transaction = getCloud().createTransaction("test-transaction");
+			log.debug("transaction: "+transaction.getUser().toString());
+            return transaction;
 		}
     }
 	
