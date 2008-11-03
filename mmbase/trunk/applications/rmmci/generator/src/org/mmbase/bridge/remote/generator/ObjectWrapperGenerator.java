@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ObjectWrapperGenerator.java,v 1.4 2008-07-16 13:28:20 michiel Exp $
+ * @version $Id: ObjectWrapperGenerator.java,v 1.5 2008-11-03 17:45:59 michiel Exp $
  */
 public class ObjectWrapperGenerator extends AbstractGenerator {
 
@@ -103,8 +103,8 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
         generateHeader();
         buffer.append("public abstract class ObjectWrapperHelper {\n");
 
-        buffer.append("  public static Object localToRMIObject(Object o) throws RemoteException {\n");
-        buffer.append("    Object retval = null;\n");
+        buffer.append("    public static Object localToRMIObject(Object o) throws RemoteException {\n");
+        buffer.append("        Object retval = null;\n");
 
         boolean isFirst = true;
         for (Class<?> c : objectsToWrap) {
@@ -114,13 +114,13 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
             String name = getShortName(c);
             String remoteName = "Remote" + name;
             buffer.append("    if (o instanceof " + name + ") {\n");
-            buffer.append("      retval = new " + remoteName + "_Rmi((" + name + ")o);\n");
+            buffer.append("        retval = new " + remoteName + "_Rmi((" + name + ")o);\n");
             isFirst = false;
         }
         buffer.append("    }\n    return retval;\n  }\n\n");
 
         buffer.append("  public static Object rmiObjectToRemoteProxy(Object o) throws RemoteException {\n");
-        buffer.append("    Object retval = null;\n");
+        buffer.append("      Object retval = null;\n");
 
         isFirst = true;
         for (Class<?> c : objectsToWrap) {
