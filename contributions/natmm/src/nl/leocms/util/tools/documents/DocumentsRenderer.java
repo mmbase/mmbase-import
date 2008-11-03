@@ -16,8 +16,6 @@
 package nl.leocms.util.tools.documents;
 
 import java.io.PrintWriter;
-import java.util.*;
-import java.util.TreeMap;
 
 import org.mmbase.bridge.*;
 
