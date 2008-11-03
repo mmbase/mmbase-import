@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.2 2008-11-03 17:53:48 michiel Exp $
+ * @version $Id: RMMCI.java,v 1.3 2008-11-03 18:39:09 michiel Exp $
  */
 public class RMMCI {
 
@@ -49,11 +49,17 @@ public class RMMCI {
         }
     }
 
-    public boolean needsRemote(Class<?> c) {
-        return c.getName().startsWith("org.mmbase") &&
-               c.isInterface() &&
-               (!java.io.Serializable.class.isAssignableFrom(c) || org.mmbase.bridge.Cloud.class.equals(c));
+
+    public static boolean needsRemote(java.lang.reflect.Type t) {
+        return t instanceof Class &&
+               ((Class<?>)t).getName().startsWith("org.mmbase") &&
+               ((Class<?>)t).isInterface() &&
+               (!java.io.Serializable.class.isAssignableFrom(((Class<?>)t)) ||
+                org.mmbase.bridge.Cloud.class.equals(t) ||
+                org.mmbase.security.UserContext.class.equals(t)
+                );
     }
+
 
     public void generate(Class<?> c) {
         if (needsRemote(c)) {
