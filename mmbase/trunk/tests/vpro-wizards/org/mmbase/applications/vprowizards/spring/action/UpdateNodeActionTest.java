@@ -81,7 +81,6 @@ public class UpdateNodeActionTest extends AbstractActionTest {
 				"actions[updateNode][1].nodenr=" + n.getNumber() + 
 				"&actions[updateNode][1].fields[title]="+newTitle);
 		WizardController wc = createWizardController();
-		wc.setCloudFactory(new StaticCloudFactory((Transaction) getTransaction()));
 		
 		try{
 			checkNoErrors(wc.handleRequest(req, null));
@@ -102,7 +101,6 @@ public class UpdateNodeActionTest extends AbstractActionTest {
 				"&actions[updateNode][1].dateFields[start].date=01-01-2007"+
 				"&actions[updateNode][1].dateFields[start].time=12:00:00");
 		WizardController wc = createWizardController();
-		wc.setCloudFactory(new StaticCloudFactory((Transaction) getTransaction()));
 		
 		try{
 			checkNoErrors(wc.handleRequest(req, null));
