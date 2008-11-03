@@ -12,23 +12,6 @@
         refreshFrame('channels');
         </script>
     </c:if>
-     <script language="javascript">
-      window.onload = function () {
-         var divBody = document.getElementById("mainBody");
-         var divHeight = "450";
-         if( typeof( window.innerHeight ) == 'number' ) {
-          //Non-IE
-          divHeight = window.innerHeight;
-        } else if( document.documentElement && (document.documentElement.clientHeight ) ) {
-          //IE 6+ in 'standards compliant mode'
-          divHeight = document.documentElement.clientHeight;
-        } else if( document.body && (document.body.clientHeight ) ) {
-          //IE 4 compatible
-          divHeight = document.body.clientHeight;
-        }
-        divBody.style["height"] =  divHeight+"px";
-      }
-   </script>
 </cmscedit:head>
 <body>
 
@@ -53,7 +36,7 @@
     </div>
 </div>
 <div class="editor">
-   <div class="body"   id="mainBody" style="overflow-x:hidden;overflow-y:scroll">
+   <div class="body">
    <br />
 	<mm:cloud>
 		<c:if test="${hasRights}">
