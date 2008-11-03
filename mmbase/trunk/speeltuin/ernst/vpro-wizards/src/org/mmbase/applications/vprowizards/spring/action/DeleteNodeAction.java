@@ -9,12 +9,9 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.ResultContainer;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

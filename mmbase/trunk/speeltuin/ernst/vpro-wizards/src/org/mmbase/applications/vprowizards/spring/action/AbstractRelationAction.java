@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NotFoundException;
-import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.Logger;

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 /**
  * This return page resolver will return the referrer url wiht a parameter 'nodenr' added when there is a new node in

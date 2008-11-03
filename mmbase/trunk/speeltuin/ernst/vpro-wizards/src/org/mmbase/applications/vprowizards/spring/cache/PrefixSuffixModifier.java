@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import java.util.*;
-
 import org.apache.commons.lang.StringUtils;
 
 /**

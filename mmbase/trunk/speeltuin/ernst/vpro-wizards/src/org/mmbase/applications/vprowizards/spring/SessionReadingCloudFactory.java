@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.*;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.Cloud;

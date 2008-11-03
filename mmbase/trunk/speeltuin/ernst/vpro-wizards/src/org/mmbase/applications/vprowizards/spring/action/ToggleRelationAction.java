@@ -19,8 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.Logger;

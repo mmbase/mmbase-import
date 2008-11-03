@@ -17,7 +17,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.apache.commons.collections15.FactoryUtils;
 import org.apache.commons.collections15.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +27,6 @@ import org.mmbase.applications.vprowizards.spring.ResultContainer;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.applications.vprowizards.spring.util.HTMLFilterUtils;
-import org.mmbase.applications.vprowizards.spring.util.ParamValueResolver;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
