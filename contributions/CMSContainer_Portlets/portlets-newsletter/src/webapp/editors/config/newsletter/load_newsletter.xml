@@ -20,7 +20,6 @@
 	<field name="subject" />
 	<field name="description" />
 	<field name="externalurl"/>
-	<field name="sendempty"/>
 	<field name="txtempty" />
 	<field name="schedule" />
    <field name="bounce_checking"/>
