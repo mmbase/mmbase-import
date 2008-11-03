@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework.basic;
 import java.util.*;
+import java.io.Serializable;
 
 import org.mmbase.framework.*;
 import org.mmbase.util.functions.*;
@@ -22,11 +23,11 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.13 2008-10-29 19:42:42 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.14 2008-11-03 13:09:36 andre Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
-public interface UrlConverter {
+public interface UrlConverter extends Serializable {
 
 
     /**
