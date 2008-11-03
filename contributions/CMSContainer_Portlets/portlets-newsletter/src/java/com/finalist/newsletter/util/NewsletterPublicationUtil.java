@@ -11,7 +11,9 @@ import org.mmbase.bridge.NodeManager;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.PortletUtil;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Publication.STATUS;
 
 public abstract class NewsletterPublicationUtil {
 
@@ -116,4 +118,36 @@ public abstract class NewsletterPublicationUtil {
       return (themes);
    }
 
+   public static Publication getPublication(int number) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterPublicationNode = cloud.getNode(number);
+
+      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+      Publication pub = new Publication();
+      pub.setId(newsletterPublicationNode.getNumber());
+      pub.setStatus(Publication.STATUS.valueOf(newsletterPublicationNode.getStringValue("status")));
+      pub.setUrl(getPublicationURL(number));
+      Newsletter newsletter = new Newsletter();
+
+      Node node = relatedNewsletters.get(0);
+      new POConvertUtils<Newsletter>().convert(newsletter, node);
+      newsletter.setTxtempty(node.getStringValue("txtempty"));
+      newsletter.setReplyAddress(node.getStringValue("replyto_mail"));
+      pub.setNewsletter(newsletter);
+
+      return pub;
+   }
+   public static String getPublicationURL(int publciationId) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node publicationNode = cloud.getNode(publciationId);
+      String hostUrl = NewsletterUtil.getServerURL();
+      String newsletterPath = getNewsletterPath(publicationNode);
+      return "".concat(hostUrl).concat(newsletterPath);
+   }
+   public static String getNewsletterPath(Node newsletterPublicationNode) {
+      return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
+   }
+   public static STATUS getStatus(int publicationId) {
+      return getPublication(publicationId).getStatus();
+   }
 }
