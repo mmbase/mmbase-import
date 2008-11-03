@@ -85,39 +85,19 @@
     <antcall target="install.jar" >
       <param name="name" value="mmbase-vpro-wizards" />
     </antcall>
-    <!--copy the required jars to the lib dir-->
-    <antcall target="get" >
-      <param name="file" value="org.springframework/jars/spring-mock-2.0-rc3.jar" />
-      <param name="destfile" value="spring-mock-2.0-rc3.jar" />
-    </antcall>
-    <antcall target="get" >
-      <param name="file" value="org.springframework/jars/spring-2.0-rc3.jar" />
-      <param name="destfile" value="spring-2.0-rc3.jar" />
-    </antcall>
-    <antcall target="get" >
-      <param name="file" value="org.springframework/jars/spring-webmvc-2.0-m2.jar" />
-      <param name="destfile" value="spring-webmvc-2.0-m2.jar" />
-    </antcall>
-    <antcall target="get" >
-      <param name="file" value="commons-lang/jars/commons-lang-2.3.jar" />
-      <param name="destfile" value="commons-lang-2.3.jar" />
-    </antcall>
-    <antcall target="get" >
-      <param name="file" value="commons-logging/jars/commons-logging-1.0.4.jar" />
-      <param name="destfile" value="commons-logging-1.0.4.jar" />
-    </antcall>
-    <antcall target="get" >
-      <param name="file" value="net.sourceforge.collections/jars/collections-generic-4.01.jar" />
-      <param name="destfile" value="collections-generic-4.01.jar" />
-    </antcall>
-    <copy file="${download.dir}/commons-lang-2.3.jar" todir="${lib}"/>
-    <copy file="${download.dir}/spring-mock-2.0-rc3.jar" todir="${lib}"/>
-    <copy file="${download.dir}/spring-2.0-rc3.jar" todir="${lib}"/>
-    <copy file="${download.dir}/spring-webmvc-2.0-m2.jar" todir="${lib}"/>
-    <copy file="${download.dir}/commons-logging-1.0.4.jar" todir="${lib}"/>
-    <copy file="${download.dir}/collections-generic-4.01.jar" todir="${lib}"/>
-  </target>  
+    <exec executable="maven.bat" dir="../applications/vpro-wizards">
+      <arg value="war"/>
+    </exec>
     
+    <copy todir="lib" flatten="true">
+        <zipfileset src="../applications/vpro-wizards/target/mmbase-vpro-wizards.war">
+        <patternset>
+          <include name="**/*.jar"/>
+        </patternset>
+  </zipfileset>
+
+    </copy>
+  </target>
   
 
   <target name="download" unless="no" depends="local.download">
