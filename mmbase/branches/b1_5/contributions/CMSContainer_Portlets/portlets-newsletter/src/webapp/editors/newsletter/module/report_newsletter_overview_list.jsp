@@ -19,7 +19,7 @@
                         <input type="checkbox" name="ids" value="${result.id}"/>
                      </td>
                      <td>
-                        <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img height="16" width="16" title="<fmt:message key='site.newsletter.edit'/>" src="../gfx/icons/edit.gif"/></a>
+                        <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img height="16" width="16" title="<fmt:message key='newsletter.icons.title.editproperty'/>" src="../gfx/icons/edit.gif"/></a>
                         <a href="javascript:ask('${result.id}')"><img src="../gfx/icons/delete.png" align="top" title="<fmt:message key='site.newsletter.remove'/>"/></a>
                         <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top" title="<fmt:message key='site.newsletter.edit'/>"/></a>
                      </td>
