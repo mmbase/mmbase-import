@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.vprowizards.spring;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.mmbase.applications.vprowizards.spring.action.Action;

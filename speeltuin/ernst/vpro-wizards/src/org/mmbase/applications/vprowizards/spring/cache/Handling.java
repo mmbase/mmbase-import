@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import java.util.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

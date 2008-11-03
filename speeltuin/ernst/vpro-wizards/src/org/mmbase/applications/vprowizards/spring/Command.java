@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.applications.vprowizards.spring.action.Action;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Transaction;
 
 
 

@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This factory instantiates a TokenizerCacheNameResolver instance, sets
