@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.23 2008-09-23 16:29:07 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.24 2008-11-03 18:42:49 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -146,9 +146,9 @@ public abstract class ContextLoginModule {
 
         if(found == null) {
             if (rank != null) {
-                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + "was not found for identify type: '" + identifyType  + "'");
+                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + " was not found for identify type: '" + identifyType  + "'", new Exception());
             } else {
-                log.warn("No user with username '" + userName + "' was not found for identify type: '" + identifyType  + "'");
+                log.warn("No user with username '" + userName + "' was found for identify type: '" + identifyType  + "'");
             }
             return null;
         }
