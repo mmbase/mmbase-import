@@ -15,7 +15,7 @@ See http://www.MMBase.org/license
 
     <beforeGoal name="mmbase-module:webapp">
         <ant:delete file="${maven.src.dir}/webapp/WEB-INF/spring-newsletter.xml"/>
-        <ant:copy file="${maven.src.dir}/config/spring-newsletter-${cmsc.workingmodel}.xml"
+        <ant:copy file="${maven.src.dir}/config/spring-newsletter${cmsc.workingmodel}.xml"
                   tofile="${maven.src.dir}/webapp/WEB-INF/spring-newsletter.xml"/>
     </beforeGoal>
     <postGoal name="mmbase-module:webapp">
