@@ -19,7 +19,7 @@ import java.lang.reflect.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractGenerator.java,v 1.1 2007-03-31 17:14:57 nklasens Exp $
+ * @version $Id: AbstractGenerator.java,v 1.2 2008-11-03 18:39:09 michiel Exp $
  */
 abstract public class AbstractGenerator {
 
@@ -59,10 +59,7 @@ abstract public class AbstractGenerator {
     }
 
     public boolean needsRemote(Type t) {
-        return t instanceof Class &&
-               ((Class<?>)t).getName().startsWith("org.mmbase") &&
-               ((Class<?>)t).isInterface() &&
-               (!java.io.Serializable.class.isAssignableFrom(((Class<?>)t)) || org.mmbase.bridge.Cloud.class.equals(t));
+        return RMMCI.needsRemote(t);
     }
 
     public String getShortName(Class<?> c) {
