@@ -154,7 +154,7 @@ public class NewsletterPublisher {
       String content = " ";
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
          int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-         if (articleCounts == 0 && publication.getNewsletter().getSendempty()) {
+         if (articleCounts == 0 ) {
             content = publication.getNewsletter().getTxtempty();
          } else {
             log.info("url---->" + url);
