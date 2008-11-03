@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.springframework.web.bind.RequestUtils;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -46,7 +45,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
                 log.debug("handling request type flush hint");
                 if (shouldFlush(request)) {
                     TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
-                    resolver.setInput(RequestUtils.getStringParameter(request, "flushname", ""));
+                    resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
                     resolver.setNameSpace("request");
                     flushForName(resolver.getNames());
                 }
@@ -62,7 +61,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
                 log.debug("handling node type flush hint");
                 if (shouldFlush(request)) {
                     TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
-                    resolver.setInput(RequestUtils.getStringParameter(request, "flushname", ""));
+                    resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
                     resolver.setNameSpace("node");
                     flushForName(resolver.getNames());
                 }
@@ -77,7 +76,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
                 log.debug("handling relation type flush hint");
                 if (shouldFlush(request)) {
                     TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
-                    resolver.setInput(RequestUtils.getStringParameter(request, "flushname", ""));
+                    resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
                     resolver.setNameSpace("relation");
                     flushForName(resolver.getNames());
                 }
@@ -85,22 +84,6 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
         });
 
     }
-
-    /**
-     * util: concatenate all strings in the list, separated by comma's
-     * @param namesForNamespace
-     * @return
-     */
-    private String listToString(List<String> namesForNamespace) {
-        String result = "";
-        for (Iterator<String> iter = namesForNamespace.iterator(); iter.hasNext();) {
-            result = iter.next() + (iter.hasNext() ? "'" : "");
-            
-        }
-        return result;
-    }
-    
-    
 
     /**
      * flush the given cache groups.
