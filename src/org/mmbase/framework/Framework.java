@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.*;
+import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.61 2008-10-20 17:10:53 michiel Exp $
+ * @version $Id: Framework.java,v 1.62 2008-11-03 16:43:48 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -38,10 +39,10 @@ public abstract class Framework {
 
     /**
      * Reference to the Framework singleton.
-     * @since MMBase-1.9
      */
     static Framework framework = null;
 
+    private static ResourceWatcher frameworkWatcher;
 
     public static final String XSD = "framework.xsd";
     public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
@@ -70,31 +71,33 @@ public abstract class Framework {
      */
     public static Framework getInstance() {
         if (framework == null) {
-            org.mmbase.util.ResourceWatcher frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
-                    public void onChange(String resourceName) {
-                        try {
-                            ComponentRepository.getInstance();
-                            org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, Framework.class);
-                            if (fwConfiguration == null)  {
-                                framework = new org.mmbase.framework.basic.BasicFramework();
-                            } else {
-                                org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
-                                try {
-                                    framework = (Framework) Instantiator.getInstance(el, el);
-                                } catch (NoSuchMethodError nsme) {
-                                    framework = (Framework) Instantiator.getInstance(el);
+            if (frameworkWatcher == null) {
+                frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
+                        public void onChange(String resourceName) {
+                            try {
+                                ComponentRepository.getInstance();
+                                org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, Framework.class);
+                                if (fwConfiguration == null)  {
+                                    framework = new org.mmbase.framework.basic.BasicFramework();
+                                } else {
+                                    org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
+                                    try {
+                                        framework = (Framework) Instantiator.getInstance(el, el);
+                                    } catch (NoSuchMethodError nsme) {
+                                        framework = (Framework) Instantiator.getInstance(el);
+                                    }
                                 }
-                            }
 
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                            framework = new org.mmbase.framework.basic.BasicFramework();
+                            } catch (Exception e) {
+                                log.error(e.getMessage(), e);
+                                framework = new org.mmbase.framework.basic.BasicFramework();
+                            }
                         }
-                    }
-                };
-            frameworkWatcher.add("framework.xml");
-            frameworkWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-            frameworkWatcher.start();
+                    };
+                frameworkWatcher.add("framework.xml");
+                frameworkWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+                frameworkWatcher.start();
+            }
             frameworkWatcher.onChange();
         }
         return framework;
