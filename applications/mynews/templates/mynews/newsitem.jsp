@@ -27,8 +27,8 @@ for the MMBase node --%>
     The default escape behaviour can be changed on tags producing output.
     escape="p"  generates p-tags, to escape newlines.
  --%>
-  <mm:field  escape="p,links" name="body"/>
-
+  <mm:field  escape="none" name="body"/>
+  <p>hallo</p>
   <table>
   <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
    <mm:first><tr><th colspan="2">Related images</th></tr><tr><td /><td></mm:first>
