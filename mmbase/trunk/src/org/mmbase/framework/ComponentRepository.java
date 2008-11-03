@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.44 2008-10-09 13:00:28 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.45 2008-11-03 16:43:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -55,6 +55,8 @@ public class ComponentRepository {
         ResourceWatcher rw = new ResourceWatcher() {
                 public void onChange(String r) {
                     getInstance().readConfiguration(r);
+                    Framework.framework = null; // invalidate also the framework configuration,
+                                                // because e.g. UrlConverters may have referrences to components
                 }
             };
         rw.add("components");
