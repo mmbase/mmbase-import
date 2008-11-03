@@ -6,11 +6,11 @@
       <table>
          <thead>
             <th width="3%"></th>
-            <th width="5%"></th>
+            <th width="12%"></th>
             <th width="15%"><fmt:message key="newsletteroverview.newsletter"/></th>
             <th width="15%"><fmt:message key="globalstats.total.publications"/></th>
             <th width="15%"><fmt:message key="globalstats.total.sentsubscriptions"/></th>
-            <th width="47%"><fmt:message key="globalstats.total.subscriptions"/></th>
+            <th width="40%"><fmt:message key="globalstats.total.subscriptions"/></th>
          </thead>
          <tbody>
             <c:forEach items="${results}" var="result">
@@ -19,7 +19,8 @@
                         <input type="checkbox" name="ids" value="${result.id}"/>
                      </td>
                      <td>
-                        <a href="NewsletterDelete.do?number=${result.id}&amp;remove='true'&amp;forward='manage'"><img src="../gfx/icons/delete.png" align="top" title="<fmt:message key='site.newsletter.remove'/>"/></a>
+                        <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img height="16" width="16" title="<fmt:message key='site.newsletter.edit'/>" src="../gfx/icons/edit.gif"/></a>
+                        <a href="javascript:ask('${result.id}')"><img src="../gfx/icons/delete.png" align="top" title="<fmt:message key='site.newsletter.remove'/>"/></a>
                         <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top" title="<fmt:message key='site.newsletter.edit'/>"/></a>
                      </td>
                      <td>
@@ -61,5 +62,9 @@
       }
 
       return false;
-   }
+      }
+      
+      function ask(idk){		
+		location.href=" NewsletterDelete.do?number="+idk+"&amp;remove='true'&amp;forward='manage'";          		
+	  }
 </script>
