@@ -80,6 +80,27 @@ This is a zip file you need to unzip, and place the various elements in the righ
 5) the web.xml fragment in the WEB-INF dir needs to be merged into your applications web.xml.
 
 
+Dependencies
+--------------------------------
+The vpro-wizards have a number of dependencies. Here is an overview:
+VPRO-Wizards
+  +- Spring
+     +- commons-logging
+     +- commons-lang
+  +- Spring webmvc
+  +- Nekohtml
+     +- xerces
+  +- collections-generic
+
+If you want to use the CachHandlerInterceptor and the org.mmbase.applications.vprowizards.spring.cache.CacheWrapper You will also need need the oscache jar.
+
+Spring-mock is used to run the (integration) tests, you don't need it for run- or compile time.
+
+Nekohtml is an html parser/filter that is used to clean richtext input. 
+Collections-generic is a version of commons-collections that supports generics.
+You can examine the maven project.xml file to see what versions are used to build the VPRO-Wizards, and you can run "maven war:war" to create an archive that contains little more than these jars.
+
+
 Considerations
 ---------------------------------
 Some things that are important to know when  using the vpro-wizards
