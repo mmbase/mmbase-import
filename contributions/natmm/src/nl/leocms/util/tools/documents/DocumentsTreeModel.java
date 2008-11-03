@@ -23,8 +23,6 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
-import java.util.TreeMap;
-
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 

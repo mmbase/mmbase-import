@@ -1,6 +1,5 @@
 package nl.leocms.util.tools;
 
-import java.io.*;
 import java.util.*;
 
 import org.mmbase.bridge.*;
@@ -25,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class SearchUtil {
 
