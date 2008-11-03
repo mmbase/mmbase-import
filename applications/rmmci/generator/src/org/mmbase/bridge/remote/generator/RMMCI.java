@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.1 2007-03-31 17:14:57 nklasens Exp $
+ * @version $Id: RMMCI.java,v 1.2 2008-11-03 17:53:48 michiel Exp $
  */
 public class RMMCI {
 
@@ -143,8 +143,9 @@ public class RMMCI {
 */
 
         // security classes
-/*
         generate(org.mmbase.security.UserContext.class);
+/*
+
         generate(org.mmbase.security.Rank.class);
 */
         generate(org.mmbase.security.AuthenticationData.class);
