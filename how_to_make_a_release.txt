@@ -1,4 +1,11 @@
-$Id: how_to_make_a_release.txt,v 1.1 2008-06-27 09:53:01 michiel Exp $
+$Id: how_to_make_a_release.txt,v 1.2 2008-11-03 20:21:27 michiel Exp $
+
+
+- Make sure all automated test-cases succeed. Check the nightly build, or run 'make all' in tests.
+- Manually test. Build or download an example war. Deploy it on recent tomcat version.
+    - No warnings, errors in the log
+    - No easily found problems in the example webapp
+    - run test jsps? tests/taglib?  All pages under /mmbase/admin/tests?
 
 
 - Check out 'minimall'.
