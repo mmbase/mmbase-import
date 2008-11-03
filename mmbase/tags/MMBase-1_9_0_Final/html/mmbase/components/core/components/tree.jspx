@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_core b_component-block-tree ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+    <mm:import externid="type" />
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+    <mm:notpresent referid="type">
+      <h4>Classified blocks</h4>
+      <mm:functioncontainer>
+        <mm:listfunction set="components" name="blockClassification">
+          <mm:write request="blockType" />
+          <mm:include page="blockType.jspx" />
+        </mm:listfunction>
+      </mm:functioncontainer>
+      <h4>Unclassified blocks</h4>
+      <mm:functioncontainer>
+        <mm:param name="id"></mm:param>
+        <mm:listfunction set="components" name="blockClassification">
+          <mm:write request="blockType" />
+          <mm:include page="blockType.jspx" />
+        </mm:listfunction>
+      </mm:functioncontainer>
+    </mm:notpresent>
+    <mm:present referid="type">
+      <h4>Blocks for ${type}</h4>
+      <mm:functioncontainer>
+        <mm:param name="id">${type}</mm:param>
+        <mm:listfunction set="components" name="blockClassification">
+          <mm:write request="blockType" />
+          <mm:include page="blockType.jspx" />
+        </mm:listfunction>
+      </mm:functioncontainer>
+    </mm:present>
+</div>

@@ -1,0 +1,35 @@
+<table
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
+    class="turn">
+  <jsp:directive.attribute name="file"     type="java.lang.String" required="true" />
+  <jsp:directive.attribute name="link"     type="java.lang.String" required="true" />
+  <col /><col /><col />
+  <tr>
+    <td/>
+    <td class="click" title="upside up">
+      <mm-res:transformation file="${file}" link="${link}"
+                            template="">^</mm-res:transformation>
+    </td>
+    <td />
+  </tr>
+  <tr>
+    <td class="click" title="-90 degrees">
+      <mm-res:transformation file="${file}" link="${link}"
+                            template="r(270)">&amp;lt;</mm-res:transformation>
+    </td>
+    <td class="click" title="${transformation[file]}" />
+    <td class="click" title="+90 degrees">
+      <mm-res:transformation file="${file}" link="${link}"
+                            template="r(90)">&amp;gt;</mm-res:transformation>
+    </td>
+  </tr>
+  <tr>
+    <td/>
+    <td class="click" title="upside down">
+      <mm-res:transformation file="${file}" link="${link}"
+                            template="r(180)">v</mm-res:transformation>
+    </td>
+    <td />
+  </tr>
+</table>

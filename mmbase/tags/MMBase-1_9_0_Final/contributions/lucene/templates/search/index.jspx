@@ -1,0 +1,15 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="../head.jspx" />
+  <body class="basic">
+    <mm:content type="text/html" expires="0">
+      <mm:cloud method="asis">
+        <mm:include page="/mmbase/components/lucene/search.jspx" />
+      </mm:cloud>
+    </mm:content>
+  </body>
+</html>

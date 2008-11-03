@@ -1,0 +1,12 @@
+<mm:content
+    expires="300"
+    language="${empty param.lang ? client : param.lang}"
+    type="application/xml"
+    postprocessor="none"
+    jspvar="locale"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <numberInfo>
+    <decimalSeparator><jsp:expression>new java.text.DecimalFormatSymbols(locale).getDecimalSeparator()</jsp:expression></decimalSeparator>
+  </numberInfo>
+</mm:content>

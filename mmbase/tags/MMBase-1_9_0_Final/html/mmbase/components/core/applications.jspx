@@ -1,0 +1,117 @@
+<mm:cloud rank="administrator"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="application" />
+  <mm:import externid="app" />
+  <div
+      class="mm_c c_core b_applications ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+    <mm:notpresent referid="application">
+      
+      <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+      <table summary="applications" border="0" cellspacing="0" cellpadding="3">
+        <caption>
+          ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+        </caption>
+        <tr>
+          <th>Name</th>
+          <th>Version</th>
+          <th>Installed</th>
+          <th>Maintainer</th>
+          <th>Auto-Deploy</th>
+          <th class="center">Manage</th>
+        </tr>
+        <mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
+          <tr>
+            <td>
+              <mm:link page="applications">
+                <mm:param name="application"><mm:field name="item1" /></mm:param>
+                <a href="${_}" title="manage application"><mm:field name="item1" /></a>
+              </mm:link>
+            </td>
+            <td><mm:field name="item2" /></td>
+            <td><mm:field name="item3" /></td>
+            <td><mm:field name="item4" /></td>
+            <td><mm:field name="item5" /></td>
+            <td class="center">
+              <mm:link page="applications">
+                <mm:param name="application"><mm:field name="item1" /></mm:param>
+                <a href="${_}" title="manage application"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="manage" width="21" height="20" /></mm:link></a>
+              </mm:link>
+            </td>
+          </tr>
+        </mm:nodelistfunction>
+      </table>
+    </mm:notpresent>
+    
+    <mm:present referid="application">
+    
+      <mm:import id="version"><mm:function module="mmadmin" name="VERSION" referids="application" /></mm:import>
+      <mm:import id="installedversion"><mm:function module="mmadmin" name="INSTALLEDVERSION" referids="application" /></mm:import>
+    
+      <h3>Application <mm:write referid="application" /></h3>
+      <p><mm:function module="mmadmin" name="DESCRIPTION" referids="application" escape="none" /></p>
+      
+      <table border="0" cellspacing="0" cellpadding="3">
+        <caption>Install the application <mm:write referid="application" />.</caption>
+        <tr>
+          <th>Action</th>
+          <th>Version</th>
+          <th>Installed version</th>
+          <th class="center">Confirm</th>
+        </tr>
+        <tr>
+         <td>Install <mm:write referid="application" /></td>
+         <td>Version: <mm:function module="mmadmin" name="VERSION" referids="application" /></td>
+         <td>
+           <mm:compare referid="installedversion" value="-1" inverse="true">
+             Version: <mm:write referid="installedversion" />
+           </mm:compare>
+         </td>
+         <td class="center">
+           <mm:islessthan referid="installedversion" value="$version">
+             <mm:link page="applications-actions" referids="application">
+               <mm:param name="cmd" value="LOAD" />
+               <mm:param name="app"><mm:write referid="application" /></mm:param>
+               <a href="${_}"><mm:link page="/mmbase/style/images/ok.png"><img src="${_}" alt="OK" width="21" height="20" /></mm:link></a>
+             </mm:link>
+           </mm:islessthan>
+         </td>
+        </tr>
+      </table>
+    
+      <mm:link page="applications-actions" referids="application">
+        <form action="${_}" method="post">
+        <input name="cmd" type="hidden" value="SAVE" />
+        <table border="0" cellspacing="0" cellpadding="3">
+          <caption>
+            Backup or save the application <mm:write referid="application" />.
+          </caption>
+          <tr>
+            <th>Action</th>
+            <th>Path</th>
+            <th class="center">Confirm</th>
+          </tr><tr>
+           <td>Save <mm:write referid="application" /></td>
+           <td><input type="text" name="path" value="/tmp" size="72" /></td>
+           <td class="center">
+             <mm:link page="/mmbase/style/images/ok.png"><input type="image" src="${_}" alt="OK" /></mm:link>
+           </td>
+          </tr>
+        </table>
+        </form>
+      </mm:link>
+    
+      <p>
+        <mm:link page="applications">
+          <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
+          <a href="${_}">Return to Applications Overview</a>
+        </mm:link>
+      </p>
+    </mm:present>
+   
+  </div>
+</mm:cloud>

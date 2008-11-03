@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE taglibcontent PUBLIC "-//MMBase//DTD taglibcontent 1.0//EN" "http://www.mmbase.org/dtd/taglibcontent_1_0.dtd">
+<taglibcontent defaulttype="text/html">
+  <!--
+  It is not a good idea to change things in this XML (because this might cause portability issues), but
+  you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
+
+  version: $Id: taglibcontent.xml,v 1.56 2008-03-18 15:15:12 pierre Exp $
+  -->
+
+  <!-- First per content-type default escapers and postprocessors are defined.
+       These are used if the corrosponding attributes are not used
+  -->
+
+  <content
+    id="html"
+    type="text/html"
+    defaultescaper="text/html"
+    defaultpostprocessor="reducespace"
+    />
+
+  <!--
+    see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/
+    The trouble is that IE (_all_ versions)  does absolutely not support it
+  -->
+  <content
+    id="xhtml"
+    type="application/xhtml+xml"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+  <content
+    id="xml"
+    type="application/xml"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+
+  <content
+    type="text/html"
+    defaultescaper="text/html"
+    defaultpostprocessor="reducespace"
+    />
+  <content
+    type="text/xml"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    />
+
+  <content
+    type="application/xml"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="application/xhtml+xml"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="audio/x-pn-realaudio"
+    defaultescaper="none"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="application/smil"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="text/vnd.rn-realtext"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="video/x-ms-wmp"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+
+  <content
+    type="text/javascript"
+    defaultescaper="none"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="text/css"
+    defaultescaper="none"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+
+  <!-- These are the available escapers.  There is one 'global' escaper which is provided by the
+  content-tag to its writer childs. Writers also have an 'escaper' attribute.
+  -->
+
+  <escaper id="text/plain">
+    <info>This equals no escaping</info>
+  </escaper>
+  <escaper id="none">
+    <!-- explicitely no escaping -->
+    <info>No escaping</info>
+  </escaper>
+  <escaper id="text/html">
+    <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
+    <info>Escapes for use in HTML.</info>
+  </escaper>
+  <escaper id="text/html/attribute">
+    <class config="ESCAPE_ATTRIBUTE_HTML">org.mmbase.util.transformers.Xml</class>
+    <info>Escapes for use in HTML atributes</info>
+  </escaper>
+  <escaper id="text/xml">
+    <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
+    <info>Escapes for use in XML (or XHTML).</info>
+  </escaper>
+  <escaper id="inline">
+    <class config="HTML_INLINE" back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>Interpret as 'enriched' ASCII for 'inline' HTML parts (so no blocks)</info>
+  </escaper>
+  <escaper id="p">
+    <class config="HTML_BLOCK_BR" back="true">org.mmbase.util.transformers.XmlField</class>
+    <!-- Generates zero, one or more paragraphs, paragraphs can also end with br tags -->
+    <info>Interpret as 'enriched' ASCII for 'block' HTML parts. It normally generates one or more p-tags (everything is enclosed by a p tag, including lists).</info>
+  </escaper>
+  <escaper id="pp">
+    <class config="HTML_BLOCK"  back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>As 'p', but only one sequences of one br-tags are produced</info>
+  </escaper>
+  <escaper id="p-ommit-surrounding">
+    <class config="HTML_BLOCK_BR_NOSURROUNDINGP" back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>as p, but surrounding p /p tags are omitted (you must place them by hand). This can be needed for 'read-more' links.</info>
+  </escaper>
+  <escaper id="pp-ommit-surrounding">
+    <class config="HTML_BLOCK_NOSURROUNDINGP"  back="true">org.mmbase.util.transformers.XmlField</class>
+  </escaper>
+  <escaper id="pl">
+    <class config="HTML_BLOCK_LIST_BR" back="true">org.mmbase.util.transformers.XmlField</class>
+    <!-- Generates zero, one or more paragraphs, paragraphs can contain ul tags -->
+    <info>Interpret as 'enriched' ASCII for 'block' HTML parts. It normally generates one or more p-tags. Lists (ul tags) are placed outside the paragraphs. As such a block may start or end with an ul tag.</info>
+  </escaper>
+  <escaper id="ppl">
+    <class config="HTML_BLOCK_LIST" back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>As 'p2', but only one sequences of one br-tags are produced</info>
+  </escaper>
+  <escaper id="pl-ommit-surrounding">
+    <class config="HTML_BLOCK_LIST_BR_NOSURROUNDINGP" back="true">org.mmbase.util.transformers.XmlField</class>
+    <!-- Generates zero, one or more paragraphs, paragraphs can contain ul tags -->
+    <info>as p2, but surrounding p /p tags are omitted (you must place them by hand).</info>
+  </escaper>
+  <escaper id="ppl-ommit-surrounding">
+    <class config="HTML_BLOCK_LIST_NOSURROUNDINGP" back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>as pp2, but surrounding p /p tags are omitted (you must place them by hand).</info>
+  </escaper>
+
+  <escaper id="wiki">
+    <class config="RICHBODY"  back="true">org.mmbase.util.transformers.XmlField</class>
+    <info>Generates piece of XHTML2 compatible XML</info>
+  </escaper>
+
+  <escaper id="sql">
+    <class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
+    <info>Escapes for use in SQL (escaping of quotes). You will _not_ have to use this if use mm:constraint.</info>
+  </escaper>
+  <escaper id="js-single-quotes">
+    <class config="ESCAPE_SINGLE_QUOTES">org.mmbase.util.transformers.Javascript</class>
+    <info>Escapes single quotes for use in Javascript (with \').</info>
+  </escaper>
+  <escaper id="js-double-quotes">
+    <class config="ESCAPE_DOUBLE_QUOTES">org.mmbase.util.transformers.Javascript</class>
+    <info>Escapes double quotes for use in Javascript (with &quot;).</info>
+  </escaper>
+    <escaper id="js-both-quotes">
+    <class config="ESCAPE_BOTH_QUOTES">org.mmbase.util.transformers.Javascript</class>
+    <info>Escapes both quote types (' and ") for use in Javascript (with \').</info>
+  </escaper>
+  <escaper id="url">
+    <class config="ESCAPE">org.mmbase.util.transformers.Url</class>
+    <info>Escapes for use in an URL (using escaping with %). When you use mm:url with mm:param tags you will not have to use this.</info>
+  </escaper>
+  <escaper id="urlparam">
+    <class config="PARAM_ESCAPE">org.mmbase.util.transformers.Url</class>
+    <info>Similar to 'url' but also escapes '+'</info>
+  </escaper>
+  <escaper id="uppercase">
+    <class>org.mmbase.util.transformers.UpperCaser</class>
+    <info>Converts to all uppercase.</info>
+  </escaper>
+  <escaper id="lowercase">
+    <class>org.mmbase.util.transformers.LowerCaser</class>
+    <info>Converts to all lowercase.</info>
+  </escaper>
+  <escaper id="identifier">
+    <class>org.mmbase.util.transformers.Identifier</class>
+    <info>Replaces anything which is not alphanumeric by underscores.</info>
+  </escaper>
+  <escaper id="censor">
+    <class>org.mmbase.util.transformers.Censor</class>
+    <info>Finds and replaces 'forbidden' words.</info>
+  </escaper>
+  <escaper id="swallow">
+    <class>org.mmbase.util.transformers.Swallower</class>
+    <info>Everything disappears</info>
+  </escaper>
+  <escaper id="links">
+    <class>org.mmbase.util.transformers.LinkFinder</class>
+    <info>Finds and makes clickable URL's.</info>
+  </escaper>
+  <escaper id="plainlinks">
+    <class config="WORDS">org.mmbase.util.transformers.LinkFinder</class>
+    <info>Finds and makes clickable URL's, assuming plain/text input.</info>
+  </escaper>
+  <escaper id="figlet">
+    <class>org.mmbase.util.transformers.Figlet</class>
+    <info>Filters through the command-line tool 'figlet', which can have amusing results.</info>
+  </escaper>
+  <escaper id="trimmer">
+    <class>org.mmbase.util.transformers.Trimmer</class>
+    <info>Trims leading and trailing whitespace</info>
+  </escaper>
+
+  <escaper id="cp1252">
+    <class>org.mmbase.util.transformers.CP1252Surrogator</class>
+    <info>
+      Escapes the CP1252 characters which are not in ISO-8859-1. You don't want to serve your
+      pages as CP1252 (it is not a standard encoding). It is adviceable to do it using UTF-8, but if
+      you really want to use ISO-8859-1, you can create reasonable surrogates by this (nicer then question marks).
+    </info>
+  </escaper>
+
+  <escaper id="cp1252wrong">
+    <class config="WRONG_ENCODED">org.mmbase.util.transformers.CP1252Surrogator</class>
+    <info>
+      Escapes   the CP1252 characters, but suppose that the String was originally wrongly encoded
+      (CP1252 bytes were incorrectly supposed ISO-8859-1)
+    </info>
+  </escaper>
+
+  <escaper id="spaceremover">
+    <class>org.mmbase.util.transformers.SpaceRemover</class>
+    <info>
+      Replace 1 or more white space characters by one space, unless, those are the first or last of
+      the string, those are replaced with nothing.
+    </info>
+  </escaper>
+  <escaper id="spaceswallower">
+    <class>org.mmbase.util.transformers.SpaceSwallower</class>
+    <info>
+      Removes all whitespace.
+    </info>
+  </escaper>
+
+  <escaper id="roman">
+    <class>org.mmbase.util.transformers.RomanTransformer</class>
+    <info>
+      This works on integers only, and converts them to a roman numbers (lowercase, so see also
+      'uppercase'). This works only for natural numbers smaller than 4000.
+    </info>
+  </escaper>
+
+  <escaper id="rot13">
+    <class>org.mmbase.util.transformers.Rot13</class>
+    <info>
+      Performs 'rot 13' encoding of the string, to scramble letters. Can be decoded by doing a rot13 again.
+    </info>
+  </escaper>
+  <escaper id="rot5">
+    <class>org.mmbase.util.transformers.Rot5</class>
+    <info>
+      Performs 'rot 5' encoding of the string. This scrambles the digits.
+    </info>
+  </escaper>
+
+  <escaper id="md5">
+    <class>org.mmbase.util.transformers.MD5</class>
+  </escaper>
+
+  <escaper id="adler32">
+    <class config="java.util.zip.Adler32">org.mmbase.util.transformers.ChecksumFactory</class>
+    <info>
+      Performs a 'adler32' checksum.
+    </info>
+  </escaper>
+
+  <escaper id="crc32">
+    <class config="java.util.zip.CRC32">org.mmbase.util.transformers.ChecksumFactory</class>
+    <info>
+      Performs a 'crc32' checksum.
+    </info>
+  </escaper>
+
+  <escaper id="java">
+    <class>org.mmbase.util.transformers.UnicodeEscaper</class>
+    <info>
+      Escapes non-ASCII characters to java escape sequences.
+    </info>
+  </escaper>
+
+
+  <parameterizedescaper id="regexps">
+    <class>org.mmbase.util.transformers.RegexpReplacerFactory</class>
+    <info>
+      Regexp-replacing.
+    </info>
+    <param name="patterns">
+      <info>
+        A list of entries describing regular expresions replacements. Replacements happens per word.
+      </info>
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="wrap">
+    <class>org.mmbase.util.transformers.WordWrapperFactory</class>
+    <info>
+      Word wrapping. Works on plain/text, and wraps with newlines. Can be converted to HTML with a chained escaper.
+    </info>
+    <param name="length">
+      <info>
+        Length of lines (default to 80).
+      </info>
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="substring">
+    <class>org.mmbase.util.transformers.SubstringFactory</class>
+    <info>
+      Take substring.
+    </info>
+    <param name="from">
+    </param>
+    <param name="to">
+    </param>
+    <param name="ellipsis">
+    <info>
+      Can be used to put those three dots ('...') at the end of a 'substringed' line.
+    </info>
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="paragraph">
+    <class>org.mmbase.util.transformers.ParagraphTransformerFactory</class>
+    <info>Wraps a text in paragraph (p) tags, unless it is empty or that textstarts with a p tag (in which case it is already wrapped). Use this for fields that contain HTML, but for which you are unsure if they have parahraph tags already</info>
+    <param name="class">
+      <info>
+        A class name to give to the paragraph tag.
+      </info>
+    </param>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="resourcebundle">
+    <class>org.mmbase.util.transformers.ResourceBundleReplacerFactory</class>
+    <info>
+      Replaces the words which are present as key in given resourcebundle with the values. Since
+      resource bundles are localized, this gives a way to translate (mm:write is nearly
+      fmt:message).
+      E.g. mm:write escape="resourcebundle(org.mmbase.datatypes.resources.ordinals)" value="5".
+    </info>
+    <param name="basename" />
+    <param name="mode" value="ENTIRE" />
+    <param name="locale" />
+  </parameterizedescaper>
+
+  <parameterizedescaper id="ordinals">
+    <class>org.mmbase.util.transformers.ResourceBundleReplacerFactory</class>
+    <info>
+      Replaces numerics with ordinals ('first', 'second'...).
+    </info>
+    <param name="basename" value="org.mmbase.datatypes.resources.ordinals" />
+    <param name="mode" />
+    <param name="locale" />
+  </parameterizedescaper>
+  <parameterizedescaper id="google">
+    <class>org.mmbase.util.transformers.GoogleHighlighterFactory</class>
+    <info>
+      Explores the request for the 'referer' http header. If this is from google, the google search
+      words are highlighted in the text.
+    </info>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="encryption">
+    <class>org.mmbase.util.transformers.EncryptionTransformerFactory</class>
+    <info>
+      Encrypts or decrypts the given input using a cryptographic algorithm that is specified as a parameter.
+    </info>
+    <param name="key">
+      <info>
+        The key used to encrypt the data. eg. AES uses a 128 bit key.
+      </info>
+    </param>
+    <param name="format">
+      <info>
+        The in-/output format of the ecrypted data. 'hex'(default) or 'base64'
+      </info>
+    </param>
+    <param name="algorithm">
+      <info>
+        The algorithm used for the encryption. eg. 'AES'(default), 'DES', 'Blowfish', etc.
+      </info>
+    </param>
+    <param name="direction">
+      <info>
+        The direction of encryption. 'encrypt'(default) or 'decrypt'
+      </info>
+    </param>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="codesample">
+    <class>org.mmbase.util.transformers.CodeSampleFactory</class>
+    <info>
+      <p>
+        Escapes the code between the tags you define.
+      </p>
+      <p>
+        This escaper enables the use of two different escapers in one piece of text.
+        It was started to simplify the inclusion of a code snippet in html but can be
+        used for other purposes as well.
+      </p>
+      <p>
+        You can specify the tags between which you wish to escape your text, the
+        escaper to use and you can set an escaper for the rest of the text. It needs
+        to be rewritten to support all escapers/transformers. It only supports the
+        escapers p, pp, p-ommit-surrounding, pp-ommit-surrounding, inline, text/html
+        and text/xml for now.
+        All parameters may be ommitted then it defaults to &lt;pre&gt; and 'text/html'.
+        Use it like f.e.:
+      </p>
+      <p>
+        &lt;mm:import id="texttext"&gt;
+        This is an example:
+        &lt;% String foo = "bar"; %&gt;
+        &lt;/mm:import&gt;
+        &lt;mm:escaper type="codesample" id="testsample" /&gt;
+        &lt;mm:write referid="testtext" escape="testsample" /&gt;
+      </p>
+    </info>
+    <param name="starttag">
+      <info>
+        The starttag, f.e. &lt;pre&gt;.
+      </info>
+    </param>
+    <param name="closetag">
+      <info>
+        The closetag, f.e. &lt;/pre&gt;.
+      </info>
+    </param>
+    <param name="escapecode">
+      <info>
+        The escaper to use between the start- and closetag.
+      </info>
+    </param>
+    <param name="escaperest">
+      <info>
+        The escaper to use on the rest of the text.
+      </info>
+    </param>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="tagstripper">
+    <class>org.mmbase.util.transformers.TagStripperFactory</class>
+    <info>
+      <p>
+        Changes existing HTML markup.
+      </p>
+    </info>
+    <param name="tags">
+      <info>
+        Either XSS or NONE. XSS will strip all tags and attributes which may have been present in the HTML to try cross-site-scripting.
+        NONE will strip all tags, and produce plain text.
+      </info>
+    </param>
+    <param name="addbrs">
+      <info>
+        If true, then newlines are replaced by br-tags. This can be used to make better html from a kind of pseudo-html.
+      </info>
+    </param>
+    <param name="escapeamps">
+      <info>
+        Html 4 entities are resolved. This indicated whether the remaining ampersands must be
+        replaced with &amp;amp;. Default to false. But see also the 'toxml' escaper.
+      </info>
+    </param>
+  </parameterizedescaper>
+
+  <parameterizedescaper id="toxml">
+    <class>org.mmbase.util.transformers.TagStripperFactory</class>
+    <info>
+      <p>This filters HTML-4, and cleanes it up, so that it is valid XML. At the moment, like tagstrippers(XSS), with escapeamps is true.
+      </p>
+    </info>
+    <param name="tags" value="XSS" />
+    <param name="addbrs" value="false" />
+    <param name="escapeamps" value="true" />
+  </parameterizedescaper>
+
+
+  <!-- The content-tag then can 'postprocess' everything in its body.
+       These are meant to be simple transformations, like throwing
+       away too much space, or escaping unknown characters.  There is
+       no real difference between escapers and postprocessors, only in
+       goal. Postprocessors are meant to be for the complete
+       content-tag body, thought escapers are only for writers.  But
+       you can use them mixed (and there is no need to define
+       something as a postprocessor if it is an escaper already).
+  -->
+
+  <postprocessor id="reducespace">
+    <class>org.mmbase.util.transformers.SpaceReducer</class>
+    <info>
+      <p>
+        Replaces groups of one and more newlines by one new line, and one or more space by one
+        space. This spares bandwidth and makes the result better readable.
+      </p>
+      <p>
+        This is default for most XML-like content types.
+      </p>
+    </info>
+  </postprocessor>
+  <postprocessor id="entities">
+    <class>org.mmbase.util.transformers.XmlEntities</class>
+    <info>Any non-ASCII character will be replaced by an XML-entity.</info>
+  </postprocessor>
+  <postprocessor id="xmetodo">
+    <class config="XMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
+    <info>Replaces ĉ, ĝ, ĥ, ĵ, ŝ, ŭ with cx, gx, hx, jx, sx, ux</info>
+  </postprocessor>
+  <postprocessor id="hmetodo">
+    <class config="HMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
+    <info>Replaces ĉ, ĝ, ĥ, ĵ, ŝ, ŭ with ch, gh, hh, jh, sh, u</info>
+  </postprocessor>
+  <postprocessor id="perl">
+    <class>org.mmbase.util.transformers.Perl</class>
+    <info>
+      Interpret the complete body as a perl program, and write the result.
+    </info>
+  </postprocessor>
+  <postprocessor id="sitestat">
+    <class>org.mmbase.util.transformers.Sitestat</class>
+    <info>
+      Rewrites the input to the characters which are alowed in Sitestat keys for
+      page statistics, being: "A-Z, a-z, 0-9, - . _".
+    </info>
+  </postprocessor>
+</taglibcontent>

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_core b_transactions ${requestScope['org.mmbase.componentClassName']}"
+    id="${requestScope['org.mmbase.componentId']}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
+  <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <mm:cloud rank="administrator">
+      <mm:import externid="transaction" from="request" />
+      <mm:notpresent referid="transaction">
+        <table summary="current transactions" border="0" cellspacing="0" cellpadding="3">
+          <caption>
+            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+          </caption>
+          <tr>
+            <th>Transaction</th>
+            <th class="view">View</th>
+          </tr>
+          <mm:listfunction id="trans" set="transactions" name="list" >
+          <tr>
+            <td>
+              <mm:link>
+                <mm:param name="transaction">${trans.key}</mm:param>
+                <a href="${_}">${trans.key}</a>
+              </mm:link>
+            </td>
+            <td>
+              <mm:link>
+                <mm:param name="transaction">${trans.key}</mm:param>
+                <a href="${_}"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="view" width="21" height="20" /></mm:link></a>
+              </mm:link>
+            </td>
+          </tr>
+          </mm:listfunction>
+        </table>
+      </mm:notpresent>
+      
+      <mm:present referid="transaction">
+        <h1>'${transaction}'</h1>
+        <ul>
+          <mm:nodelistfunction set="transactions" name="get" referids="transaction@name">
+            <li>${_node} <mm:nodeinfo type="gui" /></li>
+          </mm:nodelistfunction>
+        </ul>
+        <mm:link>
+          <a href="${_}">back</a>
+        </mm:link>
+      </mm:present>
+      
+    </mm:cloud>
+  </mm:content>
+</div>

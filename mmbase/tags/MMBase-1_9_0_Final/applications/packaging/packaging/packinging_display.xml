@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_display_html PUBLIC "-//MMBase/DTD packaging_display_html config 1.0//EN" "http://www.mmbase.org/dtd/packaging_display_html_1_0.dtd">
+<packaging_display_html>
+  <lastversion>5</lastversion>
+  <lastdate>Sun Nov 14 23:32:03 CET 2004</lastdate>
+  <name>packaging html</name>
+  <maintainer>Submarine</maintainer>
+  <description>The html for the package manager and builder</description>
+  <license type="MPL" version="" name="" />
+  <releasenotes></releasenotes>
+  <installationnotes></installationnotes>
+  <basedir>templates/jsp/</basedir>
+  <include>*</include>
+  <exclude>CVS</exclude>
+  <packagedepends>
+  </packagedepends>
+  <initiators>
+    <initiator name="Daniel Ockeloen" company="Submarine" />
+  </initiators>
+  <supporters>
+  </supporters>
+  <developers>
+    <developer name="Daniel Ockeloen" company="Submarine" />
+  </developers>
+  <contacts>
+    <contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@xs4all.nl" />
+  </contacts>
+  <publishprovider name="" state="inactive" sharepassword="" />
+</packaging_display_html>

@@ -1,0 +1,190 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="mmservers" maintainer="mmbase.org" version="0" extends="object">
+
+  <class>MMServers</class>
+  <searchage>1000</searchage>
+  <names>
+    <singular xml:lang="en">MMBase Server</singular>
+    <singular xml:lang="nl">MMBase Server</singular>
+    <singular xml:lang="eo">MMBase Servilo</singular>
+    <singular xml:lang="it">MMBase Server</singular>
+    <plural xml:lang="en">MMBase Servers</plural>
+    <plural xml:lang="nl">MMBase Servers</plural>
+    <plural xml:lang="eo">MMBase Serviloj</plural>
+    <plural xml:lang="it">MMBase Servers</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">MMBase Servers defines node of a MMBase within this system</description>
+    <description xml:lang="nl">MMMBase Servers bepaalt de node binnen een MMBase cluster</description>
+    <description xml:lang="eo">Tipo MMServilo difinas la nodon en MMBase-aro</description>
+    <description xml:lang="it">MMBase Servers definiscono il nodo di un MMBase dentro questo sistema</description>
+  </descriptions>
+
+  <properties>
+    <!--
+        Interval (in seconds) beteen updates in mmservers
+        table. Defaults to 60 seconds.
+        You can safely set it higher if you have only one server (and spare
+        some SQL-queries)    -->
+    <property name="ProbeInterval">60</property>
+    <!--
+         Time to take until a server is marked as 'inactive', in seconds.
+         Defaults to 15 minutes (900 s)
+    -->
+    <property name="ServiceTimeout">900</property>
+  </properties>
+
+  <fieldlist>
+    <field name="name">
+      <descriptions>
+        <description xml:lang="en">Name of MMBase servers inside this cluster</description>
+        <description xml:lang="nl">Naam van de MMBase servers binnen dit cluster</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Server</guiname>
+        <guiname xml:lang="nl">Server</guiname>
+        <guiname xml:lang="eo">Servilo</guiname>
+        <guiname xml:lang="it">Server</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>1</input>
+          <list>1</list>
+          <search>1</search>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="100" />
+      </datatype>
+    </field>
+
+    <field name="state">
+      <descriptions>
+        <description xml:lang="en">State of MMBase servers inside this cluster</description>
+        <description xml:lang="nl">Status van de MMBase servers binnen dit cluster</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">State</guiname>
+        <guiname xml:lang="nl">Status</guiname>
+        <guiname xml:lang="eo">Stato</guiname>
+        <guiname xml:lang="it">Stato</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>2</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.datatypes.resources.states"
+                 javaconstants="org.mmbase.module.builders.MMServers" />
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="atime">
+      <descriptions>
+        <description xml:lang="en">Time of the last check of this server</description>
+        <description xml:lang="nl">De tijd dat deze server voor het laatst gecontroleerd is</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Last Seen</guiname>
+        <guiname xml:lang="nl">Laatst Gezien</guiname>
+        <guiname xml:lang="eo">Laste vidita</guiname>
+        <guiname xml:lang="it">Visto da ultimo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="host">
+      <descriptions>
+        <description xml:lang="en">Hostname or ipaddress of MMBase servers inside this cluster</description>
+        <description xml:lang="nl">Servernaam of ip-adres van de MMBase servers binnen dit cluster</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Host</guiname>
+        <guiname xml:lang="nl">Host</guiname>
+        <guiname xml:lang="eo">Ĉefkomputilo</guiname>
+        <guiname xml:lang="it">Sistema ospitante</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <list>4</list>
+          <search>4</search>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
+    </field>
+
+    <field name="os">
+      <descriptions>
+        <description xml:lang="en">Operating System of MMBase servers inside this cluster</description>
+        <description xml:lang="nl">Besturingssystemen van de MMBase servers binnen dit cluster</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">OS</guiname>
+        <guiname xml:lang="nl">OS</guiname>
+        <guiname xml:lang="eo">Operaciumo</guiname>
+        <guiname xml:lang="it">OS</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>5</list>
+          <search>5</search>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
+    </field>
+
+    <field name="jdk">
+      <descriptions>
+        <description xml:lang="en">JDK (Java Developers Kit) used on the MMBase servers inside this cluster</description>
+        <description xml:lang="nl">JDK (Java Developers Kit) gebruikt op de MMBase servers binnen dit cluster</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">JDK</guiname>
+        <guiname xml:lang="nl">JDK</guiname>
+        <guiname xml:lang="eo">JDK</guiname>
+        <guiname xml:lang="it">JDK</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>6</input>
+          <list>6</list>
+          <search>6</search>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="80" />
+      </datatype>
+    </field>
+
+  </fieldlist>
+  <indexlist>
+    <index name="mmserversUnique" unique="true">
+      <indexfield name="name" />
+      <indexfield name="host" />
+    </index>
+  </indexlist>
+
+</builder>

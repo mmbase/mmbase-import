@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<blocktypes
+    xmlns="http://www.mmbase.org/xmlns/blocktypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/blocktypes
+                        http://www.mmbase.org/xmlns/blocktypes.xsd">
+  <!--
+       The following defines the order or the entries in the /mmbase/admin menu.
+       /mmbase/admin shows all block classified in 'mmbase'.
+  -->
+  <blocktype name="mmbase.about"           weight="0">
+    <title xml:lang="nl">Over</title>
+    <title xml:lang="en">About</title>
+  </blocktype>
+  <blocktype name="mmbase.admin"           weight="10" >
+    <title xml:lang="nl">Beheer</title>
+    <title xml:lang="en">Admin</title>
+  </blocktype>
+  <blocktype name="mmbase.tools"           weight="20">
+    <title xml:lang="nl">Gereedschap</title>
+    <title xml:lang="en">Tools</title>
+  </blocktype>
+  <blocktype name="mmbase.components"      weight="30">
+    <title xml:lang="nl">Componenten</title>
+    <title xml:lang="en">Components</title>
+  </blocktype>
+
+  <blocktype name="mmbase.edit"            weight="40">
+    <title xml:lang="nl">Redactie</title>
+    <title xml:lang="en">Edit</title>
+  </blocktype>
+
+  <blocktype name="mmbase.examples"        weight="10000">
+    <title xml:lang="nl">Voorbeelden</title>
+    <title xml:lang="en">Examples</title>
+  </blocktype>
+</blocktypes>
+
