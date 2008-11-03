@@ -22,6 +22,7 @@
   </authenticate>
 
   <authenticate class="org\.mmbase\.bridge\.remote\..*">
+    <property name="username" value="admin" />
     <property name="rank" value="administrator" />
   </authenticate>
 
