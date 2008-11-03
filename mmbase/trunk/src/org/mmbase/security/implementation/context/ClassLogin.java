@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.9 2008-10-01 16:57:34 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.10 2008-11-03 18:42:49 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -33,8 +33,8 @@ public class ClassLogin extends ContextLoginModule {
             throw new SecurityException("Class authentication failed  '" + userLoginInfo + "' (class not authorized)");
         }
         // get username
-        String userName = li.getMap().get("username");
-        String reqRank  = li.getMap().get("rank");
+        final String userName = li.getMap().get("username");
+        final String reqRank  = li.getMap().get("rank");
         if(userName == null && reqRank == null) throw new org.mmbase.security.SecurityException("expected the property 'username' and/or 'rank' with login");
 
         if ("anonymous".equals(reqRank) && userName == null) {
@@ -43,17 +43,17 @@ public class ClassLogin extends ContextLoginModule {
 
         org.w3c.dom.Element node = getAccount(userName, null, reqRank);
         if(node == null) {
-            log.info("No user with name '" + userName + "' and rank '" + reqRank + "'");
+            log.warn("No user with name '" + userName + "' and rank '" + reqRank + "' " + userLoginInfo + " " + li.getMap());
             return null;
         }
-        userName = node.getAttribute("name");
+        String un = node.getAttribute("name");
 
-        Rank rank= getRank(userName, null);
+        Rank rank= getRank(un, null);
         if(rank == null) {
-            log.warn( "expected a rank for user with name '" + userName + "', canceling a valid login due to the fact that the rank attribute was not set");
+            log.warn( "expected a rank for user with name '" + un + "', canceling a valid login due to the fact that the rank attribute was not set");
             return null;
 
         }
-        return getValidUserContext(userName, rank);
+        return getValidUserContext(un, rank);
     }
 }
