@@ -1,10 +1,7 @@
 package nl.leocms.util.tools;
 
-import java.util.*;
-import java.io.*;
-import java.text.*;
-import org.mmbase.util.logging.*;
-import java.net.URLEncoder; 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by Henk Hangyi (MMatch)
@@ -12,7 +9,7 @@ import java.net.URLEncoder;
 
 public class HtmlCleaner {
 
-   private static final Logger log = Logging.getLoggerInstance(HtmlCleaner.class);
+//   private static final Logger log = Logging.getLoggerInstance(HtmlCleaner.class);
 
    public static String filterUTFChars(String textStr) {
        int uPos = textStr.indexOf("%u");
