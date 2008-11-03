@@ -64,14 +64,19 @@ public abstract class BridgeTest extends MMBaseTest {
     }
 
     protected Cloud getCloud(String userName) {
-        CloudThreadLocal.unbind();
-        Map<String, Object> loginInfo = new HashMap<String, Object>();
-        loginInfo.put("username", userName);
-        Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
-        ensureDeployed(c, "local cloud");
-        CloudThreadLocal.bind(c);
-        log.debug("Found cloud of " + c.getUser().getIdentifier() + " with " + loginInfo);
-        return c;
+        try {
+            CloudThreadLocal.unbind();
+            Map<String, Object> loginInfo = new HashMap<String, Object>();
+            loginInfo.put("username", userName);
+            Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
+            ensureDeployed(c, "local cloud");
+            CloudThreadLocal.bind(c);
+            return c;
+        } catch (Throwable t) {
+            System.err.println(t.getMessage());
+            System.err.println(Logging.stackTrace(t));
+            return null;
+        }
     }
     protected Cloud getCloud() {
         return getCloud("admin");
@@ -98,11 +103,11 @@ public abstract class BridgeTest extends MMBaseTest {
         while(c == null) {
             try {
                 Map<String, Object> loginInfo = new HashMap<String, Object>();
-                loginInfo.put("rank", "administrator");
+                loginInfo.put("username", "admin");
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", loginInfo);
                 break;
             } catch (BridgeException be) {
-                System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
+                System.out.println(be.getMessage() + ". " + uri + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ") " + be.getMessage());
                 try {
                     tryCount ++;
                     Thread.sleep(5000);
@@ -110,6 +115,8 @@ public abstract class BridgeTest extends MMBaseTest {
                     return null;
                 }
                 if (tryCount > 25) throw be;
+            } catch (Throwable t) {
+                System.out.println(t.getMessage());
             }
         }
         ensureDeployed(c, uri);
