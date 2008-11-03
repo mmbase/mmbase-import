@@ -5,11 +5,11 @@
  *        Currently the moldingprocess must be bootstrapped manually, per input box.
 
  * Supported are
- *  -  Widgets.prototype.enumerationSuggestion(selector):  Makes single selection only a suggestion, meaning that the value 'OTHER' gives the user the possibility to type a value herself
- *  -  Widgets.prototype.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
- *  -  Widgets.prototype.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
+ *  -  Widgets.instance.enumerationSuggestion(selector):  Makes single selection only a suggestion, meaning that the value 'OTHER' gives the user the possibility to type a value herself
+ *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
+ *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.1 2008-10-29 18:09:57 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.2 2008-11-03 12:52:08 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -20,6 +20,7 @@
 function Widgets() {
 }
 
+Widgets.instance = new Widgets();
 
 /**
  * This function is used by {@link $enumerationSuggestion}.
@@ -79,34 +80,56 @@ Widgets.prototype.setToString = function(set) {
     return v;
 };
 
-Widgets.prototype.singleBoxes = function(select) {
+Widgets.prototype.singleBoxes = function(select, min, max) {
     var t = $(select);
-    var text = $("<div class='mm_boxes'></div>");
+    var text = document.createElement("div");
+    text.className = "mm_boxes";
+    text.setAttribute("id", t.attr("id"));
+    if (min) {
+        text.appendChild(document.createTextNode(min));
+    }
     var first = true;
-    $(select.options).each(function() {
-        if (! $(this).hasClass("head")) {
-            var nobr = $("<nobr />");
-            var input = $("<input type='checkbox' value='" + this.value + "' />");
-            nobr.append(input).append($(this).text());
-            text.append(nobr);
-            input.attr('name', t.attr('name'));
-            if (this.selected) {
-                input.attr('checked', 'checked');
-                hidden[0].values[this.value] = true;
+    for (var i = 0; i < select.options.length; i++) {
+        var option = select.options[i];
+        if (! $(option).hasClass("head")) {
+            var nobr = document.createElement('nobr');
+            var input;
+            if(document.all && !window.opera && document.createElement) {
+                // This is just for IE. IE sucks incredibly.
+                input = document.createElement("<input type='radio'  name='" + t.attr('name') + "' " + (option.selected ? "checked='checked'" : "") + " value='" +   option.value + "' />");
+            } else {
+                input = document.createElement("input");
+                input.setAttribute("type",  "radio");
+                input.setAttribute("name",  t.attr('name'));
+                if (option.selected) {
+                    input.setAttribute("checked", option.selected);
+                }
+                input.setAttribute("value",  option.value);
             }
+
+
+
+            nobr.appendChild(input);
+            if (! min) {
+                nobr.appendChild(document.createTextNode($(option).text()));
+            }
+            text.appendChild(nobr);
             first = false;
-        } else if ($(this).text() == "--") {
+        } else if ($(option).text() == "--") {
             if (! first) {
                 text.append("<br />");
             }
         } else {
             var span = $("<span class='head' />");
             text.append(span);
-            span.text($(this).text());
+            span.text($(option).text());
             first = false;
 
         }
-    });
+    }
+    if (max) {
+        text.appendChild(document.createTextNode(max));
+    }
     t.after(text);
     t.remove();
 }
@@ -160,13 +183,13 @@ Widgets.prototype.multipleBoxes = function(select) {
 /**
  * Molds a select input to a list of checkboxes (for multiple selections) or radiobuttons (for single selections).
  */
-Widgets.prototype.boxes = function(selector, multiple) {
+Widgets.prototype.boxes = function(selector, multiple, min, max) {
     $(document).ready(function() {
         $(selector).each(function() {
             if (multiple || this.multiple) {
                 Widgets.prototype.multipleBoxes(this);
             } else {
-                Widgets.prototype.singleBoxes(this);
+                Widgets.prototype.singleBoxes(this, min, max);
             }
 
         });
