@@ -8,21 +8,17 @@ See http://www.MMBase.org/license
 
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.bind.RequestUtils;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 /**
  *This is a cache handler interceptor that implements support for all types of cacheflush hints.

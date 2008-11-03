@@ -20,7 +20,6 @@ import org.mmbase.applications.vprowizards.spring.util.PathBuilder;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.bridge.util.Queries;

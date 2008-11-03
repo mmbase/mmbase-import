@@ -20,7 +20,6 @@ import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.FactoryUtils;
 import org.apache.commons.collections15.MapUtils;
 import org.mmbase.applications.vprowizards.spring.action.Action;
-import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.*;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.applications.vprowizards.spring.GlobalError;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NotFoundException;

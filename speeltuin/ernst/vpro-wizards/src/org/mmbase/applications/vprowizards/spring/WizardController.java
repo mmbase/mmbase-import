@@ -9,16 +9,13 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.cache.CacheHandlerInterceptor;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a helper class to build paths for mmbase queries. You set the steps in the path, and then it checks if the

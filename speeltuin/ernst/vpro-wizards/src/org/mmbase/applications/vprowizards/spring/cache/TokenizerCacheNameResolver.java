@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections15.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.mmbase.util.logging.Logger;
