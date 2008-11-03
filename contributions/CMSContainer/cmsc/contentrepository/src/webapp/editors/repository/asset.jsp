@@ -95,6 +95,9 @@
         <th></th>
     </tr>
 </thead>
+
+<script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
+
 <tbody class="hover">
 <mm:listnodes referid="elements" jspvar="node">
 <mm:field name="number" write="false" id="number" vartype="String"/>
@@ -118,9 +121,8 @@
     <a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="../gfx/icons/preview.png"
                                                                          alt="<fmt:message key="asset.preview.title" />"
                                                                          title="<fmt:message key="asset.preview.title" />"/></a>
-    <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16"
-                                                                 title="<fmt:message key="asset.info" />"
-                                                                 alt="<fmt:message key="asset.info" />"/></a>
+    <a href="javascript:showInfo('<mm:nodeinfo type="guitype"/>', '<mm:field name="number" />');">
+                              <img src="../gfx/icons/info.png" title="<fmt:message key="asset.info"/>" alt="<fmt:message key="asset.info"/>"/></a>
     <mm:haspage page="/editors/versioning">
         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
             <c:param name="nodenumber"><mm:field name="number"/></c:param>
