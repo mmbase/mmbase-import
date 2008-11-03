@@ -4,16 +4,19 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.NavigationRenderer;
+import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
-import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.domain.Publication;
 
 
 public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItemRenderer {
@@ -44,8 +47,8 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          boolean isPublished;
          isSingleApplication = ServerUtil.isSingle();
          if (isSingleApplication) {
-            NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-            Publication.STATUS status = publicationService.getStatus(parentNode.getNumber());
+           // NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+            Publication.STATUS status = NewsletterPublicationUtil.getStatus(parentNode.getNumber());
             isPublished = Publication.STATUS.DELIVERED.equals(status);
          } else {
             isPublished = Publish.isPublished(parentNode);
