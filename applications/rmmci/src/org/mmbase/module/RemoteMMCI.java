@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.21 2008-08-04 22:30:12 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.22 2008-11-03 17:45:32 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -160,9 +160,9 @@ public class RemoteMMCI extends ProcessorModule {
              */
              reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
             //try if the registry is running
-            reg.list();
-            //if no RemoteException is thrown we are probabely ok
-            log.debug("using an existing RMI registry");
+             reg.list();
+             //if no RemoteException is thrown we are probabely ok
+             log.debug("using an existing RMI registry");
         } catch (RemoteException rex) {
             /*
              * Binding a stub to a local registry should be enough to keep it
@@ -239,13 +239,14 @@ public class RemoteMMCI extends ProcessorModule {
     private void stopRegistry() {
         log.info("Stopping the RMI registry");
         try {
+
             String[] names = registry.list();
             for (String element : names) {
                 try {
                     log.service("Unbind " + element);
                     registry.unbind(element);
                 } catch (NotBoundException e1) {
-                    log.warn(Logging.stackTrace(e1));
+                    log.warn(e1.getMessage(), e1);
                 }
             }
             if (!UnicastRemoteObject.unexportObject(registry, true)) {
@@ -254,15 +255,18 @@ public class RemoteMMCI extends ProcessorModule {
                 log.service("Unexported " + registry);
             }
         } catch (AccessException e) {
-            log.warn(Logging.stackTrace(e));
+            log.warn(e.getMessage(), e);
         } catch (RemoteException e) {
-            log.warn(Logging.stackTrace(e));
+            log.warn(e.getMessage(), e);
         }
         registry = null;
         // Explicitely calling the garbage collector here helps tomcat to stop faster.
         // It can take several minutes otherwise for the RMI Reaper thread to stop.
+        log.debug("Reading unexporting objects. Now gc-en, to speed up shut down");
         Runtime.getRuntime().gc();
     }
+
+
 
     public boolean test(String host, int registryPort, String bindName) {
         try {
@@ -304,16 +308,16 @@ public class RemoteMMCI extends ProcessorModule {
     public void resetBind(String host, int registryPort, String bindName) throws RemoteException, AccessException {
         Registry reg = getRegistry(host, registryPort);
         try {
-           reg.unbind(bindName);
+            reg.unbind(bindName);
         } catch (AccessException e) {
-           log.warn(Logging.stackTrace(e));
+            log.warn(e.getMessage(), e);
         } catch (RemoteException e) {
-           log.warn(Logging.stackTrace(e));
+            log.warn(e.getMessage(), e);
         } catch (NotBoundException e) {
-           log.info("Unbind failed for " + bindName + " in RMIregistry " + host + ":" + registryPort);
+            log.info("Unbind failed for " + bindName + " in RMIregistry " + host + ":" + registryPort);
         }
         register(reg, bindName);
-     }
+    }
 
      private void startChecker(RemoteMMCI remoteMMCI) {
         String checkConnection  = getInitParameter("checkconnection");
