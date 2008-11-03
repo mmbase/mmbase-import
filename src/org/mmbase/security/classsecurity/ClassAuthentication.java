@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.24 2008-10-20 14:12:22 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.25 2008-11-03 14:00:57 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -101,7 +101,7 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    authenticatedClasses.add(new Login(u, Pattern.compile(clazz), method, Collections.unmodifiableMap(map), weight, i));
+                    authenticatedClasses.add(new Login(u, Pattern.compile(clazz), method, map, weight, i));
                 }
             } catch (Exception e) {
                 log.error(u + " " + e.getMessage(), e);
@@ -113,7 +113,7 @@ public class ClassAuthentication {
         { // last fall back, everybody may get the 'anonymous' cloud.
             Map<String, String> map = new HashMap<String, String>();
             map.put("rank", "anonymous");
-            authenticatedClasses.add(new Login(null, Pattern.compile(".*"), "class", Collections.unmodifiableMap(map), Integer.MIN_VALUE, 0));
+            authenticatedClasses.add(new Login(null, Pattern.compile(".*"), "class", map, Integer.MIN_VALUE, 0));
         }
 
         log.service("Class authentication: " + authenticatedClasses);
@@ -259,10 +259,20 @@ public class ClassAuthentication {
     /**
      * @since MMBase-1.9
      */
+    private static  Map<String, String> createCombinedMap(Map<String, String> map1, Map<String, String> map2) {
+        Map<String, String> result = new HashMap<String, String>();
+        result.putAll(map1);
+        result.putAll(map2);
+        return result;
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
     public static class LoginResult extends Login {
         final int    propertyMatchCount;
         LoginResult(Login p, Map<String, String> properties, int propertyMatchCount) {
-            super(p.url, p.classPattern, p.application, properties == null ? p.map : new LinkMap<String, String>(p.map, properties), p.weight, p.position);
+            super(p.url, p.classPattern, p.application, properties == null ? p.map : createCombinedMap(p.map, properties), p.weight, p.position);
             this.propertyMatchCount = propertyMatchCount;
         }
         public String toString() {
