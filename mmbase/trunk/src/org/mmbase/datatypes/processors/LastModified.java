@@ -17,7 +17,7 @@ import java.util.Date;
  * to the current time when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.5 2008-07-15 10:11:43 michiel Exp $
+ * @version $Id: LastModified.java,v 1.6 2008-11-04 16:47:59 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -26,8 +26,20 @@ public class LastModified implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
+
+    private boolean setIfNotChanged = false;
+    /**
+     * On default the field is not changed if no other fields were changed. You can override this
+     * using this property.
+     *
+     * @since MMBase-1.9.1
+     */
+    public void setIfNotChanged(boolean b) {
+        setIfNotChanged = b;
+    }
+
     public void commit(Node node, Field field) {
-        if (node.mayWrite()) {
+        if (node.mayWrite() && (setIfNotChanged || node.getChanged().size() > 0)) {
             node.setValueWithoutProcess(field.getName(), new Date());
         }
     }
