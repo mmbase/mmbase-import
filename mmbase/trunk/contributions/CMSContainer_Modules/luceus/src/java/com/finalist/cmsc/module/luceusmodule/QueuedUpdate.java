@@ -44,12 +44,18 @@ public class QueuedUpdate {
    private int nodeNumber = 0;
 
    private int relatedNumber = 0;
+   
+   private String nodemanager = null;
 
 
    public QueuedUpdate(int method) {
       this.method = method;
    }
-
+   
+   public QueuedUpdate(int method, String nodemanager) {
+      this.method = method;
+      this.nodemanager = nodemanager;
+   }
 
    public QueuedUpdate(int method, int nodeNumber) {
       this.method = method;
@@ -95,6 +101,14 @@ public class QueuedUpdate {
          code *= relatedNumber;
       }
       return code;
+   }
+
+   public void setNodemanager(String nodemanager) {
+      this.nodemanager = nodemanager;
+   }
+
+   public String getNodemanager() {
+      return nodemanager;
    }
 
 }

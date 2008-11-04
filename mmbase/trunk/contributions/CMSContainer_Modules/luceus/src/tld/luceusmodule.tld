@@ -18,6 +18,12 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+      <attribute>
+         <name>nodemanager</name>
+         <description>Optionally pass a specific nodemanager to index and skip others. Do not use this together with the eraase attribute.</description>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
 	</tag>
 	<tag>
 		<name>serverurl</name>
