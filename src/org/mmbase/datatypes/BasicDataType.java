@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.99 2008-09-24 22:33:26 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.100 2008-11-04 21:11:40 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -1213,10 +1213,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, node.getNumber());
                     Queries.addConstraint(query, constraint);
                 }
-                if(log.isDebugEnabled()) {
-                    log.debug(query);
+                int c = Queries.count(query);
+                if (log.isDebugEnabled()) {
+                    log.debug(query.toSql() + " -> " + c);
                 }
-                return Queries.count(query) == 0;
+                return c == 0;
             } else {
                 if (field == null) log.warn("Cannot check uniqueness  without field");
                 return true;
