@@ -391,11 +391,8 @@ div.content_block_purple>div.body_table
 /* bovenkant voor block */
 div.content_block_purple div.header
 {
-   display: block;
    background-image: url('../gfx/bg_cb_purple.gif');
    height: 36px;
-   width: auto;
-   float: left;
    clear: both;
 }
 
@@ -485,7 +482,6 @@ div.content_block_pink>div.body_table
 /* bovenkant voor block */
 div.content_block_pink div.header
 {
-   display: block;
    background-image: url('../gfx/bg_cb_pink.gif');
    height: 36px;
    width: auto;
