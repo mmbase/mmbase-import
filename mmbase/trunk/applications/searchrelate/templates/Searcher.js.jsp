@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.38 2008-10-20 08:16:10 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.39 2008-11-04 15:02:12 michiel Exp $
  */
 
 
@@ -570,7 +570,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node, fields: fields};
+    var params = {id: this.getQueryId(), node: node, fields: this.fields};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
