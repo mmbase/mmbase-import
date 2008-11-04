@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.46 2008-10-30 13:16:03 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.47 2008-11-04 18:37:10 michiel Exp $
  */
 public class TransactionManager {
 
@@ -230,19 +230,29 @@ public class TransactionManager {
         return transactionName;
     }
 
-    private final static int UNCOMMITED = 0;
-    private final static int COMMITED = 1;
-    private final static int FAILED = 2;
-    private final static int NODE = 3;
-    private final static int RELATION = 4;
+
+    private enum State {
+        UNCOMMITED,
+        COMMITED,
+        FAILED,
+        NODE ,
+        RELATION
+    }
+
+
+    private class NodeState {
+        public int exists;
+        public State state;
+        public boolean changed = true;
+    }
 
     /**
      * @since MMBase-1.9
      */
-    private void commitNode(Object user, MMObjectNode node, int i, int[] nodestate, int[] nodeexist) {
+    private void commitNode(Object user, MMObjectNode node, NodeState state) {
 
-        if (nodeexist[i] == I_EXISTS_YES ) {
-            //if (! node.isChanged()) return;
+        if (state.exists == I_EXISTS_YES ) {
+            if (! state.changed) return;
             // Commit also if not changed, because the node may have been deleted or changed by
             // someone else. It is like this in the transaction it should be saved like this.
             // See also MMB-1680
@@ -257,11 +267,11 @@ public class TransactionManager {
                 commitOK = node.parent.safeCommit(node);
             }
             if (commitOK) {
-                nodestate[i] = COMMITED;
+                state.state = State.COMMITED;
             } else {
-                nodestate[i] = FAILED;
+                state.state = State.FAILED;
             }
-        } else if (nodeexist[i] == I_EXISTS_NO ) {
+        } else if (state.exists == I_EXISTS_NO ) {
             int insertOK;
             if (user instanceof UserContext) {
                 insertOK = node.insert((UserContext)user);
@@ -270,9 +280,9 @@ public class TransactionManager {
                 insertOK = node.parent.safeInsert(node, username);
             }
             if (insertOK > 0) {
-                nodestate[i] = COMMITED;
+                state.state = State.COMMITED;
             } else {
-                nodestate[i] = FAILED;
+                state.state = State.FAILED;
                 String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
                 throw new RuntimeException(message);
             }
@@ -286,93 +296,103 @@ public class TransactionManager {
             return true;
         }
 
-        int[] nodestate = new int[nodes.size()];
-        int[] nodeexist = new int[nodes.size()];
+        Map<Integer, NodeState> stati = new HashMap<Integer, NodeState>();
 
         log.debug("Checking types and existance");
 
-        int i = -1;
         for (MMObjectNode node : nodes) {
-            i++;
             // Nodes are uncommited by default
-            nodestate[i] = UNCOMMITED;
+            NodeState state = new NodeState();
+            state.state = State.UNCOMMITED;
+            state.changed = node.isChanged() || node.isNew();
             String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
             if (exists == null) {
                 throw new IllegalStateException("The _exists field does not exist on node "+node);
             } else if (exists.equals(EXISTS_NO)) {
-                nodeexist[i] = I_EXISTS_NO;
+                state.exists  = I_EXISTS_NO;
             } else if (exists.equals(EXISTS_YES)) {
-                nodeexist[i] = I_EXISTS_YES;
+                state.exists = I_EXISTS_YES;
             } else if (exists.equals(EXISTS_NOLONGER)) {
-                nodeexist[i] = I_EXISTS_NOLONGER;
+                state.exists = I_EXISTS_NOLONGER;
             } else {
                 throw new IllegalStateException("Invalid value for _exists on node "+node);
+            }
+            stati.put(node.getNumber(), state);
+        }
+
+        // Now set the 'chanaged' flag of all node to or frm a relation was made.
+        // Related to MMB-1680
+        for (MMObjectNode node : nodes) {
+            if (node.getBuilder() instanceof InsRel) {
+                NodeState state = stati.get(node.getNumber());
+                if (state.changed) {
+                    NodeState sstate = stati.get(node.getIntValue("snumber"));
+                    sstate.changed = true;
+                    NodeState dstate = stati.get(node.getIntValue("dnumber"));
+                    dstate.changed = true;
+                }
+
             }
         }
 
         log.debug("Commiting nodes");
 
-        i = -1;
         // First commit all the NODES
         for (MMObjectNode node : nodes) {
-            i++;
             if (!(node.getBuilder() instanceof InsRel)) {
-                commitNode(user, node, i, nodestate, nodeexist);
+                NodeState state = stati.get(node.getNumber());
+                commitNode(user, node, state);
             }
         }
 
         log.debug("Commiting relations");
 
         // Then commit all the RELATIONS
-        i = -1;
         for (MMObjectNode node : nodes) {
-            i++;
             if (node.getBuilder() instanceof InsRel) {
-                commitNode(user, node, i, nodestate, nodeexist);
+                NodeState state = stati.get(node.getNumber());
+                commitNode(user, node, state);
             }
         }
 
         log.debug("Deleting relations");
 
         // Then commit all the RELATIONS that must be deleted
-        i = -1;
         for (MMObjectNode node : nodes) {
-            i++;
-            if (node.getBuilder() instanceof InsRel && nodeexist[i] == I_EXISTS_NOLONGER) {
+            NodeState state = stati.get(node.getNumber());
+            if (node.getBuilder() instanceof InsRel && state.exists == I_EXISTS_NOLONGER) {
                 // no return information
                 if (user instanceof UserContext) {
                     node.remove((UserContext)user);
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i] = COMMITED;
+                state.state = State.COMMITED;
             }
         }
 
         log.debug("Deleting nodes");
         // Then commit all the NODES that must be deleted
-        i = -1;
         for (MMObjectNode node : nodes) {
-            i++;
-            if (!(node.getBuilder() instanceof InsRel) && (nodeexist[i] == I_EXISTS_NOLONGER)) {
+            NodeState state = stati.get(node.getNumber());
+            if (!(node.getBuilder() instanceof InsRel) && (state.exists== I_EXISTS_NOLONGER)) {
                 // no return information
                 if (user instanceof UserContext) {
                     node.remove((UserContext)user);
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i] = COMMITED;
+                state.state = State.COMMITED;
             }
         }
 
         // check for failures
-        boolean okay=true;
-        i = -1;
+        boolean okay = true;
         for (MMObjectNode node : nodes) {
-            i++;
-            if (nodestate[i] == FAILED) {
+            NodeState state = stati.get(node.getNumber());
+            if (state.state == State.FAILED) {
                 okay = false;
-                log.error("Failed node "+node.toString());
+                log.error("Failed node " + node.toString());
             }
         }
         return okay;
