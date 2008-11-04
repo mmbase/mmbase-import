@@ -25,6 +25,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.util.HugeNodeListIterator;
 import org.mmbase.module.Module;
 
@@ -276,7 +277,7 @@ public class LuceusModule extends Module {
    public void eraseIndex() {
       addToQueue(new QueuedUpdate(QueuedUpdate.METHOD_ERASE_INDEX));
    }
-
+   
 
    public void deleteChannelContentIndex(int channel, int contentelement) {
       addToQueue(new QueuedUpdate(QueuedUpdate.METHOD_DELETE_CHANNELCONTENT_INDEX, channel, contentelement));
@@ -341,10 +342,12 @@ public class LuceusModule extends Module {
    private class FullIndexTimerTask extends TimerTask {
 
       private boolean erase = false;
+      
+      private String nodemanager = null;
 
-
-      public FullIndexTimerTask(boolean erase) {
+      public FullIndexTimerTask(boolean erase, String nodemanager) {
          this.erase = erase;
+         this.nodemanager = nodemanager;
       }
 
 
@@ -352,12 +355,25 @@ public class LuceusModule extends Module {
          log.info("===>fullIndex starting<==");
          Cloud cloud = getAnonymousCloud();
 
+         NodeManager nm = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
+         
+         //Optionally use a specific Nodemanager to (re)index
+         if (nodemanager != null) {
+            log.info("===>only doing a fullIndex on nodemanager " + nodemanager + "<==");
+            try {
+               nm = cloud.getNodeManager(nodemanager);
+            } catch (NotFoundException e) {
+               log.error("===>Help, nodemanager '" + nodemanager + "' could not be found!<===");
+               log.info("===>fullIndex aborted<==");
+               return;
+            }
+         }
+         
          if (erase) {
             log.info("===>erasing index<==");
             eraseIndex();
          }
-
-         NodeManager nm = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
+         
          NodeQuery q = nm.createQuery();
 
          // use this iterator because we can have many data to process
@@ -385,8 +401,8 @@ public class LuceusModule extends Module {
    }
 
 
-   public void startFullIndex(boolean erase) {
-      Thread runOnce = new Thread(new FullIndexTimerTask(erase));
+   public void startFullIndex(boolean erase, String nodemanager) {
+      Thread runOnce = new Thread(new FullIndexTimerTask(erase, nodemanager));
       runOnce.setDaemon(true);
       runOnce.start();
    }
