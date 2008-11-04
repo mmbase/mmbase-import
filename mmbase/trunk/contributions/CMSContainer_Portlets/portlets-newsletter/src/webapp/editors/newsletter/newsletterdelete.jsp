@@ -26,7 +26,7 @@
 		<html:hidden property="number" value="${number}" />
 		<html:hidden property="forward" value="${forward}" />
 	   	<html:submit property="remove"><fmt:message key="newsletterdelete.yes"/></html:submit>&nbsp;
-	   	<a href="javascript:window.history.go(-1);"><input type="button" value="<fmt:message key="newsletterdelete.no"/>"></a> 
+	   	<html:submit property="cancel"><fmt:message key="newsletterdelete.no"/></html:submit>
 	</form>
 </cmscedit:sideblock>
 </body>
