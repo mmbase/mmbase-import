@@ -1,6 +1,8 @@
 package com.finalist.cmsc.struts;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -8,7 +10,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -55,25 +60,33 @@ public class WizardInitAction extends MMBaseFormlessAction {
          session.removeAttribute("creation");
       }
 
-      String[] contenttypes = request.getParameterValues("contenttype");
-      String contenttype = null;
-      if (contenttypes == null || contenttypes.length == 0) {
+      String[] elementtypes = request.getParameterValues("contenttype");
+      if(elementtypes == null || elementtypes.length == 0){
+         elementtypes = request.getParameterValues("assettype");
+      }
+      String elementtype = null;
+      if (elementtypes == null || elementtypes.length == 0) {
          if (objectNumber != null && !"new".equals(objectNumber)) {
             Node node = cloud.getNode(objectNumber);
-            contenttype = node.getNodeManager().getName();
+            elementtype = node.getNodeManager().getName();
          }
          else {
             throw new IllegalStateException("No criteria available to find a wizard."
-                  + " Provide a contenttype or objectnumber");
+                  + " Provide a elementtype or objectnumber");
          }
       }
       else {
-         if (contenttypes.length == 1) {
-            contenttype = contenttypes[0];
+         if (elementtypes.length == 1) {
+            elementtype = elementtypes[0];
          }
          else {
-            List<String> list = Arrays.asList(contenttypes);
-            addToRequest(request, "contenttypes", list);
+            List<String> list = Arrays.asList(elementtypes);
+            if(request.getParameterValues("contenttype").length > 1){
+               addToRequest(request, "contenttypes", list);
+            }
+            else {
+               addToRequest(request, "assettypes", list);
+            }
             ActionForward ret = mapping.findForward("newtypes");
             return ret;
          }
@@ -83,24 +96,24 @@ public class WizardInitAction extends MMBaseFormlessAction {
       if (StringUtils.isEmpty(wizardConfigName)) {
          NodeList list = null;
          NodeManager manager = cloud.getNodeManager("editwizards");
-         list = manager.getList("nodepath = '" + contenttype + "'", null, null);
+         list = manager.getList("nodepath = '" + elementtype + "'", null, null);
          if (!list.isEmpty()) {
             Node wizard = list.getNode(0);
             wizardConfigName = wizard.getStringValue("wizard");
          }
          else {
-            String typeWizard = "config/" + contenttype + "/" + contenttype;
+            String typeWizard = "config/" + elementtype + "/" + elementtype;
             if (editwizardExists(typeWizard)) {
                wizardConfigName = typeWizard;
             }
             else {
-               throw new IllegalStateException("Unable to find a wizard for contenttype " + contenttype + " or objectnumber "
+               throw new IllegalStateException("Unable to find a wizard for elementtype " + elementtype + " or objectnumber "
                      + objectNumber);
             }
          }
       }
 
-      session.setAttribute("contenttype", contenttype);
+      session.setAttribute("contenttype", elementtype);
 
       String sessionkey = request.getParameter("sessionkey");
       if (sessionkey == null || sessionkey.length() == 0) {

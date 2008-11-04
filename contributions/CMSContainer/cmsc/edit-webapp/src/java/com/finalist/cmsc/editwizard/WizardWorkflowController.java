@@ -61,12 +61,12 @@ public class WizardWorkflowController extends WizardController {
     */
    @Override
    public void openWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig config, Cloud cloud,
-         Map<String, String> params, UserRole userrole, String contenttype) {
+         Map<String, String> params, UserRole userrole, String elementtype) {
 
       String objectnr = config.objectNumber;
 
-      if (isMainWizard(ewconfig, config) && contenttype != null && !"".equals(contenttype)
-            && Workflow.isWorkflowType(contenttype)) {
+      if (isMainWizard(ewconfig, config) && elementtype != null && !"".equals(elementtype)
+            && Workflow.isWorkflowType(elementtype)) {
 
          params.put("WORKFLOW", TRUE);
          params.put("WORKFLOW-ACCEPTED-ENABLED", Boolean.toString(Workflow.isAcceptedStepEnabled()));
@@ -104,7 +104,7 @@ public class WizardWorkflowController extends WizardController {
             }
          }
          else {
-            if (PagesUtil.isPageType(cloud.getNodeManager(contenttype))) {
+            if (PagesUtil.isPageType(cloud.getNodeManager(elementtype))) {
                // disable workflow for a new page
                params.put("WORKFLOW", OFF);
             }
@@ -113,7 +113,7 @@ public class WizardWorkflowController extends WizardController {
          params.put("ACTIVITY", activity);
       }
       else {
-         if (contenttype != null && !"".equals(contenttype) && Workflow.isWorkflowType(contenttype)) {
+         if (elementtype != null && !"".equals(elementtype) && Workflow.isWorkflowType(elementtype)) {
             params.put("WORKFLOW", FALSE);
          }
          else {
@@ -125,9 +125,9 @@ public class WizardWorkflowController extends WizardController {
 
    @Override
    public void closeWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig wizardConfig, Cloud cloud,
-         Node editNode, String contenttype) {
+         Node editNode, String elementtype) {
 
-      if (isMainWizard(ewconfig, wizardConfig) && editNode != null && Workflow.isWorkflowType(contenttype)) {
+      if (isMainWizard(ewconfig, wizardConfig) && editNode != null && Workflow.isWorkflowType(elementtype)) {
 
          String objectnr = wizardConfig.objectNumber;
 
@@ -200,7 +200,7 @@ public class WizardWorkflowController extends WizardController {
          }
       }
       else {
-         if (editNode != null && !Workflow.isWorkflowType(contenttype)) {
+         if (editNode != null && !Workflow.isWorkflowType(elementtype)) {
 
             String workflowCommand = request.getParameter(WORKFLOWCOMMAND);
             if (PUBLISH.equals(workflowCommand)) {

@@ -21,6 +21,11 @@ public class WorkflowStatusInfo {
    private int contentApproved;
    private int contentPublished;
 
+   private int assetDraft;
+   private int assetFinished;
+   private int assetApproved;
+   private int assetPublished;
+
    private int linkDraft;
    private int linkFinished;
    private int linkApproved;
@@ -53,6 +58,22 @@ public class WorkflowStatusInfo {
             }
             if (Workflow.STATUS_PUBLISHED.equals(status))
                contentPublished = count;
+         }
+         if ("asset".equals(type)) {
+            if (Workflow.STATUS_DRAFT.equals(status))
+               assetDraft = count;
+            if (Workflow.STATUS_FINISHED.equals(status))
+               assetFinished += count;
+            if (Workflow.STATUS_APPROVED.equals(status)) {
+               if (Workflow.isAcceptedStepEnabled()) {
+                  assetApproved = count;
+               }
+               else {
+                  assetFinished += count;
+               }
+            }
+            if (Workflow.STATUS_PUBLISHED.equals(status))
+               assetPublished = count;
          }
          if ("link".equals(type)) {
             if (Workflow.STATUS_DRAFT.equals(status))
@@ -129,6 +150,46 @@ public class WorkflowStatusInfo {
 
    public void setContentPublished(int contentPublished) {
       this.contentPublished = contentPublished;
+   }
+
+
+   public int getAssetDraft() {
+      return assetDraft;
+   }
+
+
+   public void setAssetDraft(int assetDraft) {
+      this.assetDraft = assetDraft;
+   }
+
+
+   public int getAssetFinished() {
+      return assetFinished;
+   }
+
+
+   public void setAssetFinished(int assetFinished) {
+      this.assetFinished = assetFinished;
+   }
+
+
+   public int getAssetApproved() {
+      return assetApproved;
+   }
+
+
+   public void setAssetApproved(int assetApproved) {
+      this.assetApproved = assetApproved;
+   }
+
+
+   public int getAssetPublished() {
+      return assetPublished;
+   }
+
+
+   public void setAssetPublished(int assetPublished) {
+      this.assetPublished = assetPublished;
    }
 
 
