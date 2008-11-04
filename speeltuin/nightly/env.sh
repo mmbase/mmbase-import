@@ -9,7 +9,7 @@ export BUILD_HOME="/home/nightly"
 export JAVA_HOME=/home/nightly/jdk
 export JAVAC=${JAVA_HOME}/bin/javac
 
-export MAVEN_OPTS=-Xmx512m
+export MAVEN_OPTS=-Xmx700m -XX:MaxPermSize=128m
 export MAVEN="/home/nightly/maven/bin/maven --nobanner --quiet"
 export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
 export ANT_HOME=/usr/ant
