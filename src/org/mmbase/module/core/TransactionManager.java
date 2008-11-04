@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.34 2006-07-06 11:24:44 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.34.2.1 2008-11-04 18:37:34 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -222,155 +222,168 @@ public class TransactionManager implements TransactionManagerInterface {
     private final static int NODE = 3;
     private final static int RELATION = 4;
 
+    private class NodeState {
+        public int exists;
+        public int state;
+        public boolean changed = true;
+    }
+
+    /**
+     * @since MMBase-1.8.7
+     */
+    private void commitNode(Object user, MMObjectNode node, NodeState state) {
+
+        if (state.exists == I_EXISTS_YES ) {
+            if (! state.changed) return;
+            // Commit also if not changed, because the node may have been deleted or changed by
+            // someone else. It is like this in the transaction it should be saved like this.
+            // See also MMB-1680
+            // TODO: what is the performance penalty here?
+
+
+            // use safe commit, which locks the node cache
+            boolean commitOK;
+            if (user instanceof UserContext) {
+                commitOK = node.commit((UserContext)user);
+            } else {
+                commitOK = node.parent.safeCommit(node);
+            }
+            if (commitOK) {
+                state.state = COMMITED;
+            } else {
+                state.state = FAILED;
+            }
+        } else if (state.exists == I_EXISTS_NO ) {
+            int insertOK;
+            if (user instanceof UserContext) {
+                insertOK = node.insert((UserContext)user);
+            } else {
+                String username = findUserName(user);
+                insertOK = node.parent.safeInsert(node, username);
+            }
+            if (insertOK > 0) {
+                state.state = COMMITED;
+            } else {
+                state.state = FAILED;
+                String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
+                throw new RuntimeException(message);
+            }
+        }
+    }
+
     boolean performCommits(Object user, Collection nodes) {
         if (nodes == null || nodes.size() == 0) {
             log.warn("Empty list of nodes");
             return true;
         }
 
-        int[] nodestate = new int[nodes.size()];
-        int[] nodeexist = new int[nodes.size()];
-        String username = findUserName(user),exists;
+        Map stati = new HashMap();
+
+        String username = findUserName(user);
 
         log.debug("Checking types and existance");
 
-        int i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
+            NodeState state = new NodeState();
+            state.state = UNCOMMITED;
+            state.changed = node.isChanged() || node.isNew();
             // Nodes are uncommited by default
-            nodestate[i] = UNCOMMITED;
-            exists = node.getStringValue("_exists");
+            String exists = node.getStringValue("_exists");
             if (exists == null) {
                 throw new IllegalStateException("The _exists field does not exist on node "+node);
             } else if (exists.equals(EXISTS_NO)) {
-                nodeexist[i]=I_EXISTS_NO;
+                state.exists = I_EXISTS_NO;
             } else if (exists.equals(EXISTS_YES)) {
-                nodeexist[i]=I_EXISTS_YES;
+                state.exists = I_EXISTS_YES;
             } else if (exists.equals(EXISTS_NOLONGER)) {
-                nodeexist[i]=I_EXISTS_NOLONGER;
+                state.exists = I_EXISTS_NOLONGER;
             } else {
                 throw new IllegalStateException("Invalid value for _exists on node "+node);
             }
+            stati.put(new Integer(node.getNumber()), state);
         }
+
+        // Now set the 'chanaged' flag of all node to or frm a relation was made.
+        // Related to MMB-1680
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
+            MMObjectNode node = (MMObjectNode)nodeIterator.next();
+            if (node.getBuilder() instanceof InsRel) {
+                NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+                if (state.changed) {
+                    NodeState sstate = (NodeState) stati.get(new Integer(node.getIntValue("snumber")));
+                    sstate.changed = true;
+                    NodeState dstate = (NodeState) stati.get(new Integer(node.getIntValue("dnumber")));
+                    dstate.changed = true;
+                }
+
+            }
+        }
+
 
         log.debug("Commiting nodes");
 
         // First commit all the NODES
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (!(node.getBuilder() instanceof InsRel)) {
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    // use safe commit, which locks the node cache
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
-                        log.error(message);
-                        throw new RuntimeException(message);
-                    }
-                }
+                NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+                commitNode(user, node, state);
             }
         }
 
         log.debug("Commiting relations");
 
         // Then commit all the RELATIONS
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
             if (node.getBuilder() instanceof InsRel) {
-                // excactly the same code as 10 lines ago. Should be dispatched to some method..
-                if (nodeexist[i] == I_EXISTS_YES ) {
-                    boolean commitOK;
-                    if (user instanceof UserContext) {
-                        commitOK = node.commit((UserContext)user);
-                    } else {
-                        commitOK = node.parent.safeCommit(node);
-                    }
-                    if (commitOK) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                    }
-                } else if (nodeexist[i] == I_EXISTS_NO ) {
-                    int insertOK;
-                    if (user instanceof UserContext) {
-                        insertOK = node.insert((UserContext)user);
-                    } else {
-                        insertOK = node.parent.safeInsert(node, username);
-                    }
-                    if (insertOK > 0) {
-                        nodestate[i] = COMMITED;
-                    } else {
-                        nodestate[i] = FAILED;
-                        String message = "relation failed(transaction 2.0: [rollback?])";
-                        log.error(message);
-                    }
-                }
+                NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+                commitNode(user, node, state);
             }
         }
 
         log.debug("Deleting relations");
 
         // Then commit all the RELATIONS that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (node.getBuilder() instanceof InsRel && nodeexist[i] == I_EXISTS_NOLONGER) {
+            NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+            if (node.getBuilder() instanceof InsRel && state.exists == I_EXISTS_NOLONGER) {
                 // no return information
                 if (user instanceof UserContext) {
                     node.remove((UserContext)user);
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i]=COMMITED;
+                state.state = COMMITED;
             }
         }
 
         log.debug("Deleting nodes");
         // Then commit all the NODES that must be deleted
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (!(node.getBuilder() instanceof InsRel) && (nodeexist[i] == I_EXISTS_NOLONGER)) {
+            NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+            if (!(node.getBuilder() instanceof InsRel) && (state.exists == I_EXISTS_NOLONGER)) {
                 // no return information
                 if (user instanceof UserContext) {
                     node.remove((UserContext)user);
                 } else {
                     node.parent.removeNode(node);
                 }
-                nodestate[i]=COMMITED;
+                state.state = COMMITED;
             }
         }
 
         // check for failures
-        boolean okay=true;
-        i = 0;
-        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
+        boolean okay = true;
+        for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext();) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();
-            if (nodestate[i] == FAILED) {
-                okay=false;
-                log.error("Failed node "+node.toString());
+            NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
+            if (state.state == FAILED) {
+                okay = false;
+                log.error("Failed node " + node.toString());
             }
         }
         return okay;
