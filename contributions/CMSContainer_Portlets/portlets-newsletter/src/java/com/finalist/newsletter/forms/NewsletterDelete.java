@@ -71,6 +71,9 @@ public class NewsletterDelete extends MMBaseFormlessAction {
       }
 
       if (isCancelAction(request)) {
+         if (StringUtils.isNotEmpty(getParameter(request, "forward"))) {
+            return mapping.findForward("newslettermanage");
+         }
          return mapping.findForward(SUCCESS);
       }
 
