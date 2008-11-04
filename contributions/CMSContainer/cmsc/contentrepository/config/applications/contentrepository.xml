@@ -16,7 +16,7 @@
       <builder maintainer="finalist.com" version="1">deletionrel</builder>
       <builder maintainer="finalist.com" version="1">ownerrel</builder>
       <builder maintainer="finalist.com" version="1">imagerel</builder>
-      <builder maintainer="finalist.com" version="1">collectionchannel</builder>      
+      <builder maintainer="finalist.com" version="1">collectionchannel</builder>
       <builder maintainer="finalist.com" version="1">contentchannel</builder>
       <builder maintainer="finalist.com" version="1">contentelement</builder>
       <builder maintainer="finalist.com" version="1">assetelement</builder>
@@ -53,6 +53,7 @@
       <!--assets-->
       <relation from="assetelement" to="contentchannel" type="creationrel" />
       <relation from="assetelement" to="contentchannel" type="deletionrel" />
+      <relation from="assetelement" to="user" type="ownerrel" />
    </allowedrelationlist>
 
    <datasourcelist>
