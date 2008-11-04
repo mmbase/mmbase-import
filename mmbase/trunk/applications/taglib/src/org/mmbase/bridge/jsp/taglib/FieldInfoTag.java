@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.116 2008-09-02 12:17:14 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.117 2008-11-04 11:51:26 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -170,7 +170,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     public void setDatatype(Object d) throws JspTagException {
         if (d instanceof String) {
-            dataType = getAttribute((String) d);
+            dataType = getAttribute((String) d, true);
             specifiedDataType = null;
         } else {
             specifiedDataType = (DataType) d;

@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97.2.11 2008-09-02 12:16:29 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.12 2008-11-04 11:50:08 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -175,6 +175,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         if (dataType != Attribute.NULL) {
             if (specifiedDataType != null) throw new RuntimeException();
             String name = dataType.getString(this);
+            if ("".equals(name)) return specifiedDataType;
             DataType dt = null;
             DataTypeCollector collector = (DataTypeCollector) pageContext.getAttribute(DataTypeTag.KEY, DataTypeTag.SCOPE);
             if (collector != null) {
