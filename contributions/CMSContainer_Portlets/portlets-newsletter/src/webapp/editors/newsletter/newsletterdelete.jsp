@@ -12,6 +12,7 @@
 	</style>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
+<mm:import externid="forward" required="false" from="parameters"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="newsletterdelete.title" titleClass="side_block_green">
@@ -23,6 +24,7 @@
 	</p>
 	<form action="?">
 		<html:hidden property="number" value="${number}" />
+		<html:hidden property="forward" value="${forward}" />
 	   	<html:submit property="remove"><fmt:message key="newsletterdelete.yes"/></html:submit>&nbsp;
 	   	<a href="javascript:window.history.go(-1);"><input type="button" value="<fmt:message key="newsletterdelete.no"/>"></a> 
 	</form>

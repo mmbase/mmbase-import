@@ -65,6 +65,6 @@
       }
       
       function ask(idk){		
-		location.href=" NewsletterDelete.do?number="+idk+"&amp;remove='true'&amp;forward='manage'";          		
+		location.href=" NewsletterDelete.do?number="+idk+"&forward='manage'";          		
 	  }
 </script>
