@@ -500,7 +500,7 @@ public final class RepositoryUtil {
      */
     public static void removeCreationRelForAsset(Node asset) {
        if (!AssetElementUtil.isAssetElement(asset)) {
-          throw new IllegalArgumentException("Only contentelements are allowed.");
+          throw new IllegalArgumentException("Only assetelements are allowed.");
        }
        RelationList list = asset.getRelations(CREATIONREL, null, DESTINATION);
        for (int i = 0; i < list.size(); i++) {

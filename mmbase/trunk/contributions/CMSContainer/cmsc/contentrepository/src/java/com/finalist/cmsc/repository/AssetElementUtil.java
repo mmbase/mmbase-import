@@ -24,14 +24,20 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeManagerList;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.security.SecurityUtil;
 
 public final class AssetElementUtil {
+
+   private static final String SOURCE = "SOURCE";
+   private static final String DESTINATION = "DESTINATION";
 
    public static final String NUMBER_FIELD = "number";
    public static final String TITLE_FIELD = "title";
@@ -45,6 +51,9 @@ public final class AssetElementUtil {
    public static final String ARCHIVEDATE_FIELD = "archivedate";
 
    public static final String ASSETELEMENT = "assetelement";
+   public static final String USER = SecurityUtil.USER;
+
+   public static final String OWNERREL = "ownerrel";
 
    private static final String PROPERTY_HIDDEN_ASSET_TYPES = "system.assettypes.hide";
 
@@ -113,6 +122,32 @@ public final class AssetElementUtil {
    public static boolean isAssetType(String type) {
       NodeManager nm = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNodeManager(type);
       return isAssetType(nm);
+   }
+
+   /**
+    * Add owner
+    *
+    * @param asset -
+    *           asset
+    */
+   public static void addOwner(Node asset) {
+      Cloud cloud = asset.getCloud();
+      Node user = SecurityUtil.getUserNode(cloud);
+      RelationManager author = cloud.getRelationManager(ASSETELEMENT, USER, OWNERREL);
+      Relation ownerrel = asset.createRelation(user, author);
+      ownerrel.commit();
+   }
+
+   /**
+    * Check if a assetnode has an owner
+    *
+    * @param asset -
+    *           Asset Node
+    * @return true if the node has a related workflowitem
+    */
+   public static boolean hasOwner(Node asset) {
+      int count = asset.countRelatedNodes(asset.getCloud().getNodeManager(USER), OWNERREL, DESTINATION);
+      return count > 0;
    }
 
    public static void addLifeCycleConstraint(NodeQuery query, long date) {

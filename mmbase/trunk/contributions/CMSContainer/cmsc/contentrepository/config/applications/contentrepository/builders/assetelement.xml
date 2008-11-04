@@ -51,7 +51,7 @@
             <type key="false" notnull="false" state="system">DATETIME</type>
          </db>
       </field>
-      <field>
+            <field>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
@@ -75,6 +75,59 @@
             <type key="false" notnull="false" state="system">DATETIME</type>
          </db>
       </field>
+         <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Publicatie datum</guiname>
+            <guiname xml:lang="en">Publishdate</guiname>
+            <guiname xml:lang="zh">发布时间</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+            <default value="now" />
+         </datatype>
+         <db>
+            <name>publishdate</name>
+            <type key="false" notnull="false" state="persistent">DATETIME</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Verloopdatum</guiname>
+            <guiname xml:lang="en">Expiredate</guiname>
+            <guiname xml:lang="zh">过期时间</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>7</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+            <default value="today + 100 year" />
+         </datatype>
+         <db>
+            <name>expiredate</name>
+            <type key="false" notnull="false" state="persistent">DATETIME</type>
+         </db>
+      </field>
+
       <field>
          <descriptions>
             <description xml:lang="nl"></description>
@@ -99,6 +152,7 @@
             <type key="false" notnull="false" size="1024" state="system">STRING</type>
          </db>
       </field>
+
       <field>
          <descriptions>
             <description xml:lang="nl"></description>
@@ -121,6 +175,30 @@
          <db>
             <name>creator</name>
             <type key="false" notnull="false" size="1024" state="system">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Gebruik verloop datum</guiname>
+            <guiname xml:lang="en">Use expirydate</guiname>
+            <guiname xml:lang="zh">使用过期</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>10</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>use_expirydate</name>
+            <type key="false" required="true" state="persistent">BOOLEAN</type>
          </db>
       </field>
       <field>
@@ -169,6 +247,32 @@
          <db>
             <name>description</name>
             <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Status</guiname>
+            <guiname xml:lang="en">Status</guiname>
+            <guiname xml:lang="zh">状态</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>-1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+            <default value="new" />
+         </datatype>
+         <db>
+            <name>status</name>
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
    </fieldlist>
