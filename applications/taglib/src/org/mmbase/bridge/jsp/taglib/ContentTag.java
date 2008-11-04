@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.67 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.68 2008-11-04 22:33:58 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -508,7 +508,7 @@ public class ContentTag extends LocaleTag  {
                 addVary("Accept");
                 String acceptHeader = request.getHeader("Accept");
                 log.debug("a: " + acceptHeader);
-                boolean acceptable = acceptHeader.indexOf(type) != -1;
+                boolean acceptable = acceptHeader == null ? true : acceptHeader.indexOf(type) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
                         log.debug("browser doesn't accept " + type + " crippling now");
