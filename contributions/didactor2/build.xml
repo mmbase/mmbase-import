@@ -37,7 +37,7 @@
       <available file="install-dependency.xml" />
     </not>
     <then>
-      <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml?pathrev=MMBase-1_9_0_Final"
+      <get src="http://cvs.mmbase.org/viewcvs/*checkout*/all/install-dependency.xml"
            dest="install-dependency.xml"
            usetimestamp="true"  ignoreerrors="true" />
     </then>
