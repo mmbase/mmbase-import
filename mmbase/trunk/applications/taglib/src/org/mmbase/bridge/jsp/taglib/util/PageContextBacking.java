@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.19 2008-10-13 12:04:31 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.20 2008-11-05 13:06:49 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
@@ -79,7 +79,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     }
 
-    public Set<Map.Entry<String, Object>> entrySet() {
+    @Override public Set<Map.Entry<String, Object>> entrySet() {
         return new AbstractSet<Map.Entry<String, Object>>() {
             Set<String> names = new HashSet<String>(Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE)));
 
@@ -142,7 +142,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
     }
 
 
-    public Object put(String key, Object value) {
+    @Override public Object put(String key, Object value) {
         if (value == null) {
             nulls.add(key);
         } else {
@@ -153,7 +153,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         return unwrapped.put(key, value);
     }
 
-    public Object get(Object key) {
+    @Override public Object get(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key);
         } else {
@@ -172,7 +172,7 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
 
-    public boolean containsKey(Object key) {
+    @Override public boolean containsKey(Object key) {
         if (key instanceof String) {
             return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
         } else {
