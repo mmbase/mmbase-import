@@ -81,9 +81,9 @@
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
-                     <td>
+                     <td nowrap>
                         <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:150px" />
-                        <img src="<c:url value='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img">
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img">
                            
                         </input>
                         <script type="text/javascript">
@@ -96,9 +96,9 @@
                        </script>
                      </td>
                      <td> <fmt:message key="newsletterlog.to" /> </td>
-                     <td>
+                     <td nowrap>
                         <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:150px" />
-                        <img src="<c:url value='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img">
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img">
                            
                         </input>
                         <script type="text/javascript">
