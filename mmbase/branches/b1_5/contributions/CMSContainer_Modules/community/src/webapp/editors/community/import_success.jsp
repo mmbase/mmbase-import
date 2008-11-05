@@ -15,18 +15,18 @@
       <fmt:message key="datafile.import.success"/>
    </title>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-   <link rel="icon" href="/cmsc-community/favicon.ico" type="image/x-icon"/>
-   <link rel="shortcut icon" href="/cmsc-community/favicon.ico" type="image/x-icon"/>
-   <link href="/cmsc-community/editors/css/main.css" type="text/css" rel="stylesheet"/>
+   <link rel="icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon"/>
+   <link rel="shortcut icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon"/>
+   <link href="<c:url value='/editors/css/main.css'/>" type="text/css" rel="stylesheet"/>
    <!--[if IE]>
    <style type="text/css" xml:space="preserve">
-      body { behavior: url(/cmsc-community/editors/css/hover.htc);}
+      body { behavior: url(<c:url value='/editors/css/hover.htc'/>);}
    </style>
    <![endif]-->
-   <script src="/cmsc-community/editors/utils/rowhover.js" type="text/javascript"></script>
+   <script src="<c:url value='/editors/utils/rowhover.js'/>" type="text/javascript"></script>
 
-   <script src="/cmsc-community/js/window.js" type="text/javascript"></script>
-   <script src="/cmsc-community/js/transparent_png.js" type="text/javascript"></script>
+   <script src="<c:url value='/js/window.js'/>" type="text/javascript"></script>
+   <script src="<c:url value='/js/transparent_png.js'/>" type="text/javascript"></script>
    <style type="text/css">
       input {
          width: 100px;
