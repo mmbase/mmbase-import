@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.21 2008-10-15 12:36:13 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.22 2008-11-05 13:06:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
@@ -42,24 +42,24 @@ public class  ContextCollector extends StandaloneContextContainer {
     }
 
     @Override protected BasicBacking createBacking(PageContext pc) {
-        return new BasicBacking(pc, parent instanceof PageContextContainer) {
-                public Object put(String key, Object value) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Putting in collector " + key + "=" + value + " " + parent);
-                    }
-                    if (parentCheckedKeys.contains(key)) {
-                        parent.put(key, value);
-                    } else {
-                        parentCheckedKeys.add(key);
-                        try {
-                            parent.register(key, value);
-                        } catch (JspTagException jte) {
-                            throw new RuntimeException(jte);
-                        }
-                    }
-                    return super.put(key, value);
+        return new BasicBacking(pc, parent instanceof PageContextContainer || parent instanceof ContextCollector) {
+            @Override public Object put(String key, Object value) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Putting in collector " + key + "=" + value + " " + parent);
                 }
-            };
+                if (parentCheckedKeys.contains(key)) {
+                    parent.put(key, value);
+                } else {
+                    parentCheckedKeys.add(key);
+                    try {
+                        parent.register(key, value);
+                    } catch (JspTagException jte) {
+                        throw new RuntimeException(jte);
+                    }
+                }
+                return super.put(key, value);
+            }
+        };
     }
 
 
