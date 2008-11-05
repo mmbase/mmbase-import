@@ -386,7 +386,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Eenheid"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Eenheid' AND hidden = '0'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Eenheid' AND hidden = '0'" orderby="positie" directions="UP">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -412,7 +412,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Nederland' AND hidden = '0'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Nederland' AND hidden = '0'" orderby="positie" directions="UP">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 	<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -438,7 +438,7 @@ jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
 document.KaartenForm.sel_Kaart.length=0;
-<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Coordinaten' AND hidden = '0'">
+<mm:listnodes type="thema_plot_kaart" constraints="type_gebied = 'Coordinaten' AND hidden = '0'" orderby="positie" directions="UP">
 	<mm:field name="naam" jspvar="fieldName" write="false" vartype="String" >
 	<mm:field name="number" jspvar="nodeNumber" write="false" vartype="String" >
 		<mm:index jspvar="topIndex" write="false" vartype="Integer">
@@ -581,9 +581,11 @@ function validationMessage() {
 
 //
 function doOnLoad() {
-	jsc_defaultOptie(); jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]); jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
+	jsc_defaultOptie(); 
+   jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]); 
+   jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 	setScreenSize();
-   document.getElementById("sel_Formaat").disabled=true;
+   //document.getElementById("sel_Formaat").disabled=true;
 }
       </script>
       
