@@ -12,6 +12,7 @@
     <li><mm:link page="test_cloud"><a href="${_}">mm:cloud</a></mm:link></li>
     <li><mm:link page="test_transaction"><a href="${_}">mm:transaction</a></mm:link></li>
     <li><mm:link page="test_fieldinfo"><a href="${_}">mm:fieldinfo</a></mm:link></li>
+    <li><mm:link page="test_listcontainers"><a href="${_}">list containers</a></mm:link></li>
   </ol>
 
 </div>
