@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * Straight-forward filter which can serve files from one directory (the directory 'files' in the
  * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.7 2008-09-03 17:17:35 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.8 2008-11-05 11:28:18 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -54,8 +54,9 @@ public class FileServlet extends BridgeServlet {
             if (log == null) {
                 log = Logging.getLoggerInstance(FileServlet.class);
             }
-            files = MMBase.getMMBase().getDataDir();
+            File dataDir = MMBase.getMMBase().getDataDir();
 
+            files = new Filed(dataDir, "files");
             if (! files.exists()) {
                 if (files.mkdirs()) {
                     log.info("Directory " + files + " was created");
