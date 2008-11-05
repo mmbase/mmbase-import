@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.117 2008-11-04 11:51:26 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.118 2008-11-05 11:02:55 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -87,6 +87,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_SEARCHINPUT      = 18;
     protected static final int TYPE_USESEARCHINPUT   = 19;
     protected static final int TYPE_REUSESEARCHINPUT = 20;
+
+    private static final int TYPE_IGNORE           = 1000;
 
 
     private String sessionName = "cloud_mmbase";
@@ -365,7 +367,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_USEINPUT:
             if (field.isReadOnly()) {
                 // ignore useinput
-                infoType = TYPE_DEFAULTVALUE;
+                infoType = TYPE_IGNORE;
                 break;
             }
         case TYPE_VALUE:
@@ -480,6 +482,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             break;
         case TYPE_DEFAULTVALUE:
             show = Casting.toString(dataType.getDefaultValue(locale, getCloudVar(), field));
+            break;
+        case TYPE_IGNORE:
+            show = "";
             break;
         case TYPE_UNSET:
             throw new JspTagException("Type attribute not used");
