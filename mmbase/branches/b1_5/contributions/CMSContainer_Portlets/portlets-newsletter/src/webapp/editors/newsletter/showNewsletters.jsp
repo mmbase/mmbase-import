@@ -71,19 +71,19 @@
                   <tbody>
                   <tr>
                      <td style="width:13%"> <fmt:message key="newsletterlog.newsletter" /> </td>
-                     <td style="width:20%">
+                     <td style="width:25%">
                         <html:select property="newsletters" styleId="newsletters" style="width:150px">
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
                      <td style="width:10%">&nbsp;</td>
-                     <td style="width:57%">&nbsp;</td>
+                     <td style="width:52%">&nbsp;</td>
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td>
                         <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:150px" />
-                        <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_b" class="img">
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img">
                            
                         </input>
                         <script type="text/javascript">
@@ -98,7 +98,7 @@
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td>
                         <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:150px" />
-                        <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_be" class="img">
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img">
                            
                         </input>
                         <script type="text/javascript">
