@@ -49,5 +49,13 @@
          classification="taglib.test">
     <body jsp="test/node.jspx" />
   </block>
+  <block name="test_listcontainers" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/listcontainers.jspx" />
+  </block>
+  <block name="test_vars" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/vars.jspx" />
+  </block>
 
 </component>
