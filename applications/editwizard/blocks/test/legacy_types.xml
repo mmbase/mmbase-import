@@ -11,6 +11,7 @@
   <action type="load" />
   <form-schema id="step1">
     <field name="eventtime" />
+    <field name="string_boolean" />
 
   </form-schema>
 </wizard-schema>
