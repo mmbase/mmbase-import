@@ -85,6 +85,15 @@
   </block>
 
 
+  <block
+      name="editwizardtests"
+      classification="mmbase.test"
+      mimetype="application/xml">
+    <title xml:lang="en">Editward tests</title>
+    <body jsp="test/index.jspx" />
+  </block>
+
+
 
   <block name="style.po.example">
     <body jsp="po/example.jspx" />
