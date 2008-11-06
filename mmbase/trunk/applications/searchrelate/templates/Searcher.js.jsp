@@ -12,12 +12,12 @@
  * On ready, the necessary javascript will then be connected to .mm_related a.search
 
  * Custom events
- * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr) ) )
- * - mmsrUnrelate            (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr) ) )
- * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
+ * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr, relater) ) )
+ * - mmsrUnrelate            (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
+ * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.41 2008-11-06 17:26:07 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.42 2008-11-06 17:33:23 michiel Exp $
  */
 
 
@@ -135,6 +135,13 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
                 })});
         }
     }
+}
+
+
+MMBaseRelater.prototype.needsCommit = function() {
+    var relatedNumbers   = this.getNumbers(this.related);
+    var unrelatedNumbers = this.getNumbers(this.unrelated);
+    return relatedNumbers != "" || unrelatedNumbers != "";
 }
 
 
@@ -280,7 +287,7 @@ MMBaseRelater.prototype.relate = function(tr) {
     if (this.relateCallBack != null) {
         this.relateCallBack(tr);
     }
-    $(this.div).trigger("mmsrRelate", [tr]);
+    $(this.div).trigger("mmsrRelate", [tr, this]);
 }
 
 
@@ -320,7 +327,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     $(tr).click(function() {
         searcher.relate(this)
     });
-    $(this.div).trigger("mmsrUnrelate", [tr]);
+    $(this.div).trigger("mmsrUnrelate", [tr, this]);
 }
 
 /**
