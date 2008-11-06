@@ -1,33 +1,33 @@
-body.assessment span.col,
-body.assessment span.head {
+div.student span.col,
+div.student span.head {
   overflow: hidden;
   display: block;
   float: left;
 
 }
-body.assessment span.head {
+div.student span.head {
   text-align: center;
   font-weight: bold;
 }
-body.assessment span.head.closed {
+div.student span.head.closed {
   color: #aaa;
 }
-body.assessment span.problem {
+div.student span.problem {
   width: 35%;
 }
-body.assessment span.delete {
+div.student span.delete {
   width: 5%;
 }
-body.assessment span.col input,
-body.assessment span.col select {
+div.student span.col input,
+div.student span.col select {
   width: 80%;
   background-color: #fff;
 }
-body.assessment span.col div.extra {
+div.student span.col div.extra {
   display: none;
 }
 
-body.assessment div.inter {
+div.student div.inter {
   clear: left;
   width: 100%;
   font-weight: bold;
@@ -36,15 +36,15 @@ body.assessment div.inter {
   color: white;
 }
 
-body.assessment ol {
+div.student ol {
   margin-left: 0px;
   padding-left: 0px;
 }
-body.assessment div.problems {
+div.student div.problems {
   background-color: #eee;
 
 }
-body.assessment div.problems li {
+div.student div.problems li {
   width: 100%;
   display: block;
   float: left;
@@ -53,7 +53,7 @@ body.assessment div.problems li {
   border: solid 1px white;
 }
 
-body.assessment a.create {
+div.student a.create {
   float: left;
   clear: left;
 }
