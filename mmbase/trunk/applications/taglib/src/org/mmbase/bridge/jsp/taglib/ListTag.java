@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.53 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ListTag.java,v 1.54 2008-11-06 12:25:11 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -153,14 +153,14 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             }
 
             query = Queries.createQuery(getCloudVar(),
-                    getSearchNodes(),
-                    getPath(),
-                    fields.getString(this),
-                    (String) constraints.getValue(this),
-                    (String) orderby.getValue(this),
-                    (String) directions.getValue(this),
-                    searchString,
-                    searchDistinct);
+                                        getSearchNodes(),
+                                        getPath(),
+                                        fields.getString(this),
+                                        (String) constraints.getValue(this),
+                                        (String) orderby.getValue(this),
+                                        (String) directions.getValue(this),
+                                        searchString,
+                                        searchDistinct);
         } else {   // container found!
             if (path != Attribute.NULL || search != Attribute.NULL) {
                 throw new JspTagException("search and path attributes not supported within a container.");
