@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.100 2008-11-04 21:11:40 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.101 2008-11-06 13:31:32 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -304,6 +304,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
             value = origin.cast(value, node, field);
         }
+        if (value == null) return null;
         Cloud cloud = getCloud(getCloud(node, field));
         try {
             return cast(value, cloud, node, field);
@@ -468,7 +469,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public void finish(Object owner) {
         this.owner = owner;
-        handlers = Collections.unmodifiableMap(handlers);
+        if (! isFinished()) {
+            handlers = Collections.unmodifiableMap(handlers);
+        }
     }
 
     /**
