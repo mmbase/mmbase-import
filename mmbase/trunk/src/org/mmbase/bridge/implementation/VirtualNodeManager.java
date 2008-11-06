@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.50 2008-02-27 12:37:50 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.51 2008-11-06 13:45:46 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -90,19 +90,20 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
      */
-    @Override
-    protected Map<String, Field> getFieldTypes() {
+    @Override protected Map<String, Field> getFieldTypes() {
         if (builder != null) {
             return fieldTypes;
         } else {
             if (query != null) { // means not yet called (lazy loading of fields)
                 // code to solve the fields.
                 for (Step step : query.getSteps()) {
-                    DataType nodeType  = DataTypes.getDataType("node");
+                    DataType nodeType  = DataTypes.getDataType("node").clone();
+
                     String name = step.getAlias();
                     if (name == null) name = step.getTableName();
                     CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
                     fd.finish();
+
                     Field ft = new VirtualNodeManagerField(fd, name);
                     fieldTypes.put(name, ft);
 
@@ -140,8 +141,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
 
 
-    @Override
-    public String getGUIName(int plurality, Locale locale) {
+    @Override public String getGUIName(int plurality, Locale locale) {
         if (locale == null) locale = cloud.getLocale();
         if (builder != null) {
             if (plurality == NodeManager.GUI_SINGULAR) {
