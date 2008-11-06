@@ -8,12 +8,14 @@ See http://www.MMBase.org/license
 
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -29,9 +31,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
 
     private static Logger log = Logging.getLoggerInstance(BasicCacheHandlerInterceptor.class);
-
+    private List<Modifier> modifiers = new ArrayList<Modifier>();
     
-    private CacheNameResolverFactory cacheNameResolverFactory = null;
+//    private Class<? extends CacheNameResolver> cachNameResolverClass;
+    private ClassInstanceFactory<CacheNameResolver> cacheNameResolverFactory;
     private CacheWrapper cacheWrapper = null;
 
     BasicCacheHandlerInterceptor() {
@@ -43,11 +46,10 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
                     throws Exception {
 
                 log.debug("handling request type flush hint");
-                if (shouldFlush(request)) {
-                    TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
+                if (shouldFlush(request) && request.getParameterMap().get("flushname") != null) {
+                    CacheNameResolver resolver = cacheNameResolverFactory.newInstance();
                     resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
-                    resolver.setNameSpace("request");
-                    flushForName(resolver.getNames());
+                    flushForNames(resolver.getNames("request"));
                 }
             }
 
@@ -60,10 +62,9 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
 
                 log.debug("handling node type flush hint");
                 if (shouldFlush(request)) {
-                    TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
+                    CacheNameResolver resolver = cacheNameResolverFactory.newInstance();
                     resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
-                    resolver.setNameSpace("node");
-                    flushForName(resolver.getNames());
+                    flushForNames(resolver.getNames("node"));
                 }
             }
         });
@@ -75,41 +76,86 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
 
                 log.debug("handling relation type flush hint");
                 if (shouldFlush(request)) {
-                    TokenizerCacheNameResolver resolver = (TokenizerCacheNameResolver) cacheNameResolverFactory.getCacheNameResolver();
+                    CacheNameResolver resolver = cacheNameResolverFactory.newInstance();
                     resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
-                    resolver.setNameSpace("relation");
-                    flushForName(resolver.getNames());
+                    flushForNames(resolver.getNames("relation"));
                 }
             }
         });
 
     }
 
-    /**
-     * flush the given cache groups.
-     * @param request
-     * @param flushnames a comma separated list of cache groups.
-     */
-    private void flushForName(List<String> flushnames) {
-        for(String name: flushnames) {
-            cacheWrapper.flushForName(name);
-        }
-       
+    
+    
+    public void setCacheWrapper(CacheWrapper cacheWrapper) {
+        this.cacheWrapper = cacheWrapper;
+    }
+
+
+    public CacheWrapper getCacheWrapper() {
+        return cacheWrapper;
+    }
+    
+    public void addModifier(Modifier modifier) {
+        modifiers.add(modifier);
+    }
+    
+    public void setModifiers(List<Modifier> modifiers) {
+        this.modifiers.addAll(modifiers);
     }
 
     private boolean shouldFlush(HttpServletRequest request) {
         return ! StringUtils.isEmpty(request.getParameter("flushname"));
     }
 
-   
-
-    public void setCacheNameResolverFactory(CacheNameResolverFactory cacheNameResolverFactory) {
-        this.cacheNameResolverFactory = cacheNameResolverFactory;
+    public ClassInstanceFactory<CacheNameResolver> getCacheNameResolverFactory() {
+        return cacheNameResolverFactory;
     }
 
-    public void setCacheWrapper(CacheWrapper cacheWrapper) {
-        this.cacheWrapper = cacheWrapper;
+
+
+    public void setCacheNameResolverFactory(ClassInstanceFactory<CacheNameResolver> classInstanceFactory) {
+        this.cacheNameResolverFactory = classInstanceFactory;
     }
 
+
+
+    /**
+     * flush the given cache groups.
+     * @param request
+     * @param flushnames a comma separated list of cache groups.
+     * @param request 
+     */
+    private void flushForNames(List<String> flushnames) {
+        for(String name: flushnames) {
+            cacheWrapper.flushForName(applyModifiers(name));
+        }
+    }
+    
+    private String applyModifiers(String input){
+        for(Modifier modifier: modifiers){
+            input = modifier.modify(input);
+        }
+        return input;
+    }
+
+    /**
+     * apply all the modifiers to a list of strings.
+     * All the cache names that are resolved will be put through all the registered modifiers
+     * before they are returned.
+     * 
+     * @param items
+     * @return
+     */
+    private List<String> modify(List<String> items) {
+        List<String> result = new ArrayList<String>();
+        for (String item: items) {
+            for (Modifier modifier : modifiers) {
+                item = modifier.modify(item);
+            }
+            result.add(item);
+        }
+        return result;
+    }
 
 }

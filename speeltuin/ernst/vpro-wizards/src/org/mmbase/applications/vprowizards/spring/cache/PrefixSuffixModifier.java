@@ -32,18 +32,24 @@ public class PrefixSuffixModifier implements Modifier {
     }
 
     public void setPrefix(String prefix) {
-        this.prefix = prefix;
+        if(prefix == null){
+            prefix = "";
+        }
+        this.prefix = prefix.trim();
     }
 
     public void setSuffix(String suffix) {
-        this.suffix = suffix;
+        if(suffix == null){
+            suffix  = "";
+        }
+        this.suffix = suffix.trim();
     }
 
     public String modify(String input) {
-        if (!StringUtils.isEmpty(prefix)) {
+        if (!StringUtils.isBlank(prefix)) {
             input = prefix + input;
         }
-        if (!StringUtils.isEmpty(suffix)) {
+        if (!StringUtils.isBlank(suffix)) {
             input = input + suffix;
         }
         return input;
