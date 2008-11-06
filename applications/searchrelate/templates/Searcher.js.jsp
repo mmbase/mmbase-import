@@ -15,9 +15,10 @@
  * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr, relater) ) )
  * - mmsrUnrelate            (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
+ * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.42 2008-11-06 17:33:23 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.43 2008-11-06 20:28:08 michiel Exp $
  */
 
 
@@ -150,15 +151,16 @@ MMBaseRelater.prototype.needsCommit = function() {
 *  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
  */
 
-MMBaseRelater.prototype.commit = function(el) {
+MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
 
-    $(a).addClass("submitting");
-    $(a).removeClass("failed");
-    $(a).removeClass("succeeded");
     if (relatedNumbers != "" || unrelatedNumbers != "") {
-        var a = el.target;
+        var a = ev.target;
+        $(a).addClass("submitting");
+        $(a).removeClass("failed");
+        $(a).removeClass("succeeded");
+
         this.logger.debug("Commiting changed relations of " + this.div.id);
         var id = this.div.id;
         var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
@@ -178,15 +180,18 @@ MMBaseRelater.prototype.commit = function(el) {
                         $(a).addClass("succeeded");
                         this.related = {};
                         this.unrelated = {};
+                        $(this.div).trigger("mmsrCommitted", [a, status, this]);
                         return true;
                     } else {
                         $(a).addClass("failed");
+                        $(this.div).trigger("mmsrCommitted", [a, status, this]);
                         return false;
                     }
                 }
                });
     } else {
         this.logger.debug("No changes, no need to commit");
+        $(this.div).trigger("mmsrCommitted", [a, "nochanges", this]);
         $(a).addClass("succeeded");
     }
 }
