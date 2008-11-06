@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.73 2008-09-23 16:23:42 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.74 2008-11-06 13:46:19 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -686,14 +686,15 @@ public class BasicQuery implements Query  {
         return cloud.getList(this);
     }
 
-    @Override
-    public boolean equals(Object obj) {
+    @Override public boolean equals(Object obj) {
+        if (obj instanceof BasicQuery) {
+            obj = ((BasicQuery)obj).query;
+        }
         return query.equals(obj);
     }
 
     // javadoc is inherited
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         return query.hashCode();
     }
 
