@@ -8,6 +8,7 @@ import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.util.POConvertUtils;
 
@@ -79,7 +80,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       newsletter.setReplyAddress(node.getStringValue("replyto_mail"));
       pub.setNewsletter(newsletter);
 
-      return pub;
+      return NewsletterPublicationUtil.getPublication(cloud,number);
    }
 
    public Node getPublicationNode(int number) {
@@ -87,11 +88,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    }
 
    public String getPublicationURL(int publciationId) {
-
-      Node publicationNode = cloud.getNode(publciationId);
-      String hostUrl = NewsletterUtil.getServerURL();
-      String newsletterPath = getNewsletterPath(publicationNode);
-      return "".concat(hostUrl).concat(newsletterPath);
+      return NewsletterPublicationUtil.getPublicationURL(cloud,publciationId);
    }
 
    public int getNewsletterId(int publicationId) {
