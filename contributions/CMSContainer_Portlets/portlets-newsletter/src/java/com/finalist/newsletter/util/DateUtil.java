@@ -3,6 +3,8 @@ package com.finalist.newsletter.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -22,7 +24,12 @@ public class DateUtil {
     */
    public static Date parser(String raw) {
       Date date = null;
-
+      String regEx = "/";
+      Pattern p = Pattern.compile(regEx);
+      Matcher m = p.matcher(raw);
+      if(m.find()){
+         raw = m.replaceAll("-");
+      } 
       if (StringUtils.isNotBlank(raw)) {
          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
          try {
