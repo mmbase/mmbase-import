@@ -17,7 +17,7 @@ public class Assessment extends org.mmbase.framework.BasicComponent {
     @Override protected void init() {
         MMObjectBuilder learnblocks = MMBase.getMMBase().getBuilder("learnblocks");
 
-        CoreField assessment= Fields.createField("assessment", Field.TYPE_BOOLEAN, Field.STATE_VIRTUAL, DataTypes.getDataType("didactor_assessment_field"));
+        CoreField assessment= Fields.createField("assessment", Field.TYPE_BOOLEAN, Field.STATE_VIRTUAL, DataTypes.getDataType("didactor_assessment_field").clone());
         assessment.setParent(learnblocks);
         assessment.setStoragePosition(100);
         assessment.finish();
