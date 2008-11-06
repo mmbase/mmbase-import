@@ -24,7 +24,7 @@ import org.mmbase.util.functions.Function;
  * org.mmbase.bridge.implementation.VirtualNodeManager}).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.11 2008-09-04 09:34:51 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.12 2008-11-06 13:21:36 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
@@ -106,7 +106,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
 
     public boolean hasField(String fieldName) {
-        Map fieldTypes = getFieldTypes();
+        Map<String, Field> fieldTypes = getFieldTypes();
         return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
     }
 
