@@ -4,8 +4,8 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
 
-  <div class="menuSeperator"><jsp:text> </jsp:text></div>
-  <div class="menuItem">
+  <div class="menuSeperator assessment"><jsp:text> </jsp:text></div>
+  <div class="menuItem assessment" id="menu_assessment">
     <mm:treefile page="/assessment/index.jsp" objectlist="$includePath" referids="${referids}"
                  write="false"
                  >
