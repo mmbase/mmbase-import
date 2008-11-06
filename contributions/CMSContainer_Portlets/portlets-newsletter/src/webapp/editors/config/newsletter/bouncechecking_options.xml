@@ -2,7 +2,7 @@
 <!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <optionlist name="bouncechecking_options">
    <option id="">
-      <prompt xml:lang="nl">Disable</prompt>
+      <prompt xml:lang="nl">Uitschakelen</prompt>
       <prompt xml:lang="en">Disable</prompt>
       <prompt xml:lang="zh">不跟踪</prompt>
    </option>
