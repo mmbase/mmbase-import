@@ -43,7 +43,44 @@
                 endDate[0].value = "";
             }
             function submits(){
+            var startDate = document.getElementsByName("startDate");
+            var endDate = document.getElementsByName("endDate");
+            if(startDate[0].value!=''&&!strDateTime(startDate[0].value)) {
+               alert("<fmt:message key='newsletterlog.datefrom.advice'/>");
+               return;
+            }if(endDate[0].value!='' && !strDateTime(endDate[0].value)) {
+               alert("<fmt:message key='newsletterlog.dateto.advice'/>");
+               return;
+            }
                document.forms[0].submit();
+            }
+            function strDateTime(str){
+               var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
+               var r = str.match(reg);
+               if(r==null)return false;
+
+               var datenum = parseInt(r[4],10);
+               if(datenum>=1 && datenum<=9){
+                  datenum = '0'+datenum;
+               }
+               var monthnum = parseInt(r[3],10);
+               if(monthnum >=1 && monthnum<=9){
+                  monthnum = '0' +monthnum;
+               }
+               str = r[1]+r[2]+monthnum+r[2]+datenum;
+
+               var d= new Date(r[1], r[3]-1,r[4]);
+
+               var dateRel = parseInt(d.getDate(),10);
+               if(dateRel >=1 && dateRel <=9){
+                  dateRel = '0'+dateRel;
+               }
+               var monthRel = parseInt(d.getMonth()+1,10);
+               if(monthRel >=1 && monthRel <=9){
+                  monthRel = '0' +monthRel;
+               }
+               var newStr =d.getFullYear()+r[2]+monthRel+r[2]+dateRel;
+               return newStr==str;
             }
       </script>
    </head>
@@ -71,18 +108,18 @@
                   <tbody>
                   <tr>
                      <td style="width:13%"> <fmt:message key="newsletterlog.newsletter" /> </td>
-                     <td style="width:20%">
+                     <td style="width:25%">
                         <html:select property="newsletters" styleId="newsletters" style="width:150px">
                            <html:optionsCollection name="newsletters" label="title" value="id" />
                         </html:select>
                      </td>
                      <td style="width:10%">&nbsp;</td>
-                     <td style="width:57%">&nbsp;</td>
+                     <td style="width:52%">&nbsp;</td>
                   </tr>
                   <tr>
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td nowrap>
-                        <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:150px" />
+                        <html:text property="startDate" styleId="f_date_b" style="width:150px" />
                         <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img">
                            
                         </input>
@@ -97,7 +134,7 @@
                      </td>
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td nowrap>
-                        <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:150px" />
+                        <html:text property="endDate" styleId="f_date_be" style="width:150px" />
                         <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img">
                            
                         </input>
@@ -141,19 +178,22 @@
                      </c:choose>
                      <td colspan="2">&nbsp;</td>
                   </tr>
-                  <tr>
-                     <td>&nbsp;</td>
-                     <td>
-                         <input type="submit" onclick="javascript:submits()" 
-                           value="<fmt:message key="newsletterlog.submit" />" />
-                        <input type="submit" onclick="javascript:resets()"  
-                           value="<fmt:message key="newsletterlog.reset" />" />
-                     </td>
-                     <td colspan="2">&nbsp;</td>
-                  </tr>
+
                   </tbody>
                </table>
             </html:form>
+            <table>
+               <tr>
+                  <td style="width:13%">&nbsp;</td>
+                  <td>
+                      <input type="submit" onclick="javascript:submits()" 
+                        value="<fmt:message key="newsletterlog.submit" />" />
+                     <input type="submit" onclick="javascript:resets()"  
+                        value="<fmt:message key="newsletterlog.reset" />" />
+                  </td>
+                  <td colspan="2">&nbsp;</td>
+               </tr>
+            </table>
          </div>
       </div>
 
