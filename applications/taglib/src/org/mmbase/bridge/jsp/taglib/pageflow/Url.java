@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.48 2008-10-02 09:41:01 michiel Exp $;
+ * @version $Id: Url.java,v 1.49 2008-11-06 12:24:57 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -251,7 +251,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         try {
             String u = get(escapeAmps);
             log.debug("Produced " + u);
-            if (u == null) return "NULL_URL";
+            if (u == null) {
+                log.warn("Produces an url which is null! With " + page + " " + params + " " + frameworkParams);
+                return "NULL_URL";
+            }
             StringBuilder show = new StringBuilder();
             if (! useAbsoluteAttribute(show, u)) {
                 log.debug("Absolute attribute not applied on " + u);
