@@ -70,7 +70,7 @@
 	</field>
 	<field name="txtempty" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Text when empty</prompt>
-		<prompt xml:lang="nl">Text when empty</prompt>
+		<prompt xml:lang="nl">Tekst als leeg</prompt>
 		<prompt xml:lang="zh">内容为空时是否发送其他内容</prompt>
 	</field>
    <field name="schedule" ftype="calendar">
@@ -80,7 +80,7 @@
 	</field>
    <field name="bounce_checking" ftype="enum">
 		<prompt xml:lang="en">Bounce Checking</prompt>
-		<prompt xml:lang="nl">Bounce Checking</prompt>
+		<prompt xml:lang="nl">Bounce controle</prompt>
 		<prompt xml:lang="zh">跟踪退信</prompt>
       <optionlist select="bouncechecking_options" />
    </field>
@@ -96,12 +96,12 @@
 	</field>
    <field name="user_name">
 		<prompt xml:lang="en">User Name</prompt>
-		<prompt xml:lang="nl">User Name</prompt>
+		<prompt xml:lang="nl">Gebruikersnaam</prompt>
 		<prompt xml:lang="zh">用户名</prompt>
 	</field>
    <field name="password" ftype="password">
 		<prompt xml:lang="en">Password</prompt>
-		<prompt xml:lang="nl">Password</prompt>
+		<prompt xml:lang="nl">Wachtwoord</prompt>
 		<prompt xml:lang="zh">密码</prompt>
 	</field>
    <list include="config/layout/search_page_layoutrel_layout.xml" />
