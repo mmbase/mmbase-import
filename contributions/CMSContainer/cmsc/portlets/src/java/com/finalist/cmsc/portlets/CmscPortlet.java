@@ -37,6 +37,7 @@ import org.apache.pluto.core.InternalPortletRequest;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
@@ -77,51 +78,95 @@ public class CmscPortlet extends GenericPortlet {
    }
 
    /**
-    * @see javax.portlet.GenericPortlet#processAction(javax.portlet.ActionRequest,
-    *      javax.portlet.ActionResponse)
+    * Answers whether the given {@link PortletMode} is restricted for this {@link Portlet} instance.
+    * If a certain mode is restricted, an authorized user is required to continue the request.
+    * 
+    * @param mode the mode to check
+    * @return <code>true</code> if the given mode is restricted, <code>false</code> otherwise.
+    */
+   protected boolean isRestrictedPortletMode(PortletMode mode) {
+      return mode == null || PortletMode.EDIT.equals(mode)
+            || CmscPortletMode.EDIT_DEFAULTS.equals(mode);
+   }
+
+   /**
+    * Answers whether the given {@link PortletRequest} is allowed. A request is allowed if:
+    * <ol>
+    * <li>it's {@link PortletMode} is not restricted. See also
+    * {@link #isRestrictedPortletMode(PortletMode)}.</li>
+    * <li>it's {@link PortletMode} is restricted and the current user is allowed to request the
+    * portlet in that mode.</li>
+    * </ol>
+    * Subclasses may override this method for different behavior.
+    * 
+    * @param request
+    *           the request to check
+    * @return <code>true</code> if the request is allowed, <code>false</code> otherwise.
+    */
+   protected boolean isRequestAllowed(PortletRequest request) {
+      // TODO Move to a service?
+      
+      PortletMode mode = request.getPortletMode();
+      if (isRestrictedPortletMode(mode)) {
+
+         Cloud cloud = CloudUtil.getCloudFromThread();
+         if (cloud != null) {
+            Node userNode = SecurityUtil.getUserNode(cloud);
+            if (userNode != null) {
+               return SecurityUtil.isLoggedInUser(cloud, userNode);
+            }
+         }
+
+         return false;
+      }
+
+      return true;
+   }
+
+   /*
+    * @see javax.portlet.GenericPortlet#processAction(javax.portlet.ActionRequest, javax.portlet.ActionResponse)
     */
    @Override
-   public void processAction(ActionRequest req, ActionResponse res) throws PortletException,
-         IOException {
+   public void processAction(ActionRequest req, ActionResponse res) throws PortletException, IOException {
       if (getLogger().isDebugEnabled()) {
          getLogger().debug("===> process " + getPortletName() + " mode = " + req.getPortletMode());
       }
-      PortletMode mode = req.getPortletMode();
+      
+      if (isRequestAllowed(req)) {
+         
+         PortletMode mode = req.getPortletMode();
 
-      if (mode.equals(PortletMode.VIEW)) {
-         processView(req, res);
-      }
-      else
-         if (mode.equals(CmscPortletMode.ABOUT)) {
+         if (mode.equals(PortletMode.VIEW)) {
+            processView(req, res);
+         }
+         else if (mode.equals(CmscPortletMode.ABOUT)) {
             processAbout(req, res);
          }
-         else
-            if (mode.equals(CmscPortletMode.CONFIG)) {
-               processConfig(req, res);
-            }
-            else
-               if (mode.equals(PortletMode.EDIT)) {
-                  processEdit(req, res);
-               }
-               else
-                  if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
-                     processEditDefaults(req, res);
-                  }
-                  else
-                     if (mode.equals(PortletMode.HELP)) {
-                        processHelp(req, res);
-                     }
-                     else
-                        if (mode.equals(CmscPortletMode.PREVIEW)) {
-                           processPreview(req, res);
-                        }
-                        else
-                           if (mode.equals(CmscPortletMode.PRINT)) {
-                              processPrint(req, res);
-                           }
-                           else {
-                              throw new PortletException(mode.toString());
-                           }
+         else if (mode.equals(CmscPortletMode.CONFIG)) {
+            processConfig(req, res);
+         }
+         else if (mode.equals(PortletMode.EDIT)) {
+            processEdit(req, res);
+         }
+         else if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
+            processEditDefaults(req, res);
+         }
+         else if (mode.equals(PortletMode.HELP)) {
+            processHelp(req, res);
+         }
+         else if (mode.equals(CmscPortletMode.PREVIEW)) {
+            processPreview(req, res);
+         }
+         else if (mode.equals(CmscPortletMode.PRINT)) {
+            processPrint(req, res);
+         }
+         else {
+            throw new PortletException(mode.toString());
+         }
+      }
+      else {
+         getLogger().warn("Prevented unauthorised access to portlet: " + getPortletName());
+      }
    }
 
    public void processPrint(ActionRequest req, ActionResponse res) throws PortletException,
@@ -192,59 +237,56 @@ public class CmscPortlet extends GenericPortlet {
       // convenience method
    }
 
-   /**
-    * @see javax.portlet.GenericPortlet#doDispatch(javax.portlet.RenderRequest,
-    *      javax.portlet.RenderResponse)
+   /*
+    * @see javax.portlet.GenericPortlet#doDispatch(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
     */
    @Override
-   protected void doDispatch(RenderRequest req, RenderResponse res) throws IOException,
-         PortletException {
+   protected void doDispatch(RenderRequest req, RenderResponse res) throws IOException, PortletException {
 
       if (getLogger().isDebugEnabled()) {
          getLogger().debug(
                "===> " + getPortletName() + " mode = " + req.getPortletMode() + " window = "
                      + req.getWindowState());
       }
+      
+      if (isRequestAllowed(req)) {
 
-      WindowState state = req.getWindowState();
-
-      if (!state.equals(WindowState.MINIMIZED)) {
-         PortletMode mode = req.getPortletMode();
-
-         if (mode.equals(PortletMode.VIEW)) {
-            doView(req, res);
-         }
-         else
-            if (mode.equals(CmscPortletMode.ABOUT)) {
+         WindowState state = req.getWindowState();
+   
+         if (!state.equals(WindowState.MINIMIZED)) {
+            PortletMode mode = req.getPortletMode();
+   
+            if (mode.equals(PortletMode.VIEW)) {
+               doView(req, res);
+            }
+            else if (mode.equals(CmscPortletMode.ABOUT)) {
                doAbout(req, res);
             }
-            else
-               if (mode.equals(CmscPortletMode.CONFIG)) {
-                  doConfig(req, res);
-               }
-               else
-                  if (mode.equals(PortletMode.EDIT)) {
-                     doEdit(req, res);
-                  }
-                  else
-                     if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
-                        doEditDefaults(req, res);
-                     }
-                     else
-                        if (mode.equals(PortletMode.HELP)) {
-                           doHelp(req, res);
-                        }
-                        else
-                           if (mode.equals(CmscPortletMode.PREVIEW)) {
-                              doPreview(req, res);
-                           }
-                           else
-                              if (mode.equals(CmscPortletMode.PRINT)) {
-                                 doPrint(req, res);
-                              }
-                              else {
-                                 throw new PortletException(mode.toString());
-                              }
+            else if (mode.equals(CmscPortletMode.CONFIG)) {
+               doConfig(req, res);
+            }
+            else if (mode.equals(PortletMode.EDIT)) {
+               doEdit(req, res);
+            }
+            else if (mode.equals(CmscPortletMode.EDIT_DEFAULTS)) {
+               doEditDefaults(req, res);
+            }
+            else if (mode.equals(PortletMode.HELP)) {
+               doHelp(req, res);
+            }
+            else if (mode.equals(CmscPortletMode.PREVIEW)) {
+               doPreview(req, res);
+            }
+            else if (mode.equals(CmscPortletMode.PRINT)) {
+               doPrint(req, res);
+            }
+            else {
+               throw new PortletException(mode.toString());
+            }
+         }
+      }
+      else {
+         getLogger().warn("Prevented unauthorised access to portlet: " + getPortletName());
       }
    }
 
