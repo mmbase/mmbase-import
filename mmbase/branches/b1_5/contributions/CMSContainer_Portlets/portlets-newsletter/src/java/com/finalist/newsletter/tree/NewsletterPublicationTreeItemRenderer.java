@@ -4,16 +4,19 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.NavigationRenderer;
+import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
-import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.domain.Publication;
 
 
 public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItemRenderer {
@@ -38,17 +41,16 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
       if (SecurityUtil.isEditor(role)) {
          element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
-               "../newsletter/NewsletterPublicationEdit.do?number=" + id));
+                  "../newsletter/NewsletterPublicationEdit.do?number=" + id));
 
          boolean isSingleApplication = true;
          boolean isPublished;
-
+         isSingleApplication = ServerUtil.isSingle();
          if (isSingleApplication) {
-            NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-            Publication.STATUS status = publicationService.getStatus(parentNode.getNumber());
+           // NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+            Publication.STATUS status = NewsletterPublicationUtil.getStatus(parentNode.getCloud(),parentNode.getNumber());
             isPublished = Publication.STATUS.DELIVERED.equals(status);
-         }
-         else {
+         } else {
             isPublished = Publish.isPublished(parentNode);
          }
 
@@ -56,11 +58,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished)) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
-                  "../newsletter/NewsletterPublicationDelete.do?number=" + id));
+                     "../newsletter/NewsletterPublicationDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.publish", "newsletter",
-                  "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+                     "../newsletter/NewsletterPublicationPublish.do?number=" + id));
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.test", "newsletter",
-                  "../newsletter/NewsletterPublicationTest.do?number=" + id));
+                     "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
@@ -69,7 +71,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.publish", "newsletter",
-                  "../workflow/publish.jsp?number=" + id));
+                     "../workflow/publish.jsp?number=" + id));
          }
       }
 
