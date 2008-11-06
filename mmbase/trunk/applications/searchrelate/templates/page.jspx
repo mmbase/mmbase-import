@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.20 2008-11-06 14:59:10 michiel Exp $
+      @version $Id: page.jspx,v 1.21 2008-11-06 15:33:40 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />
@@ -56,29 +56,29 @@
             </fmt:message>
           </c:otherwise>
         </c:choose>
-        <table summary="${mm:escape('tagstripper(none),text/xml', summary)}">
+        <table cellspacing="0" summary="${mm:escape('tagstripper(none),text/xml', summary)}">
           <caption class="${empty search ? 'emptysearch' : 'search'} ${size gt pagesize ? 'paging needed' : 'paging notneeded'}">${summary}</caption>
           &lt;!-- <jsp:expression>bq.toSql()</jsp:expression> --&gt;
-          <thead>
+          <thead class="${size gt 0 ? 'paging needed' : 'paging notneeded'}">
             <tr class="${query.nodeManager.name}">
               <c:choose>
                 <c:when test="${!empty fields}">
-                  <th class="node number">#</th>
+                  <th class="node number" scope="col">#</th>
                   <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$fields" varStatus="field">
-                    <th class="fields ${field.current.name}"><mm:fieldinfo type="guiname" /></th>
+                    <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                     <mm:last><mm:index write="false" id="colcount" /></mm:last>
                   </mm:fieldlist>
                 </c:when>
                 <c:otherwise>
-                  <th class="node number">#</th>
-                  <th class="node"> </th>
+                  <th class="node number" scope="col">#</th>
+                  <th class="node" scope="col"> </th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
-                      <th class="fields ${field.current.name}"><mm:fieldinfo type="guiname" /></th>
+                      <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                       <mm:last><mm:index write="false" id="colcount" /></mm:last>
                     </mm:fieldlist>
                 </c:otherwise>
               </c:choose>
-              <th class="node action"> </th>
+              <th class="node action" scope="col"> </th>
             </tr>
           </thead>
           <!--  PAGING -->
