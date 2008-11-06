@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.35 2008-10-19 14:07:01 andre Exp $
+      @version $Id: relate.tagx,v 1.36 2008-11-06 14:59:55 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -43,7 +43,7 @@
   <jsp:directive.attribute name="maxpages"           type="java.lang.Integer"
                            description="Max number of pages to show in the pager" />
 
-  <jsp:directive.attribute name="fields"             type="java.lang.String" 
+  <jsp:directive.attribute name="fields"             type="java.lang.String"
                            description="Fields to show in both lists. Searching still occurs with 'fieldlist type=search' " />
 
   <jsp:directive.attribute name="styleClass"
@@ -151,6 +151,7 @@
               <mm:param name="fields" referid="fields" />
             </c:if>
             <mm:param name="id">mm_related_${seq}_current</mm:param>
+            <mm:param name="extraClass">implicit</mm:param>
           </mm:include>
         </div>
       </c:if>
@@ -190,6 +191,7 @@
             <mm:param name="maxpages" referid="maxpages" />
           </c:if>
           <mm:param name="id">mm_related_${seq}_repository</mm:param>
+          <mm:param name="extraClass">implicit</mm:param>
         </mm:include>
       </div>
     </div>
