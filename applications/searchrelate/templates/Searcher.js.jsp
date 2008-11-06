@@ -13,10 +13,11 @@
 
  * Custom events
  * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr) ) )
+ * - mmsrUnrelate            (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.40 2008-11-06 14:59:10 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.41 2008-11-06 17:26:07 michiel Exp $
  */
 
 
@@ -319,6 +320,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     $(tr).click(function() {
         searcher.relate(this)
     });
+    $(this.div).trigger("mmsrUnrelate", [tr]);
 }
 
 /**
