@@ -1,5 +1,5 @@
 <div
-    class="searchresult"
+    class="searchresult ${param.extraClass}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.19 2008-10-19 14:15:46 andre Exp $
+      @version $Id: page.jspx,v 1.20 2008-11-06 14:59:10 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />

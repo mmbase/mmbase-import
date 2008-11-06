@@ -16,7 +16,7 @@
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, tr) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.39 2008-11-04 15:02:12 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.40 2008-11-06 14:59:10 michiel Exp $
  */
 
 
@@ -383,6 +383,13 @@ function MMBaseSearcher(d, r, type, logger) {
     });
     this.searchResults = {};
     this.bindEvents();
+    // Arrange that pressing enter in the search-area works:
+    $(this.div).find("input.search").keypress(function(ev) {
+        if (ev.which == 13) {
+            self.search(this.value, 0);
+            return false;
+        }
+    });
     this.validator = this.relater.validator;
     this.searchUrl = $(this.div).find("form.searchform").attr("action");
     this.context   = "";
@@ -454,14 +461,15 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     if (result == null) {
         var self = this;
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
-                 beforeSend: function() { 
-                    $("input.search").addClass("searching"); 
+                 beforeSend: function() {
+                    $("input.search").addClass("searching");
                     $(rep).append($('<p><fmt:message key="searching" /></p>'));
                  },
                  complete: function(res, status) {
                     if ( status == "success" || status == "notmodified" ) {
                         result = res.responseText;
                         $(rep).empty();
+                        $(rep).attr("class", $(result).attr("class"));
                         $("input.search").removeClass("searching");
                         //console.log($(result).find("*").length);
                         $(rep).append($(result).find("> *"));
@@ -473,7 +481,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                     }
                 }
                });
-       
+
     } else {
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
@@ -629,13 +637,7 @@ MMBaseSearcher.prototype.bindEvents = function() {
     var self = this;
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
 
-    // Arrage that pressing enter in the search-area works:
-    $(this.div).find("input.search").keypress(function(ev) {
-        if (ev.which == 13) {
-            self.search(this.value, 0);
-            return false;
-        }
-    });
+
     $(this.div).find("a.navigate").click(function(ev) {
         var anchor = ev.target;
         self.logger.debug("navigating " + anchor);
