@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.51 2008-11-06 13:45:46 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.52 2008-11-06 16:29:39 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -97,12 +97,11 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             if (query != null) { // means not yet called (lazy loading of fields)
                 // code to solve the fields.
                 for (Step step : query.getSteps()) {
-                    DataType nodeType  = DataTypes.getDataType("node").clone();
+                    DataType nodeType  = DataTypes.getDataType("node");
 
                     String name = step.getAlias();
                     if (name == null) name = step.getTableName();
                     CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
-                    fd.finish();
 
                     Field ft = new VirtualNodeManagerField(fd, name);
                     fieldTypes.put(name, ft);
