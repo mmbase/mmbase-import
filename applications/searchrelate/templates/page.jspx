@@ -1,4 +1,4 @@
-<div
+﻿<div
     class="searchresult ${param.extraClass}"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.21 2008-11-06 15:33:40 andre Exp $
+      @version $Id: page.jspx,v 1.22 2008-11-06 16:22:22 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />
@@ -87,21 +87,29 @@
               <td colspan="${colcount + 3}">
                 <mm:previousbatches maxtotal="${maxpages}" indexoffset="1">
                   <mm:first>
+                    <c:if test="${offset != 0}">
+                      <a class="navigate" href="${'#'}${id}_${offset - pagesize}" name="${offset - pagesize}">««</a>
+                      <jsp:text><span class="seperator">,</span> </jsp:text>
+                    </c:if>
                     <mm:index>
                       <mm:compare value="1" inverse="true">...</mm:compare>
                     </mm:index>
                   </mm:first>
                   <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
-                  <jsp:text>, </jsp:text>
+                  <jsp:text><span class="seperator">,</span> </jsp:text>
                 </mm:previousbatches>
                 <span class="current"><mm:index offset="1" /></span>
                 <mm:nextbatches maxtotal="${maxpages}" indexoffset="1">
-                  <jsp:text>, </jsp:text>
+                  <jsp:text><span class="seperator">,</span> </jsp:text>
                   <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
                   <mm:last>
                     <mm:index write="false">
                       <c:if test="${_ lt size / pagesize}">...</c:if>
                     </mm:index>
+                    <c:if test="${(size - offset) > pagesize}">
+                      <jsp:text><span class="seperator">,</span> </jsp:text>
+                      <a class="navigate" href="${'#'}${id}_${offset + pagesize}" name="${offset + pagesize}">»»</a>
+                    </c:if>
                   </mm:last>
                 </mm:nextbatches>
               </td>
