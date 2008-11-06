@@ -34,54 +34,20 @@
       <script src="<c:url value='/js/transparent_png.js'/>" type="text/javascript"></script>
 
       <!--the reset button needs  -->
+	  <script src="<c:url value='/editors/newsletter/newsletter.js'/>" type="text/javascript"></script>
       <script language="javascript"> 
-            function resets(){
-            document.forms[0].reset();
-            var startDate = document.getElementsByName("startDate");
-            var endDate = document.getElementsByName("endDate");
-                startDate[0].value = "";
-                endDate[0].value = "";
-            }
-            function submits(){
-            var startDate = document.getElementsByName("startDate");
-            var endDate = document.getElementsByName("endDate");
-            if(startDate[0].value!=''&&!strDateTime(startDate[0].value)) {
-               alert("<fmt:message key='newsletterlog.datefrom.advice'/>");
-               return;
-            }if(endDate[0].value!='' && !strDateTime(endDate[0].value)) {
-               alert("<fmt:message key='newsletterlog.dateto.advice'/>");
-               return;
-            }
-               document.forms[0].submit();
-            }
-            function strDateTime(str){
-               var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
-               var r = str.match(reg);
-               if(r==null)return false;
-
-               var datenum = parseInt(r[4],10);
-               if(datenum>=1 && datenum<=9){
-                  datenum = '0'+datenum;
-               }
-               var monthnum = parseInt(r[3],10);
-               if(monthnum >=1 && monthnum<=9){
-                  monthnum = '0' +monthnum;
-               }
-               str = r[1]+r[2]+monthnum+r[2]+datenum;
-
-               var d= new Date(r[1], r[3]-1,r[4]);
-
-               var dateRel = parseInt(d.getDate(),10);
-               if(dateRel >=1 && dateRel <=9){
-                  dateRel = '0'+dateRel;
-               }
-               var monthRel = parseInt(d.getMonth()+1,10);
-               if(monthRel >=1 && monthRel <=9){
-                  monthRel = '0' +monthRel;
-               }
-               var newStr =d.getFullYear()+r[2]+monthRel+r[2]+dateRel;
-               return newStr==str;
-            }
+         function submits(){
+         var startDate = document.getElementsByName("startDate");
+         var endDate = document.getElementsByName("endDate");
+         if(startDate[0].value!=''&&!strDateTime(startDate[0].value)) {
+            alert("<fmt:message key='newsletterlog.datefrom.advice'/>");
+            return;
+         }if(endDate[0].value!='' && !strDateTime(endDate[0].value)) {
+            alert("<fmt:message key='newsletterlog.dateto.advice'/>");
+            return;
+         }
+            document.forms[0].submit();
+         }
       </script>
    </head>
    <body>
