@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.33 2008-06-13 10:51:34 michiel Exp $
+ * @version $Id: BasicList.java,v 1.34 2008-11-06 12:24:03 michiel Exp $
  */
 public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> implements BridgeList<E>  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
-    private Map<Object, Object> properties = new HashMap<Object, Object>();
+    private final Map<Object, Object> properties = new HashMap<Object, Object>();
 
     private boolean converted = false;
 
@@ -41,7 +41,7 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
     }
 
     public void setProperty(Object key, Object value) {
-        properties.put(key,value);
+        properties.put(key, value);
     }
 
     /**
