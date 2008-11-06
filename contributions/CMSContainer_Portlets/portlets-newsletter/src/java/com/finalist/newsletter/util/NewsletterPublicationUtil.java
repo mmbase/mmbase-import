@@ -118,15 +118,14 @@ public abstract class NewsletterPublicationUtil {
       return (themes);
    }
 
-   public static Publication getPublication(int number) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+   public static Publication getPublication(Cloud cloud,int number) {
       Node newsletterPublicationNode = cloud.getNode(number);
 
       List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
       Publication pub = new Publication();
       pub.setId(newsletterPublicationNode.getNumber());
       pub.setStatus(Publication.STATUS.valueOf(newsletterPublicationNode.getStringValue("status")));
-      pub.setUrl(getPublicationURL(number));
+      pub.setUrl(getPublicationURL(cloud,number));
       Newsletter newsletter = new Newsletter();
 
       Node node = relatedNewsletters.get(0);
@@ -137,8 +136,7 @@ public abstract class NewsletterPublicationUtil {
 
       return pub;
    }
-   public static String getPublicationURL(int publciationId) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+   public static String getPublicationURL(Cloud cloud,int publciationId) {
       Node publicationNode = cloud.getNode(publciationId);
       String hostUrl = NewsletterUtil.getServerURL();
       String newsletterPath = getNewsletterPath(publicationNode);
@@ -147,7 +145,7 @@ public abstract class NewsletterPublicationUtil {
    public static String getNewsletterPath(Node newsletterPublicationNode) {
       return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
    }
-   public static STATUS getStatus(int publicationId) {
-      return getPublication(publicationId).getStatus();
+   public static STATUS getStatus(Cloud cloud,int publicationId) {
+      return getPublication(cloud,publicationId).getStatus();
    }
 }

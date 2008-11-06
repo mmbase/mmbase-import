@@ -7,6 +7,8 @@
  * 
  */package com.finalist.cmsc.community.forms;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ import org.apache.struts.action.ActionMessages;
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
@@ -147,7 +150,7 @@ public class UserAddAction extends AbstractCommunityAction {
             if (authentication.getId() != null) {
                authId = authentication.getId();
                Person person = ps.createPerson(userForm.getFirstName(), userForm.getPrefix(), userForm.getLastName(),
-                     authentication.getId());
+                     authentication.getId(),RegisterStatus.UNCONFIRMED.getName(),new Date());
                person.setEmail(userForm.getEmail());
                ps.updatePerson(person);
 

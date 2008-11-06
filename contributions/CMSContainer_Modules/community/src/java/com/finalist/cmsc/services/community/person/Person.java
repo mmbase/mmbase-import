@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * @author Remco Bos
@@ -32,6 +33,8 @@ public class Person {
    private String nickname;
    private String email;
    private String uri;
+   private String active;
+   private Date registerDate;
 
    public Long getId() {
       return id;
@@ -127,5 +130,21 @@ public class Person {
 
    public String getFullName() {
       return this.getFirstName() + " " + this.getLastName();
+   }
+
+   public String getActive() {
+      return active;
+   }
+
+   public void setActive(String active) {
+      this.active = active;
+   }
+
+   public Date getRegisterDate() {
+      return registerDate;
+   }
+
+   public void setRegisterDate(Date registerDate) {
+      this.registerDate = registerDate;
    }
 }

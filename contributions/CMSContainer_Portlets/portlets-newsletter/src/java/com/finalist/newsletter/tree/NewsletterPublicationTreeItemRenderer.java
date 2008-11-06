@@ -48,7 +48,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          isSingleApplication = ServerUtil.isSingle();
          if (isSingleApplication) {
            // NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-            Publication.STATUS status = NewsletterPublicationUtil.getStatus(parentNode.getNumber());
+            Publication.STATUS status = NewsletterPublicationUtil.getStatus(parentNode.getCloud(),parentNode.getNumber());
             isPublished = Publication.STATUS.DELIVERED.equals(status);
          } else {
             isPublished = Publish.isPublished(parentNode);

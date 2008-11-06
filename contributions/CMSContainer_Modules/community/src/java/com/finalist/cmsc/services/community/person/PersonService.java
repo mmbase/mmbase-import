@@ -8,6 +8,7 @@
  */
 package com.finalist.cmsc.services.community.person;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +51,7 @@ public interface PersonService {
 
    Person getPersonByEmail(String email);
 
-   Person createPerson(String firstName, String infix, String lastName, Long authenticationId);
+   Person createPerson(String firstName, String infix, String lastName, Long authenticationId,String active,Date registerDate);
 
    /*
     * Save or update the person to the database
