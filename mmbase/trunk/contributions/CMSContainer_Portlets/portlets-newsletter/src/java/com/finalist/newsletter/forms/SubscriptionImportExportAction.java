@@ -3,6 +3,7 @@ package com.finalist.newsletter.forms;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Collections;
 
@@ -145,7 +147,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
             if (tmpPerson == null) {
                AuthenticationService as = getAuthenticationService();
                Authentication authentication = as.createAuthentication(tmpUserEmail, tmpUserEmail);
-               Person person = personService.createPerson(tmpUserName, "", "", authentication.getId());
+               Person person = personService.createPerson(tmpUserName, "", "", authentication.getId(),RegisterStatus.UNCONFIRMED.getName(),new Date());
                person.setEmail(tmpUserEmail);
                personService.updatePerson(person);
                tmpPerson = personService.getPersonByEmail(tmpUserEmail);
