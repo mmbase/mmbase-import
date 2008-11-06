@@ -18,7 +18,7 @@
       <prompt xml:lang="zh">查找标签</prompt>
 		<search-filter>
 			<name xml:lang="en">Term Name contains</name>
-			<name xml:lang="nl">Term Name bevat</name>
+			<name xml:lang="nl">Termnaam bevat</name>
          <name xml:lang="zh">名称包含</name>
 			<search-fields>[name]</search-fields>
 		</search-filter>

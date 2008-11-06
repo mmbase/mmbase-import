@@ -17,7 +17,7 @@
 	</field>
 	<field name="publishdate">
 		<prompt xml:lang="en">(First) publishdate</prompt>
-		<prompt xml:lang="nl">(Eerste) publicatie datum</prompt>
+		<prompt xml:lang="nl">(Eerste) publicatiedatum</prompt>
 		<prompt xml:lang="zh">起始发布日期</prompt>
 	</field>
 	<field name="use_expirydate" ftype="enum">
