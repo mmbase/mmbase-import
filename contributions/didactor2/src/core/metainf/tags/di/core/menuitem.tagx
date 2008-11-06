@@ -25,8 +25,8 @@
                    write="false" id="treefile" />
       <c:choose>
         <c:when test="${empty type or type eq 'div'}">
-          <div class="menuSeperator"><jsp:text> </jsp:text></div>
-          <div class="menuItem" id="menu_${component.name}">
+          <div class="menuSeperator ${component_name}"><jsp:text> </jsp:text></div>
+          <div class="menuItem ${component_name}" id="menu_${component.name}">
             <a href="${treefile}" class="menubar ${component.name eq active ? 'active' : ''}"><di:translate key="${component.name}.title" /></a>
           </div>
         </c:when>
