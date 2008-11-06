@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.21 2008-09-03 21:56:46 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.22 2008-11-06 17:00:27 michiel Exp $
  */
 public class StorageConnector {
 
@@ -306,7 +306,7 @@ public class StorageConnector {
      * @return List containing real nodes, directly from this Builders
      */
     public List<MMObjectNode> getNodes(Collection<MMObjectNode> virtuals) throws SearchQueryException  {
-        List<MMObjectNode> result = new ArrayList<MMObjectNode>();
+        final List<MMObjectNode> result = new ArrayList<MMObjectNode>();
 
         int numbersSize = 0;
         NodeSearchQuery query = new NodeSearchQuery(builder);
@@ -318,7 +318,11 @@ public class StorageConnector {
             // check if this node is already in cache
             Integer number = node.getNumber();
             if(builder.isNodeCached(number)) {
-                result.add(builder.getNodeFromCache(number));
+                MMObjectNode n = builder.getNodeFromCache(number);
+                if (n == null) {
+                    log.warn("No such node '" + number + "', adding NULL. Found in virtual node " + node);
+                }
+                result.add(n);
                 // else seek it with a search on builder in db
             } else {
                 numbersSize +=  ("," + number).length();
@@ -354,15 +358,20 @@ public class StorageConnector {
      * @since MMBase-1.8.2
      */
     protected void addSubResult(final NodeSearchQuery query, final List<Integer> subResult, final List<MMObjectNode> result) throws SearchQueryException {
-        List<MMObjectNode> rawNodes = getRawNodes(query, true);
+        final List<MMObjectNode> rawNodes = getRawNodes(query, true);
         // convert this list to a map, for easy reference when filling result.
          // would the creation of this Map not somehow be avoidable?
-        Map<Integer, MMObjectNode> rawMap = new HashMap<Integer, MMObjectNode>();
+        final Map<Integer, MMObjectNode> rawMap = new HashMap<Integer, MMObjectNode>();
+
         for (MMObjectNode n : rawNodes) {
             rawMap.put(n.getNumber(), n);
         }
         for (Integer n : subResult) {
-            result.add(rawMap.get(n));
+            MMObjectNode node = rawMap.get(n);
+            if (node == null) {
+                log.warn("No node " + n + " found in " + rawNodes + " (for " +   MMBase.getMMBase().getSearchQueryHandler().createSqlString(query)  + ") will use NULL");
+            }
+            result.add(node);
         }
     }
 
@@ -660,7 +669,7 @@ public class StorageConnector {
                 try {
                     for (MMObjectNode current : conversionBuilder.getStorageConnector().getNodes(nodes)) {
                         if (current == null) {
-                            log.warn("Found a node which is NULL!");
+                            log.service("Found a node which is NULL !");
                             continue;
                         }
                         convertedNodes.put(current.getNumber(), current);
