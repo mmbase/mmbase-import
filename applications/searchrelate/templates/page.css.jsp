@@ -115,7 +115,8 @@ input.searching
   background-color: #e8d8d8;
 }
 
-.mm_related .searchable table .paging.notneeded {
+.mm_related .searchable table tfoot.notneeded, 
+.mm_related .searchable table thead.notneeded {
   display: none;
 }
 
