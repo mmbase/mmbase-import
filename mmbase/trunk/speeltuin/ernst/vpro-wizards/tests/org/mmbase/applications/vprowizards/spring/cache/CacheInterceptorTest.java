@@ -16,12 +16,12 @@ public class CacheInterceptorTest extends TestCase {
     
     public void test_application_context(){
         assertNotNull(context.getBean("handlerInterceptor"));
-        assertNotNull(context.getBean("cachewrapper"));
-        assertNotNull(context.getBean("flushHintCacheNameResolverFactory"));
+        assertNotNull(context.getBean("dummyCacheWrapper"));
         BasicCacheHandlerInterceptor handlerInterceptor = (BasicCacheHandlerInterceptor) context.getBean("handlerInterceptor");
-        assertTrue(DummyCacheWrapper.class.isAssignableFrom(handlerInterceptor.getCacheWrapper().getClass()));
-        FlushHintCacheNameResolverFactory x = (FlushHintCacheNameResolverFactory) context.getBean("flushHintCacheNameResolverFactory");
-        assertEquals(x.getClass(), handlerInterceptor.getCacheNameResolverFactory().getClass());
+        assertNotNull(handlerInterceptor.getCacheNameResolverFactory());
+        
+        assertTrue(DummyCacheWrapper.class.isInstance(handlerInterceptor.getCacheWrapper()));
+        assertEquals(TokenizerCacheNameResolver.class, handlerInterceptor.getCacheNameResolverFactory().getClazz());
     }
 
 }

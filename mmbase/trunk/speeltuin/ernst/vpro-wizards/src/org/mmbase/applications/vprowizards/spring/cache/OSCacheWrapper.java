@@ -9,18 +9,31 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import com.opensymphony.oscache.base.Cache;
+import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.module.core.MMBaseContext;
+
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.web.ServletCacheAdministrator;
+
+/**
+ * this wraps an oscahe instance.
+ * @author ebunders
+ *
+ */
 public class OSCacheWrapper implements CacheWrapper {
 
-    private Cache cache = null;
+    private static Cache cache = null;
 
+    /**
+     * This method flushes an oscache cache group with given name.
+     * @see org.mmbase.applications.vprowizards.spring.cache.CacheWrapper#flushForName(java.lang.String, javax.servlet.http.HttpServletRequest)
+     */
     public void flushForName(String flushname) {
         if (cache == null) {
-            //TODO:sort this out
-//            cache = ServletCacheAdministrator.getInstance(MMBaseContext.getServletContext()).getCache(request,
-//                    PageContext.APPLICATION_SCOPE);
+            cache = ServletCacheAdministrator.getInstance(MMBaseContext.getServletContext()).getAppScopeCache(MMBaseContext.getServletContext());
         }
+        cache.flushGroup(flushname);
     }
 
 }

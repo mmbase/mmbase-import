@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<description>
+		Application context definition for testing the cache
+		interceptor
+  </description>
+
+
+	<bean id="handlerInterceptor"
+		class="org.mmbase.applications.vprowizards.spring.cache.BasicCacheHandlerInterceptor">
+		<property name="cacheWrapper" ref="dummyCacheWrapper" />
+		<property name="modifiers">
+			<list>
+				<bean
+					class="org.mmbase.applications.vprowizards.spring.cache.PrefixSuffixModifier">
+					<property name="prefix" value="pre_" />
+					<property name="suffix" value="_suf" />
+				</bean>
+			</list>
+		</property>
+		<property name="cacheNameResolverFactory">
+		  <bean class="org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory">
+		      <property name="className" value="org.mmbase.applications.vprowizards.spring.cache.TokenizerCacheNameResolver"/>
+		  </bean>
+		</property>
+	</bean>
+
+	<bean id="dummyCacheWrapper"
+		class="org.mmbase.applications.vprowizards.spring.cache.DummyCacheWrapper" />
+</beans>
