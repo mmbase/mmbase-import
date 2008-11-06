@@ -50,7 +50,7 @@ public class CoreField extends AbstractField implements Field, Storable {
     public CoreField(Field field) {
         this(field.getName(), field.getType(), field.getListItemType(), field.getState(), field.getDataType());
     }
-    
+
     /**
      * Create a core object
      * @param name the name of the data type
@@ -295,6 +295,7 @@ public class CoreField extends AbstractField implements Field, Storable {
     }
 
     public void finish() {
+        if (dataType.isFinished()) throw new RuntimeException("The datatype " + dataType + " is already finished");
         dataType.finish(this);
     }
 
