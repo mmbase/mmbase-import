@@ -1,0 +1,25 @@
+<mm:content
+    type="application/xml"
+    expires="0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:output omit-xml-declaration="yes" />
+
+  <!--
+      Just wraps ${nm}/rate${nm}.jsp in a valid xml.
+
+  -->
+
+  <mm:cloud
+      rank="didactor user">
+
+    <mm:import externid="nm"          required="true" />
+
+    <div>
+      <mm:include page="${nm}/rate${nm}.jsp" />
+    </div>
+  </mm:cloud>
+</mm:content>
