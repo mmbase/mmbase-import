@@ -53,11 +53,18 @@ public class AssetAction extends MMBaseAction {
       String parentchannel = request.getParameter("parentchannel");
       String orderby = request.getParameter("orderby");
       String direction = request.getParameter("direction");
+      String show = request.getParameter("show");
+      if(StringUtils.isNotEmpty(show)){
+         show = "thumbnail";
+      }else{
+         show = null;
+      }
       if (StringUtils.isEmpty(orderby)) {
          orderby = null;
       }
       if (StringUtils.isEmpty(direction)) {
          direction = null;
+
       }
 
       // Set the offset (used for paging).
@@ -88,6 +95,7 @@ public class AssetAction extends MMBaseAction {
          addToRequest(request, "orderby", orderby);
          addToRequest(request, "elements", assets);
          addToRequest(request, "elementCount", Integer.toString(assetCount));
+         addToRequest(request, "show", show);
 
          Map<String, Node> createdNumbers = new HashMap<String, Node>();
          for (Iterator<Node> iter = created.iterator(); iter.hasNext();) {
