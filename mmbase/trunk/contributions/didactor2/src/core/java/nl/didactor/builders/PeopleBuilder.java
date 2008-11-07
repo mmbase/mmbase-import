@@ -185,7 +185,7 @@ public class PeopleBuilder extends DidactorBuilder {
         return super.getValue(node, field);
     }
 
-    public int insert(String owner, MMObjectNode node) {
+    @Override public int insert(String owner, MMObjectNode node) {
         // forbid setting a username to an existing one
 
         String newValue = (String) node.getValues().get("username");
