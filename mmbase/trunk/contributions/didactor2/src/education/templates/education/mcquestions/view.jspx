@@ -7,7 +7,10 @@
 
   <mm:node number="${param.question}" id="question" />
 
-  <b class="type${question.type}"><di:translate key="education.givenanswer${question.type eq 1 ? 's' : ''}" />: </b>
+  <b class="type${question.type}">
+    <di:translate key="education.givenanswer${question.type eq 1 ? 's' : ''}" /><!-- So much for i18n, plural by s is only true for a few languages -->
+    <jsp:text>: </jsp:text>
+  </b>
   <mm:relatednodes type="answers">
     <mm:field name="text"/>
     <mm:last inverse="true">, </mm:last>
