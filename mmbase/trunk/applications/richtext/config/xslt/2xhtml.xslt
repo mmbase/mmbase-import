@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.33 2008-10-22 13:07:10 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.34 2008-11-07 12:54:09 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -160,9 +160,12 @@
 
   -->
 
-  <!-- Produces output for one object
+  <!--
+       Produces output for one object
        Required argument: relation, the relation object which made this necessary.
        position, last: if used in a list, these can be provided.
+       This defaults to an URL to this object.
+
   -->
   <xsl:template match="o:object" mode="inline">
     <xsl:param name="relation" />
@@ -171,7 +174,7 @@
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:attribute name="class">generated</xsl:attribute>
+      <xsl:attribute name="class">generated  <xsl:call-template name="nm_classes"/></xsl:attribute>
       <xsl:apply-templates select="." mode="title" />
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
@@ -189,7 +192,7 @@
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:if test="not($body)">
-        <xsl:attribute name="class">generated</xsl:attribute>
+        <xsl:attribute name="class">generated  <xsl:call-template name="nm_classes"/></xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="$body">
         <xsl:with-param name="in_a">yes</xsl:with-param>
@@ -368,7 +371,7 @@
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
       <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:attribute name="class">generated</xsl:attribute>
+      <xsl:attribute name="class">generated  <xsl:call-template name="nm_classes"/></xsl:attribute>
       <xsl:apply-templates select="." mode="icon" />
     </a>
     <xsl:if test="$position != $last">,</xsl:if>
@@ -662,6 +665,31 @@
 
 
 
+  <!--
+      Utitlities
+  -->
+
+  <xsl:template name="nm_classes">
+    <xsl:text>nm_</xsl:text><xsl:value-of select="@type" />
+    <xsl:text> </xsl:text>
+    <xsl:call-template name="nm_classes_list">
+      <xsl:with-param name="list"><xsl:value-of select="@ancestors" /></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+
+  <xsl:template name="nm_classes_list">
+    <xsl:param name="list" />
+    <xsl:variable name="newlist" select="concat(normalize-space($list), ' ')" />
+    <xsl:variable name="first" select="substring-before($newlist, ' ')" />
+    <xsl:variable name="remaining" select="substring-after($newlist, ' ')" />
+    <xsl:text> nm_</xsl:text><xsl:value-of select="$first" />
+    <xsl:if test="$remaining">
+      <xsl:call-template name="nm_classes_list">
+        <xsl:with-param name="list" select="$remaining" />
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
 
 
 </xsl:stylesheet>
