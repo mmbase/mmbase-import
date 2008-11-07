@@ -3,7 +3,7 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
-     name="openquestions" maintainer="didactor.nl" version="2" extends="questions">
+    name="openquestions" maintainer="didactor.nl" version="2" extends="questions">
   <class>nl.didactor.education.builders.OpenQuestionBuilder</class>
   <searchage>31</searchage>
 
@@ -22,6 +22,7 @@
   <properties>
     <property name="key:new:name">education.createnewopenquestions</property>
     <property name="key:new:description">education.createnewopenquestionsdescription</property>
+    <property name="wizard">config/question/mcquestions</property>
   </properties>
 
   <fieldlist >
@@ -40,7 +41,7 @@
       <datatype base="didactor_openquestions_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-   <field name="type_of_score">
+    <field name="type_of_score">
       <descriptions>
         <description xml:lang="nl">Layout van de vraag. Zie TO voor mogelijke waarden.</description>
         <description xml:lang="en">Layout of the question in the template. See TO for possible values.</description>
@@ -55,9 +56,9 @@
         </positions>
       </editor>
       <datatype base="didactor_openquestions_type_of_score" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-   </field>
+    </field>
 
 
-    </fieldlist>
+  </fieldlist>
 
 </builder>

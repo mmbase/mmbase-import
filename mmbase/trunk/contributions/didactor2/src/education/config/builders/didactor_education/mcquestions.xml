@@ -21,6 +21,7 @@
   <properties>
     <property name="key:new:name">education.createnewmcquestions</property>
     <property name="key:new:description">education.createnewmcquestionsdescription</property>
+    <property name="wizard">config/question/mcquestions</property>
   </properties>
 
   <fieldlist>
