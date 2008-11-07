@@ -1179,5 +1179,10 @@ public final class RepositoryUtil {
        contentChannels.add(0, getRootNode(cloud));
        return contentChannels;
     }
-    
+
+      public static void removeAssetFromChannel(Node asset, Node channelNode) {
+         RepositoryUtil.addDeletionRelation(asset, channelNode);
+     }
 }
+
+   

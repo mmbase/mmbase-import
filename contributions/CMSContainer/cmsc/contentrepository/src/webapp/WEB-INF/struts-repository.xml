@@ -20,6 +20,8 @@
       <form-bean name="RolesForm" type="com.finalist.cmsc.security.forms.RolesForm" />
 
       <form-bean name="RepositoryPasteForm" type="com.finalist.cmsc.repository.forms.PasteForm" />
+
+      <form-bean name="AssetUploadForm" type="com.finalist.cmsc.repository.forms.AssetUploadForm" />
    </form-beans>
 
    <!-- ========== Global Exceptions Definitions =================================== -->
@@ -222,6 +224,18 @@
       </action>
       <action path="/editors/repository/AssetSearchAction" type="com.finalist.cmsc.repository.forms.AssetSearchAction"
          name="AssetSearchForm" scope="request" input="/editors/repository/assetsearch.jsp" unknown="false" validate="true">
+      </action>
+      <action path="/editors/repository/AssetUploadAction" type="com.finalist.cmsc.repository.forms.AssetUploadAction" 
+         name="AssetUploadForm" unknown="false" validate="true">
+         <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
+      </action>
+      <action path="/editors/repository/DeleteAssetAction"
+         type="com.finalist.cmsc.repository.forms.DeleteAssetAction" unknown="false" validate="false">
+         <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
+      </action>
+      <action path="/editors/repository/AssetMassDelete" type="com.finalist.cmsc.repository.forms.AssetMassDeleteAction" 
+         unknown="false" validate="false">
+         <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
 
    </action-mappings>
