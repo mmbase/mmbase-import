@@ -30,11 +30,10 @@ public class RegisterCleanCronJob extends AbstractCronJob implements CronJob {
       Person example = new Person();
       example.setActive(RegisterStatus.UNCONFIRMED.getName());
       List<Person> persons = personService.getPersons(example);
-      
       for(Person person:persons) {
          if(person.getRegisterDate() != null) {
-            Date newDate  = DateUtils.addDays(person.getRegisterDate(), 3);
-            if(newDate.before(new Date())) {
+            Date expireDate  = DateUtils.addDays(person.getRegisterDate(), 3);
+            if(expireDate.before(new Date())) {
                Long authId = person.getAuthenticationId();
                if (authId > 0) {
                   personService.deletePersonByAuthenticationId(authId);           
