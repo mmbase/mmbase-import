@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.34 2008-11-07 12:54:09 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.35 2008-11-07 14:31:26 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -191,9 +191,14 @@
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:if test="not($body)">
-        <xsl:attribute name="class">generated  <xsl:call-template name="nm_classes"/></xsl:attribute>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="not($body)">
+          <xsl:attribute name="class">generated  <xsl:call-template name="nm_classes"/></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="class"><xsl:call-template name="nm_classes"/></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates select="$body">
         <xsl:with-param name="in_a">yes</xsl:with-param>
       </xsl:apply-templates>
