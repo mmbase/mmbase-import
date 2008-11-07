@@ -126,14 +126,18 @@
       <di:include debug="html"
                   page="/education/wizards/menu_items.jspx" />
 
-      <di:has editcontext="toetsen">
-        <mm:link page="." referids="e?">
-          <mm:param name="mode">tests</mm:param>
-          <a class="education_top_menu ${mode eq 'tests' ? 'selected' : ''}"
-             href="${_}">
-          <di:translate key="education.educationmenutests" /></a>
-        </mm:link>
-      </di:has>
+
+      <di:getsetting setting="new_learnobjects" component="core" vartype="list" id="new_learnobjects" write="false" />
+      <c:if test="${mm:contains(new_learnobjects, 'tests')}">
+        <di:has editcontext="toetsen">
+          <mm:link page="." referids="e?">
+            <mm:param name="mode">tests</mm:param>
+            <a class="education_top_menu ${mode eq 'tests' ? 'selected' : ''}"
+               href="${_}">
+            <di:translate key="education.educationmenutests" /></a>
+          </mm:link>
+        </di:has>
+      </c:if>
 
 
 
