@@ -27,6 +27,7 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.Encode;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
@@ -46,6 +47,8 @@ public class RegisterPorlet extends CmscPortlet{
    private static final String ACEGI_SECURITY_FORM_LASTNAME_KEY = "lastName";
    private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "passwordText";
    private static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
+   private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
+
    private static final Log log = LogFactory.getLog(RegisterPorlet.class);
 
    @Override
@@ -58,6 +61,16 @@ public class RegisterPorlet extends CmscPortlet{
       String passwordConfirmation = request.getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
       String errorMessages = "";
       Long authId = null;
+      if(StringUtils.isBlank(email)) { 
+         errorMessages = "register.email.empty";
+         response.setRenderParameter("errorMessages", errorMessages);
+         return;
+      }
+      if(!isEmailAddress(email)) { 
+         errorMessages = "register.email.match";
+         response.setRenderParameter("errorMessages", errorMessages);
+         return;
+      }
       if(StringUtils.isEmpty(passwordText)) { 
          errorMessages = "register.password.empty";
          response.setRenderParameter("errorMessages", errorMessages);
@@ -163,5 +176,23 @@ public class RegisterPorlet extends CmscPortlet{
       
       }
       return link;
+   }
+   private  boolean isEmailAddress(String emailAddress) {
+      if (emailAddress == null) {
+         return false;
+      }
+      if (StringUtils.isBlank(emailAddress)) {
+         return false;
+      }
+
+      String emailRegex = getEmailRegex();
+      return emailAddress.trim().matches(emailRegex);
+   }
+   protected String getEmailRegex() {
+      String emailRegex = PropertiesUtil.getProperty("email.regex");
+      if (StringUtils.isNotBlank(emailRegex)) {
+         return emailRegex;
+      }
+      return DEFAULT_EMAILREGEX;
    }
 }

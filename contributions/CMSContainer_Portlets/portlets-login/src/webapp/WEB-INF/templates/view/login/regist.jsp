@@ -17,8 +17,9 @@
    <div id="user">
       <table class="formcontent">     
          <tr>
-            <td class="fieldname"><fmt:message key="register.email" /></td>
-            <td><input type="text" name="email" size='30' />
+            <td class="fieldname"><fmt:message key="register.email" />
+            </td>
+            <td><input type="text" name="email" size='30' /><font color="red">*</font>
             </td>
          </tr>
          <tr>
@@ -40,14 +41,14 @@
          <tr>
             <td class="fieldname"><fmt:message key="register.password" /></td>
             <td>
-               <input type="password" name="passwordText" size="15" maxlength="15" />
+               <input type="password" name="passwordText" size="15" maxlength="15" /><font color="red">*</font>
    
             </td>
          </tr>
          <tr>
             <td class="fieldname" nowrap><fmt:message key="register.confirmpassword" /></td>
             <td>
-               <input type="password" name="passwordConfirmation" size="15" maxlength="15" />
+               <input type="password" name="passwordConfirmation" size="15" maxlength="15" /><font color="red">*</font>
              </td>
          </tr>
          <tr>
