@@ -25,7 +25,7 @@ import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
-public class RegistPorlet extends CmscPortlet{
+public class RegisterPorlet extends CmscPortlet{
    protected static final String ACTION_PARAMETER = "action";
 
    private static final String ACEGI_SECURITY_FORM_EMAIL_KEY = "email";
@@ -34,7 +34,7 @@ public class RegistPorlet extends CmscPortlet{
    private static final String ACEGI_SECURITY_FORM_LASTNAME_KEY = "lastName";
    private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "passwordText";
    private static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
-   private static final Log log = LogFactory.getLog(RegistPorlet.class);
+   private static final Log log = LogFactory.getLog(RegisterPorlet.class);
 
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
