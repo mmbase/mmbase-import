@@ -12,6 +12,7 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
 public class RegisterCleanCronJob extends AbstractCronJob implements CronJob {
@@ -27,6 +28,7 @@ public class RegisterCleanCronJob extends AbstractCronJob implements CronJob {
       AuthenticationService authenticationService = (AuthenticationService)ApplicationContextFactory.getBean("authenticationService");
       PersonService personService = (PersonService)ApplicationContextFactory.getBean("personService");
       Person example = new Person();
+      example.setActive(RegisterStatus.UNCONFIRMED.getName());
       List<Person> persons = personService.getPersons(example);
       
       for(Person person:persons) {
