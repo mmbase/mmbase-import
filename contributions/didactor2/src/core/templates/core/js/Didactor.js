@@ -6,8 +6,10 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.11 2008-10-23 10:20:38 michiel Exp $
+ * @version $Id: Didactor.js,v 1.12 2008-11-07 17:02:41 michiel Exp $
  */
+
+
 
 
 function Didactor() {
@@ -16,6 +18,7 @@ function Didactor() {
     this.lastCheck      = new Date();
     this.pageReporter   = this.getSetting("Didactor-PageReporter") == "true";
     var self = this;
+
     $.timer(500, function(timer) {
 	    self.reportOnline();
 	    timer.reset(self.pageReporter ? 5000 : 1000 * 60 * 2);
@@ -25,6 +28,7 @@ function Didactor() {
 	        self.reportOnline(null, false);
 	    });
     }
+
     this.content = null;
     for (var i = 0; i < Didactor.contentParameters.length; i++) {
 	    var param = Didactor.contentParameters[i];
@@ -36,6 +40,8 @@ function Didactor() {
 	    var param = Didactor.ignoredParameters[i];
 	    $.query.REMOVE(param);
     }
+    this.q = $.query.toString();
+
     for (var i = 0; i < Didactor.welcomeFiles.length; i++) {
 	    var welcomeFile = Didactor.welcomeFiles[i];
 	    this.url = this.url.replace(new RegExp(welcomeFile + "$"), "");
@@ -54,7 +60,7 @@ Didactor.prototype.reportOnline = function (timer, async) {
     var params;
     var thisCheck = new Date();
     if (this.getSetting("Didactor-PageReporter") == "true") {
-	    params = {page: this.url + $.query.toString(), add: thisCheck.getTime() - this.lastCheck.getTime()};
+	    params = {page: this.url + this.q, add: thisCheck.getTime() - this.lastCheck.getTime()};
 	    if (this.content != undefined && this.content != null && this.content != "") {
 	        params.content = this.content;
 	    }
@@ -76,8 +82,52 @@ Didactor.prototype.setContent = function(c) {
     this.content = c;
 }
 
+Didactor.prototype.resolveQuestions = function(el) {
+    var did = this;
+    $(el).find(".nm_questions").each(function() {
+        var params = {};
+        params.learnobject = did.content;
+        var div = $("<div />");
+        div.load(this.href, params, function() {
+            div.find(".answerquestion").click(function() {
+                var params = {};
+                $(div).find("textarea").each(function() {
+                    params[this.name] = this.value;
+                });
+                $(div).find("input").each(function() {
+                    if (this.type == "checkbox" && ! this.checked) {
+                    } else {
+                        params[this.name] = this.value;
+                    }
+                });
+                $.ajax({url: this.href, type: "POST", dataType: "xml", data: params,
+                        complete: function(res, status) {
+                            if (status == "success") {
+                                $(div).append(res.responseText);
+                            } else {
+                                alert(status);
+                            }
+                        }
+                       });
+                return false;
+
+            });
+        });
+        $(this).after(div);
+        $(this).remove();
+
+    });
+}
+
+
+
 var didactor;
 $(document).ready(function() {
     didactor = new Didactor();
+    var self = this;
+    $(document).bind("didactorContentLoaded",  function(ev, el) {
+        didactor.resolveQuestions(el.loaded);
+    });
+    // if this is a staticly loaded piece of html, there may be some questions already
+    didactor.resolveQuestions(document);
 });
-
