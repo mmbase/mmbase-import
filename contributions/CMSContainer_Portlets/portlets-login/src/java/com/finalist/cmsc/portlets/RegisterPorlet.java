@@ -5,16 +5,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.Encode;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
@@ -24,6 +33,9 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.HttpUtil;
 
 public class RegisterPorlet extends CmscPortlet{
    protected static final String ACTION_PARAMETER = "action";
@@ -84,14 +96,21 @@ public class RegisterPorlet extends CmscPortlet{
       String template;
       String error = request.getParameter("errorMessages");
       String email = request.getParameter("email");
-      if(StringUtils.isNotEmpty(email)) {
+      String active = request.getParameter("active");
+      if(StringUtils.isNotEmpty(active)) {
+         request.setAttribute("active", active);
          template = "login/register_success.jsp";
       }
       else {
-         if (StringUtils.isNotBlank(error)) {
-            request.setAttribute("errormessages", error);
+         if(StringUtils.isNotEmpty(email)) {
+            template = "login/register_success.jsp";
          }
-         template = "login/regist.jsp";
+         else {
+            if (StringUtils.isNotBlank(error)) {
+               request.setAttribute("errormessages", error);
+            }
+            template = "login/regist.jsp";
+         }
       }
       doInclude("view", template, request, response);
    }
@@ -111,8 +130,38 @@ public class RegisterPorlet extends CmscPortlet{
       catch (IOException e) {
          log.error("error happen when reading email template",e);
       }
+      Cloud cloud = getCloudForAnonymousUpdate(false);
+      String url = getUnsubscribeLink(cloud);
       Encode encoder = new org.mmbase.util.Encode("BASE64");
-      String confirmUrl = request.getContextPath()+"/login/confirm.do?s="+encoder.encode(email);
+      String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(email)+"&pn="+this.getPortletName()+"&returnurl="+encoder.encode(url);
       return String.format(sb.toString(), email,confirmUrl);
+   }
+   public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (isRemote) {
+         return Publish.getRemoteCloud(cloud);
+      }
+      return cloud;
+   }
+   private String getUnsubscribeLink(Cloud cloud) {
+      String link = null;
+      NodeList portletDefinations = SearchUtil.findNodeList(cloud, "portletdefinition", "definition", this.getPortletName());
+      Node regiesterPortletDefination = portletDefinations.getNode(0);
+      if (portletDefinations.size() > 1) {
+         log.error("found " + portletDefinations.size() + " regiesterPortlet nodes; first one will be used");
+      }
+      NodeList portlets = regiesterPortletDefination.getRelatedNodes("portlet", "definitionrel", SearchUtil.SOURCE);
+      Node  portlet = portlets.getNode(0);
+      NodeList pages = portlet.getRelatedNodes("page");
+      if (pages != null && pages.size() >= 1) {
+         Node page = pages.getNode(pages.size() - 1);
+         link = SiteManagement.getPath(page.getNumber(), true);
+        // link = "content/" + page.getNumber();
+         RelationList relations = portlet.getRelations("portletrel", page.getNodeManager());
+         String name = relations.getRelation(0).getStringValue("name");
+         link += "/_rp_".concat(name).concat("_").concat("active").concat("/1_");
+      
+      }
+      return link;
    }
 }
