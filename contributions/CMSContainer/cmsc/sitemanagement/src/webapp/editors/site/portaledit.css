@@ -76,6 +76,7 @@ html>.portlet-config-canvas
    min-height: 23px;
    height: auto !important;
    height: 23px;
+   margin: -1px; /* compensate for border */
    text-align: left;
 }
 
