@@ -30,11 +30,13 @@
 
         <p /><!-- WTF, why don't we produce, say, for example, HTML!  This is pure horror -->
 
-        <mm:field name="text" escape="tagstripper(xss)"/>
+        <mm:field name="text" escape="tagstripper(XSS)"/>
+
         <p/>
 
-        <mm:import id="questiontype"><mm:field name="type"/></mm:import>
-        <mm:import id="questionlayout"><mm:field name="layout"/></mm:import>
+
+        <mm:field name="type" id="questiontype" write="false" />
+        <mm:field name="layout" id="questionlayout" write="false" />
 
         <!-- Show answers in random order -->
         <mm:compare referid="questionlayout" valueset="0,1,2">
@@ -45,6 +47,7 @@
         <mm:compare referid="questionlayout" valueset="3,4,5">
           <mm:relatednodes type="mcanswers" role="posrel" orderby="posrel.pos" id="answerlist"/>
         </mm:compare>
+
 
 
         <!-- Generate layout for radiogroup / pulldown menu (only 1 correct answer to be chosen) -->
