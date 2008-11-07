@@ -1,7 +1,7 @@
-<%@ page language="java" contentType="text/html;charset=utf-8" 
-%><%@ include file="globals.jsp" 
-%><%@ page import="com.finalist.cmsc.repository.RepositoryUtil" 
-%><%@ page import="com.finalist.cmsc.security.*" 
+<%@ page language="java" contentType="text/html;charset=utf-8"
+%><%@ include file="globals.jsp"
+%><%@ page import="com.finalist.cmsc.repository.RepositoryUtil"
+%><%@ page import="com.finalist.cmsc.security.*"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 
    <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
@@ -11,7 +11,7 @@
          referid="parentchannel"/>&direction=down</mm:import>
 
          <cmscedit:head title="images.title">
-            <script type="text/javascript"> 
+            <script type="text/javascript">
 
                function showEditItems(id){
                   document.getElementById('asset-info-'+id).style.display = 'block';
@@ -32,6 +32,7 @@
                   }
                }
             </script>
+            <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
          </cmscedit:head>
 
 
@@ -134,8 +135,6 @@
                            </tr>
                         </thead>
 
-<script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
-
                         <tbody class="hover">
                            <mm:listnodes referid="elements" jspvar="node">
                               <mm:field name="number" write="false" id="number" vartype="String"/>
@@ -220,7 +219,7 @@
                      <input type="hidden" name="offset" value="${param.offset}"/>
                      <input type="hidden" name="orderby" value="${orderby}" />
                      <input type="hidden" name="direction" value="${direction}"/>
-                     
+
                      <div width="100%;float:left;">
                         <mm:listnodes referid="elements">
                            <div style="width:150px; height:150px;float:left;text-align:center;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)"  >
@@ -239,7 +238,7 @@
                                      <c:if test="${type eq 'URL'}">
                                        need to add
                                     </c:if>
-                                    
+
                                  </a>
                               </div>
                               <div style="width:130px;text-align:center;margin:0px 10px 0px 10px;overflow-x:hidden;">
@@ -266,7 +265,7 @@
          </div>
 
 
-    
+
       </html:html>
    </mm:cloud>
 </mm:content>
