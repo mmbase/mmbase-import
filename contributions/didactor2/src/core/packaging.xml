@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE packaging PUBLIC "-//MMBase/DTD packaging config 1.0//EN" "http://www.mmbase.org/dtd/packaging_1_0.dtd">
-<packaging basedir=".">
-	<package name="jars" type="java/jar" file="packaging/core_jars.xml" />
-	<package name="templates" type="display/html" file="packaging/core_html.xml" />
-	<package name="config" type="config/basic" file="packaging/core_config.xml" />
-	<bundle name="default" type="bundle/basic" file="packaging/core_bundle.xml" />
-</packaging>
