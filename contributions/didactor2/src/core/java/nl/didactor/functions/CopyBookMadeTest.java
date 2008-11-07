@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * Retrieves a 'madetests' object for a certain tests and copybook objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyBookMadeTest.java,v 1.3 2008-11-07 17:01:04 michiel Exp $
+ * @version $Id: CopyBookMadeTest.java,v 1.4 2008-11-07 17:06:08 michiel Exp $
  */
 public class CopyBookMadeTest {
     protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
@@ -62,9 +62,10 @@ public class CopyBookMadeTest {
         NodeManager madeTests = cloud.getNodeManager("madetests");
         NodeQuery query = Queries.createRelatedNodesQuery(node, madeTests, "related", "destination");
         Step testStep = query.addRelationStep(cloud.getNodeManager("learnobjects"), "related", "source").getNext();
-        Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "number"), test));
+        StepField numberField = query.createStepField(testStep, "number");
+        Queries.addConstraint(query, query.createConstraint(numberField, test));
         Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "otype"), getOTypes(cloud, true, NODEMANAGERS)));
-        query.addSortOrder(testStep, SortOrder.ASCENDING);
+        query.addSortOrder(numberField, SortOrder.ORDER_ASCENDING);
 
         NodeList found = madeTests.getList(query);
 
