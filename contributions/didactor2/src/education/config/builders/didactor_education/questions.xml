@@ -3,7 +3,9 @@
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
-    name="questions" maintainer="didactor.nl" version="2" extends="learnobjects">
+    name="questions"
+    maintainer="didactor.nl" version="2"
+    extends="learnobjects">
 
   <class>nl.didactor.builders.DidactorBuilder</class>
   <searchage>-1</searchage>
@@ -82,4 +84,10 @@
     </field>
 
   </fieldlist>
+
+  <functionlist>
+    <function name="url" key="{REQUEST.getContextPath}/education/question.jspx?question={NODE.number}">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
 </builder>
