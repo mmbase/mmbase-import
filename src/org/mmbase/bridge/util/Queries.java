@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.110 2008-09-16 11:20:18 michiel Exp $
+ * @version $Id: Queries.java,v 1.111 2008-11-07 13:42:26 andre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1351,8 +1351,26 @@ abstract public class Queries {
      * @since MMBase-1.8.6
      */
     public static NodeList removeFromResult(Query q, Node n) {
+        NodeList result = getRelations(q, n);
+        NodeIterator ni = result.nodeIterator();
+        while (ni.hasNext()) {
+            Node r = ni.nextNode();
+            r.delete();
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Explores a query object, returns the relations the node has within the query.
+     *
+     * @throws UnsupportedOperationException If it cannot be determined how the node is related.
+     * @since MMBase-1.9.1
+     * @return The relation nodes
+     * @throws NullPointerException if q or n is <code>null</code>
+     */
+    public static NodeList getRelations(Query q, Node n) {
         List<Step> steps = q.getSteps();
-
         if (steps.size() < 3) throw new UnsupportedOperationException();
 
         NodeList result = q.getCloud().createNodeList();
@@ -1380,10 +1398,7 @@ abstract public class Queries {
                     Node virtual = ni.nextNode();
                     Node r = cloud.getNode(virtual.getIntValue(alias));
                     result.add(r);
-                    r.delete();
-
                 }
-
             }
         }
         return result;
