@@ -231,6 +231,12 @@
     </antcall>
   </target>
 
+  <target name="calendar" depends="mmbase">
+    <antcall target="install.module">
+      <param name="name" value="calendar" />
+    </antcall>
+  </target>
+
   <target name="statistics">
     <antcall target="install.module">
       <param name="name" value="statistics" />
@@ -270,13 +276,21 @@
     </antcall>
   </target>
 
-  <target name="get.itextxml" depends="setproxy"  unless="noconnection">
-    <get src="http://www.astrogrid.org/maven/itext-xml/jars/itext-xml-1.00.jar" dest="${download.dir}/itext-xml-1.00.jar"  
-         usetimestamp="true"   ignoreerrors="true" />
+  <target name="itextxml">
+    <antcall target="install.jar">
+      <param name="name" value="itext" />
+      <param name="base" value="itext" />
+      <param name="version" value="1.3.1" />
+    </antcall>
+
+    <antcall target="install.jar">
+      <param name="name" value="jtidy" />
+      <param name="base" value="jtidy" />
+      <param name="version" value="r8-SNAPSHOT" />
+    </antcall>
   </target>
-  <target name="itextxml" depends="get.itextxml">
-    <copy file="${download.dir}/itext-xml-1.00.jar" todir="${jardest}" preservelastmodified="true" overwrite="false" failonerror="false" />
-  </target>
+
+
 
   <target name="jstl" unless="jstl.installed">
     <antcall target="install.jar">
