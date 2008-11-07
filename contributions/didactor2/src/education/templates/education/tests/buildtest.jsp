@@ -32,11 +32,12 @@
       <div class="content learnenvironment tests">
         <!-- Take care: form name is used in JavaScript of the specific question jsp pages! -->
         <mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,learnobject,madetest@thismadetest" write="false"/>
-        <form name="questionform"
-              action="${post}"
-              method="POST">
+        <mm:node number="$learnobject" id="test">
 
-          <mm:node number="$learnobject" id="test">
+
+          <form name="questionform"
+                action="${post}"
+                method="POST">
 
             <di:title field="name" />
 
@@ -113,7 +114,7 @@
                 <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
 
                   <input type="button"
-                        disabled="disabled"
+                         disabled="disabled"
                          value="${di:translate('education.buttontextdone')}"
                          class="formbutton"
                          onclick="document.forms.questionform.command.value='done'; postContent('${post}', document.forms.questionform);" />
@@ -132,7 +133,7 @@
                            onclick="postContent('${post}', questionform);" />
                   </c:if>
                   <c:if test="${learnobject.questionsperpage lt 1 or page * learnobject.questionsperpage ge fn:length(questions)}">
-                     <input type="button"
+                    <input type="button"
                            value="${di:translate('education.buttontextdone')}"
                            class="formbutton"
                            onclick="questionform.command.value='done'; postContent('${post}', questionform);" />
@@ -141,13 +142,14 @@
               </c:choose>
 
             </mm:present>
-          </mm:node>
-        </form>
-        <mm:notpresent referid="copybookNo">
-          <di:translate key="education.nocopybookfound" />
-        </mm:notpresent>
+          </form>
+
+          <mm:notpresent referid="copybookNo">
+            <di:translate key="education.nocopybookfound" />
+          </mm:notpresent>
 
         <di:blocks classification="after_test" />
+      </mm:node>
 
       </div>
     </mm:cloud>
