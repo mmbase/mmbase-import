@@ -15,7 +15,6 @@
    <steps>
       <step form-schema="edit_newsletter"/>
       <step form-schema="edit_newsletterfields"/>
-      <step form-schema="edit_pageadmin"/>
    </steps>
    <form-schema id="edit_newsletter" extends="config/newsletter/edit_newsletter.xml"/>
    <form-schema id="edit_newsletterfields" extends="config/newsletter/edit_newsletterfields.xml"/>
