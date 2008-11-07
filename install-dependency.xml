@@ -270,6 +270,14 @@
     </antcall>
   </target>
 
+  <target name="get.itextxml" depends="setproxy"  unless="noconnection">
+    <get src="http://www.astrogrid.org/maven/itext-xml/jars/itext-xml-1.00.jar" dest="${download.dir}/itext-xml-1.00.jar"  
+         usetimestamp="true"   ignoreerrors="true" />
+  </target>
+  <target name="itextxml" depends="get.itextxml">
+    <copy file="${download.dir}/itext-xml-1.00.jar" todir="${jardest}" preservelastmodified="true" overwrite="false" failonerror="false" />
+  </target>
+
   <target name="jstl" unless="jstl.installed">
     <antcall target="install.jar">
       <param name="name" value="jstl" />
