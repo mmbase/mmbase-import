@@ -24,12 +24,7 @@ public class DateUtil {
     */
    public static Date parser(String raw) {
       Date date = null;
-      String regEx = "/";
-      Pattern p = Pattern.compile(regEx);
-      Matcher m = p.matcher(raw);
-      if(m.find()){
-         raw = m.replaceAll("-");
-      } 
+      raw = raw.replaceAll("/", "-");
       if (StringUtils.isNotBlank(raw)) {
          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
          try {
