@@ -12,17 +12,11 @@ UserName: %s
 Your account is currently inactive. You cannot use it until you visit
  the following link: 
 
-https://www.jboss.com/index.html?module=user&op=activate&i=baad8951cb929c4f40989c674f0ad0eb&u=331200 
-%s
+%s 
+
 
 If you did not register for membership on our site, no further action
  is required. 
 
 
 Regards,
-The JBoss.com Staff
-
-
-
-Account successfully activated!
-Login to access your account.
