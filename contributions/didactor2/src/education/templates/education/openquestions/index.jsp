@@ -7,6 +7,8 @@
       <mm:import externid="madetest">-1</mm:import>
 
       <mm:node number="$question">
+
+
         <mm:isnotempty referid="madetest">
           <mm:relatedcontainer path="givenanswers,madetests">
             <mm:constraint field="madetests.number" value="$madetest"/>
@@ -25,7 +27,7 @@
         </mm:field>
 
         <p/> <!-- wtf -->
-        <mm:field name="text" escape="none"/>
+        <mm:field name="text" escape="tagstripper(XSS)"/>
         <p/><!-- wtf -->
 
         <mm:import id="layout"><mm:field name="layout"/></mm:import>
