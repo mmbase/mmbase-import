@@ -32,10 +32,10 @@
       </portlet-info>
    </portlet>
    <portlet>
-      <description>RegistPorlet</description>
-      <portlet-name>RegistPorlet</portlet-name>
-      <display-name>RegistPorlet</display-name>
-      <portlet-class>com.finalist.cmsc.portlets.RegistPorlet</portlet-class>
+      <description>Register Porlet</description>
+      <portlet-name>RegisterPorlet</portlet-name>
+      <display-name>RegisterPorlet</display-name>
+      <portlet-class>com.finalist.cmsc.portlets.RegisterPorlet</portlet-class>
         <init-param>
             <name>template.edit_defaults</name>
             <value>login/regist.jsp</value>
@@ -55,9 +55,9 @@
       <supported-locale>nl</supported-locale>
       <resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
       <portlet-info>
-         <title>RegistPorlet</title>
-         <short-title>RegistPorlet</short-title>
-         <keywords>regist</keywords>
+         <title>Register Porlet</title>
+         <short-title>Register Porlet</short-title>
+         <keywords>Register</keywords>
       </portlet-info>
    </portlet>
 </portlet-app>
