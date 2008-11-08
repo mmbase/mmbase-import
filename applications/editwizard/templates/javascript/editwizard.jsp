@@ -1,17 +1,16 @@
-<% response.setContentType("text/javascript"); %>
-/**
+/** -*- mode: java -*-
  * editwizard.jsp
  * Routines for refreshing the edit wizard,
  * interaction between form elements, navigation,
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.73 2008-05-09 14:01:34 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.74 2008-11-08 13:07:35 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
  */
-
+<% response.setContentType("text/javascript"); %>
 var form = null;
 
 function doOnLoad_ew() {
@@ -23,7 +22,9 @@ function doOnLoad_ew() {
 
     //scan form fields
     for (var i=0; i<form.elements.length; i++) {
+
         var elem = form.elements[i];
+
 
         // set date fields to clientside now time if a new wizard.
         var superId = elem.getAttribute("super");
@@ -39,7 +40,7 @@ function doOnLoad_ew() {
               var d = new Date();
 
               if (elem.name == "internal_" + id + "_day") {
-                if (elem.selectedIndex) { 
+                if (elem.selectedIndex) {
                   elem.selectedIndex = d.getDate() - 1;
                 } else {
                   elem.value = d.getDate();
