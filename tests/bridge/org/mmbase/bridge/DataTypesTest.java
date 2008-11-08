@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.tests.*;
@@ -22,7 +23,6 @@ import junit.framework.*;
  * @since MMBase-1.8
  */
 public class DataTypesTest extends BridgeTest {
-
 
     public DataTypesTest(String name) {
         super(name);
@@ -505,6 +505,17 @@ public class DataTypesTest extends BridgeTest {
     public void testRequiredLegacy() {
         Node node = getNewNode();
         assertTrue(node.getNodeManager().getField("required_legacy").isRequired());
+    }
+
+    //http://www.mmbase.org/jira/browse/MMB-1418
+    public void testProcessorConfiguration() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        DataType dt = nm.getField("lastmodifier").getDataType();
+        CommitProcessor cp = dt.getCommitProcessor();
+        assertFalse(cp instanceof ChainedCommitProcessor);
+        assertTrue(cp instanceof LastModifier);
+
     }
 
 }
