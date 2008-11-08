@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.43 2008-11-06 20:28:08 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.44 2008-11-08 16:05:44 andre Exp $
  */
 
 
@@ -28,7 +28,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -229,6 +229,14 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                 })
             }
         });
+
+        $(rep).find("form.relation").each(function() {
+            self.logger.debug("binding to relation form");
+            $(this).submit(function(ev) {
+                self.saverelation(ev);
+            })
+        });
+        
     }
 }
 
@@ -295,7 +303,9 @@ MMBaseRelater.prototype.relate = function(tr) {
     $(this.div).trigger("mmsrRelate", [tr, this]);
 }
 
-
+MMBaseRelater.prototype.getRelationTrs = function(number) {
+    return $(this.div).find("tr.node_" + number);
+}
 
 /**
  * Moves a node from the list of related nodes to the 'unrelated' repository.
@@ -303,7 +313,10 @@ MMBaseRelater.prototype.relate = function(tr) {
 MMBaseRelater.prototype.unrelate = function(tr) {
     var number = this.getNumber(tr);
     this.logger.debug("Unrelating " + number);
-
+    
+    // relation tr's
+    var relationTrs = this.getRelationTrs(number);
+    this.logger.debug("+ relations: " + relationTrs.length);
 
     // Set up data
     if (typeof(this.related[number]) == "undefined") {
@@ -314,6 +327,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     // Set up HTML
     var repository =  $(this.div).find("div.mm_relate_repository div.searchresult table tbody");
     repository.append(tr);
+    repository.append(relationTrs);
 
     this.current.searcher.dec();
     this.repository.searcher.inc();
@@ -333,6 +347,40 @@ MMBaseRelater.prototype.unrelate = function(tr) {
         searcher.relate(this)
     });
     $(this.div).trigger("mmsrUnrelate", [tr, this]);
+}
+
+/**
+ * Saves a modified relations values.
+ */
+MMBaseRelater.prototype.saverelation = function(ev) {
+    ev.preventDefault();
+    var form = ev.target;
+    
+    var params = {};
+    if (this.transaction != null) {
+        params.transaction = this.transaction;
+    }
+    var inputs = $(form).find(":input");
+    for (var i = 0; i < inputs.length; i++) {
+        var name = $(inputs[i]).attr("name");
+        name = name.substr(name.lastIndexOf("_") + 1);
+        params[name] = $(inputs[i]).attr("value");
+        this.logger.debug("name: " + name + ", value: " + $(inputs[i]).attr("value"));
+    }
+    
+    var url = "${mm:link('/mmbase/searchrelate/saverelation.jspx')}";
+    $.ajax({
+       type: "POST",
+       url: url,
+       data: params,
+       success: function(msg) {
+          console.log("ok: " + msg);
+       }
+    
+ });
+
+    
+    
 }
 
 /**
