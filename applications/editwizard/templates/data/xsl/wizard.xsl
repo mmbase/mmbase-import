@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.188 2008-10-29 14:11:11 michiel Exp $
+    @version $Id: wizard.xsl,v 1.189 2008-11-08 13:09:58 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -169,6 +169,13 @@
                 customize(editor, "]]></xsl:text><xsl:value-of select="$htmlareadir"/><xsl:text disable-output-escaping="yes"><![CDATA[");
                 editor.generate();
                 htmlAreas[i] = editor;
+                setTimeout(function() {
+                   HTMLArea._addEvent(editor._doc, "blur", function() {
+                     editor._textArea.value = editor.getHTML();
+                     validator.validate(editor._textArea);
+                   });
+                   },
+                   1000);
               }
             }
           }
