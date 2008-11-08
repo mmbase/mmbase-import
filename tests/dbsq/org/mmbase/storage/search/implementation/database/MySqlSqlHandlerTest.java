@@ -12,7 +12,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class MySqlSqlHandlerTest extends TestCase {
 
@@ -118,6 +118,28 @@ public class MySqlSqlHandlerTest extends TestCase {
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance),
         instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL LIMIT 50," + Integer.MAX_VALUE));
+    }
+
+
+    public void testToSqlString() {
+
+        assertEquals("abc", instance.toSqlString("abc"));
+        assertEquals("a''bc", instance.toSqlString("a'bc"));
+        assertEquals("a''''bc", instance.toSqlString("a''bc"));
+        assertEquals("a\\\\bc", instance.toSqlString("a\\bc"));
+        assertEquals("a\\\\''bc", instance.toSqlString("a\\'bc"));
+        assertEquals("a\\tbc", instance.toSqlString("a\tbc"));
+        assertEquals("a\\0bc", instance.toSqlString("a\0bc"));
+        assertEquals("a\\\\0bc", instance.toSqlString("a\\0bc"));
+
+
+        assertEquals("a%bc", instance.toSqlString("a%bc"));
+        assertEquals("a_bc", instance.toSqlString("a_bc"));
+
+        // Should it be possible to escape % and _ ?
+        // These two cases could apply (now failing)
+        //assertEquals("a\\%bc", instance.toSqlString("a\\%bc"));
+        //assertEquals("a\\_bc", instance.toSqlString("a\\_bc"));
     }
 
     public static Test suite() {
