@@ -57,6 +57,12 @@ input.searching
   background-color: #fff;
 }
 
+.searchresult table tbody tr.relation {
+  color: #333;
+  background-color: #FFD;
+  font-size: 0.8em;
+}
+
 .searchresult tbody tr.even.new {
   background-color: #ded;
 }
