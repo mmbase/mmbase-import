@@ -49,7 +49,7 @@
     <mm:xslt xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:template match="input">
         <input value="${value}" type="${empty type ? 'radio' : type}">
-          <c:if test="${! empty checked}">
+          <c:if test="${! empty checked and (checked eq true  or checked eq 'true' or checked eq 'checked') }">
             <xsl:attribute name="checked">${checked}</xsl:attribute>
           </c:if>
           <c:if test="${empty checked and value eq compare}">
