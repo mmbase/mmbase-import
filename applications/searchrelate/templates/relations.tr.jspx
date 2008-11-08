@@ -1,0 +1,59 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+
+      <mm:import externid="colcount" from="request,parameters" />
+      <mm:import externid="node"  jspvar="n" vartype="Node" required="true" from="request,parameters" />
+      <mm:import externid="query" jspvar="q" vartype="org.mmbase.bridge.Query" required="true" from="request,parameters" />
+      
+      <jsp:scriptlet>
+        NodeList rl = Queries.getRelations(q, n);
+        pageContext.setAttribute("rl", rl);
+      </jsp:scriptlet>
+      
+      <mm:listnodes referid="rl" id="relation">
+        <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
+        <tr class="relation node_${node} ${nodemanager}">
+          <td colspan="${colcount + 3}">
+            <!--
+            <mm:compare referid="relation" value="$rel"><mm:present referid="changerel">
+              <strong class="message">The relation is changed.</strong>
+            </mm:present></mm:compare>
+              -->
+            <mm:form styleClass="relation">
+              <fieldset>
+                <legend>${nodemanager} relation</legend>
+                <input name="id"   type="hidden" value="${relation}" />
+                
+                <mm:fieldlist type="edit" fields="owner" id="fields${relation}" varStatus="status">
+                  <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
+                  <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
+                  <div class="relationrow ${status.current.name} state_${status.current.state}">
+                    <mm:fieldinfo type="name">
+                      <label for="mm_fields${relation}_${_}">
+                        <em><mm:fieldinfo type="guiname" /></em> ${_}
+                      </label>
+                    </mm:fieldinfo>
+                    <mm:fieldinfo type="$formtype" />
+                  </div>
+                </mm:fieldlist>
+                
+                <mm:maywrite>
+                  <div class="relationrow submit">
+                    <input type="submit" name="changerel" value="Change" />
+                  </div>
+                </mm:maywrite>
+              </fieldset>
+            </mm:form>
+          
+          </td>
+        </tr>
+      </mm:listnodes>
+    </mm:cloud>
+  </mm:content>
+</jsp:root>
