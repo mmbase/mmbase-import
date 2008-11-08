@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.20 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.21 2008-11-08 11:17:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -50,7 +50,14 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     @Override
     protected String toSqlString(String str) {
-        String res =  super.toSqlString(str).replaceAll("\\\\", "\\\\\\\\");
+        //http://dev.mysql.com/doc/refman/5.0/en/string-syntax.html
+        String res =  super.toSqlString(str
+                                        .replaceAll("\\\\", "\\\\\\\\")
+                                        .replaceAll("\t", "\\\\t")
+                                        .replaceAll("\0", "\\\\0")
+                                        .replaceAll("\b", "\\\\b")
+                                        .replaceAll("\32", "\\\\Z")
+                                        );
         return res;
     }
 
