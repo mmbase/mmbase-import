@@ -77,7 +77,7 @@ input.searching
   background-color: #fee;
 }
 
-.searchresult tbody tr:hover {
+.searchresult tbody tr.click:hover {
   cursor: pointer;
 }
 .searchresult tbody tr.odd:hover {
