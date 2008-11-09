@@ -7,24 +7,35 @@
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
 
-      <mm:import externid="colcount" from="request,parameters" />
-      <mm:import externid="node"  jspvar="n" vartype="Node" required="true" from="request,parameters" />
-      <mm:import externid="query" jspvar="q" vartype="org.mmbase.bridge.Query" required="true" from="request,parameters" />
-      
-      <jsp:scriptlet>
-        NodeList rl = Queries.getRelations(q, n);
-        pageContext.setAttribute("rl", rl);
-      </jsp:scriptlet>
+      <mm:import externid="fields" from="request,parameters" />
+      <mm:import externid="node" from="request,parameters" />
+      <mm:import externid="id" from="request,parameters" />
+      <mm:import from="session" externid="${id}" id="q" jspvar="q" vartype="org.mmbase.bridge.Query" />
+
+      <mm:node referid="node" jspvar="n">
+        <c:choose>
+          <c:when test="${!empty fields}">
+            <mm:fieldlist fields="$fields">
+              <mm:size id="colcount" write="false" />
+            </mm:fieldlist>
+          </c:when>
+          <c:otherwise>
+            <mm:fieldlist type="list">
+              <mm:size id="colcount" write="false" />
+            </mm:fieldlist>
+          </c:otherwise>
+        </c:choose>
+        
+        <jsp:scriptlet>
+          NodeList rl = Queries.getRelations(q, n);
+          pageContext.setAttribute("rl", rl);
+        </jsp:scriptlet>
+      </mm:node>
       
       <mm:listnodes referid="rl" id="relation">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
-        <tr class="relation node_${node} ${nodemanager}">
+        <tr class="relation node_${n} ${nodemanager}">
           <td colspan="${colcount + 3}">
-            <!--
-            <mm:compare referid="relation" value="$rel"><mm:present referid="changerel">
-              <strong class="message">The relation is changed.</strong>
-            </mm:present></mm:compare>
-              -->
             <mm:form styleClass="relation">
               <fieldset>
                 <legend>${nodemanager} relation</legend>
