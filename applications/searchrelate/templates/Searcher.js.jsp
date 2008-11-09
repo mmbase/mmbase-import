@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.44 2008-11-08 16:05:44 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.45 2008-11-09 20:22:03 andre Exp $
  */
 
 
@@ -28,7 +28,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -54,14 +54,14 @@ MMBaseLogger.prototype.debug = function (msg) {
  * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
 function MMBaseRelater(d) {
-    this.div          = d;
+    this.div           = d;
     this.related       = {};
     this.unrelated     = {};
     this.logger        = new MMBaseLogger();
     this.logger.debug(d);
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
-    this.canUnrelate = $(d).hasClass("can_unrelate");
+    this.canUnrelate   = $(d).hasClass("can_unrelate");
     if (this.current != null) {
         this.addSearcher(this.current, "current");
     } else {
@@ -148,9 +148,8 @@ MMBaseRelater.prototype.needsCommit = function() {
 
 /**
  * Commits made changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
-*  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
+ * This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
  */
-
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
@@ -178,6 +177,17 @@ MMBaseRelater.prototype.commit = function(ev) {
                     if (status == "success") {
                         //console.log("" + res);
                         $(a).addClass("succeeded");
+                        if (relatedNumbers != "") { // get them to create tr's to edit relations 
+                            var nrs = relatedNumbers.split(",");
+                            $(nrs).each(function(i) {
+                                var nr = this;
+                                console.log(i + ", nr: " + nr);
+                                // var trr = self.getTrrelation(nr); // allmost works except for query (you can't get the current one, getQueryId looks for a.search))
+                                // var tr = // find the tr
+                                // $(trr).after(tr);
+                            });
+                            
+                        }
                         this.related = {};
                         this.unrelated = {};
                         $(this.div).trigger("mmsrCommitted", [a, status, this]);
@@ -197,8 +207,6 @@ MMBaseRelater.prototype.commit = function(ev) {
 }
 
 
-
-
 MMBaseRelater.prototype.getNumbers = function(map) {
     var numbers = "";
     $.each(map, function(key, value) {
@@ -210,6 +218,20 @@ MMBaseRelater.prototype.getNumbers = function(map) {
     return numbers;
 }
 
+MMBaseRelater.prototype.getTrrelation = function(nodenr) {
+    var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
+    var params = {id: this.current.searcher.getQueryId(), node: nodenr, fields: this.repository.searcher.fields};
+    this.logger.debug(url + ", " + params);
+    var result;
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+            complete: function(res, status){
+                if ( status == "success" || status == "notmodified" ) {
+                    result = res.responseText;
+                }
+            }
+           });
+    return result;
+}
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
@@ -273,7 +295,6 @@ MMBaseRelater.prototype.relate = function(tr) {
         this.unrelated[number] = null;
 
 
-
         var currentList =  $(this.current).find("div.searchresult table tbody");
         this.logger.debug(currentList[0]);
         currentList.append(tr);
@@ -327,7 +348,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     // Set up HTML
     var repository =  $(this.div).find("div.mm_relate_repository div.searchresult table tbody");
     repository.append(tr);
-    repository.append(relationTrs);
+    $(relationTrs).remove();    // remove the tr's to edit relations
 
     this.current.searcher.dec();
     this.repository.searcher.inc();
@@ -651,7 +672,6 @@ MMBaseSearcher.prototype.getTr = function(node) {
            });
     return result;
 }
-
 
 MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
     this.logger.debug("Deleting newly removed");
