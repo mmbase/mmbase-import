@@ -13,8 +13,10 @@ package org.mmbase.bridge;
 import java.text.*;
 import java.util.*;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.mmbase.util.Casting;
+import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.datatypes.*;
 
 /**
@@ -104,7 +106,10 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue("getValue on string field should give \"Bridge testing!\" but gave " + object,
                     "Bridge testing!".equals(object));
             } else if (element.equals("xml")) {
-                //   assertTrue(getEmptyDocument().isEqualNode((org.w3c.dom.Node)object)); java 1.5
+                Element el = ((Document) object).getDocumentElement();
+                Element empty = getEmptyDocument().getDocumentElement();
+                assertTrue(XMLWriter.write(empty) + "!=" + XMLWriter.write(el),
+                           empty.isEqualNode(el));
                 assertTrue("getValue on xml field should give ??? but gave ",
                     Casting.toString(getEmptyDocument()).equals(Casting.toString(object)));
             } else if (element.equals("node")) {
