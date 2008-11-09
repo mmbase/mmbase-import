@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.45 2008-11-09 20:22:03 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.46 2008-11-09 20:22:41 andre Exp $
  */
 
 
@@ -177,12 +177,13 @@ MMBaseRelater.prototype.commit = function(ev) {
                     if (status == "success") {
                         //console.log("" + res);
                         $(a).addClass("succeeded");
-                        if (relatedNumbers != "") { // get them to create tr's to edit relations 
+                        if (relatedNumbers != "") { // get them to create tr's in which to edit relations 
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
                                 console.log(i + ", nr: " + nr);
-                                // var trr = self.getTrrelation(nr); // allmost works except for query (you can't get the current one, getQueryId looks for a.search))
+                                // allmost works except for query (you can't get the current one, BUG: getQueryId looks for a.search))
+                                // var trr = self.getTrrelation(nr); 
                                 // var tr = // find the tr
                                 // $(trr).after(tr);
                             });
@@ -206,6 +207,21 @@ MMBaseRelater.prototype.commit = function(ev) {
     }
 }
 
+MMBaseRelater.prototype.getTrrelation = function(nodenr) {
+    var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
+    var params = {id: this.current.searcher.getQueryId(), node: nodenr, fields: this.repository.searcher.fields};
+    // BUG: can't get this.current.searcher.getQueryId()
+    this.logger.debug(url + ", id: " + this.current.searcher.getQueryId() + ", flds: " + this.repository.searcher.fields);
+    var result;
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+            complete: function(res, status){
+                if ( status == "success" || status == "notmodified" ) {
+                    result = res.responseText;
+                }
+            }
+           });
+    return result;
+}
 
 MMBaseRelater.prototype.getNumbers = function(map) {
     var numbers = "";
@@ -216,21 +232,6 @@ MMBaseRelater.prototype.getNumbers = function(map) {
         }
     });
     return numbers;
-}
-
-MMBaseRelater.prototype.getTrrelation = function(nodenr) {
-    var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
-    var params = {id: this.current.searcher.getQueryId(), node: nodenr, fields: this.repository.searcher.fields};
-    this.logger.debug(url + ", " + params);
-    var result;
-    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-            complete: function(res, status){
-                if ( status == "success" || status == "notmodified" ) {
-                    result = res.responseText;
-                }
-            }
-           });
-    return result;
 }
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
