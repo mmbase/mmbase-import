@@ -1,3 +1,4 @@
+<%@ page buffer="1000kb" autoFlush="false" %> 
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
    <%@include file="includes/templateheader.jsp" %>
@@ -244,7 +245,7 @@ function validationMessage() {
                <td class="vastgoed_light"><%= item.getAantal()%></td>
                <td class="vastgoed_light"><%= item.getGevouwenOfOpgerold()%></td>
                <td>
-                  <%String updateLink = "/nmintra/KaartenInitAction.eb" + rubriekParams; %>
+                  <% String updateLink = "/nmintra/KaartenInitAction.eb" + rubriekParams + "&randNr=" + java.lang.Math.random(); %>
                   <html:link 
                      page="<%=updateLink%>" 
                      paramId="number" paramName="i">
