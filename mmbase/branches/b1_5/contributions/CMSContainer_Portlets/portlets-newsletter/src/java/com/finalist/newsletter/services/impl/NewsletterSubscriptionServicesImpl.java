@@ -9,12 +9,12 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.util.DateUtil;
 import com.finalist.newsletter.cao.*;
 import com.finalist.newsletter.domain.*;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.domain.Subscription.STATUS;
 import com.finalist.newsletter.services.*;
-import com.finalist.newsletter.util.DateUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices {
@@ -298,7 +298,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
    public List<Person> getAllSubscribers(String name, String email) {
       List<Node> subscriptions = subscriptionCAO.getAllSubscriptions();
-      Set<Integer> authenticationIds = new HashSet();
+      Set<Integer> authenticationIds = new HashSet<Integer>();
       for (Node subscription : subscriptions) {
          int authId = subscription.getIntValue("subscriber");
             authenticationIds.add(authId);
