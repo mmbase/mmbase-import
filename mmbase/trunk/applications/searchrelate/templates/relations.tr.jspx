@@ -34,7 +34,7 @@
       
       <mm:listnodes referid="rl" id="relation">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
-        <tr class="relation node_${n} ${nodemanager}">
+        <tr class="relation node_${node} ${nodemanager}">
           <td colspan="${colcount + 3}">
             <mm:form styleClass="relation">
               <fieldset>
