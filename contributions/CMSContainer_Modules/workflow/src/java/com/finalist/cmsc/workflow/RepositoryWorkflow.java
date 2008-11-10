@@ -32,6 +32,15 @@ public abstract class RepositoryWorkflow extends WorkflowManager {
    }
 
 
+   protected Node getAssetNode(Node wfItem) {
+      NodeList list = wfItem.getRelatedNodes(RepositoryUtil.ASSETELEMENT, WORKFLOWREL, DESTINATION);
+      if (!list.isEmpty()) {
+         return list.getNode(0);
+      }
+      return null;
+   }
+
+
    protected Node getLinkChannel(Node wfItem) {
       NodeList channels = wfItem.getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, WORKFLOWREL, DESTINATION);
       if (!channels.isEmpty()) {
