@@ -113,7 +113,11 @@ public class WizardInitAction extends MMBaseFormlessAction {
          }
       }
 
-      session.setAttribute("contenttype", elementtype);
+      if ("images".equals(elementtype) || "attachments".equals(elementtype) || "urls".equals(elementtype)) {
+         session.setAttribute("assettype", elementtype);
+      } else {
+         session.setAttribute("contenttype", elementtype);
+      }
 
       String sessionkey = request.getParameter("sessionkey");
       if (sessionkey == null || sessionkey.length() == 0) {
