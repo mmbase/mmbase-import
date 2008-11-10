@@ -10,6 +10,10 @@
 
       <mm:import externid="question" required="true"/>
       <mm:import externid="madetest" required="true"/>
+
+      <mm:import externid="answernode" />
+
+
       <!--
       Multiple choice questions
       types:
@@ -19,12 +23,23 @@
 
     <mm:node number="$question" id="my_question">
 
-      <mm:createnode type="givenanswers" id="my_givenanswers">
-        <mm:setfield name="score">0</mm:setfield>
-      </mm:createnode>
+      <mm:notpresent referid="answernode">
+        <mm:remove referid="answernode" />
+        <mm:createnode id="answernode" type="givenanswers" />
+        <mm:createrelation role="related" source="madetest" destination="answernode" />
+        <mm:createrelation role="related" source="question" destination="answernode" />
+      </mm:notpresent>
+      <mm:present referid="answernode">
+        <mm:node id="answernode" referid="answernode">
+          <mm:listrelations type="mcanswers">
+            <mm:deletenode />
+          </mm:listrelations>
+        </mm:node>
+      </mm:present>
 
-      <mm:createrelation role="related" source="madetest" destination="my_givenanswers"/>
-      <mm:createrelation role="related" source="question" destination="my_givenanswers"/>
+      <mm:node referid="answernode" id="my_givenanswers">
+        <mm:setfield name="score">0</mm:setfield>
+      </mm:node>
 
 
       <mm:field name="type" write="false">
@@ -54,7 +69,7 @@
               <mm:field id="correct" name="correct" write="false"/>
 
               <mm:import externid="${question}_${_node}" id="givenanswer" />
-
+.
               <mm:log>Value for givenanser (${question}_${_node}): ${givenanswer}</mm:log>
               <mm:present referid="givenanswer">
                 <mm:log>this answer was given</mm:log>

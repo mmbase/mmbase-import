@@ -1,6 +1,8 @@
-<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0" >
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-t="urn:jsptagdir:/WEB-INF/tags/mm/u"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0" >
   <mm:content postprocessor="none">
     <mm:cloud method="delegate">
 
@@ -22,6 +24,15 @@
       -->
 
       <mm:node number="$question">
+
+        <mm:isnotempty referid="madetest">
+          <mm:relatednodes
+              type="givenanswers" orderby="number" directions="down" max="1">
+            <mm:relatednodes type="mcanswers" id="givenanswers" />
+          </mm:relatednodes>
+        </mm:isnotempty>
+
+
         <mm:field name="showtitle">
           <mm:compare value="1">
             <h2><mm:field name="title"/></h2>
@@ -67,8 +78,9 @@
                   <mm:field name="description" escape="tagstripper(xss)"/>
                 </mm:relatednodes>
               </div>
+              ${mm:contains(givenanswers, _node)} ${question} ${givenanswers} / ${_node}
               <mm:import externid="${question}" id="answer" />
-              <mm:radio  name="${question}" value="${_node}" compare="${answer}" />
+              <mm-t:radio type="checkbox" name="${question}_${_node}"  value="${_node}" checked="${mm:contains(givenanswers, _node)}" />
               <mm:field name="text" />
 
               <!-- Each answer on a new line -->
@@ -83,7 +95,7 @@
             <select name="${question}">
               <mm:import externid="${question}" id="answer" />
               <mm:listnodes referid="answerlist">
-                <mm:option compare="question" value="${_node}"><mm:field name="text"/></mm:option>
+                <mm:option compare="question" value="${_node}" selected="${mm:contains(givenanswers, _node)}"><mm:field name="text"/></mm:option>
               </mm:listnodes>
             </select>
           </mm:compare>
@@ -92,8 +104,7 @@
         <!-- Generate layout for checkboxes (multiple correct answers to be chosen) -->
         <mm:compare referid="questiontype" value="1">
           <mm:listnodes referid="answerlist">
-            <mm:import externid="${question}_${_node}" id="answer" />
-            <mm:radio type="checkbox" name="${question}_${_node}"  value="${_node}" compare="${answer}" />
+            <mm:radio type="checkbox" name="${question}_${_node}"  value="${_node}" checked="${mm:contains(givenanswers, _node)}" />
             <mm:field name="text"/>
             <!-- Each answer on a new line -->
             <mm:compare referid="questionlayout" valueset="0,3">
