@@ -25,7 +25,9 @@
 
 	<action type="create">
 		<relation destinationtype="pollchoice" role="posrel">
-			<field name="pos">{sum(//relation[@role='posrel' and @destination='pollchoice' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='pollchoice']/../field[@name='pos'])+{$pos}}</field>
+			
+			
 			<object type="pollchoice" >
                <field name="counter" ftype="int">0</field>
             </object>
