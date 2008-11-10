@@ -11,7 +11,7 @@ package com.finalist.cmsc.workflow.forms;
 
 import org.mmbase.bridge.*;
 
-import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.repository.AssetElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.workflow.*;
 
@@ -19,31 +19,31 @@ public class AssetWorkflowAction extends WorkflowAction {
 
    @Override
    protected String getWorkflowType() {
-      return ContentWorkflow.TYPE_CONTENT;
+      return AssetWorkflow.TYPE_ASSET;
    }
 
 
    @Override
    protected NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean aord) {
-      NodeManager manager = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
+      NodeManager manager = cloud.getNodeManager(AssetElementUtil.ASSETELEMENT);
       NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
 
       NodeManager channelManager = cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
       wfQuery.addRelationStep(channelManager, RepositoryUtil.CREATIONREL, null);
 
-      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + ".number");
-      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.TITLE_FIELD);
-      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.LASTMODIFIEDDATE_FIELD);
-      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.LASTMODIFIER_FIELD);
-      wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "." + RepositoryUtil.NAME_FIELD);
-      if (orderby.equals(ContentElementUtil.TITLE_FIELD)) {
-         addOrderBy(manager, wfQuery, ContentElementUtil.TITLE_FIELD, aord);
+      wfQuery.addField(AssetElementUtil.ASSETELEMENT + ".number");
+      wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.TITLE_FIELD);
+      wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.LASTMODIFIEDDATE_FIELD);
+      wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.LASTMODIFIER_FIELD);
+      wfQuery.addField(RepositoryUtil.ASSETELEMENT + "." + RepositoryUtil.NAME_FIELD);
+      if (orderby.equals(AssetElementUtil.TITLE_FIELD)) {
+         addOrderBy(manager, wfQuery, AssetElementUtil.TITLE_FIELD, aord);
       }
-      else if (orderby.equals(ContentElementUtil.LASTMODIFIER_FIELD)) {
-         addOrderBy(manager, wfQuery, ContentElementUtil.LASTMODIFIER_FIELD, aord);
+      else if (orderby.equals(AssetElementUtil.LASTMODIFIER_FIELD)) {
+         addOrderBy(manager, wfQuery, AssetElementUtil.LASTMODIFIER_FIELD, aord);
       }
-      else if (orderby.equals(ContentElementUtil.LASTMODIFIEDDATE_FIELD)) {
-         addOrderBy(manager, wfQuery, ContentElementUtil.LASTMODIFIEDDATE_FIELD, aord);
+      else if (orderby.equals(AssetElementUtil.LASTMODIFIEDDATE_FIELD)) {
+         addOrderBy(manager, wfQuery, AssetElementUtil.LASTMODIFIEDDATE_FIELD, aord);
       }
       else if (orderby.equals(RepositoryUtil.CONTENTCHANNEL)) {
          addOrderBy(channelManager, wfQuery, RepositoryUtil.NAME_FIELD, aord);
