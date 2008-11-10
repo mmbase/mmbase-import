@@ -436,6 +436,10 @@
         <type state="persistent" size="64000">XML</type>
       </db>
     </field>
+
+    <field name="lastmodifier">
+      <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
   </fieldlist>
 
   <functionlist>
