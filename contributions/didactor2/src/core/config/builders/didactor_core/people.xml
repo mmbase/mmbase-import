@@ -464,6 +464,9 @@
     <function key="peopleClass" name="class">
       <class>nl.didactor.functions.PeopleClassFunction</class>
     </function>
+    <function key="peopleClasses" name="classes">
+      <class>nl.didactor.functions.PeopleClassFunction</class>
+    </function>
     <function key="blockedLearnBlocks" name="blockedLearnBlocks">
       <class>nl.didactor.functions.PeopleClassFunction</class>
     </function>
