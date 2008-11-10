@@ -32,13 +32,13 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
+import com.finalist.cmsc.util.DateUtil;
 import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.domain.Subscription.STATUS;
-import com.finalist.newsletter.util.DateUtil;
 
 public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements NewsletterSubscriptionCAO {
 

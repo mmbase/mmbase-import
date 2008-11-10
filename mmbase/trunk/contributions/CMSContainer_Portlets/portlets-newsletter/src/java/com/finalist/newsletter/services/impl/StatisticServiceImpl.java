@@ -4,6 +4,7 @@ package com.finalist.newsletter.services.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.finalist.cmsc.util.DateUtil;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.StatisticResult;
@@ -11,7 +12,6 @@ import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.ServiceException;
 import com.finalist.newsletter.services.StatisticService;
-import com.finalist.newsletter.util.DateUtil;
 
 public class StatisticServiceImpl implements StatisticService {
 
