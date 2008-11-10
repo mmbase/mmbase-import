@@ -8,16 +8,13 @@
 
       <mm:node number="$question">
 
-
         <mm:isnotempty referid="madetest">
-          <mm:relatedcontainer path="givenanswers,madetests">
+          <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
             <mm:constraint field="madetests.number" value="$madetest"/>
-            <mm:related>
-              <mm:node element="givenanswers">
-                <mm:field name="text" id="answer" write="false"/>
-              </mm:node>
-            </mm:related>
-          </mm:relatedcontainer>
+            <mm:relatednodes>
+              <mm:field name="text" id="answer" write="false"/>
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
         </mm:isnotempty>
 
         <mm:field name="showtitle">

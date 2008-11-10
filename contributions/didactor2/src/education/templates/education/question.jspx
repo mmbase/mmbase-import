@@ -17,9 +17,9 @@
       rank="didactor user">
 
     <mm:import externid="question"    required="true" />
-    <mm:import externid="learnobject" required="true" />
+    <mm:import externid="learnobject"  required="true" />
     <mm:node number="${question}">
-      <div id="question_${_node}">
+      <div class="question" id="question_${_node}">
 
         <!-- make sure there is a 'madetest' object to containe the answers -->
 
