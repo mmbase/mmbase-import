@@ -35,7 +35,7 @@ public class AssetWorkflowAction extends WorkflowAction {
       wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.TITLE_FIELD);
       wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.LASTMODIFIEDDATE_FIELD);
       wfQuery.addField(AssetElementUtil.ASSETELEMENT + "." + AssetElementUtil.LASTMODIFIER_FIELD);
-      wfQuery.addField(RepositoryUtil.ASSETELEMENT + "." + RepositoryUtil.NAME_FIELD);
+      wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "." + RepositoryUtil.NAME_FIELD);
       if (orderby.equals(AssetElementUtil.TITLE_FIELD)) {
          addOrderBy(manager, wfQuery, AssetElementUtil.TITLE_FIELD, aord);
       }
