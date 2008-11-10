@@ -139,16 +139,17 @@ function check(className) {
 }
 
 function requestContent(href) {
-   var content = usedFrames[href];
-   if (content == null) {
-       loadIconOn();
-       var contentEl = document.getElementById('contentFrame');
-       $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
-                   complete: function(res, status){
-                   loadIconOff();
-                   if (status == "success") {
-                       $(contentEl).empty();
-                       $(contentEl).append(res.responseText);
+    var contentEl = document.getElementById('contentFrame');
+    $(document).trigger("didactorContentBeforeUnload",  { unloaded: contentEl });
+    var content = usedFrames[href];
+    if (content == null) {
+        loadIconOn();
+        $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
+                    complete: function(res, status){
+                    loadIconOff();
+                    if (status == "success") {
+                        $(contentEl).empty();
+                        $(contentEl).append(res.responseText);
                        // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
                        contentEl.validator = new MMBaseValidator();
                        //contentEl.validator.logEnabled = true;
@@ -179,16 +180,17 @@ function requestContent(href) {
                        }
                        usedFrames[href] = array;
                         $(document).trigger("didactorContentLoaded",  { loaded: contentEl });
+                        $(document).trigger("didactorContent",  { loaded: contentEl });
                    }
                }
            });
    } else {
-       var contentEl = document.getElementById('contentFrame');
        $(contentEl).empty();
        for (var i=0; i < content.length; i++) {
            contentEl.appendChild(content[i]);
        }
        document.href_frame = href;
+       $(document).trigger("didactorContent",  { loaded: contentEl });
    }
    scrollToTop();
 }
