@@ -5,7 +5,7 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="includes/getactiveaccount.jsp" %>
 <mm:content type="text/html" escaper="none">
-<mm:cloud logon="<%= account %>" pwd="<%= password %>" jspvar="cloud">
+<mm:cloud logon="<%= account %>" pwd="<%= password %>" jspvar="cloud" method="sessionlogon">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/calendar.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
