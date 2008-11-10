@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.13 2008-11-10 14:51:11 michiel Exp $
+ * @version $Id: Didactor.js,v 1.14 2008-11-10 16:26:39 michiel Exp $
  */
 
 
@@ -43,6 +43,7 @@ function Didactor() {
 	    $.query.REMOVE(param);
     }
     this.q = $.query.toString();
+
 
     for (var i = 0; i < Didactor.welcomeFiles.length; i++) {
 	    var welcomeFile = Didactor.welcomeFiles[i];
@@ -154,11 +155,12 @@ var didactor;
 $(document).ready(function() {
     didactor = new Didactor();
     var self = this;
-    $(document).bind("didactorContentLoaded",  function(ev, el) {
-        didactor.resolveQuestions(el.loaded);
+    $(document).bind("didactorContentLoaded",  function(ev, data) {
+        didactor.resolveQuestions(data.loaded);
     });
-    $(document).bind("didactorContent",  function(ev, el) {
-        didactor.setUpQuestionEvents(el.loaded);
+    $(document).bind("didactorContent",  function(ev, data) {
+        didactor.setUpQuestionEvents(data.loaded);
+        didactor.setContent(data.number);
     });
 
     $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
