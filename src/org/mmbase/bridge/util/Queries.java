@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.111 2008-11-07 13:42:26 andre Exp $
+ * @version $Id: Queries.java,v 1.112 2008-11-10 10:23:22 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1352,15 +1352,12 @@ abstract public class Queries {
      */
     public static NodeList removeFromResult(Query q, Node n) {
         NodeList result = getRelations(q, n);
-        NodeIterator ni = result.nodeIterator();
-        while (ni.hasNext()) {
-            Node r = ni.nextNode();
+        for (Node r : result) {
             r.delete();
         }
-        
         return result;
     }
-    
+
     /**
      * Explores a query object, returns the relations the node has within the query.
      *
@@ -1503,6 +1500,7 @@ abstract public class Queries {
         StepField sf = q.createStepField((Step) q.getSteps().get(0), "number");
         return q.createConstraint(sf, new Integer(-1));
     }
+
 
     public static void main(String[] argv) {
         System.out.println(ConstraintParser.convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
