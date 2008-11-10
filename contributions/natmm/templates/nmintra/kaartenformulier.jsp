@@ -93,6 +93,8 @@
       <bean:define id="natGebMap" property="natGebMap" name="KaartenForm" type="java.util.Map" />
       <bean:define id="gebiedMap" property="gebiedMap" name="KaartenForm" type="java.util.Map" />
       <bean:define id="selKaartMap" property="selKaartMap" name="KaartenForm" type="java.util.Map" />
+      <bean:define id="rad_Schaal" property="rad_Schaal" name="KaartenForm" type="String" />
+      
       <script type="text/javascript">
 <!--
 <%@include file="includes/vastgoed/giveinfo.js" %>
@@ -258,6 +260,14 @@ function enable0()
   document.getElementById("sel_Beheereenheden").selectedIndex = 0;
   document.getElementById("sel_NatGeb").disabled = false;
 }
+function disable00()
+{
+  deselect('sel_NatGeb');
+  deselect('sel_Beheereenheden');  
+  document.getElementById("sel_Beheereenheden").disabled=true;
+  document.getElementById("sel_NatGeb").disabled=true;
+  document.getElementById("sel_NatGeb").length=0;  
+}
 
 function enable1()
 {
@@ -265,9 +275,13 @@ function enable1()
   document.getElementById("sel_gebieden").selectedIndex = 0;
   document.getElementById("sel_Areaal").disabled = false;
 }
-
-function enable2()
+function disable01()
 {
+  deselect('sel_Areaal');
+  deselect('sel_gebieden');
+  document.getElementById("sel_gebieden").disabled=true;
+  document.getElementById("sel_Areaal").disabled=true;
+  document.getElementById("sel_Areaal").length=0;
 }
 
 function enable3()
@@ -281,6 +295,22 @@ function enable3()
   document.getElementById("linksY").disabled=false;
   document.getElementById("rechtsX").disabled=false;
   document.getElementById("rechtsY").disabled=false;
+}
+function disable03()
+{
+  txtcolor = '#999999';
+  document.getElementById('td_Xlo').style.color=txtcolor;
+  document.getElementById('td_Ylo').style.color=txtcolor;
+  document.getElementById('td_Xrb').style.color=txtcolor;
+  document.getElementById('td_Yrb').style.color=txtcolor;   
+  document.getElementById("linksX").disabled=true;
+  document.getElementById("linksX").value="";
+  document.getElementById("linksY").disabled=true;
+  document.getElementById("linksY").value="";
+  document.getElementById("rechtsX").disabled=true;
+  document.getElementById("rechtsX").value="";
+  document.getElementById("rechtsY").disabled=true;
+  document.getElementById("rechtsY").value="";
 }
 
 function deselect(id) 
@@ -298,34 +328,6 @@ function deselect(id)
     }
 }
 
-function disable0()
-{
-  txtcolor = '#999999';
-  deselect('sel_Areaal');
-  deselect('sel_NatGeb');
-  deselect('sel_Beheereenheden');
-  deselect('sel_gebieden');
-  document.getElementById('td_Xlo').style.color=txtcolor;
-  document.getElementById('td_Ylo').style.color=txtcolor;
-  document.getElementById('td_Xrb').style.color=txtcolor;
-  document.getElementById('td_Yrb').style.color=txtcolor;
-  document.getElementById("sel_Beheereenheden").disabled=true;
-  document.getElementById("sel_NatGeb").disabled=true;
-  document.getElementById("sel_NatGeb").length=0;
-  document.getElementById("sel_gebieden").disabled=true;
-  document.getElementById("sel_Areaal").disabled=true;
-  document.getElementById("sel_Areaal").length=0;
-  document.getElementById("linksX").disabled=true;
-  document.getElementById("linksX").value="";
-  document.getElementById("linksY").disabled=true;
-  document.getElementById("linksY").value="";
-  document.getElementById("rechtsX").disabled=true;
-  document.getElementById("rechtsX").value="";
-  document.getElementById("rechtsY").disabled=true;
-  document.getElementById("rechtsY").value="";
-}
-
-
 function jsc_defaultOptie() {
   <logic:equal name="KaartenForm" property="rad_Gebied" value="Natuurgebied">
   	jsc_optie0();
@@ -333,7 +335,7 @@ function jsc_defaultOptie() {
     <logic:equal name="KaartenForm" property="rad_Gebied" value="Eenheid">
   	jsc_optie1();
   </logic:equal>
-    <logic:equal name="KaartenForm" property="rad_Gebied" value="Nederland">
+  <logic:equal name="KaartenForm" property="rad_Gebied" value="Nederland">
   	jsc_optie2();
   </logic:equal>
   <logic:equal name="KaartenForm" property="rad_Gebied" value="Coordinaten">
@@ -348,10 +350,8 @@ var imagesCoor = new Array();
 
 function jsc_optie0()
 {
-//nieuw
-disable0();
-enable0();
-//einde nieuw
+disable01();
+disable03();
 jsc_VulSelectUitArray(document.KaartenForm.sel_NatGeb, arr_NatGeb[document.KaartenForm.sel_Beheereenheden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
@@ -376,10 +376,8 @@ jsc_setPicture(null);
 
 function jsc_optie1()
 {
-//nieuw
-disable0();
-enable1();
-//einde nieuw
+disable00();
+disable03();
 jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 jsc_ClearUnselectedOptions();
 
@@ -404,10 +402,9 @@ jsc_setPicture(null);
 
 function jsc_optie2()
 {
-//nieuw
-disable0();
-enable2();
-//einde nieuw
+disable00();
+disable01();
+disable03();
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Nederland"); %>
 
@@ -430,10 +427,8 @@ jsc_setPicture(null);
 
 function jsc_optie3()
 {
-//nieuw
-disable0();
-enable3();
-//einde nieuw
+disable00();
+disable01();
 jsc_ClearUnselectedOptions();
 <% kartTypes = (ArrayList) selKaartMap.get("Coordinaten"); %>
 
@@ -586,6 +581,17 @@ function doOnLoad() {
    jsc_VulSelectUitArray(document.KaartenForm.sel_Areaal, arr_Areaal[document.KaartenForm.sel_gebieden.selectedIndex]);
 	setScreenSize();
    //document.getElementById("sel_Formaat").disabled=true;
+   
+   //alert("<%=rad_Schaal%>");
+   
+   <% if ("formaat".equals(rad_Schaal)) { %>
+      deselect('sel_Schaal');
+      document.getElementById("sel_Schaal").disabled = true;
+   <% } else { %>
+      deselect('sel_Formaat');
+      document.getElementById("sel_Formaat").disabled = true;   
+   <% } %>
+
 }
       </script>
       
@@ -630,7 +636,7 @@ DIV.Schermuitleg
    
    <body <% 
          if(!printPage) { 
-         %>onLoad="javascript:resizeBlocks();jsc_optie0();jsc_optie4();doOnLoad();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
+         %>onLoad="javascript:resizeBlocks();doOnLoad();<mm:present referid="extraload"><mm:write referid="extraload" /></mm:present
    >" onResize="javascript:resizeBlocks();" onUnLoad="javascript:setScreenSize()"<%
          } else {
    %>onLoad="self.print();"<% 
@@ -695,7 +701,7 @@ DIV.Schermuitleg
       <table width ="500"  class="vastgoed_medium" border="0" cellspacing="0">
          <tr>
             <td width="20">
-               <html:radio property="rad_Gebied" value="Natuurgebied" onclick="jsc_optie0();" style="background:vastgoed_medium"/>
+               <html:radio property="rad_Gebied" value="Natuurgebied" onclick="jsc_optie0();enable0();" style="background:vastgoed_medium"/>
             </td>
             <td width="220">Natuurgebied:</td>
             
@@ -729,7 +735,7 @@ DIV.Schermuitleg
       <table width ="500"  class="vastgoed_light" border="0" cellspacing="0">
          <tr>
             <td width="20">
-               <html:radio property="rad_Gebied" value="Eenheid" onclick="jsc_optie1();" style="background:vastgoed_light"/>
+               <html:radio property="rad_Gebied" value="Eenheid" onclick="jsc_optie1();enable1();" style="background:vastgoed_light"/>
             </td>
             <td width="220">Eenheid / Regio / Provincie:</td>
             <td>&nbsp;</td>
@@ -779,7 +785,7 @@ DIV.Schermuitleg
       <table width="500" class="vastgoed_light" border="0" cellspacing="0">	
          <tr>
             <td width="20">
-               <html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();" style="background:vastgoed_light"/>
+               <html:radio property="rad_Gebied" value="Coordinaten" onclick="jsc_optie3();enable3();" style="background:vastgoed_light"/>
             </td>
             <td colspan="4">Coördinaten:&nbsp;</td>
             <td>&nbsp;</td>
