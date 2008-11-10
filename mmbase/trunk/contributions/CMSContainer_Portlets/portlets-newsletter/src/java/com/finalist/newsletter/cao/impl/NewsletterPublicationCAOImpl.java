@@ -9,7 +9,6 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
-import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.util.POConvertUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -87,8 +86,8 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       return cloud.getNode(number);
    }
 
-   public String getPublicationURL(int publciationId) {
-      return NewsletterPublicationUtil.getPublicationURL(cloud,publciationId);
+   public String getPublicationURL(int publicationId) {
+      return NewsletterPublicationUtil.getPublicationURL(cloud,publicationId);
    }
 
    public int getNewsletterId(int publicationId) {
