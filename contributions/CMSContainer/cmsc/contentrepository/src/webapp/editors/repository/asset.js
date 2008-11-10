@@ -8,7 +8,7 @@ function showInfo(assetType, objectnumber) {
 }
 
 function unpublish(parentchannel, objectnumber) {
-    var url = "DeleteAssetAction.do";
+    var url = "AssetDeleteAction.do";
     url += "?channelnumber=" + parentchannel;
     url += "&action=unlink";
     url += "&returnurl=" + escape(document.location + "&refreshchannel=true");

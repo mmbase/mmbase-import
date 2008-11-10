@@ -147,10 +147,7 @@
       <action path="/editors/resources/ImageAction" type="com.finalist.cmsc.resources.forms.ImageAction"
          name="ImageForm" scope="request" input="/editors/resources/imagesearch.jsp" unknown="false" validate="true">
       </action>
- 	 <action path="/editors/resources/PreviewImageAction" type="com.finalist.cmsc.resources.forms.PreviewImageAction" 
-         unknown="false" validate="false">
-         <forward name="success" path="/editors/resources/previeImage.jsp" redirect="false" />
-      </action>
+
       <action path="/editors/resources/AttachmentInitAction" type="com.finalist.cmsc.resources.forms.AttachmentInitAction"
          name="AttachmentForm" scope="request" unknown="false" validate="false">
          <forward name="searchoptions" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
@@ -232,8 +229,8 @@
          name="AssetUploadForm" unknown="false" validate="true">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
-      <action path="/editors/repository/DeleteAssetAction"
-         type="com.finalist.cmsc.repository.forms.DeleteAssetAction" unknown="false" validate="false">
+      <action path="/editors/repository/AssetDeleteAction"
+         type="com.finalist.cmsc.repository.forms.AssetDeleteAction" unknown="false" validate="false">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
       <action path="/editors/repository/AssetMassDelete" type="com.finalist.cmsc.repository.forms.AssetMassDeleteAction" 
