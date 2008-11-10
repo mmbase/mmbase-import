@@ -13,12 +13,12 @@
 
  * Custom events
  * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr, relater) ) )
- * - mmsrUnrelate            (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
+ * - mmsrUnrelate          (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.48 2008-11-10 11:49:01 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.49 2008-11-10 21:02:11 andre Exp $
  */
 
 
@@ -28,7 +28,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -181,7 +181,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
-                                var trr = self.getTrrelation(nr); 
+                                var trr = self.getNewRelationTr(nr); 
                                 $('#' + id + ' div.mm_relate_current tr.click').each(function() {
                                     if (self.getNumber(this) == nr) {
                                         $(trr).insertAfter(this);
@@ -191,6 +191,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                         }
                         this.related = {};
                         this.unrelated = {};
+                        self.bindSaverelation(this.div);
                         $(this.div).trigger("mmsrCommitted", [a, status, this]);
                         return true;
                     } else {
@@ -207,11 +208,16 @@ MMBaseRelater.prototype.commit = function(ev) {
     }
 }
 
-MMBaseRelater.prototype.getTrrelation = function(nodenr) {
+/**
+ * Gets a the relation tr for a newly created relation in which the relation can be edited.
+ *
+ */
+MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
+    var self = this;
     var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
     var queryid = this.repository.searcher.getQueryId();
     queryid = queryid.replace(/repository/i, "current");
-    this.logger.debug(url + ", id: " + queryid + ", nodenr: " + nodenr +  ", fields: " + this.repository.searcher.fields);
+    self.logger.debug(url + ", id: " + queryid + ", node: " + nodenr +  ", fields: " + this.repository.searcher.fields);
     
     var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
     var result;
@@ -222,6 +228,7 @@ MMBaseRelater.prototype.getTrrelation = function(nodenr) {
                 }
             }
            });
+    
     return result;
 }
 
@@ -234,6 +241,17 @@ MMBaseRelater.prototype.getNumbers = function(map) {
         }
     });
     return numbers;
+}
+
+MMBaseRelater.prototype.bindSaverelation = function(div) {
+    var self = this;
+    self.logger.debug("unbinding and binding relation forms");
+    $(div).find('form.relation').unbind();
+    $(div).find("form.relation").each(function() {
+        $(this).submit(function(ev) {
+            self.saverelation(ev);
+        });
+    });
 }
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
@@ -254,14 +272,8 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                 })
             }
         });
-
-        $(rep).find("form.relation").each(function() {
-            self.logger.debug("binding to relation form");
-            $(this).submit(function(ev) {
-                self.saverelation(ev);
-            })
-        });
         
+        self.bindSaverelation(rep);
     }
 }
 
@@ -327,6 +339,9 @@ MMBaseRelater.prototype.relate = function(tr) {
     $(this.div).trigger("mmsrRelate", [tr, this]);
 }
 
+/**
+ * Returns the relation tr('s) that belong to a node.
+ */
 MMBaseRelater.prototype.getRelationTrs = function(number) {
     return $(this.div).find("tr.node_" + number);
 }
@@ -401,10 +416,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
           console.log("ok: " + msg);
        }
     
- });
-
-    
-    
+    });
 }
 
 /**
