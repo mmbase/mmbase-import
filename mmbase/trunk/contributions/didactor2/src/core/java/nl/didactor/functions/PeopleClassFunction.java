@@ -4,13 +4,15 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 import java.util.*;
 import java.lang.reflect.*;
+import javax.servlet.http.*;
 
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.6 2008-08-01 15:59:23 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.7 2008-11-10 16:10:00 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -21,15 +23,20 @@ public class PeopleClassFunction {
         node = n;
     }
 
-    private int e;
+    private int e = -1;
 
     public void setEducation(int e) {
         this.e = e;
     }
 
 
-    public Node peopleClass() {
+
+    public NodeList peopleClasses() {
         Cloud cloud = node.getCloud();
+        if (e == -1) {
+            HttpServletRequest req = (HttpServletRequest) cloud.getProperty(Cloud.PROP_REQUEST);
+            e = Casting.toInt(req.getAttribute("education"));
+        }
         Node education = cloud.getNode(e);
         NodeManager classes = cloud.getNodeManager("classes");
         NodeQuery query = Queries.createRelatedNodesQuery(node, classes, null, null);
@@ -37,6 +44,11 @@ public class PeopleClassFunction {
         RelationStep step = query.addRelationStep(cloud.getNodeManager("educations"), null, null);
         Queries.addConstraint(query, query.createConstraint(query.createStepField(step.getNext(),"number"), education.getNumber()));
         NodeList foundClasses = classes.getList(query);
+        return foundClasses;
+    }
+
+    public Node peopleClass() {
+        NodeList foundClasses = peopleClasses();
         Node claz;
         if (foundClasses.size() > 1) {
             log.debug("more classes related! for node " + node.getNumber());
