@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.12 2008-11-07 17:02:41 michiel Exp $
+ * @version $Id: Didactor.js,v 1.13 2008-11-10 14:51:11 michiel Exp $
  */
 
 
@@ -17,6 +17,8 @@ function Didactor() {
     this.url            = this.getSetting("Didactor-URL");
     this.lastCheck      = new Date();
     this.pageReporter   = this.getSetting("Didactor-PageReporter") == "true";
+
+    this.questions      = {};
     var self = this;
 
     $.timer(500, function(timer) {
@@ -46,6 +48,7 @@ function Didactor() {
 	    var welcomeFile = Didactor.welcomeFiles[i];
 	    this.url = this.url.replace(new RegExp(welcomeFile + "$"), "");
     }
+
 }
 
 Didactor.contentParameters = ["learnobject", "openSub" ];
@@ -60,7 +63,10 @@ Didactor.prototype.reportOnline = function (timer, async) {
     var params;
     var thisCheck = new Date();
     if (this.getSetting("Didactor-PageReporter") == "true") {
-	    params = {page: this.url + this.q, add: thisCheck.getTime() - this.lastCheck.getTime()};
+	    params = {
+            page: this.url + this.q,
+            add: thisCheck.getTime() - this.lastCheck.getTime()
+        };
 	    if (this.content != undefined && this.content != null && this.content != "") {
 	        params.content = this.content;
 	    }
@@ -82,41 +88,64 @@ Didactor.prototype.setContent = function(c) {
     this.content = c;
 }
 
+Didactor.prototype.setUpQuestionEvents = function(div) {
+    var did = this;
+    $(div).find("div.question").each(function() {
+        var qdiv = this;
+        var a = qdiv.a;
+        $(qdiv).find("textarea").keyup(function() {
+            did.questions[a][0] = true;
+        });
+        $(qdiv).find("input").change(function() {
+            did.questions[a][0] = true;
+        });
+        $(qdiv).find(".answerquestion").click(function() {
+            var params = {};
+            $(qdiv).find("textarea").each(function() {
+                params[this.name] = this.value;
+            });
+            $(qdiv).find("input").each(function() {
+                if (this.type == "checkbox" && ! this.checked) {
+                } else {
+                    params[this.name] = this.value;
+                }
+            });
+            $.ajax({url: this.href, type: "POST", dataType: "xml", data: params,
+                    complete: function(res, status) {
+                        if (status == "success") {
+                            $(div).append(res.responseText);
+                        } else {
+                            alert(status);
+                        }
+                    }
+                   });
+            return false;
+        });
+    });
+}
+
 Didactor.prototype.resolveQuestions = function(el) {
     var did = this;
     $(el).find(".nm_questions").each(function() {
         var params = {};
         params.learnobject = did.content;
-        var div = $("<div />");
-        div.load(this.href, params, function() {
-            div.find(".answerquestion").click(function() {
-                var params = {};
-                $(div).find("textarea").each(function() {
-                    params[this.name] = this.value;
-                });
-                $(div).find("input").each(function() {
-                    if (this.type == "checkbox" && ! this.checked) {
-                    } else {
-                        params[this.name] = this.value;
-                    }
-                });
-                $.ajax({url: this.href, type: "POST", dataType: "xml", data: params,
-                        complete: function(res, status) {
-                            if (status == "success") {
-                                $(div).append(res.responseText);
-                            } else {
-                                alert(status);
-                            }
-                        }
-                       });
-                return false;
-
-            });
+        var div = $("<div  />");
+        var d = div[0];
+        var a = this;
+        if (did.questions[a] == null) {
+            did.questions[a] = [false, d];
+        }
+        div.load(a.href, params, function() {
+            div.find("div.question")[0].a = a;
+            did.setUpQuestionEvents(d);
         });
         $(this).after(div);
         $(this).remove();
-
     });
+
+
+
+
 }
 
 
@@ -127,6 +156,21 @@ $(document).ready(function() {
     var self = this;
     $(document).bind("didactorContentLoaded",  function(ev, el) {
         didactor.resolveQuestions(el.loaded);
+    });
+    $(document).bind("didactorContent",  function(ev, el) {
+        didactor.setUpQuestionEvents(el.loaded);
+    });
+
+    $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
+        for (key in didactor.questions) {
+            var status = didactor.questions[key];
+            var changed = status[0];
+            var div = status[1];
+            if (changed) {
+                $(div).find(".answerquestion").click();
+                didactor.questions[key][0] = false;
+            }
+        }
     });
     // if this is a staticly loaded piece of html, there may be some questions already
     didactor.resolveQuestions(document);
