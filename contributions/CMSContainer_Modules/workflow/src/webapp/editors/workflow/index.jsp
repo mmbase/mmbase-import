@@ -12,6 +12,9 @@ String redirectTo = "ContentWorkflowAction.do";
 if ("content".equals(type)) {
     redirectTo = "ContentWorkflowAction.do";
 }
+if ("asset".equals(type)) {
+   redirectTo = "AssetWorkflowAction.do";
+}
 if ("link".equals(type)) {
     redirectTo = "LinkWorkflowAction.do";
 }
