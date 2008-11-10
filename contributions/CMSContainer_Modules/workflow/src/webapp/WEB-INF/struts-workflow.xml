@@ -17,6 +17,10 @@
 			type="com.finalist.cmsc.workflow.forms.ContentWorkflowAction" unknown="false" validate="false">
 			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
 		</action>
+      <action path="/editors/workflow/AssetWorkflowAction"
+         type="com.finalist.cmsc.workflow.forms.AssetWorkflowAction" unknown="false" validate="false">
+         <forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
+      </action>
 		<action path="/editors/workflow/LinkWorkflowAction"
 			type="com.finalist.cmsc.workflow.forms.LinkWorkflowAction" unknown="false" validate="false">
 			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
