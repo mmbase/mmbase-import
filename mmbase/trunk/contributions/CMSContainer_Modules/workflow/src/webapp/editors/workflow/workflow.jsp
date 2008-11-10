@@ -46,6 +46,15 @@
                <td><a href="ContentWorkflowAction.do?status=published">${statusInfo.contentPublished}</a></td>
             </tr>
             <tr>
+               <td><fmt:message key="workflow.status.asset"/></td>
+               <td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
+               <td><a href="AssetWorkflowAction.do?status=finished">${statusInfo.assetFinished}</a></td>
+               <c:if test="${acceptedEnabled}">
+                  <td><a href="AssetWorkflowAction.do?status=approved">${statusInfo.assetApproved}</a></td>
+               </c:if>
+               <td><a href="AssetWorkflowAction.do?status=published">${statusInfo.assetPublished}</a></td>
+            </tr>
+            <tr>
                <td><fmt:message key="workflow.status.page"/></td>
                <td><a href="PageWorkflowAction.do?status=draft">${statusInfo.pageDraft}</a></td>
                <td><a href="PageWorkflowAction.do?status=finished">${statusInfo.pageFinished}</a></td>
@@ -163,6 +172,9 @@
    <div>
       <c:if test="${workflowType == 'content' }">
          <fmt:message key="workflow.title.content"/>
+      </c:if>
+      <c:if test="${workflowType == 'asset' }">
+         <fmt:message key="workflow.title.asset"/>
       </c:if>
       <c:if test="${workflowType == 'link' }">
          <fmt:message key="workflow.title.link"/>
