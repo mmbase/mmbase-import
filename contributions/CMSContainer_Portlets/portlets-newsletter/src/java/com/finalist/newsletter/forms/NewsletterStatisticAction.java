@@ -3,10 +3,10 @@ package com.finalist.newsletter.forms;
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
+import com.finalist.cmsc.util.DateUtil;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.services.*;
-import com.finalist.newsletter.util.DateUtil;
 
 
 import java.util.ArrayList;

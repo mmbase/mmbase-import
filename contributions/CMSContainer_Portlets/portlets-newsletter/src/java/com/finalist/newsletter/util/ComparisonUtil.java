@@ -7,6 +7,8 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.finalist.cmsc.util.DateUtil;
+
 public class ComparisonUtil implements Comparator {
    private static Log log = LogFactory.getLog(DateUtil.class);
    /*
