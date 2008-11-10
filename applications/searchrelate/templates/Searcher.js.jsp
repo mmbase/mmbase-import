@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.46 2008-11-09 20:22:41 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.47 2008-11-10 09:43:41 andre Exp $
  */
 
 
@@ -181,7 +181,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
-                                console.log(i + ", nr: " + nr);
+                                // console.log(i + ", nr: " + nr);
                                 // allmost works except for query (you can't get the current one, BUG: getQueryId looks for a.search))
                                 // var trr = self.getTrrelation(nr); 
                                 // var tr = // find the tr
