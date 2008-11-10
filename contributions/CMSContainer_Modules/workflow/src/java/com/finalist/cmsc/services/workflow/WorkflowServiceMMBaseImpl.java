@@ -96,6 +96,10 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
       if (manager.isWorkflowElement(node, isWorkflowItem)) {
          return manager;
       }
+      manager = getAssetWorkflow(node.getCloud());
+      if (manager.isWorkflowElement(node, isWorkflowItem)) {
+         return manager;
+      }
       manager = getPageWorkflow(node.getCloud());
       if (manager.isWorkflowElement(node, isWorkflowItem)) {
          return manager;
@@ -110,6 +114,11 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
 
    private ContentWorkflow getContentWorkflow(Cloud cloud) {
       return new ContentWorkflow(cloud);
+   }
+
+
+   private AssetWorkflow getAssetWorkflow(Cloud cloud) {
+      return new AssetWorkflow(cloud);
    }
 
 
@@ -132,6 +141,7 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
    @Override
    public boolean hasWorkflow(Node node) {
       return getContentWorkflow(node.getCloud()).hasWorkflow(node)
+            || getAssetWorkflow(node.getCloud()).hasWorkflow(node)
             || getPageWorkflow(node.getCloud()).hasWorkflow(node) || getLinkWorkflow(node.getCloud()).hasWorkflow(node);
    }
 
@@ -139,7 +149,8 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
    @Override
    public boolean isWorkflowType(String type) {
       Cloud cloud = getUserCloud();
-      return getContentWorkflow(cloud).isWorkflowType(type) || getPageWorkflow(cloud).isWorkflowType(type);
+      return getContentWorkflow(cloud).isWorkflowType(type) || getAssetWorkflow(cloud).isWorkflowType(type)
+            || getPageWorkflow(cloud).isWorkflowType(type);
    }
 
 
@@ -147,6 +158,7 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
    public boolean isWorkflowElement(Node node) {
       Cloud cloud = node.getCloud();
       return getContentWorkflow(cloud).isWorkflowElement(node, false)
+            || getAssetWorkflow(cloud).isWorkflowElement(node, false)
             || getPageWorkflow(cloud).isWorkflowElement(node, false)
             || getLinkWorkflow(cloud).isWorkflowElement(node, false);
    }
