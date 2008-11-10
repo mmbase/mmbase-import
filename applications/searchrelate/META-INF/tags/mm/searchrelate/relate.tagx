@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.36 2008-11-06 14:59:55 michiel Exp $
+      @version $Id: relate.tagx,v 1.37 2008-11-10 10:40:24 andre Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -27,6 +27,9 @@
 
   <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow deletion of relations" />
+
+  <jsp:directive.attribute name="relations"         type="java.lang.Boolean"
+                           description="Whether, or not, the tools should show the relation values and display a small form to edit them" />
 
   <jsp:directive.attribute name="create"             type="java.lang.Boolean"
                            description="Whether, or not, the tools should also allow creation of new nodes. Defaults to 'false'." />
