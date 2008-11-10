@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.47 2008-11-10 09:43:41 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.48 2008-11-10 11:49:01 andre Exp $
  */
 
 
@@ -28,7 +28,7 @@
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -177,17 +177,17 @@ MMBaseRelater.prototype.commit = function(ev) {
                     if (status == "success") {
                         //console.log("" + res);
                         $(a).addClass("succeeded");
-                        if (relatedNumbers != "") { // get them to create tr's in which to edit relations 
+                        if (relatedNumbers != "") { // create tr's in which to edit relations 
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
-                                // console.log(i + ", nr: " + nr);
-                                // allmost works except for query (you can't get the current one, BUG: getQueryId looks for a.search))
-                                // var trr = self.getTrrelation(nr); 
-                                // var tr = // find the tr
-                                // $(trr).after(tr);
+                                var trr = self.getTrrelation(nr); 
+                                $('#' + id + ' div.mm_relate_current tr.click').each(function() {
+                                    if (self.getNumber(this) == nr) {
+                                        $(trr).insertAfter(this);
+                                    }
+                                });
                             });
-                            
                         }
                         this.related = {};
                         this.unrelated = {};
@@ -209,9 +209,11 @@ MMBaseRelater.prototype.commit = function(ev) {
 
 MMBaseRelater.prototype.getTrrelation = function(nodenr) {
     var url = "${mm:link('/mmbase/searchrelate/relations.tr.jspx')}";
-    var params = {id: this.current.searcher.getQueryId(), node: nodenr, fields: this.repository.searcher.fields};
-    // BUG: can't get this.current.searcher.getQueryId()
-    this.logger.debug(url + ", id: " + this.current.searcher.getQueryId() + ", flds: " + this.repository.searcher.fields);
+    var queryid = this.repository.searcher.getQueryId();
+    queryid = queryid.replace(/repository/i, "current");
+    this.logger.debug(url + ", id: " + queryid + ", nodenr: " + nodenr +  ", fields: " + this.repository.searcher.fields);
+    
+    var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
