@@ -138,7 +138,7 @@ function check(className) {
     }
 }
 
-function requestContent(href) {
+function requestContent(href, number) {
     var contentEl = document.getElementById('contentFrame');
     $(document).trigger("didactorContentBeforeUnload",  { unloaded: contentEl });
     var content = usedFrames[href];
@@ -179,8 +179,8 @@ function requestContent(href) {
                            alert(ex);
                        }
                        usedFrames[href] = array;
-                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl });
-                        $(document).trigger("didactorContent",  { loaded: contentEl });
+                       $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
                    }
                }
            });
@@ -190,7 +190,7 @@ function requestContent(href) {
            contentEl.appendChild(content[i]);
        }
        document.href_frame = href;
-       $(document).trigger("didactorContent",  { loaded: contentEl });
+       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
    }
    scrollToTop();
 }
@@ -257,7 +257,7 @@ function openContent(type, number, el) {
     if (type != null && type != '') {
         href = addParameter(href, 'type=' + type);
     }
-    requestContent(href);
+    requestContent(href, number);
 
     $("#content" + currentnumber).addClass("selectedContent");
 
