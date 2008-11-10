@@ -1,0 +1,54 @@
+
+<p>
+                </div>
+                <div class="ruler_green">
+                    <div>
+                        IS BEING USED IN
+                    </div>
+                </div>
+                
+                <br/>
+				<div class="body">
+<form method="get" name="operationform" action="PreviewImageAction.do">
+   <input type="hidden" name="imageId" value="${imageId}"/>
+   <input type="hidden" name="more"  value="${size+3}"/>
+      <table>
+         <thead>
+            <th width="3%"></th>
+            <th width="5%"></th>
+            <th width="15%">TITLE</th>
+			 <th width="15%">NUMBER</th>
+            <th width="15%">CHANNEL</th>
+            <th width="47%">TYPE</th>
+           
+         </thead>
+         <tbody>
+            <c:forEach items="${element}" var="result">
+                  <tr <mm:even inverse="true">class="swap"</mm:even>>
+                     <td>
+                        <a href="<mm:url page="../WizardInitAction.do">
+                          <mm:param name="objectnumber">${result.objectnumber}</mm:param>
+                          <mm:param name="returnurl" value="/editors/repository/PreviewImageAction.do?imageId=${imageId}" />
+                      </mm:url>">
+                         <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="searchform.icon.edit.title" />" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
+                    </td>
+					<td>
+						<a href="${result.imageId}" target="_blank"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
+					</td>
+                     
+                     <td><a href="javascript:callEditWizard('${result.number}');">${result.tilte}<a></td>
+                     <td>${result.number}</td>
+                     <td>${result.channel}</td>
+					 <td>${result.type}</td>
+                  </tr>
+            </c:forEach>
+         </tbody>
+      </table>
+      <br/>
+	  <c:if test="${size > 0}">
+	  <input class="button"  value="${size}&nbsp;more" type="submit"/>
+	  </c:if>
+	  
+   
+     
+</form>
