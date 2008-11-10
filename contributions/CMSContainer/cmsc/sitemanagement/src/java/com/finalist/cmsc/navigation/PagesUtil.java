@@ -259,6 +259,8 @@ public final class PagesUtil {
 
    public static Node copyPageRelations(Node sourcePage, Node newPage) {
       CloneUtil.cloneRelations(sourcePage, newPage, LAYOUTREL, LAYOUT);
+      CloneUtil.cloneRelations(sourcePage, newPage, STYLEREL, STYLESHEET);
+      CloneUtil.cloneRelations(sourcePage, newPage, NAMEDREL, IMAGES);
       PortletUtil.copyPortlets(sourcePage, newPage);
 
       Node popupinfo = getPopupinfo(sourcePage);
