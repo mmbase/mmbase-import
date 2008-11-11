@@ -16,12 +16,12 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * The set- and get- processors implemented in this file can be used to make a virtual field which
- * act as 'related'.
+ * The set- and get- processors implemented in this file can be used to make a virtual node field which
+ * act as one related node. Often you could just as well use a real node field.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.2 2008-11-11 13:24:46 michiel Exp $
+ * @version $Id: Related.java,v 1.3 2008-11-11 13:29:34 michiel Exp $
  */
 
 public class Related {
@@ -49,11 +49,8 @@ public class Related {
         private static final long serialVersionUID = 1L;
         public Object process(Node node, Field field, Object value) {
             if (node.getChanged().contains(field.getName())) {
-                log.info("Setting "  + value);
                 RelationList nl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
-                RelationIterator ni = nl.relationIterator();
-                while (ni.hasNext()) {
-                    Relation r = ni.nextRelation();
+                for (Relation r : nl) {
                     r.delete();
                 }
                 if (value != null) {
