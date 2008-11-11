@@ -159,6 +159,9 @@ public class TagCloudUtil {
 			}
 
 			Collections.sort(tags, new TagNameComperator(orderby, direction));
+			while(tags.size() > max) {
+				tags.remove(max);
+			}
 		} catch (SQLException e) {
 			log.error("Failed to execute", e);
 		}
