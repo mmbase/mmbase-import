@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -39,7 +38,6 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class RegisterPorlet extends CmscPortlet{
-   protected static final String ACTION_PARAMETER = "action";
 
    private static final String ACEGI_SECURITY_FORM_EMAIL_KEY = "email";
    private static final String ACEGI_SECURITY_FORM_FIRSTNAME_KEY = "firstName";
@@ -144,7 +142,7 @@ public class RegisterPorlet extends CmscPortlet{
          log.error("error happen when reading email template",e);
       }
       Cloud cloud = getCloudForAnonymousUpdate(false);
-      String url = getUnsubscribeLink(cloud);
+      String url = getConfirmationLink(cloud);
       Encode encoder = new org.mmbase.util.Encode("BASE64");
       String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(email)+"&pn="+this.getPortletName()+"&returnurl="+encoder.encode(url);
       return String.format(sb.toString(), email,confirmUrl);
@@ -156,7 +154,7 @@ public class RegisterPorlet extends CmscPortlet{
       }
       return cloud;
    }
-   private String getUnsubscribeLink(Cloud cloud) {
+   private String getConfirmationLink(Cloud cloud) {
       String link = null;
       NodeList portletDefinations = SearchUtil.findNodeList(cloud, "portletdefinition", "definition", this.getPortletName());
       Node regiesterPortletDefination = portletDefinations.getNode(0);
