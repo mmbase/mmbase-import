@@ -35,6 +35,9 @@
     <meta name="Didactor-Provider" content="${provider}" />
     <meta name="Didactor-Education" content="${education}" />
     <meta name="Didactor-PageReporter" content="${di:setting('core', 'pagereporter')}" />
+    <c:if test="${di:setting('core', 'pagereporter') eq 'true'}">
+      <meta name="Didactor-PageReporterInterval" content="${di:setting('core', 'pagereporter_interval')}" />
+    </c:if>
     <mm:link absolute="context">
       <meta name="Didactor-URL" content="${_}" />
     </mm:link>
