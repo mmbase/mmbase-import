@@ -20,6 +20,9 @@
        title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
                                                          title="<fmt:message key="asset.delete" />"
                                                          alt="<fmt:message key="asset.delete" />"/></a>
+    <a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
+       target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
+        <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
     <% } %>
 
     <cmsc:hasfeature name="savedformmodule">
