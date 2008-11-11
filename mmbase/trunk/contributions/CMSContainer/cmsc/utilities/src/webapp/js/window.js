@@ -205,6 +205,7 @@ function openUrlInFrame(name, url, win, parentcall) {
 
 // addLoadEvent(functieNaam)
 function addLoadEvent(func, windowElement) {
+  if (typeof func != 'function') return;
   if (windowElement == undefined) {
      windowElement = window; 
   }
