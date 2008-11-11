@@ -19,11 +19,11 @@ String companyphoneId = request.getParameter("companyphone"); if(companyphoneId=
 String cellularphoneId = request.getParameter("cellularphone"); if(cellularphoneId==null) { cellularphoneId=""; }
 String faxId = request.getParameter("fax"); if(faxId==null) { faxId=""; }
 String emailId = request.getParameter("email"); if(emailId==null) { emailId=""; }
+String omschrijvingId = request.getParameter("omschrijving"); if(omschrijvingId==null) { omschrijvingId=""; }
 String omschrijving_engId = request.getParameter("omschrijving_eng"); if(omschrijving_engId==null) { omschrijving_engId=""; }
 String omschrijving_deId = request.getParameter("omschrijving_de"); if(omschrijving_deId==null) { omschrijving_deId=""; }
-String jobId = request.getParameter("job"); if(jobId==null) { jobId=""; }
-String omschrijvingId = request.getParameter("omschrijving"); if(omschrijvingId==null) { omschrijvingId=""; }
 String omschrijving_fraId= request.getParameter("omschrijving_fra"); if(omschrijving_fraId==null) { omschrijving_fraId=""; }
+String jobId = request.getParameter("job"); if(jobId==null) { jobId=""; }
 
 String specialDays = "Vaste vrije dag(en)";
 if(iRubriekLayout==NMIntraConfig.SUBSITE1_LAYOUT) {
