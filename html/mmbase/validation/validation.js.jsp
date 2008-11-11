@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.28 2008-04-18 08:58:09 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.29 2008-11-11 16:06:36 michiel Exp $
  */
 
 
@@ -92,7 +92,9 @@ MMBaseValidator.prototype.log = function (msg) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-            console.log(msg);
+	    if (typeof(console) != "undefined") {
+		console.log(msg);
+	    }
         }
     }
 }
@@ -104,7 +106,9 @@ MMBaseValidator.prototype.trace = function (msg) {
             errorTextArea.value = "TRACE: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-            console.log(msg);
+	    if (typeof(console) != "undefined") {
+		console.log(msg);
+	    }
         }
     }
 }
@@ -176,8 +180,8 @@ MMBaseValidator.prototype.find = function(el, path, r) {
 MMBaseValidator.prototype.isRequired = function(el) {
     if (el.mm_isrequired != null) return el.mm_isrequired;
     var re = this.find(this.getDataTypeXml(el), 'datatype required')[0];
-    el.mm_isrequired = "true" == "" + re.getAttribute("value");
-    el.mm_isrequired_enforce = re.getAttribute("enforce");
+    el.mm_isrequired = re != null && ("true" == "" + re.getAttribute("value"));
+    el.mm_isrequired_enforce = re != null && re.getAttribute("enforce");
     return el.mm_isrequired;
 }
 
@@ -272,6 +276,7 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
     var pattern = new RegExp(javaClass);
     var xml = this.getDataTypeXml(el);
     var javaClassElement = this.find(xml, 'datatype class')[0];
+    if (! javaClassElement) return false;
     var name = javaClassElement.getAttribute("name");
     if (pattern.test(name)) {
         return true;
@@ -321,6 +326,12 @@ MMBaseValidator.prototype.isBinary = function(el) {
     if (el.mm_isbinary != null) return el.mm_isbinary;
     el.mm_isbinary = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BinaryDataType");
     return el.isbinary;
+}
+
+MMBaseValidator.prototype.isXml = function(el) {
+    if (el.mm_isxml != null) return el.mm_isxml;
+    el.mm_isxml= this.hasJavaClass(el, "org\.mmbase\.datatypes\.XmlDataType");
+    return el.mm_isxml;
 }
 
 MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
@@ -442,22 +453,23 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     var dataType = this.dataTypeCache[el.mm_key];
     if (dataType == null) {
 
-	var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
-	var params = this.getDataTypeArguments(key);
-	var self = this;
-	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-		complete: function(res, status){
-		    if (status == "success") {
-			dataType = res.responseXML;
-			self.dataTypeCache[el.mm_key] = dataType;
-		    }
-		}
-	       });
-	this.log("Found " + dataType);
+	    var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
+	    var params = this.getDataTypeArguments(key);
+	    var self = this;
+	    $.ajax({async: false, url: url, type: "GET",
+                dataType: "xml", data: params,
+		        complete: function(res, status){
+		            if (status == "success") {
+			            dataType = res.responseXML;
+			            self.dataTypeCache[el.mm_key] = dataType;
+		            }
+		        }
+	           });
+	    this.log("Found " + dataType);
 
 
     } else {
-	this.trace("Found in cache " + dataType);
+	    this.trace("Found in cache " + dataType);
     }
     return dataType;
 }
@@ -847,6 +859,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "select-multiple":
         default:
             this.log("Adding eventhandler to " + entry);
+            this.log(entry);
             $(entry).bind("change", function(ev) { self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
         }
