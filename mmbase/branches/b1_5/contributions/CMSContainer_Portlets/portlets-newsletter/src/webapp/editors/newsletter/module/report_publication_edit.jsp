@@ -69,6 +69,9 @@
             <edit:ui-tcolumn titlekey="newsletter.publication.result.modificationdate" sort="lastmodifieddate" width="30%">
                ${result.lastmodifieddate}
             </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="newsletter.publication.result.status" sort="process_status" width="30%">
+               ${result.process_status}
+            </edit:ui-tcolumn>
          </edit:ui-table>
       </div>
    </div>
