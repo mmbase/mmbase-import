@@ -16,19 +16,21 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * The set- and get- processors implemented in this file can be used to make a virtual node field which
- * act as one related node. Often you could just as well use a real node field.
+ * The set- and get- processors implemented in this file can be used to make a virtual field which
+ * act as a a node field, but actually is a related node.
+ *
+ * In case just one related node is desired, this makes it easy to just create a drop-down for it.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.3 2008-11-11 13:29:34 michiel Exp $
+ * @version $Id: Related.java,v 1.4 2008-11-11 18:34:21 michiel Exp $
  */
 
 public class Related {
 
     private static final Logger log = Logging.getLoggerInstance(Related.class);
 
-    private static abstract class  AbstractProcessor implements Processor {
+    public abstract static class  AbstractProcessor implements Processor {
 
         protected String role = "related";
         protected String type = "object";
@@ -48,25 +50,35 @@ public class Related {
 
         private static final long serialVersionUID = 1L;
         public Object process(Node node, Field field, Object value) {
-            if (node.getChanged().contains(field.getName())) {
-                RelationList nl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
-                for (Relation r : nl) {
-                    r.delete();
-                }
-                if (value != null) {
-                    Cloud cloud = node.getCloud();
+            if (log.isDebugEnabled()) {
+                log.debug("Setting "  + value);
+            }
+            RelationList rl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
+
+            if (value != null) {
+                Cloud cloud = node.getCloud();
+                Node dest = Casting.toNode(value, cloud);
+                NodeList nl = node.getRelatedNodes(type, role, searchDir);
+                if (nl.contains(dest)) {
+                    // nothing changed
+                } else {
+                    for (Relation r : rl) {
+                        r.delete();
+                    }
                     RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
                                                                    cloud.getNodeManager(type),
-                                                                   role);
-                    Node dest = Casting.toNode(value, node.getCloud());
-                    node.createRelation(dest, rel);
-                    return dest;
-                } else {
-                    return null;
+                                                               role);
+                    Relation newrel = node.createRelation(dest, rel);
+                    newrel.commit();
                 }
+                return dest;
             } else {
-                return value;
+                for (Relation r : rl) {
+                    r.delete();
+                }
+                return null;
             }
+
         }
     }
 
@@ -74,6 +86,9 @@ public class Related {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
+            if (log.isDebugEnabled()) {
+                log.debug("getting "  + node);
+            }
             NodeList nl = node.getRelatedNodes(type, role, searchDir);
             if (nl.size() == 0) {
                 return null;
