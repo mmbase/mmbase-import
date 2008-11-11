@@ -91,7 +91,7 @@
               <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_fra" /></td>
            </tr>
            <tr><td style="padding-bottom:3px;">Werkzaamheden:&nbsp;</td>
-              <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_de" /></td>
+              <td style="padding-bottom:3px;vertical-align:bottom;"><mm:field name="omschrijving_de" jspvar="omschrijving_de" vartype="String" write="false"><%= HtmlCleaner.cleanHtml(omschrijving_de) %></mm:field></td>
            </tr>
            <%
            if(!sRubriekLayout.equals("" + NMIntraConfig.SUBSITE1_LAYOUT)) { 
