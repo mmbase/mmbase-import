@@ -31,6 +31,7 @@ public abstract class WorkflowManager {
    public final static String NUMBER_FIELD = "number";
    public final static String STATUS_FIELD = "status";
    public final static String TYPE_FIELD = "type";
+   public final static String NODETYPE_FIELD = "nodetype";
    public final static String REMARK_FIELD = "remark";
    public static final String CREATIONDATE_FIELD = "creationdate";
    public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
@@ -291,15 +292,16 @@ public abstract class WorkflowManager {
    }
 
 
-   protected Node createFor(String type, String remark) {
-      return createFor(type, remark, STATUS_DRAFT);
+   protected Node createFor(String type, String remark, String nodetype) {
+      return createFor(type, remark, STATUS_DRAFT, nodetype);
    }
 
 
-   protected Node createFor(String type, String remark, String status) {
+   protected Node createFor(String type, String remark, String status, String nodetype) {
       NodeManager workflow = getManager();
       Node wfItem = workflow.createNode();
       wfItem.setStringValue(TYPE_FIELD, type);
+      wfItem.setStringValue(NODETYPE_FIELD, nodetype);
       changeWorkflow(wfItem, status, remark);
 
       Node user = SecurityUtil.getUserNode(cloud);
