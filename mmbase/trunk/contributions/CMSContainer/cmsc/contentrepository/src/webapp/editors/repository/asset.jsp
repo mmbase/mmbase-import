@@ -21,13 +21,14 @@
                   document.getElementById('asset-info-'+id).style.display = 'none';
                   document.getElementById('asset-info-'+id).style.display = 2000;
                }
-               function changeMode(){
+               function changeMode(offset){
+                  if(offset==null){offset=0;}
                   var assetsMode = document.getElementsByTagName("option");
                   for(i = 0; i < assetsMode.length; i++){
                      if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down';
+                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset;
                      }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0';
+                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset;
                      }
                   }
                }
@@ -82,7 +83,7 @@
             </div>
 
             <div>
-               <select name="assesMode" onchange="javascript:changeMode()">
+               <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
                   <c:if test="${empty show}">
                      <option id="a_list" selected="selected">list</option>
                      <option id = "a_thumbnail" >thumbnail</option>
@@ -222,11 +223,13 @@
 
                      <div width="100%;float:left;">
                         <mm:listnodes referid="elements">
-                           <div style="width:150px; height:150px;float:left;text-align:center;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)"  >
-                              <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: absolute; border-style: ridge;" >
+                           <div style="width:150px; height:180px;float:left;text-align:center;" >
+                           <div style="clear:both;float:left;width:80%;height:35px;">
+                              <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border-style: ridge;" >
                                  <%@ include file="icons.jspf" %>
                               </div>
-                              <div style="width:100%;height:100px;text-align:center;padding:10px;vertical-align:middle;">
+                           </div>
+                              <div style="width:100%;height:100px;text-align:left;padding:0px 10px 5px 5px;vertical-align:middle;display:block;float:left;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
                                  <a href="javascript:showInfo(<mm:field name="number" />)">
                                     <c:set var="type" ><mm:nodeinfo type="guitype"/></c:set>
                                     <c:if test="${type eq 'Image'}">
@@ -241,7 +244,7 @@
 
                                  </a>
                               </div>
-                              <div style="width:130px;text-align:center;margin:0px 10px 0px 10px;overflow-x:hidden;">
+                              <div style="width:80%;text-align:center;margin:0px 0px 0px 0px;padding-top:0px;padding-right:0px;overflow-x:hidden;">
                                  <c:set var="type" ><mm:nodeinfo type="guitype"/></c:set>
                                  <c:if test="${type eq 'Image'}">
                                     <mm:field name="title"/><br/><mm:field name="itype"/>
