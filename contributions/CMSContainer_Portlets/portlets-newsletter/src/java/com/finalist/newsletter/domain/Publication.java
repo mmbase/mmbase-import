@@ -18,6 +18,7 @@ public class Publication {
    private Date publishdate;
    private int subscriptions;
    private int bounced;
+   private String process_status;
 
    private String title;
 
@@ -168,6 +169,14 @@ public class Publication {
 
    public void setBounced(int bounced) {
       this.bounced = bounced;
+   }
+
+   public String getProcess_status() {
+      return process_status;
+   }
+
+   public void setProcess_status(String process_status) {
+      this.process_status = process_status;
    }
 
 }
