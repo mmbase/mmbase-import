@@ -14,7 +14,7 @@
     <tr><td>Lokatie, regio/afdeling en functie:&nbsp;</td><td><textarea name="omschrijving_eng" style="width:400px;height:50px;"><%= omschrijving_engId %></textarea></td></tr>
     <tr><td>Functie (visitekaartje):&nbsp;</td>     <td><input type="text" name="job" value="<mm:field name="job" />" style="width:400px;"></td></tr>
     <tr><td><%= specialDays %>:&nbsp;</td>          <td><textarea name="omschrijving_fra" rows="2" style="width:400px;"><mm:field name="omschrijving_fra" /></textarea></td></tr>
-    <tr><td>Werkzaamheden: &nbsp;</td>              <td><textarea name="omschrijving_de" rows="4" style="width:400px;"><%= omschrijving_deId %></textarea></td></tr>
+    <tr><td>Werkzaamheden: &nbsp;</td>              <td><textarea name="omschrijving_de" rows="4" style="width:400px;"><mm:field name="omschrijving_de" jspvar="omschrijving_de" vartype="String" write="false"><%= HtmlCleaner.cleanHtml(omschrijving_de) %></mm:field></textarea></td></tr>
     <% if(iRubriekLayout!=NMIntraConfig.SUBSITE1_LAYOUT) { 
       %>
       <tr><td>En verder:&nbsp;</td>                <td><textarea name="omschrijving" rows="5" style="width:400px;"><mm:field name="omschrijving" /></textarea></td></tr>
