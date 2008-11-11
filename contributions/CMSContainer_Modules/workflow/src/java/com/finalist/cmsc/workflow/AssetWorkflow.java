@@ -43,7 +43,7 @@ public class AssetWorkflow extends RepositoryWorkflow {
             return (Node) getWorkflows(asset).get(0);
          }
          else {
-            Node wfItem = createFor(TYPE_ASSET, remark);
+            Node wfItem = createFor(TYPE_ASSET, remark, asset.getNodeManager().getName());
             RelationUtil.createRelation(wfItem, asset, WORKFLOWREL);
             log.debug("Workflow " + wfItem.getNumber() + " created for asset " + asset.getNumber());
             return wfItem;
