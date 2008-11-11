@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.14 2008-11-10 16:26:39 michiel Exp $
+ * @version $Id: Didactor.js,v 1.15 2008-11-11 08:17:03 michiel Exp $
  */
 
 
@@ -23,7 +23,8 @@ function Didactor() {
 
     $.timer(500, function(timer) {
 	    self.reportOnline();
-	    timer.reset(self.pageReporter ? 5000 : 1000 * 60 * 2);
+      var interval = self.getSetting("Didactor-PageReporterInterval") * 1000;
+	    timer.reset(self.pageReporter ? interval : 1000 * 60 * 2);
     });
     if (this.pageReporter) {
 	    $(window).bind("beforeunload", function() {
