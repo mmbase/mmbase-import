@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.112 2008-11-10 10:23:22 michiel Exp $
+ * @version $Id: Queries.java,v 1.113 2008-11-11 16:15:31 andre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1324,17 +1324,17 @@ abstract public class Queries {
                 Integer rolei = rel.getRole();
                 String role = rolei == null ? null : cloud.getNode(rolei.intValue()).getStringValue("sname");
                 switch(rel.getDirectionality()) {
-                case RelationStep.DIRECTIONS_SOURCE: {
-                    Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
-                    newRel.commit();
-                    result.add(newRel);
-                    break;
-                }
-                default: {
-                    Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
-                    newRel.commit();
-                    result.add(newRel);
-                }
+                    case org.mmbase.storage.search.RelationStep.DIRECTIONS_SOURCE: { //org.mmbase.storage.search.RelationStep
+                        Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(n, startNode);
+                        newRel.commit();
+                        result.add(newRel);
+                        break;
+                    }
+                    default: {
+                        Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+                        newRel.commit();
+                        result.add(newRel);
+                    }
                 }
             }
         }
