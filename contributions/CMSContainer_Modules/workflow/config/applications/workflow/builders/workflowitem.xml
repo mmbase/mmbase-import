@@ -233,12 +233,12 @@
          <descriptions>
             <description xml:lang="nl">NodeType</description>
             <description xml:lang="en">NodeType</description>
-            <description xml:lang="zh">类型</description>
+            <description xml:lang="zh">所属类型</description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">NodeType</guiname>
             <guiname xml:lang="en">NodeType</guiname>
-            <guiname xml:lang="zh">类型</guiname>
+            <guiname xml:lang="zh">所属类型</guiname>
          </gui>
          <editor>
             <positions>
