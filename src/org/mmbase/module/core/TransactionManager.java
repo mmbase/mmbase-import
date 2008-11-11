@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.34.2.1 2008-11-04 18:37:34 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.34.2.2 2008-11-11 09:07:07 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -312,9 +312,9 @@ public class TransactionManager implements TransactionManagerInterface {
                 NodeState state = (NodeState) stati.get(new Integer(node.getNumber()));
                 if (state.changed) {
                     NodeState sstate = (NodeState) stati.get(new Integer(node.getIntValue("snumber")));
-                    sstate.changed = true;
+                    if (sstate != null) sstate.changed = true;
                     NodeState dstate = (NodeState) stati.get(new Integer(node.getIntValue("dnumber")));
-                    dstate.changed = true;
+                    if (dstate != null) dstate.changed = true;
                 }
 
             }
