@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.8 2008-03-17 10:03:41 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.9 2008-11-11 18:58:18 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -404,7 +404,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         Integer result = new Integer(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Integer) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result);
+            result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result));
+            // Casting on this position. Should it not be done in all get<..>Value's?
         }
         return result.intValue();
 
@@ -961,6 +962,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     // javadoc inherited (from Node)
     public void setContext(String context) {
         // set the context on the node (run after insert).
+        log.info("Setting context to " + context + " " + temporaryNodeId);
         getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
     }
 
