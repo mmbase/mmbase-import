@@ -1,0 +1,1 @@
+ALTER TABLE v1_thema_plot_kaart ADD positie int(11);
