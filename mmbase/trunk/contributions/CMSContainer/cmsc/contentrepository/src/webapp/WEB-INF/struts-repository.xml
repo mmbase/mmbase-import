@@ -233,8 +233,12 @@
          type="com.finalist.cmsc.repository.forms.AssetDeleteAction" unknown="false" validate="false">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
-      <action path="/editors/repository/AssetMassDelete" type="com.finalist.cmsc.repository.forms.AssetMassDeleteAction" 
+      <action path="/editors/repository/AssetMassDeleteAction" type="com.finalist.cmsc.repository.forms.AssetMassDeleteAction" 
          unknown="false" validate="false">
+         <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
+      </action>
+      <action path="/editors/repository/ImageUploadAction" type="com.finalist.cmsc.repository.forms.ImageUploadAction" 
+         name="AssetUploadForm" unknown="false" validate="true">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
 
