@@ -29,7 +29,7 @@ import org.mmbase.bridge.Node;
  * Date :Sep 15, 2003
  * 
  */
-public class UrlRenderer extends TreeCellRendererAdapter implements TreeCellRenderer {
+public class UrlRenderer extends TreeCellRendererAdapter {
 
    /* (non-Javadoc)
     * @see com.finalist.tree.TreeCellRenderer#render(java.lang.Object, java.io.PrintWriter)
