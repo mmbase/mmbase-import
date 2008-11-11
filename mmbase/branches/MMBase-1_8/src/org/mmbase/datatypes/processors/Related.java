@@ -21,14 +21,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.1.2.1 2008-11-11 12:35:30 michiel Exp $
+ * @version $Id: Related.java,v 1.1.2.2 2008-11-11 18:32:26 michiel Exp $
  */
 
 public class Related {
 
     private static final Logger log = Logging.getLoggerInstance(Related.class);
 
-    private static abstract class  AbstractProcessor implements Processor {
+    public abstract static class  AbstractProcessor implements Processor {
 
         protected String role = "related";
         protected String type = "object";
@@ -48,28 +48,40 @@ public class Related {
 
         private static final long serialVersionUID = 1L;
         public Object process(Node node, Field field, Object value) {
-            if (node.getChanged().contains(field.getName())) {
-                log.info("Setting "  + value);
-                RelationList nl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
-                RelationIterator ni = nl.relationIterator();
+            if (log.isDebugEnabled()) {
+                log.debug("Setting "  + value);
+            }
+            RelationList rl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
+
+            if (value != null) {
+                Cloud cloud = node.getCloud();
+                Node dest = Casting.toNode(value, cloud);
+                NodeList nl = node.getRelatedNodes(type, role, searchDir);
+                if (nl.contains(dest)) {
+                    // nothing changed
+                } else {
+
+                    RelationIterator ni = rl.relationIterator();
+                    while (ni.hasNext()) {
+                        Relation r = ni.nextRelation();
+                        r.delete();
+                    }
+                    RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
+                                                                   cloud.getNodeManager(type),
+                                                               role);
+                    Relation newrel = node.createRelation(dest, rel);
+                    newrel.commit();
+                }
+                return dest;
+            } else {
+                RelationIterator ni = rl.relationIterator();
                 while (ni.hasNext()) {
                     Relation r = ni.nextRelation();
                     r.delete();
                 }
-                if (value != null) {
-                    Cloud cloud = node.getCloud();
-                    RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
-                                                                   cloud.getNodeManager(type),
-                                                                   role);
-                    Node dest = Casting.toNode(value, node.getCloud());
-                    node.createRelation(dest, rel);
-                    return dest;
-                } else {
-                    return null;
-                }
-            } else {
-                return value;
+                return null;
             }
+
         }
     }
 
@@ -77,6 +89,9 @@ public class Related {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
+            if (log.isDebugEnabled()) {
+                log.debug("getting "  + node);
+            }
             NodeList nl = node.getRelatedNodes(type, role, searchDir);
             if (nl.size() == 0) {
                 return null;
