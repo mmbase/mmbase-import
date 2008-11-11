@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.47 2008-11-04 18:37:10 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.48 2008-11-11 07:46:30 michiel Exp $
  */
 public class TransactionManager {
 
@@ -320,16 +320,16 @@ public class TransactionManager {
             stati.put(node.getNumber(), state);
         }
 
-        // Now set the 'chanaged' flag of all node to or frm a relation was made.
+        // Now set the 'changed' flag of all node to or from a relation was made.
         // Related to MMB-1680
         for (MMObjectNode node : nodes) {
             if (node.getBuilder() instanceof InsRel) {
                 NodeState state = stati.get(node.getNumber());
                 if (state.changed) {
                     NodeState sstate = stati.get(node.getIntValue("snumber"));
-                    sstate.changed = true;
+                    if (sstate != null) sstate.changed = true;
                     NodeState dstate = stati.get(node.getIntValue("dnumber"));
-                    dstate.changed = true;
+                    if (dstate != null) dstate.changed = true;
                 }
 
             }
