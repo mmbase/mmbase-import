@@ -16,7 +16,7 @@
       <description xml:lang="en">medewerker</description>
    </descriptions>
    <properties>
-      <property name="htmlFields">omschrijving</property>
+      <property name="htmlFields">omschrijving omschrijving_de omschrijving_eng omschrijving_fra</property>
    </properties>
    <fieldlist>
       <!-- contentelement -->
