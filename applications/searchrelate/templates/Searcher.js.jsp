@@ -18,7 +18,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.50 2008-11-10 21:23:10 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.51 2008-11-11 19:06:40 andre Exp $
  */
 
 
@@ -192,11 +192,11 @@ MMBaseRelater.prototype.commit = function(ev) {
                         self.related = {};
                         self.unrelated = {};
                         self.bindSaverelation(this.div);
-                        $(this.div).trigger("mmsrCommitted", [a, status, this]);
+                        $(self.div).trigger("mmsrCommitted", [a, status, self]);
                         return true;
                     } else {
                         $(a).addClass("failed");
-                        $(this.div).trigger("mmsrCommitted", [a, status, this]);
+                        $(self.div).trigger("mmsrCommitted", [a, status, self]);
                         return false;
                     }
                 }
