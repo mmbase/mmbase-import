@@ -42,7 +42,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    public Node createFor(Node channel, String remark) {
       Node wfItem = getWorkflowNode(channel, TYPE_LINK);
       if (wfItem == null) {
-         wfItem = createFor(TYPE_LINK, remark, Workflow.STATUS_FINISHED);
+         wfItem = createFor(TYPE_LINK, remark, Workflow.STATUS_FINISHED, null);
       }
 
       if (channel != null) {
