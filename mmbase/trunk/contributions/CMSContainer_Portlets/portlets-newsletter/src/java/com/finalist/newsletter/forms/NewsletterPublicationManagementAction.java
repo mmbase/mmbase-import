@@ -145,6 +145,7 @@ public class NewsletterPublicationManagementAction extends DispatchActionSupport
          result.put("subject", publication.getSubject());
          result.put("lastmodifier", publication.getLastmodifier());
          result.put("lastmodifieddate", publication.getLastmodifieddate());
+         result.put("process_status", publication.getProcess_status());
          results.add(result);
       }
       return results;
