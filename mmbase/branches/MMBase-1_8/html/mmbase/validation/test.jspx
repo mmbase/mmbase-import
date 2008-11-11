@@ -33,7 +33,7 @@
 
       <mm:import externid="field" />
       <mm:notpresent referid="field">
-        <mm:import externid="datatype">requiredfield</mm:import>
+        <mm:import externid="datatype" vartype="string">requiredfield</mm:import>
       </mm:notpresent>
       <mm:present referid="field">
         <mm:import externid="nodemanager" required="true" />
