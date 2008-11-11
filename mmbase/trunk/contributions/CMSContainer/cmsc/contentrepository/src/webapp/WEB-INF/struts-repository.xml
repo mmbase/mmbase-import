@@ -221,6 +221,11 @@
       <action path="/editors/repository/Asset" type="com.finalist.cmsc.repository.forms.AssetAction" 
          unknown="false" validate="false">
          <forward name="success" path="/editors/repository/elementlist.jsp" redirect="false" />
+         <forward name="moveAssetToChannel" path="/editors/repository/MoveAssetToChannel.do"/>
+      </action>
+      <action path="/editors/repository/MoveAssetToChannel" type="com.finalist.cmsc.repository.forms.MoveAssetToChannelAction" 
+         unknown="false" validate="false">
+         <forward name="success" path="/editors/repository/Asset.do" redirect="false" />
       </action>
       <action path="/editors/repository/AssetSearchAction" type="com.finalist.cmsc.repository.forms.AssetSearchAction"
          name="AssetSearchForm" scope="request" input="/editors/repository/assetsearch.jsp" unknown="false" validate="true">

@@ -1,5 +1,4 @@
 <%@ page import="com.finalist.util.http.BulkUploadUtil"%>
-<script src="../repository/search.js" type="text/javascript"></script>
 <script type="text/javascript">
        function upload() {
            if(document.getElementById("atype").options[document.getElementById("atype").options.selectedIndex].value=="urls"){

@@ -33,10 +33,15 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class AssetAction extends MMBaseAction {
 
+   private final static String MOVEASSETTOCHANNEL = "moveAssetToChannel";
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
+      String action = request.getParameter("action");
+      if(StringUtils.isNotEmpty(action) && action.equals(MOVEASSETTOCHANNEL)) {
+         return mapping.findForward(MOVEASSETTOCHANNEL);
+      }
       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
       List<NodeManager> types = AssetElementUtil.getAssetTypes(cloud);
