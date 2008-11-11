@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.2.2.1 2008-11-03 12:53:01 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.2.2.2 2008-11-11 10:46:42 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -94,10 +94,14 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
         if (! $(option).hasClass("head")) {
             var nobr = document.createElement('nobr');
             var input;
-            if(document.all && !window.opera && document.createElement) {
-                // This is just for IE. IE sucks incredibly.
-                input = document.createElement("<input type='radio'  name='" + t.attr('name') + "' " + (option.selected ? "checked='checked'" : "") + " value='" +   option.value + "' />");
-            } else {
+            try {
+                // This is just for IE. IE sucks incredibly, since it does not support basic DOM manipulation,
+                // and we have to use this convulated trick, which would even throw an exception in other browers.
+                // JQuery doesn't help either, with this.
+                input = document.createElement("<input type='radio'  name='" + t.attr('name') + "' " +
+                                               (option.selected ? "checked='checked'" : "") +
+                                               " value='" +   option.value + "' />");
+            } catch(err) {
                 input = document.createElement("input");
                 input.setAttribute("type",  "radio");
                 input.setAttribute("name",  t.attr('name'));
@@ -106,8 +110,6 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
                 }
                 input.setAttribute("value",  option.value);
             }
-
-
 
             nobr.appendChild(input);
             if (! min) {
