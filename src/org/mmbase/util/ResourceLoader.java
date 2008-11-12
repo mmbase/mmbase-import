@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.73 2008-10-15 13:58:34 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.74 2008-11-12 10:52:11 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -515,7 +515,7 @@ public class ResourceLoader extends ClassLoader {
      *
      * {@inheritDoc}
      */
-    protected URL findResource(final String name) {
+    @Override protected URL findResource(final String name) {
         try {
             if (name.startsWith("/")) {
                 return newURL(PROTOCOL + ":" + name);
@@ -535,7 +535,7 @@ public class ResourceLoader extends ClassLoader {
      * {@inheritDoc}
      * @see #getResourceList
      */
-    protected Enumeration<URL> findResources(final String name) throws IOException {
+    @Override protected Enumeration<URL> findResources(final String name) throws IOException {
         final Iterator<PathURLStreamHandler> i = roots.iterator();
         return new Enumeration<URL>() {
                 private Enumeration<URL> current = null;
@@ -1043,14 +1043,14 @@ public class ResourceLoader extends ClassLoader {
     /**
      * @see java.lang.Object#toString()
      */
-    public String toString() {
+    @Override public String toString() {
         return "" + context.getPath() + " resolving in "  + roots;
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if(this == o) return true;
         // if this is a 'root' loader, then the only equal object should be the object itself!
         if (parent == null) return  false;
@@ -1065,7 +1065,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * @see java.lang.Object#hashCode()
      */
-    public int hashCode() {
+    @Override public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, parent);
         result = HashCodeUtil.hashCode(result, context);
@@ -1108,7 +1108,7 @@ public class ResourceLoader extends ClassLoader {
                 };
         }
 
-        protected URLConnection openConnection(URL u) throws IOException {
+        @Override protected URLConnection openConnection(URL u) throws IOException {
             String name = getName(u);
             if (name != null) {
                 return openConnection(name);
@@ -1131,7 +1131,7 @@ public class ResourceLoader extends ClassLoader {
             writeable = w;
         }
 
-        public URLConnection openConnection(String name)  {
+        @Override public URLConnection openConnection(String name)  {
             URL u;
             try {
                 if (name.startsWith("file:")) {
@@ -1146,7 +1146,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return new FileConnection(u, getFile(name), writeable);
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive ? "" : null, directories);
         }
         private  Set<String> getPaths(final Set<String> results, final Pattern pattern,  final String recursive, final boolean directories) {
@@ -1190,7 +1190,7 @@ public class ResourceLoader extends ClassLoader {
             fileRoot  = f.fileRoot;
         }
 
-        public File getFile(String name) {
+        @Override public File getFile(String name) {
             if (name != null && name.startsWith("file:")) {
                 try {
                     return new File(new URI(name)); // hff, how cumbersome, to translate an URL to a File
@@ -1204,16 +1204,16 @@ public class ResourceLoader extends ClassLoader {
             }
             return new File(fileName);
         }
-        public String getName(URL u) {
+        @Override public String getName(URL u) {
             int l = (fileRoot + ResourceLoader.this.context.getPath()).length();
             String path = u.getPath();
             return l < path.length() ? path.substring(l) : path;
         }
 
-        public String toString() {
+        @Override public String toString() {
             return fileRoot.toString();
         }
-        public boolean equals(Object o) {
+        @Override public boolean equals(Object o) {
             if (o instanceof FileURLStreamHandler) {
                 FileURLStreamHandler of = (FileURLStreamHandler) o;
                 return of.fileRoot.equals(fileRoot);
@@ -1241,7 +1241,7 @@ public class ResourceLoader extends ClassLoader {
             this.file = f;
             this.writeable = w;
         }
-        public void connect() throws IOException {
+        @Override public void connect() throws IOException {
             connected = true;
         }
 
@@ -1249,10 +1249,10 @@ public class ResourceLoader extends ClassLoader {
             return file;
         }
 
-        public boolean getDoInput() {
+        @Override public boolean getDoInput() {
             return file.canRead();
         }
-        public boolean getDoOutput() {
+        @Override public boolean getDoOutput() {
             if (! writeable) return false;
             File f = file;
             while (f != null) {
@@ -1265,11 +1265,11 @@ public class ResourceLoader extends ClassLoader {
             return false;
         }
 
-        public InputStream getInputStream() throws IOException {
+        @Override public InputStream getInputStream() throws IOException {
             if (! connected) connect();
             return new FileInputStream(file);
         }
-        public OutputStream getOutputStream() throws IOException {
+        @Override public OutputStream getOutputStream() throws IOException {
             if (! connected) connect();
             if (! writeable) {
                 throw new UnknownServiceException("This file-connection does not allow writing.");
@@ -1314,11 +1314,11 @@ public class ResourceLoader extends ClassLoader {
                 };
             }
         }
-        public long getLastModified() {
+        @Override public long getLastModified() {
             return file.lastModified();
         }
 
-        public String toString() {
+        @Override public String toString() {
             return "FileConnection " + file.toString();
         }
 
@@ -1368,10 +1368,10 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        public File getFile(final String in) {
+        @Override public File getFile(final String in) {
             return getFileFromString(FILES.get(in));
         }
-        public String getName(URL u) {
+        @Override public String getName(URL u) {
             for (Map.Entry<String, String> entry : FILES.entrySet()) {
                 try {
                     File file = getFileFromString(entry.getValue());
@@ -1386,7 +1386,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return null;
         }
-        public String toString() {
+        @Override public String toString() {
             StringBuilder bul = new StringBuilder("{");
             for (Map.Entry<String, String> e : FILES.entrySet()) {
                 if (bul.length() > 1) bul.append(", ");
@@ -1422,7 +1422,7 @@ public class ResourceLoader extends ClassLoader {
             this.type = nf.type;
         }
 
-        protected String getName(URL u) {
+        @Override protected String getName(URL u) {
             return u.getPath().substring(NODE_URL_CONTEXT.getPath().length());
         }
         public URLConnection openConnection(String name) {
@@ -1437,7 +1437,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return new NodeConnection(u, name, type);
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
@@ -1479,7 +1479,7 @@ public class ResourceLoader extends ClassLoader {
             }
             return results;
         }
-        public String toString() {
+        @Override public String toString() {
             return "nodes of type " + type;
         }
 
@@ -1498,7 +1498,7 @@ public class ResourceLoader extends ClassLoader {
             this.name = name;
             this.type = t;
         }
-        public void connect() throws IOException {
+        @Override public void connect() throws IOException {
             if (ResourceLoader.resourceBuilder == null) {
                 throw new IOException("No resources builder available.");
             }
@@ -1535,18 +1535,18 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
 
-        public boolean getDoInput() {
+        @Override public boolean getDoInput() {
             return getResourceNode() != null;
         }
 
-        public boolean getDoOutput() {
+        @Override public boolean getDoOutput() {
             getResourceNode();
             return
                 (node != null && node.mayWrite()) ||
                 (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
         }
 
-        public InputStream getInputStream() throws IOException {
+        @Override public InputStream getInputStream() throws IOException {
             getResourceNode();
             if (node != null) {
                 return node.getInputStreamValue(HANDLE_FIELD);
@@ -1554,7 +1554,7 @@ public class ResourceLoader extends ClassLoader {
                 throw new IOException("No such (node) resource for " + name);
             }
         }
-        public OutputStream getOutputStream() throws IOException {
+        @Override public OutputStream getOutputStream() throws IOException {
             if (getResourceNode() == null) {
                 if (ResourceLoader.resourceBuilder == null) return null;
 
@@ -1567,31 +1567,31 @@ public class ResourceLoader extends ClassLoader {
                 node.commit();
             }
             return new OutputStream() {
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    public void close() throws IOException {
-                        byte[] b = bytes.toByteArray();
-                        node.setValue(HANDLE_FIELD, b);
-                        String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(b));
-                        if (mimeType == null) {
-                            URLConnection.guessContentTypeFromName(name);
-                        }
-                        node.setValue("mimetype", mimeType);
-                        node.commit();
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                @Override public void close() throws IOException {
+                    byte[] b = bytes.toByteArray();
+                    node.setValue(HANDLE_FIELD, b);
+                    String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(b));
+                    if (mimeType == null) {
+                        URLConnection.guessContentTypeFromName(name);
                     }
-                    public void write(int b) {
-                        bytes.write(b);
+                    node.setValue("mimetype", mimeType);
+                    node.commit();
+                }
+                @Override public void write(int b) {
+                    bytes.write(b);
+                }
+                public void write(byte[] b) throws IOException {
+                    if (b == null) {
+                        node.delete();
+                        node = null;
+                    } else {
+                        super.write(b);
                     }
-                    public void write(byte[] b) throws IOException {
-                        if (b == null) {
-                            node.delete();
-                            node = null;
-                        } else {
-                            super.write(b);
-                        }
-                    }
-                };
+                }
+            };
         }
-        public long getLastModified() {
+        @Override public long getLastModified() {
             getResourceNode();
             if (node != null) {
                 Date lm = node.getDateValue(LASTMODIFIED_FIELD);
@@ -1602,7 +1602,7 @@ public class ResourceLoader extends ClassLoader {
             return -1;
         }
 
-        public String toString() {
+        @Override public String toString() {
             return "NodeConnection " + node;
         }
 
@@ -1632,10 +1632,10 @@ public class ResourceLoader extends ClassLoader {
         }
 
 
-        protected String getName(URL u) {
+        @Override protected String getName(URL u) {
             return u.getPath().substring(root.length());
         }
-        public URLConnection openConnection(String name) {
+        @Override public URLConnection openConnection(String name) {
             try {
                 URL u = ResourceLoader.servletContext.getResource(root + ResourceLoader.this.context.getPath() + name);
                 if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
@@ -1644,7 +1644,7 @@ public class ResourceLoader extends ClassLoader {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             if (log.isDebugEnabled()) {
                 log.debug("Getting " + (directories ? "directories" : "files") + " matching '" + pattern + "' in '" + root + "'");
             }
@@ -1709,7 +1709,7 @@ public class ResourceLoader extends ClassLoader {
             return results;
         }
 
-        public String toString() {
+        @Override public String toString() {
             return "ServletResource " + root;
         }
     }
@@ -1743,7 +1743,7 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        protected String getName(URL u) {
+        @Override protected String getName(URL u) {
             return u.getPath().substring((root +  ResourceLoader.this.context.getPath()).length());
         }
         private String getClassResourceName(final String name) throws MalformedURLException {
@@ -1771,7 +1771,7 @@ public class ResourceLoader extends ClassLoader {
                 return Collections.enumeration( Collections.EMPTY_LIST);
             }
         }
-        public URLConnection openConnection(String name) {
+        @Override public URLConnection openConnection(String name) {
             try {
                 URL u = getClassLoader().getResource(getClassResourceName(name));
                 if (u == null) {
@@ -1784,7 +1784,7 @@ public class ResourceLoader extends ClassLoader {
             }
         }
 
-        public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+        @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive, directories, "", null);
         }
 
@@ -1873,7 +1873,7 @@ public class ResourceLoader extends ClassLoader {
             return results;
         }
 
-        public String toString() {
+        @Override public String toString() {
             return "ClassLoader " + root;
         }
     }
@@ -1893,12 +1893,12 @@ public class ResourceLoader extends ClassLoader {
      */
     private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
 
-            protected String getName(URL u) {
+            @Override protected String getName(URL u) {
                 String path = u.getPath();
                 return path.substring("/NOTFOUND/".length());
             }
 
-            public URLConnection openConnection(String name) {
+            @Override public URLConnection openConnection(String name) {
                 URL u;
                 while (name.startsWith("/")) {
                     name = name.substring(1);
@@ -1911,7 +1911,7 @@ public class ResourceLoader extends ClassLoader {
                 return new NotAvailableConnection(u, name);
             }
 
-            public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+            @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
                 return new HashSet<String>();
             }
         };
@@ -1932,14 +1932,12 @@ public class ResourceLoader extends ClassLoader {
             }
             name = n;
         }
-        public void connect() throws IOException {  throw new IOException("No such resource " + name); };
-        public boolean getDoInput() { return false; }
-        public boolean getDoOutput() { return false; }
-        public InputStream getInputStream() throws IOException { connect(); return null;}
-        public OutputStream getOutputStream() throws IOException { connect(); return null; }
-        public String toString() {
-            return "NOTAVAILABLECONNECTION " + name;
-        }
+        @Override public void connect() throws IOException {  throw new IOException("No such resource " + name); };
+        @Override public boolean getDoInput() { return false; }
+        @Override public boolean getDoOutput() { return false; }
+        @Override public InputStream getInputStream() throws IOException { connect(); return null;}
+        @Override public OutputStream getOutputStream() throws IOException { connect(); return null; }
+        @Override public String toString() { return "NOTAVAILABLECONNECTION " + name; }
     };
 
 
@@ -1957,14 +1955,14 @@ public class ResourceLoader extends ClassLoader {
         MMURLStreamHandler() {
             super();
         }
-        protected URLConnection openConnection(URL u) throws IOException {
+        @Override protected URLConnection openConnection(URL u) throws IOException {
             return new MMURLConnection(u);
         }
         /**
          * ExternalForms are mainly used in entity-resolving and URL.toString()
          * {@inheritDoc}
          */
-        protected String toExternalForm(URL u) {
+        @Override protected String toExternalForm(URL u) {
             return new MMURLConnection(u).getInputConnection().getURL().toExternalForm();
         }
     }
@@ -1992,7 +1990,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * {@inheritDoc}
          */
-        public void connect() {
+        @Override public void connect() {
             connected = true;
         }
 
@@ -2025,7 +2023,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * Returns <code>true</true> if you can successfully use getInputStream();
          */
-        public boolean getDoInput() {
+        @Override public boolean getDoInput() {
             return getInputConnection().getDoInput();
         }
 
@@ -2033,7 +2031,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * {@inheritDoc}
          */
-        public InputStream getInputStream() throws IOException  {
+        @Override public InputStream getInputStream() throws IOException  {
             return getInputConnection().getInputStream();
         }
 
@@ -2084,13 +2082,13 @@ public class ResourceLoader extends ClassLoader {
         /**
          * Returns <code>true</true> if you can successfully use getOutputStream();
          */
-        public boolean getDoOutput() {
+        @Override public boolean getDoOutput() {
             return getOutputConnection().getDoOutput();
         }
         /**
          * {@inheritDoc}
          */
-        public OutputStream getOutputStream() throws IOException  {
+        @Override public OutputStream getOutputStream() throws IOException  {
             try {
                 OutputStream os = getOutputConnection().getOutputStream();
                 if (os == null) {
@@ -2108,7 +2106,7 @@ public class ResourceLoader extends ClassLoader {
         /**
          * {@inheritDoc}
          */
-        public long getLastModified() {
+        @Override public long getLastModified() {
             return getInputConnection().getLastModified();
         }
 
