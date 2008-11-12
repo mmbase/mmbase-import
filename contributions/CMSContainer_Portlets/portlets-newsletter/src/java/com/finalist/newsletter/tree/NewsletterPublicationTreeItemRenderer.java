@@ -59,9 +59,9 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished)) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
                      "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-            element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.publish", "newsletter",
+            element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.publish", "newsletter",
                      "../newsletter/NewsletterPublicationPublish.do?number=" + id));
-            element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.test", "newsletter",
+            element.addOption(renderer.createTreeOption("type/email_go.png", "site.newsletteredition.test", "newsletter",
                      "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
 
