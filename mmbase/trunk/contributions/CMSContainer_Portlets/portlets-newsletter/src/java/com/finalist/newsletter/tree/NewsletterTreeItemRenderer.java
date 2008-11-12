@@ -8,6 +8,7 @@ import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
+import com.finalist.util.module.ModuleUtil;
 
 public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
 
@@ -75,11 +76,13 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                         String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
                )
       );
-      element.addOption(
-            renderer.createTreeOption("masspublish.png", "site.newsletter.publish", "newsletter",
-                  "../newsletter/NewsletterPublish.do?number=" + id
-         )
-      );
+      if (ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+         element.addOption(
+               renderer.createTreeOption("masspublish.png", "site.newsletter.publish", "newsletter",
+                     "../newsletter/NewsletterPublish.do?number=" + id
+            )
+         );
+      }
    }
 
    private void addWebmasterOptions(NavigationRenderer renderer, String id, TreeElement element) {
