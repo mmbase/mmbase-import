@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.75 2008-11-12 13:15:18 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.76 2008-11-12 13:32:51 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1720,18 +1720,18 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ClassLoader
 
-    private static org.mmbase.util.xml.UtilReader.PropertiesMap<String> classWeightProperties =
-        new org.mmbase.util.xml.UtilReader("resourceclassloader.xml", new Runnable() {
+    private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
+        new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
             public void run() {
                 ResourceLoader.getClassWeights();
             }
         }
-        ).getProperties();
+        ).getMaps();
 
     private static final Map<Pattern, Integer> classWeights = new ConcurrentHashMap<Pattern, Integer>();
 
     private static void getClassWeights() {
-        for (Map.Entry<String, String> entry : classWeightProperties.entrySet()) {
+        for (Map.Entry<String, String> entry : classWeightProperties.get("classloaderpattern")) {
             classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
         }
         log.info("Found classWeights " + classWeights);
