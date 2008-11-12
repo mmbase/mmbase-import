@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.78 2008-11-12 15:58:15 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.79 2008-11-12 16:32:15 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -382,7 +382,7 @@ public class ResourceLoader extends ClassLoader {
             configRoot.roots.add(configRoot.new ClassLoaderURLStreamHandler(CLASSLOADER_ROOT));
 
             //last fall back: fully qualified class-name
-            configRoot.roots.add(configRoot.new ClassLoaderURLStreamHandler("/"));
+            //configRoot.roots.add(configRoot.new ClassLoaderURLStreamHandler("/"));
 
         }
         return configRoot;
@@ -1765,18 +1765,21 @@ public class ResourceLoader extends ClassLoader {
             boolean foundw1 = false;
             boolean foundw2 = false;
             for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
-                if (! foundw1 && e.getKey().matcher(u1.toExternalForm()).matches()) {
+                Pattern p = e.getKey();
+                if (! foundw1 && p.matcher(u1.toExternalForm()).matches()) {
                     w1 = e.getValue();
-                    log.debug("Matched " + u1 + " " + e.getKey() + " -> " + w1);
+                    log.trace("Matched " + u1 + " " + p + " -> " + w1);
                     foundw1 = true;
                 }
-                if (! foundw2 && e.getKey().matcher(u2.toExternalForm()).matches()) {
+                if (! foundw2 && p.matcher(u2.toExternalForm()).matches()) {
                     w2 = e.getValue();
-                    log.debug("Matched " + u2 + " " + e.getKey() + " -> " + w2);
+                    log.trace("Matched " + u2 + " " + p + " -> " + w2);
                     foundw2 = true;
                 }
+                if (foundw1 && foundw2) break;
             }
-            return w2 - w1;
+            int r = w2 - 1;
+            return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
 
         }
         public boolean equals(Object o) {
@@ -1815,9 +1818,6 @@ public class ResourceLoader extends ClassLoader {
             return u.getPath().substring((root +  ResourceLoader.this.context.getPath()).length());
         }
         private String getClassResourceName(String name) throws MalformedURLException {
-           while (name.startsWith("/")) {
-                name = name.substring(1);
-            }
             String res = root + new URL(ResourceLoader.this.context, name).getPath();
             while (res.startsWith("/")) {
                 res = res.substring(1);
@@ -1833,19 +1833,20 @@ public class ResourceLoader extends ClassLoader {
          */
         protected SortedSet<URL> getSortedResources(String name) throws IOException {
             SortedSet<URL> result = new TreeSet<URL>(urlComparator);
-
-            Enumeration<URL> e = getClassLoader().getResources(getClassResourceName(name));
+            String crn = getClassResourceName(name);
+            Enumeration<URL> e = getClassLoader().getResources(crn);
             while (e.hasMoreElements()) {
-                result.add(e.nextElement());
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Found for '" + name + "' " + result);
+                URL n = e.nextElement();
+                result.add(n);
             }
             return result;
         }
 
         @Override Enumeration<URL> getResources(String name) throws IOException {
             try {
+                while (name.startsWith("/")) {
+                    name = name.substring(1);
+                }
                 log.debug("Getting the resource " + name + " from " + this);
                 return Collections.enumeration(getSortedResources(name));
 
@@ -1884,10 +1885,9 @@ public class ResourceLoader extends ClassLoader {
         private Set<String> getPaths(final Set<String> results, final Pattern pattern, final boolean recursive, final boolean directories, String resourceDir, String searchUp) {
             try {
                 List<String> subDirs = new ArrayList<String>();
-                Enumeration<URL> e = getResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
+                SortedSet<URL> resources = getSortedResources("".equals(resourceDir) ? INDEX : resourceDir + INDEX);
                 if (searchUp != null && resourceDir.startsWith("..")) resourceDir = "";
-                while (e.hasMoreElements()) {
-                    URL u = e.nextElement();
+                for (URL u : resources) {
                     InputStream inputStream = u.openStream();
                     if (inputStream != null) {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
