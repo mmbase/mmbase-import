@@ -168,5 +168,29 @@
             <type key="false" notnull="true" size="50" state="persistent">STRING</type>
          </db>
       </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">static html</guiname>
+            <guiname xml:lang="en">static html</guiname>
+            <guiname xml:lang="zh">static html</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>11</input>
+               <list>11</list>
+               <search>11</search>
+            </positions>
+         </editor>
+         <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>static_html</name>
+            <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+         </db>
+      </field>
    </fieldlist>
 </builder>
