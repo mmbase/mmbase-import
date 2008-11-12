@@ -1,0 +1,48 @@
+### all the dependencies ###
+
+# ----- Spring ---------
+spring.version=spring-framework-2.5.4
+spring.file=${spring.version}.zip
+spring.dest=${download.dir}/${spring.file}
+spring.loc=http://downloads.sourceforge.net/springframework/${spring.file}
+spring.jar=${expand.dir}/${spring.version}/dist/spring.jar
+spring.mvc.jar=${expand.dir}/${spring.version}/dist/modules/spring-webmvc.jar
+spring.test.jar=${expand.dir}/${spring.version}/dist/modules/spring-test.jar
+
+# ----- Commons collections with generics
+commons.collections.version=collections-generic-4.01
+commons.collections.file=${commons.collections.version}.zip
+commons.collections.dest=${download.dir}/${commons.collections.file}
+commons.collections.loc=http://downloads.sourceforge.net/collections/${commons.collections.file}
+commons.collections.jar=${expand.dir}/${commons.collections.version}/${commons.collections.version}.jar
+
+
+
+mmbase.maven.repository=http://www.mmbase.org/maven
+
+comm.collections.file=commons-collections-3.0.jar
+comm.collections.loc=${mmbase.maven.repository}/commons-collections/jars/${comm.collections.file}
+
+comm.lang.file=commons-lang-2.0.jar
+comm.lang.loc=${mmbase.maven.repository}/commons-lang/jars/${comm.lang.file}
+
+#comm.fileupload.file=commons-fileupload-1.0.jar
+#comm.fileupload.loc=${mmbase.maven.repository}/commons-fileupload/jars/${comm.fileupload.file}
+
+nekohtml.file=nekohtml-0.7.7.jar
+nekohtml.loc=${mmbase.maven.repository}/nekohtml/jars/${nekohtml.file}
+
+xerces.file=xercesImpl-2.8.0.jar
+xerces.file.noversion=xercesImpl.jar
+xerces.loc=${mmbase.maven.repository}/xerces/jars/${xerces.file}
+
+oscache.file=oscache-2.4.1.jar
+oscache.loc=${mmbase.maven.repository}/opensymphony/jars/${oscache.file}
+
+#fck editor (javascript)
+fckeditor.name=FCKeditor
+fckeditor.version=2.6.3
+fckeditor.file=${fckeditor.name}_${fckeditor.version}.zip
+fckeditor.url=http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/${fckeditor.file}
+fckeditor.destination=${templates.dir}/${project.target.templates.dir}/system/javascript/fckeditor
+
