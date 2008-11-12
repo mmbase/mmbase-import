@@ -51,7 +51,7 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
          String email = getParameter(request, "email");
          String mimeType = request.getParameter("mimetype");
          NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-         ;
+         NewsletterPublicationUtil.publish(cloud,number);
          publicationService.deliver(number, email, mimeType);
          return mapping.findForward(SUCCESS);
       }
