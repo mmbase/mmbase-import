@@ -11,6 +11,8 @@ import org.mmbase.bridge.NodeManager;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.PortletUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Publication.STATUS;
@@ -147,5 +149,15 @@ public abstract class NewsletterPublicationUtil {
    }
    public static STATUS getStatus(Cloud cloud,int publicationId) {
       return getPublication(cloud,publicationId).getStatus();
+   }
+   
+   public static void publish(Node node) {
+      if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+         Publish.publish(node);
+      }
+   }
+   public static void publish(Cloud cloud ,Integer number) {
+      Node node = cloud.getNode(number);
+      publish(node);
    }
 }
