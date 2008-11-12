@@ -77,27 +77,22 @@
     <antcall target="install.jar">
       <param name="name" value="mmbase-clustering" />
     </antcall>
-    <antcall target="vprowizards"/>
+    <antcall target="vpro-wizards"/>
   </target>
   
-  <target name="vprowizards">
-  <!--get the (latest) vpro-wizards jar from the local maven repository-->
-    <antcall target="install.jar" >
-      <param name="name" value="mmbase-vpro-wizards" />
+  
+  <target name="vpro-wizards">
+    <mkdir dir="__temp"/>
+    <antcall target="install.module">
+      <param name="dest" value="__temp" /> 
+      <param name="name" value="vpro-wizards" />
     </antcall>
-    <exec executable="maven.bat" dir="../applications/vpro-wizards">
-      <arg value="war"/>
-    </exec>
-    
-    <copy todir="lib" flatten="true">
-        <zipfileset src="../applications/vpro-wizards/target/mmbase-vpro-wizards.war">
-        <patternset>
-          <include name="**/*.jar"/>
-        </patternset>
-  </zipfileset>
-
+    <copy todir="lib" >
+      <fileset dir="__temp/WEB-INF/lib"/>
     </copy>
+    <delete dir="__temp"/>
   </target>
+
   
 
   <target name="download" unless="no" depends="local.download">
