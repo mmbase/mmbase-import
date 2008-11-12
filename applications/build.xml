@@ -32,6 +32,7 @@ Applications build file
     <available file="rmmci/build.xml" property="rmmci.exists"/>
     <available file="resources/build.xml" property="resources.exists"/>
     <available file="mynews/build.xml" property="mynews.exists"/>
+    <available file="vpro-wizards/build.xml" property="vpro-wizards.exists"/>
     <available file="jumpers/build.xml" property="jumpers.exists"/>
   	<available file="myyahoo/build.xml" property="myyahoo.exists"/>
     <available file="notifications/build.xml" property="notifications.exists"/>
@@ -42,7 +43,7 @@ Applications build file
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter" />
   <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,myyahoo,resources,largeobjects,notifications" />
-  <target name="all19" depends="init,all18" />
+  <target name="all19" depends="init,all18,vpro-wizards" />
 
   <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
   <target name="all18_15" depends="init,email,richtext,jumpers,commandserver,notifications" />
@@ -241,6 +242,14 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
+	
+	<target name="vpro-wizards" depends="init" if="vpro-wizards.exists">
+	     <ant dir="vpro-wizards"  target="package" inheritAll="false">
+	       <property name="project.zip.dir"        value="${applications.build.dir}" />
+	       <property name="build.dir"        value="${build.dir}" />
+	       <property name="download.dir"        value="${download.dir}" />
+	     </ant>
+	  </target>
 
   <target name="jumpers" if="init,jumpers.exists">
      <ant dir="jumpers"  target="package" inheritAll="false">
