@@ -177,6 +177,13 @@
     </antcall>
     <property name="dove.installed" value="yes" />
   </target>
+  
+  <target name="vpro-wizards" depends="mmbase" >
+    <antcall target="install.module">
+      <param name="name" value="vpro-wizards" />
+    </antcall>
+    <property name="dove.installed" value="yes" />
+  </target>
 
   <target name="taglib" depends="mmbase,jstl" unless="taglib.installed">
     <antcall target="install.module">
