@@ -44,6 +44,12 @@
             Not Available
           </td>
         </tr>
+        <tr>
+          <td>Uri</td>
+          <td colspan="3">
+            <jsp:expression>org.mmbase.util.ResourceLoader.getConfigurationRoot().getResource(org.mmbase.module.core.MMBase.getMMBase().getBuilder(builder).getConfigResource())</jsp:expression>
+          </td>
+        </tr>
         <tr><td colspan="5"> </td></tr>
         <tr>
           <th>Field</th>
