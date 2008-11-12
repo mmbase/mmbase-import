@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.77 2008-11-12 15:11:40 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.78 2008-11-12 15:58:15 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1723,21 +1723,24 @@ public class ResourceLoader extends ClassLoader {
     private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
         new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
             public void run() {
-                ResourceLoader.getClassWeights();
+                ResourceLoader.readClassWeights();
             }
         }
         ).getMaps();
 
     private static final Map<Pattern, Integer> classWeights = new ConcurrentHashMap<Pattern, Integer>();
 
-    private static void getClassWeights() {
-        Collection<Map.Entry<String, String>> col = classWeightProperties.get("classloaderpattern");
+    private static void readClassWeights() {
+        Collection<Map.Entry<String, String>> col = classWeightProperties.get("classloaderpatterns");
         if (col != null) {
             for (Map.Entry<String, String> entry : col) {
                 classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
             }
         }
         log.info("Found classWeights " + classWeights);
+    }
+    static {
+        readClassWeights();
     }
 
     /**
@@ -1811,7 +1814,10 @@ public class ResourceLoader extends ClassLoader {
         @Override protected String getName(URL u) {
             return u.getPath().substring((root +  ResourceLoader.this.context.getPath()).length());
         }
-        private String getClassResourceName(final String name) throws MalformedURLException {
+        private String getClassResourceName(String name) throws MalformedURLException {
+           while (name.startsWith("/")) {
+                name = name.substring(1);
+            }
             String res = root + new URL(ResourceLoader.this.context, name).getPath();
             while (res.startsWith("/")) {
                 res = res.substring(1);
@@ -1852,15 +1858,20 @@ public class ResourceLoader extends ClassLoader {
         }
         @Override final public URLConnection openConnection(String name) {
             try {
-                URL u;
+                URLConnection u = null;
                 Enumeration<URL> resources = getResources(name);
-                if (resources.hasMoreElements()) {
-                    u = resources.nextElement();
-                } else {
+                while (resources.hasMoreElements()) {
+                    URLConnection p = resources.nextElement().openConnection();
+                    if (p.getDoInput()) {
+                        u = p;
+                        break;
+                    }
+                }
+                if (u == null) {
                     return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 }
                 //subDirs.add(ResourceLoader.getDirectory(name));
-                return u.openConnection();
+                return u;
             } catch (IOException ioe) {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
