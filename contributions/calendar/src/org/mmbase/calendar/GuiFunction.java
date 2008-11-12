@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * The gui function of calendar items and calendar item types.
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.2 2006-12-28 13:58:12 michiel Exp $
+ * @version $Id: GuiFunction.java,v 1.3 2008-11-12 18:04:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class GuiFunction extends org.mmbase.util.functions.GuiFunction {
@@ -45,7 +45,7 @@ public class GuiFunction extends org.mmbase.util.functions.GuiFunction {
         if (color != null) {
             return "<span style='background-color: " + color + ";'>" + super.getFunctionValue(node, parameters) + "</span>";
         } else {
-            return super.getFunctionValue(node, parameters);
+            return (String) super.getFunctionValue(node, parameters);
         }
 
     }
