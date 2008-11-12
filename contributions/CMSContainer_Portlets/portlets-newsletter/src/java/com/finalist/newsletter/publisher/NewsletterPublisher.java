@@ -90,7 +90,10 @@ public class NewsletterPublisher {
       Multipart multipart = new MimeMultipart();
       MimeBodyPart mdp = new MimeBodyPart();
       try {
-         mdp.setContent(getBody(publication, subscription), subscription.getMimeType());
+         String type=subscription.getMimeType();
+         String o=getBody(publication, subscription);
+         log.info("the content will be sended:"+o+"\n "+"his type is :"+type);
+         mdp.setContent(o, type);
          multipart.addBodyPart(mdp);
       }
       catch (MessagingException e) {
@@ -142,8 +145,7 @@ public class NewsletterPublisher {
    private String getBody(Publication publication, Subscription subscription)
             throws MessagingException {
 
-      String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
-               .getTerms(), publication.getId());
+      String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
       ICache cache = null;
       String expiration = PropertiesUtil.getProperty("publication.cache.expiration");
       if (StringUtils.isEmpty(expiration)) {
@@ -154,18 +156,21 @@ public class NewsletterPublisher {
       String content = " ";
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
          int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-         if (articleCounts == 0 ) {
+         if (articleCounts == 0 ) {            
             content = publication.getNewsletter().getTxtempty();
+            log.info("the newsletter use textEmpty" + content);
          } else {
             log.info("url---->" + url);
             content = NewsletterGenerator.generate(url, subscription.getMimeType());
          }
          if (null != getPersonalise()) {
             content = getPersonalise().personalise(content, subscription, publication);
+            log.info("the content sended is Personalised :"+content);
          }
          cache.add(url, content);
       } else {
          content = (String) cache.get(url);
+         log.info("the content sended is from the cache"+content);
       }
       return content + "\n";
    }
