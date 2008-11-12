@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.435 2008-10-09 13:13:12 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.436 2008-11-12 18:36:56 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1838,6 +1838,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
 
         if (function.equals("age")) {
+            if (node == null) return -1;
             Integer val = Integer.valueOf(node.getAge());
             return val.toString();
         } else if (function.equals("wap")) {
@@ -2564,7 +2565,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
 
     public String getConfigResource() {
-        return "builders/" + getXMLPath() + "/" + getTableName() + ".xml";
+        return "builders/" + getXMLPath() + getTableName() + ".xml";
     }
 
     /**
