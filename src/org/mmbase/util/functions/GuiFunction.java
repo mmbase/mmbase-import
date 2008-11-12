@@ -18,35 +18,34 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.6 2008-07-11 14:49:50 michiel Exp $
- * @since MMBase-1.9
+ * @version $Id: GuiFunction.java,v 1.6.2.1 2008-11-12 16:55:29 michiel Exp $
+ * @since MMBase-1.8.6
  */
-public class GuiFunction extends NodeFunction<String> {
+public class GuiFunction extends NodeFunction {
 
     private static final Logger log = Logging.getLoggerInstance(GuiFunction.class);
-    public static final Parameter<?>[] PARAMETERS = {
+    public static final Parameter[] PARAMETERS = {
         Parameter.FIELD,
         Parameter.LANGUAGE,
-        new Parameter<String>("session", String.class),
+        new Parameter("session", String.class),
         Parameter.RESPONSE,
         Parameter.REQUEST,
         Parameter.LOCALE,
-        new Parameter<String>("stringvalue", String.class)
+        new Parameter("stringvalue", String.class)
         //new Parameter("length", Integer.class),
         //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
     };
 
     public GuiFunction() {
-        super("gui", PARAMETERS);
+        super("gui", PARAMETERS, ReturnType.STRING);
     }
 
-    @Override
-    protected String getFunctionValue(Node node, Parameters parameters) {
+    protected Object getFunctionValue(Node node, Parameters parameters) {
         if (log.isDebugEnabled()) {
             log.debug("GUI of builder with " + parameters);
         }
-        String fieldName = parameters.get(Parameter.FIELD);
+        String fieldName = (String) parameters.get(Parameter.FIELD);
         if (fieldName != null && (! fieldName.equals("")) && parameters.get("stringvalue") == null) {
             if (node.getSize(fieldName) < 2000) {
                 parameters.set("stringvalue", node.getStringValue(fieldName));
