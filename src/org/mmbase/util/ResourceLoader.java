@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.80 2008-11-12 17:09:11 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.81 2008-11-12 17:33:39 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1748,44 +1748,54 @@ public class ResourceLoader extends ClassLoader {
      */
     public static int getWeight(final URL u) {
         int w = 0;
-        for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
-            if (e.getKey().matcher(u.toExternalForm()).matches()) {
-                w = e.getValue();
-                break;
+        if (classWeights != null) {
+            for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
+                if (e.getKey().matcher(u.toExternalForm()).matches()) {
+                    w = e.getValue();
+                    break;
+                }
             }
         }
         return w;
     }
 
 
-    private static final Comparator<URL> urlComparator = new Comparator<URL>() {
-        public int compare(final URL u1, final URL u2)  {
-            int w1 = 0;
-            int w2 = 0;
-            boolean foundw1 = false;
-            boolean foundw2 = false;
-            for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
-                Pattern p = e.getKey();
-                if (! foundw1 && p.matcher(u1.toExternalForm()).matches()) {
-                    w1 = e.getValue();
-                    log.trace("Matched " + u1 + " " + p + " -> " + w1);
-                    foundw1 = true;
-                }
-                if (! foundw2 && p.matcher(u2.toExternalForm()).matches()) {
-                    w2 = e.getValue();
-                    log.trace("Matched " + u2 + " " + p + " -> " + w2);
-                    foundw2 = true;
-                }
-                if (foundw1 && foundw2) break;
-            }
-            int r = w2 - 1;
-            return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
+    private static Comparator<URL> urlComparator;
+    private static Comparator<URL> getUrlComparator() {
+        if (urlComparator == null) {
+            urlComparator = new Comparator<URL>() {
+                public int compare(final URL u1, final URL u2)  {
+                    int w1 = 0;
+                    int w2 = 0;
+                    boolean foundw1 = false;
+                    boolean foundw2 = false;
+                    if (classWeights != null) {
+                        for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
+                            Pattern p = e.getKey();
+                            if (! foundw1 && p.matcher(u1.toExternalForm()).matches()) {
+                                w1 = e.getValue();
+                                log.trace("Matched " + u1 + " " + p + " -> " + w1);
+                                foundw1 = true;
+                            }
+                            if (! foundw2 && p.matcher(u2.toExternalForm()).matches()) {
+                                w2 = e.getValue();
+                                log.trace("Matched " + u2 + " " + p + " -> " + w2);
+                                foundw2 = true;
+                            }
+                            if (foundw1 && foundw2) break;
+                        }
+                    }
+                    int r = w2 - 1;
+                    return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
 
+                }
+                public boolean equals(Object o) {
+                    return o == this;
+                }
+            };
         }
-        public boolean equals(Object o) {
-            return o == this;
-        }
-    };
+        return urlComparator;
+    }
 
 
 
@@ -1832,7 +1842,7 @@ public class ResourceLoader extends ClassLoader {
          * @since MMBase-1.9.1
          */
         protected SortedSet<URL> getSortedResources(String name) throws IOException {
-            SortedSet<URL> result = new TreeSet<URL>(urlComparator);
+            SortedSet<URL> result = new TreeSet<URL>(getUrlComparator());
             String crn = getClassResourceName(name);
             Enumeration<URL> e = getClassLoader().getResources(crn);
             while (e.hasMoreElements()) {
