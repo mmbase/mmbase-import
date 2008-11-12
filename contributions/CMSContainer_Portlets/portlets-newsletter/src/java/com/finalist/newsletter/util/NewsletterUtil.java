@@ -708,9 +708,4 @@ public abstract class NewsletterUtil {
       scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
       scheduleNode.commit();
    }
-   public static Node getNewsletterById(int id){
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node newsletterNode = cloud.getNode(id);
-      return newsletterNode;
-   }
 }
