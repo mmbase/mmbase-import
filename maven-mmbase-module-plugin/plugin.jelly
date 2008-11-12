@@ -185,9 +185,10 @@
       <j:set var="dep" value="${lib.dependency}"/>
       <j:if test="${dep.getProperty('mmbase.bundle')=='true'}">
           
-         <!-- j:if test="${dep.type =='jar'}"> 
+         <j:if test="${dep.type =='jar'}">
+            <ant:echo message="including jar: ${dep.artifactId}"/>
            <ant:copy todir="${webapp.build.lib}" file="${lib.path}"/>  
-         </j:if --> 
+         </j:if>
          
          <j:if test="${dep.type =='tld'}"> 
            <ant:copy todir="${webapp.build.tlds}" file="${lib.path}"/>  
