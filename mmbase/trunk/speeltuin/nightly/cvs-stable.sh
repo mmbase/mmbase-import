@@ -14,7 +14,7 @@ for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
 done
 echo "Build from ${revision} ${cvsversionoption} ${cvsversion} against java 1.4 are" > ${builddir}/README
 for i in 'src' 'maven-base' 'applications/app-base' 'documentation' 'tests' 'config' 'html' \
-    'applications/resources' 'applications/cloudsecurity' 'applications/mynews' 'application/xmlimporter' \
+    'applications/resources' 'applications/cloudsecurity' 'applications/mynews' 'applications/xmlimporter' \
     'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/cloudcontext' \
     'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
     'applications/media' 'applications/packaging' 'applications/community' 'applications/largeobjects' \
