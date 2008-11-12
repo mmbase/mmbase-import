@@ -88,6 +88,9 @@
       <action path="/editors/newsletter/SwitchMIMEAction" type="com.finalist.newsletter.forms.SwitchMIMEAction" unknown="false"
               validate="false">
       </action>
+      <action path="/editors/newsletter/NewsletterPublish" type="com.finalist.newsletter.forms.NewsletterPublish" validate="false">
+          <forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false"/>
+      </action>
 
       <!-- ==== Newsletter Search ==== -->
 		<action path="/editors/newsletter/NewsletterPublicationAction" type="com.finalist.newsletter.forms.NewsletterPublicationAction"
