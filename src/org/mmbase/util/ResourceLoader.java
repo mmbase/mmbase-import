@@ -12,6 +12,7 @@ package org.mmbase.util;
 // general
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 import java.net.*;
 
@@ -97,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.74 2008-11-12 10:52:11 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.75 2008-11-12 13:15:18 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1719,8 +1720,69 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ClassLoader
 
+    private static org.mmbase.util.xml.UtilReader.PropertiesMap<String> classWeightProperties =
+        new org.mmbase.util.xml.UtilReader("resourceclassloader.xml", new Runnable() {
+            public void run() {
+                ResourceLoader.getClassWeights();
+            }
+        }
+        ).getProperties();
+
+    private static final Map<Pattern, Integer> classWeights = new ConcurrentHashMap<Pattern, Integer>();
+
+    private static void getClassWeights() {
+        for (Map.Entry<String, String> entry : classWeightProperties.entrySet()) {
+            classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
+        }
+        log.info("Found classWeights " + classWeights);
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public static int getWeight(final URL u) {
+        int w = 0;
+        for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
+            if (e.getKey().matcher(u.toExternalForm()).matches()) {
+                w = e.getValue();
+                break;
+            }
+        }
+        return w;
+    }
+
+
+    private static final Comparator<URL> urlComparator = new Comparator<URL>() {
+        public int compare(final URL u1, final URL u2)  {
+            int w1 = 0;
+            int w2 = 0;
+            boolean foundw1 = false;
+            boolean foundw2 = false;
+            for (Map.Entry<Pattern, Integer> e : classWeights.entrySet()) {
+                if (! foundw1 && e.getKey().matcher(u1.toExternalForm()).matches()) {
+                    w1 = e.getValue();
+                    log.debug("Matched " + u1 + " " + e.getKey() + " -> " + w1);
+                    foundw1 = true;
+                }
+                if (! foundw2 && e.getKey().matcher(u2.toExternalForm()).matches()) {
+                    w2 = e.getValue();
+                    log.debug("Matched " + u2 + " " + e.getKey() + " -> " + w2);
+                    foundw2 = true;
+                }
+            }
+            return w2 - w1;
+
+        }
+        public boolean equals(Object o) {
+            return o == this;
+        }
+    };
+
+
+
     protected class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
-        private String root;
+        private final String root;
+
 
         // Some arrangment to remember wich subdirs were possible
         //private Set subDirs = new HashSet();
@@ -1757,24 +1819,41 @@ public class ResourceLoader extends ClassLoader {
             return res;
         }
 
-        Enumeration<URL> getResources(String name) throws IOException {
+        /**
+         * @since MMBase-1.9.1
+         */
+        protected SortedSet<URL> getSortedResources(String name) throws IOException {
+            SortedSet<URL> result = new TreeSet<URL>(urlComparator);
+
+            Enumeration<URL> e = getClassLoader().getResources(getClassResourceName(name));
+            while (e.hasMoreElements()) {
+                result.add(e.nextElement());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Found for '" + name + "' " + result);
+            }
+            return result;
+        }
+
+        @Override Enumeration<URL> getResources(String name) throws IOException {
             try {
                 log.debug("Getting the resource " + name + " from " + this);
-                while (name.startsWith("/")) {
-                    name = name.substring(1);
-                }
-                return getClassLoader().getResources(getClassResourceName(name));
+                return Collections.enumeration(getSortedResources(name));
+
             } catch (IOException ioe) {
                 throw ioe;
             } catch (Throwable t) {
-                log.warn("RAAS" + t.getMessage(), t);
+                log.warn(t.getMessage(), t);
                 return Collections.enumeration( Collections.EMPTY_LIST);
             }
         }
-        @Override public URLConnection openConnection(String name) {
+        @Override final public URLConnection openConnection(String name) {
             try {
-                URL u = getClassLoader().getResource(getClassResourceName(name));
-                if (u == null) {
+                URL u;
+                Enumeration<URL> resources = getResources(name);
+                if (resources.hasMoreElements()) {
+                    u = resources.nextElement();
+                } else {
                     return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 }
                 //subDirs.add(ResourceLoader.getDirectory(name));
