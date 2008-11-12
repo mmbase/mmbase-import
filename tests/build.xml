@@ -79,12 +79,12 @@
     </antcall>
     <antcall target="vpro-wizards"/>
   </target>
-  
-  
+
+
   <target name="vpro-wizards">
     <mkdir dir="__temp"/>
     <antcall target="install.module">
-      <param name="dest" value="__temp" /> 
+      <param name="dest" value="__temp" />
       <param name="name" value="vpro-wizards" />
     </antcall>
     <copy todir="lib" >
@@ -93,7 +93,7 @@
     <delete dir="__temp"/>
   </target>
 
-  
+
 
   <target name="download" unless="no" depends="local.download">
     <echo message="downloading" />
@@ -256,6 +256,13 @@
         <exclude name="build*"/>
         <exclude name="core"/>
       </fileset>
+      <fileset dir="${tests.source.dir}/util" >
+        <include name="**/*.xml"/>
+        <exclude name="**/*.java"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+        <exclude name="core"/>
+      </fileset>
     </copy>
 
     <echo level="debug" message="compiling" />
@@ -316,7 +323,7 @@ Build-compiler: ${build.compiler}
 
     <delete file="${tests.build.dir}/manifest.mf" />
   </target>
-  
+
     <target name="run.vprowizards" depends="init,jar" description="VPRO MMBase wizards tests">
         <antcall target="clean.database" inheritRefs="true" />
         <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
