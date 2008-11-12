@@ -75,6 +75,11 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                         String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
                )
       );
+      element.addOption(
+            renderer.createTreeOption("masspublish.png", "site.newsletter.publish", "newsletter",
+                  "../newsletter/NewsletterPublish.do?number=" + id
+         )
+      );
    }
 
    private void addWebmasterOptions(NavigationRenderer renderer, String id, TreeElement element) {
@@ -119,6 +124,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                         "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=true"
                )
       );
+      
    }
 
    public boolean showChildren(Node parentNode) {
