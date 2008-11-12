@@ -78,7 +78,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       );
       if (ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
          element.addOption(
-               renderer.createTreeOption("masspublish.png", "site.newsletter.publish", "newsletter",
+               renderer.createTreeOption("publish.png", "site.newsletter.publish", "newsletter",
                      "../newsletter/NewsletterPublish.do?number=" + id
             )
          );
