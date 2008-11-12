@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.net.*;
+import  edu.emory.mathcs.backport.java.util.concurrent.*;
 
 // used for resolving in servlet-environment
 import javax.servlet.ServletContext;
@@ -97,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.11 2008-07-24 18:38:49 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.12 2008-11-12 16:38:01 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1299,7 +1300,7 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public String toString() {
-            return "FileConnection " + file.toString();
+            return "FileConnection " + (file != null ? file.toString() : "NULL");
         }
 
     }
@@ -1575,7 +1576,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * URLStreamHandler based on the servletContext object of ResourceLoader
- */
+     */
     protected  class ServletResourceURLStreamHandler extends PathURLStreamHandler {
         private String root;
         ServletResourceURLStreamHandler(String r) {
@@ -1671,6 +1672,71 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
+    // ================================================================================
+    // ClassLoader
+    private static org.mmbase.util.xml.UtilReader.PropertiesMap classWeightProperties =
+        new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
+            public void run() {
+                ResourceLoader.readClassWeights();
+            }
+        }
+        ).getMaps();
+
+    private static final Map classWeights = new ConcurrentHashMap();
+
+    private static void readClassWeights() {
+        Collection col = (Collection) classWeightProperties.get("classloaderpatterns");
+        if (col != null) {
+            Iterator i = col.iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                classWeights.put(Pattern.compile((String) entry.getKey()),
+                                 new Integer((String) entry.getValue()));
+            }
+        }
+        log.info("Found classWeights " + classWeights);
+    }
+
+    static {
+        readClassWeights();
+    }
+
+
+
+
+    private static final Comparator urlComparator = new Comparator() {
+        public int compare(final Object o1, final Object o2)  {
+            URL u1 = (URL) o1;
+            URL u2 = (URL) o2;
+            int w1 = 0;
+            int w2 = 0;
+            boolean foundw1 = false;
+            boolean foundw2 = false;
+            Iterator i = classWeights.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e  = (Map.Entry) i.next();
+                if (! foundw1 && ((Pattern) e.getKey()).matcher(u1.toExternalForm()).matches()) {
+                    w1 = ((Integer) e.getValue()).intValue();
+                    log.trace("Matched " + u1 + " " + e.getKey() + " -> " + w1);
+                    foundw1 = true;
+                }
+                if (! foundw2 && ((Pattern) e.getKey()).matcher(u2.toExternalForm()).matches()) {
+                    w2 = ((Integer) e.getValue()).intValue();
+                    log.trace("Matched " + u2 + " " + e.getKey() + " -> " + w2);
+                    foundw2 = true;
+                }
+            }
+            int r = w2 - 1;
+            return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
+
+        }
+        public boolean equals(Object o) {
+            return o == this;
+        }
+    };
+
+
+
     protected class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
         private String root;
 
@@ -1709,28 +1775,59 @@ public class ResourceLoader extends ClassLoader {
             return res;
         }
 
-        Enumeration getResources(final String name) throws IOException {
+
+        /**
+         * @since MMBase-1.9.1
+         */
+        protected SortedSet getSortedResources(String name) throws IOException {
+            SortedSet result = new TreeSet(urlComparator);
+
+            Enumeration  e = getClassLoader().getResources(getClassResourceName(name));
+            while (e.hasMoreElements()) {
+                result.add(e.nextElement());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Found for '" + name + "' " + result);
+            }
+            return result;
+        }
+
+        Enumeration getResources(String name) throws IOException {
             try {
-                return getClassLoader().getResources(getClassResourceName(name));
+                while (name.startsWith("/")) {
+                    name = name.substring(1);
+                }
+                log.debug("Getting the resource " + name + " from " + this);
+                return Collections.enumeration(getSortedResources(name));
+
             } catch (IOException ioe) {
                 throw ioe;
             } catch (Throwable t) {
-                log.warn(t);
-                return Collections.enumeration(Collections.EMPTY_LIST);
+                log.warn(t.getMessage(), t);
+                return Collections.enumeration( Collections.EMPTY_LIST);
             }
         }
-        public URLConnection openConnection(String name) {
+        final public URLConnection openConnection(String name) {
             try {
-                URL u = getClassLoader().getResource(getClassResourceName(name));
+                URLConnection u = null;
+                Enumeration  resources = getResources(name);
+                while (resources.hasMoreElements()) {
+                    URLConnection p = ((URL) resources.nextElement()).openConnection();
+                    if (p.getDoInput()) {
+                        u = p;
+                        break;
+                    }
+                }
                 if (u == null) {
                     return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 }
                 //subDirs.add(ResourceLoader.getDirectory(name));
-                return u.openConnection();
+                return u;
             } catch (IOException ioe) {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
+
 
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
             return getPaths(results, pattern, recursive, directories, "", null);
