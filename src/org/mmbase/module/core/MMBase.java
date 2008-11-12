@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.258 2008-10-03 09:44:20 michiel Exp $
+ * @version $Id: MMBase.java,v 1.259 2008-11-12 17:08:04 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -921,6 +921,7 @@ public class MMBase extends ProcessorModule {
     public BuilderReader getBuilderReader(String builderName) {
         try {
             BuilderReader r = null;
+            int urlWeight;
             String protocol = null;
             for (java.net.URL url : getBuilderLoader().getResourceList(builderName + ".xml")) {
                 if (! url.openConnection().getDoInput()) {
@@ -935,15 +936,23 @@ public class MMBase extends ProcessorModule {
                 }
                 org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
                 BuilderReader prop = new BuilderReader(doc, this);
+                int proposalWeight = ResourceLoader.getWeight(url);
                 prop.setSystemId(url.toString());
                 if (r == null) {
                     r = prop;
+                    urlWeight = ResourceLoader.getWeight(r);
                     protocol = url.getProtocol();
-                } else if (prop.getVersion() > r.getVersion()) {
+                } else if (urlWeight == proposalWeight && prop.getVersion() > r.getVersion()) {
                     log.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead");
                     r = prop;
                 } else {
-                    log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it.");
+                    if (proposalWeight > urlWeight) {
+                        log.warn("The weight of the proposal is bigger. This should never happen");
+                    } else if (proposalWeight <  urlWeight) {
+                        log.service(url.toString() + " has a lower weight than " + r.getSystemId() + ". Ignoring it.");
+                    } else {
+                        log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it.");
+                    }
                 }
             }
             if (r != null) {
