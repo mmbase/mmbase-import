@@ -2,10 +2,6 @@ package org.mmbase.applications.vprowizards.spring.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-import org.junit.runners.Parameterized;
 
 public class ClassInstanceFactory<T> {
 
