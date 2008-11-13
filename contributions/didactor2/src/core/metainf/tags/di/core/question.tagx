@@ -12,20 +12,20 @@
   <mm:import externid="question" required="true"/>
   <mm:import externid="madetest">-1</mm:import>
 
-
-  <mm:isnotempty referid="madetest">
-    <mm:relatednodescontainer
-        path="givenanswers,madetests"
-        element="givenanswers">
-      <mm:sortorder field="givenanswers.number" direction="down" />
-      <mm:constraint field="madetests.number" value="$madetest"/>
-      <mm:relatednodes max="1">
-        <mm:node id="answernode" />
-      </mm:relatednodes>
-    </mm:relatednodescontainer>
-  </mm:isnotempty>
-
   <mm:node referid="question">
+
+    <mm:isnotempty referid="madetest">
+      <mm:relatednodescontainer
+          path="givenanswers,madetests"
+          element="givenanswers"
+          >
+        <mm:sortorder field="givenanswers.number" direction="down" />
+        <mm:constraint field="madetests.number" value="${madetest}"/>
+        <mm:relatednodes max="1">
+          <mm:node id="answernode" />
+      </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </mm:isnotempty>
 
     <mm:field name="showtitle">
       <mm:compare value="1">

@@ -8,7 +8,6 @@
 
       <di:question>
 
-        AN: ${answernode}
         <mm:present referid="answernode">
           <mm:node referid="answernode">
             <mm:field name="text" id="answer" write="false"/>
