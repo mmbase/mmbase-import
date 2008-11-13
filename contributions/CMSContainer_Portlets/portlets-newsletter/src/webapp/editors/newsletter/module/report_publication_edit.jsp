@@ -55,6 +55,12 @@
                <a href="../newsletter/NewsletterPublicationEdit.do?number=${result.id}&parent=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit_defaults.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.edit'/>"></a>
                <a href="../newsletter/NewsletterPublicationTest.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_go.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendemail'/>"></a>
                <a href="../newsletter/NewsletterPublicationPublish.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_error.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendedition'/>"></a>
+               <c:if test="${result.process_status == 'concept edition'}">
+                  <a   href="../newsletter/NewsletterEditionFreeze.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/arrow_right.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendedition'/>"></a>
+               </c:if>
+               <c:if test="${result.process_status == 'Frozen'}">
+                  <a href="../newsletter/NewsletterEditionDefrost.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/arrow_undo.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendedition'/>"></a>
+               </c:if>
                <a href="../usermanagement/pagerights.jsp?number=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/rights.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.userright'/>"></a>
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="25%">
