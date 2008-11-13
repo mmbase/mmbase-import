@@ -100,11 +100,11 @@
 
       <action path="/editors/repository/SearchInitAction" type="com.finalist.cmsc.repository.forms.SearchInitAction"
          name="SearchForm" scope="request" unknown="false" validate="false">
-         <forward name="searchoptions" path="/editors/repository/search.jsp" redirect="false" />
-         <forward name="dosearch" path="/editors/repository/SearchAction.do" redirect="false" />
+         <forward name="searchoptions" path="/editors/repository/contentsearch.jsp" redirect="false" />
+         <forward name="dosearch" path="/editors/repository/ContentSearchAction.do" redirect="false" />
       </action>
-      <action path="/editors/repository/SearchAction" type="com.finalist.cmsc.repository.forms.SearchAction"
-         name="SearchForm" scope="request" input="/editors/repository/search.jsp" unknown="false" validate="true">
+      <action path="/editors/repository/ContentSearchAction" type="com.finalist.cmsc.repository.forms.ContentSearchAction"
+         name="SearchForm" scope="request" input="/editors/repository/contentsearch.jsp" unknown="false" validate="true">
       </action>
       <action path="/editors/repository/contentMassDelete" type="com.finalist.cmsc.repository.forms.ContentMassDeleteAction" 
          unknown="false" validate="false">
