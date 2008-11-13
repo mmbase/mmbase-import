@@ -1,22 +1,32 @@
 package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.PortletUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl;
 import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.domain.Publication.STATUS;
+import com.finalist.newsletter.publisher.MIMEType;
+import com.finalist.newsletter.publisher.NewsletterGenerator;
 
 public abstract class NewsletterPublicationUtil {
 
@@ -164,9 +174,12 @@ public abstract class NewsletterPublicationUtil {
    
    /**
     * Freeze a edition
+    * @throws MessagingException 
     */
-   public static void freezeEdition(Node edition) {
+   public static void freezeEdition(Node edition) throws MessagingException {
+      String static_html = getStaticHtml(edition.getNumber());
       edition.setStringValue("process_status", EditionStatus.FROZEN.value());
+      edition.setStringValue("static_html", static_html);
       edition.commit();
    }
    
@@ -192,18 +205,72 @@ public abstract class NewsletterPublicationUtil {
       edition.setStringValue("process_status", EditionStatus.FROZEN.value());
       edition.commit();
    }
+   
    /**
-    * Revoke approval of a edition
+    * change the status of the edition to be beingsent
+    */
+   public static void setBeingSent(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.BEING_SENT.value());
+      edition.commit();
+   }
+   /**
+    * change the status of the edition to be beingsent
+    */
+   public static void setBeingSent(Integer number) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node edition = cloud.getNode(number);    
+      setBeingSent(edition);
+   }
+   /**
+    * change the status  of a edition to be issent
+    */
+   public static void setIsSent(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.IS_SENT.value());
+      edition.commit();
+   }
+   /**
+    * change the status  of a edition to be issent
+    */
+   public static void setIsSent(Integer number) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node edition = cloud.getNode(number);  
+      setIsSent(edition);
+   }
+   /**
+    * get the process status  of a edition
     */
    public static String getEditionStatus(Node edition) {
       return edition.getStringValue("process_status");
    }
    /**
-    * Revoke approval of a edition
+    * get the process status  of a edition
     */
    public static String getEditionStatus(Integer number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node edition = cloud.getNode(number);      
       return edition.getStringValue("process_status");
    }
+
+   public static String getStaticHtml(int publicationId) throws MessagingException {
+
+      NewsletterPublicationCAOImpl publicationCAO = new NewsletterPublicationCAOImpl();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      publicationCAO.setCloud(cloud);
+      Publication publication = publicationCAO.getPublication(publicationId);
+      Subscription subscription = new Subscription();
+      subscription.setTerms(new HashSet<Term>());
+      subscription.setMimeType(MIMEType.HTML.type());
+      return getBody(publication, subscription);
+   }
+   private static String getBody(Publication publication, Subscription subscription)
+            throws MessagingException {     
+      String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
+               .getTerms(), publication.getId());
+      String content = " ";
+      if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0)) {
+         content = NewsletterGenerator.generate(url, subscription.getMimeType());
+      } 
+      return content + "\n";
+   }
+
 }
