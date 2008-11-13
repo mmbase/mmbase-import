@@ -12,6 +12,7 @@ import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.tree.TreeElement;
@@ -72,6 +73,17 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletteredition.publish", "newsletter",
                      "../workflow/publish.jsp?number=" + id));
+         }
+         if (SecurityUtil.isWebmaster(role)) {
+            String status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
+            if(EditionStatus.INITIAL.value().equals(status)) {
+               element.addOption(renderer.createTreeOption("arrow_right.png", "site.newsletteredition.freeze", "newsletter",
+                     "../newsletter/NewsletterEditionFreeze.do?number=" + id));
+            }
+            if(EditionStatus.FROZEN.value().equals(status)) {
+               element.addOption(renderer.createTreeOption("arrow_undo.png", "site.newsletteredition.defrost", "newsletter",
+                  "../newsletter/NewsletterEditionDefrost.do?number=" + id));
+            }
          }
       }
 
