@@ -14,7 +14,10 @@
     <setting name="background_image_template" type="string" default="" />
     <setting name="new_questiontypes" type="string" default="mcquestions,openquestions,rankingquestions,couplingquestions,hotspotquestions,valuequestions,dropquestions,fillquestions,fillselectquestions,opennumeralquestions,essayquestions,openvaluequestions" />
 
+    <setting name="education_paragraphs" type="boolean" default="false" />
+
   </scope>
+
   <scope name="people" referid="user">
   </scope>
 </component>
