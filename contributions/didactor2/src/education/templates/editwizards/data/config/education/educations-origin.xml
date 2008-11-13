@@ -58,6 +58,8 @@
     <field name="intro" ftype="html" dtminlength="0" />
     <field name="layout" />
     <field name="imagelayout" />
+    <field name="path" />
+
     <list role="sizerel" extends="config/image/sizedimages.xml" />
     <list destination="news" extends="config/news/news-list.xml" />
     <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
