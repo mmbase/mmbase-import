@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.15 2008-11-11 08:17:03 michiel Exp $
+ * @version $Id: Didactor.js,v 1.16 2008-11-13 10:48:22 michiel Exp $
  */
 
 
@@ -39,6 +39,7 @@ function Didactor() {
 	    $.query.REMOVE(param);
 	    if (this.content != null) break;
     }
+    this.block = this.content; // This is the content as defined by the URL. 'block' will no be changed.
     for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
 	    var param = Didactor.ignoredParameters[i];
 	    $.query.REMOVE(param);
@@ -129,15 +130,13 @@ Didactor.prototype.setUpQuestionEvents = function(div) {
 Didactor.prototype.resolveQuestions = function(el) {
     var did = this;
     $(el).find(".nm_questions").each(function() {
-        var params = {};
-        params.learnobject = did.content;
         var div = $("<div  />");
         var d = div[0];
         var a = this;
         if (did.questions[a] == null) {
             did.questions[a] = [false, d];
         }
-        div.load(a.href, params, function() {
+        div.load(a.href + "&learnobject=" + did.content, null, function() {
             div.find("div.question")[0].a = a;
             did.setUpQuestionEvents(d);
         });
@@ -157,11 +156,12 @@ $(document).ready(function() {
     didactor = new Didactor();
     var self = this;
     $(document).bind("didactorContentLoaded",  function(ev, data) {
+        didactor.setContent(data.number);
         didactor.resolveQuestions(data.loaded);
     });
     $(document).bind("didactorContent",  function(ev, data) {
-        didactor.setUpQuestionEvents(data.loaded);
         didactor.setContent(data.number);
+        didactor.setUpQuestionEvents(data.loaded);
     });
 
     $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
