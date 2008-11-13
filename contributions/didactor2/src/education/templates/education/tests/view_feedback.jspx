@@ -3,12 +3,17 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
-  >
-  <b><di:translate key="education.feedback" />:</b> 
+  <b><di:translate key="education.feedback" />:</b>
+
   <jsp:text> </jsp:text>
-  <mm:field name="text" escape="none"/>
-  <mm:related path="descriptionrel,learnobjects" searchdir="both">
-    <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids,_node.learnobjects@learnobject"
+
+  <mm:field name="text" escape="tagstripper(XSS)" />
+
+  <mm:related
+      path="descriptionrel,learnobjects"
+      searchdir="both">
+    <mm:treefile page="/education/index.jsp"
+                 objectlist="$includePath" referids="$referids,_node.learnobjects@learnobject"
                  write="false">
       <a target="_blank" href="${_}">
         <mm:field name="descriptionrel.description">
