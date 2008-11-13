@@ -16,7 +16,7 @@ import org.mmbase.bridge.Node;
  * type of {@link org.mmbase.bridge.CloudContext#getAuthentication}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.12 2008-09-05 16:08:07 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.13 2008-11-13 15:12:33 michiel Exp $
  * @since MMBase-1.8
  */
 public interface AuthenticationData {
@@ -117,7 +117,7 @@ public interface AuthenticationData {
      * This method returns an MMBase node that corresponds with the given UserContext
      * @since MMBase-1.9
      */
-    Node getNode(UserContext userContext) throws SecurityException;
+    int getNode(UserContext userContext) throws SecurityException;
 
     /**
      * This method returns the builder name of the nodes that will be returned by the
