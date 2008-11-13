@@ -1,0 +1,45 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    version="2.0">
+
+  <jsp:directive.variable
+       name-given="answernode"
+       variable-class="org.mmbase.bridge.Node" />
+
+  <mm:import externid="question" required="true"/>
+  <mm:import externid="madetest">-1</mm:import>
+
+
+  <mm:isnotempty referid="madetest">
+    <mm:relatednodescontainer
+        path="givenanswers,madetests"
+        element="givenanswers">
+      <mm:sortorder field="givenanswers.number" direction="down" />
+      <mm:constraint field="madetests.number" value="$madetest"/>
+      <mm:relatednodes max="1">
+        <mm:node id="answernode" />
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:isnotempty>
+
+  <mm:node referid="question">
+
+    <mm:field name="showtitle">
+      <mm:compare value="1">
+        <h2><mm:field name="title"/></h2>
+      </mm:compare>
+    </mm:field>
+
+    <div class="text">
+      <mm:field name="text" escape="tagstripper(XSS)"/>
+    </div>
+
+    <jsp:doBody />
+
+  </mm:node>
+
+</jsp:root>
+
