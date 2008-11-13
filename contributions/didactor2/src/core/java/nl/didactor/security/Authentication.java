@@ -440,7 +440,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             return new String[] {"name/password", "reincarnate"};
         case METHOD_DELEGATE:
         case METHOD_SESSIONDELEGATE:
-            return new String[] {"name/password", "login", "reincarnate"}; // redirect page
+            return new String[] {"login", "name/password", "reincarnate"}; // redirect page
         case METHOD_LOGINPAGE:
             return new String[] {"name/password", "login", "reincarnate"};
         default:
