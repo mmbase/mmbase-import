@@ -1056,3 +1056,8 @@ body.editwizards .titlebar a {
 img.icon {
   border: none;
 }
+
+
+a.answerquestion {
+  display: none;
+}
