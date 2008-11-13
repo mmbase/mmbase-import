@@ -79,9 +79,7 @@ public class NewsletterPublisher {
          setTitle(message, newsletter.getTitle());
          // setMIME(message, subscription.getMimeType());
          Transport.send(message);
-         newsletterEditionNode.setStringValue("process_status",EditionStatus.APPROVED.value());
-         newsletterEditionNode.setStringValue("static_html",originalBody);
-         newsletterEditionNode.commit();
+
          log.debug(String.format("mail send! publication %s to %s in %s format", publication.getId(), subscription
                .getId(), subscription.getMimeType()));
       } catch (MessagingException e) {

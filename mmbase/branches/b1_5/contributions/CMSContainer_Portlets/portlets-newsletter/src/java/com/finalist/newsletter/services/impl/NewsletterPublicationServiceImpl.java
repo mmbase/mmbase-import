@@ -23,6 +23,7 @@ import com.finalist.newsletter.domain.Publication.STATUS;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
 
@@ -77,9 +78,8 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
    /**
     * deliver specific publication.
-    * 
-    * @param publicationId
-    *            The id of the publication to be sent out
+    *
+    * @param publicationId The id of the publication to be sent out
     */
    public Map<String, List<String>> deliver(int publicationId) {
 
@@ -89,9 +89,8 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       Map<String, List<String>> sendResults = new HashMap<String, List<String>>();
       List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
       log.debug("deliver publication " + publicationId + " which has " + subscriptions.size() + " subscriptions");
-
+      NewsletterPublicationUtil.setBeingSent(publicationId);
       Publication publication = publicationCAO.getPublication(publicationId);
-
       for (Subscription subscription : subscriptions) {
          Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
          Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
@@ -105,6 +104,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
             log.error(e.getMessage());
          }
       }
+      NewsletterPublicationUtil.setIsSent(publicationId);
       sendResults.put(SEND_SUCCESS, sendSuccess);
       sendResults.put(SEND_FAIL, sendFails);
 
@@ -148,7 +148,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    }
 
    public List<Publication> searchPublication(String title, String subject,
-         String description, String intro, boolean paging) {
+                                              String description, String intro, boolean paging) {
       return publicationCAO.getPublications(title, subject, description, intro, paging);
    }
 
