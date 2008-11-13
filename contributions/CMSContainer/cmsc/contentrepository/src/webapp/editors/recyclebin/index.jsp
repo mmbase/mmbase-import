@@ -23,8 +23,8 @@
         </div>
     </div>
 
-	<div class="editor">
-		<mm:cloud jspvar="cloud" rank="basic user" method='http'>
+   <div class="editor">
+      <mm:cloud jspvar="cloud" rank="basic user" method='http'>
                
          <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
             <mm:field name="number" jspvar="trashNumber" vartype="Integer">
@@ -57,8 +57,8 @@
                
                      <div class="body">   
                         <mm:node number="$parentchannel">
-                           <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
-                              <mm:sortorder field="contentelement.${sortBy}" direction="${direction}" />
+                           <mm:relatednodescontainer path="creationrel,assetelement" searchdirs="source" element="assetelement">
+                              
             
                               <c:set var="listSize"><mm:size/></c:set>
                               <c:set var="resultsPerPage" value="50"/>
@@ -83,27 +83,92 @@
                            
                                  <tr <mm:even inverse="true">class="swap"</mm:even>>
                                     <td nowrap>
-                                    <a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />" title="<fmt:message key="recyclebin.info" />"/></a>
-                                    <a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
-                                    <a href="javascript:restore('<mm:field name="number" />', '${offset}');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />" title="<fmt:message key="recyclebin.restore" />"/></a>
+                                       <a href="javascript:info('<mm:field name="number" />', '<mm:nodeinfo type="guitype"/>')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />" title="<fmt:message key="recyclebin.info" />"/></a>
+                                       <a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
+                                       <a href="javascript:restore('<mm:field name="number" />', '${offset}','<mm:nodeinfo type="guitype"/>');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />" title="<fmt:message key="recyclebin.restore" />"/></a>
                                     </td>
-                                       <td>
-                                         <mm:nodeinfo type="guitype"/>
-                                       </td>
-                                       <td><mm:field name="title"/></td>
-                                       <td><mm:field name="lastmodifier" /></td>
-                                    <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
-                                    <td><mm:field name="number"/></td>
+                                    <td>
+                                      <mm:nodeinfo type="guitype"/>
+                                    </td>
+                                    <td>
+                                       <mm:field name="title"/>
+                                    </td>
+                                    <td>
+                                       <mm:field name="lastmodifier" />
+                                    </td>
+                                    <td nowrap>
+                                       <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field>
+                                    </td>
+                                    <td>
+                                       <mm:field name="number"/> 
+                                    </td>
                                  </tr>
                            
-                                 <mm:last>
-                                       </tbody>
-                                    </table>
-                                    <%@include file="../pages.jsp" %>
-                                 </mm:last>
-                             </mm:listnodes>
-                           </mm:relatednodescontainer>
-                        </mm:node>
+                              <mm:last>
+                                    </tbody>
+                                 </table>
+                 
+                              </mm:last>
+                          </mm:listnodes>
+                        </mm:relatednodescontainer>                   
+                     </mm:node>
+
+                      <mm:node number="$parentchannel">
+                           <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
+                             
+            
+                              <c:set var="listSize"><mm:size/></c:set>
+                              <c:set var="resultsPerPage" value="50"/>
+                              <c:set var="offset" value="${not empty param.offset ? param.offset : '0'}"/>
+                              
+                              <mm:listnodes jspvar="node" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
+                                 <mm:first>
+                                   
+                                     <table>
+                                       <thead>
+                                          <tr>
+                                             <th style="width: 56px;"></th>
+                                             <th style="width: 68px;"><a href="?sortBy=otype&direction=${direction}" class="headerlink"><fmt:message key="locate.typecolumn" /></a></th>
+                                             <th><a href="?sortBy=title&direction=${direction}" class="headerlink"><fmt:message key="locate.titlecolumn" /></a></th>
+                                             <th style="width: 50px;"><a href="?sortBy=creator&direction=${direction}" class="headerlink"><fmt:message key="locate.authorcolumn" /></a></th>
+                                             <th style="width: 120px;"><a href="?sortBy=lastmodifieddate&direction=${direction}" class="headerlink"><fmt:message key="locate.lastmodifiedcolumn" /></a></th>
+                                             <th style="width: 60px;"><a href="?sortBy=number&direction=${direction}" class="headerlink"><fmt:message key="locate.numbercolumn" /></a></th>
+                                          </tr>
+                                       </thead>
+                                       <tbody class="hover">
+                                 </mm:first>
+                           
+                                 <tr <mm:even inverse="true">class="swap"</mm:even>>
+                                    <td nowrap>
+                                       <a href="javascript:info('<mm:field name="number" />', '<mm:nodeinfo type="guitype"/>')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />" title="<fmt:message key="recyclebin.info" />"/></a>
+                                       <a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
+                                       <a href="javascript:restore('<mm:field name="number" />', '${offset}', '<mm:nodeinfo type="guitype"/>');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />" title="<fmt:message key="recyclebin.restore" />"/></a>
+                                    </td>
+                                    <td>
+                                      <mm:nodeinfo type="guitype"/>
+                                    </td>
+                                    <td>
+                                       <mm:field name="title"/>
+                                    </td>
+                                    <td>
+                                       <mm:field name="lastmodifier" />
+                                    </td>
+                                    <td nowrap>
+                                       <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field>
+                                    </td>
+                                    <td>
+                                       <mm:field name="number"/> 
+                                    </td>
+                                 </tr>
+                           
+                              <mm:last>
+                                    </tbody>
+                                 </table>
+                                 <%@include file="../pages.jsp" %>
+                              </mm:last>
+                          </mm:listnodes>
+                        </mm:relatednodescontainer>
+                     </mm:node>
 
                      </div>
 
@@ -120,8 +185,8 @@
          </mm:node>
 
       </mm:cloud>
-		<div class="side_block_end"></div>
-	</div>	
+      <div class="side_block_end"></div>
+   </div>   
 
 </body>
 </html:html>
