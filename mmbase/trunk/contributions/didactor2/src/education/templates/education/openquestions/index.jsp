@@ -7,6 +7,8 @@
     <mm:cloud rank="didactor user">
 
       <di:question>
+
+        AN: ${answernode}
         <mm:present referid="answernode">
           <mm:node referid="answernode">
             <mm:field name="text" id="answer" write="false"/>
@@ -16,7 +18,7 @@
         <c:choose>
           <c:when test="${_node.layout eq 0}">
             <!-- Generate large input field -->
-            <textarea name="${question}"
+            <textarea name="${_node}"
                       class="question mm_validate mm_dt_requiredfield"
                       cols="80" rows="5">
               <mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present>
@@ -27,7 +29,7 @@
             <!-- Generate small input field -->
             <input type="text" size="100"
                    class="question mm_validate mm_dt_requiredfield"
-                   name="${question}" value="${answer}"/>
+                   name="${_node}" value="${answer}"/>
           </c:otherwise>
         </c:choose>
 

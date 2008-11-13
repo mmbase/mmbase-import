@@ -29,7 +29,8 @@
         <di:copybook><mm:node id="copybookNo" /></di:copybook>
 
         <mm:node referid="copybookNo">
-          <mm:nodefunction id="madetest" name="madetest"
+          <mm:nodefunction id="madetest"
+                           name="madetest"
                            referids="learnobject@test,clearmadetest@clear" />
         </mm:node>
 
