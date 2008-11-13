@@ -366,6 +366,9 @@ public class Authentication extends org.mmbase.security.Authentication {
         }
     }
 
+    /**
+     * @deprecated
+     */
     protected static Node getUserNode(Cloud cloud, String id){
         NodeManager people = cloud.getNodeManager("people");
         NodeQuery nq = people.createQuery();
@@ -378,13 +381,15 @@ public class Authentication extends org.mmbase.security.Authentication {
         }
     }
 
+    /**
+     * @deprecated
+     */
     public static Node getCurrentUserNode(Cloud cloud){
         return getUserNode(cloud, cloud.getUser().getIdentifier());
 
     }
-    @Override
-    public Node getNode(org.mmbase.security.UserContext userContext) throws SecurityException {
-        return getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null), userContext.getIdentifier());
+    @Override public int getNode(org.mmbase.security.UserContext userContext) throws SecurityException {
+        return getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null), userContext.getIdentifier()).getNumber();
     }
 
 
