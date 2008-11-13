@@ -51,28 +51,22 @@ public class NewsletterPublisher {
 
    public void deliver(Publication publication, Subscription subscription) {
       try {
-         //if needed to prompt user this validate will be remove to Action
+         // if needed to prompt user this validate will be remove to Action
          String originalBody = getBody(publication, subscription);
-         if (!containAticle(publication)||StringUtils.isBlank(HtmlBodyParser.html2text(originalBody))) {
-            log.error("the mail does not contain any aticle, please check your term or article !");
-            return;
-         } else {
-            NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-            // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
-            Newsletter newsletter = publication.getNewsletter();
-            String replyAddress = newsletter.getReplyAddress();
-            String toEmail = subscription.getEmail();
-            Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
-            setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress,
-                  newsletter.getReplyName());
-            setContent(message, publication, subscription, originalBody);
-            setRecipient(message, subscription.getEmail());
-            // setBody(publication, subscription, message);
-            setTitle(message, newsletter.getTitle());
-            // setMIME(message, subscription.getMimeType());
-            Transport.send(message);
-         }
-
+         NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+         // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
+         Newsletter newsletter = publication.getNewsletter();
+         String replyAddress = newsletter.getReplyAddress();
+         String toEmail = subscription.getEmail();
+         Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
+         setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress, newsletter
+               .getReplyName());
+         setContent(message, publication, subscription, originalBody);
+         setRecipient(message, subscription.getEmail());
+         // setBody(publication, subscription, message);
+         setTitle(message, newsletter.getTitle());
+         // setMIME(message, subscription.getMimeType());
+         Transport.send(message);
          log.debug(String.format("mail send! publication %s to %s in %s format", publication.getId(), subscription
                .getId(), subscription.getMimeType()));
       } catch (MessagingException e) {
