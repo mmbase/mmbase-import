@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.25 2008-10-27 18:24:22 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.26 2008-11-13 15:18:36 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -64,8 +64,7 @@ public class Authenticate extends Authentication {
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected void load() throws SecurityException {
+    @Override protected void load() throws SecurityException {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
         Users users = Users.getBuilder();
         if (users == null) {
@@ -95,11 +94,11 @@ public class Authenticate extends Authentication {
     /**
      * @since MMBase-1.9
      */
-    public org.mmbase.bridge.Node getNode(org.mmbase.bridge.Cloud cloud) throws SecurityException {
-        return cloud.getNode(cloud.getUser().getIdentifier());
+    @Override public int getNode(UserContext user) throws SecurityException {
+        return Integer.valueOf(user.getIdentifier());
     }
 
-    public String getUserBuilder() {
+    @Override public String getUserBuilder() {
         return "mmbaseusers";
     }
 
@@ -107,8 +106,7 @@ public class Authenticate extends Authentication {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public UserContext login(String s, Map<String, ?> map, Object aobj[]) throws SecurityException  {
+    @Override public UserContext login(String s, Map<String, ?> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
@@ -220,7 +218,7 @@ public class Authenticate extends Authentication {
     }
 
 
-    public String[] getTypes(int method) {
+    @Override public String[] getTypes(int method) {
         if (allowEncodedPassword) {
             if (method == METHOD_ASIS) {
                 return new String[] {"anonymous", "name/password", "name/encodedpassword", "class"};
@@ -244,7 +242,7 @@ public class Authenticate extends Authentication {
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
 
-    public Parameters createParameters(String application) {
+    @Override public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
             return new Parameters(PARAMETERS_ANONYMOUS);
