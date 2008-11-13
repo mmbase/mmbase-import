@@ -51,60 +51,63 @@ public class NewsletterPublisher {
 
    public void deliver(Publication publication, Subscription subscription) {
       try {
-         NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-         // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
-         Newsletter newsletter = publication.getNewsletter();
-         String replyAddress = newsletter.getReplyAddress();
-         String toEmail = subscription.getEmail();
-         Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
+         //if needed to prompt user this validate will be remove to Action
+         String originalBody = getBody(publication, subscription);
+         if (!containAticle(publication)||StringUtils.isBlank(HtmlBodyParser.html2text(originalBody))) {
+            log.error("the mail does not contain any aticle, please check your term or article !");
+            return;
+         } else {
+            NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+            // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
+            Newsletter newsletter = publication.getNewsletter();
+            String replyAddress = newsletter.getReplyAddress();
+            String toEmail = subscription.getEmail();
+            Message message = new MimeMessage(getMailSession(toEmail, replyAddress));
+            setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress,
+                  newsletter.getReplyName());
+            setContent(message, publication, subscription, originalBody);
+            setRecipient(message, subscription.getEmail());
+            // setBody(publication, subscription, message);
+            setTitle(message, newsletter.getTitle());
+            // setMIME(message, subscription.getMimeType());
+            Transport.send(message);
+         }
 
-         setSenderInfomation(message, newsletter.getFromAddress(), newsletter.getFromName(), replyAddress, newsletter.getReplyName());
-
-         setContent(message, publication, subscription);
-         setRecipient(message, subscription.getEmail());
-         // setBody(publication, subscription, message);
-         setTitle(message, newsletter.getTitle());
-         // setMIME(message, subscription.getMimeType());
-
-         Transport.send(message);
-         log.debug(String.format(
-                  "mail send! publication %s to %s in %s format",
-                  publication.getId(), subscription.getId(), subscription.getMimeType())
-         );
-      }
-      catch (MessagingException e) {
+         log.debug(String.format("mail send! publication %s to %s in %s format", publication.getId(), subscription
+               .getId(), subscription.getMimeType()));
+      } catch (MessagingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
-      }
-      catch (UnsupportedEncodingException e) {
+      } catch (UnsupportedEncodingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
       }
    }
 
-   private void setContent(Message message, Publication publication,
-                           Subscription subscription) {
+   private void setContent(Message message, Publication publication,Subscription subscription,String originalBody) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterPublicationNode = cloud.getNode(publication.getId());
       NodeList attachmentNodes = newsletterPublicationNode.getRelatedNodes("attachments");
       Multipart multipart = new MimeMultipart();
-      MimeBodyPart mdp = new MimeBodyPart();
-      try {
-         String type=subscription.getMimeType();
-         String o=getBody(publication, subscription);
-         log.info("the content will be sended:"+o+"\n "+"his type is :"+type);
-         mdp.setContent(o, type);
-         multipart.addBodyPart(mdp);
-      }
-      catch (MessagingException e) {
-         log.error(e);
-      }
-
+      setBody(publication, subscription, multipart,originalBody);
       setAttachment(multipart, attachmentNodes, MimeType.attachment);
       NodeList imageNodes = newsletterPublicationNode.getRelatedNodes("images");
       setAttachment(multipart, imageNodes, MimeType.image);
       try {
          message.setContent(multipart);
+      }
+      catch (MessagingException e) {
+         log.error(e);
+      }
+   }
+
+   private void setBody(Publication publication, Subscription subscription, Multipart multipart,String originalBody) {
+      MimeBodyPart mdp = new MimeBodyPart();
+      try {
+         String type=subscription.getMimeType();
+         log.info("the content will be sended:"+originalBody+"\n "+"his type is :"+type);
+         mdp.setContent(originalBody, type);
+         multipart.addBodyPart(mdp);
       }
       catch (MessagingException e) {
          log.error(e);
@@ -142,8 +145,7 @@ public class NewsletterPublisher {
       }
    }
 
-   private String getBody(Publication publication, Subscription subscription)
-            throws MessagingException {
+   private String getBody(Publication publication, Subscription subscription) throws MessagingException {
 
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
       ICache cache = null;
@@ -155,8 +157,7 @@ public class NewsletterPublisher {
       }
       String content = " ";
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
-         int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-         if (articleCounts == 0 ) {            
+         if (!containAticle(publication)) {
             content = publication.getNewsletter().getTxtempty();
             log.info("the newsletter use textEmpty" + content);
          } else {
@@ -165,14 +166,23 @@ public class NewsletterPublisher {
          }
          if (null != getPersonalise()) {
             content = getPersonalise().personalise(content, subscription, publication);
-            log.info("the content sended is Personalised :"+content);
+            log.info("the content sended is Personalised :" + content);
          }
          cache.add(url, content);
       } else {
          content = (String) cache.get(url);
-         log.info("the content sended is from the cache"+content);
+         log.info("the content sended is from the cache" + content);
       }
       return content + "\n";
+   }
+
+   private boolean containAticle(Publication publication) {
+      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
+      if (articleCounts == 0 ) {            
+         return false;
+      }else{
+         return true;
+      }
    }
 
    private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
