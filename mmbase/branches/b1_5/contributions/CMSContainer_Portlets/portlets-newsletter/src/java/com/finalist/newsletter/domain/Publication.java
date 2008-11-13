@@ -19,6 +19,7 @@ public class Publication {
    private int subscriptions;
    private int bounced;
    private String process_status;
+   private String static_html;
 
    private String title;
 
@@ -177,6 +178,14 @@ public class Publication {
 
    public void setProcess_status(String process_status) {
       this.process_status = process_status;
+   }
+
+   public String getStatic_html() {
+      return static_html;
+   }
+
+   public void setStatic_html(String static_html) {
+      this.static_html = static_html;
    }
 
 }
