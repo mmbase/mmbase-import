@@ -11,7 +11,7 @@
 
   <mm:hasrelationmanager sourcemanager="${_node}" destinationmanager="images" role="background">
     <mm:relatednodescontainer type="images" role="background">
-      <mm:size>
+      <mm:size write="false">
         <c:choose>
           <c:when test="${_ eq 0}">
             <mm:relatednodes path="posrel,object">

@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.16 2008-11-13 10:48:22 michiel Exp $
+ * @version $Id: Didactor.js,v 1.17 2008-11-13 11:17:15 michiel Exp $
  */
 
 
@@ -23,7 +23,9 @@ function Didactor() {
 
     $.timer(500, function(timer) {
 	    self.reportOnline();
-      var interval = self.getSetting("Didactor-PageReporterInterval") * 1000;
+        var interval = self.getSetting("Didactor-PageReporterInterval");
+        interval = interval == "" ? 10000 : interval * 1000;
+        if (interval < 10000) interval = 10000;
 	    timer.reset(self.pageReporter ? interval : 1000 * 60 * 2);
     });
     if (this.pageReporter) {
@@ -113,7 +115,7 @@ Didactor.prototype.setUpQuestionEvents = function(div) {
                     params[this.name] = this.value;
                 }
             });
-            $.ajax({url: this.href, type: "POST", dataType: "xml", data: params,
+            $.ajax({url: this.href, async: false, type: "POST", dataType: "xml", data: params,
                     complete: function(res, status) {
                         if (status == "success") {
                             $(div).append(res.responseText);
@@ -149,6 +151,18 @@ Didactor.prototype.resolveQuestions = function(el) {
 
 }
 
+Didactor.prototype.saveQuestions = function() {
+    var didactor = this;
+    for (key in didactor.questions) {
+        var status = didactor.questions[key];
+        var changed = status[0];
+        var div = status[1];
+        if (changed) {
+            $(div).find(".answerquestion").click();
+            didactor.questions[key][0] = false;
+        }
+    }
+}
 
 
 var didactor;
@@ -165,16 +179,13 @@ $(document).ready(function() {
     });
 
     $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
-        for (key in didactor.questions) {
-            var status = didactor.questions[key];
-            var changed = status[0];
-            var div = status[1];
-            if (changed) {
-                $(div).find(".answerquestion").click();
-                didactor.questions[key][0] = false;
-            }
-        }
+        didactor.saveQuestions();
+
     });
+    $(window).bind("beforeunload", function() {
+        didactor.saveQuestions();
+    });
+
     // if this is a staticly loaded piece of html, there may be some questions already
     didactor.resolveQuestions(document);
 });
