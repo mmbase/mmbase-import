@@ -19,7 +19,9 @@
     <mm:import externid="question"    required="true" />
     <mm:import externid="learnobject"  required="true" />
     <mm:node number="${question}">
-      <div class="question" id="question_${_node}">
+      <mm:nodeinfo type="nodemanager" id="nm" write="false" />
+
+      <div class="question ${nm}" id="question_${_node}">
 
         <!-- make sure there is a 'madetest' object to containe the answers -->
 
@@ -32,13 +34,10 @@
         </mm:node>
 
 
-        <mm:nodeinfo type="nodemanager" id="nm" write="false" />
-
         <mm:include page="${nm}/index.jsp" referids="madetest" />
 
-
-
-        <mm:link absolute="server"  page="rate_question.jspx"
+        <mm:link absolute="server"
+                 page="rate_question.jspx"
                  referids="question,madetest,learnobject,nm">
           <a
               class="answerquestion"
