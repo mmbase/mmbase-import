@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.192 2008-10-21 17:23:01 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.193 2008-11-13 15:04:59 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -105,14 +105,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @throws BridgeException   No security could be obtained.
      * @throws SecurityException  Could not perform login
      */
-    BasicCloud(String name, String authenticationType, Map<String, ?> loginInfo, CloudContext cloudContext) {
+    BasicCloud(String name, String authenticationType, Map<String, ?> loginInfo, BasicCloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
-        this.cloudContext = (BasicCloudContext) cloudContext;
+        this.cloudContext = cloudContext;
         init();
         userContext = BasicCloudContext.mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
         if (userContext == null) {
             log.debug("Login failed");
-            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
+            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + "  on " + BasicCloudContext.mmb.getMMBaseCop().getAuthentication());
         }
         // end authentication...
 
