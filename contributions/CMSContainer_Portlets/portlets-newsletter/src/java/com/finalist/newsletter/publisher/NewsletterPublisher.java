@@ -3,6 +3,7 @@ package com.finalist.newsletter.publisher;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Subscription;
@@ -51,8 +52,19 @@ public class NewsletterPublisher {
 
    public void deliver(Publication publication, Subscription subscription) {
       try {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterEditionNode = cloud.getNode(publication.getId());
          // if needed to prompt user this validate will be remove to Action
-         String originalBody = getBody(publication, subscription);
+         String originalBody  = "";
+         String status = newsletterEditionNode.getStringValue("process_status");
+         if (EditionStatus.INITIAL.value().equals(status)) {
+            originalBody = getBody(publication, subscription);
+         }
+         else {
+            originalBody = newsletterEditionNode.getStringValue("static_html");
+         }
+         
+
          NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
          // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
          Newsletter newsletter = publication.getNewsletter();
@@ -67,6 +79,9 @@ public class NewsletterPublisher {
          setTitle(message, newsletter.getTitle());
          // setMIME(message, subscription.getMimeType());
          Transport.send(message);
+         newsletterEditionNode.setStringValue("process_status",EditionStatus.APPROVED.value());
+         newsletterEditionNode.setStringValue("static_html",originalBody);
+         newsletterEditionNode.commit();
          log.debug(String.format("mail send! publication %s to %s in %s format", publication.getId(), subscription
                .getId(), subscription.getMimeType()));
       } catch (MessagingException e) {
