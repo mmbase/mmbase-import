@@ -11,14 +11,17 @@
       <mm:import externid="question" required="true"/>
       <mm:import externid="madetest" required="true"/>
 
-      <mm:import externid="givenanswer" />
-      <mm:notpresent referid="givenanswer">
+      <mm:import externid="answernode" />
+
+      <mm:notpresent referid="answernode">
+        <mm:remove referid="answernode" />
         <mm:createnode id="answernode" type="givenanswers" />
-        <mm:createrelation role="related" source="madetest" destination="givenanswer"/>
-        <mm:createrelation role="related" source="question" destination="givenanswer"/>
+        <mm:createrelation role="related" source="madetest" destination="answernode"/>
+        <mm:createrelation role="related" source="question" destination="answernode"/>
       </mm:notpresent>
-      <mm:present referid="givenanswer">
-        <mm:node id="answernode" referid="givenanswer" />
+
+      <mm:present referid="answernode">
+        <mm:node id="answernode" referid="answernode" />
       </mm:present>
 
       <jsp:directive.include file="/education/tests/definitions.jsp" />
