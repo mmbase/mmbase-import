@@ -9,6 +9,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterEditionFreeze extends MMBaseFormlessAction{
@@ -25,7 +26,15 @@ public class NewsletterEditionFreeze extends MMBaseFormlessAction{
       if(isSaveAction(request)) {
          Node edition = cloud.getNode(number);
          request.setAttribute("action", "freeze");
-         NewsletterPublicationUtil.freezeEdition(edition);
+         if(!EditionStatus.FROZEN.value().equals(edition.getValue("process_status"))) {
+            NewsletterPublicationUtil.freezeEdition(edition);
+         }
+         if (StringUtils.isNotBlank(request.getParameter("forward"))) {
+            ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
+                     + request.getParameter("newsletterId"));
+            ret.setRedirect(true);
+            return ret;
+         }
          return mapping.findForward("success");
       }
       if(isCancelAction(request)) {
