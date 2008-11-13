@@ -91,9 +91,11 @@
                   <cmsc:rights nodeNumber="<%=trashNumber.intValue()%>" var="rolename"/>
                   <c:if test="${rolename eq 'webmaster'}">
                      <li class="trashbin">
-                        <a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
+                        <mm:countrelations id="contentNum"type="contentelement" searchdir="destination" role="contentrel"><mm:write write="false" /></mm:countrelations>
+                        <mm:countrelations id="assetNum" type="assetelement" searchdir="source" role="creationrel"><mm:write write="false" /></mm:countrelations>
+                        <a href="<mm:url page="../recyclebin/index.jsp"/>" target="content" >
                            <fmt:message key="selector.recyclebin" />
-                           (<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
+                           (<c:out value="${contentNum+assetNum}" />)
                         </a>
                      </li>
                   </c:if>
