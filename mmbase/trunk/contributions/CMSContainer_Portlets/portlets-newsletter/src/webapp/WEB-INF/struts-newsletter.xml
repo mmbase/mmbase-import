@@ -184,11 +184,13 @@
          <forward name="confirm" path="/editors/newsletter/edition_confirm.jsp" redirect="false" />
          <forward name="success" path="/editors/newsletter/edition_results.jsp" redirect="false" />
          <forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+         <forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
       </action>
       <action path="/editors/newsletter/NewsletterEditionFreeze" type="com.finalist.newsletter.forms.NewsletterEditionFreeze" unknown="false" validate="false">
          <forward name="confirm" path="/editors/newsletter/edition_confirm.jsp" redirect="false" />
          <forward name="success" path="/editors/newsletter/edition_results.jsp" redirect="false" />
          <forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+         <forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
       </action>
       <!-- ==== Newsletter Statistic ==== -->
       <action path="/editors/newsletter/ShowNewsletters"
