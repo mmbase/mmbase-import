@@ -246,6 +246,11 @@
          name="AssetUploadForm" unknown="false" validate="true">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
+      <action path="/editors/recyclebin/RestoreAssetAction" type="com.finalist.cmsc.recyclebin.forms.RestoreAssetAction" 
+         unknown="false" validate="false">
+         <forward name="restore" path="/editors/recyclebin/restore.jsp" redirect="false" />
+         <forward name="success" path="/editors/recyclebin/index.jsp" redirect="false" />
+      </action>
 
    </action-mappings>
 

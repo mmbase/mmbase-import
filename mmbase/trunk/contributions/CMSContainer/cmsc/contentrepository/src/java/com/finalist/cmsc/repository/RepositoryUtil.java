@@ -931,8 +931,8 @@ public final class RepositoryUtil {
                 CONTENTCHANNEL), DELETIONREL, DESTINATION);
     }
 
-    public static NodeList getDeletionChannels(Node contentNode) {
-        return contentNode.getRelatedNodes(CONTENTCHANNEL, DELETIONREL, DESTINATION);
+    public static NodeList getDeletionChannels(Node elementNode) {
+        return elementNode.getRelatedNodes(CONTENTCHANNEL, DELETIONREL, DESTINATION);
     }
 
     /**
