@@ -6,8 +6,6 @@
   <mm:content postprocessor="none">
     <mm:cloud method="delegate">
 
-      <mm:import externid="question" required="true"/>
-      <mm:import externid="madetest">-1</mm:import>
 
       <!--
       Multiple choice questions
@@ -23,28 +21,15 @@
       5: pulldown menu (only for type 0) / fixed order
       -->
 
-      <mm:node number="$question">
+      <di:question>
 
-        <mm:isnotempty referid="madetest">
+
+        <mm:present referid="answernode">
           <mm:relatednodes
               type="givenanswers" orderby="number" directions="down" max="1">
             <mm:relatednodes type="mcanswers" id="givenanswers" />
           </mm:relatednodes>
-        </mm:isnotempty>
-
-
-        <mm:field name="showtitle">
-          <mm:compare value="1">
-            <h2><mm:field name="title"/></h2>
-          </mm:compare>
-        </mm:field>
-
-        <p /><!-- WTF, why don't we produce, say, for example, HTML!  This is pure horror -->
-
-        <mm:field name="text" escape="tagstripper(XSS)"/>
-
-        <p/>
-
+        </mm:present>
 
         <mm:field name="type" id="questiontype" write="false" />
         <mm:field name="layout" id="questionlayout" write="false" />
@@ -78,9 +63,8 @@
                   <mm:field name="description" escape="tagstripper(xss)"/>
                 </mm:relatednodes>
               </div>
-              ${mm:contains(givenanswers, _node)} ${question} ${givenanswers} / ${_node}
               <mm:import externid="${question}" id="answer" />
-              <mm-t:radio type="checkbox" name="${question}_${_node}"  value="${_node}" checked="${mm:contains(givenanswers, _node)}" />
+              <mm:radio type="checkbox" name="${question}_${_node}"  value="${_node}" checked="${mm:contains(givenanswers, _node)}" />
               <mm:field name="text" />
 
               <!-- Each answer on a new line -->
@@ -112,8 +96,7 @@
             </mm:compare>
           </mm:listnodes>
         </mm:compare>
-
-      </mm:node>
+      </di:question>
     </mm:cloud>
   </mm:content>
 </jsp:root>
