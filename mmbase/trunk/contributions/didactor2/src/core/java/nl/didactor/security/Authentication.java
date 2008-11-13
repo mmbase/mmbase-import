@@ -19,6 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.Casting;
 
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -101,7 +102,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         if (education != null && n != null) {
             Function fun = n.getFunction("class");
             Parameters params = fun.createParameters();
-            params.set("education", education);
+            params.set("education", Casting.toInt(education));
             Node claz = (Node) fun.getFunctionValue(params);
             req.setAttribute("class", claz);
         }
@@ -115,6 +116,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         log.debug("Processing didactor logout because ", new Exception());
         HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
+            session.removeAttribute(nl.didactor.filter.ProviderFilter.USER_KEY);
             String loginComponent = (String)session.getAttribute("didactor-logincomponent");
             if (loginComponent != null) {
                 for (AuthenticationComponent ac : securityComponents) {
@@ -389,7 +391,9 @@ public class Authentication extends org.mmbase.security.Authentication {
 
     }
     @Override public int getNode(org.mmbase.security.UserContext userContext) throws SecurityException {
-        return getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null), userContext.getIdentifier()).getNumber();
+        String id = userContext.getIdentifier();
+        Node n = getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null), id);
+        return n == null ? -1 : n.getNumber();
     }
 
 
