@@ -22,7 +22,7 @@
   <properties>
     <property name="key:new:name">education.createnewopenquestions</property>
     <property name="key:new:description">education.createnewopenquestionsdescription</property>
-    <property name="wizard">config/question/mcquestions</property>
+    <property name="wizard">config/question/openquestions</property>
   </properties>
 
   <fieldlist >
