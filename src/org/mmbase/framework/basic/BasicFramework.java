@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.38 2008-10-25 08:32:01 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.39 2008-11-13 16:24:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -272,7 +272,16 @@ public class BasicFramework extends Framework {
 
     public Node getUserNode(Parameters frameworkParameters) {
         Cloud cloud = frameworkParameters.get(Parameter.CLOUD);
-        return cloud == null ? null : cloud.getCloudContext().getAuthentication().getNode(cloud.getUser());
+        if (cloud == null) {
+            return null;
+        } else {
+            int userNode = cloud.getCloudContext().getAuthentication().getNode(cloud.getUser());
+            if (cloud.hasNode(userNode)) {
+                return cloud.getNode(userNode);
+            } else {
+                return null;
+            }
+        }
     }
 
     public String getUserBuilder() {
