@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.12 2008-11-12 16:38:01 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.13 2008-11-13 13:08:10 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -289,6 +289,7 @@ public class ResourceLoader extends ClassLoader {
         }
         return path;
     }
+
 
     /**
      * Utility method to return the name of the directory of a resource-name. This does not include
@@ -1701,40 +1702,44 @@ public class ResourceLoader extends ClassLoader {
         readClassWeights();
     }
 
+    private static Comparator urlComparator;
+    private static Comparator getUrlComparator() {
+        if (urlComparator == null) {
+            urlComparator = new Comparator() {
+                    public int compare(final Object o1, final Object o2)  {
+                        URL u1 = (URL) o1;
+                        URL u2 = (URL) o2;
+                        int w1 = 0;
+                        int w2 = 0;
+                        boolean foundw1 = false;
+                        boolean foundw2 = false;
+                        if (classWeights != null) {
+                            Iterator i = classWeights.entrySet().iterator();
+                            while (i.hasNext()) {
+                                Map.Entry e  = (Map.Entry) i.next();
+                                if (! foundw1 && ((Pattern) e.getKey()).matcher(u1.toExternalForm()).matches()) {
+                                    w1 = ((Integer) e.getValue()).intValue();
+                                    log.trace("Matched " + u1 + " " + e.getKey() + " -> " + w1);
+                                    foundw1 = true;
+                                }
+                                if (! foundw2 && ((Pattern) e.getKey()).matcher(u2.toExternalForm()).matches()) {
+                                    w2 = ((Integer) e.getValue()).intValue();
+                                    log.trace("Matched " + u2 + " " + e.getKey() + " -> " + w2);
+                                    foundw2 = true;
+                                }
+                            }
+                        }
+                        int r = w2 - 1;
+                        return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
 
-
-
-    private static final Comparator urlComparator = new Comparator() {
-        public int compare(final Object o1, final Object o2)  {
-            URL u1 = (URL) o1;
-            URL u2 = (URL) o2;
-            int w1 = 0;
-            int w2 = 0;
-            boolean foundw1 = false;
-            boolean foundw2 = false;
-            Iterator i = classWeights.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry e  = (Map.Entry) i.next();
-                if (! foundw1 && ((Pattern) e.getKey()).matcher(u1.toExternalForm()).matches()) {
-                    w1 = ((Integer) e.getValue()).intValue();
-                    log.trace("Matched " + u1 + " " + e.getKey() + " -> " + w1);
-                    foundw1 = true;
-                }
-                if (! foundw2 && ((Pattern) e.getKey()).matcher(u2.toExternalForm()).matches()) {
-                    w2 = ((Integer) e.getValue()).intValue();
-                    log.trace("Matched " + u2 + " " + e.getKey() + " -> " + w2);
-                    foundw2 = true;
-                }
-            }
-            int r = w2 - 1;
-            return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
-
+                    }
+                    public boolean equals(Object o) {
+                        return o == this;
+                    }
+                };
         }
-        public boolean equals(Object o) {
-            return o == this;
-        }
-    };
-
+        return urlComparator;
+    }
 
 
     protected class ClassLoaderURLStreamHandler extends PathURLStreamHandler {
@@ -1780,7 +1785,7 @@ public class ResourceLoader extends ClassLoader {
          * @since MMBase-1.9.1
          */
         protected SortedSet getSortedResources(String name) throws IOException {
-            SortedSet result = new TreeSet(urlComparator);
+            SortedSet result = new TreeSet(getUrlComparator());
 
             Enumeration  e = getClassLoader().getResources(getClassResourceName(name));
             while (e.hasMoreElements()) {
