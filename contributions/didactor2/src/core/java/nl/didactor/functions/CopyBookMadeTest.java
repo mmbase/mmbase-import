@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * Retrieves a 'madetests' object for a certain tests and copybook objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyBookMadeTest.java,v 1.4 2008-11-07 17:06:08 michiel Exp $
+ * @version $Id: CopyBookMadeTest.java,v 1.5 2008-11-13 11:10:22 michiel Exp $
  */
 public class CopyBookMadeTest {
     protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
@@ -38,6 +38,7 @@ public class CopyBookMadeTest {
     static {
         NODEMANAGERS.add("tests");
         NODEMANAGERS.add("learnblocks");
+        NODEMANAGERS.add("xmlcontent");
     }
 
     protected static SortedSet<Integer> getOTypes(Cloud cloud, boolean desc, List<String> names)  {
