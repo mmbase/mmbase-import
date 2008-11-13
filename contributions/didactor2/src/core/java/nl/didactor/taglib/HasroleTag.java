@@ -21,7 +21,7 @@ import nl.didactor.util.ClassRoom;
 /**
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: HasroleTag.java,v 1.9 2008-02-01 14:13:01 michiel Exp $
+ * @version $Id: HasroleTag.java,v 1.10 2008-11-13 16:57:25 michiel Exp $
  */
 public class HasroleTag extends CloudReferrerTag {
     private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
@@ -110,6 +110,8 @@ public class HasroleTag extends CloudReferrerTag {
        if (in_education != null) {
            if (in_education instanceof Integer) {
                educationno= ((Integer) in_education).intValue();
+           } else if (in_education instanceof Node) {
+               educationno= ((Node) in_education).getNumber();
            } else if (in_education instanceof String) {
                educationno= Integer.parseInt( (String) in_education);
            } else {

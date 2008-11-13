@@ -136,7 +136,8 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="didactor_people_lastname" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="didactor_people_lastname"
+                xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="address">
