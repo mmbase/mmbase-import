@@ -50,6 +50,7 @@
     <field name="intro" ftype="html" />
     <field name="layout" />
     <field name="imagelayout" />
+    <field name="path" />
 
     <list role="sizerel" extends="config/image/sizedimages.xml" />
     <list destination="news" extends="config/news/news-list.xml" />
