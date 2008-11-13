@@ -13,6 +13,7 @@ import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.PortletUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Publication.STATUS;
@@ -159,5 +160,50 @@ public abstract class NewsletterPublicationUtil {
    public static void publish(Cloud cloud ,Integer number) {
       Node node = cloud.getNode(number);
       publish(node);
+   }
+   
+   /**
+    * Freeze a edition
+    */
+   public static void freezeEdition(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.FROZEN.value());
+      edition.commit();
+   }
+   
+   /**
+    * Defrost a edition
+    */
+   public static void defrostEdition(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.INITIAL.value());
+      edition.setStringValue("static_html", null);
+      edition.commit();
+   }
+   /**
+    * Approve a edition
+    */
+   public static void approveEdition(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.APPROVED.value());
+      edition.commit();
+   }
+   /**
+    * Revoke approval of a edition
+    */
+   public static void revokeEdition(Node edition) {
+      edition.setStringValue("process_status", EditionStatus.FROZEN.value());
+      edition.commit();
+   }
+   /**
+    * Revoke approval of a edition
+    */
+   public static String getEditionStatus(Node edition) {
+      return edition.getStringValue("process_status");
+   }
+   /**
+    * Revoke approval of a edition
+    */
+   public static String getEditionStatus(Integer number) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node edition = cloud.getNode(number);      
+      return edition.getStringValue("process_status");
    }
 }
