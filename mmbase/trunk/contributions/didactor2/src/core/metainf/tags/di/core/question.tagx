@@ -40,11 +40,18 @@
     <jsp:doBody />
 
     <mm:present referid="answernode">
-      <div class="feedback">
-        <mm:include page="/education/tests/view_feedback.jspx" />
-      </div>
-    </mm:present>
 
+      <mm:relatednodescontainer
+          type="feedback"
+          searchdirs="destination">
+        <mm:relatednodes>
+          <div class="feedback">
+            <mm:include page="/education/tests/view_feedback.jspx" />
+          </div>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+
+    </mm:present>
   </mm:node>
 
 </jsp:root>
