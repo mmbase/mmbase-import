@@ -1,5 +1,6 @@
 package com.finalist.newsletter.tree;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -86,7 +87,14 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
             }
          }
       }
-
+      if(SecurityUtil.isWebmaster(role)){
+         String status = NewsletterPublicationUtil.getEditionStatus(Integer.parseInt(id));
+         if("approved".equalsIgnoreCase(status)){
+            element.addOption(renderer.createTreeOption("status_onlive.png", "site.newsletteredition.revokeapproval", "newsletter","../newsletter/NewsletterEditionRevokeApprovePublicationAction.do?number=" + id));
+         }else if("frozen".equalsIgnoreCase(status)){
+            element.addOption(renderer.createTreeOption("status_published.png", "site.newsletteredition.approve", "newsletter","../newsletter/NewsletterEditionApprovePublicationAction.do?number=" + id));
+         }
+      }
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
 
       return element;
