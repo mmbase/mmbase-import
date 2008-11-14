@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.7 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.8 2008-11-14 10:07:37 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
@@ -122,6 +122,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     public static String makeLiteral(String s) {
         // sometimes, implementing java looks rather idiotic, but honestely, this is correct!
         s =  s.replaceAll("\\\\", "\\\\\\\\");
+        s =  s.replaceAll("\\.", "\\\\.");
         return s.replaceAll("\\$", "\\\\\\$");
     }
 
