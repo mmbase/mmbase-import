@@ -78,11 +78,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role)) {
             String status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
             if(EditionStatus.INITIAL.value().equals(status)) {
-               element.addOption(renderer.createTreeOption("arrow_right.png", "site.newsletteredition.freeze", "newsletter",
+               element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
                      "../newsletter/NewsletterEditionFreeze.do?number=" + id));
             }
             if(EditionStatus.FROZEN.value().equals(status)) {
-               element.addOption(renderer.createTreeOption("arrow_undo.png", "site.newsletteredition.defrost", "newsletter",
+               element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
                   "../newsletter/NewsletterEditionDefrost.do?number=" + id));
             }
          }
