@@ -164,16 +164,12 @@ public class NewsletterPublisher {
       }
       String content = " ";
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
-         if (!containAticle(publication)) {
-            content = publication.getNewsletter().getTxtempty();
-            log.info("the newsletter use textEmpty" + content);
-         } else {
-            log.info("url---->" + url);
-            content = NewsletterGenerator.generate(url, subscription.getMimeType());
-         }
          if (null != getPersonalise()) {
             content = getPersonalise().personalise(content, subscription, publication);
             log.info("the content sended is Personalised :" + content);
+         }else {
+            log.info("url---->" + url);
+            content = NewsletterGenerator.generate(url, subscription.getMimeType());
          }
          cache.add(url, content);
       } else {
@@ -181,15 +177,6 @@ public class NewsletterPublisher {
          log.info("the content sended is from the cache" + content);
       }
       return content + "\n";
-   }
-
-   private boolean containAticle(Publication publication) {
-      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-      if (articleCounts == 0 ) {            
-         return false;
-      }else{
-         return true;
-      }
    }
 
    private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
