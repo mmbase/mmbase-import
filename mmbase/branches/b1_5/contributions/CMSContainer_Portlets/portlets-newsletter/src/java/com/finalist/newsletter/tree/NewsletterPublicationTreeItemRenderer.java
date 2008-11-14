@@ -78,13 +78,21 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role)) {
             String status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
             if(EditionStatus.INITIAL.value().equals(status)) {
-               element.addOption(renderer.createTreeOption("arrow_right.png", "site.newsletteredition.freeze", "newsletter",
+               element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
                      "../newsletter/NewsletterEditionFreeze.do?number=" + id));
             }
             if(EditionStatus.FROZEN.value().equals(status)) {
-               element.addOption(renderer.createTreeOption("arrow_undo.png", "site.newsletteredition.defrost", "newsletter",
+               element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
                   "../newsletter/NewsletterEditionDefrost.do?number=" + id));
             }
+         }
+      }
+      if(SecurityUtil.isWebmaster(role)){
+         String status = NewsletterPublicationUtil.getEditionStatus(Integer.parseInt(id));
+         if("approved".equalsIgnoreCase(status)){
+            element.addOption(renderer.createTreeOption("status_onlive.png", "site.newsletteredition.revokeapproval", "newsletter","../newsletter/NewsletterEditionRevoke.do?number=" + id));
+         }else if("frozen".equalsIgnoreCase(status)){
+            element.addOption(renderer.createTreeOption("status_published.png", "site.newsletteredition.approve", "newsletter","../newsletter/NewsletterEditionApprove.do?number=" + id));
          }
       }
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
