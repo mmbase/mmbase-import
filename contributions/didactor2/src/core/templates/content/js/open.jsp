@@ -149,40 +149,53 @@ function requestContent(href, number) {
                     loadIconOff();
                     if (status == "success") {
                         $(contentEl).empty();
-                        $(contentEl).append(res.responseText);
-                       // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
-                       contentEl.validator = new MMBaseValidator();
-                       //contentEl.validator.logEnabled = true;
-                       //contentEl.validator.traceEnabled = true;
-                       contentEl.validator.validateHook = function(valid) {
-                           var buttons = $(contentEl).find("input.formbutton");
-                           for (i = 0; i < buttons.length; i++) {
-                               var disabled = (contentEl.validator.invalidElements > 0);
-                               buttons[i].disabled = disabled;
-                               // just because IE does not recognize input[disabled]
-                               // IE SUCKS
-                               buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
-                           }
-                       };
-                       contentEl.validator.validatePage(false, contentEl);
-                       contentEl.validator.addValidation(contentEl);
-                       check(res.responseXML.documentElement.getAttribute('class'));
-                       document.href_frame = href;
-                       var array = new Array();
-                       // in case it is more than one element (e.g. comments or so), store all childnodes.
+                        $(document).trigger("didactorContentBeforeLoaded",  { response: res, number: number });
+                        $(contentEl).append(res.responseXML);
+                        // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
+                        contentEl.validator = new MMBaseValidator();
+                        //contentEl.validator.logEnabled = true;
+                        //contentEl.validator.traceEnabled = true;
+                        contentEl.validator.validateHook = function(valid) {
+                            var buttons = $(contentEl).find("input.formbutton");
+                            for (i = 0; i < buttons.length; i++) {
+                                var disabled = (contentEl.validator.invalidElements > 0);
+                                buttons[i].disabled = disabled;
+                                // just because IE does not recognize input[disabled]
+                                // IE SUCKS
+                                buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
+                            }
+                        };
+                        contentEl.validator.validatePage(false, contentEl);
+                        contentEl.validator.addValidation(contentEl);
+                        check(res.responseXML.documentElement.getAttribute('class'));
+                        document.href_frame = href;
+                        var array = new Array();
+                        // in case it is more than one element (e.g. comments or so), store all childnodes.
 
-                       try {
-                           for (var i = 0; i < contentEl.childNodes.length; i++) {
-                               array.push(contentEl.childNodes[i]);
-                           }
-                       } catch (ex) {
-                           alert(ex);
-                       }
-                       usedFrames[href] = array;
-                       $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
-                       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-                   }
-               }
+                        try {
+                            for (var i = 0; i < contentEl.childNodes.length; i++) {
+                                array.push(contentEl.childNodes[i]);
+                            }
+                        } catch (ex) {
+                            alert(ex);
+                        }
+                        usedFrames[href] = array;
+                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+                        if ($.browser.msie) {
+                            if ($.browser.version.substr(0, 3) <= 6.0) {
+                                // alert("IE 6 is a horrible browser which cannot do this correctly at once
+                                $.timer(500, function(timer) {
+                                        $(contentEl).empty();
+                                        for (var i=0; i < array.length; i++) {
+                                            contentEl.appendChild(array[i]);
+                                        }
+                                    }
+                                    );
+                            }
+                        }
+                    }
+                }
            });
    } else {
        $(contentEl).empty();
@@ -192,7 +205,7 @@ function requestContent(href, number) {
        document.href_frame = href;
        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
    }
-   scrollToTop();
+    scrollToTop();
 }
 
 function postContent(href, form) {
@@ -243,7 +256,7 @@ function openContent(type, number, el) {
     if (el != null) {
         $(el).addClass("active");
     }
-    if (document.getElementById('content-'+currentnumber)) {
+    if (document.getElementById('content-' + currentnumber)) {
         $("#content-" + currentnumber).removeClass("selectedContent");
     }
     if ( number > 0 ) {
