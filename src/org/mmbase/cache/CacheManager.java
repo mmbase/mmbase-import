@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
@@ -24,12 +25,16 @@ import javax.management.*;
 
 
 /**
- * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
+ * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on
+ * this in stead.
+ *
+ * Since 1.9.1 this class represents a singleton. Actually most methods should more logically not be
+ * static any more.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.41 2008-09-05 13:56:55 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.42 2008-11-14 16:09:24 michiel Exp $
  */
-public abstract class CacheManager {
+public class CacheManager implements CacheManagerMBean {
 
     private static final Logger log = Logging.getLoggerInstance(CacheManager.class);
 
@@ -37,7 +42,59 @@ public abstract class CacheManager {
      * All registered caches
      */
     //private static final NavigableMap<String, Cache<?,?>> caches = new ConcurrentSkipListMap<String, Cache<?,?>>();
-    private static final Map<String, Cache<?,?>> caches = new ConcurrentHashMap<String, Cache<?,?>>();
+    private final Map<String, Cache<?,?>> caches = new ConcurrentHashMap<String, Cache<?,?>>();
+
+    private static CacheManager instance = null;
+
+
+    private CacheManager() {
+        // singleton
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+
+    public static CacheManager getInstance() {
+        if (instance == null) {
+            instance = new CacheManager();
+            ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        ObjectName on;
+                        final Hashtable<String, String> props = new Hashtable<String, String>();
+
+                        try {
+                            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+
+                            props.put("type", "CacheManagerMBean");
+                            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+                            if (machineName != null) {
+                                props.put("mmb", machineName);
+                            }
+                            on = new ObjectName("org.mmbase.cache", props);
+                        } catch (MalformedObjectNameException mfone) {
+                            log.warn("" + props + " " + mfone);
+                            return;
+                        }
+                        try {
+                            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                            mbs.registerMBean(instance, on);
+                        } catch (JMException jmo) {
+                            log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
+                        } catch (Throwable t) {
+                            log.error("" + on + " " + t.getClass() + " " + t.getMessage());
+                        }
+
+
+                    }
+                });
+
+        }
+        return instance;
+    }
+
+
+
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -47,7 +104,7 @@ public abstract class CacheManager {
      * @see #getCaches
      */
     public static Cache getCache(String name) {
-        return caches.get(name);
+        return getInstance().caches.get(name);
     }
 
     /**
@@ -60,7 +117,7 @@ public abstract class CacheManager {
     }
     public static Set<Bean> getCaches(String className) {
         SortedSet<Bean> result = new TreeSet<Bean>();
-        for (Cache c : caches.values()) {
+        for (Cache c : getInstance().caches.values()) {
             try {
                 if (className == null || Class.forName(className).isInstance(c)) {
                     result.add(new Bean(c));
@@ -78,14 +135,14 @@ public abstract class CacheManager {
      * @return A Set containing the names of all caches.
      */
     public static Set<String> getCaches() {
-        return Collections.unmodifiableSet(caches.keySet());
+        return Collections.unmodifiableSet(getInstance().caches.keySet());
     }
 
     /**
      * @since MMBase-1.8.6
      */
     public static Map<String, Cache<?, ?>> getMap() {
-        return Collections.unmodifiableMap(caches);
+        return Collections.unmodifiableMap(getInstance().caches);
     }
 
 
@@ -97,7 +154,7 @@ public abstract class CacheManager {
      * @return The previous cache of the same type (stored under the same name)
      */
     public static <K,V> Cache<K,V> putCache(final Cache<K,V> cache) {
-        Cache old = caches.put(cache.getName(), cache);
+        Cache old = getInstance().caches.put(cache.getName(), cache);
         try {
             configure(configReader, cache.getName());
         } catch (Throwable t) {
@@ -284,7 +341,7 @@ public abstract class CacheManager {
     public static int getTotalByteSize() {
         int len = 0;
         SizeOf sizeof = new SizeOf();
-        for (Map.Entry entry : caches.entrySet()) {
+        for (Map.Entry<String, Cache<?, ?>> entry : getInstance().caches.entrySet()) {
             len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
@@ -298,7 +355,7 @@ public abstract class CacheManager {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         log.info("Clearing and unregistering all caches");
         log.debug(mbs.queryNames(getObjectName(null), null));
-        for(Cache<?,?> cache : caches.values()) {
+        for(Cache<?,?> cache : getInstance().caches.values()) {
             cache.clear();
             ObjectName name = getObjectName(cache);
             if (mbs.isRegistered(name)) {
@@ -309,10 +366,27 @@ public abstract class CacheManager {
                 }
             }
         }
+        {
+            final Hashtable<String, String> props = new Hashtable<String, String>();
+            props.put("type", "CacheManagerMBean");
+            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+            if (machineName != null) {
+                props.put("mmb", machineName);
+            }
+            try {
+                ObjectName name = new ObjectName("org.mmbase.cache", props);
+                if (mbs.isRegistered(name)) {
+                    mbs.unregisterMBean(name);
+                }
+            } catch (JMException jmo) {
+
+            }
+        }
         if(mbs.queryNames(getObjectName(null), null).size() > 0) {
             log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null), null));
         }
-        caches.clear();
+        getInstance().caches.clear();
+        instance = null;
     }
 
 
@@ -323,6 +397,23 @@ public abstract class CacheManager {
         Cache cache = getCache(name);
         if (cache == null) throw new IllegalArgumentException();
         return cache.remove(key);
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public String clear(String pattern) {
+        if (pattern == null) pattern = ".*";
+        StringBuilder buf = new StringBuilder();
+        Pattern p = Pattern.compile(pattern);
+        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
+            if (p.matcher(entry.getKey()).matches()) {
+                buf.append("Clearing " + entry.getValue() + "\n");
+                entry.getValue().clear();
+            }
+        }
+        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        return buf.toString();
     }
 
     public static class Bean<K, V> implements Comparable<Bean<?, ?>> {
