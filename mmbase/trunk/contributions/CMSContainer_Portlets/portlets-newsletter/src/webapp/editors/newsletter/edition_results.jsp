@@ -10,7 +10,6 @@
    <style type="text/css">
    input { width: 100px;}
    </style>
-   <script src="content.js" type="text/javascript"></script>
    <script>
      refreshFrame('pages');
    </script>
