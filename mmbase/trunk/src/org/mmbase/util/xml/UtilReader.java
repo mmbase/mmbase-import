@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.38 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.39 2008-11-14 10:06:11 michiel Exp $
  */
 public class UtilReader {
 
@@ -152,7 +152,7 @@ public class UtilReader {
                     onChange.run();
                 }
             }
-             );
+            );
     }
 
     public void finalize() {
@@ -187,6 +187,15 @@ public class UtilReader {
             return false;
         }
     }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected Map.Entry<String, String> getEntry(DocumentReader reader, String k, String v) {
+        return new Entry<String,String>(k, v);
+    }
+
+
 
     protected void readProperties(String s) {
         properties.clear();
@@ -226,7 +235,7 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null) {
-                                    entryList.add(new Entry<String,String>(key, value));
+                                    entryList.add(getEntry(reader, key, value));
                                 }
                             }
                             if (maps.containsKey(name)) {
@@ -236,10 +245,11 @@ public class UtilReader {
                             }
                         } else {
                             String value = reader.getElementValue(p);
-                            if (properties.containsKey(name)) {
-                                log.debug("Property '" + name + "' ('" + value + "') of " + url + " is shadowed");
+                            Map.Entry<String, String> entry = getEntry(reader, name, value);
+                            if (properties.containsKey(entry.getKey())) {
+                                log.debug("Property '" + entry.getKey() + "' ('" + entry.getValue() + "') of " + url + " is shadowed");
                             } else {
-                                properties.put(name, value);
+                                properties.put(entry.getKey(), entry.getValue());
                             }
                         }
                     }
@@ -247,6 +257,7 @@ public class UtilReader {
             } else {
                 log.debug("Resource " + s + " does not exist");
             }
+
         }
         if (properties.size() == 0) {
             log.service("No properties read from " + configList);
