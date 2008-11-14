@@ -150,7 +150,7 @@ function requestContent(href, number) {
                     if (status == "success") {
                         $(contentEl).empty();
                         $(document).trigger("didactorContentBeforeLoaded",  { response: res, number: number });
-                        $(contentEl).append(res.responseXML);
+                        $(contentEl).append(res.responseText);
                         // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
                         contentEl.validator = new MMBaseValidator();
                         //contentEl.validator.logEnabled = true;
@@ -185,13 +185,12 @@ function requestContent(href, number) {
                         if ($.browser.msie) {
                             if ($.browser.version.substr(0, 3) <= 6.0) {
                                 // alert("IE 6 is a horrible browser which cannot do this correctly at once
-                                $.timer(500, function(timer) {
+                                setTimeout(function() {
                                         $(contentEl).empty();
                                         for (var i=0; i < array.length; i++) {
                                             contentEl.appendChild(array[i]);
                                         }
-                                    }
-                                    );
+                                    }, 500);
                             }
                         }
                     }
