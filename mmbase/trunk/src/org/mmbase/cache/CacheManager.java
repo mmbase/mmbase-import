@@ -32,7 +32,7 @@ import javax.management.*;
  * static any more.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.42 2008-11-14 16:09:24 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.43 2008-11-14 16:21:47 michiel Exp $
  */
 public class CacheManager implements CacheManagerMBean {
 
@@ -415,6 +415,58 @@ public class CacheManager implements CacheManagerMBean {
         if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
         return buf.toString();
     }
+    /**
+     * @since MMBase-1.9.1
+     */
+    public String enable(String pattern) {
+        if (pattern == null) pattern = ".*";
+        StringBuilder buf = new StringBuilder();
+        Pattern p = Pattern.compile(pattern);
+        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
+            if (p.matcher(entry.getKey()).matches()) {
+                Cache c = entry.getValue();
+                if(c.isActive()) {
+                    buf.append("Already active " + c + "\n");
+                } else {
+                    c.setActive(true);
+                    buf.append("Making active " + c + "\n");
+                }
+
+            }
+        }
+        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        return buf.toString();
+    }
+    /**
+     * @since MMBase-1.9.1
+     */
+    public String disable(String pattern) {
+        if (pattern == null) pattern = ".*";
+        StringBuilder buf = new StringBuilder();
+        Pattern p = Pattern.compile(pattern);
+        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
+            if (p.matcher(entry.getKey()).matches()) {
+                Cache c = entry.getValue();
+                if(c.isActive()) {
+                    c.setActive(false);
+                    buf.append("Making inactive " + c + "\n");
+                } else {
+                    buf.append("Already inactive " + c + "\n");
+                }
+
+            }
+        }
+        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
+        return buf.toString();
+    }
+    /**
+     * @since MMBase-1.9.1
+     */
+    public String readConfiguration() {
+        configWatcher.onChange("caches.xml");
+        return "Read " + ResourceLoader.getConfigurationRoot().getResource("caches.xml");
+    }
+
 
     public static class Bean<K, V> implements Comparable<Bean<?, ?>> {
         /* private final Cache<K, V> cache; // this line prevents building in Java 1.5.0_07 probably because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620 */
