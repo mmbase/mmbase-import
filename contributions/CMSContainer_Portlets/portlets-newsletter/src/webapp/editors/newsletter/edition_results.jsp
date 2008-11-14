@@ -10,18 +10,20 @@
    <style type="text/css">
    input { width: 100px;}
    </style>
+   <script src="content.js" type="text/javascript"></script>
+   <script>
+     refreshFrame('pages');
+   </script>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="selector.newsletterpublications" titleClass="side_block_green">
-
-      <p>
+      <p style="margin-left:10px">
           <fmt:message key="newsletter.edition.success" >
              <fmt:param value="${action}"/>
           </fmt:message>
       </p>
-
 </cmscedit:sideblock>
 </body>
 </mm:cloud>
