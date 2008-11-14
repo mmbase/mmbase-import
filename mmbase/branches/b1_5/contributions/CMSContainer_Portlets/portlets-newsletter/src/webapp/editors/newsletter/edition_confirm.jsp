@@ -12,7 +12,7 @@
    </style>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
-<mm:import externid="forward" />
+<mm:import externid="forward" from="parameters"/>
 <mm:import externid="newsletterId"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>

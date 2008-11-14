@@ -12,7 +12,7 @@
    </style>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
-<mm:import externid="forward" />
+<mm:import externid="forward" from="parameters"/>
 <mm:import externid="newsletterId"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
@@ -20,20 +20,7 @@
    <p>
       <fmt:message key="confirm_send.subtitle" /> <mm:node referid="number"><b><mm:field name="title"/></b></mm:node>
    </p>
-   <p>        
-      <c:if test="${action =='approve'}">
-         <c:set var="action"><fmt:message key="newsletter.edition.confirmation.approve" /></c:set>
-      </c:if>
-      <c:if test="${action =='revoke approving'}">
-         <c:set var="action"><fmt:message key="newsletter.edition.confirmation.revoke" /></c:set>
-      </c:if>
-      <c:if test="${action =='freeze'}">
-         <c:set var="action"><fmt:message key="newsletter.edition.confirmation.freeze" /></c:set>
-      </c:if>
-      <c:if test="${action =='defrost'}">
-         <c:set var="action"><fmt:message key="newsletter.edition.confirmation.defrost" /></c:set>
-      </c:if>
-      
+   <p>
       <fmt:message key="newsletter.edition.confirmation" >
          <fmt:param value="${action}"/>
       </fmt:message>
