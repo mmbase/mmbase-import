@@ -23,9 +23,8 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 /**
  * Create Newsletter Action
- * 
+ *
  * @author Lisa
- * 
  */
 public class NewsletterCreate extends MMBaseFormlessAction {
    /**
@@ -44,7 +43,7 @@ public class NewsletterCreate extends MMBaseFormlessAction {
       if (StringUtils.isBlank(action)) {
          request.getSession().setAttribute("parentnewsletter", parentnewsletter);
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
-               + "&contenttype=newsletter" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+                  + "&contenttype=newsletter" + "&returnurl=" + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
       } else {
@@ -57,17 +56,17 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             PagesUtil.linkPortlets(newNewsletter, layoutNode);
             request.getSession().removeAttribute("parentnewsletter");
 
-            // Create a default term for this newsletter
-
             // NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
-
             newNewsletter.setStringValue("scheduledescription", NewsletterUtil.getScheduleMessageByExpression(
-                  newNewsletter.getStringValue("schedule")));
+                     newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
+//            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+//               Publish.publish(newNewsletter);
+//            }
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId="
-                  + ewnodelastedited + "&fresh=fresh");
+                     + ewnodelastedited + "&fresh=fresh");
             return ret;
          }
          request.getSession().removeAttribute("parentnewsletter");

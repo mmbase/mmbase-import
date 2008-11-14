@@ -18,9 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -59,9 +57,9 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          NewsletterUtil.addScheduleForNewsletter(newsletterNode);
          addToRequest(request, "showpage", ewnodelastedited);
 
-         if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
-            Publish.publish(newsletterNode);
-         }
+//         if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+//            Publish.publish(newsletterNode);
+//         }
 
          int nodeId = Integer.parseInt(request.getParameter("objectnumber"));
          ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);

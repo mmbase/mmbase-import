@@ -18,8 +18,6 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -63,9 +61,9 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             newNewsletter.setStringValue("scheduledescription", NewsletterUtil.getScheduleMessageByExpression(
                      newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
-            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
-               Publish.publish(newNewsletter);
-            }
+//            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+//               Publish.publish(newNewsletter);
+//            }
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId="
                      + ewnodelastedited + "&fresh=fresh");

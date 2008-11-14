@@ -77,11 +77,13 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                )
       );*/
       if (ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-         element.addOption(
-               renderer.createTreeOption("publish.png", "site.newsletter.publish", "newsletter",
-                     "../newsletter/NewsletterPublish.do?number=" + id
-            )
-         );
+//         element.addOption(
+//               renderer.createTreeOption("publish.png", "site.newsletter.publish", "newsletter",
+//                     "../newsletter/NewsletterPublish.do?number=" + id
+//            )
+//         );
+         element.addOption(renderer.createTreeOption("publish.png", "site.newsletter.publish","newsletter",
+               "../workflow/publish.jsp?number=" + id));
       }
    }
 
