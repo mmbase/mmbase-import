@@ -24,7 +24,7 @@
          <fmt:message key="register.active.failure" />
          </c:if>
          <c:if test="${active == 'actived'}">
-         <fmt:message key="register.active.actived" />
+         <fmt:message key="register.active.alreadyactivated" />
          </c:if>
        </td>
      </tr>
