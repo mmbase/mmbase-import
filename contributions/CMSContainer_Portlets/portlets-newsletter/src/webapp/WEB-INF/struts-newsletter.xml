@@ -192,13 +192,13 @@
          <forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
          <forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
       </action>
-      <action path="/editors/newsletter/NewsletterEditionApprovePublicationAction" type="com.finalist.newsletter.forms.NewsletterEditionApprovePublicationAction">
+      <action path="/editors/newsletter/NewsletterEditionApprove" type="com.finalist.newsletter.forms.NewsletterEditionApprove">
          <forward name="confirm" path="/editors/newsletter/edition_confirm.jsp" redirect="false" />
          <forward name="success" path="/editors/newsletter/edition_results.jsp" redirect="false" />
          <forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
          <forward name="publicationedit" path="/editors/newsletter/NewsletterPublicationManagement.do" redirect="false"/>
       </action>
-      <action path="/editors/newsletter/NewsletterEditionRevokeApprovePublicationAction" type="com.finalist.newsletter.forms.NewsletterEditionRevokeApprovePublicationAction">
+      <action path="/editors/newsletter/NewsletterEditionRevoke" type="com.finalist.newsletter.forms.NewsletterEditionRevoke">
          <forward name="confirm" path="/editors/newsletter/edition_confirm.jsp" redirect="false" />
          <forward name="success" path="/editors/newsletter/edition_results.jsp" redirect="false" />
          <forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />

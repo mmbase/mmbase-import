@@ -12,7 +12,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
-public class NewsletterEditionApprovePublicationAction extends MMBaseFormlessAction{
+public class NewsletterEditionApprove extends MMBaseFormlessAction{
    private static final String SUCCESS = "success";
    private static final String SAVE = "save";
    private static final String ACTION_CANCEL = "cancel";
