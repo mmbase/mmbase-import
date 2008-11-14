@@ -60,10 +60,10 @@
                </c:if>
                <c:if test="${result.process_status == 'Frozen'}">
                   <a href="../newsletter/NewsletterEditionDefrost.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/arrow_undo.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendedition'/>"></a>
-                  <a href="../newsletter/NewsletterEditionApprovePublicationAction.do?number=${result.id}&newsletterId=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_published.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.approve'/>"></a>
+                  <a href="../newsletter/NewsletterEditionApprove.do?number=${result.id}&newsletterId=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_published.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.approve'/>"></a>
                </c:if>
                 <c:if test="${result.process_status=='Approved'}">
-                  <a href="../newsletter/NewsletterEditionRevokeApprovePublicationAction.do?number=${result.id}&newsletterId=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_onlive.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.revokeapproval'/>"></a></c:if>
+                  <a href="../newsletter/NewsletterEditionRevoke.do?number=${result.id}&newsletterId=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_onlive.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.revokeapproval'/>"></a></c:if>
                <a href="../usermanagement/pagerights.jsp?number=${result.id}"><img src="<cmsc:staticurl page='/editors/gfx/icons/rights.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.userright'/>"></a>
             </edit:ui-tcolumn>
             <edit:ui-tcolumn titlekey="newsletter.publication.result.title" sort="title" width="25%">
