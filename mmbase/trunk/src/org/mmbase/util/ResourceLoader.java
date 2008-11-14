@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.81 2008-11-12 17:33:39 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.82 2008-11-14 10:07:11 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1722,18 +1722,32 @@ public class ResourceLoader extends ClassLoader {
 
     private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
         new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
-            public void run() {
-                ResourceLoader.readClassWeights();
+                public void run() {
+                    ResourceLoader.readClassWeights();
+                }
             }
-        }
-        ).getMaps();
+            ) {
+            @Override protected Map.Entry<String, String> getEntry(org.mmbase.util.xml.DocumentReader reader, String key, String value) {
+                String u = reader.getDocument().getDocumentURI();
+                String[] parts = u.split("!", 2);
+                log.info(u + "-> " + Arrays.asList(parts));
+                if (parts.length == 2) {
+                    if (key.startsWith("!")) {
+                        key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
+                    }
+                }
+                return new Entry<String, String>(key, value);
+            }
+        }.getMaps();
 
     private static final Map<Pattern, Integer> classWeights = new ConcurrentHashMap<Pattern, Integer>();
 
     private static void readClassWeights() {
+        classWeights.clear();
         Collection<Map.Entry<String, String>> col = classWeightProperties.get("classloaderpatterns");
         if (col != null) {
             for (Map.Entry<String, String> entry : col) {
+                String k = entry.getKey();
                 classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
             }
         }
@@ -1785,7 +1799,7 @@ public class ResourceLoader extends ClassLoader {
                             if (foundw1 && foundw2) break;
                         }
                     }
-                    int r = w2 - 1;
+                    int r = w2 - w1;
                     return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
 
                 }
