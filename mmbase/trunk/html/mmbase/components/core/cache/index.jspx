@@ -13,9 +13,24 @@
 <mm:import externid="clear"  from="request" />
 <mm:import externid="rs_active" from="request" />
 <mm:import externid="rs_show"   from="request" />
+<mm:import externid="clearregexp"   />
+<mm:import externid="regexp"   />
+
 
   <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 
+  <p>
+    <form>
+      <input type="submit" name="clearregexp" value="clear" />
+      <input name="regexp" value="${empty regexp ? '.*' : regexp}" />
+    </form>
+    <mm:present referid="clearregexp">
+      <mm:write referid="regexp" jspvar="regexp" vartype="String" write="false">
+        <jsp:scriptlet> CacheManager.getInstance().clear(regexp); </jsp:scriptlet>
+      </mm:write>
+      <p>Cleared by ${regexp}</p>
+    </mm:present>
+  </p>
   <!-- activate or deactivate cache -->
   <mm:present referid="active">
     <mm:import externid="cache" />
@@ -26,7 +41,7 @@
     </mm:write>
     <div class="msg">The cache <em>${cache}</em> is turned ${active}.</div>
   </mm:present>
-  
+
   <!-- clear cache -->
   <mm:present referid="clear">
     <mm:import externid="cache" />
@@ -41,9 +56,9 @@
     <mm:import externid="cache" />
     <mm:write referid="rs_active" jspvar="active" vartype="String" write="false">
       <mm:write referid="cache" jspvar="cache" vartype="String" write="false">
-        <jsp:scriptlet> 
+        <jsp:scriptlet>
           QueryResultCache qrc = (QueryResultCache) CacheManager.getCache(cache);
-          qrc.getReleaseStrategy().setEnabled(active.equals("on") ? true : false); 
+          qrc.getReleaseStrategy().setEnabled(active.equals("on") ? true : false);
         </jsp:scriptlet>
       </mm:write>
     </mm:write>
@@ -52,7 +67,7 @@
 
   <table summary="MMBase caches, their statistics and actions that can be taken" cellspacing="0" cellpadding="3" border="0">
     <caption>
-      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
     </caption>
 
     <tr>
@@ -64,7 +79,7 @@
         a certain change in the cloud should invalidate a query from the cache.
       </td>
     </tr>
- 
+
   <mm:functioncontainer>
     <mm:param name="type">org.mmbase.cache.QueryResultCache</mm:param>
     <mm:listfunction set="caches" name="list" id="qc">
@@ -82,7 +97,7 @@
       </mm:first>
       <tr>
         <td> <strong>${qc.name}</strong> ${qc.description} </td>
-        <td class="center"> ${qc.hits + qc.misses} </td> 
+        <td class="center"> ${qc.hits + qc.misses} </td>
         <td class="center"> ${qc.hits} </td>
         <td class="center"> ${qc.misses} </td>
         <td class="center"> ${qc.puts} </td>
@@ -129,7 +144,7 @@
           Events Analyzed:   ${qc.releaseStrategy.totalEvaluated}
           Queries preserved: ${qc.releaseStrategy.totalPreserved}
           Queries flushed:   ${qc.releaseStrategy.totalEvaluated - qc.releaseStrategy.totalPreserved}
-          
+
         </td><td class="view">
           <c:choose>
             <c:when test="${qc.releaseStrategy.enabled}">
@@ -156,7 +171,7 @@
           <td colspan="8">
             <c:forEach items="${qc.releaseStrategy.list}" var="rs">
               <c:if test="${rs eq rs_name}">
-                
+
                 <strong>${rs.name}</strong> ${rs.description}
                 <table summary="specifics of the release strategy ${rs.name}" cellspacing="0" cellpadding="3" border="0">
                   <tr>
@@ -171,10 +186,10 @@
                      <td class="center"> ${rs.totalEvaluated} </td>
                      <td class="center"> ${rs.totalPreserved} </td>
                      <td class="center"> ${rs.totalEvaluationTimeMillis} </td>
-                     <td class="center"> 
+                     <td class="center">
                        <fmt:formatNumber value="${rs.totalEvaluationTimeMillis / rs.totalEvaluated}" maxFractionDigits="2" />
                      </td>
-                     <td class="center"> 
+                     <td class="center">
                        <fmt:formatNumber value="${rs.totalEvaluated / rs.totalPreserved}" maxFractionDigits="2" type="percent" />
                      </td>
                   </tr>
@@ -213,7 +228,7 @@
       </mm:first>
       <tr>
         <td> <strong>${c.name}</strong> ${c.description} </td>
-        <td class="center"> ${c.hits + c.misses} </td> 
+        <td class="center"> ${c.hits + c.misses} </td>
         <td class="center"> ${c.hits} </td>
         <td class="center"> ${c.misses} </td>
         <td class="center"> ${c.puts} </td>
