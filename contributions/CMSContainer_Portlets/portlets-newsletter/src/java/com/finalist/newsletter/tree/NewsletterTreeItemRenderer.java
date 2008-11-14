@@ -71,11 +71,11 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                         String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/html", id)
                )
       );
-      element.addOption(
+/*      element.addOption(
                renderer.createTreeOption("switch.png", "site.newsletter.switchtowap", "newsletter",
                         String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
                )
-      );
+      );*/
       if (ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
          element.addOption(
                renderer.createTreeOption("publish.png", "site.newsletter.publish", "newsletter",

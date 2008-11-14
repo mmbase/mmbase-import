@@ -56,10 +56,10 @@
                <a href="../newsletter/NewsletterPublicationTest.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_go.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendemail'/>"></a>
                <a href="../newsletter/NewsletterPublicationPublish.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/type/email_error.png'/>" width="16" height="16" title="<fmt:message key='newsletter.icons.title.sendedition'/>"></a>
                <c:if test="${result.process_status == 'concept edition'}">
-                  <a   href="../newsletter/NewsletterEditionFreeze.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/arrow_right.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.freeze'/>"></a>
+                  <a   href="../newsletter/NewsletterEditionFreeze.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_finished.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.freeze'/>"></a>
                </c:if>
                <c:if test="${result.process_status == 'Frozen'}">
-                  <a href="../newsletter/NewsletterEditionDefrost.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/arrow_undo.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.defrost'/>"></a>
+                  <a href="../newsletter/NewsletterEditionDefrost.do?number=${result.id}&forward=publicationedit&newsletterId=${requestScope.newsletterId}"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_approved.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.defrost'/>"></a>
                   <a href="../newsletter/NewsletterEditionApprove.do?number=${result.id}&newsletterId=${requestScope.newsletterId}&forward=publicationedit"><img src="<cmsc:staticurl page='/editors/gfx/icons/status_published.png'/>" width="16" height="16" title="<fmt:message key='site.newsletteredition.approve'/>"></a>
                </c:if>
                 <c:if test="${result.process_status=='Approved'}">
