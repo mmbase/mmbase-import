@@ -283,6 +283,7 @@
       <param name="active" type="String" />
       <param name="cache"  type="String" />
       <param name="clear"  type="String" />
+      <param name="regexp"  type="String" />
       <param name="rs_active" type="String" />
       <param name="rs_show"   type="String" />
       <param name="rs_name"   type="String" />
