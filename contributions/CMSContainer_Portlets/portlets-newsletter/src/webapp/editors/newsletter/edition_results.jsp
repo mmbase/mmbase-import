@@ -18,6 +18,20 @@
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="selector.newsletterpublications" titleClass="side_block_green">
+      <c:choose>
+         <c:when test="${action =='approve'}">
+            <c:set var="action"><fmt:message key="site.newsletteredition.approve" /></c:set>
+         </c:when>
+         <c:when test="${action =='revoke approving'}">
+            <c:set var="action"><fmt:message key="site.newsletteredition.revokeapproval" /></c:set>
+         </c:when>
+         <c:when test="${action =='freeze'}">
+             <c:set var="action"><fmt:message key="site.newsletteredition.freeze" /></c:set>
+         </c:when>
+         <c:when test="${action =='defrost'}">
+            <c:set var="action"><fmt:message key="site.newsletteredition.defrost" /></c:set>
+         </c:when>
+      </c:choose>  
       <p style="margin-left:10px">
           <fmt:message key="newsletter.edition.success" >
              <fmt:param value="${action}"/>
