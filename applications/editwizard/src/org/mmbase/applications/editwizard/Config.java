@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.73 2008-11-15 12:39:30 michiel Exp $
+ * @version $Id: Config.java,v 1.74 2008-11-15 12:46:30 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -404,21 +404,23 @@ public class Config implements java.io.Serializable {
                         where = " = '" + where + "'";
                     }
                 } else {
-                    if (where.equals("") || ! org.mmbase.datatypes.StringDataType.DOUBLE_PATTERN.matcher(where).matches()) {
-                        where = "0";
-                    }
-                    if (sType.equals("greaterthan")) {
-                        where = " > " + where;
-                    } else if (sType.equals("lessthan")) {
-                        where = " < " + where;
-                    } else if (sType.equals("notgreaterthan")) {
-                        where = " <= " + where;
-                    } else if (sType.equals("notlessthan")) {
-                        where = " >= " + where;
-                    } else if (sType.equals("notequals")) {
-                        where = " != " + where;
-                    } else { // equals
-                        where = " = " + where;
+                    if (! "".equals(where)) {
+                        if (! org.mmbase.datatypes.StringDataType.DOUBLE_PATTERN.matcher(where).matches()) {
+                            where = "0";
+                        }
+                        if (sType.equals("greaterthan")) {
+                            where = " > " + where;
+                        } else if (sType.equals("lessthan")) {
+                            where = " < " + where;
+                        } else if (sType.equals("notgreaterthan")) {
+                            where = " <= " + where;
+                        } else if (sType.equals("notlessthan")) {
+                            where = " >= " + where;
+                        } else if (sType.equals("notequals")) {
+                            where = " != " + where;
+                        } else { // equals
+                            where = " = " + where;
+                        }
                     }
                 }
                 if (! "".equals(where)) {
