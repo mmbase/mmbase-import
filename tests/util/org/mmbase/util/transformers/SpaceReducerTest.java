@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: SpaceReducerTest.java,v 1.1 2008-11-15 10:41:14 michiel Exp $
+ * @version $Id: SpaceReducerTest.java,v 1.2 2008-11-15 10:43:57 michiel Exp $
  */
 public class SpaceReducerTest  extends TestCase {
 
@@ -37,6 +37,13 @@ public class SpaceReducerTest  extends TestCase {
         test("jaja</pre>", false, true);
         test("jaja</pre> <pre> hoera</pre><p>test</p>", false, true);
         test("jaja<pre>bla <pre /></pre>filter out bodyless tags", false, false);
+    }
+
+    public void testPre() {
+        assertEquals("a\nb<pre>\n\nc\n\nd</pre>\ne", reducer.transform("a\n\nb<pre>\n\nc\n\nd</pre>\n\ne"));
+    }
+    public void testTextarea() {
+        assertEquals("a\nb<textarea>\n\nc\n\nd</textarea>\ne", reducer.transform("a\n\nb<textarea>\n\nc\n\nd</textarea>\n\ne"));
     }
 
 }
