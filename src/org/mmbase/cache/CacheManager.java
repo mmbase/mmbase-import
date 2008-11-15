@@ -32,7 +32,7 @@ import javax.management.*;
  * static any more.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.43 2008-11-14 16:21:47 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.44 2008-11-15 19:15:10 michiel Exp $
  */
 public class CacheManager implements CacheManagerMBean {
 
@@ -66,12 +66,12 @@ public class CacheManager implements CacheManagerMBean {
                         try {
                             org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
 
-                            props.put("type", "CacheManagerMBean");
+                            props.put("type", "Caches");
                             String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
                             if (machineName != null) {
-                                props.put("mmb", machineName);
+                                props.put("type", machineName);
                             }
-                            on = new ObjectName("org.mmbase.cache", props);
+                            on = new ObjectName("org.mmbase", props);
                         } catch (MalformedObjectNameException mfone) {
                             log.warn("" + props + " " + mfone);
                             return;
@@ -190,7 +190,7 @@ public class CacheManager implements CacheManagerMBean {
     private static ObjectName getObjectName(Cache cache) {
         Hashtable<String, String> props = new Hashtable<String, String>();
         try {
-            props.put("type", "CacheMBean");
+            props.put("type", "Caches");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
             String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
             if (machineName != null) {
@@ -202,7 +202,7 @@ public class CacheManager implements CacheManagerMBean {
             } else {
                 //props.put("name", "*"); // WTF, this does not work in java 5.
             }
-            return new ObjectName("org.mmbase.cache", props);
+            return new ObjectName("org.mmbase", props);
         } catch (MalformedObjectNameException mfone) {
             log.warn("" + props + " " + mfone);
             return null;
@@ -368,13 +368,13 @@ public class CacheManager implements CacheManagerMBean {
         }
         {
             final Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("type", "CacheManagerMBean");
+            props.put("type", "Caches");
             String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
             if (machineName != null) {
-                props.put("mmb", machineName);
+                props.put("type", machineName);
             }
             try {
-                ObjectName name = new ObjectName("org.mmbase.cache", props);
+                ObjectName name = new ObjectName("org.mmbase", props);
                 if (mbs.isRegistered(name)) {
                     mbs.unregisterMBean(name);
                 }
