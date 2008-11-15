@@ -75,14 +75,14 @@ if [ 1 == 1 ] ; then
 	    echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
 	    echo -e "Build on ${version} failed:\n\n" | \
 		cat latest/messages.log latest/errors.log | grep -B 10 "\[javac\]" | \
-		mutt -e $mutthdr -s "Build failed ${version}" ${BUILD_MAILADDRESS}
+		mutt -e "$mutthdr" -s "Build failed" ${BUILD_MAILADDRESS}
 	    showtests=0;
         fi
     else
         echo Build failed, sending mail to ${BUILD_MAILADDRESS} | tee -a ${builddir}/messages.log
         echo -e "No build created on ${version}\n\n" | \
             tail -q -n 20 - latest/errors.log | \
-            mutt -e $mutthdr -s "Build failed ${version}" ${BUILD_MAILADDRESS}
+            mutt -e "$mutthdr" -s "Build failed" ${BUILD_MAILADDRESS}
 	showtests=0;
     fi
 fi
@@ -98,7 +98,7 @@ if [ 1 == $showtests ] ; then
 	    echo Failures, sending mail to ${MAILADDRESS}  | tee -a ${builddir}/messages.log
 	    (echo "Failures on build ${version}" ; echo "See also http://www.mmbase.org/download/builds/latest/tests-results.log" ; \
                 cat latest/tests-results.log  | grep -P  '(^Tests run:|^[0-9]+\)|^\tat org\.mmbase|FAILURES|========================|OK)' ) | \
-		mutt -e $mutthdr -s "Test cases failures" ${MAILADDRESS}
+		mutt -e "$mutthdr" -s "Test cases failures" ${MAILADDRESS}
 	fi
     fi
 fi
