@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.22 2008-07-11 14:52:59 michiel Exp $
+ * @version $Id: SpaceReducer.java,v 1.23 2008-11-15 10:40:48 michiel Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
@@ -124,7 +124,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
      * @author ebunders
      *
      */
-    private static class Tag{
+    protected static class Tag{
         private boolean hasOpened = false;
         private boolean hasClosed = false;
         private Pattern openingPattern;
@@ -189,12 +189,11 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
     }
 
-    @Override
-    public Status createNewStatus(){
+    @Override public Status createNewStatus(){
         return new SpaceReducerStatus();
     }
 
-    public static class SpaceReducerStatus extends Status {
+    protected static class SpaceReducerStatus extends Status {
         private final List<Tag> tagsToPass = new ArrayList<Tag>();
         private Tag currentlyOpen = null;
 
@@ -215,26 +214,5 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
     }
 
-    /**
-     * method to test the tag class
-     * TODO: this should be a unit test
-     * @param args
-     */
-    public static void main (String[] args){
-        test("bladie hallo<pre> en nog wat");
-        test("bladie hallo<pre> en nog wat<pre>daarna");
-        test("bladie hallo<pre> en nog wat< / pre><   pre> <p>jaja</p> <a href=\"nogwat\">jaja</a>");
-        test("jaja</pre>");
-        test("jaja</pre> <pre> hoera</pre><p>test</p>");
-        test("jaja<pre>bla <pre /></pre>filter out bodyless tags");
-        System.out.println("FINISED");
-    }
 
-    public static void test(String line){
-        System.out.println("testing line: "+line);
-        Tag tag = new Tag("pre");
-        tag.setLine(line);
-        System.out.println("opening: "+tag.hasOpened()+" :: closed: "+tag.hasClosed());
-        System.out.println("****************\n");
-    }
 }
