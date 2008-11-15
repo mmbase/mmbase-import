@@ -30,7 +30,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.63.2.2 2007-05-04 12:12:00 nklasens Exp $
+ * @version $Id: Config.java,v 1.63.2.3 2008-11-15 12:38:51 michiel Exp $
  */
 
 public class Config {
@@ -397,7 +397,7 @@ public class Config {
                         where = " = '" + where + "'";
                     }
                 } else {
-                    if (where.equals("")) {
+                    if (where.equals("") || ! org.mmbase.datatypes.StringDataType.DOUBLE_PATTERN.matcher(where).matches()) {
                         where = "0";
                     }
                     if (sType.equals("greaterthan")) {
