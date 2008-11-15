@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.58 2008-10-27 16:40:44 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.59 2008-11-15 10:58:40 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -329,7 +329,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
     protected static final Pattern legalizeFileName = Pattern.compile("[%\\/\\:\\;\\\\ \\?\\&]+");
-
+    private   static final org.mmbase.util.transformers.CharTransformer urlEscaper = new org.mmbase.util.transformers.Url();
 
     /**
      * @since MMBase-1.8
@@ -362,7 +362,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (backSlash > -1)  {
             fileName = fileName.substring(backSlash + 1);
         }
-        buf.append(legalizeFileName.matcher(fileName).replaceAll("_"));
+
+        buf.append(urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_")));
         return buf;
     }
 
