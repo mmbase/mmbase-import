@@ -26,7 +26,7 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
     public final static int PARAM_ESCAPE = 2;
 
     public Url() {
-        super();
+        super(ESCAPE);
     }
 
     public Url(int conf) {
