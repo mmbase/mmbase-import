@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.167 2008-10-01 20:08:14 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.168 2008-11-17 16:31:32 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -181,7 +181,7 @@ public class MMAdmin extends ProcessorModule {
      * Generate a list of values from a command to the processor
      * @javadoc
      */
-    public Vector<String> getList(PageInfo sp, StringTagger tagger, String value) {
+    public List<String> getList(PageInfo sp, StringTagger tagger, String value) {
         String line = Strip.doubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -769,20 +769,25 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    Vector<String> getBuildersList() {
+    List<String> getBuildersList() {
         Versions ver = (Versions)mmb.getBuilder("versions");
-        Vector<String> results = new Vector<String>();
+        List<String> results = new ArrayList<String>();
+
+        List<String> builders = new ArrayList<String>();
         ResourceLoader builderLoader = mmb.getBuilderLoader();
-        Iterator<String> builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
-        while (builders.hasNext()) {
-            String builderResource = builders.next();
+        for (String builderResource:  builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true)) {
             String builderName = ResourceLoader.getName(builderResource);
             BuilderReader reader = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
             if (reader == null) {
                 log.error("Did not find reader for " + builderResource);
                 continue;
             }
+            builders.add(builderName);
+        }
+        Collections.sort(builders);
+        for (String builderName : builders) {
             results.add(builderName);
+            BuilderReader reader = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
             results.add("" + reader.getVersion());
             int installedversion = -1;
             if (ver != null) {
@@ -795,6 +800,7 @@ public class MMAdmin extends ProcessorModule {
             }
             results.add(reader.getMaintainer());
         }
+
         return results;
     }
 
