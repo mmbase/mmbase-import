@@ -2,7 +2,6 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
-  <jsp:directive.page buffer="100kb" />
   <online>
     <mm:content postprocessor="none"
                 type="application/xml"
