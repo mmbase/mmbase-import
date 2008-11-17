@@ -26,8 +26,6 @@ public class Newsletter {
 
    private String fromAddress;
 
-   private String txtempty;
-
    public int getId() {
       return id;
    }
@@ -106,14 +104,6 @@ public class Newsletter {
 
    public void setTerms(Set<Term> terms) {
       this.terms = terms;
-   }
-
-   public String getTxtempty() {
-      return txtempty;
-   }
-
-   public void setTxtempty(String txtempty) {
-      this.txtempty = txtempty;
    }
 
    public boolean equals(Object o) {

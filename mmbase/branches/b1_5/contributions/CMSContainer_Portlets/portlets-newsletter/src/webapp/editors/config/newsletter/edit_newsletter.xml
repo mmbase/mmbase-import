@@ -68,11 +68,6 @@
 		<prompt xml:lang="zh">暂停截止</prompt>
 		<optionlist select="boolean" />
 	</field>
-	<field name="txtempty" dtmaxlength="1024" ftype="text" rows="3">
-		<prompt xml:lang="en">Text when empty</prompt>
-		<prompt xml:lang="nl">Tekst als leeg</prompt>
-		<prompt xml:lang="zh">内容为空时是否发送其他内容</prompt>
-	</field>
    <field name="schedule" ftype="calendar">
 		<prompt xml:lang="en">Schedule</prompt>
 		<prompt xml:lang="nl">Schedule</prompt>
