@@ -21,7 +21,7 @@
                       class="question mm_validate mm_dt_requiredfield"
                       cols="80" rows="5">
               <mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present>
-              <jsp:text> </jsp:text>
+              <jsp:text></jsp:text>
             </textarea>
           </c:when>
           <c:otherwise>

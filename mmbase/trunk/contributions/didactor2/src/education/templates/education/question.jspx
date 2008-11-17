@@ -28,23 +28,29 @@
         <mm:import externid="clearmadetest">false</mm:import>
         <di:copybook><mm:node id="copybookNo" /></di:copybook>
 
-        <mm:node referid="copybookNo">
-          <mm:nodefunction id="madetest"
-                           name="madetest"
-                           referids="learnobject@test,clearmadetest@clear" />
-        </mm:node>
+
+        <mm:present referid="copybookNo">
+          <mm:node referid="copybookNo">
+            <mm:nodefunction id="madetest"
+                             name="madetest"
+                             referids="learnobject@test,clearmadetest@clear" />
+          </mm:node>
 
 
-        <mm:include page="${nm}/index.jsp" referids="madetest" />
+          <mm:include page="${nm}/index.jsp" referids="madetest" />
 
-        <mm:link absolute="server"
-                 page="rate_question.jspx"
-                 referids="question,madetest,learnobject,nm">
-          <a
-              class="answerquestion"
-              href="${_}"
-              >Answer</a>
-        </mm:link>
+          <mm:link absolute="server"
+                   page="rate_question.jspx"
+                   referids="question,madetest,learnobject,nm">
+            <a
+                class="answerquestion"
+                href="${_}"
+                >Answer</a>
+          </mm:link>
+        </mm:present>
+        <mm:notpresent referid="copybookNo">
+          <p class="error">No copybook found</p>
+        </mm:notpresent>
       </div>
     </mm:node>
 
