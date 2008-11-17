@@ -36,14 +36,17 @@ public class TagCloudUtil {
 /*
 
  */
-	private static final String SQL_STAGING_SELECT_TAGS_COUNT = "  SELECT tag.number,COUNT(insrel.number) AS cnt " 
+	private static final String SQL_STAGING_SELECT_TAGS_COUNT = "  SELECT tag.number,tag.name,tag.description,COUNT(insrel.number) AS cnt " 
 		+ "FROM mm_tag tag,mm_insrel insrel "
 		+ "WHERE (tag.number=insrel.dnumber) AND tag.name is not null "
-		+ "GROUP BY tag.number";
-	private static final String SQL_LIVE_SELECT_TAGS_COUNT = "SELECT tag.number,COUNT(contentelement.number) AS cnt "
-		+ "FROM live_tag tag,live_insrel insrel,live_contentelement contentelement "
-		+ "WHERE (tag.number=insrel.dnumber AND contentelement.number=insrel.snumber) AND tag.name is not null "
-		+ "GROUP BY tag.name";
+		+ "GROUP BY tag.number "
+		+ "ORDER BY cnt DESC";
+
+	private static final String SQL_LIVE_SELECT_TAGS_COUNT = "  SELECT tag.number,tag.name,tag.description,COUNT(insrel.number) AS cnt " 
+		+ "FROM live_tag tag,live_insrel insrel "
+		+ "WHERE (tag.number=insrel.dnumber) AND tag.name is not null "
+		+ "GROUP BY tag.number "
+		+ "ORDER BY cnt DESC";
 
 	private static final String SQL_STAGING_SELECT_CONTENT_RELATED_TAGS = "SELECT tag.number,tag.name,tag.description "
 		+ "FROM mm_tag tag,mm_insrel insrel "
@@ -137,25 +140,12 @@ public class TagCloudUtil {
 			if (max != null) {
 				st.setMaxRows(max);
 			}
-			String sqlSelect = ServerUtil.isLive()?SQL_LIVE_SELECT_TAGS:SQL_STAGING_SELECT_TAGS;
-			ResultSet rs = st.executeQuery(sqlSelect);
-			while (rs.next()) {
-				Tag tag = new Tag(rs.getInt("tag.number"), rs.getString("tag.name"), rs.getString("tag.description"), 0);
-				tags.add(tag);
-			}
 
 			String sqlSelectCount = ServerUtil.isLive()?SQL_LIVE_SELECT_TAGS_COUNT:SQL_STAGING_SELECT_TAGS_COUNT;
 			ResultSet rsCount = st.executeQuery(sqlSelectCount);
 			while (rsCount.next()) {
-				
-				int number = rsCount.getInt("tag.number");
-				int count = rsCount.getInt("cnt");
-
-				for(Tag tag:tags) {
-					if(tag.getNumber() == number) {
-						tag.setCount(tag.getCount()+count);
-					}
-				}
+				Tag tag = new Tag(rsCount.getInt("tag.number"), rsCount.getString("tag.name"), rsCount.getString("tag.description"), rsCount.getInt("cnt"));
+				tags.add(tag);				
 			}
 
 			Collections.sort(tags, new TagNameComperator("count", "down"));
