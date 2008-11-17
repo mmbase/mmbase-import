@@ -12,7 +12,7 @@
   <mm:treeinclude debug="${debug}"
                   page="${page}"
                   notfound="message"
-                  objectlist="$includePath" >
+                  objectlist="${includePath}" >
     <mm:param name="extraheader">
       <jsp:doBody />
     </mm:param>
