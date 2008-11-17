@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import javax.servlet.http.HttpServletRequest;
 
 
 public interface CacheWrapper {
