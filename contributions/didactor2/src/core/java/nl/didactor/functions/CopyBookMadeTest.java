@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * Retrieves a 'madetests' object for a certain tests and copybook objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyBookMadeTest.java,v 1.5 2008-11-13 11:10:22 michiel Exp $
+ * @version $Id: CopyBookMadeTest.java,v 1.6 2008-11-17 15:24:40 michiel Exp $
  */
 public class CopyBookMadeTest {
     protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
@@ -27,6 +27,7 @@ public class CopyBookMadeTest {
     public void setTest(Node t) {
         test = t;
     }
+
 
     private boolean clear = false;
 
@@ -58,17 +59,26 @@ public class CopyBookMadeTest {
     }
 
 
-    public Node madetest() {
+    public NodeList madetests() {
         Cloud cloud = node.getCloud();
         NodeManager madeTests = cloud.getNodeManager("madetests");
         NodeQuery query = Queries.createRelatedNodesQuery(node, madeTests, "related", "destination");
-        Step testStep = query.addRelationStep(cloud.getNodeManager("learnobjects"), "related", "source").getNext();
-        StepField numberField = query.createStepField(testStep, "number");
-        Queries.addConstraint(query, query.createConstraint(numberField, test));
-        Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "otype"), getOTypes(cloud, true, NODEMANAGERS)));
-        query.addSortOrder(numberField, SortOrder.ORDER_ASCENDING);
+        if (test != null) {
+            Step testStep = query.addRelationStep(cloud.getNodeManager("learnobjects"), "related", "source").getNext();
+            StepField numberField = query.createStepField(testStep, "number");
+            Queries.addConstraint(query, query.createConstraint(numberField, test));
+            Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "otype"), getOTypes(cloud, true, NODEMANAGERS)));
+            query.addSortOrder(numberField, SortOrder.ORDER_ASCENDING);
+        }
+        StepField testsField = query.createStepField(query.getSteps().get(0), "number");
+        query.addSortOrder(testsField, SortOrder.ORDER_ASCENDING);
 
         NodeList found = madeTests.getList(query);
+        return found;
+    }
+
+    public Node madetest() {
+        NodeList found = madetests();
 
         if (found.size() > 0) {
             if (clear) {
@@ -78,6 +88,9 @@ public class CopyBookMadeTest {
                 return found.getNode(0);
             }
         }
+        Cloud cloud = node.getCloud();
+
+        NodeManager madeTests = cloud.getNodeManager("madetests");
         Node madeTest = madeTests.createNode();
         madeTest.commit();
 
