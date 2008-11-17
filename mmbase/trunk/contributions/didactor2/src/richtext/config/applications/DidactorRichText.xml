@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorRichText" maintainer="didactor.nl" version="8" auto-deploy="true">
+<application name="DidactorRichText" maintainer="didactor.nl" version="9" auto-deploy="true">
   <requirements>
     <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
     <requires name="Resources"         maintainer="didactor.nl" version="2" />
@@ -30,6 +30,8 @@
     <relation from="xmlcontent"    to="rich"           type="idrel" />
     <relation from="xmlcontent"    to="learnobjects"   type="idrel" />
     <relation from="xmlcontent"    to="flashobjects"   type="idrel" />
+
+    <relation from="xmlcontent"    to="madetests"      type="related" />
 
     <relation from="blocks"     to="news"              type="idrel" />
     <relation from="blocks"     to="xmlcontent"        type="idrel" />
