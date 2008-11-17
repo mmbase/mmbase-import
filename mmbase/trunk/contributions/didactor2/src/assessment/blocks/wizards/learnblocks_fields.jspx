@@ -12,10 +12,14 @@
               doctype-root-element="fieldset"
               />
   <fieldset>
-    <di:hascomponent name="assessement">
-      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-        <field name="assessment" />
-      </c:if>
-    </di:hascomponent>
+    <mm:cloud>
+      <mm:node number="${education}">
+        <di:hascomponent name="assessement">
+          <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+            <field name="assessment" />
+          </c:if>
+        </di:hascomponent>
+      </mm:node>
+    </mm:cloud>
   </fieldset>
 </mm:content>
