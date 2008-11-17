@@ -4,7 +4,6 @@
 
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
-  <jsp:directive.page buffer="20000kb" />
   <di:html
       type="text/html"
       styleClass="editwizards"
