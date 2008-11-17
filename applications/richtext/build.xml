@@ -3,7 +3,7 @@
   <property name="java.source.version" value="1.5" />
 
   <property name="kupu.repository" value="http://codespeak.net/svn/kupu/trunk/kupu" />
-  <property name="kupu.revision"   value="-r 59599" />
+  <property name="kupu.revision"   value="-r 59953" />
 
   <import file="../buildbase-include.xml" />
 
