@@ -12,7 +12,7 @@ import javax.servlet.http.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.7 2008-11-10 16:10:00 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.8 2008-11-17 17:37:37 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -36,6 +36,13 @@ public class PeopleClassFunction {
         if (e == -1) {
             HttpServletRequest req = (HttpServletRequest) cloud.getProperty(Cloud.PROP_REQUEST);
             e = Casting.toInt(req.getAttribute("education"));
+            if (! cloud.hasNode(e)) {
+                throw new IllegalStateException("No such education '" + e + "' (as found in request attribute 'education')");
+            }
+        } else {
+            if (! cloud.hasNode(e)) {
+                throw new IllegalStateException("No such education '" + e + "' (as found set with parameter)");
+            }
         }
         Node education = cloud.getNode(e);
         NodeManager classes = cloud.getNodeManager("classes");
