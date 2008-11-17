@@ -89,5 +89,9 @@
     <function name="url" key="{REQUEST.getContextPath}/education/question.jspx?question={NODE.number}">
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
+
+    <function name="givenanswers">
+      <class>nl.didactor.education.functions.GivenAnswers</class>
+    </function>
   </functionlist>
 </builder>
