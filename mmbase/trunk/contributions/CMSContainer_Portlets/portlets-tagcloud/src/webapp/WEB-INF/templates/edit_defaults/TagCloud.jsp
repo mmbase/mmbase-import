@@ -35,14 +35,7 @@
 
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.max_items" />:</td>
-		<td><cmsc:select var="param_max">
-			<cmsc:option value="100" message="edit_defaults.max_items_100" />
-			<cmsc:option value="5" message="edit_defaults.max_items_5" />
-			<cmsc:option value="10" message="edit_defaults.max_items_10" />
-			<cmsc:option value="15" message="edit_defaults.max_items_15" />
-			<cmsc:option value="20" message="edit_defaults.max_items_20" />
-			<cmsc:option value="25" message="edit_defaults.max_items_25" />
-		</cmsc:select></td>
+		<td><input type="text" name="param_max" value="${param_max}" /></td>
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.order_by" />:</td>
