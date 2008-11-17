@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.21 2008-11-17 13:22:42 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.22 2008-11-17 14:32:03 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -467,19 +467,43 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 userAttributes.put("class", cloud.getNode(c).getNumber());
             }
         } else {
-            Object education = attributes.get("education");
-            if (education != null && userAttributes.get("class") == null) {
-                try {
-                    Node user = cloud.getNode((Integer) userAttributes.get("user"));
-                    Function fun = user.getFunction("class");
-                    Parameters params = fun.createParameters();
-                    params.set("education", education);
-                    Node claz = (Node) fun.getFunctionValue(params);
-                    userAttributes.put("class", claz == null ? null : claz.getNumber());
-                } catch (NotFoundException nfe) {
-                    // never mind
-                    userAttributes.put("class", null);
+            Integer userClass = (Integer) userAttributes.get("class");
+            Integer education = (Integer) attributes.get("education");
+            if (userClass != null) {
+                // check if this class is consisten with the selected education.
+                Node claz = cloud.getNode(userClass);
+                if (education == null) {
+                    attributes.put("education", claz.getIntValue("education"));
+                } else {
+                    if (education != claz.getIntValue("education")) {
+                        userClass = null;
+                        userAttributes.put("class", null);
+                    }
                 }
+
+            }
+
+            if (userClass == null) {
+                if (education != null) {
+
+                    try {
+                        Node user = cloud.getNode((Integer) userAttributes.get("user"));
+                        Function fun = user.getFunction("class");
+                        Parameters params = fun.createParameters();
+                        params.set("education", education);
+                        Node claz = (Node) fun.getFunctionValue(params);
+                        userAttributes.put("class", claz == null ? null : claz.getNumber());
+                        log.info("Found " + claz.getNumber() + " for user " + user.getNumber() + " and educcation " + education);
+                    } catch (NotFoundException nfe) {
+                        log.warn(nfe);
+                        // never mind
+                        userAttributes.put("class", null);
+                    }
+                } else {
+                    log.warn("No education found");
+                }
+            } else {
+                log.debug("Explicit class in " + userAttributes);
             }
         }
 
