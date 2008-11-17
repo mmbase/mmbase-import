@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.20 2008-11-13 16:57:24 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.21 2008-11-17 13:22:42 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -201,7 +201,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
      * @param provider If provider already determined, it can be given.
      * @param
      */
-    protected Node getEducation(Cloud cloud, Node provider, String[] urls, Map<String, Object> attributes) {
+    protected Node getEducation(Cloud cloud, Node provider, String[] urls) {
 
         Node education = null;
         NodeList educations;
@@ -250,12 +250,6 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             education = educations.nodeIterator().nextNode();
         }
 
-        if (education != null) {
-            log.debug("Found education " + education.getNumber());
-            attributes.put("education", education.getNumber());
-        } else {
-            //attributes.put("education", null);
-        }
         return education;
     }
 
@@ -313,17 +307,18 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
         String contextPath = req.getContextPath();
         HttpSession session = req.getSession(false);
 
-
-        String parameterEducation = useParameters && session != null ? (String) session.getAttribute("nl.didactor.education") : null;
-        if ((parameterEducation == null || parameterEducation.length() == 0) && useParameters) parameterEducation = req.getParameter("education");
+        String parameterEducation = useParameters ? req.getParameter("education") : null;
         if (parameterEducation != null && parameterEducation.length() == 0) parameterEducation = null;
+        if (parameterEducation == null && session != null) {
+            parameterEducation = (String) session.getAttribute("nl.didactor.education");
+        }
 
         if (parameterEducation != null && useParameters && session != null) {
             // remember some explicit education parameter in the session.
             session.setAttribute("nl.didactor.education", parameterEducation);
         }
 
-        String providerParameter  = useParameters ? req.getParameter("provider") : null;
+        String parameterProvider  = useParameters ? req.getParameter("provider") : null;
 
         Cloud cloud = getCloud(req);
         Map<String, Serializable> userAttributes;
@@ -343,7 +338,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
             userAttributes.put("user", userNumber);
         }
 
-        String key = serverName + contextPath + ':' + parameterEducation + ':' + providerParameter + ":" + cloud.getUser().getIdentifier();
+        String key = serverName + contextPath + ':' + parameterEducation + ':' + parameterProvider  + ":" + cloud.getUser().getIdentifier();
         Map<String, Object> attributes = providerCache.get(key);
         if (attributes == null) {
 
@@ -357,10 +352,10 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
             Node provider = null;
             {
-                if (cloud.hasNode(providerParameter)) {
+                if (cloud.hasNode(parameterProvider)) {
                     // explicitely stated provider on the URL.
                     // Don't know if that should be maintained.
-                    provider = cloud.getNode(providerParameter);
+                    provider = cloud.getNode(parameterProvider);
                 } else {
                     NodeList providers = cloud.getNodeManager("providers").getList(null, null, null);
                     if (providers.size() == 0) {
@@ -383,7 +378,12 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                     }
                 }
             }
-            Node education = getEducation(cloud, provider, urls, attributes);
+            Node defaultEducation = getEducation(cloud, provider, urls);
+            Node education =
+                parameterEducation != null ?
+                cloud.getNode(parameterEducation) : // explicit education always takes preference
+                defaultEducation;
+
 
             // try determining provider if education found, but not yet a provider
             if (provider == null && education != null) {
@@ -398,9 +398,18 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 NodeList providers = cloud.getNodeManager("providers").getList(null, null, null);
                 if (providers.size() > 0) {
                     provider = providers.getNode(0);
-                    education = getEducation(cloud, provider, urls, attributes);
+                    defaultEducation = getEducation(cloud, provider, urls);
+                    education = defaultEducation;
                 }
             }
+
+            if (education != null) {
+                log.debug("Found education " + education.getNumber());
+                attributes.put("education", education.getNumber());
+            } else {
+                //attributes.put("education", null);
+            }
+
             Locale locale;
             if (provider != null) {
                 log.debug("Found provider " + provider.getNumber());
@@ -437,7 +446,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 attributes.put("includePath", "" + provider.getNumber());
             }
 
-            attributes.put("referids", "class?,workgroup?,student?,c?");
+            attributes.put("referids", "class?,workgroup?,student?,c?" + (education.getNumber() != defaultEducation.getNumber() ? ",education" : ""));
 
             providerCache.put(key, attributes);
 
