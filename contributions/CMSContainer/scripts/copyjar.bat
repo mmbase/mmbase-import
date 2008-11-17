@@ -104,11 +104,11 @@ GOTO processCopy
 			GOTO usage
 
 	:copyApp
-		pushd %APPLICATION%
+		pushd "%APPLICATION%"
 		call maven %BUILD_OPTS% clean jar:install
 		popd
-		echo APPLICATION %APPLICATION% TO %WEBAPP%
-		xcopy /D /S /Y %APPLICATION%\target\*.jar %CATALINA_HOME%\webapps\%WEBAPP%\WEB-INF\lib
+		echo APPLICATION "%APPLICATION%" TO "%WEBAPP%"
+		xcopy /D /S /Y "%APPLICATION%\target\*.jar" "%CATALINA_HOME%\webapps\%WEBAPP%\WEB-INF\lib"
 		GOTO end
 
 :exit
