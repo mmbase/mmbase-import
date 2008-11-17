@@ -237,6 +237,25 @@
       </datatype>
     </field>
 
+    <field name="offline_date">
+      <descriptions>
+        <description xml:lang="en">Offline Date</description>
+         <description xml:lang="nl">Offline Tijd</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Offline Date</guiname>
+        <guiname xml:lang="nl">Offline Tijd</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>11</list>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today + 100 year" />
+      </datatype>
+    </field>
+
 
   </fieldlist>
 
@@ -246,6 +265,9 @@
     </function>
     <function key="online">
       <class>nl.didactor.education.Functions</class>
+    </function>
+    <function name="madetestholder" key="{NODE.number}">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
   </functionlist>
 
