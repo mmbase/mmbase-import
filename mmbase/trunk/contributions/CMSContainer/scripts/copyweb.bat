@@ -63,8 +63,8 @@ GOTO processCopy
 
 	:copyApp
 		echo APPLICATION %APPLICATION% TO %WEBAPP%
-		xcopy /D /S /Y /EXCLUDE:copyweb.exclude %APPLICATION%\src\webapp %CATALINA_HOME%\webapps\%WEBAPP%
-		xcopy /D /S /Y /EXCLUDE:copyweb.exclude %APPLICATION%\config %CATALINA_HOME%\webapps\%WEBAPP%\WEB-INF\config
+		xcopy /D /S /Y /EXCLUDE:copyweb.exclude "%APPLICATION%\src\webapp" "%CATALINA_HOME%\webapps\%WEBAPP%"
+		xcopy /D /S /Y /EXCLUDE:copyweb.exclude "%APPLICATION%\config" "%CATALINA_HOME%\webapps\%WEBAPP%\WEB-INF\config"
 		GOTO end
 
 :exit
