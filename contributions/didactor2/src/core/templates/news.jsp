@@ -1,5 +1,5 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate">
@@ -29,7 +29,7 @@
     </div>
 
     <div class="ListLeft">
-      <jsp:directive.include file="listleft.jsp" />
+      <jsp:directive.include file="cockpit/index/listleft.jsp" />
     </div>
   </div>
 
