@@ -1,8 +1,9 @@
-<jsp:root version="2.0"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:directive.page session="false" />
   <jsp:directive.page import="java.util.*,nl.didactor.component.*" />
   <mm:cloud method="asis">
@@ -11,7 +12,7 @@
 
         <mm:present referid="education">
           <mm:hasnode number="component.progress">
-            <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
+            <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="true">
               <script type="text/javascript"> function reloadProgress() { $("#progressMeter").load('${_}'); } </script>
             </mm:treefile>
             <div id="progressMeter">
