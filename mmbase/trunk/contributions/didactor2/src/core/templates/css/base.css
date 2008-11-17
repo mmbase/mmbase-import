@@ -278,6 +278,9 @@ input.search {
 .menuItemApplicationMenubar.start + .menuSeperatorApplicationMenubar {
   display: none;
 }
+.menuItemApplicationMenubar.educationSelector form {
+  display: inline;
+}
 
 .spacer {
   background-image: url('../gfx/spacer.gif');

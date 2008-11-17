@@ -1,8 +1,10 @@
-<jsp:root version="2.0"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:cloud method="asis">
     <div class="applicationMenubar">
       <mm:import externid="showlogin"><mm:hasrank value="anonymous">yes</mm:hasrank></mm:import>
@@ -13,6 +15,7 @@
                 absolute="context"
                 page="/education/index.jsp" objectlist="$includePath" referids="$referids" />
           </mm:import>
+
 
           <form method="post" action="${mm:link(referrer)}">
             <p>
@@ -59,7 +62,7 @@
 
         <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
         <div class="menuItemApplicationMenubar">
-          <mm:node number="${user}">
+              <mm:node number="${user}">
             <mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids" write="false">
               <a title="${di:translate('core.logout')}"
                  href="${_}" class="menubar">
@@ -70,6 +73,24 @@
             </mm:treefile>
           </mm:node>
         </div>
+
+        <mm:node number="$user">
+
+          <mm:nodelistfunction id="educations" name="educations" />
+          <c:if test="${fn:length(educations) gt 1}">
+            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+            <div class="menuItemApplicationMenubar educationSelector">
+              <form method="GET">
+                <select name="education" onchange="this.form.submit()">
+                  <mm:listnodes referid="educations">
+                    <mm:option value="${_node}" compare="${education}">${_node.name}</mm:option>
+                  </mm:listnodes>
+                </select>
+              </form>
+            </div>
+          </c:if>
+        </mm:node>
+
 
         <di:blocks styleClass="menuItemApplicationMenubar"
                   classification="applicationbar">
