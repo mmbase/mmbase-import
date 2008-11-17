@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.98 2008-09-26 14:57:02 michiel Exp $
+ * @version $Id: Dove.java,v 1.99 2008-11-17 14:28:12 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -161,8 +161,8 @@ public class Dove extends AbstractDove {
                                                            // booleans. Don't ask me why. It's stupid.
                     key =  "" + Casting.toInt(key);
                 }
-                Element o = addContentElement("option", "" + entry.getValue(), ol);
-                o.setAttribute("id", "" + key);
+                Element o = addContentElement("option", Casting.toString(entry.getValue()), ol);
+                o.setAttribute("id", Casting.toString(key));
             }
         }
         return fel;
@@ -195,7 +195,7 @@ public class Dove extends AbstractDove {
                 }
                 public Map.Entry<?, String> next() {
                     Long v = new Long(value++);
-                    return new org.mmbase.util.Entry(v, "" + v);
+                    return new org.mmbase.util.Entry<Long, String>(v, "" + v);
                 }
                 public void remove() {
                     throw new UnsupportedOperationException();
