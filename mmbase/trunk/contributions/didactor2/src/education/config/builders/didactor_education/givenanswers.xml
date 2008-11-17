@@ -2,7 +2,7 @@
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"    
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="givenanswers" maintainer="didactor.nl" version="2" extends="answers">
 
   <searchage>31</searchage>
@@ -53,6 +53,33 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+    </field>
+
+    <field name="question" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Vraag</guiname>
+        <guiname xml:lang="en">Question</guiname>
+      </gui>
+      <editor><positions><list>2</list></positions></editor>
+
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
+        <enumeration enforce="never">
+          <query type="questions"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <sortorder field="name" />
+          </query>
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="type">questions</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="type">questions</param>
+          </class>
+        </getprocessor>
+      </datatype>
     </field>
   </fieldlist>
 </builder>
