@@ -12,8 +12,10 @@
               doctype-root-element="fieldset"
               />
   <fieldset>
-    <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-      <field name="assessment" />
-    </c:if>
+    <di:hascomponent name="assessement">
+      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+        <field name="assessment" />
+      </c:if>
+    </di:hascomponent>
   </fieldset>
 </mm:content>
