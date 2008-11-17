@@ -30,7 +30,8 @@
             </a>
             <img src='gfx/menu_root.gif' border='0' align='center' valign='middle' /> <!-- Why are we including style in the HTML? -->
             <span style='width:100px; white-space: nowrap'>
-              <mm:link referid="listjsp${forbidtemplate}">
+              <mm:link referid="listjsp${forbidtemplate}"
+                       referids="provider">
                 <mm:param name="wizard">config/education/educations</mm:param>
                 <mm:param name="nodepath">educations</mm:param>
                 <mm:param name="searchfields">name</mm:param>
