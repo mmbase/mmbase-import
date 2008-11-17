@@ -14,13 +14,15 @@
       <mm:size write="false">
         <c:choose>
           <c:when test="${_ eq 0}">
-            <mm:relatednodes path="posrel,object">
-            <mm:hasrelationmanager sourcemanager="${_node}" destinationmanager="images" role="background">
-              <mm:relatednodes path="background,images">
-                <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+            <mm:hasrelationmanager destinationmanager="object" role="posrel">
+              <mm:relatednodes path="posrel,object">
+                <mm:hasrelationmanager sourcemanager="${_node}" destinationmanager="images" role="background">
+                  <mm:relatednodes path="background,images">
+                    <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+                  </mm:relatednodes>
+                </mm:hasrelationmanager>
               </mm:relatednodes>
             </mm:hasrelationmanager>
-          </mm:relatednodes>
           </c:when>
           <c:otherwise>
             <mm:relatednodes>
