@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Givenanswers for a certain question.
  * @author Michiel Meeuwissen
- * @version $Id: GivenAnswers.java,v 1.1 2008-11-17 17:09:59 michiel Exp $
+ * @version $Id: GivenAnswers.java,v 1.2 2008-11-17 17:40:51 michiel Exp $
  */
 public class GivenAnswers {
     protected final static Logger log = Logging.getLoggerInstance(GivenAnswers.class);
@@ -27,10 +27,10 @@ public class GivenAnswers {
         copybook = n;
     }
 
-    private Node block;
+    private Node test;
 
-    public void setBlock(Node n) {
-        block = n;
+    public void setTest(Node n) {
+        test = n;
     }
 
 
@@ -43,19 +43,19 @@ public class GivenAnswers {
         NodeManager copybooks    = cloud.getNodeManager("copybooks");
 
         NodeList mt = null;
-        if (block != null) {
-            NodeQuery sq = Queries.createRelatedNodesQuery(block, madetests, "related", "destination");
-            RelationStep srs = sq.addRelationStep(copybooks, "related", "source");
+        if (test != null) {
+            NodeQuery sq = Queries.createRelatedNodesQuery(test, madetests, "related", "DESTINATION");
+            RelationStep srs = sq.addRelationStep(copybooks, "related", "SOURCE");
             sq.addNode(srs.getNext(), copybook.getNumber());
             mt = madetests.getList(sq);
         }
 
 
 
-        NodeQuery q = Queries.createRelatedNodesQuery(question, givenanswers, "related", "source");
+        NodeQuery q = Queries.createRelatedNodesQuery(question, givenanswers, "related", "SOURCE");
         Queries.addSortOrders(q, "insrel.number", "DOWN");
 
-        RelationStep rs1 = q.addRelationStep(madetests, "related", "destination");
+        RelationStep rs1 = q.addRelationStep(madetests, "related", "DESTINATION");
         if (mt != null) {
             for (Node n : mt) {
                 q.addNode(rs1.getNext(), n.getNumber());
@@ -63,7 +63,7 @@ public class GivenAnswers {
         }
 
 
-        RelationStep rs = q.addRelationStep(copybooks, "related",  "source");
+        RelationStep rs = q.addRelationStep(copybooks, "related",  "SOURCE");
         q.addNode(rs.getNext(), copybook.getNumber());
 
         return givenanswers.getList(q);
