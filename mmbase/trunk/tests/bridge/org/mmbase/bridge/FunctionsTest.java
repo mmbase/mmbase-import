@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.15 2008-09-22 17:15:20 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.16 2008-11-18 23:33:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -214,6 +214,29 @@ public class FunctionsTest extends BridgeTest {
 
     }
 
+
+    public void testFunctionOnClusterNode() {
+        Cloud cloud = getCloud();
+        NodeList nl = cloud.getList("", "object", "",
+                                    "", "", "",
+                                    "", false);
+        Node n = nl.get(0);
+        assertTrue(n.getNumber() < 0);
+
+        // info implemented in MMObjectBuilder  itself, so even virtual nodes must  have it, and give something non empty
+        assertTrue(!"".equals(n.getFunctionValue("info", null).toString()));
+
+        // TODO: FAILS!!!
+        //assertTrue(!"".equals(n.getStringValue("info()")));
+
+        // could also test gui of virtual nodes themselves, they seem to give empty now.
+
+        // should be possible to call functions on elements too.
+        assertTrue(!"".equals(n.getNodeValue("object").getFunctionValue("gui", null).toString()));
+
+        // TODO: FAILS:
+        //assertTrue(!"".equals(n.getStringValue("object.gui()")));
+    }
 
     public void testNonExistingFunctionOnClusterNode() { //MMB-1208
         Cloud cloud = getCloud();
