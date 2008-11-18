@@ -43,7 +43,7 @@ public class AssetMassDeleteAction extends MMBaseFormlessAction {
             RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
          }
       }
-      String url = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + channelnumber;
+      String url = mapping.findForward(SUCCESS).getPath() + "?type=asset&parentchannel=" + channelnumber;
       if(StringUtils.isNotEmpty(offset)) {
          url += "&offset="+offset;
       }
@@ -53,6 +53,7 @@ public class AssetMassDeleteAction extends MMBaseFormlessAction {
       if(StringUtils.isNotEmpty(direction)) {
          url += "&direction="+direction;
       }
+      url += "&refreshchannel=true";
       return new ActionForward(url, true);
    }
 
