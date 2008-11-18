@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.26 2008-11-10 10:47:01 andre Exp $
+      @version $Id: page.jspx,v 1.27 2008-11-18 15:39:18 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />
@@ -22,7 +22,7 @@
       <mm:import externid="offset" vartype="integer">0</mm:import>
       <mm:import externid="customizedir" />
       <mm:import externid="relations" />
-      <mm:import externid="fields" />
+      <mm:import externid="fields" id="flds" />
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
         <c:if test="${! empty search}">
@@ -63,15 +63,15 @@
           <thead class="${size gt 0 ? 'paging needed' : 'paging notneeded'}">
             <tr class="${query.nodeManager.name}">
               <c:choose>
-                <c:when test="${!empty fields}">
-                  <th class="node number" scope="col">#</th>
-                  <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$fields" varStatus="field">
+                <c:when test="${!empty flds}">
+                  <th class="node number" scope="col"># flds: ${flds} </th>
+                  <mm:fieldlist nodetype="${query.nodeManager.name}" fields="$flds" varStatus="field">
                     <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
                     <mm:last><mm:index write="false" id="colcount" /></mm:last>
                   </mm:fieldlist>
                 </c:when>
                 <c:otherwise>
-                  <th class="node number" scope="col">#</th>
+                  <th class="node number" scope="col"># flds: ${flds} </th>
                   <th class="node" scope="col"> </th>
                     <mm:fieldlist nodetype="${query.nodeManager.name}" type="list" varStatus="field">
                       <th class="fields ${field.current.name}" scope="col"><mm:fieldinfo type="guiname" /></th>
@@ -119,10 +119,10 @@
           <!--  ACTUAL SEARCHRESULT -->
           <tbody>
             <mm:listnodes varStatus="status" jspvar="n">
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,fields?" />
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?" />
               <c:if test="${relations == true}">
                 <mm:compare referid="id" regexp="\w*current">
-                  <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,fields?" />
+                  <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,flds@fields?" />
                 </mm:compare>
               </c:if>
             </mm:listnodes>
