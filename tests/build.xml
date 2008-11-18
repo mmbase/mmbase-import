@@ -77,6 +77,9 @@
     <antcall target="install.jar">
       <param name="name" value="mmbase-clustering" />
     </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="mmbase-richtext" />
+    </antcall>
     <antcall target="vpro-wizards"/>
   </target>
 
@@ -135,13 +138,14 @@
           <include name="servletapi*.jar" />
           <include name="commons-fileupload*.jar" />
           <include name="mmbase-resources*.jar" />
+          <include name="mmbase-richtext*.jar" />
           <include name="mmbase-${version}.jar" />
         </fileset>
         <fileset dir="${tests.lib}">
           <include name="mmbase-test.jar" />
         </fileset>
       </classpath>
-    <classpath id="run.classpath.vpro-wizards">
+      <classpath id="run.classpath.vpro-wizards">
         <path refid="run.classpath" />
         <fileset dir="${lib}">
           <include name="mmbase-vpro-wizards*.jar" />
@@ -149,8 +153,8 @@
           <include name="servletapi*.jar" />
           <include name="commons-*.jar" />
           <include name="collections-generic*.jar" />
-      </fileset>
-    </classpath>
+        </fileset>
+      </classpath>
       <classpath id="run.classpath.rmmci">
         <path refid="run.classpath"/>
         <fileset dir="${lib}">
@@ -282,6 +286,7 @@
       <src path="${tests.source.dir}/clustering"/>
       <src path="${tests.source.dir}/releasestrategy"/>
       <src path="${tests.source.dir}/vpro-wizards" />
+      <src path="${tests.source.dir}/richtext" />
       <include name="**/*.java"/>
     </javac>
     <property name="compiled" value="yes" />
@@ -324,17 +329,17 @@ Build-compiler: ${build.compiler}
     <delete file="${tests.build.dir}/manifest.mf" />
   </target>
 
-    <target name="run.vprowizards" depends="init,jar" description="VPRO MMBase wizards tests">
-        <antcall target="clean.database" inheritRefs="true" />
-        <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
-            <arg value="org.mmbase.applications.vprowizards.AllTests" />
-            <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-            <jvmarg value="-Duser.dir=${tests.work.dir}" />
-            <assertions>
-                <enable />
-            </assertions>
-        </java>
-    </target>
+  <target name="run.vprowizards" depends="init,jar" description="VPRO MMBase wizards tests">
+    <antcall target="clean.database" inheritRefs="true" />
+    <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
+      <arg value="org.mmbase.applications.vprowizards.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions>
+        <enable />
+      </assertions>
+    </java>
+  </target>
 
   <target name="run.typerel" depends="jar,init" description="Allowed Relations tests">
     <antcall target="clean.database" inheritRefs="true" />
@@ -452,6 +457,21 @@ Build-compiler: ${build.compiler}
         timeout="300000"
         classpathref="run.classpath">
       <arg value="org.mmbase.util.UtilTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
+  <target name="run.richtext" depends="init,jar" description="Richtext tests">
+    <antcall target="clean.database" />
+    <echo message="Starting ${ui.class}: " />
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.richtext.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <assertions><enable /></assertions>
