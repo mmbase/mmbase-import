@@ -12,13 +12,13 @@ package com.finalist.cmsc.workflow.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 
-import com.finalist.cmsc.workflow.AssetWorkflow;
+import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.workflow.LinkWorkflow;
 import com.finalist.cmsc.workflow.WorkflowManager;
-import com.finalist.cmsc.repository.RepositoryUtil;
 
 public class LinkWorkflowAction extends WorkflowAction {
 
