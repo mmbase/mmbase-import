@@ -24,7 +24,7 @@
    <div class="body">
       <c:set var="relcount1" value="0"/>
       <c:set var="relcount2" value="0"/>
-      
+      <c:set var="relcount3" value="0"/>
       <mm:list nodes="$parentchannel" path="contentchannel,creationrel,contentelement"> 
          <mm:field name="contentelement.number" id="cenumber" write="false"/>
          
@@ -40,8 +40,11 @@
                   </c:otherwise>
                </c:choose>
             </mm:first>
-         </mm:list>
-         
+         </mm:list>         
+      </mm:list>
+
+      <mm:list nodes="$parentchannel" path="contentchannel,creationrel,assetelement"> 
+          <c:set var="relcount3" value="${relcount3 + 1}"/>     
       </mm:list>
 
       <p>
@@ -51,7 +54,7 @@
          <ul>
             <li>
                <fmt:message key="channeldelete.message.1">
-                  <fmt:param >${relcount1}</fmt:param>
+                  <fmt:param >${relcount1+relcount3}</fmt:param>
                </fmt:message>
             </li>
             <c:if test="${relcount2 ne 0}">
@@ -158,6 +161,57 @@
                      </fmt:message>
                   </mm:node>
                   <mm:import id="lastotype" reset="true"><mm:write referid="otype" /></mm:import>
+
+                  <table class="listcontent">
+               </mm:compare>
+
+               <tr class="itemrow" >
+                  <td><mm:field name="number" /></td>
+                  <td nowrap>
+                     <a href="javascript:info('<mm:field name="number" />');">
+                        <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="channeldelete.info" />" />
+                     </a>
+                     <a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');">
+                        <img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="channeldelete.unlink" />" />
+                     </a>
+                  </td>
+                  <td width="100%"><mm:field name="title" /></td>
+
+               <mm:last>
+               <mm:compare referid="lastotype" value="" inverse="true">
+                     </tr>
+                  </table>
+               </mm:compare>
+               </mm:last>
+            </mm:listnodes>
+         </mm:relatednodescontainer>
+         <mm:relatednodescontainer path="creationrel,assetelement" searchdirs="source" element="assetelement">
+            <mm:sortorder field="assetelement.otype" direction="up" />
+            <mm:sortorder field="assetelement.title" direction="up" />
+
+            <mm:listnodes jspvar="node">
+               <mm:field name="otype" write="false" id="aotype" />
+               <mm:field name="number" write="false" id="anumber" />
+
+               <mm:compare referid="lastotype" value="" inverse="true">
+                  </tr>
+               </mm:compare>
+               <mm:compare referid="aotype" referid2="lastotype" inverse="true">
+                  <mm:compare referid="lastotype" value="" inverse="true">
+                     </table>
+                  </mm:compare>
+
+                  <mm:node referid="aotype">
+                     <br />
+                     <fmt:message key="recyclebin.type">
+                        <fmt:param>
+                           <mm:field name="name" id="anodename">
+                              <mm:nodeinfo nodetype="$anodename" type="guitype" />
+                           </mm:field>
+                        </fmt:param>
+                     </fmt:message>
+                  </mm:node>
+                  <mm:import id="lastotype" reset="true"><mm:write referid="aotype" /></mm:import>
 
                   <table class="listcontent">
                </mm:compare>
