@@ -13,6 +13,12 @@
 	<!-- ========== Global Forward Definitions =================================== -->
 	<!-- ========== Action Mapping Definitions =================================== -->
 	<action-mappings>
+      <action path="/editors/workflow/AllcontentWorkflowAction"
+         type="com.finalist.cmsc.workflow.forms.AllcontentWorkflowAction"
+         unknown="false" validate="false">
+         <forward name="success" path="/editors/workflow/workflow.jsp"
+            redirect="false" />
+      </action>
 		<action path="/editors/workflow/ContentWorkflowAction"
 			type="com.finalist.cmsc.workflow.forms.ContentWorkflowAction" unknown="false" validate="false">
 			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />

@@ -26,7 +26,7 @@
             <fmt:message key="workflow.lastmodifier"/>
          </a>
       </th>
-      <c:if test="${workflowType == 'page' || workflowType == 'content' || workflowType == 'asset'}">
+      <c:if test="${workflowType == 'page' || workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
          <th style="width: 140px;">
             <a href="#" <%=onClickandStyle(pageContext, "lastmodifieddate")%>>
                <fmt:message key="workflow.lastmodifieddate"/>
@@ -38,7 +38,7 @@
             <fmt:message key="workflow.number"/>
          </a>
       </th>
-      <c:if test="${workflowType == 'content' || workflowType == 'asset' }">
+      <c:if test="${workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
          <th style="width: 140px;">
             <a href="#" <%=onClickandStyle(pageContext, "contentchannel")%>>
                <fmt:message key="workflow.contentchannel"/>
@@ -60,6 +60,13 @@
       <input type="checkbox" name="check_${workflowNumber}" value="on"/>
    </td>
 
+   <c:if test="${workflowType == 'allcontent' }">
+      <mm:field name="workflowitem.type" id="itemType" write="false"/>
+      <c:if test="${itemType == 'content' }"><c:set var="type" value="contentelement"/></c:if>
+      <c:if test="${itemType == 'asset' }"><c:set var="type" value="assetelement"/></c:if>
+      <c:set var="field" value="title"/>
+      <c:set var="returnAction" value="AllcontentWorkflowAction.do"/>
+   </c:if>
    <c:if test="${workflowType == 'content' }">
       <c:set var="type" value="contentelement"/>
       <c:set var="field" value="title"/>
@@ -105,7 +112,7 @@
          <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="workflow.editelement"/>"
               title="<fmt:message key="workflow.editelement"/>"/>
       </a>
-      <c:if test="${type == 'contentelement' || type == 'assetelement'}">
+      <c:if test="${type == 'contentelement' || type == 'assetelement' }">
          <a href="<cmsc:contenturl number="${number}"/>" target="_blank">
             <img src="../gfx/icons/preview.png" alt="<fmt:message key="workflow.preview.title"/>"
                  title="<fmt:message key="workflow.preview.title"/>"/>
@@ -143,7 +150,7 @@
    <td style="white-space: nowrap;">
       <mm:field name="workflowitem.lastmodifier"/>
    </td>
-   <c:if test="${workflowType == 'page' || workflowType == 'content' || workflowType == 'asset' }">
+   <c:if test="${workflowType == 'page' || workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
       <td style="white-space: nowrap;">
          <mm:field name="${type}.lastmodifieddate"><cmsc:dateformat displaytime="true"/></mm:field>
       </td>
@@ -151,7 +158,7 @@
    <td style="white-space: nowrap;">
       ${number}
    </td>
-   <c:if test="${workflowType == 'content' || workflowType == 'asset' }">
+   <c:if test="${workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
       <td style="white-space: nowrap;">
          <mm:field name="contentchannel.name"/>
       </td>

@@ -29,6 +29,9 @@ public class AssetWorkflow extends RepositoryWorkflow {
    private static final Logger log = Logging.getLoggerInstance(AssetWorkflow.class.getName());
 
    public static final String TYPE_ASSET = "asset";
+   public static final String NODETYPE_IMAGES = "images";
+   public static final String NODETYPE_ATTACHMENTS = "attachments";
+   public static final String NODETYPE_URLS = "urls";
 
 
    public AssetWorkflow(Cloud cloud) {

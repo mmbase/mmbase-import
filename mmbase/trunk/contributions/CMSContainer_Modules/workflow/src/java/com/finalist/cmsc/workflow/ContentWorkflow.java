@@ -29,6 +29,10 @@ public class ContentWorkflow extends RepositoryWorkflow {
    private static final Logger log = Logging.getLoggerInstance(ContentWorkflow.class.getName());
 
    public static final String TYPE_CONTENT = "content";
+   public static final String NODETYPE_ARTICLE = "article";
+   public static final String NODETYPE_BANNERS = "banners";
+   public static final String NODETYPE_LINK = "link";
+   public static final String NODETYPE_FAQITEM = "faqitem";
 
 
    public ContentWorkflow(Cloud cloud) {
