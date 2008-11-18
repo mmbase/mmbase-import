@@ -627,6 +627,10 @@ public final class RepositoryUtil {
         return channel.getRelatedNodes(CONTENTELEMENT, CREATIONREL, SOURCE);
     }
     
+    public static NodeList getCreatedAssetElements(Node channel) {
+       return channel.getRelatedNodes(ASSETELEMENT, CREATIONREL, SOURCE);
+   }
+    
     public static NodeList getCreatedAssets(Node channel) {
         return channel.getRelatedNodes(ASSETELEMENT, CREATIONREL, SOURCE);
     }
