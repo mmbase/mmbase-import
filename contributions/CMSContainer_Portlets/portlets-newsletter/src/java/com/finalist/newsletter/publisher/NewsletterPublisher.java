@@ -57,7 +57,8 @@ public class NewsletterPublisher {
          // if needed to prompt user this validate will be remove to Action
          String originalBody  = "";
          String status = newsletterEditionNode.getStringValue("process_status");
-         if (EditionStatus.INITIAL.value().equals(status)) {
+         String static_html = newsletterEditionNode.getStringValue("static_html");
+         if (EditionStatus.INITIAL.value().equals(status) && StringUtils.isEmpty(static_html)) {
             originalBody = getBody(publication, subscription);
          }
          else {
