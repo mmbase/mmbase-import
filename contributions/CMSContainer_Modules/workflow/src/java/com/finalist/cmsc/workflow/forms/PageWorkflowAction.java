@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.workflow.forms;
 
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.navigation.PagesUtil;
@@ -20,7 +23,6 @@ public class PageWorkflowAction extends WorkflowAction {
    protected String getWorkflowType() {
       return PageWorkflow.TYPE_PAGE;
    }
-
 
    @Override
    protected NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean aord) {
@@ -53,4 +55,7 @@ public class PageWorkflowAction extends WorkflowAction {
       return wfQuery;
    }
 
+   @Override
+   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus) {
+   }
 }

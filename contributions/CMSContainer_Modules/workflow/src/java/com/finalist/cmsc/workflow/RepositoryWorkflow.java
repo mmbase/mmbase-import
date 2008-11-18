@@ -17,6 +17,8 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.Role;
 
 public abstract class RepositoryWorkflow extends WorkflowManager {
+   
+   public static final String TYPE_ALLCONTENT = "allcontent";
 
    public RepositoryWorkflow(Cloud cloud) {
       super(cloud);

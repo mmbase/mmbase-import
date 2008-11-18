@@ -5,6 +5,10 @@ table.centerData{
 table.centerData td {
    text-align: center;
 }
+table.centerData td.leftData {
+   text-align: left;
+   width:106px;
+}
 
 a.sortup {
    background: url( ../gfx/icons/sort_up.gif ) no-repeat right !important;

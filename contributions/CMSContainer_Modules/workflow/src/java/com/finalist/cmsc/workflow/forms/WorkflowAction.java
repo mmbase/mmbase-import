@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.NodeListHelper;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
@@ -26,6 +27,7 @@ import org.mmbase.storage.search.implementation.BasicStep;
 
 import com.finalist.cmsc.services.workflow.*;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.workflow.RepositoryWorkflow;
 import com.finalist.cmsc.workflow.WorkflowManager;
 
 public abstract class WorkflowAction extends MMBaseFormlessAction {
@@ -95,29 +97,46 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          status = statusStr;
       }
 
-      WorkflowStatusInfo ststusInfo = Workflow.getStatusInfo(cloud);
-      request.setAttribute("statusInfo", ststusInfo);
+      WorkflowStatusInfo statusInfo = Workflow.getStatusInfo(cloud);
+      request.setAttribute("statusInfo", statusInfo);
       String type = getWorkflowType();
       addToRequest(request, "workflowType", type);
-
-      NodeQuery listQuery = WorkflowManager.createListQuery(cloud);
-      Queries.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, status));
-      if (!Workflow.isAcceptedStepEnabled() && Workflow.STATUS_FINISHED.equals(status)) {
-         SearchUtil.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, Workflow.STATUS_APPROVED),
-               CompositeConstraint.LOGICAL_OR);
+      String nodetype = null;
+      String nodetypeStr = request.getParameter("workflowNodetype");
+      if (StringUtils.isNotEmpty(nodetypeStr)) {
+         nodetype = nodetypeStr;
+         addToRequest(request, "workflowNodetype", nodetype);
       }
-      Queries.addConstraint(listQuery, WorkflowManager.getTypeConstraint(listQuery, type));
-      NodeQuery wfQuery = createDetailQuery(cloud, orderby, (laststatus == null) ? false : (laststatus.equals("true")));
 
-      addWorkflowListToRequest(request, cloud, wfQuery, listQuery, "results");
+      if(!RepositoryWorkflow.TYPE_ALLCONTENT.equals(type)){
+         NodeQuery listQuery = WorkflowManager.createListQuery(cloud);
+         Queries.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, status));
+         if (!Workflow.isAcceptedStepEnabled() && Workflow.STATUS_FINISHED.equals(status)) {
+            SearchUtil.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, Workflow.STATUS_APPROVED),
+                  CompositeConstraint.LOGICAL_OR);
+         }
+         Queries.addConstraint(listQuery, WorkflowManager.getTypeConstraint(listQuery, type));
+         if(!StringUtils.isBlank(nodetype)){
+            Queries.addConstraint(listQuery, WorkflowManager.getNodetypeConstraint(listQuery, nodetype));
+         }
+         NodeQuery wfQuery = createDetailQuery(cloud, orderby, (laststatus == null) ? false : (laststatus.equals("true")));
+         addWorkflowListToRequest(request, cloud, wfQuery, listQuery, "results");
+      }else{
+         addAllcontentListToRequest(request, cloud, status, laststatus);
+      }
 
       request.setAttribute("acceptedEnabled", Workflow.isAcceptedStepEnabled());
       HttpSession session = request.getSession();
       session.setAttribute("workflow.type", type);
+      if(StringUtils.isNotEmpty(nodetype)){
+         session.setAttribute("workflow.nodetype", nodetype);
+      }
       session.setAttribute("workflow.status", status);
       return mapping.findForward(SUCCESS);
    }
 
+
+   protected abstract void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus);
 
    protected abstract String getWorkflowType();
 
@@ -189,7 +208,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
    }
 
 
-   private NodeQuery createDetailsWithNumbersQuery(NodeQuery wfQuery, NodeList workflowNumbers) {
+   protected NodeQuery createDetailsWithNumbersQuery(NodeQuery wfQuery, NodeList workflowNumbers) {
       NodeQuery detailQuery = (NodeQuery) wfQuery.clone();
 
       BasicStep wfStep = (BasicStep) detailQuery.getStep(WorkflowManager.WORKFLOW_MANAGER_NAME);
