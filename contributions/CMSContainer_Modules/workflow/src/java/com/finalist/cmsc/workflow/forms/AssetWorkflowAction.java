@@ -9,6 +9,10 @@
  */
 package com.finalist.cmsc.workflow.forms;
 
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.AssetElementUtil;
@@ -60,4 +64,7 @@ public class AssetWorkflowAction extends WorkflowAction {
       return wfQuery;
    }
 
+   @Override
+   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus) {
+   }
 }
