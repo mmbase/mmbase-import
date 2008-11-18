@@ -53,6 +53,7 @@ public class AllTests {
         suite.addTestSuite(QueriesTest.class);
         suite.addTestSuite(SerializableTest.class);
         suite.addTestSuite(ToStringTest.class);
+        suite.addTestSuite(ProcessorTest.class);
         suite.addTest(BridgeTest.SHUTDOWN);
         return suite;
     }
