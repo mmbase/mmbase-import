@@ -11,34 +11,23 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 import java.util.Date;
-import org.mmbase.util.logging.*;
 
 /**
  * This processor can be used as a 'commit' processor on a (datetime) field. The field will then be set
  * to the current time when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.4.2.2 2008-11-04 16:48:24 michiel Exp $
+ * @version $Id: LastModified.java,v 1.4.2.3 2008-11-18 23:21:37 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
 
 public class LastModified implements CommitProcessor {
 
-    private static final Logger log = Logging.getLoggerInstance(LastModified.class);
     private static final long serialVersionUID = 1L;
 
-    private boolean setIfNotChanged = false;
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public void setIfNotChanged(boolean b) {
-        setIfNotChanged = b;
-    }
-
     public void commit(Node node, Field field) {
-        if (node.mayWrite() && (setIfNotChanged || node.getChanged().size() > 0)) {
+        if (node.mayWrite()) {
             node.setValueWithoutProcess(field.getName(), new Date());
         }
     }
