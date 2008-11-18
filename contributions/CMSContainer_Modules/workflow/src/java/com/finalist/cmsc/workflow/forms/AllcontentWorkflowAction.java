@@ -12,7 +12,6 @@ package com.finalist.cmsc.workflow.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
