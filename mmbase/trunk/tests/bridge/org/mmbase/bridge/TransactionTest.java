@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.15 2008-11-19 11:00:36 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.16 2008-11-19 11:03:41 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -339,7 +339,6 @@ public class TransactionTest extends BridgeTest {
     }
 
     public void testCreateRelationBetweenNewNodes() {
-        System.out.println("Bla");
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("createrelationtrans");
         NodeManager news = t.getNodeManager("news");
@@ -351,6 +350,7 @@ public class TransactionTest extends BridgeTest {
         t.commit();
     }
 
+    // new node as argument
     public void testCreateRelationToNewNode() {
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("createrelationtrans");
@@ -359,6 +359,18 @@ public class TransactionTest extends BridgeTest {
         Node url = urls.createNode();
         RelationManager rm = t.getRelationManager("news", "urls", "posrel");
         Relation r = n.createRelation(url, rm);
+        t.commit();
+    }
+
+    // old node as argument
+    public void testCreateRelationToNewNode2() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("createrelationtrans");
+        Node n = t.getNode(newNode);
+        NodeManager urls = t.getNodeManager("urls");
+        Node url = urls.createNode();
+        RelationManager rm = t.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(n, rm);
         t.commit();
     }
 
