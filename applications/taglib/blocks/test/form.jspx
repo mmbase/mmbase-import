@@ -9,7 +9,7 @@
   <h2>mm:form</h2>
 
   <h3>Create in a form 2 new nodes and a relation between them</h3>
-  <mm:form id="form1" mode="transaction">
+  <mm:form id="form1" name="form1" mode="transaction">
     <c:catch var="e">
 
       <mm:createnode type="news" id="news">
@@ -36,7 +36,7 @@
   <p>1: ${e}</p>
 
   <h3>Create in a form 1 new node and a relation between that and an existing node</h3>
-  <mm:form id="form2">
+  <mm:form id="form2" name="form2">
     <c:catch var="e">
 
       <mm:createnode type="news" id="news2" />
@@ -60,7 +60,7 @@
   </mm:form>
 
   <h3>Actually show a form</h3>
-  <mm:form id="form3">
+  <mm:form id="form2" name="form3">
     <c:catch var="e">
 
       <mm:createnode type="news" id="news3" commitonclose="false"> <!-- TODO, perhaos it's better if commitonclose is false on default if node in transaction -->
@@ -83,6 +83,7 @@
       </mm:valid>
       <mm:valid inverse="true">
         <p>NOT VALID</p>
+        <mm:cancel />
       </mm:valid>
       </mm:present>
     </c:catch>
@@ -91,7 +92,7 @@
 
   <h3>A form which can handle both new and existings nodes</h3>
   <mm:import externid="article">new</mm:import>
-  <mm:form id="form4">
+  <mm:form id="form4" name="form4">
     <c:catch var="e">
 
       <c:choose>
@@ -114,7 +115,7 @@
       <mm:import externid="submit4" />
       <mm:present referid="submit4">
         <mm:valid>
-          <mm:node number="${url}" id="url4" commitonclose="false" />
+          <mm:node number="${url}" id="url4"  />
           <mm:createrelation source="article" destination="url4" role="posrel" id="r4" />
           <mm:commit />
           <p>Commited.</p>
@@ -125,13 +126,17 @@
             <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
           </mm:node>
         </mm:valid>
+        <mm:valid inverse="true">
+          <p>NOT VALID</p>
+          <mm:cancel />
+        </mm:valid>
       </mm:present>
     </c:catch>
     <p>${e}</p>
   </mm:form>
 
   <h3>Split up in 2 mm:forms</h3>
-  <mm:form  name="form5" mode="transaction"> <!-- if mode trnasaction a html form is avoided -->
+  <mm:form  id="form5" name="form5" mode="transaction"> <!-- if mode trnasaction a html form is avoided -->
     <c:catch var="e">
       <mm:createnode type="news" id="news5" commitonclose="false">
         <mm:field name="title">
@@ -155,6 +160,9 @@
           <mm:node referid="r5">
             <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
           </mm:node>
+        </mm:valid>
+        <mm:valid inverse="true">
+          <mm:cancel />
         </mm:valid>
       </mm:present>
     </c:catch>
