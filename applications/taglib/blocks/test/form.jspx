@@ -35,5 +35,30 @@
     <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
   </mm:node>
 
+  <h3>Actually show a form</h3>
+  <mm:form id="form3">
+    <mm:createnode type="news" id="news3">
+      <mm:field name="title">
+        <mm:fieldinfo type="input" />
+        <mm:fieldinfo type="errors" />
+      </mm:field>
+    </mm:createnode>
+    <input type="submit" name="submit" />
+    <mm:import externid="submit" />
+    <mm:present referid="submit">
+      <mm:valid>
+        <mm:node number="${url}" id="url3" />
+        <mm:createrelation source="news3" destination="url3" role="posrel" id="r3" />
+        <mm:commit />
+        <p>Commitedd</p>
+      </mm:valid>
+    </mm:present>
+  </mm:form>
+  <mm:present referid="r3">
+    <mm:node referid="r3">
+      <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+    </mm:node>
+  </mm:present>
+
 
 </div>
