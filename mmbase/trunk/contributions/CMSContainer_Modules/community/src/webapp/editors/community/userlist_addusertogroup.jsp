@@ -62,7 +62,7 @@
                <fmt:message key="community.search.prompt" var="title">
                   <fmt:param value="${requestScope.groupName}" />
                </fmt:message>
-               <edit:ui-tab title="${title}" active="true"/>
+               <edit:ui-tab title="${title}" active="true">#</edit:ui-tab>
                        
             </edit:ui-tabs>
    
