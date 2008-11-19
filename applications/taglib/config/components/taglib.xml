@@ -57,5 +57,9 @@
          classification="taglib.test">
     <body jsp="test/vars.jspx" />
   </block>
+  <block name="test_form" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/form.jspx" />
+  </block>
 
 </component>
