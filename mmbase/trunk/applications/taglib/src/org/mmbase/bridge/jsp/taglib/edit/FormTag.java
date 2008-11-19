@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.19 2008-07-31 09:54:08 michiel Exp $
+ * @version $Id: FormTag.java,v 1.20 2008-11-19 12:05:32 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -94,6 +94,8 @@ public class FormTag extends TransactionTag implements Writer {
             return MODE_URL;
         } else if (m.equals("validate")) {
             return MODE_VALIDATE;
+        } else if (m.equals("transaction")) {
+            return MODE_TRANSACTION;
         } else {
             throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
