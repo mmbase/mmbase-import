@@ -30,277 +30,287 @@ import com.finalist.cmsc.util.KeywordUtil;
 
 public class ContentSearchAction extends PagerAction {
 
-    public static final String GETURL = "geturl";
+   public static final String GETURL = "geturl";
 
-    public static final String PERSONAL = "personal";
-    public static final String MODE = "mode";
-    public static final String AUTHOR = "author";
-    public static final String OBJECTID = "objectid";
-    public static final String PARENTCHANNEL = "parentchannel";
-    public static final String CONTENTTYPES = "contenttypes";
+   public static final String PERSONAL = "personal";
+   public static final String MODE = "mode";
+   public static final String AUTHOR = "author";
+   public static final String OBJECTID = "objectid";
+   public static final String PARENTCHANNEL = "parentchannel";
+   public static final String CONTENTTYPES = "contenttypes";
 
-    public static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
+   public static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
-    /**
-     * MMbase logging system
-     */
-    private static final Logger log = Logging.getLoggerInstance(ContentSearchAction.class.getName());
+   /**
+    * MMbase logging system
+    */
+   private static final Logger log = Logging.getLoggerInstance(ContentSearchAction.class.getName());
 
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
 
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+      log.debug("Starting the search:");
 
-        log.debug("Starting the search:");
+      // Initialize
+      SearchForm searchForm = (SearchForm) form;
 
-        // Initialize
-        SearchForm searchForm = (SearchForm) form;
+      String deleteContentRequest = request.getParameter("deleteContentRequest");
 
-        String deleteContentRequest = request.getParameter("deleteContentRequest");
-
-        if (StringUtils.isNotEmpty(deleteContentRequest)) {
-           if(deleteContentRequest.startsWith("massDelete:")) {
-              massDeleteContent(deleteContentRequest.substring(11));
-           }
-           else {
+      if (StringUtils.isNotEmpty(deleteContentRequest)) {
+         if (deleteContentRequest.startsWith("massDelete:")) {
+            massDeleteContent(deleteContentRequest.substring(11));
+         } else {
             deleteContent(deleteContentRequest);
-           }
+         }
 
-            // add a flag to let search result page refresh the channels frame,
-            // so that the number of item in recyclebin can update
-            request.setAttribute("refreshChannels", "refreshChannels");
-        }
+         // add a flag to let search result page refresh the channels frame,
+         // so that the number of item in recyclebin can update
+         request.setAttribute("refreshChannels", "refreshChannels");
+      }
 
-        // First prepare the typeList, we'll need this one anyway:
-        List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
+      // First prepare the typeList, we'll need this one anyway:
+      List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
-        List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
-        List<String> hiddenTypes = ContentElementUtil.getHiddenTypes();
-        for (NodeManager manager : types) {
-            String name = manager.getName();
-            if (!hiddenTypes.contains(name)) {
-                LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
-                typesList.add(bean);
+      List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+      List<String> hiddenTypes = ContentElementUtil.getHiddenTypes();
+      for (NodeManager manager : types) {
+         String name = manager.getName();
+         if (!hiddenTypes.contains(name)) {
+            LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+            typesList.add(bean);
+         }
+      }
+      addToRequest(request, "typesList", typesList);
+
+      // Switching tab, no searching.
+      if ("false".equalsIgnoreCase(searchForm.getSearch())) {
+         return mapping.getInputForward();
+      }
+
+      NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
+      QueryStringComposer queryStringComposer = new QueryStringComposer();
+      if (StringUtils.isNotEmpty(request.getParameter(MODE))) {
+         queryStringComposer.addParameter(MODE, request.getParameter(MODE));
+      }
+      NodeQuery query = cloud.createNodeQuery();
+
+      // First we add the contenttype parameter
+      queryStringComposer.addParameter(CONTENTTYPES, searchForm.getContenttypes());
+
+      // First add the proper step to the query.
+      Step theStep = null;
+      if (StringUtils.isNotEmpty(searchForm.getParentchannel())) {
+         Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
+         query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
+         theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
+         query.setNodeStep(theStep);
+         queryStringComposer.addParameter(PARENTCHANNEL, searchForm.getParentchannel());
+      } else {
+         theStep = query.addStep(nodeManager);
+         query.setNodeStep(theStep);
+      }
+
+      // Order the result by:
+      String order = searchForm.getOrder();
+
+      // set default order field
+      if (StringUtils.isEmpty(order)) {
+         if (nodeManager.hasField("title")) {
+            order = "title";
+         }
+         if (nodeManager.hasField("name")) {
+            order = "name";
+         }
+      }
+      if (StringUtils.isNotEmpty(order)) {
+         queryStringComposer.addParameter(ORDER, searchForm.getOrder());
+         queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
+         query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
+      }
+
+      query.setDistinct(true);
+
+      // Set some date constraints.
+      queryStringComposer.addParameter(ContentElementUtil.CREATIONDATE_FIELD, "" + searchForm.getCreationdate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.CREATIONDATE_FIELD, searchForm
+            .getCreationdate());
+      queryStringComposer.addParameter(ContentElementUtil.PUBLISHDATE_FIELD, "" + searchForm.getPublishdate());
+      SearchUtil
+            .addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, searchForm.getPublishdate());
+      queryStringComposer.addParameter(ContentElementUtil.EXPIREDATE_FIELD, "" + searchForm.getExpiredate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EXPIREDATE_FIELD, searchForm.getExpiredate());
+      queryStringComposer
+            .addParameter(ContentElementUtil.LASTMODIFIEDDATE_FIELD, "" + searchForm.getLastmodifieddate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIEDDATE_FIELD, searchForm
+            .getLastmodifieddate());
+
+      // Perhaps we have some more constraints if the nodetype was specified (=>
+      // not
+      // contentelement).
+      if (!ContentElementUtil.CONTENTELEMENT.equalsIgnoreCase(nodeManager.getName())) {
+         FieldList fields = nodeManager.getFields();
+         FieldIterator fieldIterator = fields.fieldIterator();
+
+         while (fieldIterator.hasNext()) {
+            Field field = fieldIterator.nextField();
+            String paramName = nodeManager.getName() + "." + field.getName();
+            String paramValue = request.getParameter(paramName);
+            if (StringUtils.isNotEmpty(paramValue)) {
+               SearchUtil.addLikeConstraint(query, field, paramValue.trim());
             }
-        }
-        addToRequest(request, "typesList", typesList);
+            queryStringComposer.addParameter(paramName, paramValue);
+         }
+      }
 
-        // Switching tab, no searching.
-        if ("false".equalsIgnoreCase(searchForm.getSearch())) {
-            return mapping.getInputForward();
-        }
+      // Add the title constraint:
+      if (StringUtils.isNotEmpty(searchForm.getTitle())) {
 
-        NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
-        QueryStringComposer queryStringComposer = new QueryStringComposer();
-        if(StringUtils.isNotEmpty(request.getParameter(MODE))) {
-        	queryStringComposer.addParameter(MODE, request.getParameter(MODE));
-        }
-        NodeQuery query = cloud.createNodeQuery();
+         queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle().trim());
+         Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
+         Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle().trim());
+         SearchUtil.addConstraint(query, titleConstraint);
+      }
 
-        // First we add the contenttype parameter
-        queryStringComposer.addParameter(CONTENTTYPES, searchForm.getContenttypes());
-
-        // First add the proper step to the query.
-        Step theStep = null;
-        if (StringUtils.isNotEmpty(searchForm.getParentchannel())) {
-            Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
-            query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
-            theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
-            query.setNodeStep(theStep);
-            queryStringComposer.addParameter(PARENTCHANNEL, searchForm.getParentchannel());
-        }
-        else {
-            theStep = query.addStep(nodeManager);
-            query.setNodeStep(theStep);
-        }
-
-        // Order the result by:
-        String order = searchForm.getOrder();
-
-        // set default order field
-        if (StringUtils.isEmpty(order)) {
-            if (nodeManager.hasField("title")) {
-                order = "title";
+      searchKey(request, searchForm, nodeManager, queryStringComposer, query);
+      // Set the objectid constraint
+      if (StringUtils.isNotEmpty(searchForm.getObjectid())) {
+         String stringObjectId = searchForm.getObjectid().trim();
+         Integer objectId = null;
+         if (stringObjectId.matches("^\\d+$")) {
+            objectId = Integer.valueOf(stringObjectId);
+         } else {
+            if (cloud.hasNode(stringObjectId)) {
+               objectId = Integer.valueOf(cloud.getNode(stringObjectId).getNumber());
+            } else {
+               objectId = Integer.valueOf(-1);
             }
-            if (nodeManager.hasField("name")) {
-                order = "name";
-            }
-        }
-        if (StringUtils.isNotEmpty(order)) {
-            queryStringComposer.addParameter(ORDER, searchForm.getOrder());
-            queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
-            query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
-        }
+         }
+         SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);
+         queryStringComposer.addParameter(OBJECTID, stringObjectId);
+      }
 
-        query.setDistinct(true);
+      // Add the user personal:
+      if (StringUtils.isNotEmpty(searchForm.getPersonal())) {
 
-        // Set some date constraints.
-        queryStringComposer.addParameter(ContentElementUtil.CREATIONDATE_FIELD, "" + searchForm.getCreationdate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.CREATIONDATE_FIELD, searchForm
-                .getCreationdate());
-        queryStringComposer.addParameter(ContentElementUtil.PUBLISHDATE_FIELD, "" + searchForm.getPublishdate());
-        SearchUtil
-                .addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, searchForm.getPublishdate());
-        queryStringComposer.addParameter(ContentElementUtil.EXPIREDATE_FIELD, "" + searchForm.getExpiredate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EXPIREDATE_FIELD, searchForm.getExpiredate());
-        queryStringComposer
-                .addParameter(ContentElementUtil.LASTMODIFIEDDATE_FIELD, "" + searchForm.getLastmodifieddate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIEDDATE_FIELD, searchForm
-                .getLastmodifieddate());
-
-        // Perhaps we have some more constraints if the nodetype was specified (=>
-        // not
-        // contentelement).
-        if (!ContentElementUtil.CONTENTELEMENT.equalsIgnoreCase(nodeManager.getName())) {
-            FieldList fields = nodeManager.getFields();
-            FieldIterator fieldIterator = fields.fieldIterator();
-
-            while (fieldIterator.hasNext()) {
-                Field field = fieldIterator.nextField();
-                String paramName = nodeManager.getName() + "." + field.getName();
-                String paramValue = request.getParameter(paramName);
-                if (StringUtils.isNotEmpty(paramValue)) {
-                    SearchUtil.addLikeConstraint(query, field, paramValue.trim());
-                }
-                queryStringComposer.addParameter(paramName, paramValue);
-            }
-        }
-
-        // Add the title constraint:
-        if (StringUtils.isNotEmpty(searchForm.getTitle())) {
-
-            queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle().trim());
-            Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
-            Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle().trim());
-            SearchUtil.addConstraint(query, titleConstraint);
-        }
-
-        // And some keyword searching
-        if (StringUtils.isNotEmpty(searchForm.getKeywords())) {
-            queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
-            Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
-            List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
-            for (String keyword : keywords) {
-                Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
-                SearchUtil.addORConstraint(query, keywordConstraint);
-            }
-        }
-
-        // Set the objectid constraint
-        if (StringUtils.isNotEmpty(searchForm.getObjectid())) {
-        	String stringObjectId = searchForm.getObjectid().trim();
-            Integer objectId = null;
-            if (stringObjectId.matches("^\\d+$")) {
-                objectId = Integer.valueOf(stringObjectId);
-            }
-            else {
-                if (cloud.hasNode(stringObjectId)) {
-                    objectId = Integer.valueOf(cloud.getNode(stringObjectId).getNumber());
-                }
-                else {
-                    objectId = Integer.valueOf(-1);
-                }
-            }
-            SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);
-            queryStringComposer.addParameter(OBJECTID, stringObjectId);
-        }
-
-        // Add the user personal:
-        if (StringUtils.isNotEmpty(searchForm.getPersonal())) {
-
-            String useraccount = cloud.getUser().getIdentifier();
-            if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
-                SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
-            }
-            if (AUTHOR.equals(searchForm.getPersonal())) {
-                SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
-            }
-            queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
-        }
-
-        // Add the user
-        if (StringUtils.isNotEmpty(searchForm.getUseraccount())) {
-            String useraccount = searchForm.getUseraccount();
+         String useraccount = cloud.getUser().getIdentifier();
+         if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
             SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
-        }
+         }
+         if (AUTHOR.equals(searchForm.getPersonal())) {
+            SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
+         }
+         queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
+      }
 
-        // Set the maximum result size.
-        String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
-        if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
-            query.setMaxNumber(25);
-        }
-        else {
-            query.setMaxNumber(Integer.parseInt(resultsPerPage));
-        }
+      // Add the user
+      if (StringUtils.isNotEmpty(searchForm.getUseraccount())) {
+         String useraccount = searchForm.getUseraccount();
+         SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
+      }
 
-        // Set the offset (used for paging).
-        if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
-            query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
-            queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
-        }
+      // Set the maximum result size.
+      String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
+      if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
+         query.setMaxNumber(25);
+      } else {
+         query.setMaxNumber(Integer.parseInt(resultsPerPage));
+      }
 
-        log.debug("QUERY: " + query);
+      // Set the offset (used for paging).
+      if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
+         query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
+         queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
+      }
 
-        int resultCount = Queries.count(query);
-        NodeList results = cloud.getList(query);
+      log.debug("QUERY: " + query);
 
-        // Set everything on the request.
-        searchForm.setResultCount(resultCount);
-        searchForm.setResults(results);
-        request.setAttribute(GETURL, queryStringComposer.getQueryString());
+      int resultCount = Queries.count(query);
+      NodeList results = cloud.getList(query);
 
-        return super.execute(mapping, form, request, response, cloud);
-    }
+      // Set everything on the request.
+      searchForm.setResultCount(resultCount);
+      searchForm.setResults(results);
+      request.setAttribute(GETURL, queryStringComposer.getQueryString());
+      return super.execute(mapping, form, request, response, cloud);
+   }
 
-    private void massDeleteContent(String deleteContent) {
-       if(StringUtils.isNotBlank(deleteContent)){
-          String[] deleteContents = deleteContent.split(",");
-          for(String content : deleteContents) {
-             deleteContent(content);
-          }
-       }
-    }
+   private void searchKey(HttpServletRequest request, SearchForm searchForm, NodeManager nodeManager,
+         QueryStringComposer queryStringComposer, NodeQuery query) {
+      List<String> keywords = null;
+      String mode = request.getParameter(MODE);
+      if (StringUtils.isNotEmpty(mode) && ("basic").equals(mode)) {
+         keywords = KeywordUtil.getKeywords(searchForm.getTitle());
+      }
+      // And some keyword searching
+      if (StringUtils.isNotEmpty(searchForm.getKeywords())) {
+         keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
+      }
+      if (null != keywords) {
+         addKeyConstraint(searchForm, nodeManager, queryStringComposer, query, keywords);
+      }
+   }
 
-    private void deleteContent(String deleteContentRequest) {
-        StringTokenizer commandAndNumber = new StringTokenizer(deleteContentRequest, ":");
-        String command = commandAndNumber.nextToken();
-        String nunmber = commandAndNumber.nextToken();
+   private void addKeyConstraint(SearchForm searchForm, NodeManager nodeManager,
+         QueryStringComposer queryStringComposer, NodeQuery query, List<String> keywords) {
+      queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
+      Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
+      for (String keyword : keywords) {
+         Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
+         SearchUtil.addORConstraint(query, keywordConstraint);
+      }
+   }
 
-        if ("moveToRecyclebin".equals(command)) {
-            moveContentToRecyclebin(nunmber);
-        }
+   private void massDeleteContent(String deleteContent) {
+      if (StringUtils.isNotBlank(deleteContent)) {
+         String[] deleteContents = deleteContent.split(",");
+         for (String content : deleteContents) {
+            deleteContent(content);
+         }
+      }
+   }
 
-        if ("permanentDelete".equals(command)) {
-            deleteContentPermanent(nunmber);
-        }
+   private void deleteContent(String deleteContentRequest) {
+      StringTokenizer commandAndNumber = new StringTokenizer(deleteContentRequest, ":");
+      String command = commandAndNumber.nextToken();
+      String nunmber = commandAndNumber.nextToken();
 
-    }
+      if ("moveToRecyclebin".equals(command)) {
+         moveContentToRecyclebin(nunmber);
+      }
 
-    private void deleteContentPermanent(String objectnumber) {
-        CloudProvider provider = CloudProviderFactory.getCloudProvider();
-        Cloud cloud = provider.getCloud();
+      if ("permanentDelete".equals(command)) {
+         deleteContentPermanent(nunmber);
+      }
 
-        Node objectNode = cloud.getNode(objectnumber);
-        if (Workflow.hasWorkflow(objectNode)) {
-            // at this time complete is the same as remove
-            Workflow.complete(objectNode);
-        }
-        objectNode.delete(true);
+   }
 
-    }
+   private void deleteContentPermanent(String objectnumber) {
+      CloudProvider provider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = provider.getCloud();
 
-    private void moveContentToRecyclebin(String nunmber) {
-        CloudProvider provider = CloudProviderFactory.getCloudProvider();
-        Cloud cloud = provider.getCloud();
+      Node objectNode = cloud.getNode(objectnumber);
+      if (Workflow.hasWorkflow(objectNode)) {
+         // at this time complete is the same as remove
+         Workflow.complete(objectNode);
+      }
+      objectNode.delete(true);
 
-        Node objectNode = cloud.getNode(nunmber);
-        RepositoryUtil.removeCreationRelForContent(objectNode);
-        RepositoryUtil.removeContentFromAllChannels(objectNode);
-        RepositoryUtil.addContentToChannel(objectNode, RepositoryUtil.getTrash(cloud));
+   }
 
-        // unpublish and remove from workflow
-        Publish.remove(objectNode);
-        Publish.unpublish(objectNode);
-        Workflow.remove(objectNode);
-    }
+   private void moveContentToRecyclebin(String nunmber) {
+      CloudProvider provider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = provider.getCloud();
+
+      Node objectNode = cloud.getNode(nunmber);
+      RepositoryUtil.removeCreationRelForContent(objectNode);
+      RepositoryUtil.removeContentFromAllChannels(objectNode);
+      RepositoryUtil.addContentToChannel(objectNode, RepositoryUtil.getTrash(cloud));
+
+      // unpublish and remove from workflow
+      Publish.remove(objectNode);
+      Publish.unpublish(objectNode);
+      Workflow.remove(objectNode);
+   }
 
 }
