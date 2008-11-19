@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.118 2008-11-05 11:02:55 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.119 2008-11-19 18:33:54 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -432,7 +432,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, false);
             break;
         case TYPE_FORID:
-            //show = getTypeHandler(field).htmlInputId(node, field);
+            show = getTypeHandler(field).htmlInputId(node, field);
             break;
         case TYPE_USEINPUT:
             useHtmlInput(node, field);

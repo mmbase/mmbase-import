@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.67 2008-10-22 09:31:12 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.68 2008-11-19 18:33:54 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -161,9 +161,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      */
 
-    //public String htmlInputId(Node node, Field field) throws JspTagException {
-    //return prefix(field.getName());
-    //}
+    public String htmlInputId(Node node, Field field) throws JspTagException {
+        return prefix(field.getName());
+    }
 
     /**
      * Returns the field value as specified by the client's post. This is only <code>null</code> if

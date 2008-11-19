@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: TypeHandler.java,v 1.11 2008-11-19 18:33:54 michiel Exp $
  */
 
 public interface TypeHandler {
@@ -32,9 +32,9 @@ public interface TypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException;
 
     /**
-     * @since MMBase-1.8.2
+     * @since MMBase-1.9.1
      */
-    //public String htmlInputId(Node node, Field field) throws JspTagException;
+    public String htmlInputId(Node node, Field field) throws JspTagException;
 
 
     /**
@@ -47,13 +47,13 @@ public interface TypeHandler {
     /**
      * returns true if setValue happened.
      */
-    
+
     public boolean useHtmlInput(Node node, Field field) throws JspTagException;
 
 
     /**
      * @return Piece of SQL. null if no constraint.
-     * 
+     *
      */
     public String whereHtmlInput(Field field) throws JspTagException;
 
