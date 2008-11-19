@@ -5,9 +5,9 @@
   <articleinfo>
     <title>Java API Documentation</title>
 
-    <date>2004-11-01</date>
+    <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.6 2007-12-07 10:28:02 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.7 2008-11-19 07:34:35 andre Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -47,12 +47,33 @@
         <para><ulink url="/mmdocs/applications/editwizard/build/javadoc/editwizard/index.html">Editwizard</ulink></para>
         <para>The package org.mmbase.applications.editwizard</para>
       </listitem>
+      
+      <listitem>
+        <para><ulink url="/mmdocs/applications/mynews/build/javadoc/editwizard/index.html">MyNews</ulink></para>
+        <para>The package org.mmbase.applications.mynews</para>
+      </listitem>
+      
+      <listitem>
+        <para><ulink url="/mmdocs/applications/oscache-cache/build/javadoc/editwizard/index.html">OSCache-Cache</ulink></para>
+        <para>The package org.mmbase.applications.oscache</para>
+      </listitem>
+      
+      <listitem>
+        <para><ulink url="/mmdocs/applications/resources/build/javadoc/editwizard/index.html">Resources</ulink></para>
+        <para>The package org.mmbase.applications.resources</para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="/mmdocs/applications/taglib/build/javadoc/editwizard/index.html">Taglib</ulink></para>
+        <para>The package org.mmbase.applications.taglib</para>
+      </listitem>
 
       <listitem>
         <para><ulink
-        url="../applications/packaging/build/javadoc/packaging/index.html">Packaging</ulink></para>
-        <para>The package org.mmbase.applications.packaging</para>
+        url="/mmdocs/applications/packaging/build/javadoc/packaging/index.html">Packaging</ulink></para>
+        <para>The package org.mmbase.applications.packaging (deprecated!)</para>
       </listitem>
+      
     </itemizedlist>
   </section>
 </article>
