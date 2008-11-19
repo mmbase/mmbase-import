@@ -1,0 +1,294 @@
+.portalcontrols {
+	position:fixed;
+	top: 2px;
+	left: 250px;
+	background-color: #fff;
+	border: 1px solid black;
+}
+
+.portalcontrols div {
+	height: 100%;
+	font-size: 7pt;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	float: left;
+}
+
+* html .portalcontrols {
+	position:absolute;
+	left: expression( ( 250 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	background-color: #fff;
+}
+
+.portlet-config-canvas h2
+{
+	background-color: #ffffff !important;
+	font-size: 15px !important;;
+	font-weight: bold !important;;
+	color: #000000 !important;;
+}
+
+.portlet-config-canvas 
+{
+	background-color: #ffffff !important;
+	position: relative !important;
+	left: 0px;
+	top: 25px;
+	height: auto;
+	max-height: 300px;
+	overflow-y: scroll;
+	width: 400px;
+	border-style: solid;
+	border-width: 2px;
+	z-index: 3000;
+	padding: 5px;
+	color: #000000;
+	display: none;
+}
+
+.portlet-config-iframe
+{
+	position: relative;
+	height: 300px;
+	width: 350px;
+	z-index: 4000;
+	border: 1px solid black;
+	background-color: white;
+	margin-top: 22px; /* room for the 'menu' that is absolutely positioned */
+}
+
+html>.portlet-config-canvas
+{
+	position: relative !important;
+	left: 0px;
+	top: 0px;
+}
+
+.portlet-config-canvas input
+{
+	border-width: 1px;
+}
+
+.portlet-canvas {
+	border: 1px dotted black;
+	min-height: 23px;
+	height: auto !important;
+	height: 23px;
+   margin: -1px; /* compensate for border */
+	text-align: left;
+}
+
+.portlet-mode-canvas {
+	z-index: 2000;
+	background-color: #ffffff;
+	border: 1px solid black;
+	position: relative;
+	padding: 1px;
+	text-align: left;
+	font-size: 7pt;
+}
+.portlet-mode-canvas img {
+	vertical-align: text-bottom;
+}
+
+.portlet-header-canvas {
+  position: absolute;
+	width: auto;
+	text-align: left;
+}
+
+.portlet-info {
+	display:none; 
+	padding-left:5px;
+}
+
+span.handle
+{ 
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif !important;
+ 	font-size: 11px !important;
+ 	border-style: dotted !important;
+ 	border-width: 1px !important;
+ 	padding: 2px !important;
+ 	margin: 2px !important;
+ 	cursor: move !important;
+ 	color: #000000 !important;
+ 	width: 75px !important;
+ 	text-align: center !important; 	
+ 	width: 75px !important;
+ 	font-weight: normal !important;
+}
+
+a.portal_button, input.portal_button
+{	
+	width: 75px !important;
+	border-width: 1px !important;
+	border-style: solid !important;
+	border-color: #000000 !important;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif !important;
+ 	font-size: 11px !important; 
+ 	padding: 2px !important;
+ 	margin: 2px !important;
+ 	background-color: #ffffff !important;
+ 	color: #000000 !important;
+ 	cursor: hand !important;
+ 	cursor: pointer !important;
+ 	text-decoration: underline !important;
+ 	text-align: center;
+ 	font-weight: normal !important;
+}
+
+a.portal_button:hover, input.portal_button:hover
+{	
+	width: 75px !important;
+	border-width: 1px !important;
+	border-style: solid !important;
+	border-color: #000000 !important;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif !important;
+ 	font-size: 11px !important; 
+ 	padding: 2px !important;
+ 	margin: 2px !important;
+ 	background-color: #000000 !important;
+ 	color: #FFFFFF !important;
+ 	cursor: hand !important;
+ 	cursor: pointer !important;
+ 	text-decoration: underline !important;
+ 	text-align: center;
+ 	font-weight: normal !important;
+}
+
+.portalcontrols select {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: left;
+  letter-spacing: 0.05em;
+  width: 150px;
+}
+
+.portalcontrols input {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: middle;
+  letter-spacing: 0.05em;
+  width: 85px;
+}
+
+
+.portlet-mode-type-admin {
+}
+
+.k-type-edit {
+}
+
+table.editcontent {
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding: 1px;
+	text-align:	left;
+	vertical-align:	top;
+	border-width: 0px; 
+	width: 100%;
+}
+
+table.editcontent tr td {
+	padding: 0px;
+	vertical-align:	bottom;
+}
+
+table.editcontent tr td select option {
+	background-color: #ffffff;
+} 
+
+table.editcontent tr td input, 
+table.editcontent tr td textarea, 
+table.editcontent tr td select  {         
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: left;
+  letter-spacing: 0.05em;
+  width: 200px;
+}
+
+table.editcontent tr td input {
+	padding-left: 5px;
+}
+
+table.editcontent tr td input:disabled {
+	color: #666666;
+	background-color: #ffffff;
+}
+
+table.editcontent tr td a.button {
+	border: 1px outset black;
+	background-color: #e0e0e0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 1px;
+	width: 100px;
+	text-align: center;
+	color: black;
+}
+
+table.editcontent tr td a.button img {
+	vertical-align: middle;
+}
+
+/**
+  Header settings
+*/
+table.editcontent tr td h1,
+table.editcontent tr td h2,
+table.editcontent tr td h3,
+table.editcontent tr td h4,
+table.editcontent tr td h5,
+table.editcontent tr td h6  {         
+		margin-top: 10px;
+		margin-bottom: 0px;
+        text-align: left;
+        font-weight: bold; 
+}
+table.editcontent tr td h1 {
+        font-size: 20px;
+}
+table.editcontent tr td h2 {
+        font-size: 18px;
+}
+table.editcontent tr td h3 {
+        font-size: 16px;
+}
+table.editcontent tr td h4 {
+        font-size: 14px;
+}
+table.editcontent tr td h5 {
+        font-size: 12px;
+}
+table.editcontent tr td h6 {
+        font-size: 10px;
+} 
+
+table.editcontent tr td a {
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: normal;
+  color: black;
+}
+
+/************************************************
+* COLORS
+************************************************/
+
+table.editcontent tr td input,
+table.editcontent tr td textarea,
+table.editcontent tr td select {
+	color: black;
+	border: 1px solid #cccccc;
+}
+
+table.editcontent {
+	border-color: #CCCCCC;
+	background-color: #FFFFFF;
+}
