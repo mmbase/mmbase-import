@@ -7,7 +7,7 @@
 
     <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.7 2008-11-19 07:34:35 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.8 2008-11-19 08:00:25 andre Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -55,9 +55,10 @@
       
       <listitem>
         <para><ulink url="/mmdocs/applications/oscache-cache/build/javadoc/editwizard/index.html">OSCache-Cache</ulink></para>
-        <para>The package org.mmbase.applications.oscache</para>
+        <para>The package org.mmbase.applications.oscache: an implementation of the MMBase
+        'CacheImplementationInterface' interface, which delegates all calls to an OSCache implementation.</para>
       </listitem>
-      
+
       <listitem>
         <para><ulink url="/mmdocs/applications/resources/build/javadoc/editwizard/index.html">Resources</ulink></para>
         <para>The package org.mmbase.applications.resources</para>
