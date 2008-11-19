@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.194 2008-11-19 18:01:06 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.195 2008-11-19 18:04:23 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -60,7 +60,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     protected String description = null;
 
     // all transactions started by this cloud object (with createTransaction)
-    protected Map<String, Transaction> transactions = new HashMap<String, Transaction>();
+    protected Map<String, BasicTransaction> transactions = new HashMap<String, BasicTransaction>();
 
     // node managers cache
     protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap<String, BasicNodeManager>();
@@ -533,7 +533,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return createTransaction(name, false);
     }
 
-    public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
+    public BasicTransaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
         if (name == null) {
             name = "Tran" + uniqueId();
         } else {
@@ -546,7 +546,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                 }
             }
         }
-        Transaction transaction = new BasicTransaction(name, this);
+        BasicTransaction transaction = new BasicTransaction(name, this);
         transactions.put(name, transaction);
         return transaction;
     }
@@ -1054,7 +1054,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         locale     = (Locale) in.readObject();
         log.info("Reading " + this);
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
-        transactions = new HashMap<String, Transaction>();
+        transactions = new HashMap<String, BasicTransaction>();
         nodeManagerCache = new HashMap<String, BasicNodeManager>();
     }
 
