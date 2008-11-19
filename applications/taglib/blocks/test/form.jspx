@@ -20,6 +20,7 @@
     <mm:node referid="r">
       <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
     </mm:node>
+    <p>Created url: ${url}</p>
   </mm:form>
 
   <h3>Create in a form 1 new node and a relation between that and an existing node</h3>
