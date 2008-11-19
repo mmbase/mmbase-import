@@ -77,10 +77,12 @@ function postUpdate(originalRequest) {
    <input type="hidden" name="newsletter" value="${newsletterId}"/>
    <mm:notpresent referid="newsletterId">
       <mm:hasrank minvalue="administrator">
-         <p>
-            <a href="${addUrl}"  style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="newsletter.term.add" />
+   <ul class="shortcuts">
+     <li class="new" style="text-decoration: none;">
+            <a href="${addUrl}"><fmt:message key="newsletter.term.add" />
             </a>
-         </p>
+     </li>
+   </ul>
      </mm:hasrank>
    </mm:notpresent>
    <table border="0" style="padding-left:10px;">

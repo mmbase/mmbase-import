@@ -1,5 +1,8 @@
  <mm:hasrank minvalue="administrator">
-   <p><a href="#" onclick="create()" style="background:url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left no-repeat;padding-left:20px;"><fmt:message key="community.preference.new" /></a></p>
+   <ul class="shortcuts">
+    <li class="new" style="text-decoration: none;"><a href="#" onclick="create()" ><fmt:message key="community.preference.new" /></a>
+    </li>
+   </ul>
  </mm:hasrank>
  <table border="0" >  
    <tr>
