@@ -62,6 +62,9 @@
           <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
         </mm:node>
       </mm:valid>
+      <mm:valid inverse="true">
+        <p>NOT VALID</p>
+      </mm:valid>
     </mm:present>
   </mm:form>
 
