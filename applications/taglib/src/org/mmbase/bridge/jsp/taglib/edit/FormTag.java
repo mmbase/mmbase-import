@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.20 2008-11-19 12:05:32 michiel Exp $
+ * @version $Id: FormTag.java,v 1.21 2008-11-19 18:30:12 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -41,23 +41,30 @@ public class FormTag extends TransactionTag implements Writer {
      * Produces an HTML form, and (reuses) an MMBase transaction. Only explicit commit/cancel (with
      * mm:commit, mm:cancel, or 'commitonclose').
      */
-    public static final int MODE_HTML_FORM       = 0;
+    private static final int MODE_HTML_FORM       = 0;
 
     /**
      * Produces an URL for an HTML form only, and (reuses) an MMBase transaction. Only explicit commit/cancel.
      */
-    public static final int MODE_URL             = 1;
+    private static final int MODE_URL             = 1;
 
     /**
      * Does not produce any content. Implicitely cancels the transaction if not committed.
      */
-    public static final int MODE_VALIDATE        = 2;
+    private static final int MODE_VALIDATE        = 2;
+
+
+    /**
+     * Like, form but implicitely cancels if not explicitely commited.
+     */
+    private static final int MODE_HTML_FORM_VALIDATE        = 3;
+
 
     /**
      * Does not produce any content. Behaves like mm:transaction. Only difference is that on default
      * it does not commit on close.
      */
-    public static final int MODE_TRANSACTION     = 3;
+    private static final int MODE_TRANSACTION     = 4;
 
 
     private Attribute mode = Attribute.NULL;
@@ -96,6 +103,8 @@ public class FormTag extends TransactionTag implements Writer {
             return MODE_VALIDATE;
         } else if (m.equals("transaction")) {
             return MODE_TRANSACTION;
+        } else if (m.equals("formvalidate")) {
+            return MODE_HTML_FORM_VALIDATE;
         } else {
             throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
@@ -112,6 +121,8 @@ public class FormTag extends TransactionTag implements Writer {
 
 
     public int doStartTag() throws JspTagException {
+        if (getReferid() != null) {
+        }
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), this);
         }
@@ -130,6 +141,7 @@ public class FormTag extends TransactionTag implements Writer {
             helper.setValue(url);
             break;
         case MODE_HTML_FORM:
+        case MODE_HTML_FORM_VALIDATE:
             String id = getId();
             String c  = clazz.getString(this);
             try {
@@ -151,6 +163,7 @@ public class FormTag extends TransactionTag implements Writer {
         previous = null;
         switch(m) {
         case MODE_HTML_FORM:
+        case MODE_HTML_FORM_VALIDATE:
             try {
                 pageContext.getOut().write("</form>");
             } catch (java.io.IOException ioe) {
@@ -163,7 +176,9 @@ public class FormTag extends TransactionTag implements Writer {
         }
         Transaction t = transaction;
         int result = super.doEndTag();
-        if (m == MODE_VALIDATE) {
+        switch(m) {
+        case MODE_VALIDATE:
+        case MODE_HTML_FORM_VALIDATE:;
             if (! t.isCommitted()) {
                 t.cancel();
             }
