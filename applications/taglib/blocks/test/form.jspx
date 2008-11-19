@@ -60,39 +60,45 @@
   </mm:form>
 
   <h3>Actually show a form</h3>
-  <mm:form id="form2" name="form3">
-    <c:catch var="e">
+  <mm:form id="form2" name="form3" mode="formvalidate">
+    <fieldset>
+      <legend>Actual form</legend>
+      <c:catch var="e">
 
-      <mm:createnode type="news" id="news3" commitonclose="false"> <!-- TODO, perhaos it's better if commitonclose is false on default if node in transaction -->
-        <mm:field name="title">
-          <mm:fieldinfo type="input" />
-          <mm:fieldinfo type="errors" />
-        </mm:field>
-      </mm:createnode>
-      <input type="submit" name="submit3" />
-      <mm:import externid="submit3" />
-      <mm:present referid="submit3">
-      <mm:valid>
-        <mm:node number="${url}" id="url3" />
-        <mm:createrelation source="news3" destination="url3" role="posrel" id="r3" />
-        <mm:commit />
-        <p>Commited</p>
-        <mm:node referid="r3">
-          <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
-        </mm:node>
-      </mm:valid>
-      <mm:valid inverse="true">
-        <p>NOT VALID</p>
-        <mm:cancel />
-      </mm:valid>
-      </mm:present>
-    </c:catch>
-    <p>${e}</p>
+        <mm:createnode type="news" id="news3" commitonclose="false"> <!-- TODO, perhaos it's better if commitonclose is false on default if node in transaction -->
+          <mm:field name="title">
+            <mm:fieldinfo type="forid" id="id" write="false" />
+            <label for="${id}">
+              <mm:fieldinfo type="guiname" />
+            </label>
+            <mm:fieldinfo type="input" />
+            <mm:fieldinfo type="errors" />
+          </mm:field>
+        </mm:createnode>
+        <input type="submit" name="submit3" />
+        <mm:import externid="submit3" />
+        <mm:present referid="submit3">
+          <mm:valid>
+            <mm:node number="${url}" id="url3" />
+            <mm:createrelation source="news3" destination="url3" role="posrel" id="r3" />
+            <mm:commit />
+            <p>Commited</p>
+            <mm:node referid="r3">
+              <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+            </mm:node>
+          </mm:valid>
+          <mm:valid inverse="true">
+            <p>NOT VALID</p>
+          </mm:valid>
+        </mm:present>
+      </c:catch>
+      <p>${e}</p>
+    </fieldset>
   </mm:form>
 
   <h3>A form which can handle both new and existings nodes</h3>
   <mm:import externid="article">new</mm:import>
-  <mm:form id="form4" name="form4">
+  <mm:form id="form4" name="form4" mode="formvalidate">
     <c:catch var="e">
 
       <c:choose>
@@ -128,46 +134,12 @@
         </mm:valid>
         <mm:valid inverse="true">
           <p>NOT VALID</p>
-          <mm:cancel />
         </mm:valid>
       </mm:present>
     </c:catch>
     <p>${e}</p>
   </mm:form>
 
-  <h3>Split up in 2 mm:forms</h3>
-  <mm:form  id="form5" name="form5" mode="transaction"> <!-- if mode trnasaction a html form is avoided -->
-    <c:catch var="e">
-      <mm:createnode type="news" id="news5" commitonclose="false">
-        <mm:field name="title">
-          <mm:fieldinfo type="input" />
-          <mm:fieldinfo type="errors" />
-        </mm:field>
-      </mm:createnode>
-    </c:catch>
-    <p>${e}</p>
-  </mm:form>
-  <mm:form id="form5" name="form5">
-    <c:catch var="e">
-      <input type="submit" name="submit5" />
-      <mm:import externid="submit5" />
-      <mm:present referid="submit5">
-        <mm:valid>
-          <mm:node number="${url}" id="url5" />
-          <mm:createrelation source="news5" destination="url5" role="posrel" id="r5" />
-          <mm:commit />
-          <p>Commited</p>
-          <mm:node referid="r5">
-            <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
-          </mm:node>
-        </mm:valid>
-        <mm:valid inverse="true">
-          <mm:cancel />
-        </mm:valid>
-      </mm:present>
-    </c:catch>
-    <p>${e}</p>
-  </mm:form>
 
 
 </div>
