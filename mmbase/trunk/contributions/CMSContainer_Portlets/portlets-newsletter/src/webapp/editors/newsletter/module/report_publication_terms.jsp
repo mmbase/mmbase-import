@@ -27,11 +27,13 @@
 
    <div class="editor">
       <div class="body">
-         <div style="padding-left:10px">
-            <a class="addemail" href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
-               <fmt:message key="newsletter.publication.search.linkterm"/>
-            </a>
-         </div>
+         <ul class="shortcuts">
+             <li class="new" style="text-decoration: none;">
+               <a  href="module/NewsletterTermAction.do?method=list&newsletterId=${requestScope.newsletterId}" title="<fmt:message key='newsletter.publication.search.linkterm'/>">
+                  <fmt:message key="newsletter.publication.search.linkterm"/>
+               </a>
+            </li>
+        </ul>
          <form method="post" action="NewsletterTermSearch.do?newsletterId=${requestScope.newsletterId}">
             <table width="50%" border="0" cellspacing="0" cellpadding="0">
                <tr>

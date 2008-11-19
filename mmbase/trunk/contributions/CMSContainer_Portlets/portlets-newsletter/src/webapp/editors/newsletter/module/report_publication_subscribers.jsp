@@ -26,7 +26,8 @@
 
    <div class="editor">
       <div class="body">
-         <div style="padding-left:10px">
+         <ul class="shortcuts">
+             <li class="new" style="text-decoration: none;">
             <c:url var="addSuscriberUrl" value="/editors/community/SearchConditionalUser.do">
                <c:param name="method" value="searchCandidateSubscriber"/>
                <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
@@ -37,17 +38,17 @@
                <c:param name="newsletterId" value="${requestScope.newsletterId}"/>
                <c:param name="path" value="${forwardPath}"/>
             </c:url>
-            <p>
-               <a class="addemail" href="${addSuscriberUrl}" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
+
+               <a  href="${addSuscriberUrl}" title="<fmt:message key='newsletter.publication.link.newsubscriber'/>">
                   <fmt:message key="newsletter.publication.link.newsubscriber"/>
                </a>
-            </p>
-            <p>
-               <a class="addemail" href="${addUserUrl}" title="<fmt:message key='newsletter.publication.link.newuser'/>">
+          </li>
+          <li class="new" style="text-decoration: none;">
+               <a  href="${addUserUrl}" title="<fmt:message key='newsletter.publication.link.newuser'/>">
                   <fmt:message key="newsletter.publication.link.newuser"/>
                </a>
-            </p>
-         </div>
+          </li>
+      <ul class="shortcuts">
 
          <html:form action="editors/newsletter/NewsletterPublicationSubscriberSearch.do">
             <input type="hidden" name="method" value="subScriberSearch"/>

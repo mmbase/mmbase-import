@@ -1,4 +1,2 @@
-a.addemail{
-	 padding-left:20px; 
-	 background:url(../gfx/icons/type/email_add.png) left center no-repeat;
-}
+ul.shortcuts li.new  {   background-image: url('../gfx/icons/type/email_add.png');}
+

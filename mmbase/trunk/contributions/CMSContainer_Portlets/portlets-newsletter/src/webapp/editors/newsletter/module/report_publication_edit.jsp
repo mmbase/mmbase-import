@@ -27,16 +27,18 @@
 
    <div class="editor">
       <div class="body">
-      <p>
-         <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=false&forward=newslettermanage" title="<fmt:message key='site.newsletteredition.new.blank'/>">
-            <fmt:message key="site.newsletteredition.new.blank"/>
-         </a>
-      </p>
-      <p>
+         <ul class="shortcuts">
+             <li class="new" style="text-decoration: none;">
+            <a  href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=false&forward=newslettermanage" title="<fmt:message key='site.newsletteredition.new.blank'/>">
+               <fmt:message key="site.newsletteredition.new.blank"/>
+            </a>
+          </li>
+          <li class="new" style="text-decoration: none;">
          <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=true&forward=newslettermanage" title="<fmt:message key='site.newsletteredition.new.withcontent'/>">
             <fmt:message key="site.newsletteredition.new.withcontent"/>
          </a>
-      </p>
+          </li>
+         </ul>
       
          <html:form action="editors/newsletter/NewsletterPublicationManagement.do">
             <input type="hidden" name="method" value="searchPublication"/>
