@@ -60,5 +60,44 @@
     </mm:node>
   </mm:present>
 
+  <h3>A form which can handle both new and existings nodes</h3>
+  <mm:import externid="article">new</mm:import>
+  <mm:form id="form4">
+    <c:choose>
+      <c:when test="${article eq 'new'}">
+        <mm:remove referid="article" />
+        <mm:createnode id="article" type="news" />
+      </c:when>
+      <c:otherwise>
+        <input type="hidden" name="article" value="${article}" />
+      </c:otherwise>
+    </c:choose>
+    <mm:node  referid="article">
+      <p>Number: ${_node}</p>
+      <mm:field name="title">
+        <mm:fieldinfo type="input" />
+        <mm:fieldinfo type="errors" />
+      </mm:field>
+    </mm:node>
+    <input type="submit" name="submit3" />
+    <mm:import externid="submit3" />
+    <mm:present referid="submit3">
+      <mm:valid>
+        <mm:node number="${url}" id="url4" />
+        <mm:createrelation source="article" destination="url4" role="posrel" id="r4" />
+        <mm:commit />
+        <p>Commited.</p>
+      </mm:valid>
+    </mm:present>
+  </mm:form>
+  <mm:present referid="r4">
+    <mm:link referids="article">
+      <p><a href="${_}">Edit ${article}</a></p>
+    </mm:link>
+    <mm:node referid="r4">
+      <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+    </mm:node>
+  </mm:present>
+
 
 </div>
