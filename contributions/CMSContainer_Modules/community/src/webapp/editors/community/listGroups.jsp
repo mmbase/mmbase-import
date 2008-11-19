@@ -15,7 +15,11 @@
          </edit:ui-tabs>
          <div class="editor">
             <div class="body">
-               <p><a href="${pageContext.request.contextPath }/editors/community/groupInitAction.do" style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message key="community.search.newGroup"/></a><p>
+               <ul class="shortcuts">
+                  <li class="new" style="text-decoration: none;">
+                     <a href="${pageContext.request.contextPath }/editors/community/groupInitAction.do"><fmt:message key="community.search.newGroup"/></a>
+                  </li>
+               </ul>
                <html:form action="/editors/community/searchConditionalGroupAction.do" method="post">
                    <table border="0">
                       <tbody>
