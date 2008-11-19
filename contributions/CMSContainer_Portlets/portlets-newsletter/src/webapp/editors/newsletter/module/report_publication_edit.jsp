@@ -34,7 +34,7 @@
             </a>
           </li>
           <li class="new" style="text-decoration: none;">
-         <a class="addemail" href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=true&forward=newslettermanage" title="<fmt:message key='site.newsletteredition.new.withcontent'/>">
+         <a href="../newsletter/NewsletterPublicationCreate.do?parent=${requestScope.newsletterId}&copycontent=true&forward=newslettermanage" title="<fmt:message key='site.newsletteredition.new.withcontent'/>">
             <fmt:message key="site.newsletteredition.new.withcontent"/>
          </a>
           </li>

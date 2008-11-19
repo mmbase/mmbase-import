@@ -48,7 +48,7 @@
                   <fmt:message key="newsletter.publication.link.newuser"/>
                </a>
           </li>
-      <ul class="shortcuts">
+      </ul>
 
          <html:form action="editors/newsletter/NewsletterPublicationSubscriberSearch.do">
             <input type="hidden" name="method" value="subScriberSearch"/>
