@@ -1,0 +1,37 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_form ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>mm:form</h2>
+
+  <mm:form id="form1" mode="validate">
+    <mm:createnode type="news" id="news" />
+    <mm:createnode type="urls" id="url" />
+    <mm:createrelation source="news" destination="url" role="posrel" id="r" />
+    <mm:node referid="r">
+      <p>Will create relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+    </mm:node>
+    <mm:commit />
+  </mm:form>
+  <mm:node referid="r">
+    <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+  </mm:node>
+  <mm:form id="form2" mode="validate">
+    <mm:createnode type="news" id="news2" />
+    <mm:node number="${url}" id="url2" />
+    <mm:createrelation source="news2" destination="url2" role="posrel" id="r2" />
+    <mm:node referid="r2">
+      <p>Will create relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+    </mm:node>
+    <mm:commit />
+  </mm:form>
+  <mm:node referid="r2">
+    <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+  </mm:node>
+
+
+</div>
