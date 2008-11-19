@@ -102,5 +102,30 @@
     </mm:present>
   </mm:form>
 
+  <h3>Split up in 2 mm:forms</h3>
+  <mm:form name="form5" mode="transaction"> <!-- if mode trnasaction a html form is avoided -->
+    <mm:createnode type="news" id="news5">
+      <mm:field name="title">
+        <mm:fieldinfo type="input" />
+        <mm:fieldinfo type="errors" />
+      </mm:field>
+    </mm:createnode>
+  </mm:form>
+  <mm:form id="form5" name="form5">
+    <input type="submit" name="submit5" />
+    <mm:import externid="submit5" />
+    <mm:present referid="submit5">
+      <mm:valid>
+        <mm:node number="${url}" id="url5" />
+        <mm:createrelation source="news5" destination="url5" role="posrel" id="r5" />
+        <mm:commit />
+        <p>Commited</p>
+        <mm:node referid="r5">
+          <p>Created relation: ${_node}: <mm:nodeinfo type="gui" /></p>
+        </mm:node>
+      </mm:valid>
+    </mm:present>
+  </mm:form>
+
 
 </div>
