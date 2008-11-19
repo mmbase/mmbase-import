@@ -7,12 +7,22 @@
       <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
       <script type="text/javascript" src="js/formcheck.js"></script>
       <script type="text/javascript">
-         window.onload = function ()
-         {
-            Event.observe("selectform", "submit", function(e) {
-               addToGroup("chk_", "<fmt:message key="community.search.promptuser"/>", e)
-            })
+        function addToGroup(){
+         var checkboxs = document.forms[1].getElementsByTagName("input");
+         var selected = false;
+         for(i = 0; i < checkboxs.length; i++) {
+            if(checkboxs[i].type == 'checkbox' && checkboxs[i].name.indexOf('chk_') == 0 && checkboxs[i].checked) {
+               selected = true;
+               break;
+            }
          }
+         if(!selected){
+            alert("<fmt:message key="community.search.promptuser"/>");
+            return false;
+         }
+         return true;
+      }
+
       </script>
    </cmscedit:head>
 
@@ -28,16 +38,15 @@
 
    <div class="editor"> 
       <div class="body">
-         <p>
          <c:url var="addUserUrl" value="userAddInitAction.do">
             <c:param name="forward" value="addCommunityUser"/>
             <c:param name="path" value="${forwardPath}"/>
          </c:url>
-            <a href="${addUserUrl}"
-               style=" padding-left:20px; background: url(<cmsc:staticurl page='/editors/gfx/icons/new.png'/>) left center no-repeat"><fmt:message
-                  key="view.new.user"/>
-            </a>
-         </p>
+         <ul class="shortcuts">
+            <li class="new" style="text-decoration: none;">
+               <a href="${addUserUrl}"><fmt:message key="view.new.user"/></a>
+            </li>
+         </ul>
          <html:form action="/editors/community/SearchConditionalUser.do" method="post">
             <%@include file="search_user_form_table.jspf" %>
          </html:form>
