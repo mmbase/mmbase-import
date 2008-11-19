@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.193 2008-11-13 15:04:59 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.194 2008-11-19 18:01:06 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -552,10 +552,15 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public Transaction getTransaction(String name) {
-        Transaction tran = transactions.get(name);
-        if (tran == null) {
-            tran = createTransaction(name, false);
+        BasicTransaction tran = transactions.get(name);
+        if (tran != null) {
+            if (! tran.verify()) {
+                log.warn("Found an inconsistent transaction " + tran);
+                tran = new BasicTransaction(name, this);
+                transactions.put(name, tran);
+            }
         } else {
+            tran = createTransaction(name, false);
         }
         return tran;
     }
