@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that changes are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.42 2008-09-08 14:13:21 ernst Exp $
+ * @version $Id: BasicTransaction.java,v 1.43 2008-11-19 17:59:33 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -104,6 +104,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
 
+    boolean verify() {
+        return BasicCloudContext.transactionManager.getTransactions().containsKey(transactionName);
+    }
+
     public synchronized boolean commit() {
         if (canceled) {
             throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionName +"), it was already canceled.");
@@ -145,6 +149,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                     log.debug("Calling commit on " + n);
                     n.commit();
                 }
+
 
 
 
