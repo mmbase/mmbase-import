@@ -8,9 +8,6 @@
 <cmscedit:head title="community.preference.title">
 	<c:url var="actionUrl" value="/editors/community/PreferenceAction.do"/>
 	<script type="text/javascript">
-		function add() {
-	      document.forms[0].submit();
-	   }
 		function cancel() {
          document.forms[0].action = "${actionUrl}?reload=true"
 	      document.forms[0].method.value = "list";
@@ -58,7 +55,7 @@
              <tr>
                <td> </td>
              <td>
-                <input type="submit" name="submitButton" onclick="add();" 
+                <input type="submit" name="submitButton"  
                      value="<fmt:message key="view.group.submit" />"/><c:forEach var="space" begin="1" end="10" step="1">&nbsp; </c:forEach>
                      <input type="submit" name="submitButton" onclick="cancel();" 
                   value="<fmt:message key="view.group.cancel" />"/>
