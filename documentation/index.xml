@@ -5,9 +5,9 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2007-08-05</date>
+    <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.69 2008-10-21 16:51:15 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.70 2008-11-19 08:00:35 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -92,12 +92,11 @@
       <revision>
         <revnumber>0.2</revnumber>
 
-        <date>2006-09-18</date>
+        <date>2009-11-19</date>
 
         <authorinitials>AvT</authorinitials>
 
-        <revremark>New doc describing datatypes and
-        specializations.</revremark>
+        <revremark>1.8 to 1.9</revremark>
       </revision>
     </revhistory>
 
@@ -257,6 +256,12 @@
       </listitem>
 
       <listitem>
+        <para><ulink
+        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
+        MMBase Cloud Interface</ulink></para>
+      </listitem>
+      
+      <listitem>
         <para><ulink url="backenddevelopers/dbsq.html">SearchQuery
         introduction</ulink></para>
       </listitem>
@@ -298,14 +303,6 @@
       </listitem>
 
       <listitem>
-        <para><ulink
-                  url="multiproject/mmbase-oscache/apidocs/index.html">Javadocs
-        of OSCache Cache</ulink> An implementation of the MMBase
-        'CacheImplementationInterface' interface, which delegates all calls to
-        an OSCache implementation.</para>
-      </listitem>
-
-      <listitem>
         <para><ulink url="backenddevelopers/resourceloader.html">The MMBase
         Resource loader</ulink></para>
       </listitem>
@@ -328,50 +325,41 @@
 
       <listitem>
         <para><ulink
-        url="cloudcontextsecurity.html">Cloud
+        url="applications/cloudcontextsecurity/cloudcontextsecurity.html">Cloud
         Context Security</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="crontab.html">MMBase
+        <para><ulink url="applications/crontab/crontab.html">MMBase
         Crontab</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="email.html">Email
+        <para><ulink url="applications/email/email.html">Email
         application</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="notifications.html">MMBase
+        <para><ulink
+        url="applications/media/applications/media/index.html">Media project
+        documentation</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="notifications/notifications.html">MMBase
         Notifications and SMS</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/media/index.html">Media project
-        documentation</ulink></para>
-      </listitem>
-
-
-      <listitem>
-        <para><ulink
-        url="frontenddevelopers/richtext/richtext.html">The
+        url="applications/frontenddevelopers/richtext/richtext.html">The
         Richtext Functional Reference</ulink></para>
       </listitem>
 
       <listitem>
-        <para><ulink
-        url="backenddevelopers/rmmci/index.html">Remote
-        MMBase Cloud Interface</ulink></para>
-      </listitem>
-
-      <!--
-      <listitem>
         <para><ulink url="applications/scan/SCAN1_0.html">SCAN</ulink> the
         deprecated template language of MMBase</para>
       </listitem>
-      -->
     </itemizedlist>
 
     <para>MMBase taglib</para>
@@ -423,13 +411,6 @@
         XML API</ulink></para>
       </listitem>
 
-      <!--
-      <listitem>
-        <para><ulink
-        url="applications/editwizard/build/javadoc/editwizard/index.html">Editwizards
-        Javadoc</ulink> org.mmbase.applications.editwizard</para>
-      </listitem>
-      -->
     </itemizedlist>
 
     <para>XML Importer (TCP 2.0)</para>
@@ -437,18 +418,18 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
+        url="applications/frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="frontenddevelopers/xmlimporter/quickstart.html">Quick
+        url="applications/frontenddevelopers/xmlimporter/quickstart.html">Quick
         Start</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="frontenddevelopers/xmlimporter/cookbook.html">Cook
+        url="applications/frontenddevelopers/xmlimporter/cookbook.html">Cook
         Book</ulink></para>
       </listitem>
     </itemizedlist>
@@ -583,7 +564,7 @@
   <section id="release">
     <title>Release information</title>
 
-    <para>Information about the (upcoming) MMBase 1.8 release.</para>
+    <para>Information about the MMBase 1.9 release.</para>
 
     <itemizedlist>
       <listitem>
