@@ -7,7 +7,7 @@
 
     <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.8 2008-11-19 08:00:25 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.9 2008-11-19 08:18:38 andre Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -49,23 +49,23 @@
       </listitem>
       
       <listitem>
-        <para><ulink url="/mmdocs/applications/mynews/build/javadoc/editwizard/index.html">MyNews</ulink></para>
+        <para><ulink url="/mmdocs/applications/mynews/build/javadoc/mynews/index.html">MyNews</ulink></para>
         <para>The package org.mmbase.applications.mynews</para>
       </listitem>
       
       <listitem>
-        <para><ulink url="/mmdocs/applications/oscache-cache/build/javadoc/editwizard/index.html">OSCache-Cache</ulink></para>
+        <para><ulink url="/mmdocs/applications/oscache-cache/build/javadoc/oscache-cache/index.html">OSCache-Cache</ulink></para>
         <para>The package org.mmbase.applications.oscache: an implementation of the MMBase
         'CacheImplementationInterface' interface, which delegates all calls to an OSCache implementation.</para>
       </listitem>
 
       <listitem>
-        <para><ulink url="/mmdocs/applications/resources/build/javadoc/editwizard/index.html">Resources</ulink></para>
+        <para><ulink url="/mmdocs/applications/resources/build/javadoc/resources/index.html">Resources</ulink></para>
         <para>The package org.mmbase.applications.resources</para>
       </listitem>
 
       <listitem>
-        <para><ulink url="/mmdocs/applications/taglib/build/javadoc/editwizard/index.html">Taglib</ulink></para>
+        <para><ulink url="/mmdocs/applications/taglib/build/javadoc/taglib/index.html">Taglib</ulink></para>
         <para>The package org.mmbase.applications.taglib</para>
       </listitem>
 

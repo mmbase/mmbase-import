@@ -7,7 +7,7 @@
 
     <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.70 2008-11-19 08:00:35 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.71 2008-11-19 08:18:28 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -325,7 +325,7 @@
 
       <listitem>
         <para><ulink
-        url="applications/cloudcontextsecurity/cloudcontextsecurity.html">Cloud
+        url="applications/cloudcontext/cloudcontextsecurity.html">Cloud
         Context Security</ulink></para>
       </listitem>
 
@@ -346,13 +346,13 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="notifications/notifications.html">MMBase
+        <para><ulink url="applications/notifications/notifications.html">MMBase
         Notifications and SMS</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/frontenddevelopers/richtext/richtext.html">The
+        url="applications/richtext/frontenddevelopers/richtext/richtext.html">The
         Richtext Functional Reference</ulink></para>
       </listitem>
 
@@ -418,18 +418,18 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="applications/frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/index.html">Overview</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/frontenddevelopers/xmlimporter/quickstart.html">Quick
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.html">Quick
         Start</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="applications/frontenddevelopers/xmlimporter/cookbook.html">Cook
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.html">Cook
         Book</ulink></para>
       </listitem>
     </itemizedlist>
@@ -459,7 +459,7 @@
 
       <listitem>
         <para><ulink url="informationanalysts/applications.html">MMBase
-        Applications</ulink></para>
+        Applications</ulink>, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
       </listitem>
     </itemizedlist>
   </section>
