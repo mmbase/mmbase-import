@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.34 2008-11-20 09:33:18 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.35 2008-11-20 11:47:38 michiel Exp $
  */
 
 
@@ -43,7 +43,7 @@ function List(d) {
     this.callBack = null; // called on delete and create
 
 
-    var listinfos  = this.findByClass(this.div, "listinfo");
+    var listinfos  = this.find("listinfo");
 
     this.type      = listinfos.find("input[name = 'type']")[0].value;
     this.item      = listinfos.find("input[name = 'item']")[0].value;
@@ -71,12 +71,11 @@ function List(d) {
         self.commit();
     });
 
-    this.find(this.div, "a.create").each(function() {
-        if ($(this).parents(".list")[0] == self.div) {
-            self.bindCreate(this);
-        }
+    this.find("create", "a").each(function() {
+        self.bindCreate(this);
     });
-    this.find(this.div, "a.delete").each(function() {
+
+    this.find("delete", "a").each(function() {
         self.bindDelete(this);
     });
 
@@ -101,45 +100,51 @@ function List(d) {
 
 List.prototype.leftPage = false;
 
-/**
- * Finds all elements with given node name and class, but ignores everything in a child div.list.
- */
-List.prototype.find = function(el, selector, result) {
-    if (result == null) {
-        result = [];
-    }
+
+List.prototype.find = function(clazz, elname) {
+    var result = [];
     var self = this;
-    var childNodes = el.childNodes;
-    for (var i = 0; i < childNodes.length; i++) {
-        var childNode = childNodes[i];
-        var cn = childNode.nodeName.toUpperCase();
-        if (cn == '#TEXT' || cn == 'OPTION' || (cn == 'DIV' && $(childNode).hasClass("list"))) {
+    if (elname != null) elname = elname.toUpperCase();
+
+    var t = this.div.firstChild;
+    while (t != null) {
+        var cn = t.nodeName.toUpperCase();
+        if (cn == '#TEXT' || (cn == 'DIV' && $(t).hasClass("list"))) {
+            var c = t.nextSibling;
+            while (c == null) {
+                t = t.parentNode;
+                if (t == self.div) { c = null; break; }
+                c = t.nextSibling;
+            }
+            t = c;
 
         } else {
-            if ($(childNode).filter(selector).length > 0) {
-                result[result.length] = childNode;
-            }
-            self.find(childNode, selector, result);
-        }
-    }
-    return $(result);
-}
-List.prototype.findByClass = function(el, clazz, result) {
-    if (result == null) {
-        result = [];
-    }
-    var self = this;
-    var childNodes = el.childNodes;
-    for (var i = 0; i < childNodes.length; i++) {
-        var childNode = childNodes[i];
-        var cn = childNode.nodeName;
-        if (cn == '#text' || cn== 'option' || (cn == 'div' && $(childNode).hasClass("list"))) {
+            if ( (clazz == null || $(t).hasClass(clazz)) &&
+                 (elname == null || cn == elname)) {
+                result[result.length] = t;
+                var c = t.nextSibling;
+                while (c == null) {
+                    t = t.parentNode;
+                    if (t == self.div) { c = null; break; }
+                    c = t.nextSibling;
+                }
+                t = c;
 
-        } else {
-            if ($(childNode).hasClass(clazz)) {
-                result[result.length] = childNode;
+            } else {
+                var c = t.firstChild;
+                if (c == null) {
+                    c = t.nextSibling;
+                }
+                if (c == null) {
+                    c = t.nextSibling;
+                    while (c == null) {
+                        t = t.parentNode;
+                        if (t == self.div) { c = null; break; }
+                        c = t.nextSibling;
+                    }
+                }
+                t = c;
             }
-            self.findByClass(childNode, clazz, result);
         }
     }
     return $(result);
@@ -188,12 +193,12 @@ List.prototype.bindCreate = function(a) {
                                 a.list.validator.validateElement(this);
                             });
                             if (params.createpos == 'top') {
-                                a.list.find(a.list.div, "ol").prepend(r);
+                                a.list.find(null, "ol").prepend(r);
                             } else {
-                                a.list.find(a.list.div, "ol").append(r);
+                                a.list.find(null, "ol").append(r);
                             }
                             a.list.validator.addValidation(r);
-                            a.list.find(r, "a.delete").each(function() {
+                            a.list.find("delete", "a").each(function() {
                                 a.list.bindDelete(this);
                             });
                             $(r).find("* div.list").each(function() {
@@ -264,7 +269,7 @@ List.prototype.needsCommit = function() {
 }
 
 List.prototype.status = function(message, fadeout) {
-    this.find(this.div, "span.status").each(function() {
+    this.find("status", "span").each(function() {
         if (this.originalTextContent == null) this.originalTextContent = this.textContent;
         $(this).fadeTo("fast", 1);
         $(this).empty();
@@ -295,10 +300,23 @@ List.prototype.commit = function(stale, leavePage) {
                 params.createpos = this.createpos;
                 params.leavePage = leavePage ? true : false;
 
-                this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
-                .each(function() {
+                $(this.find("listinfo", "div")[0]).find("input[type='hidden']").each(function() {
                     params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
                 });
+                this.find(null, "input").each(function() {
+                    if (this.checked || this.type == 'text' || this.type == 'hidden' || this.type == 'password') {
+                        params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+                    }
+                });
+                this.find(null, "option").each(function() {
+                    if (this.selected) {
+                        params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+                    }
+                });
+                this.find(null, "textarea").each(function() {
+                    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+                });
+
 
                 var self = this;
                 this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
