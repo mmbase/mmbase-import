@@ -11,7 +11,7 @@
     <di:translate key="education.givenanswer${question.type eq 1 ? 's' : ''}" /><!-- So much for i18n, plural by s is only true for a few languages -->
     <jsp:text>: </jsp:text>
   </b>
-  <mm:relatednodes type="answers">
+  <mm:relatednodes type="mcanswers">
     <mm:field name="text"/>
     <mm:last inverse="true">, </mm:last>
   </mm:relatednodes>

@@ -6,7 +6,9 @@
   <mm:content>
     <mm:cloud rank="didactor user">
 
-      <di:question>
+      <di:question
+          question="${param.question}"
+          madetest="${param.madetest}">
 
         <mm:present referid="answernode">
           <mm:node referid="answernode">
