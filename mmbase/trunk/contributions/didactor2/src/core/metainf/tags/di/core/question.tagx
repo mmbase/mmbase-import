@@ -9,12 +9,12 @@
        name-given="answernode"
        variable-class="org.mmbase.bridge.Node" />
 
-  <mm:import externid="question" required="true"/>
-  <mm:import externid="madetest">-1</mm:import>
+  <jsp:directive.attribute name="question" required="true" />
+  <jsp:directive.attribute name="madetest" />
 
   <mm:node referid="question">
 
-    <mm:isnotempty referid="madetest">
+    <c:if test="${! empty madetest}">
       <mm:relatednodescontainer
           path="givenanswers,madetests"
           element="givenanswers"
@@ -23,9 +23,9 @@
         <mm:constraint field="madetests.number" value="${madetest}"/>
         <mm:relatednodes max="1">
           <mm:node id="answernode" />
-      </mm:relatednodes>
+        </mm:relatednodes>
       </mm:relatednodescontainer>
-    </mm:isnotempty>
+    </c:if>
 
     <mm:field name="showtitle">
       <mm:compare value="1">
