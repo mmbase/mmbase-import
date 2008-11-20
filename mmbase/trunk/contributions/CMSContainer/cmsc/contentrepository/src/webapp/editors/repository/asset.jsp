@@ -59,7 +59,7 @@
                <% if (role != null && SecurityUtil.isWriter(role)) { %>
                   <ul class="shortcuts">
                      <li class="new" style="text-decoration: none;"><fmt:message key="asset.new"/>
-                        <form name="initForm" action="../AssetInitAction.do" method="post" style="display:inline;text-decoration:none">
+                        <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
                            <input type="hidden" name="action" value="create"/>
                            <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
                            <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
@@ -157,7 +157,11 @@
                               <td onMouseDown="objClick(this);">
                                  <mm:nodeinfo type="guitype"/></td>
                               <td onMouseDown="objClick(this);">
+                              <c:set var="assettype" ><mm:nodeinfo type="guitype"/></c:set>            
                                  <mm:field id="title" write="false" name="title"/>
+                                 <c:if test="${assettype == 'URL'}">                                    
+                                    <c:set var="title" ><mm:field name="name"/></c:set>
+                                 </c:if>
                                  <c:if test="${fn:length(title) > 50}">
                                     <c:set var="title">${fn:substring(title,0,49)}...</c:set>
                                  </c:if>${title}</td>
