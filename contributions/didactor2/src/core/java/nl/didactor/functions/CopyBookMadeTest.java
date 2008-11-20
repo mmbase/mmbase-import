@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * Retrieves a 'madetests' object for a certain tests and copybook objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyBookMadeTest.java,v 1.6 2008-11-17 15:24:40 michiel Exp $
+ * @version $Id: CopyBookMadeTest.java,v 1.7 2008-11-20 15:09:40 michiel Exp $
  */
 public class CopyBookMadeTest {
     protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
@@ -58,6 +58,10 @@ public class CopyBookMadeTest {
         return set;
     }
 
+    protected Node getMadeTestHolder(Node test) {
+        return test.getFunctionValue("madetestholder", null).toNode();
+    }
+
 
     public NodeList madetests() {
         Cloud cloud = node.getCloud();
@@ -66,7 +70,7 @@ public class CopyBookMadeTest {
         if (test != null) {
             Step testStep = query.addRelationStep(cloud.getNodeManager("learnobjects"), "related", "source").getNext();
             StepField numberField = query.createStepField(testStep, "number");
-            Queries.addConstraint(query, query.createConstraint(numberField, test));
+            Queries.addConstraint(query, query.createConstraint(numberField, getMadeTestHolder(test)));
             Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "otype"), getOTypes(cloud, true, NODEMANAGERS)));
             query.addSortOrder(numberField, SortOrder.ORDER_ASCENDING);
         }
@@ -78,6 +82,7 @@ public class CopyBookMadeTest {
     }
 
     public Node madetest() {
+        if (test == null) throw new IllegalArgumentException("Test parameter is required");
         NodeList found = madetests();
 
         if (found.size() > 0) {
@@ -99,7 +104,7 @@ public class CopyBookMadeTest {
         Relation rel1 = rm.createRelation(node, madeTest);
         rel1.commit();
         RelationManager rm2 = cloud.getRelationManager(node.getNodeManager(), madeTests, "related");
-        Relation rel2 = rm2.createRelation(test, madeTest);
+        Relation rel2 = rm2.createRelation(getMadeTestHolder(test), madeTest);
         rel2.commit();
         return madeTest;
     }

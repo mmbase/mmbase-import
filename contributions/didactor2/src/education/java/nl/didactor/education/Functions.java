@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Several functions on mmbase nodes which are used by didactor.
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.5 2008-07-18 13:43:00 michiel Exp $
+ * @version $Id: Functions.java,v 1.6 2008-11-20 15:09:40 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -65,6 +65,23 @@ public class Functions {
         Date offline = node.getDateValue("offline_date");
         Date now = new Date();
         return now.after(online) && now.before(offline);
+    }
+
+
+    /**
+     * Attach the made test object to the nearest object which' node manager has the
+     * 'madetestholder' property.
+     */
+    public Node  madetestholder() {
+        Cloud cloud = node.getCloud();
+        for (int n : path()) {
+            Node node = cloud.getNode(n);
+            NodeManager nm = node.getNodeManager();
+            if ("true".equals(nm.getProperty("madetestholder"))) {
+                return node;
+            }
+        }
+        return  null;
     }
 
 

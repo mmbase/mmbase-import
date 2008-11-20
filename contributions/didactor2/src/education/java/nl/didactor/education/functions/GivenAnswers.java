@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Givenanswers for a certain question.
  * @author Michiel Meeuwissen
- * @version $Id: GivenAnswers.java,v 1.2 2008-11-17 17:40:51 michiel Exp $
+ * @version $Id: GivenAnswers.java,v 1.3 2008-11-20 15:09:40 michiel Exp $
  */
 public class GivenAnswers {
     protected final static Logger log = Logging.getLoggerInstance(GivenAnswers.class);
@@ -34,6 +34,12 @@ public class GivenAnswers {
     }
 
 
+    protected Node getMadeTestHolder(Node test) {
+        return test.getFunctionValue("madetestholder", null).toNode();
+
+    }
+
+
     /**
      */
     public NodeList  givenanswers() {
@@ -44,10 +50,12 @@ public class GivenAnswers {
 
         NodeList mt = null;
         if (test != null) {
-            NodeQuery sq = Queries.createRelatedNodesQuery(test, madetests, "related", "DESTINATION");
+            NodeQuery sq = Queries.createRelatedNodesQuery(getMadeTestHolder(test), madetests, "related", "DESTINATION");
             RelationStep srs = sq.addRelationStep(copybooks, "related", "SOURCE");
             sq.addNode(srs.getNext(), copybook.getNumber());
             mt = madetests.getList(sq);
+            log.info("Made tests " + mt);
+
         }
 
 
@@ -65,8 +73,10 @@ public class GivenAnswers {
 
         RelationStep rs = q.addRelationStep(copybooks, "related",  "SOURCE");
         q.addNode(rs.getNext(), copybook.getNumber());
-
-        return givenanswers.getList(q);
+        NodeList result = givenanswers.getList(q);
+        log.info("" + q.toSql());
+        log.info("" + result);
+        return  result;
     }
 
 

@@ -23,6 +23,7 @@
 
   <properties>
     <property name="max-nodes-from-query">99999</property>
+    <property name="madetestholder">true</property>
   </properties>
   <fieldlist>
 

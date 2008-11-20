@@ -23,6 +23,7 @@
 
   <properties>
     <property name="smartpathfield">name</property> <!-- there is also a 'path' field, should it not be that? -->
+    <property name="madetestholder">true</property>
   </properties>
 
   <fieldlist>
