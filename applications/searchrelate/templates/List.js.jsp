@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.33 2008-10-30 15:21:58 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.34 2008-11-20 09:33:18 michiel Exp $
  */
 
 
@@ -72,7 +72,9 @@ function List(d) {
     });
 
     this.find(this.div, "a.create").each(function() {
-        self.bindCreate(this);
+        if ($(this).parents(".list")[0] == self.div) {
+            self.bindCreate(this);
+        }
     });
     this.find(this.div, "a.delete").each(function() {
         self.bindDelete(this);
