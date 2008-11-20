@@ -3,6 +3,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:output omit-xml-declaration="yes" />
   <b><di:translate key="education.feedback" />:</b>
 
   <jsp:text> </jsp:text>
