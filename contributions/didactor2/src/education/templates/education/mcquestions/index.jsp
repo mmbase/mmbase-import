@@ -19,14 +19,14 @@
       4: all answers next to eachtother / fixed order
       5: pulldown menu (only for type 0) / fixed order
       -->
-
-      <di:question>
+      <di:question
+          question="${param.question}"
+          madetest="${param.madetest}">
 
         <mm:present referid="answernode">
-          <mm:relatednodes
-              type="givenanswers" orderby="number" directions="down" max="1">
+          <mm:node referid="answernode">
             <mm:relatednodes type="mcanswers" id="givenanswers" />
-          </mm:relatednodes>
+          </mm:node>
         </mm:present>
 
         <mm:node id="question">

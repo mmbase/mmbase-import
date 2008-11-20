@@ -23,6 +23,8 @@
 
     <mm:node number="$question" id="my_question">
 
+      <mm:log>Rating for ${madetest}</mm:log>
+
       <mm:notpresent referid="answernode">
         <mm:remove referid="answernode" />
         <mm:createnode id="answernode" type="givenanswers" />
@@ -72,9 +74,9 @@
 .
               <mm:log>Value for givenanser (${question}_${_node}): ${givenanswer}</mm:log>
               <mm:present referid="givenanswer">
-                <mm:log>this answer was given</mm:log>
                 <!-- Relate each given answer to the possible answers -->
-                <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/>
+                <mm:createrelation id="r" role="related" source="my_givenanswers" destination="my_answers"/>
+                <mm:log> <mm:node referid="r"><mm:nodeinfo type="gui" /></mm:node></mm:log>
                 <!-- when this is a false answer, the score is incorrect -->
                 <mm:compare referid="correct" value="0">
                   <mm:remove referid="score"/><mm:import id="score">0</mm:import>
