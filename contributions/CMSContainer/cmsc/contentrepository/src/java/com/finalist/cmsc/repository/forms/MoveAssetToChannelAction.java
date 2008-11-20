@@ -94,7 +94,7 @@ public class MoveAssetToChannelAction extends MMBaseAction {
       else {
          message = resources.getMessage(locale, "asset.movetochannel.failed", newChannelNode.getStringValue("name"));
       }
-      String path = mapping.findForward(SUCCESS).getPath() + "?" + PARAMETER_CHANNEL + "=" + channel;
+      String path = mapping.findForward(SUCCESS).getPath() + "?type=asset&" + PARAMETER_CHANNEL + "=" + channel;
 
       if(StringUtils.isNotEmpty(offset)) {
          path += "&offset="+offset;
