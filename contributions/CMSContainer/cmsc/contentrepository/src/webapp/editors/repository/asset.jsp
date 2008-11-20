@@ -223,43 +223,43 @@
 
                      <div width="100%;float:left;">
                         <mm:listnodes referid="elements">
-                           <div style="width:150px; height:180px;float:left;text-align:center;" >
-                           <div style="clear:both;float:left;width:80%;height:35px;">
-                              <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border-style: ridge;" >
+                           <div style="width:160px; height:180px;float:left;text-align:center;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
+                           <div style="clear:both;float:left;width:77%;height:33px;">
+                              <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border: 1px solid #eaedff" >
                                  <%@ include file="icons.jspf" %>
                               </div>
                            </div>
-                              <div style="width:100%;height:100px;text-align:left;padding:0px 10px 5px 5px;vertical-align:middle;display:block;float:left;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
+                              <div style="width:100%;height:100px;text-align:left;padding:0px 10px 5px 5px;vertical-align:middle;display:block;float:left;" >
                                  <a href="javascript:showInfo(<mm:field name="number" />)">
-                                    <c:set var="type" ><mm:nodeinfo type="guitype"/></c:set>
-                                    <c:if test="${type eq 'Image'}">
+                                    <c:set var="typedef" ><mm:nodeinfo type="guitype"/></c:set>
+                                    <c:if test="${typedef eq 'Image'}">
                                        <img src="<mm:image template="s(120x100)"/>" alt=""/>
                                     </c:if>
-                                    <c:if test="${type eq 'Attachment'}">
+                                    <c:if test="${typedef eq 'Attachment'}">
                                        <img src="../gfx/alert_green_left.gif" alt=""/>change
                                     </c:if>
-                                     <c:if test="${type eq 'URL'}">
+                                     <c:if test="${typedef eq 'URL'}">
                                        need to add
                                     </c:if>
 
                                  </a>
                               </div>
                               <div style="width:80%;text-align:center;margin:0px 0px 0px 0px;padding-top:0px;padding-right:0px;overflow-x:hidden;">
-                                 <c:set var="type" ><mm:nodeinfo type="guitype"/></c:set>
-                                 <c:if test="${type eq 'Image'}">
+                                 <c:set var="typedef" ><mm:nodeinfo type="guitype"/></c:set>
+                                 <c:if test="${typedef eq 'Image'}">
                                     <mm:field name="title"/><br/><mm:field name="itype"/>
                                  </c:if>
-                                 <c:if test="${type eq 'Attachment'}">
+                                 <c:if test="${typedef eq 'Attachment'}">
                                     need to change
                                  </c:if>
-                                  <c:if test="${type eq 'URL'}">
+                                  <c:if test="${typedef eq 'URL'}">
                                     need to add
                                  </c:if>
                               </div>
                            </div>
                         </mm:listnodes>
                         <div style="clear:both;"></div>
-                     <div>
+                     </div>
                   </form>
                   <%@ include file="../pages.jsp" %>
                </div>
