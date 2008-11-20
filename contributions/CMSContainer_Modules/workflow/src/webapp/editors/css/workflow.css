@@ -1,13 +1,21 @@
 /* CSS Document */
-table.centerData{
-	width:100%;
+div.side_block {
+width:300px;
+}
+#content {
+left:305px;
 }
 table.centerData td {
    text-align: center;
+   padding:0;
+   width:40px
 }
 table.centerData td.leftData {
    text-align: left;
-   width:106px;
+   width:56px;
+}
+table.centerData td.indent {
+   width:19px;
 }
 
 a.sortup {

@@ -35,242 +35,228 @@
 	<div id="left"><cmscedit:sideblock title="workflow.status.header">
 		<mm:import externid="statusInfo" required="true" />
 
+   <div id="tree">
+      <div id="tree-head">
 		<table class="centerData">
-			<thead>
-				<tr>
-					<th></th>
-					<th><fmt:message key="workflow.status.draft" /></th>
-					<th><fmt:message key="workflow.status.finished" /></th>
-					<c:if test="${acceptedEnabled}">
-						<th><fmt:message key="workflow.status.approved" /></th>
-					</c:if>
-					<th><fmt:message key="workflow.status.published" /></th>
-				</tr>
-			</thead>
 			<tbody>
 				<tr>
-					<td colspan="5">
-					<table class="centerData" id="tree_table">
-						<tbody>
-							<tr>
-								<td>
-								<table class="centerData" id="tree-allcontent">
-									<tbody>
-										<tr>
-											<td class="leftData">
-											<img id="tree-allcontent-plus" onclick="treeHandler.toggle(this);" src="../utils/ajaxtree/images/minus.png"/>
-											<fmt:message
-												key="workflow.status.allcontent" /></td>
-											<td><a href="AllcontentWorkflowAction.do?status=draft">${statusInfo.allcontentDraft}</a></td>
-											<td><a
-												href="AllcontentWorkflowAction.do?status=finished">${statusInfo.allcontentFinished}</a></td>
-											<c:if test="${acceptedEnabled}">
-												<td><a
-													href="AllcontentWorkflowAction.do?status=approved">${statusInfo.allcontentApproved}</a></td>
-											</c:if>
-											<td><a
-												href="AllcontentWorkflowAction.do?status=published">${statusInfo.allcontentPublished}</a></td>
-										</tr>
-									</tbody>
-								</table>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="5">
-								<table class="centerData" id="tree-allcontent-cont">
-									<tbody>
-										<tr>
-											<td>
-											<table class="centerData" id="tree-content">
-												<tbody>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span>
-<img id="tree-content-plus" onclick="treeHandler.toggle(this);" src="../utils/ajaxtree/images/Tminus.png"/>
-														<fmt:message
-															key="workflow.status.content" /></td>
-														<td><a href="ContentWorkflowAction.do?status=draft">${statusInfo.contentDraft}</a></td>
-														<td><a
-															href="ContentWorkflowAction.do?status=finished">${statusInfo.contentFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="ContentWorkflowAction.do?status=approved">${statusInfo.contentApproved}</a></td>
-														</c:if>
-														<td><a
-															href="ContentWorkflowAction.do?status=published">${statusInfo.contentPublished}</a></td>
-													</tr>
-												</tbody>
-											</table>
-											</td>
-										</tr>
-										<tr>
-											<td colspan="5">
-											<table class="centerData" id="tree-content-cont">
-												<tbody>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span>
-<img src="../utils/ajaxtree/images/I.png"/>
-<img src="../utils/ajaxtree/images/T.png"/>
-														<fmt:message
-															key="workflow.status.content.article" /></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=article&status=draft">${statusInfo.contentArticleDraft}</a></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=article&status=finished">${statusInfo.contentArticleFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="ContentWorkflowAction.do?workflowNodetype=article&status=approved">${statusInfo.contentArticleApproved}</a></td>
-														</c:if>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=article&status=published">${statusInfo.contentArticlePublished}</a></td>
-													</tr>
-													<tr>
-														<td class="leftData">
-														                                        <span>&nbsp;&nbsp;</span>
-<img src="../utils/ajaxtree/images/I.png"/>
-<img src="../utils/ajaxtree/images/T.png"/>
-														<fmt:message
-															key="workflow.status.content.banners" /></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=banners&status=draft">${statusInfo.contentBannersDraft}</a></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=banners&status=finished">${statusInfo.contentBannersFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="ContentWorkflowAction.do?workflowNodetype=banners&status=approved">${statusInfo.contentBannersApproved}</a></td>
-														</c:if>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=banners&status=published">${statusInfo.contentBannersPublished}</a></td>
-													</tr>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span><img src="../utils/ajaxtree/images/I.png"/><img src="../utils/ajaxtree/images/T.png"/>
-														<fmt:message key="workflow.status.content.link" /></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=link&status=draft">${statusInfo.contentLinkDraft}</a></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=link&status=finished">${statusInfo.contentLinkFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="ContentWorkflowAction.do?workflowNodetype=link&status=approved">${statusInfo.contentLinkApproved}</a></td>
-														</c:if>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=link&status=published">${statusInfo.contentLinkPublished}</a></td>
-													</tr>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span>
-<img src="../utils/ajaxtree/images/I.png"/>
-<img src="../utils/ajaxtree/images/L.png"/>
-														<fmt:message
-															key="workflow.status.content.faqitem" /></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=draft">${statusInfo.contentFaqitemDraft}</a></td>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=finished">${statusInfo.contentFaqitemFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=approved">${statusInfo.contentFaqitemApproved}</a></td>
-														</c:if>
-														<td><a
-															href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=published">${statusInfo.contentFaqitemPublished}</a></td>
-													</tr>
-												</tbody>
-											</table>
-											</td>
-										</tr>
-										<tr>
-											<td>
-											<table class="centerData" id="tree-asset">
-												<tbody>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span>
-<img id="tree-asset-plus" onclick="treeHandler.toggle(this);" src="../utils/ajaxtree/images/Lminus.png"/>
-														<fmt:message
-															key="workflow.status.asset" /></td>
-														<td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
-														<td><a href="AssetWorkflowAction.do?status=finished">${statusInfo.assetFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a href="AssetWorkflowAction.do?status=approved">${statusInfo.assetApproved}</a></td>
-														</c:if>
-														<td><a href="AssetWorkflowAction.do?status=published">${statusInfo.assetPublished}</a></td>
-													</tr>
-												</tbody>
-											</table>
-
-											</td>
-										</tr>
-										<tr>
-											<td colspan="5">
-											<table class="centerData" id="tree-asset-cont">
-												<tbody>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span>
-<span>&nbsp;&nbsp;</span>
-<img src="../utils/ajaxtree/images/T.png"/>
-														<fmt:message
-															key="workflow.status.asset.images" /></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=images&status=draft">${statusInfo.assetImagesDraft}</a></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=images&status=finished">${statusInfo.assetImagesFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="AssetWorkflowAction.do?workflowNodetype=images&status=approved">${statusInfo.assetImagesApproved}</a></td>
-														</c:if>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=images&status=published">${statusInfo.assetImagesPublished}</a></td>
-													</tr>
-													<tr>
-														<td class="leftData">
-														<span>&nbsp;&nbsp;</span><span>&nbsp;&nbsp;</span><img src="../utils/ajaxtree/images/T.png"/>
-														<fmt:message key="workflow.status.asset.attachments" /></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=attachments&status=draft">${statusInfo.assetAttachmentsDraft}</a></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=attachments&status=finished">${statusInfo.assetAttachmentsFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="AssetWorkflowAction.do?workflowNodetype=attachments&status=approved">${statusInfo.assetAttachmentsApproved}</a></td>
-														</c:if>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=attachments&status=published">${statusInfo.assetAttachmentsPublished}</a></td>
-													</tr>
-													<tr>
-														<td class="leftData">
-														                                        <span>&nbsp;&nbsp;</span>
-<span>&nbsp;&nbsp;</span>
-<img src="../utils/ajaxtree/images/L.png"/>
-														<fmt:message
-															key="workflow.status.asset.urls" /></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=urls&status=draft">${statusInfo.assetUrlsDraft}</a></td>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=urls&status=finished">${statusInfo.assetUrlsFinished}</a></td>
-														<c:if test="${acceptedEnabled}">
-															<td><a
-																href="AssetWorkflowAction.do?workflowNodetype=urls&status=approved">${statusInfo.assetUrlsApproved}</a></td>
-														</c:if>
-														<td><a
-															href="AssetWorkflowAction.do?workflowNodetype=urls&status=published">${statusInfo.assetUrlsPublished}</a></td>
-													</tr>
-												</tbody>
-											</table>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					</td>
+				   <td class="indent" />
+				   <td class="indent" />
+					<td class="indent" />
+					<td class="leftData"></td>
+					<td><fmt:message key="workflow.status.draft" /></td>
+					<td><fmt:message key="workflow.status.finished" /></td>
+					<c:if test="${acceptedEnabled}">
+						<td><fmt:message key="workflow.status.approved" /></td>
+					</c:if>
+					<td><fmt:message key="workflow.status.published" /></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-allcontent">
+		<table class="centerData">
+			<tbody>
+				<tr>
+					<td class="indent"><img id="tree-allcontent-plus"
+						onclick="treeHandler.toggle(this);"
+						src="../utils/ajaxtree/images/minus.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.allcontent" /></td>
+					<td class="indent" />
+					<td class="indent" />
+					<td><a href="AllcontentWorkflowAction.do?status=draft">${statusInfo.allcontentDraft}</a></td>
+					<td><a href="AllcontentWorkflowAction.do?status=finished">${statusInfo.allcontentFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a href="AllcontentWorkflowAction.do?status=approved">${statusInfo.allcontentApproved}</a></td>
+					</c:if>
+					<td><a href="AllcontentWorkflowAction.do?status=published">${statusInfo.allcontentPublished}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-allcontent-cont">
+		<div id="tree-content">
+		<table class="centerData">
+			<tbody>
+				<tr>
+					<td class="indent" />
+					<td class="indent"><img id="tree-content-plus"
+						onclick="treeHandler.toggle(this);"
+						src="../utils/ajaxtree/images/Tminus.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.content" /></td>
+					<td class="indent" />
+					<td><a href="ContentWorkflowAction.do?status=draft">${statusInfo.contentDraft}</a></td>
+					<td><a href="ContentWorkflowAction.do?status=finished">${statusInfo.contentFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a href="ContentWorkflowAction.do?status=approved">${statusInfo.contentApproved}</a></td>
+					</c:if>
+					<td><a href="ContentWorkflowAction.do?status=published">${statusInfo.contentPublished}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-content-cont">
+		<table class="centerData">
+			<tbody>
+				<tr>
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.content.article" /></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=article&status=draft">${statusInfo.contentArticleDraft}</a></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=article&status=finished">${statusInfo.contentArticleFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="ContentWorkflowAction.do?workflowNodetype=article&status=approved">${statusInfo.contentArticleApproved}</a></td>
+					</c:if>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=article&status=published">${statusInfo.contentArticlePublished}</a></td>
 				</tr>
 				<tr>
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.content.banners" /></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=banners&status=draft">${statusInfo.contentBannersDraft}</a></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=banners&status=finished">${statusInfo.contentBannersFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="ContentWorkflowAction.do?workflowNodetype=banners&status=approved">${statusInfo.contentBannersApproved}</a></td>
+					</c:if>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=banners&status=published">${statusInfo.contentBannersPublished}</a></td>
+				</tr>
+				<tr>
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.content.link" /></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=link&status=draft">${statusInfo.contentLinkDraft}</a></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=link&status=finished">${statusInfo.contentLinkFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="ContentWorkflowAction.do?workflowNodetype=link&status=approved">${statusInfo.contentLinkApproved}</a></td>
+					</c:if>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=link&status=published">${statusInfo.contentLinkPublished}</a></td>
+				</tr>
+				<tr>
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+					<td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.content.faqitem" /></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=draft">${statusInfo.contentFaqitemDraft}</a></td>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=finished">${statusInfo.contentFaqitemFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=approved">${statusInfo.contentFaqitemApproved}</a></td>
+					</c:if>
+					<td><a
+						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=published">${statusInfo.contentFaqitemPublished}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-asset">
+		<table class="centerData">
+			<tbody>
+				<tr>
+					<td class="indent" />
+					<td class="indent"><img id="tree-asset-plus"
+						onclick="treeHandler.toggle(this);"
+						src="../utils/ajaxtree/images/Lminus.png" /></td>
+					<td class="leftData"><fmt:message key="workflow.status.asset" /></td>
+					<td class="indent" />
+					<td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
+					<td><a href="AssetWorkflowAction.do?status=finished">${statusInfo.assetFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a href="AssetWorkflowAction.do?status=approved">${statusInfo.assetApproved}</a></td>
+					</c:if>
+					<td><a href="AssetWorkflowAction.do?status=published">${statusInfo.assetPublished}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-asset-cont">
+		<table class="centerData">
+			<tbody>
+				<tr>
+					<td class="indent" />
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.asset.images" /></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=images&status=draft">${statusInfo.assetImagesDraft}</a></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=images&status=finished">${statusInfo.assetImagesFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="AssetWorkflowAction.do?workflowNodetype=images&status=approved">${statusInfo.assetImagesApproved}</a></td>
+					</c:if>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=images&status=published">${statusInfo.assetImagesPublished}</a></td>
+				</tr>
+				<tr>
+					<td class="indent" />
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.asset.attachments" /></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=draft">${statusInfo.assetAttachmentsDraft}</a></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=finished">${statusInfo.assetAttachmentsFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="AssetWorkflowAction.do?workflowNodetype=attachments&status=approved">${statusInfo.assetAttachmentsApproved}</a></td>
+					</c:if>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=published">${statusInfo.assetAttachmentsPublished}</a></td>
+				</tr>
+				<tr>
+					<td class="indent" />
+					<td class="indent" />
+					<td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+					<td class="leftData"><fmt:message
+						key="workflow.status.asset.urls" /></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=urls&status=draft">${statusInfo.assetUrlsDraft}</a></td>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=urls&status=finished">${statusInfo.assetUrlsFinished}</a></td>
+					<c:if test="${acceptedEnabled}">
+						<td><a
+							href="AssetWorkflowAction.do?workflowNodetype=urls&status=approved">${statusInfo.assetUrlsApproved}</a></td>
+					</c:if>
+					<td><a
+						href="AssetWorkflowAction.do?workflowNodetype=urls&status=published">${statusInfo.assetUrlsPublished}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+    </div>
+		<div id="tree-page">
+		<table class="centerData">
+			<tbody>
+				<tr>
 					<td class="leftData"><fmt:message key="workflow.status.page" /></td>
+					<td class="indent" />
+					<td class="indent" />
+					<td class="indent" />
 					<td><a href="PageWorkflowAction.do?status=draft">${statusInfo.pageDraft}</a></td>
 					<td><a href="PageWorkflowAction.do?status=finished">${statusInfo.pageFinished}</a></td>
 					<c:if test="${acceptedEnabled}">
@@ -278,8 +264,17 @@
 					</c:if>
 					<td><a href="PageWorkflowAction.do?status=published">${statusInfo.pagePublished}</a></td>
 				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div id="tree-link">
+		<table class="centerData">
+			<tbody>
 				<tr>
 					<td class="leftData"><fmt:message key="workflow.status.link" /></td>
+					<td class="indent" />
+					<td class="indent" />
+					<td class="indent" />
 					<td></td>
 					<td><a href="LinkWorkflowAction.do?status=finished">${statusInfo.linkFinished}</a></td>
 					<c:if test="${acceptedEnabled}">
@@ -289,6 +284,8 @@
 				</tr>
 			</tbody>
 		</table>
+		</div>
+	</div>
 	</cmscedit:sideblock></div>
 
 	<div id="content"><mm:cloud jspvar="cloud" loginpage="login.jsp">
