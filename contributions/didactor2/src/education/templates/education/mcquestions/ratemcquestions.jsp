@@ -4,6 +4,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0" >
   <mm:content
+      expires="0"
       postprocessor="reducespace">
 
     <mm:cloud method="delegate">
@@ -49,7 +50,9 @@
           <c:when test="${_ eq 0}">
             <!-- Only 1 answer is given -->
 
-            <mm:import externid="$question" id="givenanswer" />
+            <mm:import externid="${question}" id="givenanswer" />
+
+
             <mm:present referid="givenanswer">
               <mm:node referid="givenanswer">
                 <mm:field id="questioncorrect" name="correct" write="false"/>
@@ -72,18 +75,15 @@
 
               <mm:import externid="${question}_${_node}" id="givenanswer" />
 .
-              <mm:log>Value for givenanser (${question}_${_node}): ${givenanswer}</mm:log>
               <mm:present referid="givenanswer">
                 <!-- Relate each given answer to the possible answers -->
                 <mm:createrelation id="r" role="related" source="my_givenanswers" destination="my_answers"/>
-                <mm:log> <mm:node referid="r"><mm:nodeinfo type="gui" /></mm:node></mm:log>
                 <!-- when this is a false answer, the score is incorrect -->
                 <mm:compare referid="correct" value="0">
                   <mm:remove referid="score"/><mm:import id="score">0</mm:import>
                 </mm:compare>
               </mm:present>
               <mm:notpresent referid="givenanswer">
-                <mm:log>this answer was not given</mm:log>
                 <!-- when the student had to check the button of thge correct answer, the score is incorrect -->
                 <mm:compare referid="correct" value="1">
                   <mm:remove referid="score"/>

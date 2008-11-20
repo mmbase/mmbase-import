@@ -63,8 +63,9 @@
                     <mm:field name="description" escape="tagstripper(xss)"/>
                   </mm:relatednodes>
                 </div>
-                <mm:import externid="${question}" id="answer" />
-                <mm:radio type="checkbox" name="${question}_${_node}"  value="${_node}" checked="${mm:contains(givenanswers, _node)}" />
+                <mm:import externid="${question}" id="answer">${givenanswers}</mm:import>
+                <mm:radio type="radio" name="${question}"  value="${_node}" compare="${answer}"  />
+
                 <mm:field name="text" />
 
                 <!-- Each answer on a new line -->
