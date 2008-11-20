@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.22 2008-11-17 14:32:03 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.23 2008-11-20 09:11:22 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -493,7 +493,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                         params.set("education", education);
                         Node claz = (Node) fun.getFunctionValue(params);
                         userAttributes.put("class", claz == null ? null : claz.getNumber());
-                        log.info("Found " + claz.getNumber() + " for user " + user.getNumber() + " and educcation " + education);
+                        log.debug("Found " + (claz == null ? "NULL" : claz.getNumber()) + " for user " + (user == null ? "NULL" : user.getNumber()) + " and educcation " + (education == null ? "NULL" : education));
                     } catch (NotFoundException nfe) {
                         log.warn(nfe);
                         // never mind
