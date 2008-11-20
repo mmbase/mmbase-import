@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Givenanswers for a certain question.
  * @author Michiel Meeuwissen
- * @version $Id: GivenAnswers.java,v 1.3 2008-11-20 15:09:40 michiel Exp $
+ * @version $Id: GivenAnswers.java,v 1.4 2008-11-20 16:57:44 michiel Exp $
  */
 public class GivenAnswers {
     protected final static Logger log = Logging.getLoggerInstance(GivenAnswers.class);
@@ -54,8 +54,6 @@ public class GivenAnswers {
             RelationStep srs = sq.addRelationStep(copybooks, "related", "SOURCE");
             sq.addNode(srs.getNext(), copybook.getNumber());
             mt = madetests.getList(sq);
-            log.info("Made tests " + mt);
-
         }
 
 
@@ -74,8 +72,6 @@ public class GivenAnswers {
         RelationStep rs = q.addRelationStep(copybooks, "related",  "SOURCE");
         q.addNode(rs.getNext(), copybook.getNumber());
         NodeList result = givenanswers.getList(q);
-        log.info("" + q.toSql());
-        log.info("" + result);
         return  result;
     }
 
