@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  mm-statistics-1.0
- * @version $Id: Measurement.java,v 1.8 2008-10-16 11:26:08 michiel Exp $
+ * @version $Id: Measurement.java,v 1.9 2008-11-20 16:32:08 michiel Exp $
  */
 
 
@@ -98,6 +98,13 @@ public class Measurement extends java.lang.Number {
 
     public int getCount() {
         return count;
+    }
+
+    public double getSum() {
+        return sum;
+    }
+    public double getSumOfSquares() {
+        return squareSum;
     }
 
     /**
@@ -279,8 +286,10 @@ public class Measurement extends java.lang.Number {
         return
             (useE ? "(" : "") +
             nf.format(mean.coefficient) +
-            " \u00B1 " + /* +/- */
-            nf.format(std.coefficient) +
+            (count > 1 ? (
+                          " \u00B1 " + /* +/- */
+                          nf.format(std.coefficient)
+                          ) : "" )  +
             (useE ?
              (")\u00B710" + /* .10 */
               superscript(mean.exponent))
