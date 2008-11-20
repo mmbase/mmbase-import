@@ -24,9 +24,17 @@
   <properties>
     <property name="key:new:name">richtext.createnewxmlcontent</property>
     <property name="key:new:description">richtext.createnewxmlcontentdescription</property>
+    <property name="madetestholder">true</property>
   </properties>
 
 
   <xi:include href="rich.fields.xml" />
+
+
+  <functionlist>
+    <function key="questions">
+      <class>nl.didactor.functions.RichQuestions</class>
+    </function>
+  </functionlist>
 
 </builder>

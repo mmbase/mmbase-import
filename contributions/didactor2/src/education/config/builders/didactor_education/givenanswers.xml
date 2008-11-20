@@ -81,5 +81,32 @@
         </getprocessor>
       </datatype>
     </field>
+
+    <field name="madetest" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Gemaakte test</guiname>
+        <guiname xml:lang="en">Made test</guiname>
+      </gui>
+      <editor><positions><list>3</list></positions></editor>
+
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
+        <enumeration enforce="never">
+          <query type="madetests"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <sortorder field="name" />
+          </query>
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="type">madetests</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="type">madetests</param>
+          </class>
+        </getprocessor>
+      </datatype>
+    </field>
   </fieldlist>
 </builder>

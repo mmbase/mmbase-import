@@ -89,6 +89,13 @@
     <function name="url" key="{REQUEST.getContextPath}/education/?learnobject={NODE.number}">
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
+
+    <function key="madetestholder">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+    <function key="questions">
+      <class>nl.didactor.education.functions.LearnObjectQuestions</class>
+    </function>
   </functionlist>
 
 </builder>
