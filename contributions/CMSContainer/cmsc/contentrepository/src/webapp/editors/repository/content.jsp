@@ -161,9 +161,9 @@
                                                                  title="<fmt:message key="content.info" />"
                                                                  alt="<fmt:message key="content.info" />"/></a>
 
-	1<% if (role != null && SecurityUtil.isWriter(role)) { %>                                                                 
-	    2<mm:haspage page="/editors/picktags.jsp">
-	        3<a href="/editors/picktags.jsp?ewnodelastedited=<mm:field name="number"/>"><img
+	<% if (role != null && SecurityUtil.isWriter(role)) { %>                                                                 
+	    <mm:haspage page="/editors/picktags.jsp">
+	        <a href="/editors/picktags.jsp?ewnodelastedited=<mm:field name="number"/>"><img
 	                src="../gfx/icons/tagcloud.png" title="tags" alt="tags"/></a>
 	    </mm:haspage>
 	<% } %>
