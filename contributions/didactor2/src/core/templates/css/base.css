@@ -242,8 +242,8 @@ input.search {
   padding: 0em 0.9em 0em 0em
 }
 
-.menuSeperator {
-  background-image: url('../gfx/menuseperator.gif');
+.menuSeparator {
+  background-image: url('../gfx/menuseparator.gif');
   background-repeat: no-repeat;
   height: 16px;
   width: 1px;
@@ -252,7 +252,7 @@ input.search {
   padding: 0.3em 1.5em 0.1em 0.5em
 }
 
-.menuSeperator:first-child {
+.menuSeparator:first-child {
   background-image: none;
 }
 
@@ -265,8 +265,8 @@ input.search {
 }
 
 
-.menuSeperatorApplicationMenubar {
-  background-image: url('../gfx/menuseperator.gif');
+.menuSeparatorApplicationMenubar {
+  background-image: url('../gfx/menuseparator.gif');
   background-repeat: no-repeat;
   height: 16px;
   width: 1px;
@@ -275,7 +275,7 @@ input.search {
   margin: 0em 1em 0em 1em;
   padding: 0em 0.8em 0.1em 1em
 }
-.menuItemApplicationMenubar.start + .menuSeperatorApplicationMenubar {
+.menuItemApplicationMenubar.start + .menuSeparatorApplicationMenubar {
   display: none;
 }
 .menuItemApplicationMenubar.educationSelector form {
