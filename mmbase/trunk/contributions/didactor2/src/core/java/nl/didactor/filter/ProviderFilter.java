@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.24 2008-11-20 15:09:40 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.25 2008-11-21 14:10:53 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -485,19 +485,21 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
             if (userClass == null) {
                 if (education != null) {
-
-                    try {
-                        Node user = cloud.getNode((Integer) userAttributes.get("user"));
-                        Function fun = user.getFunction("class");
-                        Parameters params = fun.createParameters();
-                        params.set("education", education);
-                        Node claz = (Node) fun.getFunctionValue(params);
-                        userAttributes.put("class", claz == null ? null : claz.getNumber());
-                        log.debug("Found " + (claz == null ? "NULL" : claz.getNumber()) + " for user " + (user == null ? "NULL" : user.getNumber()) + " and education " + (education == null ? "NULL" : education));
-                    } catch (NotFoundException nfe) {
-                        log.warn(nfe);
-                        // never mind
-                        userAttributes.put("class", null);
+                    int userNumber = (Integer) userAttributes.get("user");
+                    if (userNumber > 0) {
+                        try {
+                            Node user = cloud.getNode(userNumber);
+                            Function fun = user.getFunction("class");
+                            Parameters params = fun.createParameters();
+                            params.set("education", education);
+                            Node claz = (Node) fun.getFunctionValue(params);
+                            userAttributes.put("class", claz == null ? null : claz.getNumber());
+                            log.debug("Found " + (claz == null ? "NULL" : claz.getNumber()) + " for user " + (user == null ? "NULL" : user.getNumber()) + " and education " + (education == null ? "NULL" : education));
+                        } catch (NotFoundException nfe) {
+                            log.warn(nfe);
+                            // never mind
+                            userAttributes.put("class", null);
+                        }
                     }
                 } else {
                     log.warn("No education found");

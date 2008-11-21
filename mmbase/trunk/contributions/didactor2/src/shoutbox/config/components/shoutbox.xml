@@ -2,6 +2,7 @@
 <component
     name="shoutbox"
     version="0"
+    defaultblock="index"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
@@ -37,6 +38,13 @@
     </body>
   </block>
 
+  <block name="submenu"
+         classification="submenu"
+         mimetype="text/html">
+    <body jsp="submenu.jspx">
+    </body>
+  </block>
+
   <block name="link"
          classification="didactor.communication"
          mimetype="text/html">
@@ -51,6 +59,7 @@
     <body jsp="index.jspx">
       <param name="source" />
       <param name="reference" />
+      <param name="self" />
     </body>
   </block>
 
