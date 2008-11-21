@@ -35,8 +35,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.mmbase.RelationUtil;
-import com.finalist.cmsc.services.versioning.Versioning;
-import com.finalist.cmsc.services.versioning.VersioningException;
 import com.finalist.cmsc.util.UploadUtil;
 import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
@@ -160,13 +158,6 @@ public class BulkUploadUtil {
       node.commit();
 
       RelationUtil.createRelation(node, manager.getCloud().getNode(parentChannel), "creationrel");
-
-      //to archive the upload asset
-      try {
-         Versioning.addVersion(node);
-      } catch (VersioningException e) {
-         log.error("Failed to archive uploaded file", e);
-      }
       
       return node;
    }
