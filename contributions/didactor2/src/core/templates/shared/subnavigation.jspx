@@ -4,14 +4,7 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
-  <div class="navigationbar">
-    <di:include page="/logo.jspx" />
-    <mm:import externid="object" />
-    <mm:import externid="name" />
-
-    <di:include page="/shared/titlebar.jspx" />
-    <h1><di:translate key="${name}.name" /></h1>
-
+  <div class="subnavigation">
 
   </div>
 </jsp:root>

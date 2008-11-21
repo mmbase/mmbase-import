@@ -11,10 +11,12 @@
   <mm:import externid="name"      required="true" />
   <mm:import externid="block"     required="true" />
   <mm:import externid="node"      from="request" required="true" />
+
   <di:html
       expires="0"
       type="application/xhtml+xml"
       rank="didactor user">
+
     <jsp:attribute name="head">
       <mm:node number="${node}">
         <mm:component name="${name}" block="${block}" render="head" />
@@ -22,10 +24,12 @@
     </jsp:attribute>
     <div class="rows">
 
-		<di:include debug="html" page="/shared/navigation.jspx" />
-      <div class="mainContent">
-        <div class="contentBodywit">
+      <di:include debug="html" page="/shared/navigation.jspx" />
+      <di:include page="/shared/subnavigation.jspx" />
 
+      <div class="mainContent">
+
+        <div class="contentBodywit">
           <mm:node number="${node}">
             <mm:component name="${name}" block="${block}" />
           </mm:node>
