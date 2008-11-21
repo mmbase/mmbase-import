@@ -20,7 +20,6 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.services.versioning.Versioning;
-import com.finalist.cmsc.services.versioning.VersioningException;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.util.http.BulkUploadUtil;
 
