@@ -19,6 +19,8 @@ import org.apache.struts.upload.FormFile;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 
+import com.finalist.cmsc.services.versioning.Versioning;
+import com.finalist.cmsc.services.versioning.VersioningException;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.util.http.BulkUploadUtil;
 
@@ -37,18 +39,25 @@ public class AssetUploadAction extends MMBaseAction {
       
       if (file.getFileSize() != 0 && file.getFileName() != null) {
          String uploadFileType = file.getContentType();
+         List<Integer> nodes = null;
          if (assetType.equalsIgnoreCase("images")) {
             if (uploadFileType.equalsIgnoreCase("image/bmp") || uploadFileType.equalsIgnoreCase("image/jpeg") || uploadFileType.equalsIgnoreCase("image/gif")){
-               List<Integer> nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
                request.setAttribute("uploadedAssets", nodes);
             }
          }
          else if(assetType.equalsIgnoreCase("attachments")){
-            List<Integer> nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+            nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
             request.setAttribute("uploadedAssets", nodes);
          }
+         // to archive the upload asset
+         if (nodes != null && nodes.size() > 0) {
+            for (Integer node : nodes) {
+               Versioning.addVersion(cloud.getNode(node));
+            }
+         }
       }
-
+      
       return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&parentchannel="
             + parentchannel, true);
    }
