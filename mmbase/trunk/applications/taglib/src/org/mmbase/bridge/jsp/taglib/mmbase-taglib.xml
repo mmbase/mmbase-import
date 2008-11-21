@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.442 2008-10-22 09:31:12 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.443 2008-11-21 13:42:16 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8915,12 +8915,7 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
   -->
-  <!--
-  <tag-file>
-    <name>search</name>
-    <path>/META-INF/tags/mml/search.tagx</path>
-  </tag-file>
-  -->
+
   <tag-file>
     <type>util.html</type>
     <name>option</name>
@@ -8988,6 +8983,12 @@ The 0 is just counter, which starts at 0 on every page.
     <name>exception</name>
     <path>/META-INF/tags/mm/u/exception.tag</path>
     <since>MMBase-1.9</since>
+  </tag-file>
+  <tag-file>
+    <type>mmbase.util.framework</type>
+    <name>blocks</name>
+    <path>/META-INF/tags/mm/u/blocks.tagx</path>
+    <since>MMBase-1.9.1</since>
   </tag-file>
 
 </taglib>
