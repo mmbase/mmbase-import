@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.62 2008-11-03 16:43:48 michiel Exp $
+ * @version $Id: Framework.java,v 1.63 2008-11-21 10:19:20 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -121,6 +121,15 @@ public abstract class Framework {
      * support it, but then you simply don't have tree-overriding.
      */
     public final static String COMPONENT_INCLUDEPATH_KEY = "org.mmbase.includePath";
+
+
+    /**
+     * The components' block rendering may want to know that the node associated with the current
+     * user is.
+     * @since MMBase-1.9.1
+     */
+    public final static String COMPONENT_CURRENTUSER_KEY = "org.mmbase.currentuser";
+
 
 
     /**

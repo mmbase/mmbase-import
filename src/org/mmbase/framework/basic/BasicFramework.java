@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.39 2008-11-13 16:24:37 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.40 2008-11-21 10:19:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -223,6 +223,8 @@ public class BasicFramework extends Framework {
         try {
 
             request.setAttribute(COMPONENT_CLASS_KEY, getComponentClass());
+
+            request.setAttribute(COMPONENT_CURRENTUSER_KEY, getUserNode(frameworkParameters));
 
             Renderer actualRenderer = state.startBlock(frameworkParameters, renderer);
             if (! actualRenderer.equals(renderer)) {
