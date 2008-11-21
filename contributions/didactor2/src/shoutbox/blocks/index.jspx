@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-          version="2.0">
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    version="2.0">
 
 
   <!-- TODO this is didactor specific -->
@@ -13,9 +15,10 @@
 	</mm:node>
 
 	<div class="learnenvironment" style="background-image: ${empty background ? '' : background}">
-		<div class="mm_c c_shoutbox b_index ${requestScope['org.mmbase.componentClassName']}" id="${requestScope['org.mmbase.componentId']}">
+		<div class="mm_c c_shoutbox b_index ${requestScope['org.mmbase.componentClassName']}"
+         id="${requestScope['org.mmbase.componentId']}">
 
-      <mm:import externid="reference"  />
+      <mm:import id="reference" externid="_reference"  />
       <mm:cloud method="asis">
         <mm:param name="org.mmbase.shoutbox.reference" value="${reference}" />
 
@@ -23,18 +26,21 @@
 
         <script type="text/javascript">
           $(document).ready(function() {
-          $("#mm_reference_search").hide();
-          $("#mm_reference").change(function() {
-          document.location.href = "<mm:url page="." />?source=${source}&amp;amp;reference=" + this.value;
-          return false;
-          });
+            $("#mm_reference_search").hide();
+            $("#mm_reference,#self").change(function() {
+              this.form.submit();
+              return false;
+            });
           });
         </script>
 
 
-        <mm:node number="${source}"> <!-- source may be empty, in which case it will be the current node, as provided by the framework. -->
+        <mm:node number="${source}">
+          <!-- source may be empty, in which case it will be the current node, as provided by the framework. -->
+
 
           <mm:hasnodemanager name="properties">
+            <!-- The properties builder is used to store the 'last check' time of this page -->
             <mm:import id="key">shouts.last_check</mm:import>
             <mm:functioncontainer nodemanager="properties">
               <mm:param name="node" referid="_node" />
@@ -55,20 +61,47 @@
             </fmt:message>
           </h2>
 
-          <mm:fieldlist nodetype="shouts" fields="reference">
-            <mm:fieldinfo type="searchinput" />
-          </mm:fieldlist>
+          <form>
+            <c:if test="${! empty source}">
+              <input type="hidden" name="source" value="${source}" />
+            </c:if>
 
-          <mm-sr:relatednodes type="shouts"
-                              role="posrel"
-                              item="/mmbase/components/shoutbox/item.jspx" orderby="posrel.pos" direction="down"
-                              createposition="top">
-            <jsp:attribute name="constraints">
-              <mm:isnotempty referid="reference">
-                <mm:constraint field="reference" value="${reference}" />
-              </mm:isnotempty>
-            </jsp:attribute>
-          </mm-sr:relatednodes>
+            <mm:fieldlist nodetype="shouts"
+                          fields="reference" jspvar="field">
+              <mm:fieldinfo type="guiname" />
+              <jsp:text> </jsp:text>
+              <mm:fieldinfo type="searchinput" />
+            </mm:fieldlist>
+            <mm:import externid="self">not</mm:import> <!-- hmm -->
+
+            <select name="self" id="self">
+              <mm:option value=""     compare="${self}">--</mm:option>
+              <mm:option value="only" compare="${self}">Only from myself</mm:option>
+              <mm:option value="not"  compare="${self}">Not from myself </mm:option>
+            </select>
+          </form>
+
+          <div class="${self}">
+            <mm-sr:relatednodes
+                type="shouts"
+                role="posrel"
+                item="/mmbase/components/shoutbox/item.jspx" orderby="posrel.pos" direction="down"
+                createposition="top">
+              <jsp:attribute name="constraints">
+                <mm:isnotempty referid="reference">
+                  <mm:constraint field="reference" value="${reference}" />
+                </mm:isnotempty>
+                <c:choose>
+                  <c:when test="${self eq 'only'}">
+                    <mm:constraint field="from" value="${requestScope['org.mmbase.currentuser'].number}" />
+                  </c:when>
+                  <c:when test="${self eq 'not'}">
+                    <mm:constraint field="from" value="${requestScope['org.mmbase.currentuser'].number}" inverse="true" />
+                  </c:when>
+                </c:choose>
+              </jsp:attribute>
+            </mm-sr:relatednodes>
+          </div>
         </mm:node>
       </mm:cloud>
 		</div>
