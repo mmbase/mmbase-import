@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.35 2008-11-20 11:47:38 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.36 2008-11-24 12:37:57 michiel Exp $
  */
 
 
@@ -101,19 +101,21 @@ function List(d) {
 List.prototype.leftPage = false;
 
 
-List.prototype.find = function(clazz, elname) {
+List.prototype.find = function(clazz, elname, parent) {
     var result = [];
     var self = this;
     if (elname != null) elname = elname.toUpperCase();
 
-    var t = this.div.firstChild;
+    if (parent == null) parent = this.div;
+
+    var t = parent.firstChild;
     while (t != null) {
         var cn = t.nodeName.toUpperCase();
         if (cn == '#TEXT' || (cn == 'DIV' && $(t).hasClass("list"))) {
             var c = t.nextSibling;
             while (c == null) {
                 t = t.parentNode;
-                if (t == self.div) { c = null; break; }
+                if (t == parent) { c = null; break; }
                 c = t.nextSibling;
             }
             t = c;
@@ -125,7 +127,7 @@ List.prototype.find = function(clazz, elname) {
                 var c = t.nextSibling;
                 while (c == null) {
                     t = t.parentNode;
-                    if (t == self.div) { c = null; break; }
+                    if (t == parent) { c = null; break; }
                     c = t.nextSibling;
                 }
                 t = c;
@@ -139,7 +141,7 @@ List.prototype.find = function(clazz, elname) {
                     c = t.nextSibling;
                     while (c == null) {
                         t = t.parentNode;
-                        if (t == self.div) { c = null; break; }
+                        if (t == parent) { c = null; break; }
                         c = t.nextSibling;
                     }
                 }
@@ -186,7 +188,13 @@ List.prototype.bindCreate = function(a) {
                 complete: function(res, status){
                     try {
                         if ( status == "success" || status == "notmodified" ) {
-                            var r = $(res.responseText)[0];
+                            var r = null;
+                            try {
+                                r = document.importNode(res.responseXML.documentElement, true);
+                            } catch (e) {
+                                // IE 6 sucks.
+                                r = $(res.responseText)[0];
+                            }
                             // remove default value on focus
                             $(r).find("input").one("focus", function() {
                                 this.value = "";
@@ -198,7 +206,7 @@ List.prototype.bindCreate = function(a) {
                                 a.list.find(null, "ol").append(r);
                             }
                             a.list.validator.addValidation(r);
-                            a.list.find("delete", "a").each(function() {
+                            a.list.find("delete", "a", r).each(function() {
                                 a.list.bindDelete(this);
                             });
                             $(r).find("* div.list").each(function() {
@@ -236,6 +244,7 @@ List.prototype.bindDelete = function(a) {
         if (really) {
             var url = a.href;
             var params = {};
+
             $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
                     complete: function(res, status){
                         if ( status == "success" || status == "notmodified" ) {
@@ -246,6 +255,8 @@ List.prototype.bindDelete = function(a) {
                                 ol.removeChild(li);
                             }
                             a.list.executeCallBack("delete", li);
+                        } else {
+                            alert(status + " " + res);
                         }
                     }
                    });
