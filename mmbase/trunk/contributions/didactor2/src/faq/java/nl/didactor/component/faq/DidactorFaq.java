@@ -45,68 +45,6 @@ public class DidactorFaq extends Component {
         */
         return true;
     }
-    public void init() {
-        super.init();
-        initRelations();
-    }
-
-    public void initRelations() {
-        org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
-        String username = "system";
-        RelDef reldef = mmb.getRelDef();
-        TypeRel typerel = mmb.getTypeRel();
-        TypeDef typedef = mmb.getTypeDef();
-        int related = reldef.getNumberByName("related");
-        int faqnodes = typedef.getIntValue("faqnodes");
-        int faqitems = typedef.getIntValue("faqitems");
-        int roles = typedef.getIntValue("roles");
-        int educations = typedef.getIntValue("educations");
-        int faqcontainersnb = typedef.getIntValue("faqcontainers");
-
-        MMObjectBuilder faqcontainers = mmb.getBuilder("faqcontainers");
-        try{
-            if(faqcontainers.count(new NodeSearchQuery(faqcontainers)) < 1){
-                MMObjectNode faqcontainer = faqcontainers.getNewNode(username);
-                faqcontainer.setValue("name", "rootcontainer");
-                faqcontainers.insert(username, faqcontainer);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if(!typerel.contains(faqcontainersnb,faqnodes,related)){
-            MMObjectNode relation = typerel.getNewNode(username);
-            relation.setValue("snumber", faqcontainersnb);
-            relation.setValue("dnumber", faqnodes);
-            relation.setValue("rnumber", related);
-            typerel.insert(username, relation);
-        }
-
-        if(!typerel.contains(faqnodes,faqitems,related)){
-            MMObjectNode relation = typerel.getNewNode(username);
-            relation.setValue("snumber", faqnodes);
-            relation.setValue("dnumber", faqitems);
-            relation.setValue("rnumber", related);
-            typerel.insert(username, relation);
-        }
-
-        if(!typerel.contains(faqnodes,roles,related)){
-            MMObjectNode relation = typerel.getNewNode(username);
-            relation.setValue("snumber", faqnodes);
-            relation.setValue("dnumber", roles);
-            relation.setValue("rnumber", related);
-            typerel.insert(username, relation);
-        }
-
-        if(!typerel.contains(faqnodes,educations,related)){
-            MMObjectNode relation = typerel.getNewNode(username);
-            relation.setValue("snumber", faqnodes);
-            relation.setValue("dnumber", educations);
-            relation.setValue("rnumber", related);
-            typerel.insert(username, relation);
-        }
-
-    }
 
 
 }
