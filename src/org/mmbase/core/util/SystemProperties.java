@@ -18,6 +18,7 @@ import org.mmbase.util.logging.Logging;
  * This class will search for the mmbaseroot machinename in the value of the "mmservers" property
  * @since MMBase-1.9
  * @author Nico Klasens
+ * @version $Id: SystemProperties.java,v 1.3 2008-11-24 13:09:49 michiel Exp $
  */
 public class SystemProperties {
 
@@ -25,11 +26,13 @@ public class SystemProperties {
 
     private final static String PROPERTY_BUILDER = "systemproperties";
 
-    private final static String DEFAULT = "value";
-    private final static String DEVEVELOPMENT = "development";
-    private final static String TEST = "test";
-    private final static String ACCEPTANCE = "acceptance";
-    private final static String PRODUCTION = "production";
+    private final static String DEVEVELOPMENT    = "development";
+    private final static String TEST             = "test";
+    private final static String ACCEPTANCE       = "acceptance";
+    private final static String PRODUCTION       = "production";
+
+    private final static String DEFAULT          = "value";
+
 
     private static final String COMPONENT = "component";
     private static final String KEY = "key";
@@ -115,8 +118,7 @@ public class SystemProperties {
 
 
     private static void setEnvironment() {
-        String propertyKey = MMSERVERS_PROPERTY;
-        MMObjectNode mmservers = getPropertyNode(propertyKey);
+        MMObjectNode mmservers = getPropertyNode(MMSERVERS_PROPERTY);
         if (mmservers != null) {
             String machineName = MMBase.getMMBase().getMachineName();
             if (isServerInEnv(machineName, mmservers.getStringValue(PRODUCTION))) {
@@ -140,10 +142,9 @@ public class SystemProperties {
                         + " not in Property 'mmservers'. Using default value");
                 warnOnce = false;
             }
-        }
-        else {
+        } else {
             if (warnOnce) {
-                log.warn("Property 'mmservers' missing. Using default value");
+                log.warn("Property '" + MMSERVERS_PROPERTY + "' missing. Using default value for environment='" + environment + "'");
                 warnOnce = false;
             }
         }
