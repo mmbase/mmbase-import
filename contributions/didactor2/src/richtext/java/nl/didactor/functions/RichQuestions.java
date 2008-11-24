@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Determines the questions for a certains test.
  * @author Michiel Meeuwissen
- * @version $Id: RichQuestions.java,v 1.1 2008-11-20 15:09:40 michiel Exp $
+ * @version $Id: RichQuestions.java,v 1.2 2008-11-24 13:37:54 michiel Exp $
  */
 public class RichQuestions {
     protected final static Logger log = Logging.getLoggerInstance(RichQuestions.class);
@@ -83,7 +83,9 @@ public class RichQuestions {
                 if (id != null && ! "".equals(id)) {
                     Node dest = getDestination(rels, id);
                     NodeManager nm = dest.getNodeManager();
-                    log.info(nm.getName() + " " + dest.getNumber());
+                    if (log.isDebugEnabled()) {
+                        log.debug(nm.getName() + " " + dest.getNumber());
+                    }
                     if (dest != null) {
                         if (questions.getDescendants().contains(nm)) {
                             results.add(dest);
