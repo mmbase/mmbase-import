@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Request scope vars are 'provider', 'education', 'class'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProviderFilter.java,v 1.25 2008-11-21 14:10:53 michiel Exp $
+ * @version $Id: ProviderFilter.java,v 1.26 2008-11-24 15:03:02 michiel Exp $
  */
 public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener, RelationEventListener {
     private static final Logger log = Logging.getLoggerInstance(ProviderFilter.class);
@@ -395,12 +395,19 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
 
 
             if (provider == null) {
-                NodeList providers = cloud.getNodeManager("providers").getList(null, null, null);
-                if (providers.size() > 0) {
-                    provider = providers.getNode(0);
-                    defaultEducation = getEducation(cloud, provider, urls);
-                    education = defaultEducation;
+                NodeList providers = cloud.getNodeManager("providers").getList(null, "number", "descending");
+                for (Node prov : providers) {
+                    if (prov.getRelations("related", "educations").size() > 0) {
+                        provider = prov;
+                        break;
+                    }
                 }
+                if (provider == null && providers.size() > 0) {
+                    provider = providers.get(0);
+                }
+                defaultEducation = getEducation(cloud, provider, urls);
+                education = defaultEducation;
+
             }
 
             if (education != null) {
@@ -446,7 +453,7 @@ public class ProviderFilter implements Filter, MMBaseStarter, NodeEventListener,
                 attributes.put("includePath", "" + provider.getNumber());
             }
 
-            attributes.put("referids", "class?,workgroup?,student?,c?" + (education.getNumber() != defaultEducation.getNumber() ? ",education" : ""));
+            attributes.put("referids", "class?,workgroup?,student?,c?" + ((education != null && education.getNumber() != defaultEducation.getNumber()) ? ",education" : ""));
 
             providerCache.put(key, attributes);
 
