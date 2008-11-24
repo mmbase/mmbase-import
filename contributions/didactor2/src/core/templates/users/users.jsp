@@ -20,9 +20,10 @@
           <mm:relatednodes role="classrel" type="educations" id="directly_related" />
         </mm:hasrelationmanager>
 
-        <mm:relatednodes add="directly_related?"
-                         element="educations"
-                         path="people,classrel,classes,classrel,educations">
+        <mm:relatednodes
+            add="directly_related?"
+            element="educations"
+            path="classrel,classes,classrel,educations">
           <!-- Do check: is anybody online for this education -->
           <mm:import id="show_this_item" reset="true">false</mm:import>
           <mm:related path="classrel,people">
@@ -39,7 +40,7 @@
            </mm:relatednodes>
 
            <mm:related path="classrel,classes" orderby="classes.name">
-             <mm:node element="classes" jspvar="nodeClass">
+             <mm:node element="classes">
 
                <mm:import id="show_this_item" reset="true">false</mm:import>
                <mm:related path="classrel,people">
