@@ -15,16 +15,21 @@
           <mm:field id="faqname" name="name" write="false"/>
           <mm:relatednodes type="roles">
             <mm:field id="role" name="name" write="false" />
-            <mm:node number="$user">
-              <di:hasrole role="${role}">
-                <div class="menuSeparatorApplicationMenubar"></div>
-                <div class="menuItemApplicationMenubar">
-                  <mm:treefile page="/faq/frontoffice/index.jspx" objectlist="$includePath" referids="$referids,faq@node" write="false">
-                    <a title="${faqname}" href="${_}"  class="menubar"><mm:write referid="faqname"/></a>
-                  </mm:treefile>
-                </div>
-              </di:hasrole>
-            </mm:node>
+            <mm:notpresent referid="displayed">
+              <mm:node number="$user">
+                <di:hasrole role="${role}">
+                  <div class="menuSeparatorApplicationMenubar">
+                    <jsp:text> </jsp:text>
+                  </div>
+                  <div class="menuItemApplicationMenubar">
+                    <mm:treefile page="/faq/frontoffice/index.jspx" objectlist="$includePath" referids="$referids,faq@node" write="false">
+                      <a title="${faqname}" href="${_}"  class="menubar"><mm:write referid="faqname"/></a>
+                    </mm:treefile>
+                  </div>
+                  <mm:import id="displayed" />
+                </di:hasrole>
+              </mm:node>
+            </mm:notpresent>
           </mm:relatednodes>
         </mm:listnodes>
       </mm:listnodescontainer>
