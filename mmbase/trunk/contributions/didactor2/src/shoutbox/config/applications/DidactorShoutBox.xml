@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorShoutBox" maintainer="didactor.nl" version="1" auto-deploy="true">
+
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="didactor.nl" version="5">people</builder>
+    <builder maintainer="mmbase.org" version="0">shouts</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="people" to="shouts" type="posrel" />
+  </allowedrelationlist>
+
+  <datasourcelist />
+
+  <relationsourcelist />
+
+  <contextsourcelist/>
+
+  <description></description>
+  <install-notice><![CDATA[]]></install-notice>
+</application>
