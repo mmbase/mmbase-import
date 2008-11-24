@@ -3,7 +3,7 @@
 <application name="DidactorProgress" maintainer="didactor.nl" version="8" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
-        <requires name="Resources" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
     </requirements>
 
     <neededbuilderlist></neededbuilderlist>

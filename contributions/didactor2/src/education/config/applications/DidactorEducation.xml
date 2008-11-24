@@ -4,7 +4,7 @@
   <requirements>
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
-    <requires name="Resources" maintainer="didactor.nl" version="2" />
+    <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
   </requirements>
 
   <neededbuilderlist>

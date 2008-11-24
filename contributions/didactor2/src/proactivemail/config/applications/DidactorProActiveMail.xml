@@ -2,11 +2,11 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="DidactorProActiveMail" maintainer="didactor.nl" version="2" auto-deploy="true">
     <requirements>
-        <requires name="Resources"         maintainer="didactor.nl" version="2" />
+        <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
         <requires name="DidactorCore"      maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
         <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
-    </requirements>  
+    </requirements>
 
     <neededbuilderlist>
         <builder maintainer="didactor.nl" version="1">proactivemailscheduler</builder>
@@ -30,14 +30,14 @@
         <relation from="proactivemailtemplates" to="classes"    type="related" />
         <relation from="proactivemailtemplates" to="roles"      type="related" />
         <relation from="proactivemailtemplates" to="people"     type="related" />
-        
+
         <relation from="proactivemailtemplates" to="proactivemailtemplatetypes" type="related" />
         <relation from="proactivemailscripts"   to="proactivemailscheduler"     type="related" />
-        
+
         <relation from="proactivemailscripts"   to="proactivemailscheduler"     type="related" />
         <relation from="proactivemailscripts"   to="proactivemailscheduler"     type="related" />
         <relation from="proactivemailscripts"   to="proactivemailscheduler"     type="related" />
-        
+
         <relation from="people"   to="eventdata"     type="eventdatarel" />
     </allowedrelationlist>
 
