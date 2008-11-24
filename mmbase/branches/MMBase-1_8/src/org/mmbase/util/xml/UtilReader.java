@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.25.2.3 2008-07-24 16:16:32 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25.2.4 2008-11-24 17:32:09 michiel Exp $
  */
 public class UtilReader {
 
@@ -209,8 +209,16 @@ public class UtilReader {
                         Element p = (Element) iter.next();
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
-                        if (type.equals("map")) {
-                            Collection entryList = new ArrayList();
+                        if (type.equals("mergingmap") ||
+                            type.equals("map")) {
+                            Collection entryList = null;
+                            if (type.equals("mergingmap")) {
+                                entryList = (Collection) maps.get(name);
+                            }
+                            if (entryList == null) {
+                                entryList = new ArrayList();
+                            }
+
 
                             for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
                                 Element entry = (Element) entriesIter.next();
@@ -229,7 +237,7 @@ public class UtilReader {
                                     entryList.add(new Entry(key, value));
                                 }
                             }
-                            if (maps.containsKey(name)) {
+                            if (maps.containsKey(name) && ! type.equals("mergingmap")) {
                                 log.debug("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
                                 maps.put(name, entryList);
