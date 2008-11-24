@@ -4,7 +4,7 @@
 <mm:cloud method="asis">
 
   <mm:compare referid="type" value="div">
-    <div class="menuSeperator"> </div>
+    <div class="menuSeparator"> </div>
     <div class="menuItem" id="menuEmail">
       <mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids" write="false">
         <mm:param name="so">down</mm:param>

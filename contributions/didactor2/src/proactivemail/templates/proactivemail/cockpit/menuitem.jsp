@@ -12,7 +12,7 @@
   </di:hasrole> 
   <mm:compare referid="cansee" value="true">
     <mm:compare referid="type" value="div">
-      <div class="menuSeperator"> </div>
+      <div class="menuSeparator"> </div>
       <div class="menuItem" id="menuChat">
         <a href="<mm:treefile page="/proactivemail/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="proactivemail.proactivemail"/></a>
       </div>

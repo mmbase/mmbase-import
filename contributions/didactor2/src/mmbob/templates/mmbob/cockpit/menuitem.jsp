@@ -13,7 +13,7 @@
     <mm:present referid="classforum">
       <mm:node number="$classforum" notfound="skip">
         <mm:import id="shownClassForum">${_node}</mm:import>
-        <div class="menuSeperator"> </div>
+        <div class="menuSeparator"> </div>
         <div class="menuItem classForum" id="menuMMBob1">
           <mm:link referid="template" referids="classforum@forumid">
             <a href="${_}" class="menubar"><di:translate key="mmbob.groupforum" /></a>
@@ -26,7 +26,7 @@
         <c:if test="${_ eq 'on' and empty shownClassForum}">
           <mm:present referid="educationforum">
             <mm:node number="$educationforum">
-              <div class="menuSeperator"> </div>
+              <div class="menuSeparator"> </div>
               <div class="menuItem studentsForum" id="menuMMBob2">
                 <mm:link referid="template" referids="educationforum@forumid">
                   <a href="${_}" class="menubar"><di:translate key="mmbob.educationforum" /></a>
@@ -41,7 +41,7 @@
           <c:if test="${_ eq 'on'}">
             <mm:present referid="educationforum_coaches">
               <mm:node number="$educationforum_coaches">
-                <div class="menuSeperator"> </div>
+                <div class="menuSeparator"> </div>
                 <div class="menuItem coachesForum" id="menuMMBob3">
                   <mm:link referid="template" referids="educationforum_coaches@forumid">
                     <a href="${_}" class="menubar"><di:translate key="mmbob.educationforum_coaches" /></a>

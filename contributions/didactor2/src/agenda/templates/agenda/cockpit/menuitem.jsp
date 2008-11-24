@@ -7,7 +7,7 @@
 <mm:compare referid="scope" value="provider">
   <mm:cloud method="asis">
     <mm:compare referid="type" value="div">
-      <div class="menuSeperator"> </div>
+      <div class="menuSeparator"> </div>
       <div class="menuItem" id="menuAgenda">
         <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">agenda</a>
       </div>

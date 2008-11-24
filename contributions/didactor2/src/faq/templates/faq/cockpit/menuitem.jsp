@@ -15,7 +15,7 @@
     <mm:relatednodes type="faqnodes" id="faq">
       <mm:import id="faqname" reset="true"><mm:field name="name"/></mm:import>
       <mm:related path="educations,people" constraints="people.number='$user'">
-          <div class="menuSeperator"></div>
+          <div class="menuSeparator"></div>
           <div class="menuItem">
             <mm:treefile page="/faq/frontoffice/index.jsp" objectlist="$includePath" referids="$referids,faq@node">
               <a title="<mm:write referid="faqname"/>" href="${_}" class="menubar"><mm:write referid="faqname"/></a>
