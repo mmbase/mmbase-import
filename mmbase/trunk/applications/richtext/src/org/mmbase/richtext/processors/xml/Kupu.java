@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.7 2008-09-29 11:34:33 michiel Exp $
+ * @version $Id: Kupu.java,v 1.8 2008-11-24 16:52:37 michiel Exp $
  */
 
 class Kupu {
@@ -86,7 +86,7 @@ class Kupu {
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
     private static Set<String> divClasses    = new HashSet<String>(Arrays.asList(new String[] {"float", "note", "left", "right", "intermezzo", "caption", "quote"}));
-    private static Set<String> imageClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right"}));
+    private static Set<String> imageClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right", "big"}));
     private static Set<String> flashClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right"}));
 
     private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type|height|width");
