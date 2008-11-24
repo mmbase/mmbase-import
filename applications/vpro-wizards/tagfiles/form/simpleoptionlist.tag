@@ -13,10 +13,10 @@
     <c:otherwise>
         <c:set var="delim" value="," />
         <c:if test="${not empty delimiter}"><c:set var="delim" value="${delimiter}" /></c:if>
-        <c:forTokens var="option" items="${options}" delims=",">
+        <c:forEach var="option" items="${fn:split(options, ',')}">
             <c:set var="value" value="${fn:split(option, '=')}"/>
             <jsp:setProperty name="_options" property="value" value="${value[0]}"/>
             <jsp:setProperty name="_options" property="label" value="${value[1]}"/>
-        </c:forTokens>
+        </c:forEach>
     </c:otherwise>
 </c:choose>
