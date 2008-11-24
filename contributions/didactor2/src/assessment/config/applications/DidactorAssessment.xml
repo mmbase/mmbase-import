@@ -21,8 +21,8 @@
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="classrel" target="classrel" direction="bidirectional" guisourcename="ClassRel" guitargetname="ClassRel" />
-    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+    <reldef source="classrel" target="classrel" direction="bidirectional" guisourcename="ClassRel" guitargetname="ClassRel"  builder="classrel"/>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related"      builder="insrel"/>
     <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
     <reldef source="descriptionrel" target="descriptionrel" direction="bidirectional" guisourcename="DescriptionRel" guitargetname="DescriptionRel" builder="descriptionrel" />
   </neededreldeflist>
