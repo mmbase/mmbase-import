@@ -60,7 +60,7 @@
           </mm:treefile>
         </div>
 
-        <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+        <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
         <div class="menuItemApplicationMenubar">
               <mm:node number="${user}">
             <mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids" write="false">
@@ -78,9 +78,19 @@
 
           <mm:nodelistfunction id="educations" name="educations" />
           <c:if test="${fn:length(educations) gt 1}">
-            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+            <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
+
+            <mm:import externid="sub" />
             <div class="menuItemApplicationMenubar educationSelector">
-              <form method="GET">
+              <form action="${_}" method="GET">
+                <c:if test="${! empty sub}">
+                  <input type="hidden" name="sub" value="${sub}"  />
+                </c:if>
+                <c:forEach items="node,${referids}" var="p">
+                  <c:if test="${p ne 'education' and ! empty param[p]}">
+                    <input type="hidden" name="${p}" value="${param[p]}"  />
+                  </c:if>
+                </c:forEach>
                 <select name="education" onchange="this.form.submit()">
                   <mm:listnodes referid="educations">
                     <mm:option value="${_node}" compare="${education}">${_node.name}</mm:option>
@@ -95,15 +105,16 @@
         <di:blocks styleClass="menuItemApplicationMenubar"
                   classification="applicationbar">
           <jsp:attribute name="separator">
-            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+            <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
           </jsp:attribute>
         </di:blocks>
+
         <!--
             WTF WTF, specific code for yet another certain component
             This must be gone!
         -->
 
-        <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+        <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
 
 
         <div class="menuItemApplicationMenubar">
@@ -112,7 +123,7 @@
               <a title="${di:translate('core.configuration')}"
                  href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
             </mm:treefile>
-            <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+            <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
           </mm:hasnode>
 
           <mm:hasnode number="component.portfolio" inverse="true">
@@ -122,7 +133,7 @@
                 <a title="${di:translate('core.configuration')}"
                    href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
               </mm:treefile>
-              <div class="menuSeperatorApplicationMenubar"><jsp:text> </jsp:text></div>
+              <div class="menuSeparatorApplicationMenubar"><jsp:text> </jsp:text></div>
             </c:if>
           </mm:hasnode>
         </div>
