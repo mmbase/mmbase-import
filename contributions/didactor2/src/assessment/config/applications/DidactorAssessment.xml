@@ -2,8 +2,8 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="DidactorAssessment" maintainer="didactor.nl" version="2" auto-deploy="true">
   <requirements>
-    <requires name="Resources" maintainer="mmbase.org"          version="2" />
-    <requires name="DidactorCore" maintainer="didactor.nl"      version="10" />
+    <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
+    <requires name="DidactorCore"      maintainer="didactor.nl"      version="10" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
   </requirements>

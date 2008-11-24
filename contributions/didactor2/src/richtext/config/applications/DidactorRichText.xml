@@ -3,7 +3,7 @@
 <application name="DidactorRichText" maintainer="didactor.nl" version="9" auto-deploy="true">
   <requirements>
     <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
-    <requires name="Resources"         maintainer="didactor.nl" version="2" />
+    <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
     <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
   </requirements>
 
