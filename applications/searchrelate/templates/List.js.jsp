@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.36 2008-11-24 12:37:57 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.37 2008-11-24 12:45:22 michiel Exp $
  */
 
 
@@ -86,7 +86,11 @@ function List(d) {
                        if (!result) {
                            ev.returnValue = '<fmt:message key="invalid" />';
                        }
-                       return result;
+                       if (result) {
+                           return null;
+                       } else {
+                           return result;
+                       }
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
     $(this.div).find("input[type='text']").filter(function() {
