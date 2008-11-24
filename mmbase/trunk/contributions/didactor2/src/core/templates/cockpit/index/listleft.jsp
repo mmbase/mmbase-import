@@ -23,7 +23,7 @@
         <img src="${mm:treefile('/gfx/icon_course_notdone.gif', pageContext, includePath)}"
              width="13" height="11" border="0" title="" alt="" />
         <mm:treefile page="/education/index.jsp" objectlist="$includePath"
-                     referids="$referids,_@class">
+                     referids="$referids,_node@class">
           <mm:param name="education"><mm:relatednodes type="educations" role="classrel" max="1"><mm:field name="number" /></mm:relatednodes></mm:param>
           <a href="${_}"
              class="users">
