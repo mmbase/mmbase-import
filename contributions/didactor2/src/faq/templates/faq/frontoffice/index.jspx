@@ -6,7 +6,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     component="faq.cockpit" >
   <mm:import externid="faqitems"/>
-  <mm:import externid="node"/>
+  <mm:import externid="node" required="true" />
 
 
     <div class="rows" id="rows">
