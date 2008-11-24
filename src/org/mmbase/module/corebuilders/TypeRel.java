@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.82 2008-11-24 15:28:42 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.83 2008-11-24 15:33:06 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -520,8 +520,14 @@ public class TypeRel extends MMObjectBuilder {
         }
         if (tableName.equals(event.getBuilderName())) {
             if (event.getType() == Event.TYPE_NEW) {
-                Set<MMObjectNode> newTypeRels = addCacheEntry(getNode(event.getNodeNumber()), true);
-                log.service("Added to typerelcache: " + newTypeRels);
+                MMObjectNode typeRelNode = getNode(event.getNodeNumber());
+                if (typeRelNode != null) {
+                    Set<MMObjectNode> newTypeRels = addCacheEntry(typeRelNode, true);
+                    log.service("Added to typerelcache: " + newTypeRels);
+                } else {
+                    log.warn("Could not found typerel node with number " + event.getNodeNumber());
+                }
+
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
                 readCache();
