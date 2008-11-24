@@ -6,7 +6,7 @@
 <mm:compare referid="type" value="div">
   <mm:list nodes="$provider" path="providers,posrel,pages" fields="pages.name,posrel.pos" orderby="posrel.pos">
   <mm:field name="pages.number" id="page" write="false">
-  <div class="menuSeperator"> </div>
+  <div class="menuSeparator"> </div>
   <div class="menuItem">
     <a href="<mm:treefile page="/cms/index.jsp" objectlist="$includePath" referids="page,$referids" />" class="menubar">
     <mm:field name="pages.name"/>

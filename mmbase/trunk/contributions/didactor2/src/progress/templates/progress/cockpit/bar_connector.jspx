@@ -7,7 +7,6 @@
     method="asis" >
   <mm:content type="application/xml" expires="0">
     <jsp:output omit-xml-declaration="yes" />
-    <jsp:directive.include file="/shared/setImports.jsp" />
     <div>
       <!-- Always include the progress component -->
       <div class="progress">

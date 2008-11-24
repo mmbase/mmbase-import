@@ -20,7 +20,7 @@
       <mm:node number="$user" notfound="skipbody">
         <di:hasrole role="<%=role%>">
           <mm:notpresent referid="faqnodeshown">
-            <div class="menuSeperatorApplicationMenubar"></div>
+            <div class="menuSeparatorApplicationMenubar"></div>
             <div class="menuItemApplicationMenubar">
               <mm:treefile page="/faq/frontoffice/index.jspx" objectlist="$includePath" referids="$referids,faq@node" write="false">
                 <a title="<mm:write referid="faqname"/>" href="${_}"  class="menubar"><mm:write referid="faqname"/></a>
