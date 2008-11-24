@@ -11,6 +11,7 @@
 
   <scope name="educations" referid="education">
     <setting name="relate_learnblocks" type="boolean" default="false" />
+    <setting name="send_email" type="boolean" default="true" />
   </scope>
 
 </component>
