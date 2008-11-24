@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="Resources" maintainer="didactor.nl" version="2" auto-deploy="true">
+<application name="DidactorResources" maintainer="didactor.nl" version="1" auto-deploy="true">
+
+
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
 
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">icaches</builder>
