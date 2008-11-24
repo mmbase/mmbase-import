@@ -50,6 +50,9 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
                                HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
+      PagingUtils.initStatusHolder(request);
+      PagingStatusHolder holder = PagingUtils.getStatusHolder();
+      
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       StatisticService service = (StatisticService) ApplicationContextFactory.getBean("statisticService");
       List<Newsletter> newsletters = newsletterService.getAllNewsletter(false);
@@ -58,9 +61,6 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
       NewsLetterLogSearchForm searchForm = (NewsLetterLogSearchForm) form;
       StatisticResult result = new StatisticResult();
       request.setAttribute("searchForm", searchForm);
-      PagingUtils.initStatusHolder(request);
-      PagingStatusHolder holder = PagingUtils.getStatusHolder();
-
 
       boolean isAll = Integer.parseInt(searchForm.getNewsletters()) == 0;
       boolean isDetail = searchForm.getDetailOrSum().equals("2");
