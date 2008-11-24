@@ -6,7 +6,7 @@
 <mm:import externid="scope">none</mm:import>
     <mm:node referid="education">
         <mm:relatednodes type="components" max="1" constraints="components.name='projectgroup'">
-         <div class="menuSeperator"> </div>
+         <div class="menuSeparator"> </div>
         <div class="menuItem" id="menuWorkspace">
           <a href="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.projectgroups" /></a>
         </div>

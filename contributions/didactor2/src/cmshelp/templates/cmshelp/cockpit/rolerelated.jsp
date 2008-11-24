@@ -31,7 +31,7 @@
         <mm:import id="role" jspvar="role" reset="true"><mm:field name="name"/></mm:import>
         <mm:node number="$user" notfound="skipbody">
           <di:hasrole role="<%=role%>">
-            <div class="menuSeperatorApplicationMenubar"></div>
+            <div class="menuSeparatorApplicationMenubar"></div>
             <div class="menuItemApplicationMenubar">
               <a title="<mm:write referid="helpname"/>" href="<%=link%><%=helpNumber%>"  class="menubar"><mm:write referid="helpname"/></a>
             </div>

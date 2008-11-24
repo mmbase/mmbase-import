@@ -7,7 +7,7 @@
   <mm:cloud rank="didactor user">
 
   <mm:compare referid="type" value="div">
-    <div class="menuSeperator"> </div>
+    <div class="menuSeparator"> </div>
     <div class="menuItem" id="menuProgress">
       <mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" write="false">
         <a href="${_}" class="menubar"><di:translate key="progress.progress" /></a>

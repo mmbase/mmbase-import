@@ -8,7 +8,7 @@
   <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
   <mm:compare referid="type" value="div">
-    <div class="menuSeperator"> </div>
+    <div class="menuSeparator"> </div>
     <div class="menuItem" id="menuPortfolio">
       <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids"></mm:treefile>" class="menubar">portfolio</a>
     </div>

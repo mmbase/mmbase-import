@@ -49,7 +49,7 @@
                 <mm:import id="helpname" reset="true"><mm:field name="name" /></mm:import>
                 <mm:import id="helpnumber" jspvar="helpNumber" reset="true"><mm:field name="number" /></mm:import>
                 <mm:relatednodes type="educations" constraints="educations.number='${edu}'">
-                  <div class="menuSeperator"></div>
+                  <div class="menuSeparator"></div>
                   <div class="menuItem">
                     <a title="<mm:write referid="helpname"/>"
                        href="<%=link%><%=helpNumber%>" class="menubar"><mm:write referid="helpname" /></a>
