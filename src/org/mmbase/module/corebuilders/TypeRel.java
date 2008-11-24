@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.81 2008-10-21 17:24:07 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.82 2008-11-24 15:28:42 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -129,13 +129,17 @@ public class TypeRel extends MMObjectBuilder {
      */
     protected TypeRelSet addCacheEntry(MMObjectNode typeRel, boolean buildersInitialized) {
 
+        if (typeRel == null) throw new IllegalArgumentException("typeRel cannot be null");
+
         TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again,
         // except if one of the builders could not be found
         added.add(typeRel);
 
+        if (mmb == null) throw new IllegalStateException("mmb is null");
         RelDef reldef = mmb.getRelDef();
+        if (reldef == null) throw new IllegalStateException("No reldef found");
 
         MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
         if (reldefNode == null) { throw new RuntimeException("Could not find reldef-node for rnumber= "
