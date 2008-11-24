@@ -7,7 +7,7 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="item" required="true" />
-  <li>
+  <li xmlns="http://www.w3.org/1999/xhtml">
     <mm:form id="node${_node}">
       <mm:include debug="html" page="${item}" />
     </mm:form>
