@@ -205,6 +205,7 @@
             <include name="translations/**" />
             <include name="security/**" />
             <include name="utils/**" />
+            <include name="modules/**" />
             <include name="datatypes.xml" />
             <include name="framework.xml" />
           </fileset>
