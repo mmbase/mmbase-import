@@ -2,6 +2,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     version="2.0">
   <!--
       Closing a lesson means:
@@ -37,28 +38,31 @@
       <!--
           Now send mail
       -->
+      <c:if test="${di:setting('assessment', 'send_email') eq 'true')}">
+        <mm:node number="$user">
+          <mm:import id="from"><mm:field name="email"/></mm:import>
+          <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <di:person /> /></mm:import>
+        </mm:node>
 
-      <mm:node number="$user">
-        <mm:import id="from"><mm:field name="email"/></mm:import>
-        <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <di:person /> /></mm:import>
-      </mm:node>
+        <mm:node number="$education">
+          <mm:related path="classrel,people">
+            <mm:node element="people" id="teacher">
 
-      <mm:node number="$education">
-        <mm:related path="classrel,people">
-          <mm:node element="people" id="teacher">
+              <mm:related path="related,roles" constraints="roles.name='teacher'">
+                <mm:createnode type="emails">
+                  <mm:setfield name="from"><mm:write referid="from"/></mm:setfield>
+                  <mm:setfield name="to"><mm:field name="email" node="teacher" /></mm:setfield>
+                  <mm:setfield name="subject"><mm:write referid="subject"/></mm:setfield>
+                  <mm:setfield name="body"><di:translate key="assessment.give_feedback_body" /></mm:setfield>
+                  <mm:setfield name="type">1</mm:setfield>
+                </mm:createnode>
+              </mm:related>
+            </mm:node>
+          </mm:related>
+        </mm:node>
+      </c:if>
 
-            <mm:related path="related,roles" constraints="roles.name='teacher'">
-              <mm:createnode type="emails">
-                <mm:setfield name="from"><mm:write referid="from"/></mm:setfield>
-                <mm:setfield name="to"><mm:field name="email" node="teacher" /></mm:setfield>
-                <mm:setfield name="subject"><mm:write referid="subject"/></mm:setfield>
-                <mm:setfield name="body"><di:translate key="assessment.give_feedback_body" /></mm:setfield>
-                <mm:setfield name="type">1</mm:setfield>
-              </mm:createnode>
-            </mm:related>
-          </mm:node>
-        </mm:related>
-      </mm:node>
+
     </mm:node>
 
     <!--
