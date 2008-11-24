@@ -26,7 +26,7 @@
   <xsd:simpleType name="Name" id="Name">
     <xsd:restriction base="xsd:token">
       <xsd:pattern value="\i\c*"/>
-      <xsd:maxLength value="255" />
+      <xsd:maxLength value="128" />
     </xsd:restriction>
   </xsd:simpleType>
 

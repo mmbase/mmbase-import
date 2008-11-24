@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.72 2008-10-27 17:58:55 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.73 2008-11-24 14:20:40 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -264,7 +264,7 @@
       </description>
       <class name="org.mmbase.datatypes.ComponentNamesDataType" />
       <required value="true"/>
-      <maxLength value="255"/>
+      <maxLength value="128"/>
     </specialization>
 
     <specialization id="nodemanagers">
