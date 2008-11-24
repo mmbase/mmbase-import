@@ -13,7 +13,7 @@
         Other jars will normally define (or override) datatypes which are based on these, so it's
         better if they are available asap.
     -->
-    <property name="classloaderpatterns" type="map">
+    <property name="classloaderpatterns" type="mergingmap">
       <entry><key>!/org/mmbase/config/datatypes.xml</key><value>-1</value></entry>
     </property>
   </properties>
