@@ -2,7 +2,7 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="DidactorComponent" maintainer="didactor.nl" version="2" auto-deploy="true">
 	<requirements>
-		<requires name="Resources" maintainer="didactor.nl" version="2" />
+		<requires name="Resources" maintainer="mmbase.org" version="1" />
 	</requirements>
 
 	<neededbuilderlist>
@@ -12,8 +12,8 @@
 	</neededbuilderlist>
 
 	<neededreldeflist>
-		<reldef source="settingrel" target="settingrel" direction="bidirectional" guisourcename="SettingRel" guitargetname="SettingRel" />
-		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+		<reldef source="settingrel" target="settingrel" direction="bidirectional" guisourcename="SettingRel" guitargetname="SettingRel" builder="settingrel" />
+		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
 	</neededreldeflist>
 
 	<allowedrelationlist />

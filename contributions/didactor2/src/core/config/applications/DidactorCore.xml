@@ -30,10 +30,10 @@
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
-    <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" />
-    <reldef source="classrel" target="classrel" direction="bidirectional" guisourcename="ClassRel" guitargetname="ClassRel" />
-    <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" />
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related"  builder="insrel"/>
+    <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel"  builder="rolerel"/>
+    <reldef source="classrel" target="classrel" direction="bidirectional" guisourcename="ClassRel" guitargetname="ClassRel" builder="classrel" />
+    <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" builder="authrel"  />
   </neededreldeflist>
 
   <allowedrelationlist>
