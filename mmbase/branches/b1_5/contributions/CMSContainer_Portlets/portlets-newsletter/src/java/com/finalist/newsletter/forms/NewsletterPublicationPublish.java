@@ -35,10 +35,14 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
-   /** name of submit button in jsp to confirm removal */
+   /**
+    * name of submit button in jsp to confirm removal
+    */
    private static final String ACTION_REMOVE = "remove";
 
-   /** name of submit button in jsp to cancel removal */
+   /**
+    * name of submit button in jsp to cancel removal
+    */
    private static final String ACTION_CANCEL = "cancel";
 
    /**
@@ -76,7 +80,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          } else {
             publicationService.setStatus(number, Publication.STATUS.READY);
             request.setAttribute("isPublish", true);
-            Publish.publish(publicationNode);
+            return new ActionForward("/editors/workflow/publish.jsp?number="+number);
          }
 
          return mapping.findForward(SUCCESS);
@@ -87,7 +91,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          forwardPath = forwardPath.concat("?showpage=" + number);
          if (StringUtils.isNotBlank(request.getParameter("forward"))) {
             ActionForward ret = new ActionForward(mapping.findForward("publicationedit").getPath() + "?newsletterId="
-                  + request.getParameter("newsletterId"));
+                     + request.getParameter("newsletterId"));
             ret.setRedirect(true);
             return ret;
          }
