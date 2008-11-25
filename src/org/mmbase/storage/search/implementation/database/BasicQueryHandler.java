@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.63 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.64 2008-11-25 13:19:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -46,10 +46,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
     private static final Logger log = Logging.getLoggerInstance(BasicQueryHandler.class);
 
     /** Sql handler used to generate SQL statements. */
-    private SqlHandler sqlHandler = null;
+    private final SqlHandler sqlHandler;
 
     /** MMBase instance. */
-    private MMBase mmbase = null;
+    private final MMBase mmbase;
 
     /**
      * Default constructor.
