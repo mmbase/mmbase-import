@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.53 2008-10-27 12:48:05 michiel Exp $
+ * @version $Id: SendMail.java,v 1.54 2008-11-25 10:04:25 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -380,8 +380,13 @@ public class SendMail extends AbstractSendMail {
                 }
 
                 session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
-
-                log.info("Module SendMail started SMTP: " + buf + "(" + prop + ")");
+                Map<Object, Object> mailProps = new HashMap<Object, Object>();
+                for (Map.Entry<Object, Object> e : prop.entrySet()) {
+                    if (e.getKey().toString().startsWith("mail")) {
+                        mailProps.put(e.getKey(), e.getValue());
+                    }
+                }
+                log.info("Module SendMail started SMTP: " + buf + "(" + mailProps + ")");
             } else {
                 log.fatal("Could not create Mail session");
             }
