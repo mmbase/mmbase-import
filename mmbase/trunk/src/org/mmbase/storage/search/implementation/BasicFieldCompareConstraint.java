@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.12 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicFieldCompareConstraint.java,v 1.13 2008-11-25 12:53:25 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {
@@ -47,7 +47,7 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
 
         // Test for defined operator value.
         if (operator < FieldCompareConstraint.LESS
-        || operator > FieldCompareConstraint.LIKE) {
+        || operator > FieldCompareConstraint.REGEXP) {
             throw new IllegalArgumentException(
             "Invalid operator value: " + operator );
         }
@@ -57,6 +57,11 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
             && getField().getType() != Field.TYPE_STRING
             && getField().getType() != Field.TYPE_XML) {
             throw new IllegalArgumentException("LIKE operator not allowed for this field type: " + getField().getType());
+        }
+        if (operator == FieldCompareConstraint.REGEXP
+            && getField().getType() != Field.TYPE_STRING
+            && getField().getType() != Field.TYPE_XML) {
+            throw new IllegalArgumentException("REGEXP operator not allowed for this field type: " + getField().getType());
         }
 
         this.operator = operator;
