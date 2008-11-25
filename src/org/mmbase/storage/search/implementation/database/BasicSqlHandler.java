@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.76 2008-08-13 09:02:00 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.77 2008-11-25 13:20:10 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -661,6 +661,10 @@ public class BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
+    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * @javadoc
      */
@@ -704,8 +708,7 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
-    public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
-    SearchQuery query, boolean inverse, boolean inComposite) {
+    public void appendConstraintToSql(StringBuilder sb, Constraint constraint, SearchQuery query, boolean inverse, boolean inComposite)  throws SearchQueryException {
 
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ constraint.isInverse();
@@ -763,7 +766,21 @@ public class BasicSqlHandler implements SqlHandler {
                     appendFieldValue(sb, values.first(),
                         !fieldConstraint.isCaseSensitive(), fieldType);
                 }
-
+            } else if (fieldConstraint instanceof FieldValueInQueryConstraint) {
+                FieldValueInQueryConstraint queryConstraint = (FieldValueInQueryConstraint) fieldConstraint;
+                String subQuery = toSql(queryConstraint.getInQuery(), this);
+                if (isRelevantCaseInsensitive(fieldConstraint)) {
+                    // case insensitive
+                    sb.append("LOWER(");
+                    appendField(sb, step, fieldName, multipleSteps);
+                    sb.append(")");
+                } else {
+                    // case sensitive or case irrelevant
+                    appendField(sb, step, fieldName, multipleSteps);
+                }
+                sb.append(overallInverse? " NOT IN (": " IN (");
+                sb.append(subQuery);
+                sb.append(")");
             } else if (fieldConstraint instanceof FieldValueBetweenConstraint) {
 
                 // Field value-between constraint
@@ -840,11 +857,12 @@ public class BasicSqlHandler implements SqlHandler {
                     }
                     appendLikeOperator(sb, fieldConstraint.isCaseSensitive());
                     break;
-                    /*
                 case FieldValueConstraint.REGEXP:
-                    sb.append(getRegularExpressionOperator());
+                    if (overallInverse) {
+                        sb.append(" NOT");
+                    }
+                    appendRegularExpressionOperator(sb, fieldConstraint.isCaseSensitive());
                     break;
-                    */
                 default:
                     throw new IllegalStateException("Unknown operator value in constraint: " + fieldCompareConstraint.getOperator());
                 }
