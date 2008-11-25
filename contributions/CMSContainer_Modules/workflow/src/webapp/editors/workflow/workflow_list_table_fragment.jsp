@@ -145,7 +145,9 @@
       ${value}
    </td>
    <td>
-      <mm:field name="${type}.publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
+      <c:if test="${type ne 'contentchannel'}">
+         <mm:field name="${type}.publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
+      </c:if>
    </td>
    <td style="white-space: nowrap;">
       <mm:field name="workflowitem.lastmodifier"/>
