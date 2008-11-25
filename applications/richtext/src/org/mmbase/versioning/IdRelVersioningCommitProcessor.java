@@ -14,7 +14,7 @@ import javax.xml.xpath.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: IdRelVersioningCommitProcessor.java,v 1.1 2008-06-03 09:43:01 michiel Exp $
+ * @version $Id: IdRelVersioningCommitProcessor.java,v 1.2 2008-11-25 15:15:01 michiel Exp $
  * @since
  */
 
@@ -52,15 +52,19 @@ public class IdRelVersioningCommitProcessor implements CommitProcessor {
     boolean isRelevant(Node idrel, Node node) {
         String id = idrel.getStringValue(IdRel.ID);
         for (String xmlField : fields.split(",")) {
-            Document doc = node.getXMLValue(xmlField);
-            if (log.isDebugEnabled()) {
-                log.debug("Checking whether '" + id + "' is mentioned in " + org.mmbase.util.xml.XMLWriter.write(doc, true));
-            }
-            if (hasId(doc, id)) {
-                log.debug("yes");
-                return true;
+            if (node.getNodeManager().hasField(xmlField)) {
+                Document doc = node.getXMLValue(xmlField);
+                if (log.isDebugEnabled()) {
+                    log.debug("Checking whether '" + id + "' is mentioned in " + org.mmbase.util.xml.XMLWriter.write(doc, true));
+                }
+                if (hasId(doc, id)) {
+                    log.debug("yes");
+                    return true;
+                } else {
+                    log.debug("no");
+                }
             } else {
-                log.debug("no");
+                log.warn("No such field " + xmlField);
             }
         }
         return false;
