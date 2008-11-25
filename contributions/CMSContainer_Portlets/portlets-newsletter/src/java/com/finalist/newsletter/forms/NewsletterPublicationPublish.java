@@ -80,7 +80,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          } else {
             publicationService.setStatus(number, Publication.STATUS.READY);
             request.setAttribute("isPublish", true);
-            Publish.publish(publicationNode);
+            return new ActionForward("/editors/workflow/publish.jsp?number="+number);
          }
 
          return mapping.findForward(SUCCESS);
