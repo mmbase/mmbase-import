@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.74 2008-11-06 13:46:19 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.75 2008-11-25 13:22:02 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -467,18 +467,24 @@ public class BasicQuery implements Query  {
     }
 
 
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void removeImplicitFields() {
+       query.removeFields();
+       implicitFields.clear();
+       Iterator<StepField> i = explicitFields.iterator();
+       while (i.hasNext()) {
+           BasicStepField sf = (BasicStepField) i.next();
+           query.addField(sf.getStep(), sf.getField());
+       }
+    }
 
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
         query.setDistinct(distinct);
         if (distinct) { // in that case, make sure only the 'explicitely' added fields remain.
-            query.removeFields();
-            implicitFields.clear();
-            Iterator<StepField> i = explicitFields.iterator();
-            while (i.hasNext()) {
-                BasicStepField sf = (BasicStepField) i.next();
-                query.addField(sf.getStep(), sf.getField());
-            }
+            removeImplicitFields();
         }
         return this;
     }
@@ -544,6 +550,10 @@ public class BasicQuery implements Query  {
             }
             return c;
         }
+    }
+
+    public FieldValueInQueryConstraint createConstraint(StepField f, Query q) {
+        return  new BasicFieldValueInQueryConstraint(f, q);
     }
 
     public Constraint setInverse(Constraint c, boolean i) {

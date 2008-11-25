@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.195 2008-11-19 18:04:23 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.196 2008-11-25 13:25:44 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -537,12 +537,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (name == null) {
             name = "Tran" + uniqueId();
         } else {
-            Transaction oldtransaction = transactions.get(name);
+            BasicTransaction oldtransaction = transactions.get(name);
             if (oldtransaction != null) {
                 if (overwrite) {
                     oldtransaction.cancel();
                 } else {
-                    throw new AlreadyExistsException("Transaction with name " + name + "already exists.");
+                    throw new AlreadyExistsException("Transaction with name " + name + " already exists.");
                 }
             }
         }
@@ -699,6 +699,29 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return resultList;
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    boolean setSecurityConstraint(Constraint c) {
+        if (c == null) return true;
+        boolean secure = true;
+        if (c instanceof FieldValueInQueryConstraint) {
+            SearchQuery q = ((FieldValueInQueryConstraint) c).getInQuery();
+            if (q instanceof BasicQuery) {
+                if (! setSecurityConstraint((Query) q)) secure= false;
+            } else {
+                log.warn("Don't know how to set a security constraint on a " + q.getClass().getName());
+            }
+        } else if (c instanceof CompositeConstraint) {
+            CompositeConstraint cc = (CompositeConstraint) c;
+            for (Constraint sc : cc.getChilds()) {
+                if (! setSecurityConstraint(sc)) secure = false;
+            }
+        }
+        return secure;
+    }
+
     /**
      * @param query add security constaint to this query
      * @return is query secure
@@ -711,6 +734,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             if (bquery.isSecure()) { // already set, and secure
                 return true;
             } else {
+
+
+                boolean constraintsSecure = setSecurityConstraint(query.getConstraint());
+
                 if (bquery.queryCheck == null) { // not set already, do it now.
                     Authorization.QueryCheck check = auth.check(userContext, query, Operation.READ);
                     if (log.isDebugEnabled()) {
@@ -718,7 +745,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                     }
                     bquery.setSecurityConstraint(check);
                 }
-                return bquery.isSecure();
+                return constraintsSecure && bquery.isSecure();
             }
         } else {
             // should not happen
