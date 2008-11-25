@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
+import org.mmbase.datatypes.processors.*;
 import junit.framework.*;
 
 import org.mmbase.util.DynamicDate;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProcessorTest.java,v 1.2 2008-11-25 09:17:25 michiel Exp $
+ * @version $Id: ProcessorTest.java,v 1.3 2008-11-25 16:02:37 michiel Exp $
  * @since MMBase-1.9.1
   */
 public class ProcessorTest extends BridgeTest {
@@ -31,6 +32,7 @@ public class ProcessorTest extends BridgeTest {
         super(name);
     }
 
+    /*
     protected Node testCommitProcessorIsChanged1(Cloud c) {
         NodeManager nm = c.getNodeManager("mustbechanged");
         Node n = nm.createNode();
@@ -39,12 +41,12 @@ public class ProcessorTest extends BridgeTest {
         return n;
     }
 
-    protected void testCommitProcessorIsChanged2(Cloud c, int nn ) {
+    protected void testCommitProcessorIsChanged2(Cloud c, int nn) {
         Node n = c.getNode(nn);
         n.setStringValue("string", "blie");
         n.commit();
     }
-    protected void testCommitProcessorIsChanged3(Cloud c, int nn ) {
+    protected void testCommitProcessorIsChanged3(Cloud c, int nn) {
         Node n = c.getNode(nn);
         try {
             n.commit();
@@ -76,31 +78,101 @@ public class ProcessorTest extends BridgeTest {
 
     }
 
-
-    protected int testAge(Cloud c) {
+    protected Node testAge(Cloud c) {
         NodeManager nm = c.getNodeManager("datatypes");
         Node n = nm.createNode();
         n.setDateValue("birthdate", DynamicDate.eval("2008-01-01"));
         n.commit();
+        n = c.getNode(n.getNumber());
         assertEquals(DynamicDate.eval("2008-01-01"), n.getDateValue("birthdate"));
         n.setIntValue("age", 10);
+        assertEquals(10, n.getIntValue("age"));
         n.commit();
         assertEquals(10, n.getIntValue("age"));
-        return n.getNumber();
+        return n;
     }
 
     public void testAge() {
-        //org.mmbase.cache.CacheManager.getInstance().disable(".*");
+        org.mmbase.cache.CacheManager.getInstance().disable(".*");
         testAge(getCloud());
         org.mmbase.cache.CacheManager.getInstance().readConfiguration();
     }
+
     public void testAgeTransaction() {
         org.mmbase.cache.CacheManager.getInstance().disable(".*");
         Transaction t = getCloud().getTransaction("bla");
-        int n = testAge(t);
+        Node n = testAge(t);
         t.commit();
-        assertEquals(10, getCloud().getNode(n).getIntValue("age"));
+        assertEquals(10, getCloud().getNode(n.getNumber()).getIntValue("age"));
         org.mmbase.cache.CacheManager.getInstance().readConfiguration();
     }
+
+    */
+    protected int testCommitCount(Cloud c) {
+        NodeManager nm = c.getNodeManager("datatypes");
+        int ccbefore = CountCommitProcessor.count;
+        Node n = nm.createNode();
+        n.commit();
+        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        return n.getNumber();
+    }
+
+    public void testCommitCount() {
+        testCommitCount(getCloud());
+    }
+
+    public void testCommitCountTransaction() {
+        int ccbefore = CountCommitProcessor.count;
+        Transaction t = getCloud().getTransaction("commitcount");
+        testCommitCount(t);
+        t.commit();
+        // there is no point in calling a commit processor twice
+        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+    }
+    static int nn = 0;
+    public void testCommitCountTransaction2() {
+        Transaction t = getCloud().getTransaction("commitcount2");
+        int ccbefore = CountCommitProcessor.count;
+        NodeManager nm = t.getNodeManager("datatypes");
+        Node n = nm.createNode();
+        // not committing node
+        t.commit(); // but only the transaction.
+
+        nn = n.getNumber();
+
+        // commit processor must have been called.
+        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+    }
+
+    protected void testCommitCountOnChange(Cloud c, int nn) {
+        int ccbefore = CountCommitProcessor.count;
+        int changedbefore = CountCommitProcessor.changed;
+        Node n = c.getNode(nn);
+        n.commit();
+        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        assertEquals(changedbefore, CountCommitProcessor.changed);
+    }
+    protected void testCommitCountOnChange2(Cloud c, int nn) {
+        int ccbefore = CountCommitProcessor.count;
+        int changedbefore = CountCommitProcessor.changed;
+        Node n = c.getNode(nn);
+        n.setStringValue("string", "foobar");
+        n.commit();
+        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        assertEquals(changedbefore + 1, CountCommitProcessor.changed);
+    }
+
+    public void testCommitCountOnChange() {
+        testCommitCountOnChange(getCloud(), nn);
+        testCommitCountOnChange2(getCloud(), nn);
+    }
+
+    public void testCommitCountOnChangeTransaction() {
+        testCommitCountOnChange(getCloud().getTransaction("commitcount3"), nn);
+        testCommitCountOnChange2(getCloud().getTransaction("commitcount4"), nn);
+    }
+
+
+
 
 }
