@@ -440,6 +440,34 @@
     <field name="lastmodifier">
       <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
+
+    <field name="age" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Leeftijd</guiname>
+        <guiname xml:lang="en">Ages</guiname>
+      </gui>
+      <datatype base="age" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="5" />
+        <maxInclusive value="120" />
+      </datatype>
+    </field>
+
+    <field name="birthdate">
+      <gui>
+        <guiname xml:lang="nl">Geboortedatum</guiname>
+        <guiname xml:lang="en">Birthdate</guiname>
+      </gui>
+      <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="commitcounter">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.CountCommitProcessor" />
+        </commitprocessor>
+      </datatype>
+    </field>
+
   </fieldlist>
 
   <functionlist>
