@@ -26,6 +26,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
  * @author Lisa
  */
 public class NewsletterPublicationEdit extends MMBaseFormlessAction {
+   
    /**
     * @param mapping
     * @param request
@@ -36,7 +37,7 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = getParameter(request, "action");
-      String forwardType = getParameter(request, "forward");
+      String forwardType = request.getParameter("forward");
       String parent = getParameter(request, "parent");
 
       if (StringUtils.isBlank(action)) {
