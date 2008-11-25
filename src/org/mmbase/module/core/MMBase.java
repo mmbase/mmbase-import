@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.260 2008-11-12 17:33:06 michiel Exp $
+ * @version $Id: MMBase.java,v 1.261 2008-11-25 15:05:41 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -943,7 +943,7 @@ public class MMBase extends ProcessorModule {
                     urlWeight = ResourceLoader.getWeight(url);
                     protocol = url.getProtocol();
                 } else if (urlWeight == proposalWeight && prop.getVersion() > r.getVersion()) {
-                    log.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead");
+                    log.service(url.toString() + " has a higher version than " + r.getSystemId() + " so, using that in stead (weights are both " + urlWeight + ")");
                     r = prop;
                 } else {
                     if (proposalWeight > urlWeight) {
@@ -951,7 +951,7 @@ public class MMBase extends ProcessorModule {
                     } else if (proposalWeight <  urlWeight) {
                         log.service(url.toString() + " has a lower weight than " + r.getSystemId() + ". Ignoring it.");
                     } else {
-                        log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it.");
+                        log.service(url.toString() + " has a lower or equals version than " + r.getSystemId() + ". Ignoring it (weights are both " + urlWeight + ")");
                     }
                 }
             }
