@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.113 2008-11-11 16:15:31 andre Exp $
+ * @version $Id: Queries.java,v 1.114 2008-11-25 13:22:40 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -226,6 +226,8 @@ abstract public class Queries {
             return FieldCompareConstraint.GREATER_EQUAL;
         } else if (op.equals("LIKE")) {
             return FieldCompareConstraint.LIKE;
+        } else if (op.equals("REGEXP")) {
+            return FieldCompareConstraint.REGEXP;
         } else if (op.equals("BETWEEN")) {
             return OPERATOR_BETWEEN;
         } else if (op.equals("IN")) {
@@ -427,6 +429,11 @@ abstract public class Queries {
 
         if (value instanceof StepField) {
             newConstraint = query.createConstraint(stepField, operator, (StepField)value);
+        } else if (value instanceof Query) {
+            if (operator != OPERATOR_IN) throw new BridgeException("Must use operator IN when comparing with query");
+            Query q = (Query) ((Query) value).clone(); // clone of java is a pretty stupid thing.
+            q.removeImplicitFields();
+            newConstraint = query.createConstraint(stepField, q);
         } else if (operator == OPERATOR_NULL || value == null) {
             newConstraint = query.createConstraint(stepField);
         } else {
