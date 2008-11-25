@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.16 2008-11-19 11:03:41 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.17 2008-11-25 14:10:33 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -372,6 +372,23 @@ public class TransactionTest extends BridgeTest {
         RelationManager rm = t.getRelationManager("urls", "news", "posrel");
         Relation r = url.createRelation(n, rm);
         t.commit();
+    }
+
+
+    public void testTransactionsAreEqual() {
+        Cloud cloud = getCloud();
+        Transaction t1 = cloud.getTransaction("testequals");
+        Transaction t2 = cloud.getTransaction("testequals");
+        assertEquals(t1, t2);
+        Node n = t1.getNode(newNode);
+        NodeManager urls = t2.getNodeManager("urls");
+        Node url = urls.createNode();
+        RelationManager rm = t2.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(n, rm);
+        t2.commit();
+        assertTrue(t2.isCommitted());
+        assertTrue(t1.isCommitted());
+        assertTrue(t1 == t2);
     }
 
 
