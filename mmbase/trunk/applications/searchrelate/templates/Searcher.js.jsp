@@ -7,10 +7,11 @@
  * Generic mmbase search & relate tool. Javascript part.
  *
  *
- * Usage: It is sufficient to use the mm:relate tag. This tag wil know wether this javascript is already loaded, and if not, will arrange for that. It is required to load jquery, though.
-
+ * Usage: It is sufficient to use the mm:relate tag. This tag wil know whether this javascript is 
+ * already loaded, and if not, will arrange for that. It is required to load jquery, though.
+ *
  * On ready, the necessary javascript will then be connected to .mm_related a.search
-
+ *
  * Custom events
  * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr, relater) ) )
  * - mmsrUnrelate          (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
@@ -18,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.51 2008-11-11 19:06:40 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.52 2008-11-25 19:39:51 andre Exp $
  */
 
 
@@ -560,7 +561,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
         var self = this;
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
                  beforeSend: function() {
-                    $("input.search").addClass("searching");
+                    $(self.div).find("input.search").addClass("searching");
                     $(rep).append($('<p><fmt:message key="searching" /></p>'));
                  },
                  complete: function(res, status) {
@@ -568,7 +569,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                         result = res.responseText;
                         $(rep).empty();
                         $(rep).attr("class", $(result).attr("class"));
-                        $("input.search").removeClass("searching");
+                        $(self.div).find("input.search").removeClass("searching");
                         //console.log($(result).find("*").length);
                         $(rep).append($(result).find("> *"));
                         self.searchResults["" + offset] = result;
