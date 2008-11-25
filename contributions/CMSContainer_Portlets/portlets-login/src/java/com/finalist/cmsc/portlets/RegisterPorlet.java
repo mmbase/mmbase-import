@@ -95,7 +95,7 @@ public class RegisterPorlet extends CmscPortlet{
             log.info("add authenticationId failed");
          }
       } else {
-         errorMessages = "register.user.exsit";
+         errorMessages = "register.user.exists";
          response.setRenderParameter("errorMessages", errorMessages);
          log.info("add check1 failed for: " + email);
       }
