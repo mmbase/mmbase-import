@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.54 2008-07-10 08:24:43 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.55 2008-11-25 15:05:16 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -241,6 +241,7 @@ public class TemporaryNodeManager {
                         break;
                     }
                 } else {
+                    log.debug("Setting " + field + " to " + value + " of " + node + " " + owner + " " + key);
                     node.setValue(field, value);
                 }
             } else {
@@ -249,7 +250,7 @@ public class TemporaryNodeManager {
                 return UNKNOWN;
             }
         } else {
-            log.error("setObjectField(): Can't find node : "+key);
+            log.error("setObjectField(): Can't find node : " + key);
         }
         return "";
     }
