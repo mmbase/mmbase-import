@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.21 2008-11-08 11:17:59 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.22 2008-11-25 13:20:38 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -48,8 +48,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super();
     }
 
-    @Override
-    protected String toSqlString(String str) {
+    @Override protected String toSqlString(String str) {
         //http://dev.mysql.com/doc/refman/5.0/en/string-syntax.html
         String res =  super.toSqlString(str
                                         .replaceAll("\\\\", "\\\\\\\\")
@@ -62,8 +61,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override
-    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
+    @Override public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
@@ -73,11 +71,9 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            /*
         case SearchQueryHandler.FEATURE_REGEXP:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            */
         default:
             result = super.getSupportLevel(feature, query);
         }
@@ -85,13 +81,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc inherited
-    @Override
-    protected boolean useLower(FieldCompareConstraint constraint) {
+    @Override protected boolean useLower(FieldCompareConstraint constraint) {
         return true; // necessary for the larger strings which are stored in blobs
     }
 
-    @Override
-    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
+    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
         } else {
@@ -100,8 +94,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
-    /*
-    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" REGEXP BINARY ");
         } else {
@@ -109,7 +102,6 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
         return sb;
     }
-    */
 
     /**
      * @javadoc
