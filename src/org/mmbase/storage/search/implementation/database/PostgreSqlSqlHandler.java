@@ -36,7 +36,7 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.33 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.34 2008-11-25 13:20:53 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -75,8 +75,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
     // javadoc is inherited
-    @Override
-    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
+    @Override public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
@@ -86,11 +85,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            /*
-              case SearchQueryHandler.FEATURE_REGEXP:
-              result = SearchQueryHandler.SUPPORT_OPTIMAL;
-              break;
-            */
+        case SearchQueryHandler.FEATURE_REGEXP:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
         default:
             result = super.getSupportLevel(feature, query);
         }
@@ -98,8 +95,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override
-    protected boolean useLower(FieldCompareConstraint constraint) {
+    @Override protected boolean useLower(FieldCompareConstraint constraint) {
         if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
             return false;
         } else {
@@ -108,8 +104,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override
-    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
+    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE ");
         } else {
@@ -124,8 +119,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * UPPER(fieldname). This is mainly very bad if the query is also distinct. (ERROR: for SELECT
      * DISTINCT, ORDER BY expressions must appear in select list), may occur.
      */
-    @Override
-    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
+    @Override protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps, SearchQuery query) {
         if (localeMakesCaseInsensitive) {
             if (sortOrder.isCaseSensitive()) {
                 log.warn("Don't now how to sort case sensitively if the locale make case insensitive in Postgresql for " + sortOrder + " it will be ignored.");
@@ -145,8 +139,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             }
         }
     }
-    /*
-    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+
+    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" ~ ");
         } else {
@@ -154,7 +148,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         }
         return sb;
     }
-    */
 
     /**
      * <a href="http://www.postgresql.org/docs/7.4/static/functions-datetime.html">date time
