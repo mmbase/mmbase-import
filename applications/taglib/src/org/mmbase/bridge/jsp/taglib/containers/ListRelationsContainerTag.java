@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.22 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.23 2008-11-26 14:20:37 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -86,12 +86,14 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return r;
     }
 
+    private static final String RELATEDQUERY_PREFIX = "___related___";
 
     public int doStartTag() throws JspException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+            relatedQuery = (NodeQuery) getContextProvider().getContextContainer().getObject(RELATEDQUERY_PREFIX + getReferid());
         } else {
             Node relatedFromNode = getNode();
             Cloud cloud = relatedFromNode.getCloud();
@@ -109,6 +111,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         }
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
+            getContextProvider().getContextContainer().register(RELATEDQUERY_PREFIX + getId(), relatedQuery);
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
