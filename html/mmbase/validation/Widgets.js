@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.2 2008-11-03 12:52:08 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.3 2008-11-26 10:55:22 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -94,10 +94,14 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
         if (! $(option).hasClass("head")) {
             var nobr = document.createElement('nobr');
             var input;
-            if(document.all && !window.opera && document.createElement) {
-                // This is just for IE. IE sucks incredibly.
-                input = document.createElement("<input type='radio'  name='" + t.attr('name') + "' " + (option.selected ? "checked='checked'" : "") + " value='" +   option.value + "' />");
-            } else {
+            try {
+                // This is just for IE. IE sucks incredibly, since it does not support basic DOM manipulation,
+                // and we have to use this convulated trick, which would even throw an exception in other browers.
+                // JQuery doesn't help either, with this.
+                input = document.createElement("<input type='radio'  name='" + t.attr('name') + "' " +
+                                               (option.selected ? "checked='checked'" : "") +
+                                               " value='" +   option.value + "' />");
+            } catch(err) {
                 input = document.createElement("input");
                 input.setAttribute("type",  "radio");
                 input.setAttribute("name",  t.attr('name'));
@@ -107,9 +111,8 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
                 input.setAttribute("value",  option.value);
             }
 
-
-
             nobr.appendChild(input);
+            $(nobr).addClass("index" + i);
             if (! min) {
                 nobr.appendChild(document.createTextNode($(option).text()));
             }
@@ -135,7 +138,7 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
 }
 Widgets.prototype.multipleBoxes = function(select) {
     var t = $(select);
-    var text = $("<div class='mm_boxes'></div>");
+    var text = $("<div class='mm_boxes' />");
     var hidden = $("<input type='hidden' />");
     text.append(hidden);
     hidden.attr("name", t.attr("name"));
@@ -143,24 +146,27 @@ Widgets.prototype.multipleBoxes = function(select) {
     var first = true;
     var div = $("<div />");
     text.append(div);
-    $(select.options).each(function() {
-        if (! $(this).hasClass("head")) {
+    var options = select.options;
+    for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        if (! $(opt).hasClass("head")) {
             var nobr = $("<nobr />");
-            var input = $("<input type='checkbox' value='" + this.value + "' />");
-            nobr.append(input).append($(this).text());
-            div.append(nobr);
-            input.attr('name', t.attr('name') + "___" + this.value);
-            if (this.selected) {
-                input.attr('checked', 'checked');
-                hidden[0].values[this.value] = true;
+            nobr.addClass(t.attr('name'));
+            var input = $("<input type='checkbox' value='" + opt.value + "' " + (opt.selected ? "checked='checked'" : "") + " />");
+            input.attr('name', t.attr('name') + "___" + opt.value);
+            if (opt.selected) {
+                hidden[0].values[opt.value] = true;
             }
+            nobr.append(input);
+            nobr.append($(opt).text());
+            div.append(nobr);
             input.change(function() {
                 hidden[0].values[this.value] = this.checked;
                 hidden[0].value = Widgets.prototype.setToString(hidden[0].values);
 
             });
             first = false;
-        } else if ($(this).text() == "--") {
+        } else if ($(opt).text() == "--") {
             if (! first) {
                 div.append("<br />");
             }
@@ -174,7 +180,7 @@ Widgets.prototype.multipleBoxes = function(select) {
             span.text($(this).text());
             first = false;
         }
-    });
+    }
     hidden.attr("value", Widgets.prototype.setToString(hidden[0].values));
     t.after(text);
     t.remove();
