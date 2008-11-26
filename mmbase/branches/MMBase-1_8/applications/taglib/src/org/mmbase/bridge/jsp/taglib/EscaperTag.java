@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
 
 /**
  * Configures a new Escaper on this page.
- * 
+ *
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.9.2.1 2007-04-24 12:46:20 michiel Exp $
+ * @version $Id: EscaperTag.java,v 1.9.2.2 2008-11-26 14:08:02 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -30,11 +30,11 @@ public class EscaperTag extends ContextReferrerTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(EscaperTag.class);
     protected Parameters  parameters;
     protected CharTransformer transformer;
-    
+
     private Attribute type    = Attribute.NULL;
     private Attribute referid = Attribute.NULL;
     private Attribute inverse = Attribute.NULL;
-           
+
     private ParameterizedTransformerFactory factory;
 
     public void setType(String t) throws JspTagException {

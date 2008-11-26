@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.9 2008-05-02 07:44:08 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.10 2008-11-26 14:08:02 michiel Exp $
  * @see ContextTag
  */
 
@@ -100,7 +100,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     public static PageContext getThreadPageContext() {
         return PageContextThreadLocal.getThreadPageContext();
     }
-    
+
     /**
      * Just exposes the (otherwise protected) pageContext member. Needed by some helper classes in
      * the neighbourhood. Lacking concept of friends.
@@ -164,7 +164,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("setting page context: " + this.getClass().getName());
+            log.debug("setting page context: " + this.getClass().getName() + " " + pc);
         }
         setPageContextOnly(pc); // make pageContext availabe
         pageContextTag = null;
@@ -266,8 +266,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         writerid = Attribute.NULL;
     }
 
-    public void doCatch(Throwable e) throws Throwable {
-        log.debug("Caught throwable: " + e.getMessage());
+    public final void doCatch(Throwable e) throws Throwable {
+        log.debug("Caught throwable: " + e.getClass() + ": " + e.getMessage());
         throw e;
     }
 
@@ -721,4 +721,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
         return formTag;
     }
+
+
+
 }
