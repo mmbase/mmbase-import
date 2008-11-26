@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.2.2.3 2008-11-11 13:25:23 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.2.2.4 2008-11-26 10:52:39 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -138,7 +138,7 @@ Widgets.prototype.singleBoxes = function(select, min, max) {
 }
 Widgets.prototype.multipleBoxes = function(select) {
     var t = $(select);
-    var text = $("<div class='mm_boxes'></div>");
+    var text = $("<div class='mm_boxes' />");
     var hidden = $("<input type='hidden' />");
     text.append(hidden);
     hidden.attr("name", t.attr("name"));
@@ -146,25 +146,27 @@ Widgets.prototype.multipleBoxes = function(select) {
     var first = true;
     var div = $("<div />");
     text.append(div);
-    $(select.options).each(function() {
-        if (! $(this).hasClass("head")) {
+    var options = select.options;
+    for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        if (! $(opt).hasClass("head")) {
             var nobr = $("<nobr />");
             nobr.addClass(t.attr('name'));
-            var input = $("<input type='checkbox' value='" + this.value + "' />");
-            nobr.append(input).append($(this).text());
-            div.append(nobr);
-            input.attr('name', t.attr('name') + "___" + this.value);
-            if (this.selected) {
-                input.attr('checked', 'checked');
-                hidden[0].values[this.value] = true;
+            var input = $("<input type='checkbox' value='" + opt.value + "' " + (opt.selected ? "checked='checked'" : "") + " />");
+            input.attr('name', t.attr('name') + "___" + opt.value);
+            if (opt.selected) {
+                hidden[0].values[opt.value] = true;
             }
+            nobr.append(input);
+            nobr.append($(opt).text());
+            div.append(nobr);
             input.change(function() {
                 hidden[0].values[this.value] = this.checked;
                 hidden[0].value = Widgets.prototype.setToString(hidden[0].values);
 
             });
             first = false;
-        } else if ($(this).text() == "--") {
+        } else if ($(opt).text() == "--") {
             if (! first) {
                 div.append("<br />");
             }
@@ -178,7 +180,7 @@ Widgets.prototype.multipleBoxes = function(select) {
             span.text($(this).text());
             first = false;
         }
-    });
+    }
     hidden.attr("value", Widgets.prototype.setToString(hidden[0].values));
     t.after(text);
     t.remove();
