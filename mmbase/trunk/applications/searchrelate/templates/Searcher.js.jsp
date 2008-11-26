@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.52 2008-11-25 19:39:51 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.53 2008-11-26 19:13:37 andre Exp $
  */
 
 
@@ -86,8 +86,9 @@ function MMBaseRelater(d) {
 }
 
 /**
- *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' function, you can do something
- *  immediately after the MMBaseRealter is ready. E.g. you can add a 'relateCallBack' function.
+ *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' 
+ *  function, you can do something immediately after the MMBaseRealter is ready. E.g. you can add a 
+ *  'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
 
@@ -366,7 +367,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
 
     // Set up HTML
     var repository =  $(this.div).find("div.mm_relate_repository div.searchresult table tbody");
-    repository.append(tr);
+    repository.prepend(tr);
     $(relationTrs).remove();    // remove the tr's to edit relations
 
     this.current.searcher.dec();
