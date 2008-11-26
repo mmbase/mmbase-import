@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.1.2.3 2008-08-19 11:44:16 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.1.2.4 2008-11-26 14:08:02 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -43,7 +43,8 @@ public class DataTypeTag extends CloudReferrerTag {
 
     private Attribute base = Attribute.NULL;
     private Attribute nodeManager = Attribute.NULL;
-    private Attribute field = Attribute.NULL;
+    private Attribute field    = Attribute.NULL;
+    private Attribute register = Attribute.NULL;
 
     public void setBase(String b) throws JspTagException {
         base = getAttribute(b);
@@ -54,6 +55,9 @@ public class DataTypeTag extends CloudReferrerTag {
     }
     public void setField(String f) throws JspTagException {
         field = getAttribute(f);
+    }
+    public void setRegister(String r) throws JspTagException {
+        register = getAttribute(r);
     }
 
     protected DataTypeCollector getCollector() {
@@ -113,11 +117,11 @@ public class DataTypeTag extends CloudReferrerTag {
             BasicDataType dt = DataTypeReader.readDataType(element, getBaseDataType(collector), collector).dataType;
             collector.finish(dt);
             getContextProvider().getContextContainer().register(getId(), dt);
+            BasicDataType old  = collector.addDataType(dt);
             if (log.isDebugEnabled()) {
                 log.debug("Created " + dt);
                 log.debug("In " + collector.getDataTypes());
             }
-            BasicDataType old  = collector.addDataType(dt);
 
         } catch (org.mmbase.datatypes.util.xml.DependencyException de) {
             throw new TaglibException(de);
