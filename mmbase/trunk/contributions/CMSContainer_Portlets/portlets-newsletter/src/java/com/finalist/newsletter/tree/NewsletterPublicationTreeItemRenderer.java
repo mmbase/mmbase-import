@@ -40,10 +40,16 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
       String id = String.valueOf(parentNode.getNumber());
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
-
+      String process_status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
       if (SecurityUtil.isEditor(role)) {
-         element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
+         if(EditionStatus.INITIAL.value().equals(process_status)) {
+            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
                   "../newsletter/NewsletterPublicationEdit.do?number=" + id));
+         }
+         else {
+            element.addOption(renderer.createTreeOption("edit_defaults_gray.gif", "site.newsletteredition.edit", "newsletter",
+                  ""));
+         }
 
          boolean isSingleApplication = true;
          boolean isPublished;
@@ -76,12 +82,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
                      "../workflow/publish.jsp?number=" + id));
          }
          if (SecurityUtil.isWebmaster(role)) {
-            String status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
-            if(EditionStatus.INITIAL.value().equals(status)) {
+            if(EditionStatus.INITIAL.value().equals(process_status)) {
                element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
                      "../newsletter/NewsletterEditionFreeze.do?number=" + id));
             }
-            if(EditionStatus.FROZEN.value().equals(status)) {
+            if(EditionStatus.FROZEN.value().equals(process_status)) {
                element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
                   "../newsletter/NewsletterEditionDefrost.do?number=" + id));
             }

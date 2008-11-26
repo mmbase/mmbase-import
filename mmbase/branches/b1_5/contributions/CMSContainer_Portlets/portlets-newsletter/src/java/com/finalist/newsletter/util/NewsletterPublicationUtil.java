@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -178,7 +179,7 @@ public abstract class NewsletterPublicationUtil {
    public static void freezeEdition(Node edition) throws MessagingException {
       String static_html = getStaticHtml(edition.getNumber());
       edition.setStringValue("process_status", EditionStatus.FROZEN.value());
-      edition.setStringValue("static_html", static_html);
+      edition.setValue("static_html", StringEscapeUtils.escapeHtml(static_html));
       edition.commit();
    }
    
