@@ -38,11 +38,11 @@
       <portlet-class>com.finalist.cmsc.portlets.RegisterPorlet</portlet-class>
         <init-param>
             <name>template.edit_defaults</name>
-            <value>login/regist.jsp</value>
+            <value>login/register.jsp</value>
         </init-param>
         <init-param>
             <name>template.view</name>
-            <value>login/regist.jsp</value>
+            <value>login/register.jsp</value>
         </init-param>
       <supports>
          <mime-type>text/html</mime-type>

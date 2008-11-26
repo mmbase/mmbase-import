@@ -9,8 +9,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.util.Encode;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
@@ -20,7 +18,6 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class ConfirmAction extends Action{
-   private static final Logger log = Logging.getLoggerInstance(ConfirmAction.class.getName());
 
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
