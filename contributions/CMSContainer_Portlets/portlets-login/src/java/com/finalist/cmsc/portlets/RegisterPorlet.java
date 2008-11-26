@@ -120,7 +120,7 @@ public class RegisterPorlet extends CmscPortlet{
             if (StringUtils.isNotBlank(error)) {
                request.setAttribute("errormessages", error);
             }
-            template = "login/regist.jsp";
+            template = "login/register.jsp";
          }
       }
       doInclude("view", template, request, response);

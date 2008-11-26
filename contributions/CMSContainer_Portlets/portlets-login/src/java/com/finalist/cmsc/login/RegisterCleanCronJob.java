@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.mmbase.applications.crontab.AbstractCronJob;
-import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
@@ -15,9 +12,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
-public class RegisterCleanCronJob extends AbstractCronJob implements CronJob {
-
-   private static final Logger log = Logging.getLoggerInstance(RegisterCleanCronJob.class.getName());
+public class RegisterCleanCronJob extends AbstractCronJob {
 
    @Override
    public void run() {
