@@ -42,15 +42,8 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
       String process_status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
       if (SecurityUtil.isEditor(role)) {
-         if(EditionStatus.INITIAL.value().equals(process_status)) {
             element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
                   "../newsletter/NewsletterPublicationEdit.do?number=" + id));
-         }
-         else {
-            element.addOption(renderer.createTreeOption("edit_defaults_gray.gif", "site.newsletteredition.edit", "newsletter",
-                  ""));
-         }
-
          boolean isSingleApplication = true;
          boolean isPublished;
          isSingleApplication = ServerUtil.isSingle();
