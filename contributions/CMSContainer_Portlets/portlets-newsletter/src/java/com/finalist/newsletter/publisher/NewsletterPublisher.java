@@ -12,6 +12,8 @@ import com.finalist.newsletter.publisher.cache.ICache;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.NewsletterUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -58,11 +60,12 @@ public class NewsletterPublisher {
          String originalBody  = "";
          String status = newsletterEditionNode.getStringValue("process_status");
          String static_html = newsletterEditionNode.getStringValue("static_html");
+         static_html = StringEscapeUtils.unescapeHtml(static_html);
          if (EditionStatus.INITIAL.value().equals(status) && StringUtils.isEmpty(static_html)) {
             originalBody = getBody(publication, subscription);
          }
          else {
-            originalBody = newsletterEditionNode.getStringValue("static_html");
+            originalBody = static_html;
          }
          
 
