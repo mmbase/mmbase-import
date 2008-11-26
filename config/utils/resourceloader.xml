@@ -6,7 +6,7 @@
         This file contains patterns -> weight, which is used by the Classloader parth of ResourceLoaders
     -->
     <!--
-    <property name="classloaderpatterns" type="map">
+    <property name="classloaderpatterns" type="mergingmap">
       <entry><key>.*</key><value>0</value></entry>
     </property>
     -->
