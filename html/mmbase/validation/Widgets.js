@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.3 2008-11-26 10:55:22 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.4 2008-11-26 11:09:37 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -149,36 +149,40 @@ Widgets.prototype.multipleBoxes = function(select) {
     var options = select.options;
     for (var i = 0; i < options.length; i++) {
         var opt = options[i];
-        if (! $(opt).hasClass("head")) {
-            var nobr = $("<nobr />");
-            nobr.addClass(t.attr('name'));
-            var input = $("<input type='checkbox' value='" + opt.value + "' " + (opt.selected ? "checked='checked'" : "") + " />");
-            input.attr('name', t.attr('name') + "___" + opt.value);
-            if (opt.selected) {
-                hidden[0].values[opt.value] = true;
-            }
-            nobr.append(input);
-            nobr.append($(opt).text());
-            div.append(nobr);
-            input.change(function() {
-                hidden[0].values[this.value] = this.checked;
-                hidden[0].value = Widgets.prototype.setToString(hidden[0].values);
+        try {
+            if (! $(opt).hasClass("head")) {
+                var nobr = $("<nobr />");
+                nobr.addClass(t.attr('name'));
+                var input = $("<input type='checkbox' value='" + opt.value + "' " + (opt.selected ? "checked='checked'" : "") + " />");
+                input.attr('name', t.attr('name') + "___" + opt.value);
+                if (opt.selected) {
+                    hidden[0].values[opt.value] = true;
+                }
+                nobr.append(input);
+                nobr.append($(opt).text());
+                div.append(nobr);
+                input.change(function() {
+                    hidden[0].values[this.value] = this.checked;
+                    hidden[0].value = Widgets.prototype.setToString(hidden[0].values);
 
-            });
-            first = false;
-        } else if ($(opt).text() == "--") {
-            if (! first) {
-                div.append("<br />");
+                });
+                first = false;
+            } else if ($(opt).text() == "--") {
+                if (! first) {
+                    div.append("<br />");
+                }
+            } else {
+                if (! first) {
+                    div = $("<div />");
+                    text.append(div);
+                }
+                var span = $("<span class='head' />");
+                div.append(span);
+                span.text($(opt).text());
+                first = false;
             }
-        } else {
-            if (! first) {
-                div = $("<div />");
-                text.append(div);
-            }
-            var span = $("<span class='head' />");
-            div.append(span);
-            span.text($(this).text());
-            first = false;
+        } catch(err) {
+            //console.log(err);
         }
     }
     hidden.attr("value", Widgets.prototype.setToString(hidden[0].values));
