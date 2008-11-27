@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.38 2008-11-10 10:52:17 andre Exp $
+      @version $Id: relate.tagx,v 1.39 2008-11-27 09:52:54 andre Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -56,10 +56,10 @@
                            description="The MMBase security context for new nodes (defaults to unset, which will normally result in nodes in the default context of the current user)" />
 
 
-  <jsp:directive.attribute name="currentTitle"       fragment="true"
+  <jsp:directive.attribute name="currentTitle"        fragment="true"
                            description="A piece of HTML that will be presented first in the 'current' div"/>
 
-  <jsp:directive.attribute name="repositoryTitle"       fragment="true"
+  <jsp:directive.attribute name="repositoryTitle"     fragment="true"
                            description="A piece of HTML that will be presented first in the 'repository' div"/>
 
 
@@ -67,7 +67,8 @@
                            description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
 
 
-  <jsp:directive.attribute name="customizedir"          type="java.lang.String" />
+  <jsp:directive.attribute name="customizedir"        type="java.lang.String" 
+                           description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
 
   <mm:import externid="current" from="this" />
@@ -100,6 +101,7 @@
       $("#mm_related_${seq}").each(function() {
       if (this.relater != null) {
     <c:if test="${! empty fields}"> this.relater.setFields('${fields}'); </c:if>
+    <c:if test="${! empty customizedir}"> this.relater.setCustomizedir('${customizedir}'); </c:if>
     <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
     <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
@@ -143,7 +145,7 @@
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
-          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?">
+          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?">
             <c:if test="${! empty pagesize}">
               <mm:param name="pagesize" referid="pagesize" />
             </c:if>
@@ -152,9 +154,6 @@
             </c:if>
             <c:if test="${!empty relations}">
               <mm:param name="relations" referid="relations" />
-            </c:if>
-            <c:if test="${!empty fields}">
-              <mm:param name="fields" referid="fields" />
             </c:if>
             <mm:param name="id">mm_related_${seq}_current</mm:param>
             <mm:param name="extraClass">implicit</mm:param>
