@@ -1,9 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-
+<%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <fmt:setBundle basename="portlets-prefercences" scope="request"/>
 
 <form method="POST" name="<portlet:namespace />form_preference" action="<cmsc:renderURL/>" target="_self">

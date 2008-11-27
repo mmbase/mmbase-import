@@ -17,11 +17,11 @@
       </supports>
       <supported-locale>en</supported-locale>
       <supported-locale>nl</supported-locale>
-      <resource-bundle>portlets-newslettercontent</resource-bundle>
+      <resource-bundle>com.finalist.portlets.preferences.ProfilePortlet</resource-bundle>
       <portlet-info>
-         <title>newsletter Portlet</title>
-         <short-title>newsletter</short-title>
-         <keywords>newsletter</keywords>
+         <title>ProfilePortlet</title>
+         <short-title>ProfilePortlet</short-title>
+         <keywords>ProfilePortlet</keywords>
       </portlet-info>
    </portlet>  
 </portlet-app>

@@ -65,5 +65,3 @@
             <input type="submit" style="width:90" name="save" onclick="javascript:document.forms['<portlet:namespace />form_profile'].submit()"  value="<fmt:message key="view.submit"/>">
 		</div>
 	</form>
-
-
