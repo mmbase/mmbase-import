@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.16 2008-11-27 12:26:37 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.17 2008-11-27 13:53:35 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -31,6 +31,18 @@
     <property name="groups-builder">pools</property> <!-- you might want to use 'groups' -->
     <property name="users-builder">people</property> <!-- you might want to use 'users' -->
     <property name="users-email-field">email</property>
+
+    <!-- Time, in seconds after which sent (ONESHOT) mails are deleted from the database
+         if set to a negative value, they will never be deleted.
+    -->
+
+    <property name="expireTime">1800</property>
+
+    <!--
+        How many seconds must there be between checks of 'expireTime'.
+
+    -->
+    <property name="sleepTime">60</property>
   </properties>
 
   <fieldlist>
