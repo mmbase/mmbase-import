@@ -1,5 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <fmt:setBundle basename="portlets-prefercences" scope="request" />
 <c:set var="module"> 
    <fmt:message key="community.module.newsletter" />
@@ -21,7 +20,6 @@
    </c:if>
 </c:forEach>
 
-
    <tr>
    <td><c:out value="${module}"/></td>
    <td><c:out value="${key1}"/>
@@ -35,5 +33,3 @@
    <input type="hidden" name="${module}_key_2"  value="${key2}"></td>
    <td><input type="text" style="width: 250px" name="${module}_value_2" value="${value2}"></td>
    </tr>
-
-
