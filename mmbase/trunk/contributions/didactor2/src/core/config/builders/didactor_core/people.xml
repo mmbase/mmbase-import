@@ -476,7 +476,7 @@
     </function>
 
     <function key="forwardEmail">
-      <class>nl.didactor.builders.PeopleEmailFunctions</class>
+      <class>nl.didactor.PeopleEmailFunctions</class>
     </function>
 
   </functionlist>
