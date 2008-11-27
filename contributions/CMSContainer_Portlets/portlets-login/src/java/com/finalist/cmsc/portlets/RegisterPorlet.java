@@ -89,7 +89,11 @@ public class RegisterPorlet extends CmscPortlet{
             Person person = personHibernateService.createPerson(firstName, infix, lastName,authId,RegisterStatus.UNCONFIRMED.getName(),new Date());
             person.setEmail(email);
             personHibernateService.updatePerson(person);
-            EmailUtil.send(null, email, "confirmation", getEmailBody(request,email));
+            String subject = this.getPortletConfig().getInitParameter("confirmation.email.subject");
+            if (StringUtils.isBlank(subject)) {
+               subject = "Confirmation";
+            }
+            EmailUtil.send(null, email, subject, getEmailBody(request,authentication,person));
             response.setRenderParameter("email", email);
          } else {
             log.info("add authenticationId failed");
@@ -125,17 +129,17 @@ public class RegisterPorlet extends CmscPortlet{
       }
       doInclude("view", template, request, response);
    }
-   protected String getEmailBody(ActionRequest request,String email) {
+   protected String getEmailBody(ActionRequest request,Authentication authentication,Person person) {
       InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("../templates/view/login/confirmation.txt");
       if(is == null) {
-         throw new NullPointerException("The confirmation template file in directory 'templates/view/login' does't exist.");
+         throw new NullPointerException("The confirmation template file confirmation.txt in directory 'templates/view/login' does't exist.");
       }
       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
       StringBuilder sb = new StringBuilder();
       String strLine ;
       try {
          while( (strLine = reader.readLine()) != null) {
-            sb.append(strLine);
+            sb.append(strLine+"\n");
          }
       } 
       catch (IOException e) {
@@ -144,8 +148,8 @@ public class RegisterPorlet extends CmscPortlet{
       Cloud cloud = getCloudForAnonymousUpdate(false);
       String url = getConfirmationLink(cloud);
       Encode encoder = new org.mmbase.util.Encode("BASE64");
-      String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(email)+"&pn="+this.getPortletName()+"&returnurl="+encoder.encode(url);
-      return String.format(sb.toString(), email,confirmUrl);
+      String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(person.getEmail())+"&url="+encoder.encode(url);
+      return String.format(sb.toString(), authentication.getUserId(),authentication.getPassword(),person.getFirstName(),person.getInfix(),person.getLastName(),confirmUrl);
    }
    public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();

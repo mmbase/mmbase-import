@@ -23,7 +23,7 @@ public class ConfirmAction extends Action{
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
       String emailAddress = httpServletRequest.getParameter("s");
-      String returnUrl = httpServletRequest.getParameter("returnurl");
+      String returnUrl = httpServletRequest.getParameter("url");
       Encode encoder = new org.mmbase.util.Encode("BASE64");
       emailAddress = encoder.decode(emailAddress);
       String target = "failure";
