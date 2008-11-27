@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.3 2008-11-03 18:39:09 michiel Exp $
+ * @version $Id: RMMCI.java,v 1.4 2008-11-27 09:21:13 michiel Exp $
  */
 public class RMMCI {
 
@@ -117,6 +117,7 @@ public class RMMCI {
         generate(org.mmbase.storage.search.CompareFieldsConstraint.class);
         generate(org.mmbase.storage.search.FieldValueConstraint.class);
         generate(org.mmbase.storage.search.FieldValueInConstraint.class);
+        generate(org.mmbase.storage.search.FieldValueInQueryConstraint.class);
         generate(org.mmbase.storage.search.FieldValueBetweenConstraint.class);
         generate(org.mmbase.storage.search.FieldConstraint.class);
         generate(org.mmbase.storage.search.LegacyConstraint.class);
