@@ -43,6 +43,10 @@
 			window.top.close();
 		}
 	}
+
+	function selectChannel(channel, path) {
+	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channel="+channel;
+	}
 </script>
    <link rel="stylesheet" type="text/css" href="../../editors/editwizards_new/style/extra/wizard.css">
 		<style type="text/css">
@@ -102,8 +106,17 @@ div.editor div.body #imgList div.grid div.imgInfo {
             </c:if>
          </html:form>
       </div>
-      <div class="ruler_green"><div>??????????IMAGE IN THIS CHANNEL?????????</div></div>
-      <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
+		<div class="ruler_green"><c:choose>
+			<c:when test="${empty channel}">
+				<div>IMAGE IN ALL CHANNELS</div>
+			</c:when>
+			<c:otherwise>
+				<mm:node number="${channel}">
+					<div>IMAGE IN <mm:field name="path"/></div>
+				</mm:node>
+			</c:otherwise>
+		</c:choose></div>
+		<div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
          <mm:import externid="results" jspvar="nodeList" vartype="List"/>
          <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
          <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
@@ -131,9 +144,10 @@ div.editor div.body #imgList div.grid div.imgInfo {
       </div>
       <c:if test="${action != 'search'}">
       <div class="body">
+      <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
 		<ul class="shortcuts">
 			<li><a href="${search_init_action_url}"> Often used images in all channels </a></li>
-			<li><a href="${reorder_action_url}"> Select different channel </a></li>
+			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"> Select different channel </a></li>
 			<li><a href="ImageAction.do?action=search"> Search image </a></li>
 			<li><a href="imageupload.jsp?uploadAction=${param.action}"> New image </a></li>
 		</ul>
