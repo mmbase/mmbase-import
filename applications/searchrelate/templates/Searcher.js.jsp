@@ -1,5 +1,5 @@
 // -*- mode: javascript; -*-
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <mm:content type="text/javascript" language="${param.locale}">
 <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.53 2008-11-26 19:13:37 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.54 2008-11-27 09:49:09 andre Exp $
  */
 
 
@@ -248,7 +248,7 @@ MMBaseRelater.prototype.getNumbers = function(map) {
 MMBaseRelater.prototype.bindSaverelation = function(div) {
     var self = this;
     self.logger.debug("unbinding and binding relation forms");
-    $(div).find('form.relation').unbind();
+    $(div).find('form.relation').unbind('submit');
     $(div).find("form.relation").each(function() {
         $(this).submit(function(ev) {
             self.saverelation(ev);
@@ -267,7 +267,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
     }
     if (type == "current") {
         $(rep).find("tr.click").each(function() {
-            if ($(this).hasClass("new") || (self.relater != null && self.relater.canUnrelate)) {
+            if ($(this).hasClass("new") || (self != null && self.canUnrelate)) {
                 $(this).click(function() {
                     self.unrelate(this);
                     return false;
@@ -442,6 +442,15 @@ MMBaseRelater.prototype.setFields = function(fields) {
     }
 }
 
+MMBaseRelater.prototype.setCustomizedir = function(customizedir) {
+    if (this.current != null) {
+        this.current.searcher.setCustomizedir(customizedir);
+    }
+    if (this.repository != null) {
+        this.repository.searcher.setCustomizedir(customizedir);
+    }
+}
+
 MMBaseRelater.prototype.setPageSize = function(pagesize) {
     if (this.current != null) {
         this.current.searcher.setPageSize(pagesize);
@@ -471,6 +480,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.relater = r;
     this.type    = type;
     this.fields = "";
+    this.customizedir = "";
     this.pagesize = 10;
     this.maxpages = 20;
     this.logger  = logger != null ? logger : new MMBaseLogger();
@@ -501,6 +511,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.logger.debug("found url to use: " + this.searchUrl);
     this.maxNumber = -1;
 
+}
+
+MMBaseSearcher.prototype.setCustomizedir = function(customizedir) {
+    this.customizedir = customizedir;
 }
 
 MMBaseSearcher.prototype.setFields = function(fields) {
@@ -552,7 +566,13 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
 
     var rep = this.getResultDiv();
-    var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, fields: this.fields, pagesize: this.pagesize, maxpages: this.maxpages};
+    var params = { id: this.getQueryId(), 
+                   offset: offset, 
+                   search: "" + this.value, 
+                   fields: this.fields, 
+                   pagesize: this.pagesize, 
+                   maxpages: this.maxpages, 
+                   customizedir: this.customizedir };
 
     var result = this.searchResults["" + offset];
     this.logger.debug("Searching " + this.searchUrl + " " + params);
@@ -678,7 +698,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node, fields: this.fields};
+    var params = {id: this.getQueryId(), node: node, fields: this.fields, customizedir: this.customizedir};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
