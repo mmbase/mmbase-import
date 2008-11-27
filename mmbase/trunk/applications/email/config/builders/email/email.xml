@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.14 2008-10-14 11:04:32 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.15 2008-11-27 10:26:28 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -52,10 +52,8 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
         <minLength value="1" enforce="oncreate" />
+        <maxLength value="255" />
       </datatype>
-      <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
     </field>
     <field name="from">
       <descriptions>
@@ -107,7 +105,7 @@
     <field name="cc">
       <descriptions>
         <description xml:lang="en">Carbon copy email adress(es)</description>
-        <description xml:lang="nl">Doorslag email adres(sen)</description>
+        <description xml:lang="nl">Doorslagemailadres(sen)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Cc</guiname>
@@ -124,7 +122,7 @@
     <field name="bcc">
       <descriptions>
         <description xml:lang="en">Blind carbon copy email adress(es)</description>
-        <description xml:lang="nl">Geheime doorslag email adres(sen)</description>
+        <description xml:lang="nl">Geheime doorslagemailadres(sen)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Bcc</guiname>
@@ -284,6 +282,33 @@
       </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
+    <!--
+        This optional field can be used if you want to store the headers of received mail
+    <field name="headers">
+      <descriptions>
+        <description xml:lang="nl">Headers</description>
+        <description xml:lang="en">Headers, can be used to store headers of received mail.</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Headers</guiname>
+        <guiname xml:lang="en">Headers</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
+    </field>
+    <field name="mimetype">
+      <descriptions>
+        <description xml:lang="nl">Mimetype van het body-veld</description>
+        <description xml:lang="en">Mimetype of the body-field</description>
+      </descriptions>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="text/html" />
+        <maxLength value="128" />
+      </datatype>
+    </field>
+
+    -->
   </fieldlist>
 </builder>
 
