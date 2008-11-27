@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.54 2008-11-25 10:04:25 michiel Exp $
+ * @version $Id: SendMail.java,v 1.55 2008-11-27 10:26:28 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -47,6 +47,8 @@ public class SendMail extends AbstractSendMail {
     private static final Pattern MATCH_ALL = Pattern.compile(".*");
 
     private Pattern onlyToPattern = MATCH_ALL;
+
+    private String typeField = "mailtype";
 
     public SendMail() {
         this(null);
@@ -117,7 +119,7 @@ public class SendMail extends AbstractSendMail {
             NodeList mailboxes = person.getRelatedNodes("mailboxes");
             for (int j = 0; j < mailboxes.size(); j++) {
                 Node mailbox = mailboxes.getNode(j);
-                if (mailbox.getIntValue("type") == 0) {
+                if (mailbox.getIntValue(typeField) == 0) {
                     log.debug("Found mailbox, adding mail now");
                     Node emailNode = emailManager.createNode();
                     emailNode.setValue("to", n.getValue("to"));
@@ -132,7 +134,7 @@ public class SendMail extends AbstractSendMail {
                     if (emailNode.getNodeManager().hasField("mimetype")) {
                         emailNode.setValue("mimetype", n.getValue("mimetype"));
                     }
-                    emailNode.setIntValue("type", 2);
+                    emailNode.setIntValue(typeField, 2);
                     emailNode.commit();
                     log.debug("Appending " + emailNode + " to " + mailbox.getNumber());
                     mailbox.createRelation(emailNode, relatedManager).commit();
@@ -199,7 +201,7 @@ public class SendMail extends AbstractSendMail {
                     if (emailManager.hasField("mimetype")) {
                         error.setValue("mimetype", "text/plain");
                     }
-                    error.setIntValue("type", 1);
+                    error.setIntValue(typeField, 1);
                     error.commit();
                     log.debug("Ready sending error mail about " + failedUsers);
                 } catch (Exception e) {
@@ -308,6 +310,12 @@ public class SendMail extends AbstractSendMail {
             }
         }
 
+        {
+            String i = getInitParameter("emailbuilder.typefield");
+            if (i != null && ! "".equals(i)) {
+                typeField = i;
+            }
+        }
         //java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 
         session = null;
@@ -470,6 +478,8 @@ public class SendMail extends AbstractSendMail {
         }
         return false;
     }
+
+
 
 
     /**
@@ -675,7 +685,7 @@ public class SendMail extends AbstractSendMail {
                 errorNode.setStringValue("to", n.getStringValue("from"));
                 errorNode.setStringValue("from", n.getStringValue("from"));
                 errorNode.setStringValue("subject", "****");
-                errorNode.setIntValue("type", 1);
+                errorNode.setIntValue(typeField, 1);
                 errorNode.setStringValue("body", errors.toString());
                 errorNode.commit();
                 log.service("Sent node " + errorNode.getNumber());
