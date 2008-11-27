@@ -1,112 +1,112 @@
 package com.finalist.preferences.domain;
 
 /**
- * @author 
+ * @author
  */
 public class UserProfile implements java.io.Serializable {
- 
-	private static final long serialVersionUID = 1L;
 
-	private String action;
+   private static final long serialVersionUID = 1L;
 
-	private String email;
+   private String action;
 
-	private String passwordText;
+   private String email;
 
-	private String passwordConfirmation;
+   private String passwordText;
 
-	private String account;
+   private String passwordConfirmation;
 
-	private String firstName;
+   private String account;
 
-	private String prefix;
+   private String firstName;
 
-	private String lastName;
+   private String prefix;
 
-	private String company;
+   private String lastName;
 
-	public String getAction() {
-		return action;
-	}
+   private String company;
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+   public String getAction() {
+      return action;
+   }
 
-	public String getAccount() {
-		return account;
-	}
+   public void setAction(String action) {
+      this.action = action;
+   }
 
-	public void setAccount(String account) {
-		this.account = account;
-	}
+   public String getAccount() {
+      return account;
+   }
 
-	public String getFirstName() {
-		return firstName;
-	}
+   public void setAccount(String account) {
+      this.account = account;
+   }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+   public String getFirstName() {
+      return firstName;
+   }
 
-	public String getPrefix() {
-		return prefix;
-	}
+   public void setFirstName(String firstName) {
+      this.firstName = firstName;
+   }
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+   public String getPrefix() {
+      return prefix;
+   }
 
-	public String getLastName() {
-		return lastName;
-	}
+   public void setPrefix(String prefix) {
+      this.prefix = prefix;
+   }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+   public String getLastName() {
+      return lastName;
+   }
 
-	public String getEmail() {
-		return email;
-	}
+   public void setLastName(String lastName) {
+      this.lastName = lastName;
+   }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+   public String getEmail() {
+      return email;
+   }
 
-	public String getCompany() {
-		return company;
-	}
+   public void setEmail(String email) {
+      this.email = email;
+   }
 
-	public void setBedrijf(String company) {
-		this.company = company;
-	}
+   public String getCompany() {
+      return company;
+   }
 
-	public String getPasswordText() {
-		return passwordText;
-	}
+   public void setCompany(String company) {
+      this.company = company;
+   }
 
-	public void setPasswordText(String passwordText) {
-		this.passwordText = passwordText;
-	}
+   public String getPasswordText() {
+      return passwordText;
+   }
 
-	public String getPasswordConfirmation() {
-		return passwordConfirmation;
-	}
+   public void setPasswordText(String passwordText) {
+      this.passwordText = passwordText;
+   }
 
-	public void setPasswordConfirmation(String passwordConfirmation) {
-		this.passwordConfirmation = passwordConfirmation;
-	}
+   public String getPasswordConfirmation() {
+      return passwordConfirmation;
+   }
 
-    public void clear() {
-        action = null;
-        email = null;
-        passwordText = null;
-        passwordConfirmation = null;
-        account = null;
-        firstName = null;
-        prefix = null;
-        lastName = null;
-        company = null;
-    }
+   public void setPasswordConfirmation(String passwordConfirmation) {
+      this.passwordConfirmation = passwordConfirmation;
+   }
+
+   public void clear() {
+      action = null;
+      email = null;
+      passwordText = null;
+      passwordConfirmation = null;
+      account = null;
+      firstName = null;
+      prefix = null;
+      lastName = null;
+      company = null;
+   }
 
 }
