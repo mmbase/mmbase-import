@@ -17,7 +17,7 @@
       </supports>
       <supported-locale>en</supported-locale>
       <supported-locale>nl</supported-locale>
-      <resource-bundle>com.finalist.portlets.preferences.ProfilePortlet</resource-bundle>
+      <resource-bundle>com.finalist.cmsc.portlets.preferences.ProfilePortlet</resource-bundle>
       <portlet-info>
          <title>ProfilePortlet</title>
          <short-title>ProfilePortlet</short-title>
