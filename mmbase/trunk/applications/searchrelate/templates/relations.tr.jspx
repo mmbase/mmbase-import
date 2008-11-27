@@ -2,8 +2,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.*" />
   <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.bridge.util.Queries,org.mmbase.bridge.NodeList" />
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
 
