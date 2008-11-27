@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.ArrayList;
 
 import com.finalist.cmsc.services.HibernateService;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
 
 /**
  * <p>
@@ -36,6 +39,7 @@ import com.finalist.cmsc.services.HibernateService;
 public class UserDetailsHibernateService extends HibernateService implements UserDetailsService {
 
    private AuthenticationService authenticationService;
+   private PersonService personService; 
 
    @Transactional(readOnly = true)
    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
@@ -44,7 +48,10 @@ public class UserDetailsHibernateService extends HibernateService implements Use
       if (authentication == null) {
          throw new UsernameNotFoundException("User not found");
       }
-
+      Person person = personService.getPersonByAuthenticationId(authentication.getId());
+      if (RegisterStatus.UNCONFIRMED.getName().equals(person.getActive())) {
+         throw new UsernameNotFoundException("User not confirm");
+      }
       /* Get authorities */
       Set < Authority > authorities = authentication.getAuthorities();
       List < GrantedAuthority > grantedAuthorities = new ArrayList < GrantedAuthority >();
@@ -63,5 +70,9 @@ public class UserDetailsHibernateService extends HibernateService implements Use
    @Required
    public void setAuthenticationService(AuthenticationService authenticationService) {
       this.authenticationService = authenticationService;
+   }
+   @Required
+   public void setPersonService(PersonService personService) {
+      this.personService = personService;
    }
 }
