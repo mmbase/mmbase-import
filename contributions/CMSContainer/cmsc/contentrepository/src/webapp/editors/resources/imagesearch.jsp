@@ -14,8 +14,12 @@
 	}
 	
 	function initParentHref(elem) {
-	   elem.style.cssText="background-color:yellow";
 		elem.parentNode.setAttribute('href', elem.getAttribute('href'));
+		var oldSelected = document.getElementById('selected');
+		if(oldSelected){
+			oldSelected.id="";
+		}
+		elem.id ='selected';
 	}
 
    function doSelectIt() {
@@ -62,10 +66,15 @@ div.editor div.body #imgList div.grid {
 	text-align: center
 }
 
+div.editor div.body #imgList div.grid:hover, div.editor div.body #imgList #selected{
+	background-color: #f1f400;
+}
+
 div.editor div.body #imgList div.grid div.thumbnail {
 	width: 100%;
 	height: 80%;
 	text-align: center;
+	vertical-align:middle;
 	padding: 0;
 }
 
@@ -79,23 +88,28 @@ div.editor div.body #imgList div.grid div.imgInfo {
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-<mm:import externid="action">search</mm:import><%-- either: search of select --%>
+<mm:import externid="action">often</mm:import><%-- either often or search --%>
    <div class="editor" style="height:555px">
+      <div class="body">
          <html:form action="/editors/resources/ImageAction" method="post">
             <html:hidden property="action" value="${action}"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
             <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
+            <c:if test="${action == 'search'}">
+               <%@include file="imageform.jsp" %>
+            </c:if>
          </html:form>
-      <div class="ruler_green" style="margin-top:10px;"><div>??????????IMAGE IN THIS CHANNEL?????????</div></div>
+      </div>
+      <div class="ruler_green"><div>??????????IMAGE IN THIS CHANNEL?????????</div></div>
       <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
          <mm:import externid="results" jspvar="nodeList" vartype="List"/>
          <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
          <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
          <c:if test="${resultCount > 0}">
             <%@include file="../repository/searchpages.jsp" %>
-            <div id="imgList" style="width:100%" href="">
+            <div id="imgList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
                         <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); %>
@@ -115,14 +129,16 @@ div.editor div.body #imgList div.grid div.imgInfo {
 	         <%@include file="../repository/searchpages.jsp" %>
 	      </c:if>
       </div>
+      <c:if test="${action != 'search'}">
       <div class="body">
 		<ul class="shortcuts">
 			<li><a href="${search_init_action_url}"> Often used images in all channels </a></li>
 			<li><a href="${reorder_action_url}"> Select different channel </a></li>
-			<li><a href="${search_init_action_url}"> Search image </a></li>
-			<li><a href="${display_unsaved_files_url}"> New image </a></li>
+			<li><a href="ImageAction.do?action=search"> Search image </a></li>
+			<li><a href="imageupload.jsp?uploadAction=${param.action}"> New image </a></li>
 		</ul>
 		</div>
+      </c:if>
 </div>
        <div id="commandbuttonbar" class="buttonscontent">
             <div class="page_buttons_seperator">
