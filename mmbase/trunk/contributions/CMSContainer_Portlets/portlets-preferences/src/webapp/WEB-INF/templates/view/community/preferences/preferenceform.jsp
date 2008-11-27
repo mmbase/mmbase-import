@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<fmt:setBundle basename="portlets-prefercences" scope="request" />
 <c:set var="module"> 
    <fmt:message key="community.module.newsletter" />
 </c:set>
