@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.56 2008-11-27 13:23:32 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.57 2008-11-27 13:44:23 andre Exp $
  */
 
 
@@ -781,13 +781,12 @@ MMBaseSearcher.prototype.bindEvents = function() {
 
 MMBaseSearcher.prototype.resetTrClasses = function() {
     this.logger.debug("Resetting tr's");
-    $(this.div).find("div.searchresult table tbody tr").each(function(i) {
+    $(this.div).find("div.searchresult table tbody tr.click").each(function(i) {
         $(this).removeClass("odd");
         $(this).removeClass("even");
         $(this).addClass(i % 2 == 0 ? "even" : "odd");
     });
 }
-
 
 </fmt:bundle>
 </mm:content>
