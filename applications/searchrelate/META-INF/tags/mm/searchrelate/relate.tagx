@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.39 2008-11-27 09:52:54 andre Exp $
+      @version $Id: relate.tagx,v 1.40 2008-11-27 16:03:47 andre Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -117,7 +117,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${seq}"
-         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}  ${styleClass}">
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'}  ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
@@ -145,15 +145,12 @@
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
-          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?">
+          <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,fields?,relations?">
             <c:if test="${! empty pagesize}">
               <mm:param name="pagesize" referid="pagesize" />
             </c:if>
             <c:if test="${! empty maxpages}">
               <mm:param name="maxpages" referid="maxpages" />
-            </c:if>
-            <c:if test="${!empty relations}">
-              <mm:param name="relations" referid="relations" />
             </c:if>
             <mm:param name="id">mm_related_${seq}_current</mm:param>
             <mm:param name="extraClass">implicit</mm:param>
