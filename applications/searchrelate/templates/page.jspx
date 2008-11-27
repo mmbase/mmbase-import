@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.28 2008-11-18 15:51:17 andre Exp $
+      @version $Id: page.jspx,v 1.29 2008-11-27 16:03:02 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="id" required="true" />
@@ -21,7 +21,7 @@
       <mm:import externid="maxpages">20</mm:import>
       <mm:import externid="offset" vartype="integer">0</mm:import>
       <mm:import externid="customizedir" />
-      <mm:import externid="relations" />
+      <mm:import externid="relations" id="editrelations" />
       <mm:import externid="fields" id="flds" />
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
@@ -119,8 +119,8 @@
           <!--  ACTUAL SEARCHRESULT -->
           <tbody>
             <mm:listnodes varStatus="status" jspvar="n">
-              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?" />
-              <c:if test="${relations == true}">
+              <mm:include page="node.tr.jspx" attributes="status,_node@node,customizedir?,flds@fields?,editrelations?" />
+              <c:if test="${editrelations == true}">
                 <mm:compare referid="id" regexp="\w*current">
                   <mm:include page="relations.tr.jspx" attributes="_node@node,query,customizedir?,flds@fields?" />
                 </mm:compare>
