@@ -1,4 +1,4 @@
-package nl.didactor.builders;
+package nl.didactor;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.*;
