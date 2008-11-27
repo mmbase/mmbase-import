@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.54 2008-11-27 09:49:09 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.55 2008-11-27 13:10:20 andre Exp $
  */
 
 
@@ -411,14 +411,27 @@ MMBaseRelater.prototype.saverelation = function(ev) {
     
     var url = "${mm:link('/mmbase/searchrelate/saverelation.jspx')}";
     $.ajax({
-       type: "POST",
-       url: url,
-       data: params,
-       success: function(msg) {
-          console.log("ok: " + msg);
-       }
-    
-    });
+        type: "POST",
+        url: url,
+        data: params,
+        complete: function(res, status) {
+            if (status == "success") {
+                var msg = $(res.responseXML.documentElement).text();
+                if ($(form).find('div.succeeded').length == 0) { 
+                    $(form).prepend('<div class="succeeded" />');
+                } else {
+                   $(form).find('div.succeeded').text(msg);
+                }
+                $(form).find('div.succeeded').text(msg);
+                $(form).find('div.succeeded').fadeOut(2000, function() {
+                    $(this).parents('tr.relation').toggle();
+                });
+            } else {
+                $(form).prepend('<div class="failed" />');
+                $(form).find('div.failed').text("Error: " + res.status + " - " + res.statusText);
+            }
+        }
+     });
 }
 
 /**
