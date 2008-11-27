@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.17 2008-11-27 13:53:35 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.18 2008-11-27 16:07:10 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -163,6 +163,12 @@
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
+    <!--
+    This field is completely not implemented.
+    I think the meant functinality is available by starting the value of the body feidl with 'http:'.
+    (would also work for the subject btw).
+    -->
+    <!--
     <field name="bodyurl">
       <descriptions>
         <description xml:lang="en">URL to a script that generates the message to send</description>
@@ -178,6 +184,7 @@
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
+    -->
     <field name="body">
       <descriptions>
         <description xml:lang="en">Main message text</description>
