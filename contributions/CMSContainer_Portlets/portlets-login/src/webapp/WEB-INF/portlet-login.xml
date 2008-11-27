@@ -44,6 +44,10 @@
             <name>template.view</name>
             <value>login/register.jsp</value>
         </init-param>
+        <init-param>
+            <name>confirmation.email.subject</name>
+            <value>Confirmation from CMSC</value>
+        </init-param>
       <supports>
          <mime-type>text/html</mime-type>
          <portlet-mode>VIEW</portlet-mode>
