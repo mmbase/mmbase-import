@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.32 2008-10-14 11:04:32 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.33 2008-11-27 12:26:37 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -42,7 +42,7 @@ public class EmailBuilder extends MMObjectBuilder {
     public final static Parameter[] STARTMAIL_PARAMETERS = MAIL_PARAMETERS;
     public final static Parameter[] SETTYPE_PARAMETERS   = MAIL_PARAMETERS;
 
-    // defined values for state ( node field "mailstatus" )
+    // defined values for state (field "mailstatus" )
     public final static int STATE_UNKNOWN   = -1; // unknown
     public final static int STATE_WAITING   = 0; // waiting
     public final static int STATE_DELIVERED = 1; // delivered
@@ -51,10 +51,14 @@ public class EmailBuilder extends MMObjectBuilder {
     public final static int STATE_QUEUED    = 4; // queued
 
 
-    // defined values for state ( node field "mailtype" )
+    // defined values for type (field "mailtype" )
+    public final static int TYPE_STATIC      = 0; // A normal email object, which just represents an email object, and nothing more
     public final static int TYPE_ONESHOT     = 1; // Email will be sent and removed after sending.
-    // public final static int TYPE_REPEATMAIL  = 2; // Email will be sent and scheduled after sending for a next time (does not work?)
+    public final static int TYPE_RECEIVED    = 2; // Email which is received.
     public final static int TYPE_ONESHOTKEEP = 3; // Email will be sent and will not be removed.
+
+    // public final static int TYPE_REPEATMAIL  = 4; // Email will be sent and scheduled after sending for a next time (does not work?)
+
 
 
     static String usersBuilder;
@@ -194,6 +198,13 @@ public class EmailBuilder extends MMObjectBuilder {
         return (SendMail) Module.getModule("sendmail");
     }
 
+    static String getTypeField() {
+        SendMail sm = getSendMail();
+        if (sm != null) return sm.getTypeField();
+        return "mailtype";
+    }
+
+
     /**
      * Set the mailtype based on the first argument in the list.
      *
@@ -202,14 +213,15 @@ public class EmailBuilder extends MMObjectBuilder {
      */
     private static void setType(Node node, Parameters parameters) {
         String type = (String) parameters.get("type");
+        String typeField = getTypeField();
         if ("oneshot".equals(type)) {
-            node.setValue("mailtype", TYPE_ONESHOT);
+            node.setValue(typeField, TYPE_ONESHOT);
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
         } else if ("oneshotkeep".equals(type)) {
-            node.setValue("mailtype", TYPE_ONESHOTKEEP);
+            node.setValue(typeField, TYPE_ONESHOTKEEP);
             log.debug("Setting mailtype to " + TYPE_ONESHOTKEEP);
         } else {
-            node.setValue("mailtype", TYPE_ONESHOT);
+            node.setValue(typeField, TYPE_ONESHOT);
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
         }
     }
@@ -231,7 +243,7 @@ public class EmailBuilder extends MMObjectBuilder {
         BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), STATE_DELIVERED));
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailtype")),   TYPE_ONESHOT));
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField(getTypeField())),   TYPE_ONESHOT));
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
         query.setConstraint(cons);
         try {
