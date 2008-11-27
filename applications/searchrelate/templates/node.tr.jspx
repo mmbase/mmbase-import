@@ -10,6 +10,7 @@
       <mm:import externid="id"     required="true" from="request,parameters" />
       <mm:import externid="node"   required="true" from="request,parameters" />
       <mm:import externid="fields" from="request,parameters" />
+      <mm:import externid="editrelations" from="request,parameters" />
       <mm:import externid="customizedir" from="request,parameters" />
       <mm:node referid="node">
         <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
@@ -30,7 +31,7 @@
           </c:choose>
           <td class="node action">
             <mm:haspage page="${customizedir}action.td.jspx">
-              <mm:include page="${customizedir}action.td.jspx" />
+              <mm:include page="${customizedir}action.td.jspx" attributes="editrelations?" />
             </mm:haspage>
           </td>
         </tr>

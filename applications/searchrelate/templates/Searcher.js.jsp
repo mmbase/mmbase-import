@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.57 2008-11-27 13:44:23 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.58 2008-11-27 16:03:02 andre Exp $
  */
 
 
@@ -63,6 +63,7 @@ function MMBaseRelater(d) {
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
     this.canUnrelate   = $(d).hasClass("can_unrelate");
+    this.canEditrelations = $(d).hasClass("can_editrelations");
     if (this.current != null) {
         this.addSearcher(this.current, "current");
     } else {
@@ -179,7 +180,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                     if (status == "success") {
                         //console.log("" + res);
                         $(a).addClass("succeeded");
-                        if (relatedNumbers != "") { // create tr's in which to edit relations 
+                        if (self.canEditrelations && relatedNumbers != "") { // create tr's in which to edit relations 
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
@@ -193,7 +194,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                         }
                         self.related = {};
                         self.unrelated = {};
-                        self.bindSaverelation(this.div);
+                        if (self.canEditrelations) self.bindSaverelation(this.div);
                         $(self.div).trigger("mmsrCommitted", [a, status, self]);
                         return true;
                     } else {
@@ -227,6 +228,10 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
             complete: function(res, status){
                 if ( status == "success" || status == "notmodified" ) {
                     result = res.responseText;
+                } else {
+                    var tr = $("<tr />");
+                    tr.append('<td colspan="3" class="failed">Error: ' + res.status + ' - ' + res.statusText + '</td>');
+                    result = tr;
                 }
             }
            });
@@ -275,7 +280,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
             }
         });
         
-        self.bindSaverelation(rep);
+        if (self.canEditrelations) self.bindSaverelation(rep);
     }
 }
 
@@ -420,7 +425,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
                 if ($(form).find('div.succeeded').length == 0) { 
                     $(form).prepend('<div class="succeeded" />');
                 } else {
-                   $(form).find('div.succeeded').text(msg);
+                   $(form).find('div.succeeded').show();
                 }
                 $(form).find('div.succeeded').text(msg);
                 $(form).find('div.succeeded').fadeOut(2000, function() {
