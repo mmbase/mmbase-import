@@ -10,10 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.email;
 
 import java.util.*;
+import java.util.concurrent.*;
+
 import org.mmbase.bridge.Node;
 
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.ThreadPools;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -28,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.33 2008-11-27 12:26:37 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.34 2008-11-27 13:53:35 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -66,15 +69,15 @@ public class EmailBuilder extends MMObjectBuilder {
     static String groupsBuilder;
 
     // reference to the expire handler
-    private static EmailExpireHandler expirehandler;
+    private ScheduledFuture  expireHandler;
 
-    protected int expireTime = 60;
-    protected int sleepTime = 60 * 30;
+    protected int expireTime = 60 * 30 ;
+    protected int sleepTime = 60;
 
     /**
      * init
      */
-    public boolean init() {
+    @Override public boolean init() {
         super.init ();
 
         String property = getInitParameter("expireTime");
@@ -100,7 +103,14 @@ public class EmailBuilder extends MMObjectBuilder {
             // oneshot email nodes after the defined expiretime
             // check every defined sleeptime
             log.service("Expirehandler started with sleep time " + sleepTime + "sec, expire time " + expireTime + "sec.");
-            expirehandler = new EmailExpireHandler(this, sleepTime, expireTime);
+            expireHandler =
+                ThreadPools.scheduler.scheduleAtFixedRate(new EmailExpireHandler(this, expireTime),
+                                                          sleepTime,
+                                                          sleepTime, TimeUnit.SECONDS);
+            ThreadPools.identify(expireHandler, "Sent email deleter");
+
+
+
         } else {
             log.service("Expirehandler not started");
         }
@@ -117,6 +127,9 @@ public class EmailBuilder extends MMObjectBuilder {
         return true;
     }
 
+    @Override public void shutdown() {
+        if (expireHandler != null) { expireHandler.cancel(true); }
+    }
 
     {
         addFunction(new NodeFunction/*<Void>*/("mail", MAIL_PARAMETERS, ReturnType.VOID) {
@@ -125,7 +138,7 @@ public class EmailBuilder extends MMObjectBuilder {
                     setType(node, parameters);
 
                     // get the mailtype so we can call the correct handler/method
-                    int mailType = node.getIntValue("mailtype");
+                    int mailType = node.getIntValue(getTypeField());
                     boolean success = false;
                     switch(mailType) {
                     case TYPE_ONESHOT :
@@ -152,7 +165,7 @@ public class EmailBuilder extends MMObjectBuilder {
                     setType(node, parameters);
 
                     // get the mailtype so we can call the correct handler/method
-                    int mailType = node.getIntValue("mailtype");
+                    int mailType = node.getIntValue(getTypeField());
                     switch(mailType) {
                     case TYPE_ONESHOT :
                         // deleting the node happens in EmailExpireHandler
@@ -242,9 +255,14 @@ public class EmailBuilder extends MMObjectBuilder {
         NodeSearchQuery query = new NodeSearchQuery(this);
         BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), STATE_DELIVERED));
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField(getTypeField())),   TYPE_ONESHOT));
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
+        try {
+            cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), STATE_DELIVERED));
+            cons.addChild(new BasicFieldValueConstraint(query.getField(getField(getTypeField())),   TYPE_ONESHOT));
+            cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
+        } catch (IllegalArgumentException e) {
+            log.warn(e.getMessage());
+            return new ArrayList<MMObjectNode>();
+        }
         query.setConstraint(cons);
         try {
             // mailedtime constraints makes it useless to do a cached query.
