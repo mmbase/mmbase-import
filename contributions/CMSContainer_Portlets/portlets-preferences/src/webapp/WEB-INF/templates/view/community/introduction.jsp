@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<fmt:setBundle basename="portlets-prefercences" scope="request"/>
 
 <form method="POST" name="<portlet:namespace />form_preference" action="<cmsc:renderURL/>" target="_self">
 <br/>
