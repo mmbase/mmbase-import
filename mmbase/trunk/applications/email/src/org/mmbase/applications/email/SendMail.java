@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.55 2008-11-27 10:26:28 michiel Exp $
+ * @version $Id: SendMail.java,v 1.56 2008-11-27 12:26:37 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -119,7 +119,7 @@ public class SendMail extends AbstractSendMail {
             NodeList mailboxes = person.getRelatedNodes("mailboxes");
             for (int j = 0; j < mailboxes.size(); j++) {
                 Node mailbox = mailboxes.getNode(j);
-                if (mailbox.getIntValue(typeField) == 0) {
+                if (mailbox.getIntValue(typeField) == EmailBuilder.TYPE_STATIC) {
                     log.debug("Found mailbox, adding mail now");
                     Node emailNode = emailManager.createNode();
                     emailNode.setValue("to", n.getValue("to"));
@@ -129,12 +129,14 @@ public class SendMail extends AbstractSendMail {
                         emailNode.setValue("bcc", n.getValue("bcc"));
                     }
                     emailNode.setValue("subject", n.getValue("subject"));
-                    emailNode.setValue("date", n.getValue("date"));
+                    if (emailNode.getNodeManager().hasField("date")) {
+                        emailNode.setValue("date", n.getValue("date"));
+                    }
                     emailNode.setValue("body", n.getValue("body"));
                     if (emailNode.getNodeManager().hasField("mimetype")) {
                         emailNode.setValue("mimetype", n.getValue("mimetype"));
                     }
-                    emailNode.setIntValue(typeField, 2);
+                    emailNode.setIntValue(typeField, EmailBuilder.TYPE_RECEIVED);
                     emailNode.commit();
                     log.debug("Appending " + emailNode + " to " + mailbox.getNumber());
                     mailbox.createRelation(emailNode, relatedManager).commit();
@@ -152,7 +154,9 @@ public class SendMail extends AbstractSendMail {
                         newAttachment.setValue("filename", oldAttachment.getValue("filename"));
                         newAttachment.setValue("size", oldAttachment.getValue("size"));
                         newAttachment.setValue("handle", oldAttachment.getValue("handle"));
-                        newAttachment.setValue("date", oldAttachment.getValue("date"));
+                        if (newAttachment.getNodeManager().hasField("date")) {
+                            newAttachment.setValue("date", oldAttachment.getValue("date"));
+                        }
                         newAttachment.setValue("showtitle", oldAttachment.getValue("showtitle"));
                         newAttachment.commit();
                         emailNode.createRelation(newAttachment, relatedManager).commit();
@@ -201,7 +205,7 @@ public class SendMail extends AbstractSendMail {
                     if (emailManager.hasField("mimetype")) {
                         error.setValue("mimetype", "text/plain");
                     }
-                    error.setIntValue(typeField, 1);
+                    error.setIntValue(typeField, EmailBuilder.TYPE_ONESHOT);
                     error.commit();
                     log.debug("Ready sending error mail about " + failedUsers);
                 } catch (Exception e) {
@@ -685,7 +689,7 @@ public class SendMail extends AbstractSendMail {
                 errorNode.setStringValue("to", n.getStringValue("from"));
                 errorNode.setStringValue("from", n.getStringValue("from"));
                 errorNode.setStringValue("subject", "****");
-                errorNode.setIntValue(typeField, 1);
+                errorNode.setIntValue(typeField, EmailBuilder.TYPE_ONESHOT);
                 errorNode.setStringValue("body", errors.toString());
                 errorNode.commit();
                 log.service("Sent node " + errorNode.getNumber());
@@ -811,6 +815,10 @@ public class SendMail extends AbstractSendMail {
 
     public Session getSession() {
         return session;
+    }
+
+    public String getTypeField() {
+        return typeField;
     }
 
     {

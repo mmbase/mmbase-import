@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.15 2008-11-27 10:26:28 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.16 2008-11-27 12:26:37 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -182,28 +182,14 @@
       </db>
     </field>
     <field name="mailtype">
-      <descriptions>
-        <description xml:lang="en">Type of the email: 1:one shot email, 2: repeat email, 3: oneshot email, but keep result</description>
-        <description xml:lang="nl">Berichttype: 1: eenmalig bericht, 2: herhaald bericht, 3: eenmalig bericht, bewaar resultaat</description>
-      </descriptions>
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="eo">Tipo</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>4</list>
-        </positions>
-      </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="1" />
-        <enumeration>
-          <entry
-              javaconstants="org.mmbase.applications.email.EmailBuilder"
-              basename="org.mmbase.applications.email.resources.mailtype" />
-        </enumeration>
-      </datatype>
+      <editor><positions><list>4</list></positions></editor>
+      <datatype base="email_type" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
     </field>
     <field name="mailstatus">
       <descriptions>
@@ -282,33 +268,15 @@
       </gui>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <!--
-        This optional field can be used if you want to store the headers of received mail
-    <field name="headers">
-      <descriptions>
-        <description xml:lang="nl">Headers</description>
-        <description xml:lang="en">Headers, can be used to store headers of received mail.</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="nl">Headers</guiname>
-        <guiname xml:lang="en">Headers</guiname>
-      </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="65535" />
-      </datatype>
-    </field>
-    <field name="mimetype">
-      <descriptions>
-        <description xml:lang="nl">Mimetype van het body-veld</description>
-        <description xml:lang="en">Mimetype of the body-field</description>
-      </descriptions>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="text/html" />
-        <maxLength value="128" />
-      </datatype>
-    </field>
-
-    -->
   </fieldlist>
+  <!--
+      Some optional fields. Ported from didactor.
+
+  <xi:include
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="http://www.mmbase.org/builders/email/optional.email.fields.xml" />
+
+  -->
+
 </builder>
 
