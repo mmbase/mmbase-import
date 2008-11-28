@@ -44,8 +44,8 @@
 		}
 	}
 
-	function selectChannel(channel, path) {
-	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channel="+channel;
+	function selectChannel(channelid, path) {
+	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channelid="+channelid;
 	}
 </script>
    <link rel="stylesheet" type="text/css" href="../../editors/editwizards_new/style/extra/wizard.css">
@@ -106,16 +106,18 @@ div.editor div.body #imgList div.grid div.imgInfo {
             </c:if>
          </html:form>
       </div>
-		<div class="ruler_green"><c:choose>
-			<c:when test="${empty channel}">
+		<div class="ruler_green">
+		<c:choose>
+			<c:when test="${empty channelid}">
 				<div>IMAGE IN ALL CHANNELS</div>
 			</c:when>
 			<c:otherwise>
-				<mm:node number="${channel}">
-					<div>IMAGE IN <mm:field name="path"/></div>
+				<mm:node number="${channelid}">
+					<div>IMAGE IN <mm:field name="number"/></div>
 				</mm:node>
 			</c:otherwise>
-		</c:choose></div>
+		</c:choose>
+   `  </div>
 		<div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
          <mm:import externid="results" jspvar="nodeList" vartype="List"/>
          <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
@@ -148,8 +150,8 @@ div.editor div.body #imgList div.grid div.imgInfo {
 		<ul class="shortcuts">
 			<li><a href="${search_init_action_url}"> Often used images in all channels </a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"> Select different channel </a></li>
-			<li><a href="ImageAction.do?action=search"> Search image </a></li>
-			<li><a href="imageupload.jsp?uploadAction=${param.action}"> New image </a></li>
+			<li><a href="ImageAction.do?action=search&channelid=${channelid}"> Search image </a></li>
+			<li><a href="imageupload.jsp"> New image </a></li>
 		</ul>
 		</div>
       </c:if>
