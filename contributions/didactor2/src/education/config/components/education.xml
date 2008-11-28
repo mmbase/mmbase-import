@@ -19,6 +19,17 @@
     <body jsp="wizards/learnblock.fields.jspx" />
   </block>
 
+  <block name="education_fields"
+         classification="didactor.wizards.educations.fields:0"
+         mimetype="application/xml">
+    <body jsp="wizards/educations.fields.jspx" />
+  </block>
+  <block name="education_lists"
+         classification="didactor.wizards.educations.lists:0"
+         mimetype="application/xml">
+    <body jsp="wizards/educations.lists.jspx" />
+  </block>
+
   <block name="learnblock_forms_paragraphs"
          classification="didactor.wizards.learnblocks.forms:10"
          mimetype="application/xml">
