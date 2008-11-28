@@ -8,18 +8,12 @@
   <jsp:output omit-xml-declaration="no"
               doctype-public="-//MMBase/DTD editwizard 1.0//EN"
               doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
-              doctype-root-element="fieldset"
+              doctype-root-element="listset"
               />
-  <fieldset>
-    <c:forEach items="${di:setting('education', 'learnblocks_fields')}" var="fieldname">
-      <c:choose>
-        <c:when test="${fieldname eq 'intro'}">
-          <field name="${fieldname}" ftype="html" dtminlength="0" />
-        </c:when>
-        <c:otherwise>
-          <field name="${fieldname}"  />
-        </c:otherwise>
-      </c:choose>
+  <listset>
+    <c:forEach items="${di:setting('education', 'educations_lists')}" var="list">
+      <mm:log>${list}</mm:log>
+      <list  extends="config/${mm:escape('trimmer', list)}.xml" />
     </c:forEach>
-  </fieldset>
+  </listset>
 </mm:content>

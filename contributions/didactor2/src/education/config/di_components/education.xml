@@ -17,6 +17,9 @@
     <setting name="education_paragraphs" type="boolean" default="false" />
     <setting name="learnblocks_paragraphs" type="boolean" default="true" />
     <setting name="learnblocks_fields" type="string" default="name,showtitle,intro,layout,imagelayout" />
+    <setting name="educations_fields" type="string" default="name,showtitle,provider,intro,layout,imagelayout,path" />
+    <setting name="educations_lists"  type="string" default="image/sizedimages,news/news-list,attachment/attachments-posrel,audiotape/audiotapes-posrel,videotape/videotapes-posrel,url/urls-posrel" />
+
 
   </scope>
 
