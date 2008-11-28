@@ -13,14 +13,12 @@ import net.sf.mmapps.commons.bridge.RelationUtil;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
-import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
@@ -297,9 +295,7 @@ public class NodeService {
       Node desNode = cloud.getNode(Integer.parseInt(node));
       for (Iterator iter = rootDatas.entrySet().iterator(); iter.hasNext();) {
          Map.Entry entry = (Map.Entry) iter.next();
-         String key = (String) entry.getKey();
          ArrayList<Integer> val = (ArrayList<Integer>) entry.getValue();
-         NodeManager manager = cloud.getNodeManager(key);
          for (Integer i : val) {
             int sn=getNewkey(cloud,i);            
             if (sn>0) {
