@@ -117,6 +117,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             session.removeAttribute(nl.didactor.filter.ProviderFilter.USER_KEY);
+            session.removeAttribute(nl.didactor.filter.ProviderFilter.EDUCATION_KEY);
             String loginComponent = (String)session.getAttribute("didactor-logincomponent");
             if (loginComponent != null) {
                 for (AuthenticationComponent ac : securityComponents) {
