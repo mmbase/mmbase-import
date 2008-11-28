@@ -20,10 +20,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Deze class is de basis voor verschillende CachFlushHandler implementaties.
- * Je kunt je eigen implementatie maken door deze class te extenden, en in de constructor Handling instanties
- * aan te maken voor de verschillende cache flush hints {@see CacheFlushHint}.
- * Je kunt eenvoudig Handling instanties maken door de methode handle() anoniem te overschijven.
  * @author ebunders
  *
  */

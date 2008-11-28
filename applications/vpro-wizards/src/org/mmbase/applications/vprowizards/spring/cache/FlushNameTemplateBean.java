@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+ */
 package org.mmbase.applications.vprowizards.spring.cache;
 
 import java.util.StringTokenizer;
@@ -19,20 +19,33 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This bean is used in the templates of the vpro-wizards. it is used to add node numbers to templates of flushnames. It
- * also has a method for cleaning the templates out of the flushnames. this is used by
- * {@link TokenizerCacheNameResolver}. For this reason it implements the Modifier interface.<br>
- * So, what are templates?<br>
- * Templates are a way to create dynamic cacheGroup names, where the dynamic bit is dependend on the node you are
- * currently editing, and are used by the list tag. You can use a flushname like, 'locations_[location]', where the
- * 'location' between brackets is the builder name. Inside the list tag the [buildername] part is then changed into [buildername:nodenumber]
- * where nodenumber is the number of each row (where the nodetype of the list matches the nodetype set in this bean).
- * This way the flushname parameter wil be differen for each row in the list.<br>
- * There is one variety, that you can use if you want to create a dynamic cache flush name for the parent node of the nodes in a certain list.
- * To do this you create a template like [thistype,role,parenttype]. Then the number of the first node found with this path (where thistype matches the
- * type set in this bean) will be inserted in the template.<br>
- * So why insert and not replace (the filtering out of the template is done just before using the flush names?<br>
  * 
+ * <pre>
+ * This bean is used in the templates of the vpro-wizards. it is used to add node numbers to templates inside flush names.
+ * It also has a method for cleaning the templates out of the flush names. For this reason it implements the Modifier 
+ * interface.
+ * 
+ * As arguments it takes a template string, a 
+ * 
+ * So, what are templates?
+ * 
+ * Templates are a way to create dynamic cacheGroup names, where the dynamic bit is dependent on the node you are
+ * currently editing, and are used by the list tag. 
+ * You can use a flush name like, 'locations_[location]', where the 'location' between brackets is the builder name.
+ *  
+ * Inside the list tag the [builder name] part is then changed into [buildername:nodenumber] where node number is the 
+ * number of each row (where the node type of the list matches the node type set in this bean). 
+ * This way the flush name parameter will be different for each row in the list.
+ * 
+ * There is one variety, that you can use if you want to create a dynamic cache flush name for the parent node of the
+ * nodes in a certain list. To do this you create a template like [this_type.relation_role.child_type]. Then the number of the
+ * first node found with this path (where this_type matches the type set in this bean) will be inserted in the template.
+ * 
+ * The original template is not replaced with the node number, but the node number is appended to the template. This is
+ * done because the template is handed to a (hierarchy of) jsp page(s), and is reused. with each reuse the previous node
+ * numbers are stripped out of the template.
+ * 
+ * </pre>
  * 
  * TODO:/to test the 'extended' template (where the parent node is found we need either a cloud or a cloud mock object
  * 
@@ -40,166 +53,222 @@ import org.mmbase.util.logging.Logging;
  * 
  */
 public class FlushNameTemplateBean implements Modifier {
+    private static final String TEMPLATE_REGEXP = "^.*\\[[a-zA-Z0-9\\.:]+\\].*$";
+
     private String template;
 
-    private String type;
+    private String nodeType;
 
-    private String nodenr;
+    private String nodeNumber;
 
     private Cloud cloud;
 
     private static final Logger log = Logging.getLoggerInstance(FlushNameTemplateBean.class);
 
-    /**
-     * this method processes the template and appends the nodenumber to all matching placeholders in the templates it
-     * also removes preveously added nodenumbers. (templates can be reused)
-     * 
-     * @return
-     */
-    public String getProcessedTemplate() {
-        if(StringUtils.isEmpty(template)) {
-            throw new IllegalStateException("template not set");
-        }
-        
-        if(StringUtils.isEmpty(nodenr)) {
-            throw new IllegalStateException("nodenr not set");
-        }
-        if(StringUtils.isEmpty(type)) {
-            throw new IllegalStateException("type   not set");
-        }
-        int from = 0;
-        while (template.substring(from).matches("^.*\\[[a-zA-Z0-9\\.:]+\\].*$")) {
-            // \\[[a-zA-Z0-9]+\\]
-            log.debug("evaluating: " + template.substring(from) + ", from: " + from);
-            int begin = template.indexOf("[", from);
-            int end = template.indexOf("]", from);
-            String t = template.substring(begin + 1, end);
-            log.debug("begin: " + begin + ", end: " + end + ", template: " + t);
-
-            // maybe this template was used before, in that case we have to clean the old value out of it
-            if (t.indexOf(":") > -1) {
-                t = t.substring(0, t.indexOf(":"));
-                log.debug("template reuse. after cleaning: " + t);
-            }
-
-            // is the template a path?
-            String thistype = null, relation = null, destination = null;
-            boolean isQuery = false;
-            if (t.indexOf(".") > -1) {
-                StringTokenizer st = new StringTokenizer(t, ".");
-                thistype = st.nextToken();
-                relation = st.nextToken();
-                destination = st.nextToken();
-                isQuery = true;
-            } else {
-                thistype = t;
-            }
-
-            // if the template matches the given type, add the node number
-            if (thistype.equals(type)) {
-
-                // we copy the nodenumber field becouse if there are more templates then one we need the original again.
-                String copyNodeNumber = nodenr;
-                if (isQuery) {
-                    Node node = cloud.getNode(nodenr);
-                    NodeList nl = node.getRelatedNodes(destination, relation, "both");
-                    if (nl.size() > 0) {
-                        copyNodeNumber = "" + nl.getNode(0).getNumber();
-                    } else {
-                        log.error("could not find 'parent' node with path " + t + " and root node " + copyNodeNumber);
-                        copyNodeNumber = "!notfound!";
-                    }
-                }
-                template = template.substring(0, begin + 1) + t + ":" + copyNodeNumber + template.substring(end);
-                // adjust the end index
-                end = template.indexOf("]", from);
-            }
-            from = end + 1;
-        }
-        return template;
-    }
-
-    /**
-     * This method is from the Modifier interface, and allows this class to 
-     * play as a Modifier instance.
-     */
-    public String modify(String input) {
-        try {
-            return stripTemplates(input);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // TODO: What to do when an exception occurs?
-        return input;
-    }
-
-    /**
-     * this method strips the templates away from the flushnames and just leaves the nodenumbers. This should yield the
-     * actual flushnames.
-     * 
-     * @param flushname
-     * @return
-     * @throws Exception
-     *             when there is a problem with parsing the template
-     */
-    public static String stripTemplates(String flushname) throws Exception {
-        log.debug("before. template: " + flushname);
-        // decode the templates out of the flushname
-        int from = 0;
-        while (flushname.substring(from).matches("^.*\\[[a-zA-Z0-9\\.]+:[a-zA-Z0-9]+\\].*$")) {
-            log.debug("evaluating: " + flushname.substring(from) + ", from: " + from);
-            int begin = flushname.indexOf("[", from);
-            int end = flushname.indexOf("]", from);
-            String t = flushname.substring(begin + 1, end);
-            log.debug("begin: " + begin + ", end: " + end + ", flushname: " + t);
-
-            if (t.indexOf(":") == -1) {
-                // when this happens there is a template in the flushname that has not been suffixed
-                // with an actual nodenumber. this is an application error!
-                throw new Exception("flushname '" + flushname
-                        + "' illegal. some temlates have not been suffixed with ':<nodenr>'");
-            }
-            String nodenr = t.substring(t.indexOf(":") + 1);
-
-            flushname = flushname.substring(0, begin) + nodenr + flushname.substring(end + 1);
-            from = begin + 1;
-        }
-        log.debug("after. tempate: " + flushname);
-        return flushname;
-    }
-
     public void setCloud(Cloud cloud) {
         this.cloud = cloud;
     }
 
-    /**
-     * @param type
-     *            the nodetype to add the nodenumber to.
-     */
-    public void setType(String type) {
-        this.type = type;
+
+    public void setNodeType(String type) {
+        this.nodeType = type;
     }
 
-    /**
-     * 
-     * @param template
-     *            flushname with placeholders to be replaced
-     */
+
     public void setTemplate(String template) {
         this.template = template;
     }
 
+
+    public void setNodeNumber(String nodenr) {
+        this.nodeNumber = nodenr;
+    }
+
+
+    public String processAndGetTemplate() {
+        if (StringUtils.isEmpty(template)) {
+            throw new IllegalStateException("template not set");
+        }
+
+        if (StringUtils.isEmpty(nodeNumber)) {
+            throw new IllegalStateException("nodenr not set");
+        }
+        if (StringUtils.isEmpty(nodeType)) {
+            throw new IllegalStateException("type not set");
+        }
+        
+        if (cloud == null) {
+            throw new IllegalStateException("cloud not set");
+        }
+        
+        //we create a processor that will first strip the old node numbers, and then insert new ones.
+        processTemplate(new SubTemplateProcessor() {
+            @Override
+            void process() {
+                // Perhaps the template has been used before, and 'old' node numbers are present
+                // if this is so, they must be removed.
+                _subTemplate = stripNodenumberFromSubtemplate(_subTemplate);
+                
+
+                String templateNodeType = deriveTemplateType(_subTemplate);
+                if (nodeType.equals(templateNodeType)) {
+                    _subTemplate = appendNodenumberToTemplate(_subTemplate);
+                }
+                
+                //even if the node type did not match, perhaps the template was cleaned from previous uses.
+                //reinsert it anyway.
+                reinsertSubTemplateIntoTemplate(_subTemplate, _begin, _end);
+            }
+        });
+        return template;
+    }
+
+    
     /**
-     * @param nodenr
-     *            the number of the node appended to the tempate for matches with 'type'
+     * This method is from the Modifier interface, and allows this class to play as a Modifier instance.
      */
-    public void setNodenr(String nodenr) {
-        this.nodenr = nodenr;
+    public String modify(String input) {
+            setTemplate(input);
+            processTemplate(new SubTemplateProcessor(){
+                @Override
+                void process() {
+                    _subTemplate = stripNodenumberFromSubtemplate(_subTemplate);
+                    reinsertSubTemplateIntoTemplate(_subTemplate, _begin, _end);
+                }});
+        return template;
+    }
+
+    private void processTemplate(SubTemplateProcessor processor) {
+        int offset = 0;
+        while (offset < template.length()  && template.substring(offset).matches(TEMPLATE_REGEXP) ) {
+            log.debug("evaluating: " + template.substring(offset) + ", from: " + offset);
+            int begin = template.indexOf("[", offset) + 1;
+            int end = template.indexOf("]", offset);
+
+            String subTemplate = template.substring(begin, end);
+            log.debug("begin: " + begin + ", end: " + end + ", template: " + subTemplate);
+
+            processor.setSubTemplate(subTemplate);
+            processor.setBegin(begin);
+            processor.setEnd(end);
+            processor.process();
+            offset = offset + begin + processor.getSubTemplate().length() + 1;
+        }
+    }
+
+    
+    
+    private void reinsertSubTemplateIntoTemplate(String subTemplate, int begin, int end){
+        String subTemplatePrefix = template.substring(0, begin);
+        String subTemplateSuffix = template.substring(end);
+        template = subTemplatePrefix + subTemplate + subTemplateSuffix;
+    }
+
+    private String stripNodenumberFromSubtemplate(String subTemplate) {
+        //pattern: aaa:89 or aaa.aaa.aaa:00
+        if (subTemplate.matches("(\\w+:\\d+)|((\\w+)(\\.\\w+){2}:\\d+)")) {
+            subTemplate = subTemplate.substring(0, subTemplate.indexOf(":"));
+            log.debug("template reuse. after cleaning: " + subTemplate);
+        }
+        return subTemplate;
+    }
+
+    private boolean subtemplateIsQuery(String subTemplate) {
+        return subTemplate.split("\\.").length == 3;
+    }
+
+    private String resolveNodeNumber(String subTemplate) {
+        if (subtemplateIsQuery(subTemplate)) {
+            return resolveNodeNumberForQuery(subTemplate);
+        } else {
+            return nodeNumber;
+        }
+    }
+    
+    private String appendNodenumberToTemplate(String subTemplate) {
+        return subTemplate + ":" + resolveNodeNumber(subTemplate);
+    }
+
+    private String resolveNodeNumberForQuery(String subTemplate) {
+        QueryTemplate queryTemplate = parseQueryTemplate(subTemplate);
+        Node node = cloud.getNode(nodeNumber);
+        NodeList nl = node.getRelatedNodes(queryTemplate.getDestinationType(), queryTemplate.getRelationRole(), "both");
+        if (nl.size() > 0) {
+            return "" + nl.getNode(0).getNumber();
+        } else {
+            log.error("could not find 'parent' node with path " + subTemplate + " and root node " + nodeNumber);
+            return "!notfound!";
+        }
+    }
+
+    private String deriveTemplateType(String subTemplate) {
+        if (subtemplateIsQuery(subTemplate)) {
+            return parseQueryTemplate(subTemplate).getSourceType();
+        } else {
+            return subTemplate;
+        }
+    }
+
+    private QueryTemplate parseQueryTemplate(String subTemplate) {
+        String[] q = subTemplate.split("\\.");
+        if (q.length == 3) {
+            return new QueryTemplate(q[0], q[1], q[2]);
+        } else {
+            throw new IllegalStateException(String.format(
+                    "template '%s' is not a query template, can not create QueryTemplate instance", subTemplate));
+        }
     }
 
     public Modifier copy() {
-        //as a Modifier this thing is completely stateless, so just return
-        //this instance
+        // as a Modifier this thing is completely stateless, so just return
+        // this instance
         return this;
+    }
+
+    private static class QueryTemplate {
+        private String sourceType, relationRole, destinationType;
+
+        public QueryTemplate(String sourceType, String relationRole, String destinationType) {
+            this.sourceType = sourceType;
+            this.relationRole = relationRole;
+            this.destinationType = destinationType;
+        }
+
+        public String getSourceType() {
+            return sourceType;
+        }
+
+        public String getRelationRole() {
+            return relationRole;
+        }
+
+        public String getDestinationType() {
+            return destinationType;
+        }
+    }
+
+    private abstract class SubTemplateProcessor {
+        protected int _begin;
+        protected int _end;
+        protected String _subTemplate;
+
+        abstract void process();
+
+        public void setSubTemplate(String subTemplate) {
+            this._subTemplate = subTemplate;
+        }
+        
+        public String getSubTemplate(){
+            return _subTemplate;
+        }
+
+        public void setBegin(int begin) {
+            this._begin = begin;
+        }
+
+        public void setEnd(int end) {
+            this._end = end;
+        }
+
     }
 }
