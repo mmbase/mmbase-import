@@ -22,9 +22,18 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *This is a cache handler interceptor that implements support for all types of cacheflush hints.
+ * <pre>
+ *This is a cache handler intercepter that implements support for all types of cache flush hints.
+ *It works as following:
+ *- It creates a {@link Handling} instance for each type of cache flush hint.
+ *- It uses a class instance factory of type {@link CacheNameResolver} to generate a resolver instance.
+ *  The resolver is used to  transform the value of the 'flush name' parameter into a list of
+ *  flush names for a specific type of cache flush hint.
+ *- Any number of {@link Modifier}s can be registered to post process the resolved cache names. They are
+ *  applied in the order they are registered.
+ *- A {@link CacheWrapper} is used to handle the actual cache flushing
  *
- *
+ *</pre>
  * @author ebunders
  *
  */

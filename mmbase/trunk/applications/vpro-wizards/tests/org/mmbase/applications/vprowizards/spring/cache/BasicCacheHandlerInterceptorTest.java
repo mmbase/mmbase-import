@@ -5,7 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junit.framework.TestCase;
 
-public class CacheInterceptorTest extends TestCase {
+public class BasicCacheHandlerInterceptorTest extends TestCase {
     
     private ApplicationContext context;
 
@@ -22,6 +22,9 @@ public class CacheInterceptorTest extends TestCase {
         
         assertTrue(DummyCacheWrapper.class.isInstance(handlerInterceptor.getCacheWrapper()));
         assertEquals(TokenizerCacheNameResolver.class, handlerInterceptor.getCacheNameResolverFactory().getClazz());
+    }
+    public void test_some_more(){
+        fail("there,s nothing here yet");
     }
 
 }

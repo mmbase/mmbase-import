@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.mmbase.module.core.MMBaseContext;
 
 import com.opensymphony.oscache.base.Cache;

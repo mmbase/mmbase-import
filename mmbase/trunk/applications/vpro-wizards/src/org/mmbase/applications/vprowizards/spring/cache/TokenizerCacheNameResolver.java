@@ -21,17 +21,20 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This class helps you to handle strings that are formatted in a certain way. The idea is that you have a comma
- * separated list of values attached to a namespace, like 'namespace:value1,value2,value3'.<br>
- * the input string can contain more that one of these constructs for different namespaces, separated by a 
- * space. When using this class you have to give an input string, and then you can get values for different namespaces.
- * The input string will be parsed once.
+ * <pre>
  * 
+ * This class has a no-arg constructor so you can use it as a bean.
+ * It is reusable, but not thread safe.
+ * To see what kind of formats it can tokenize: {@link TokenizerCacheNameResolverTest}.
+ * The purpose of this class is to tokenize a cashflush command, where values can be grouped
+ * in names paces. Each name space could relate to a kind of cache flush hint {@link CacheFlushHint}.
+ * There is also support for templates. See: {@link FlushNameTemplateBean}
+ * </pre> 
  * @author ebunders
- * 
  */
 public class TokenizerCacheNameResolver implements CacheNameResolver {
 
+    
     
     private Map<String, List<String>> namesForNamespace = null;
     private List<String> globalValues;
@@ -45,17 +48,11 @@ public class TokenizerCacheNameResolver implements CacheNameResolver {
     private static Logger log = Logging.getLoggerInstance(TokenizerCacheNameResolver.class);
 
 
-    /* (non-Javadoc)
-     * @see org.mmbase.applications.vprowizard.spring.cache.CacheNameResolver#getNamesForNamespace(java.lang.String)
-     */
     public List<String> getNames(String nameSpace) {
         if(StringUtils.isEmpty(nameSpace)) {
             throw new IllegalStateException("attribute namespace is empty");
         }
-        
-        if (namesForNamespace == null) {
-            tokenize();
-        }
+        tokenizeIfNecessary();
         List<String> result = new ArrayList<String>();
         if(namesForNamespace.get(nameSpace) != null){
             result.addAll(namesForNamespace.get(nameSpace));
@@ -63,10 +60,13 @@ public class TokenizerCacheNameResolver implements CacheNameResolver {
         result.addAll(globalValues);
         return result;
     }
+
+    private void tokenizeIfNecessary() {
+        if (namesForNamespace == null) {
+            tokenize();
+        }
+    }
     
-    /* (non-Javadoc)
-     * @see org.mmbase.applications.vprowizard.spring.cache.CacheNameResolver#setInput(java.lang.String)
-     */
     public void setInput(String input) {
         reset();
         this.input = input;
