@@ -22,5 +22,6 @@
   <relation destination="urls" role="posrel" />
   <relation destination="feedback" role="descriptionrel" />
   &extra_loads;
+  <blocks classification="didactor.wizards.learnblocks.load" />
 </action>
 
