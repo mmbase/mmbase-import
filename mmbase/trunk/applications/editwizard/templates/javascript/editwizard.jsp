@@ -5,7 +5,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.74 2008-11-08 13:07:35 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.75 2008-11-28 16:51:01 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -93,7 +93,9 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
+    //
 }
+
 
 //********************************
 // COMMAND STUFF

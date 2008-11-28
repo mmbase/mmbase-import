@@ -38,7 +38,7 @@
 <!ATTLIST query where CDATA #IMPLIED >
 <!ATTLIST query orderby CDATA #IMPLIED >
 
-<!ELEMENT form-schema ( title | subtitle | field | fieldset | list | blocks )* >
+<!ELEMENT form-schema ( title | subtitle | field | fieldset | listset | list | blocks )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 <!ATTLIST form-schema include CDATA #IMPLIED >
 <!ATTLIST form-schema extends CDATA #IMPLIED >
@@ -95,6 +95,8 @@
 <!ATTLIST command pagelength CDATA #IMPLIED >
 
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
+
+<!ELEMENT listset ( list* ) >
 
 <!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
 <!ATTLIST field dtpattern CDATA #IMPLIED >
