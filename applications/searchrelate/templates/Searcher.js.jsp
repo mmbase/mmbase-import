@@ -19,7 +19,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.58 2008-11-27 16:03:02 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.59 2008-11-28 15:02:30 andre Exp $
  */
 
 
@@ -505,6 +505,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.value = "";
     this.offset = 0;
     this.transaction   = null;
+    this.canEditrelations = $(r.div).hasClass("can_editrelations");
     var self = this;
     $(d).find("span.transactioname").each(function() {
         this.transaction = this.nodeValue;
@@ -590,7 +591,8 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                    fields: this.fields, 
                    pagesize: this.pagesize, 
                    maxpages: this.maxpages, 
-                   customizedir: this.customizedir };
+                   customizedir: this.customizedir,
+                   editrelations: this.canEditrelations };
 
     var result = this.searchResults["" + offset];
     this.logger.debug("Searching " + this.searchUrl + " " + params);
@@ -716,7 +718,7 @@ MMBaseSearcher.prototype.create = function () {
 
 MMBaseSearcher.prototype.getTr = function(node) {
     var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
-    var params = {id: this.getQueryId(), node: node, fields: this.fields, customizedir: this.customizedir};
+    var params = {id: this.getQueryId(), node: node, fields: this.fields, customizedir: this.customizedir, editrelations: this.canEditrelations};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
