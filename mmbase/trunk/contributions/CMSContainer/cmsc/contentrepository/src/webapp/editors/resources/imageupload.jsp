@@ -29,23 +29,6 @@
 </cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-      <div class="tabs">
-         <div class="tab">
-            <div class="body">
-               <div>
-                  <a href="imagesearch.jsp?action=${param.uploadAction}"><fmt:message key="images.title" /></a>
-               </div>
-            </div>
-         </div>
-         <div class="tab_active">
-            <div class="body">
-               <div>
-                  <a href="#"><fmt:message key="images.upload.title" /></a>
-               </div>
-            </div>
-         </div>
-      </div>
-      
       <div class="editor" style="height:500px">
           <div class="body">
               <form action="" enctype="multipart/form-data" method="post">
