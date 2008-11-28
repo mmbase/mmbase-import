@@ -31,7 +31,7 @@
           </c:choose>
           <td class="node action">
             <mm:haspage page="${customizedir}action.td.jspx">
-              <mm:include page="${customizedir}action.td.jspx" attributes="editrelations?" />
+              <mm:include page="${customizedir}action.td.jspx" attributes="node,editrelations?" />
             </mm:haspage>
           </td>
         </tr>
