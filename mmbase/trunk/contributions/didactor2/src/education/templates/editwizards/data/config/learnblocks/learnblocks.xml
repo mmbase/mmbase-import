@@ -16,8 +16,8 @@
   <action type="delete" />
 
   <form-schema extends="config/learnblocks/step1.xml" />
-  <form-schema extends="config/learnblocks/paragraphs.xml" />
-  <form-schema extends="config/learnblocks/learnobjects.xml" />
+
+  <blocks classification="didactor.wizards.learnblocks.forms" />
 
   &extra_schemas;
 </wizard-schema>
