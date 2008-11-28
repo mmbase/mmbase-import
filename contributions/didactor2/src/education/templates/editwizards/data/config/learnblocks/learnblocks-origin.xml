@@ -23,8 +23,8 @@
 
   <form-schema extends="config/learnblocks/step1.xml" />
 
-  <blocks classification="didactor.wizards.learnblocks.forms" />
-
   &extra_schemas;
+
+  <blocks classification="didactor.wizards.learnblocks.forms" />
 
 </wizard-schema>
