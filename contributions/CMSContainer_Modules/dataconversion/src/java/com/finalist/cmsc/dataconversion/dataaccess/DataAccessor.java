@@ -1,7 +1,13 @@
 package com.finalist.cmsc.dataconversion.dataaccess;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -13,6 +19,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.dataconversion.service.Constants;
+import com.finalist.cmsc.dataconversion.service.Data;
 
 /**
  * used for Data accessing 
@@ -31,6 +38,8 @@ public class DataAccessor {
    public static final String DATATYPE_NUMBER = "datatype";
    public static final String SELFREL_NUMBER = "selfrelate";
    public static final String RELACTION_NUMBER = "relation";
+   public static final String INT_TO_DATA = "intToData";
+   public static final String BLOB_TO_STRING = "blobToString";
    
    public DataAccessor(DataSource dataSource,ElementMeta elementMeta) {
       
@@ -39,6 +48,11 @@ public class DataAccessor {
       query = new Query();
    }   
    
+   public DataAccessor(DataSource dataSource) {
+      this.dataSource = dataSource;
+      query = new Query();
+   }
+
    /**
     *  get  numbers 
     * @return key number
@@ -114,7 +128,6 @@ public class DataAccessor {
       try {
          connection = dataSource.getConnection();
          statement = connection.createStatement();
-        
          if(type == Constants.ENTITY_TYPE) {
             rs = statement.executeQuery(query.getQueryString(elementMeta,key));
             parseResultSet(rs,list,elementMeta);
@@ -122,7 +135,7 @@ public class DataAccessor {
             holder.setTableName(elementMeta.getDesTableName());
 
          }
-         else if(type == Constants.RELATION_TYPE){
+         else if(type == Constants.RELATION_TYPE||type==Constants.RELATION_DATA_TYPE){//add new type
             if(StringUtils.isNotEmpty(query.getRelateFieldsString(elementMeta,key))) {
                relRs = statement.executeQuery(query.getRelateFieldsString(elementMeta,key));
                parse(relRs,list,elementMeta,holder,key);
@@ -160,11 +173,17 @@ public class DataAccessor {
          Elements element = new Elements();
          for(String fieldName : elementMeta.getFieldNames()) {
             if(StringUtils.isNotEmpty(fieldName)) {
-               if(StringUtils.isEmpty(elementMeta.getPrefix(fieldName)) || (rs.getObject(fieldName) != null && rs.getObject(fieldName).toString().startsWith(URL_PROTOCOL))) {
+               if(StringUtils.isEmpty(elementMeta.getStyle(fieldName))&&StringUtils.isEmpty(elementMeta.getPrefix(fieldName)) || (rs.getObject(fieldName) != null && rs.getObject(fieldName).toString().startsWith(URL_PROTOCOL))) {
                   element.setValue(elementMeta.getDesFieldName(fieldName),rs.getObject(fieldName));
                }
-               else {
+               else if(!StringUtils.isEmpty(elementMeta.getPrefix(fieldName))){
                   element.setValue(elementMeta.getDesFieldName(fieldName),elementMeta.getPrefix(fieldName)+rs.getObject(fieldName));
+               }else if(!StringUtils.isEmpty(elementMeta.getStyle(fieldName))){
+                  String changeMethod=elementMeta.getStyle(fieldName);
+                  Object o=changeStyle(changeMethod,rs,fieldName);
+                  if(null!=o){
+                     element.setValue(elementMeta.getDesFieldName(fieldName),o);
+                  }
                }
             }
          }
@@ -172,6 +191,33 @@ public class DataAccessor {
       }
    }
    
+   private Object changeStyle(String changeMethod, ResultSet rs, String fieldName) {
+      try {
+         if (INT_TO_DATA.equals(changeMethod)) {
+            int i=rs.getInt(fieldName);
+            return new java.sql.Date(i);
+         } else if (BLOB_TO_STRING.equals(changeMethod)) {
+            Blob blob = rs.getBlob(fieldName);
+            InputStream inStream = blob.getBinaryStream();
+            StringBuffer out = new StringBuffer();
+            byte[] b = new byte[4096];
+            try {
+               for (int n; (n = inStream.read(b)) != -1;) {
+                  out.append(new String(b, 0, n));
+               }
+            } catch (IOException e) {
+               log.error("changeMethod failure!"+changeMethod+"can't make datatype chnge!"+e.getMessage());
+               e.printStackTrace();
+            }
+            String s=out.toString();
+            return org.mmbase.util.transformers.Xml.XMLEscape(s);
+         }
+      } catch (SQLException e) {
+         log.error("changeMethod failure!"+changeMethod+"can't make datatype chnge!"+e.getMessage());
+      }
+      return null;
+   }
+
    private void parse(ResultSet rs,List<Elements> list,ElementMeta elementMeta,DataHolder holder,Integer key) throws SQLException {
 
       if(rs == null) return;
@@ -192,6 +238,7 @@ public class DataAccessor {
          holder.setDnumber(rs.getInt("dnumber"));
       }
    }
+   
    private void release(Statement statement, Connection connection) {
       if(statement != null) {
          try {
@@ -209,5 +256,59 @@ public class DataAccessor {
             log.error("Connection close failure!"+e.getMessage());
          }
       }
+   }
+
+   public List<String> getResOfRelation(Data relData, List<Data> sources) {
+      Connection connection = null;
+      Statement statement = null;
+      ResultSet rs = null;
+      String sql = null;
+      int sv = 0, dv = 0;
+      List<String> numbers = new ArrayList<String>();
+      try {
+         connection = dataSource.getConnection();
+         statement = connection.createStatement();
+         sql = "select * from " + " " + relData.getSourceRelationType() + " " + "where snumber in (select number from "
+               + relData.getRelateTable() + ") and dnumber in (select number from " + relData.getTableName() + ")";
+         rs = statement.executeQuery(sql);
+         while (rs.next()) {
+            sv = rs.getInt("snumber");
+            dv = rs.getInt("dnumber");
+            if (sv != 0 && dv != 0) {
+               String s = String.valueOf(sv);
+               String d = String.valueOf(dv);
+               numbers.add(s + "," + d);
+            }
+         }
+      } catch (SQLException e) {
+         log.error(" get Rel numbers failure!" + e.getMessage());
+      } finally {
+         release(statement, connection);
+      }
+      return numbers;
+   }
+
+   public ArrayList<Integer> getPrimerKeyList(String sourcetype) {
+      Connection connection = null;
+      Statement statement = null;
+      ResultSet rs = null;
+      String sql = null;
+      int sv = 0;
+      ArrayList<Integer> numbers = new ArrayList<Integer>();
+      try {
+         connection = dataSource.getConnection();
+         statement = connection.createStatement();
+         sql = "select * from " + " " + sourcetype;
+         rs = statement.executeQuery(sql);
+         while (rs.next()) {
+            sv = rs.getInt("number");
+            numbers.add(sv);
+         }
+      } catch (SQLException e) {
+         log.error(" get Rel numbers failure!" + e.getMessage());
+      } finally {
+         release(statement, connection);
+      }
+      return numbers;
    }
 }

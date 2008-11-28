@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -16,6 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.finalist.cmsc.dataconversion.dataaccess.DataAccessDelegate;
+import com.finalist.cmsc.dataconversion.dataaccess.DataAccessor;
 import com.finalist.cmsc.dataconversion.dataaccess.DataHolder;
 import com.finalist.cmsc.dataconversion.dataaccess.DataSourceFactory;
 
@@ -57,128 +59,202 @@ public class Conversion {
     * the main method used to converse all data from older db 
     */
    public void converseAll() {
-      Document dom = null; 
+      Document dom = null;
       long beginTime = System.currentTimeMillis();
       try {
-    	  
-    	  
          log.info(" ###############################  begin  import ######################");
-         dom = XMLParser.parseXMLToDOM(context.getResourceAsStream(IMPORT_FILE));       
-        // XMLParser.DTDValidator(dom);
-         Element element = (Element)dom.getElementsByTagName("import").item(0);
-         NodeList list = element.getChildNodes();         
-         List<Data> sources =  new ArrayList<Data>();
-         for(int i = 0 ; i < list.getLength(); i++) {
-            //datatype node
-            if(list.item(i).getNodeName().equals("datatype")) {
-               //deal with data type node
-               log.info(String.format(table_log,XMLUtil.getSourceType((Element)list.item(i))));
-               Data sorData = getDataOfDataType((Element)list.item(i));
-               //load data number from 
-               HashMap<Integer,Integer> keys = DataAccessDelegate.getNumbersOfDataType((Element)list.item(i), dataSource);
-               log.info(String.format(result_count,keys.size(),XMLUtil.getSourceType((Element)list.item(i))));
+         dom = XMLParser.parseXMLToDOM(context.getResourceAsStream(IMPORT_FILE));
+         // XMLParser.DTDValidator(dom);
+         Element element = (Element) dom.getElementsByTagName("import").item(0);
+         NodeList list = element.getChildNodes();
+         List<Data> sources = new ArrayList<Data>();
+         List<Data> clondSources = new ArrayList<Data>();
+         int j= list.getLength();
+         for (int i = 0; i < j; i++) {
+            // datatype node
+            if (list.item(i).getNodeName().equals("datatype")) {
+               // deal with data type node
+               log.info(String.format(table_log, XMLUtil.getSourceType((Element) list.item(i))));
+               Data sorData = getDataOfDataType((Element) list.item(i));
+               // load data number from
+               HashMap<Integer, Integer> keys = DataAccessDelegate.getNumbersOfDataType((Element) list.item(i),
+                     dataSource);
+               log.info(String.format(result_count, keys.size(), XMLUtil
+                     .getSourceType((Element) list.item(i))));
                sorData.setIdentifiers(keys);
                sources.add(sorData);
-
-               if(XMLUtil.hasSelfRelation((Element)list.item(i))) {
-                  log.info(String.format(sefRelation_log,XMLUtil.getSourceType((Element)list.item(i))));
-                  Data relData = getDataOfSelfRelation((Element)list.item(i));
-                  HashMap<Integer,Integer> keys1 = DataAccessDelegate.getNumbersOfSelfRelation((Element)list.item(i), dataSource);
-                  log.info(String.format(result_count,keys1.size(),XMLUtil.getSourceType((Element)list.item(i))));
+               //log.info("did I chage? "+Utils.getXML(list.item(i)));
+               if (XMLUtil.hasSelfRelation((Element) list.item(i))) {
+                  log.info(String.format(sefRelation_log, XMLUtil.getSourceType((Element) list.item(i))));
+                  Data relData = getDataOfSelfRelation((Element) list.item(i));
+                  HashMap<Integer, Integer> keys1 = DataAccessDelegate.getNumbersOfSelfRelation((Element) list.item(i),
+                        dataSource);
+                  log.info(String.format(result_count, keys1.size(), XMLUtil.getSourceType((Element) list
+                        .item(i))));
                   if (keys1 == null || keys1.isEmpty()) {
                      continue;
                   }
                   relData.setIdentifiers(keys1);
                   sources.add(relData);
-               }                              
-               Data rootData = getRootData((Element)list.item(i));
-               HashMap<Integer,Integer> keysd = DataAccessDelegate.addChildRelation((Element)list.item(i), dataSource);
-               log.info(String.format(sefRelation_log,keysd.size()));
+               }
+               Data rootData = getRootData((Element) list.item(i));
+               HashMap<Integer, Integer> keysd = DataAccessDelegate
+                     .addChildRelation((Element) list.item(i), dataSource);
+               log.info(String.format(sefRelation_log, keysd.size()));
                rootData.setIdentifiers(keysd);
                rootData.setRelateId(Integer.parseInt(node));
-               
-              // sources.add(rootData);  
                log.info("----> before recur");
-               recur((Element)list.item(i),sources);
+               recur((Element) list.item(i), sources);
                log.info("----> after recur");
-               for(Data data:sources) {
-                  if(data.getType() == Constants.ENTITY_TYPE) {
-                     log.info(String.format(" ----> begin to save type [%s]",data.getDestinationType()));
-                  }
-                  else if(data.getType() == Constants.RELATION_TYPE) {
-                     log.info(String.format(" ----> begin to save type [%s]",data.getDestinationRelationType()));
-                  }
-                  else if(data.getType() == Constants.SELF_RELATION_TYPE) {
-                     log.info(String.format(" ----> begin to save type [%s]",data.getSourceRelationType()));
-                  }
-                  Iterator<Integer> iterator =  data.getIdentifiers().keySet().iterator();
-                  while(iterator.hasNext()) {
-                     Integer key = iterator.next();
-                     Element elment = XMLUtil.getElementByTableName(data.getTableName(),(Element)list.item(i));
-                     DataHolder holder = DataAccessDelegate.getElementByPrimaryKey(elment, dataSource, key,data.getType());
-                     Integer number = NodeService.insertData(holder,data,sources,key);                   
-                     data.getIdentifiers().put(key, number);
-                  }
-                  log.info("----> end saving ");
-               }  
-               System.out.println("finished.........");
-               NodeService.insertData(null,rootData,sources,null);
-            } 
+               relDatatype((Element) list.item(i), sources);
+               saveType(list, sources, i);
+               log.info("entity type and it relation finished.........");
+               NodeService.insertData(null, rootData, sources, null);
+            }
+            //end if
+            clondSources.addAll(sources);
+            sources.clear();
          }
-         log.info(String.format(" ---->#######################finished importing   [time:%s mins] #############################",(System.currentTimeMillis()-beginTime)/(1000*60)));
+         NodeService.insertMigrationMappings(clondSources);
+         createRelationDataType(clondSources);
+         linkRoot(list, j);
+         log.info(String.format(
+               " ---->#######################finished importing   [time:%s mins] #############################",
+               (System.currentTimeMillis() - beginTime) / (1000 * 60)));
          NodeService.insertProperties(properties);
-      } 
-      catch (Exception e) {
+      } catch (Exception e) {
          log.error(e.getMessage());
          e.printStackTrace();
-      }   
-   }      
-  /**
-   * recur to get elements related 
-   * @param element dom element 
-   * @param sources a collection object which hold Data Objects  
-   * @throws Exception
-   */
-   private void recur(Element element,List<Data> sources) throws Exception {
-      
+      }
+   }
+   
+   private void linkRoot(NodeList list, int j) {
+      Map<String, ArrayList<Integer>> rootDatas=new HashMap<String, ArrayList<Integer>>();
+      for (int i = 0; i < j; i++) {
+         if (list.item(i).getNodeName().equals("datatype")) {
+            String destinationtype=XMLUtil.getDestinationType((Element) list.item(i));
+            String sourcetype=XMLUtil.getSourceType((Element) list.item(i));
+            DataAccessor da=new DataAccessor(dataSource);
+            ArrayList<Integer> primerKeys=da.getPrimerKeyList(sourcetype);
+            rootDatas.put(destinationtype,  primerKeys);               
+         }
+      }
+      NodeService.linkRootDatas(rootDatas,node);
+   }
+   
+   private void createRelationDataType(List<Data> sources) throws Exception {
+      List<String> reskeys = new ArrayList<String>();
+      for (Data reldata : sources) {
+         if (reldata.getType() == Constants.RELATION_DATA_TYPE) {
+            reskeys = DataAccessDelegate.getResOfRelation(sources, reldata, dataSource);
+            NodeService.createRelationData(reskeys, reldata);
+         }
+      }
+   }
+
+   private void saveType(NodeList list, List<Data> sources, int i) throws Exception {
+      for (Data data : sources) {
+         if (data.getType() != Constants.RELATION_DATA_TYPE) {
+            if (data.getType() == Constants.ENTITY_TYPE) {
+               log.info(String.format(" ----> begin to save type [%s]", data.getDestinationType()));
+            } else if (data.getType() == Constants.RELATION_TYPE) {
+               log.info(String.format(" ----> begin to save type [%s]", data.getDestinationRelationType()));
+            } else if (data.getType() == Constants.SELF_RELATION_TYPE) {
+               log.info(String.format(" ----> begin to save type [%s]", data.getSourceRelationType()));
+            }
+            Iterator<Integer> iterator = data.getIdentifiers().keySet().iterator();
+            while (iterator.hasNext()) {
+               Integer key = iterator.next();
+               Element elment = XMLUtil.getElementByTableName(data.getTableName(), (Element) list.item(i));
+               DataHolder holder = DataAccessDelegate.getElementByPrimaryKey(elment, dataSource, key, data.getType());
+               Integer number = NodeService.insertData(holder, data, sources, key);
+               if (null!=number) {
+                  data.getIdentifiers().put(key, number);
+               }
+            }
+            log.info("----> end saving ");
+         }
+      }
+   }
+
+   /**
+    * recur to get elements related
+    * 
+    * @param element
+    *           dom element
+    * @param sources
+    *           a collection object which hold Data Objects
+    * @throws Exception
+    */
+   private void recur(Element element, List<Data> sources) throws Exception {
+
       Element[] relates = XMLUtil.getDirectRelateChildNodes(element);
-      if(relates.length < 1) {
-         return ;
+      if (relates.length < 1) {
+         return;
       }
 
-      for(int i = 0 ; i < relates.length ; i++) {
-         log.info("###################### begin Import table ["+XMLUtil.getSourceType(relates[i])+"]   ####################");
-         log.info(String.format(table_log,XMLUtil.getSourceType(relates[i])));
+      for (int i = 0; i < relates.length; i++) {
+         log.info("###################### begin Import table [" + XMLUtil.getSourceType(relates[i])
+               + "]   ####################");
+         log.info(String.format(table_log, XMLUtil.getSourceType(relates[i])));
          Data sorData = getDataOfDataType(relates[i]);
-         HashMap<Integer,Integer> keys = DataAccessDelegate.getNumbersOfDataType(relates[i], dataSource);
-         log.info(String.format(result_count,keys.size(),XMLUtil.getSourceType(relates[i])));                     
+         HashMap<Integer, Integer> keys = DataAccessDelegate.getNumbersOfDataType(relates[i], dataSource);
+         log.info(String.format(result_count, keys.size(), XMLUtil.getSourceType(relates[i])));
          if (keys == null || keys.isEmpty()) {
             continue;
          }
          sorData.setIdentifiers(keys);
-         sources.add(sorData);               
-         log.info(String.format(relation_log,XMLUtil.getSourceType(element),XMLUtil.getSourceType(relates[i]),XMLUtil.getSourceRelationType(relates[i])));
+         sources.add(sorData);
+         log.info(String.format(relation_log, XMLUtil.getSourceType(element), XMLUtil
+               .getSourceType(relates[i]), XMLUtil.getSourceRelationType(relates[i])));
          Data relData = getDataOfRelation(relates[i]);
-         HashMap<Integer,Integer> keys1 = DataAccessDelegate.getNumbersOfRelation(relates[i], dataSource);
-         log.info(String.format(result_rel_count,keys1.size(),XMLUtil.getSourceRelationType(relates[i])));
-         if (keys1  != null && !keys1.isEmpty()) {
+         HashMap<Integer, Integer> keys1 = DataAccessDelegate.getNumbersOfRelation(relates[i], dataSource);
+         log.info(String.format(result_rel_count, keys1.size(), XMLUtil.getSourceRelationType(relates[i])));
+         if (keys1 != null && !keys1.isEmpty()) {
             relData.setIdentifiers(keys1);
             sources.add(relData);
          }
-         log.info("###################### end Import table ["+XMLUtil.getSourceType(relates[i])+"]  ####################");
+         log.info("###################### end Import table [" + XMLUtil.getSourceType(relates[i])
+               + "]  ####################");
          recur(relates[i], sources);
       }
    }
-   
-   private void setData(Data data,Element element) {
+
+   private void relDatatype(Element element, List<Data> sources) throws Exception {
+      Element[] relates = XMLUtil.getRelateChildNodes(element);
+      for (int i = 0; i < relates.length; i++) {
+         log.info("###################### begin import relateddatatype Type ["
+               + XMLUtil.getSourceType(relates[i]) + "]   ####################");
+         Data relData = getDataOfRelationType(relates[i]);
+         sources.add(relData);
+         log.info("###################### end import relateddatatype Type ["
+               + XMLUtil.getSourceType(relates[i]) + "]  ####################");
+      }
+   }
+
+   // add getDataOfRelationType method
+   private Data getDataOfRelationType(Element element) {
+      Data relData = new Data(Constants.RELATION_DATA_TYPE);
+      setData(relData, element);
+      String destion = XMLUtil.getDestinationRelationType(element);
+      relData.setDestinationRelationType(destion);
+      String sourceRelationType = XMLUtil.getSourceRelationType(element);
+      relData.setSourceRelationType(sourceRelationType);
+      String reverse = XMLUtil.getReverseRelationType(element);
+      relData.setReverse(reverse);
+      return relData;
+   }
+
+   private void setData(Data data, Element element) {
       data.setTableName(XMLUtil.getSourceType(element));
-      data.setDestinationType(XMLUtil.getDestinationType(element)); 
+      data.setDestinationType(XMLUtil.getDestinationType(element));
       data.setRelationType(XMLUtil.getRelateType(element));
       data.setRelateTable(XMLUtil.getRelateSourceType(element));
    }
+
    private Data getDataOfDataType(Element element) {
-      Data sorData = new Data(Constants.ENTITY_TYPE);              
-      setData(sorData,element);
+      Data sorData = new Data(Constants.ENTITY_TYPE);
+      setData(sorData, element);
       sorData.setDestinationRelationType(XMLUtil.getDestinationRelationType(element));
       return sorData;
    }
@@ -195,8 +271,12 @@ public class Conversion {
       Data relData = new Data(Constants.RELATION_TYPE);  
       setData(relData,element);
       relData.setDestinationRelationType(XMLUtil.getDestinationRelationType(element));
+      //add #############
+      String reverse=XMLUtil.getReverseRelationType(element);
+      relData.setReverse(reverse);
       return relData;
    }
+   
    private Data getRootData(Element element) {
       Data rootData = new Data(Constants.ROOT_CATEGORY_TYPE);
       setData(rootData,element);

@@ -1,17 +1,26 @@
 package com.finalist.cmsc.dataconversion.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import net.sf.mmapps.commons.bridge.RelationUtil;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
@@ -87,7 +96,12 @@ public class NodeService {
             Node sourceNode = cloud.getNode(snumber.intValue());            
             Node desNode = cloud.getNode(dnumber.intValue());
             type = data.getDestinationRelationType();
-            Relation relate = RelationUtil.createRelation(sourceNode, desNode, data.getDestinationRelationType());
+            Relation relate;
+            if ("true".equals(data.getReverse())) {
+               relate = RelationUtil.createRelation(desNode, sourceNode, data.getDestinationRelationType());
+            }else{
+               relate = RelationUtil.createRelation(sourceNode, desNode, data.getDestinationRelationType());
+            }
             if(sourceNode.getNodeManager().getName().equals("contentchannel") && desNode.getNodeManager().getName().equals("article")) {
                Relation creationRelation  = RelationUtil.createRelation(desNode, sourceNode, "creationrel");
                creationRelation.commit();
@@ -131,15 +145,56 @@ public class NodeService {
                Integer id = iterator.next();
                Integer dId = getDnumber( data, id,sources);
                Node desNode = cloud.getNode(dId.intValue());
-               Relation relate = RelationUtil.createRelation(sourceNode, desNode, data.getDestinationRelationType());
+               Relation relate = RelationUtil.createRelation(sourceNode, desNode, type);
                relate.commit();
             }
          }
       } catch (Exception e) {
-         // TODO Auto-generated catch block
          log.info(String.format("[type %s] [old Node %s] [Node %s ] +"+e.getMessage(),type,key,number));
       }
       return number;
+   }
+   //createRelationData for the element relateddatatype
+   public static void createRelationData(List<String> reskeys, Data reldata) {
+      Cloud cloud = initCloud();
+      String type = "";
+      try {
+         if (reldata.getType() == Constants.RELATION_DATA_TYPE) {
+            for (String sd : reskeys) {
+               String[] spd = sd.split(",");
+               Integer snumber = getNewkey(cloud, Integer.parseInt(spd[0]));
+               Integer dnumber = getNewkey(cloud, Integer.parseInt(spd[1]));
+
+               if (snumber > 0 && dnumber > 0) {
+                  Node sourceNode = cloud.getNode(snumber.intValue());
+                  Node desNode = cloud.getNode(dnumber.intValue());
+                  type = reldata.getDestinationRelationType();
+                  Relation relate;
+                  if ("true".equals(reldata.getReverse())) {
+                     relate = RelationUtil.createRelation(desNode, sourceNode, type);
+                  } else {
+                     relate = RelationUtil.createRelation(sourceNode, desNode, type);
+                  }
+                  relate.commit();
+               }
+            }
+         }
+      } catch (Exception e) {
+         log.info(String.format("[type %s] [old Node %s] [Node %s ] +" + e.getMessage(), type));
+      }
+   }
+   // search newNumber from mapping
+   private static Integer getNewkey(Cloud cloud,int parseInt) {
+      NodeManager manager = cloud.getNodeManager("migration_mappings");
+      NodeQuery query = manager.createQuery();
+      SearchUtil.addEqualConstraint(query, manager.getField("old_number"), parseInt);
+      NodeList list = query.getList();
+      if(list != null && list.size() >0) {
+         Node node = (Node)list.get(0);
+         return node.getIntValue("new_number");
+      }else{
+         return -1;
+      }
    }
    /**
     * get the dnumber from data collection
@@ -210,9 +265,50 @@ public class NodeService {
       node.commit();
    }
    
+   // insertMigrationMappings to produce a mapping between old and   new node numbers.
+   public static void insertMigrationMappings(List<Data> clonedSources) throws Exception {
+      Cloud cloud = initCloud();
+      NodeManager manager = cloud.getNodeManager("migration_mappings");
+      for (Data data : clonedSources) {
+         if (data.getType() == Constants.ENTITY_TYPE || data.getType() == Constants.ROOT_CATEGORY_TYPE) {
+            HashMap<Integer, Integer> mappingNumber = data.getIdentifiers();
+            for (Iterator iter = mappingNumber.entrySet().iterator(); iter.hasNext();) {
+               Map.Entry entry = (Map.Entry) iter.next();
+               Node node = manager.createNode();
+               Object key = entry.getKey();
+               Object val = entry.getValue();
+               node.setObjectValue("old_number", key);
+               node.setObjectValue("new_number", val);
+               node.commit();
+            }
+         }
+      }
+       log.info("----> end insertMigrationMappings ");
+   }
+   
    private static Cloud initCloud() {
       
       CloudContext context =  ContextProvider.getDefaultCloudContext();     
       return context.getCloud("mmbase");
-   } 
+   }
+   
+   public static void linkRootDatas(Map<String, ArrayList<Integer>> rootDatas, String node) {
+      Cloud cloud = initCloud();
+      Node desNode = cloud.getNode(Integer.parseInt(node));
+      for (Iterator iter = rootDatas.entrySet().iterator(); iter.hasNext();) {
+         Map.Entry entry = (Map.Entry) iter.next();
+         String key = (String) entry.getKey();
+         ArrayList<Integer> val = (ArrayList<Integer>) entry.getValue();
+         NodeManager manager = cloud.getNodeManager(key);
+         for (Integer i : val) {
+            int sn=getNewkey(cloud,i);            
+            if (sn>0) {
+               Node sourceNode = cloud.getNode(sn);
+               Relation relate = RelationUtil.createRelation(sourceNode, desNode, "creationrel");
+               Relation rel = RelationUtil.createRelation(desNode, sourceNode, "contentrel");
+            }
+         }
+      }
+   }
+   
 }
