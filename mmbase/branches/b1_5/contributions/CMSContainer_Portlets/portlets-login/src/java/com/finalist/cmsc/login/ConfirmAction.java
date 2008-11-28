@@ -8,13 +8,11 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.util.Encode;
 
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
-import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
@@ -27,13 +25,7 @@ public class ConfirmAction extends Action{
       String pageNumber = httpServletRequest.getParameter("pn");
       String name = httpServletRequest.getParameter("nm");
       String returnUrl = "";
-      //emailAddress = encoder.decode(emailAddress);
-//      emailAddress = encoder.decode(emailAddress);
       String target = "failure";
-//      if (StringUtils.isNotBlank(returnUrl)) {
-//         returnUrl = encoder.decode(returnUrl);
-//      }  
-//      Cloud cloud = getCloudForAnonymousUpdate(false);
       if (StringUtils.isBlank(pageNumber)) {
          throw new NullPointerException("The page number is null");
       }
