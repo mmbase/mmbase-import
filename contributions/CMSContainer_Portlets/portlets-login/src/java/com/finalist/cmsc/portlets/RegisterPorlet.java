@@ -24,7 +24,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.util.Encode;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
@@ -36,7 +35,6 @@ import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class RegisterPorlet extends CmscPortlet{
