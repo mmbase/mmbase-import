@@ -14,7 +14,7 @@
         <description xml:lang="nl">Naam van het leerobject</description>
         <description xml:lang="en">Name of the learnobject</description>
       </field>
-      <field fdatapath="field[@name='pos']" ftype="data" />
+      <field fdatapath="field[@name='pos']" />
       <field ftype="startwizard" inline="true" objectnumber="{object/@number}"  wizardname="config/{object/@type}/{object/@type}">
 
       </field>
