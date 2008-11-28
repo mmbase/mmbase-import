@@ -144,6 +144,22 @@ public class XMLUtil {
       }
       return ele;
    }
+
+   public static String getReverseRelationType(Element element) {
+      return element.getAttribute("reverse");
+   }
+
+   public static Element[] getRelateChildNodes(Element element) {
+      Element[] elements = new Element[0];
+      List<Element> list = new ArrayList<Element>();      
+      NodeList relationList = element.getElementsByTagName("relateddatatype");
+      for(int i = 0 ; i < relationList.getLength() ; i++) {
+         if(((Element)relationList.item(i)).getParentNode() == element) {
+            list.add((Element)relationList.item(i));
+         }
+      }
+     return list.toArray(elements);
+   }
    
  
  }
