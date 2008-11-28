@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.38 2008-10-22 09:31:12 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.39 2008-11-28 13:54:28 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -110,7 +110,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected Node getNode(String key) throws JspTagException {
         Node n = getNodeOrNull(key);
-        if (n == null) getCloudVar().getNode((String) getObject(key)); // cause exception
+        if (n == null) getCloudVar().getNode(org.mmbase.util.Casting.toString(getObject(key))); // cause exception
         return n;
     }
     /**
