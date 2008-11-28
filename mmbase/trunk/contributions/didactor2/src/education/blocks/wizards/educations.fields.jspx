@@ -11,10 +11,10 @@
               doctype-root-element="fieldset"
               />
   <fieldset>
-    <c:forEach items="${di:setting('education', 'learnblocks_fields')}" var="fieldname">
+    <c:forEach items="${di:setting('education', 'educations_fields')}" var="fieldname">
       <c:choose>
         <c:when test="${fieldname eq 'intro'}">
-          <field name="${fieldname}" ftype="html" dtminlength="0" />
+          <field name="${fieldname}" ftype="html"  />
         </c:when>
         <c:otherwise>
           <field name="${fieldname}"  />

@@ -42,29 +42,26 @@
   <form-schema id="step1">
     <title xml:lang="nl">Opleiding invoeren</title>
     <title xml:lang="en">Enter education</title>
-    <field name="name" />
-    <field name="showtitle" />
 
-    <list destination="providers" role="related" extends="config/provider/providers-list.xml" />
+    <blocks classification="didactor.wizards.educations.fields" />
 
-    <field name="intro" ftype="html" />
-    <field name="layout" />
-    <field name="imagelayout" />
-    <field name="path" />
-
-    <list role="sizerel" extends="config/image/sizedimages.xml" />
-    <list destination="news" extends="config/news/news-list.xml" />
-    <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
-    <list role="posrel" extends="config/audiotape/audiotapes-posrel.xml" />
-    <list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
-    <list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
-    <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
+    <blocks classification="didactor.wizards.educations.lists" />
     &extra_lists;
-
-    <list destination="classes" role="classrel" extends="config/class/classes-list.xml" />
-
-
   </form-schema>
+
+  <form-schema id="learnblock">
+    <title xml:lang="nl">Leerblokken</title>
+    <title xml:lang="en">Learnblocks</title>
+
+    <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
+  </form-schema>
+
+  <form-schema id="classes">
+    <title xml:lang="nl">Klassen</title>
+    <title xml:lang="en">Classes</title>
+    <list destination="classes" role="classrel" extends="config/class/classes-list.xml" />
+  </form-schema>
+
 
   <blocks classification="didactor.wizards.education.schemas" />
 
