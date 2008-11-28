@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import org.mmbase.util.Encode;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
@@ -47,6 +49,10 @@ public class RegisterPorlet extends CmscPortlet{
    private static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
    private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
+   private static final String EMAIL_SUBJECT = "emailSubject";
+   private static final String EMAIL_TEXT = "emailText";
+   private static final String EMAIL_FROMEMAIL = "emailFromEmail";
+   private static final String EMAIL_FROMNAME = "emailFromName";
    private static final Log log = LogFactory.getLog(RegisterPorlet.class);
 
    @Override
@@ -89,11 +95,20 @@ public class RegisterPorlet extends CmscPortlet{
             Person person = personHibernateService.createPerson(firstName, infix, lastName,authId,RegisterStatus.UNCONFIRMED.getName(),new Date());
             person.setEmail(email);
             personHibernateService.updatePerson(person);
-            String subject = this.getPortletConfig().getInitParameter("confirmation.email.subject");
-            if (StringUtils.isBlank(subject)) {
-               subject = "Confirmation";
+            PortletPreferences preferences = request.getPreferences();
+            String emailSubject = preferences.getValue(EMAIL_SUBJECT, "Your account details associated with the given email address.\n");
+            String emailText = preferences.getValue(EMAIL_TEXT, null);
+            String emailFrom = preferences.getValue(EMAIL_FROMEMAIL, null);
+            String nameFrom = preferences.getValue(EMAIL_FROMNAME, null);
+
+            if (StringUtils.isBlank(emailText)) {
+               emailText = getEmailBody(request,authentication,person);
             }
-            EmailUtil.send(null, email, subject, getEmailBody(request,authentication,person));
+            else {
+               emailText = emailText+"\n\n"+getEmailBody(request,authentication,person);
+            }
+            //EmailUtil.send(null, email, subject, getEmailBody(request,authentication,person));
+            EmailUtil.send(null, null, email, nameFrom, emailFrom, emailSubject, emailText);
             response.setRenderParameter("email", email);
          } else {
             log.info("add authenticationId failed");
@@ -129,6 +144,25 @@ public class RegisterPorlet extends CmscPortlet{
       }
       doInclude("view", template, request, response);
    }
+   
+   @Override
+   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+      PortletPreferences preferences = request.getPreferences();
+      String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
+
+      String emailSubject = request.getParameter(EMAIL_SUBJECT);
+      String emailText = request.getParameter(EMAIL_TEXT);
+      String emailFromEmail = request.getParameter(EMAIL_FROMEMAIL);
+      String emailFromName = request.getParameter(EMAIL_FROMNAME);
+      
+      setPortletParameter(portletId, EMAIL_SUBJECT, emailSubject);
+      setPortletParameter(portletId, EMAIL_TEXT, emailText);
+      setPortletParameter(portletId, EMAIL_FROMEMAIL, emailFromEmail);
+      setPortletParameter(portletId, EMAIL_FROMNAME, emailFromName);
+
+      super.processEditDefaults(request, response);
+   }
+   
    protected String getEmailBody(ActionRequest request,Authentication authentication,Person person) {
       InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("../templates/view/login/confirmation.txt");
       if(is == null) {
@@ -144,13 +178,15 @@ public class RegisterPorlet extends CmscPortlet{
       } 
       catch (IOException e) {
          log.error("error happen when reading email template",e);
-      }
+      }   
       Cloud cloud = getCloudForAnonymousUpdate(false);
       String url = getConfirmationLink(cloud);
-      Encode encoder = new org.mmbase.util.Encode("BASE64");
-      String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(person.getEmail())+"&url="+encoder.encode(url);
+      //String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+encoder.encode(person.getEmail())+"&url="+encoder.encode(url);
+      String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)+"login/confirm.do?s="+authentication.getId()+url;
       return String.format(sb.toString(), authentication.getUserId(),authentication.getPassword(),person.getFirstName(),person.getInfix(),person.getLastName(),confirmUrl);
+
    }
+   
    public Cloud getCloudForAnonymousUpdate(boolean isRemote) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       if (isRemote) {
@@ -170,11 +206,13 @@ public class RegisterPorlet extends CmscPortlet{
       NodeList pages = portlet.getRelatedNodes("page");
       if (pages != null && pages.size() >= 1) {
          Node page = pages.getNode(pages.size() - 1);
-         link = SiteManagement.getPath(page.getNumber(), true);
+//         link = SiteManagement.getPath(page.getNumber(), true);
+         link = "&pn="+page.getNumber();
         // link = "content/" + page.getNumber();
          RelationList relations = portlet.getRelations("portletrel", page.getNodeManager());
          String name = relations.getRelation(0).getStringValue("name");
-         link += "/_rp_".concat(name).concat("_").concat("active").concat("/1_");
+//         link += "/_rp_".concat(name).concat("_").concat("active").concat("/1_");
+         link += "&nm="+name;
       
       }
       return link;
