@@ -23,7 +23,7 @@ public class RatingUtil {
     */
    public static int getUserRating(int contentNumber, String user) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList ratingList = cloud.getList(null, "contentelement,rating", "rating.rating", "contentelement.number = "
+      NodeList ratingList = cloud.getList(null, "object,rating", "rating.rating", "object.number = "
             + contentNumber + " AND rating.user = '" + user + "'", null, null, null, false);
       if (ratingList.size() == 0) {
          return -1;
@@ -48,7 +48,7 @@ public class RatingUtil {
     */
    public static Rating getContentRating(int contentNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList ratingList = cloud.getList(null, "contentelement,rating", "rating.rating", "contentelement.number = "
+      NodeList ratingList = cloud.getList(null, "object,rating", "rating.rating", "object.number = "
             + contentNumber, null, null, null, false);
       float rating = -1;
       int count = 0;
