@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.173 2008-10-13 13:09:53 sdeboer Exp $
+ * @version $Id: Wizard.java,v 1.174 2008-11-28 16:50:40 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -186,7 +186,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @throws WizardException when wizard creation failed
      */
     public Wizard(HttpServletRequest request, URIResolver uri,
-                  Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
+                  Config.WizardConfig wizardConfig,
+                  Cloud cloud) throws WizardException {
         initialize(request, uri, wizardConfig, cloud);
     }
 
@@ -1028,7 +1029,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
 
         // select all fields on first level
-        NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
+        NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|listset|list|command");
 
         // process all possible fields
         // - Parse the fdatapath attribute to obtain the corresponding data fields.
@@ -1046,6 +1047,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 NodeList itemprops = Utils.selectNodeList(field, "prompt");
                 Utils.appendNodeList(itemprops, newfieldset);
+
+                // place newfieldset in pre-html form
+                form.appendChild(newfieldset);
+                createPreHtmlForm(newfieldset, field, dataContext);
+            } else if (nodeName.equals("listset")) {
+                Node newfieldset = form.getOwnerDocument().createElement("listset");
+                Utils.copyAllAttributes(field, newfieldset);
 
                 // place newfieldset in pre-html form
                 form.appendChild(newfieldset);
