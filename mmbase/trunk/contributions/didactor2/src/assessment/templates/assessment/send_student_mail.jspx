@@ -20,11 +20,14 @@
             <mm:nodefunction name="clone">
               <mm:setfield name="to">${user.email}</mm:setfield>
               <mm:setfield name="type">TYPE_ONESHOT</mm:setfield>
-              <mm:import id="formatarguments" listdelimiter="\|" vartype="list"><mm:field node="lesson" name="name" /></mm:import>
-              <mm:log>${formatarguments}</mm:log>
+              <mm:import id="formatarguments" listdelimiter="\|" vartype="list">
+                <mm:field node="lesson" name="name" />
+                <jsp:text>|</jsp:text>
+                <mm:node referid="user"><di:person /></mm:node>
+              </mm:import>
               <mm:function name="startmail" referids="formatarguments" />
             </mm:nodefunction>
-          </mm:relatednodes>
+          </mm:relatednodes>b
         </mm:relatednodescontainer>
       </c:if>
 
