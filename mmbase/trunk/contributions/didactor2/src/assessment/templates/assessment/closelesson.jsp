@@ -36,7 +36,7 @@
 
 
       <!--
-          Now send mail
+          Now send mail to coach
       -->
       <c:if test="${di:setting('assessment', 'send_email') eq 'true')}">
         <mm:node number="$user">
@@ -54,12 +54,20 @@
                   <mm:setfield name="to"><mm:field name="email" node="teacher" /></mm:setfield>
                   <mm:setfield name="subject"><mm:write referid="subject"/></mm:setfield>
                   <mm:setfield name="body"><di:translate key="assessment.give_feedback_body" /></mm:setfield>
-                  <mm:setfield name="type">1</mm:setfield>
+                  <mm:setfield name="type">TYPE_ONESHOT</mm:setfield>
+                  <mm:function name="startmail" />
                 </mm:createnode>
               </mm:related>
             </mm:node>
           </mm:related>
         </mm:node>
+      </c:if>
+
+      <!--
+        And to the student
+      -->
+      <c:if test="${di:setting('assessment', 'send_student_email') eq 'true')}">
+        <mm:include page="send_student_mail.jspx" referids="user,lesson" />
       </c:if>
 
 
