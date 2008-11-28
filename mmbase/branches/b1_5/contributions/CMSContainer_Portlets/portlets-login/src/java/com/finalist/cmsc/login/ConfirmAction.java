@@ -15,6 +15,7 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class ConfirmAction extends Action{
@@ -22,19 +23,25 @@ public class ConfirmAction extends Action{
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
-      String emailAddress = httpServletRequest.getParameter("s");
-      String returnUrl = httpServletRequest.getParameter("url");
-      Encode encoder = new org.mmbase.util.Encode("BASE64");
-      emailAddress = encoder.decode(emailAddress);
+      String authId = httpServletRequest.getParameter("s");
+      String pageNumber = httpServletRequest.getParameter("pn");
+      String name = httpServletRequest.getParameter("nm");
+      String returnUrl = "";
+      //emailAddress = encoder.decode(emailAddress);
+//      emailAddress = encoder.decode(emailAddress);
       String target = "failure";
-      if (StringUtils.isNotBlank(returnUrl)) {
-         returnUrl = encoder.decode(returnUrl);
-      }
+//      if (StringUtils.isNotBlank(returnUrl)) {
+//         returnUrl = encoder.decode(returnUrl);
+//      }  
 //      Cloud cloud = getCloudForAnonymousUpdate(false);
-      if (emailAddress != null) {
-         AuthenticationService authenticationService = (AuthenticationService)ApplicationContextFactory.getBean("authenticationService");
+      if (StringUtils.isBlank(pageNumber)) {
+         throw new NullPointerException("The page number is null");
+      }
+      returnUrl = SiteManagement.getPath(Integer.parseInt(pageNumber), true);
+      returnUrl += "/_rp_".concat(name).concat("_").concat("active").concat("/1_");
+      if (authId != null) {
          PersonService personService = (PersonService)ApplicationContextFactory.getBean("personService");
-         Long authenticationId = authenticationService.getAuthenticationIdForUserId(emailAddress);
+         Long authenticationId =Long.parseLong(authId);
          if(authenticationId > 0) {
             Person person = personService.getPersonByAuthenticationId(authenticationId);
             if(person != null) {
