@@ -17,10 +17,11 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 
 /**
- * Starts a Thread which checks email nodes that can e deleted, because they were sent already some
- * time ago, and were marked as 'one shot'.
+ * Checks email nodes that can be deleted, because they were sent already some time ago, and were
+ * marked as 'one shot'.
  *
  * @author Daniel Ockeloen
+ * @version $Id: EmailExpireHandler.java,v 1.16 2008-11-28 14:26:29 michiel Exp $
  */
 class EmailExpireHandler implements Runnable {
 
