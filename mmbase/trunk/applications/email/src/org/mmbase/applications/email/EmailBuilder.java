@@ -31,15 +31,21 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.34 2008-11-27 13:53:35 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.35 2008-11-28 14:25:45 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(EmailBuilder.class);
 
-    public final static Parameter[] MAIL_PARAMETERS = {
-        new Parameter("type",    String.class)
-    };
+    public final static Parameter<String> TYPE_PARAMETER = new Parameter<String>("type", String.class, "oneshot");
+
+    static {
+    }
+
+    public final static Parameter<List> MESSAGEFORMAT_ARGUMENTS_PARAMETER = new Parameter<List>("formatarguments", List.class, null);
+
+    public final static Parameter[] MAIL_PARAMETERS = { TYPE_PARAMETER, MESSAGEFORMAT_ARGUMENTS_PARAMETER };
+
 
 
     public final static Parameter[] STARTMAIL_PARAMETERS = MAIL_PARAMETERS;
@@ -60,7 +66,15 @@ public class EmailBuilder extends MMObjectBuilder {
     public final static int TYPE_RECEIVED    = 2; // Email which is received.
     public final static int TYPE_ONESHOTKEEP = 3; // Email will be sent and will not be removed.
 
-    // public final static int TYPE_REPEATMAIL  = 4; // Email will be sent and scheduled after sending for a next time (does not work?)
+    // public final static int TYPE_REPEATMAIL  = 4; // Email will be sent and scheduled after
+    // sending for a next time (does not work?)
+
+    public final static int TYPE_TEMPLATE = 5; // This email is only meant to be a template for
+                                                // other mails. The idea is to 'clone' it, and reset
+                                                // the type.
+
+
+
 
 
 
@@ -131,60 +145,64 @@ public class EmailBuilder extends MMObjectBuilder {
         if (expireHandler != null) { expireHandler.cancel(true); }
     }
 
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected  boolean sendMail(Node node, Parameters parameters) throws javax.mail.MessagingException {
+        Object[] arguments;
+
+        if (node.getIntValue(getTypeField()) == TYPE_TEMPLATE) {
+            node = org.mmbase.bridge.util.CloneUtil.cloneNodeWithRelations(node);
+        }
+
+        List a = parameters.get(MESSAGEFORMAT_ARGUMENTS_PARAMETER);
+        arguments = a == null ? null : a.toArray();
+
+        log.debug("We're in mail - args: " + parameters);
+        setType(node, parameters);
+
+        // get the mailtype so we can call the correct handler/method
+        int mailType = node.getIntValue(getTypeField());
+        boolean success = false;
+        switch(mailType) {
+        case TYPE_ONESHOT :
+            // deleting the node happens in EmailExpireHandler
+        case TYPE_ONESHOTKEEP :
+            EmailHandler.sendMailNode(node, arguments);
+            break;
+            // case TYPE_REPEATMAIL :
+        default:
+            log.warn("Trying to mail a node with unsupported type " + mailType);
+        }
+        return success;
+    }
+
     {
         addFunction(new NodeFunction/*<Void>*/("mail", MAIL_PARAMETERS, ReturnType.VOID) {
                 protected Boolean getFunctionValue(Node node, Parameters parameters) {
-                    log.debug("We're in mail - args: " + parameters);
-                    setType(node, parameters);
-
-                    // get the mailtype so we can call the correct handler/method
-                    int mailType = node.getIntValue(getTypeField());
-                    boolean success = false;
-                    switch(mailType) {
-                    case TYPE_ONESHOT :
-                        // deleting the node happens in EmailExpireHandler
-                    case TYPE_ONESHOTKEEP :
-                        try {
-                            EmailHandler.sendMailNode(node);
-                        } catch (javax.mail.MessagingException me) {
-                            log.error(me.getMessage(), me);
-                        }
-                        break;
-                        // case TYPE_REPEATMAIL :
-                    default:
-                        log.warn("Trying to mail a node with unsupported type " + mailType);
+                    try {
+                        sendMail(node, parameters);
+                    } catch (javax.mail.MessagingException me) {
+                        log.error(me.getMessage(), me);
                     }
-
                     return null;
                 }
             }
             );
         addFunction(new NodeFunction/*<Void>*/("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Void getFunctionValue(final Node node, Parameters parameters) {
-                    log.debug("We're in startmail - args: " + parameters);
-                    setType(node, parameters);
-
-                    // get the mailtype so we can call the correct handler/method
-                    int mailType = node.getIntValue(getTypeField());
-                    switch(mailType) {
-                    case TYPE_ONESHOT :
-                        // deleting the node happens in EmailExpireHandler
-                    case TYPE_ONESHOTKEEP :
-                        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                                public void run() {
-                                    try {
-                                        EmailHandler.sendMailNode(node);
-                                    } catch (javax.mail.MessagingException me) {
-                                        log.error(me.getMessage(), me);
-                                    }
+                protected Void getFunctionValue(final Node node, final Parameters parameters) {
+                    org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                            public void run() {
+                                try {
+                                    sendMail(node, parameters);
+                                } catch (javax.mail.MessagingException me) {
+                                    log.error(me.getMessage(), me);
                                 }
-                            });
-                        break;
-                        // case TYPE_REPEATMAIL :
-                    default:
-                        log.warn("Trying to mail a node with unsupported type " + mailType);
-                    }
-
+                            }
+                        }
+                        );
                     return null;
                 }
             }
@@ -219,13 +237,12 @@ public class EmailBuilder extends MMObjectBuilder {
 
 
     /**
-     * Set the mailtype based on the first argument in the list.
      *
      * @param node	Email node on which to set the type
      * @param args	List with arguments
      */
     private static void setType(Node node, Parameters parameters) {
-        String type = (String) parameters.get("type");
+        String type = parameters.get(TYPE_PARAMETER);
         String typeField = getTypeField();
         if ("oneshot".equals(type)) {
             node.setValue(typeField, TYPE_ONESHOT);
@@ -241,6 +258,8 @@ public class EmailBuilder extends MMObjectBuilder {
 
 
 
+
+    private boolean warnedOnce = false;
     /**
      * Returns all the one-shot delivered mail nodes older than a specified time.
      * This is used by {@link EmailExpireHandler} to remove expired emails.
@@ -260,7 +279,12 @@ public class EmailBuilder extends MMObjectBuilder {
             cons.addChild(new BasicFieldValueConstraint(query.getField(getField(getTypeField())),   TYPE_ONESHOT));
             cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
         } catch (IllegalArgumentException e) {
-            log.warn(e.getMessage());
+            if (! warnedOnce) {
+                log.warn(e.getMessage() + " (subsequent these warnings logged on debug level)");
+                warnedOnce = true;
+            } else {
+                log.debug(e.getMessage());
+            }
             return new ArrayList<MMObjectNode>();
         }
         query.setConstraint(cons);
