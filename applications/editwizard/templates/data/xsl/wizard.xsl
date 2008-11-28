@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.189 2008-11-08 13:09:58 michiel Exp $
+    @version $Id: wizard.xsl,v 1.190 2008-11-28 16:18:02 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -502,9 +502,20 @@
           </tr>
         </xsl:when>
         <xsl:when test="name()='fieldset'">
-          <tr class="fieldsetcanvas">
-            <xsl:apply-templates select="."/>
-          </tr>
+          <xsl:choose>
+            <xsl:when test="count(prompt) = 0">
+              <xsl:for-each select="field">
+                <tr class="fieldcanvas">
+                  <xsl:apply-templates select="."/>
+                </tr>
+              </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+              <tr class="fieldsetcanvas">
+                <xsl:apply-templates select="."/>
+              </tr>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="."/>
