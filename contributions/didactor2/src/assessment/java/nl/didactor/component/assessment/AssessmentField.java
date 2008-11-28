@@ -28,7 +28,7 @@ public class AssessmentField {
     public static class Get implements org.mmbase.datatypes.processors.Processor {
         public Object process(Node node, Field field, Object value) {
             Object result = Casting.toType(value == null ? Boolean.class : value.getClass(), Queries.count(getRelationsQuery(node)) != 0);
-            log.info("Processing " + value + " -> " + result);
+            log.debug("Processing " + value + " -> " + result);
             return result;
         }
     }
