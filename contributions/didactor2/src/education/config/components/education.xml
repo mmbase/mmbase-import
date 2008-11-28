@@ -13,5 +13,25 @@
     <body jsp="wizards/education_schemas.jspx" />
   </block>
 
+  <block name="learnblock_fields"
+         classification="didactor.wizards.learnblocks.fields:0"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock.fields.jspx" />
+  </block>
+
+  <block name="learnblock_forms_paragraphs"
+         classification="didactor.wizards.learnblocks.forms:10"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock_paragraphs.form-schema.jspx" />
+  </block>
+
+
+  <block name="learnblock_forms_learnobjects"
+         classification="didactor.wizards.learnblocks.forms:20"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock_learnobjects.form-schema.jspx" />
+  </block>
+
+
 
 </component>
