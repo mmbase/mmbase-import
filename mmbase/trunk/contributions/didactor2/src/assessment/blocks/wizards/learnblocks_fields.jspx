@@ -14,7 +14,7 @@
   <fieldset>
     <mm:cloud>
       <mm:node number="${education}">
-        <di:hascomponent name="assessement">
+        <di:hascomponent name="assessment">
           <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
             <field name="assessment" />
           </c:if>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorAssessment" maintainer="didactor.nl" version="2" auto-deploy="true">
+<application name="DidactorAssessment" maintainer="didactor.nl" version="3" auto-deploy="true">
   <requirements>
     <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
     <requires name="DidactorCore"      maintainer="didactor.nl" version="10" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="DidactorEducation" maintainer="didactor.nl" version="22" />
+    <requires name="DidactorEmail"     maintainer="didactor.nl" version="3" />
   </requirements>
 
   <neededbuilderlist>
@@ -16,6 +17,7 @@
     <builder maintainer="didactor.nl" version="1">goals</builder>
     <builder maintainer="didactor.nl" version="1">problems</builder>
     <builder maintainer="didactor.nl" version="1">problemtypes</builder>
+    <builder maintainer="didactor.nl" version="3">emails</builder>
 
   </neededbuilderlist>
 
@@ -43,6 +45,8 @@
     <relation from="learnobjects" to="learnobjects" type="descriptionrel" />
 
     <relation from="learnblocks" to="components" type="related" /> <!-- means that assessemnt should be used for given learnblock -->
+
+    <relation from="learnblocks" to="emails" type="posrel" />
 
   </allowedrelationlist>
 
