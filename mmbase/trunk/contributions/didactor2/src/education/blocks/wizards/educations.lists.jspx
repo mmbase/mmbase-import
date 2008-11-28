@@ -12,8 +12,10 @@
               />
   <listset>
     <c:forEach items="${di:setting('education', 'educations_lists')}" var="list">
-      <mm:log>${list}</mm:log>
-      <list  extends="config/${mm:escape('trimmer', list)}.xml" />
+      <c:set var="trimmed" value="${mm:escape('trimmer', list)}" />
+      <c:if test="${trimmed != '' and trimmed != '-'}">
+        <list  extends="config/${trimmed}.xml" />
+      </c:if>
     </c:forEach>
   </listset>
 </mm:content>
