@@ -71,6 +71,23 @@ public class ElementMeta {
       return prefix;
    }
    
+   //add change sourceStyle
+   public String getStyle(String fieldName) {
+      NodeList nodeList = element.getChildNodes();
+      String Style = "";
+      for(int i = 0 ; i <nodeList.getLength() ; i++) {
+         Node node = nodeList.item(i);
+         if(node.getNodeName().equalsIgnoreCase("field")) {
+            Element elem = (Element)node;
+            if(fieldName.equals(elem.getAttribute("sourcename")) && StringUtils.isNotEmpty(elem.getAttribute("sourcestyle"))) {
+               Style = elem.getAttribute("sourcestyle");
+            }
+         }
+      }
+      return Style;
+   }
+   
+   
    public String getSourceTableName() {
       return element.getAttribute("sourcetype");
    }
