@@ -43,10 +43,9 @@
 			      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/rootfaqnodes&objectnumber=new&path=FAQ' title="nieuwe FAQ" target="text">nieuwe FAQ</a></nobr></td>
 			   </tr>
 			</table>
-	   <mm:listnodes type="faqcontainers">
-           <mm:relatednodescontainer type="faqnodes" >
+      <mm:listnodescontainer type="faqnodes" >
                 <mm:sortorder field="number" direction="up" />
-	              <mm:relatednodes>
+	              <mm:listnodes>
 	                  <% hasChilds = false; %>
 	                  <% hasSimpleContents = false; %>
 	                  <% nb++; %>
@@ -111,8 +110,7 @@
 												    <%@include file="related_faqnodes.jsp"%>
 												</mm:node>
 										</div>
-                </mm:relatednodes>
-	         </mm:relatednodescontainer>
-	   </mm:listnodes>
+                </mm:listnodes>
+	         </mm:listnodescontainer>
 </div>
 </mm:cloud>
