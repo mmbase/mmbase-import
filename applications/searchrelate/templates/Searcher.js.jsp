@@ -15,11 +15,12 @@
  * Custom events
  * - mmsrRelate            (use   $("div.mm_related").bind("mmsrRelate", function (e, tr, relater) ) )
  * - mmsrUnrelate          (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
+ * - mmsrPaged             (use   $("div.mm_related").bind("mmsrPaged", function (e, status, relater) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.59 2008-11-28 15:02:30 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.60 2008-11-29 20:26:37 andre Exp $
  */
 
 
@@ -617,7 +618,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                         self.addNewlyRelated(rep);
                         self.deleteNewlyRemoved(rep);
                         self.bindEvents(rep);
-
+                        $(self.relater.div).trigger("mmsrPaged", [status, self.relater]);
                     }
                 }
                });
@@ -630,6 +631,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
         this.addNewlyRelated(rep);
         self.deleteNewlyRemoved(rep);
         this.bindEvents(rep);
+        $(self.relater.div).trigger("mmsrPaged", [status, self.relater]);
     }
     return false;
 }
