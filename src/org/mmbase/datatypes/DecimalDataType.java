@@ -18,10 +18,25 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * DataType associated with {@link java.math.BigDecimal}, a NumberDataType, but provides getMin and getMax as int.
+ * DataType associated with {@link java.math.BigDecimal}, a NumberDataType. Decimals are naturally
+ * restricted on {@link BigDecimal#precision()} and {@link BigDecimal#scale()}.
+ *
+ * The <em>precision</em> of a decimal can be identified with its <em>length</em>, because it is simply the
+ * number of stored digits. Therefore this class <em>does</em>, in contradication to other
+ * NumberDataTypes implement {@link LengthDataType}. {@link #getPrecision} and {@link
+ * #getMaxLength} are synonymous though.
+ *
+ * The precision and scale properties correspond with the xsd-tags xsd:precision and xsd:scale,
+ * indicating <em>maximal</em> values for those concepts. The can be set with dt:precision
+ * (dt:maxLength should work too) and dt:scale.
+ *
+ * The rounding mode is used, and must be relaxed (since it is default {@link
+ * RoundingMode#UNNECESSARY}), if the scale restriction is not enforced. In this case the values can
+ * be rounded before validation and storage, but we need to know how precisely this must happen.
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.1 2008-12-01 17:24:14 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.2 2008-12-01 17:50:51 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
