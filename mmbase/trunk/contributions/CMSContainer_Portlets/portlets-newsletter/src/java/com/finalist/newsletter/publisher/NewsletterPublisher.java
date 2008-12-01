@@ -1,16 +1,29 @@
 package com.finalist.newsletter.publisher;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.services.community.ApplicationContextFactory;
-import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.domain.EditionStatus;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.publisher.cache.CacheFactory;
-import com.finalist.newsletter.publisher.cache.ICache;
-import com.finalist.newsletter.services.NewsletterService;
-import com.finalist.newsletter.util.NewsletterUtil;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -22,19 +35,15 @@ import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.*;
-import java.util.Date;
-import java.util.Properties;
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.domain.EditionStatus;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.publisher.cache.CacheFactory;
+import com.finalist.newsletter.publisher.cache.ICache;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublisher {
 
@@ -69,7 +78,7 @@ public class NewsletterPublisher {
          }
          
 
-         NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+         //NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
          // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
          Newsletter newsletter = publication.getNewsletter();
          String replyAddress = newsletter.getReplyAddress();
@@ -115,8 +124,8 @@ public class NewsletterPublisher {
    private void setBody(Publication publication, Subscription subscription, Multipart multipart,String originalBody) {
       MimeBodyPart mdp = new MimeBodyPart();
       try {
-         String type=subscription.getMimeType();
-         log.info("the content will be sended:"+originalBody+"\n "+"his type is :"+type);
+         String type = subscription.getMimeType();
+         log.debug("the content using type " + type + " will be send as: " + originalBody + "\n");
          mdp.setContent(originalBody, type);
          multipart.addBodyPart(mdp);
       }
