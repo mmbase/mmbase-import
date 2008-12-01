@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.74 2008-12-01 17:29:42 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.75 2008-12-01 17:31:01 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -354,7 +354,7 @@
 
     <specialization id="iso3166">
       <description xml:lang="en">
-        ISO 3166 language 2-country codes
+        ISO 3166 language 2-letter country codes
       </description>
       <pattern value="\A..\z" />
       <enumeration>
