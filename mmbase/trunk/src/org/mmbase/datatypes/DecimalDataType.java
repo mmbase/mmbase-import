@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.3 2008-12-01 18:56:54 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.4 2008-12-01 20:27:17 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
@@ -93,11 +93,9 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         setPrecision((int) value);
     }
 
-    @Override protected Number castString(Object preCast, Cloud cloud) throws CastException {
+    @Override protected BigDecimal castString(Object preCast, Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
-        if (preCast instanceof Number) {
-            return (Number) preCast;
-        } else if (preCast instanceof CharSequence) {
+        if (preCast instanceof CharSequence) {
             try {
                 BigDecimal dec = new BigDecimal("" + preCast, new MathContext(Integer.MAX_VALUE, roundingMode));
                 return dec;
@@ -158,6 +156,9 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
     @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
+        if (log.isDebugEnabled()) {
+            log.debug("Validating for " + field + " " + castValue.getClass() + " " + castValue);
+        }
         errors = precisionRestriction.validate(errors, castValue, node, field);
         errors = scaleRestriction.validate(errors, castValue, node, field);
         return errors;
@@ -180,7 +181,9 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             RoundingMode rm = DecimalDataType.this.getRoundingMode();
             if (rm == RoundingMode.UNNECESSARY) rm = RoundingMode.UP;
             compare = compare.setScale(scale, rm);
-            log.debug("Checking " + compare  + " " + compare.precision() + " <= " +max + " scale; " + scale);
+            if (log.isDebugEnabled()) {
+                log.debug("Checking " + compare  + " " + compare.precision() + " <= " +max + " scale; " + scale);
+            }
             return compare.precision() <= max;
         }
     }
