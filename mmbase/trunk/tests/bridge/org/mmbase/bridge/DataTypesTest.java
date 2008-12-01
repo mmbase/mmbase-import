@@ -13,6 +13,7 @@ package org.mmbase.bridge;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.processors.*;
 import java.util.*;
+import java.math.BigDecimal;
 import org.mmbase.util.*;
 import org.mmbase.tests.*;
 import junit.framework.*;
@@ -154,6 +155,11 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"nonode_typedef",
                               new Object[] {"object", "typedef", "datatypes"},
                               new Object[] {"", "asjdlkf", node1}}
+                ,
+                new Object[] {"decimal",
+                              new Object[] {"22222222222222222222222222222222222.111111111111111111111111111111"/*35.30*/, "1", new Integer(100),
+                                            new BigDecimal("22222222222222222222222222222222222.1234")},
+                              new Object[] {"333333333333333333333333333333333333", "asjdlkf", node1}}
                 /*
                   XML not very well supported yet
                 new Object[] {"xml",
