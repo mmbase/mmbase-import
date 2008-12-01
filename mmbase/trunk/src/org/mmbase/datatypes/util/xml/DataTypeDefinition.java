@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.68 2008-09-08 08:56:56 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.69 2008-12-01 17:25:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -250,6 +250,8 @@ public class DataTypeDefinition {
             ret = true;
         } else if (addPasswordProperty(childElement)) {
             ret = true;
+        } else if (addDecimalCondition(childElement)) {
+            ret = true;
         } else if (addLengthDataCondition(childElement)) {
             ret =  true;
         } else if (addComparableCondition(childElement)) {
@@ -363,6 +365,28 @@ public class DataTypeDefinition {
                 setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
                 bDataType.setMaxLength(value);
                 setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected boolean addDecimalCondition(Element conditionElement) {
+        if (dataType instanceof DecimalDataType) {
+            String localName = conditionElement.getLocalName();
+            DecimalDataType bDataType = (DecimalDataType) dataType;
+            if ("precision".equals(localName)) {
+                int value = (int) DataTypeXml.getLongValue(conditionElement);
+                bDataType.setPrecision(value);
+                setRestrictionData(bDataType.getPrecisionRestriction(), conditionElement);
+                return true;
+            } else if ("scale".equals(localName)) {
+                int value = (int) DataTypeXml.getLongValue(conditionElement);
+                bDataType.getScaleRestriction().setValue(value);
+                setRestrictionData(bDataType.getScaleRestriction(), conditionElement);
                 return true;
             }
         }

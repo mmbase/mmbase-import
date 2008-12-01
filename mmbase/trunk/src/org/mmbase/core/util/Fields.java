@@ -26,10 +26,11 @@ public class Fields {
     };
 
     public final static int TYPE_MINVALUE    = 1;
-    public final static int TYPE_MAXVALUE    = 12;
     private final static String[] TYPES = {
-        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BINARY" /* BYTE */, "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
+        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BINARY" /* BYTE */, "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST", "DECIMAL"
     };
+    public final static int TYPE_MAXVALUE    = TYPES.length + 1;
+
 
     /**
      * Returns an instance of a CoreField based on the type, with state 'SYSTEM', and a basic datatype assigned.
@@ -47,7 +48,7 @@ public class Fields {
      * @param type the MMBase basic field type, one of the {@link Field} TYPE constants.
      * @param listItemType the MMBase type for items of a list (if type is {@link Field#TYPE_LIST}).
      * @param state the MMBase field state, one of the {@link Field} STATE constants.
-     * @param dataType the dataType to use for validating the field data. If <code>null</code>, a default datatype is assigned
+     * @param dataType the <em>unfinished</em> dataType to use for validating the field data. If <code>null</code>, a default datatype is assigned
      */
     public static CoreField createField(String name, int type, int listItemType, int state, DataType dataType) {
         if (dataType == null) {
@@ -133,6 +134,7 @@ public class Fields {
         if (type.equals("NODE"))    return Field.TYPE_NODE;
         if (type.equals("DATETIME"))return Field.TYPE_DATETIME;
         if (type.equals("BOOLEAN")) return Field.TYPE_BOOLEAN;
+        if (type.equals("DECIMAL")) return Field.TYPE_DECIMAL;
         if (type.startsWith("LIST"))    return Field.TYPE_LIST;
         return Field.TYPE_UNKNOWN;
     }
@@ -169,6 +171,8 @@ public class Fields {
             return Field.TYPE_DATETIME;
         } else if (List.class.isAssignableFrom(classType)) {
             return Field.TYPE_LIST;
+        } else if (java.math.BigDecimal.class.isAssignableFrom(classType)) {
+            return Field.TYPE_DECIMAL;
         } else {
             return Field.TYPE_UNKNOWN;
         }
@@ -192,6 +196,7 @@ public class Fields {
         case Field.TYPE_NODE: return Node.class;
         case Field.TYPE_DATETIME: return java.util.Date.class;
         case Field.TYPE_BOOLEAN: return Boolean.class;
+        case Field.TYPE_DECIMAL: return java.math.BigDecimal.class;
         case Field.TYPE_LIST: return List.class;
         default: return null;
         }

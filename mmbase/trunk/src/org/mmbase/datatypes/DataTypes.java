@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.31 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.32 2008-12-01 17:24:34 michiel Exp $
  */
 
 public class DataTypes {
@@ -111,7 +111,7 @@ public class DataTypes {
                 URL u = i.previous();
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
-                    log.service("Reading " + u);
+                    log.service("Reading " + u + " with weight " + ResourceLoader.getWeight(u));
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
                     dataTypesSource.setSystemId(u.toExternalForm());
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true,
@@ -119,7 +119,9 @@ public class DataTypes {
                                                                            new org.mmbase.util.xml.EntityResolver(true, DataTypeReader.class));
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
-                    failed.addAll(DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector));
+                    List<DependencyException> f = DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
+                    log.service("Failed " + f);
+                    failed.addAll(f);
                 } else {
                     log.debug("Not reading, because not existing " + u);
                 }
@@ -127,6 +129,7 @@ public class DataTypes {
                 log.error(e.getMessage(), e);
             }
         }
+
         while (readFailedDependencies(failed) > 0);
 
         if (failed.size() > 0) {
@@ -180,6 +183,7 @@ public class DataTypes {
         case Field.TYPE_NODE: return new NodeDataType(name);
         case Field.TYPE_DATETIME: return new DateTimeDataType(name);
         case Field.TYPE_LIST: return new ListDataType(name);
+        case Field.TYPE_DECIMAL: return new DecimalDataType(name);
         default: return new BasicDataType(name);
         }
     }
