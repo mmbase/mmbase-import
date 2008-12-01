@@ -68,6 +68,9 @@ public abstract class SearchAction extends PagerAction {
       //search in one contentchannel
       String channelid=searchForm.getChannelid();
       if(!StringUtil.isEmpty(channelid)){
+      //search in the current channel
+      if("current".equals(channelid))
+         channelid = (String)request.getSession().getAttribute("creation");
       NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
       RelationStep relStep = query.addRelationStep(channelManager,CREATIONREL,DESTINATION);
       Step channelStep = relStep.getNext();

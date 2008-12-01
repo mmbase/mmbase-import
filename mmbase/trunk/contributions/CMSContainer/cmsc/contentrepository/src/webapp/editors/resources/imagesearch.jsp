@@ -108,12 +108,18 @@ div.editor div.body #imgList div.grid div.imgInfo {
       </div>
 		<div class="ruler_green">
 		<c:choose>
-			<c:when test="${empty channelid}">
-				<div>IMAGE IN ALL CHANNELS</div>
+			<c:when test="${empty param.channelid}">
+				<div><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></div>
 			</c:when>
 			<c:otherwise>
+				<c:if test="${param.channelid eq 'current'}">
+					<mm:import id="channelid" externid="creation" from="session" />
+				</c:if>
 				<mm:node number="${channelid}">
-					<div>IMAGE IN <mm:field name="number"/></div>
+					<mm:field name="pathfragment" id="pathfragment" write="false" />
+					<div><fmt:message key="images.channel.title">
+						<fmt:param value="${pathfragment}" />
+					</fmt:message></div>
 				</mm:node>
 			</c:otherwise>
 		</c:choose>
@@ -147,11 +153,13 @@ div.editor div.body #imgList div.grid div.imgInfo {
       <c:if test="${action != 'search'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
+      <mm:url page="/editors/resources/ImageAction.do?action=search&channelid=${channelid}" id="search_image_url" write="false" />
+      <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
 		<ul class="shortcuts">
-			<li><a href="${search_init_action_url}"> Often used images in all channels </a></li>
-			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"> Select different channel </a></li>
-			<li><a href="ImageAction.do?action=search&channelid=${channelid}"> Search image </a></li>
-			<li><a href="imageupload.jsp"> New image </a></li>
+			<li><a href="#"><fmt:message key="imageselect.link.allchannel" /></a></li>
+			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="imageselect.link.channel" /></a></li>
+			<li><a href="${search_image_url}"><fmt:message key="imageselect.link.search" /></a></li>
+			<li><a href="${new_image_url}"><fmt:message key="imageselect.link.new" /></a></li>
 		</ul>
 		</div>
       </c:if>
@@ -163,13 +171,13 @@ div.editor div.body #imgList div.grid div.imgInfo {
             <div class="page_buttons">
                 <div class="button">
                     <div class="button_body">
-                        <a id="bottombutton-ok" class="bottombutton" title="Select the image." href="javascript:doSelectIt();" unselectable="on" titlesave="Select the image." titlenosave="Cannot be saved, since no image is selected." inactive="false">OK</a>
+                        <a id="bottombutton-ok" class="bottombutton" title="Select the image." href="javascript:doSelectIt();" unselectable="on" titlesave="Select the image." titlenosave="Cannot be saved, since no image is selected." inactive="false"><fmt:message key="imageselect.ok" /></a>
                     </div>
                 </div>
                
                 <div class="button">
                     <div class="button_body">
-                        <a id="bottombutton-cancel" class="bottombutton" href="javascript:doCancleIt();" title="Cancel this task, image will NOT be selected.">Cancel</a>
+                        <a id="bottombutton-cancel" class="bottombutton" href="javascript:doCancleIt();" title="Cancel this task, image will NOT be selected."><fmt:message key="imageselect.cancel" /></a>
                     </div>
                 </div>
                 <div class="begin">
