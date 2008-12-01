@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.75 2008-12-01 17:31:01 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.76 2008-12-01 20:01:21 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -866,7 +866,7 @@
 
 
     <specialization id="currency">
-      <precision value="10" />
+      <precision value="20" />
       <scale     value="5" enforce="never" />
       <property name="roundingMode" value="HALF_UP" />
       <!--
