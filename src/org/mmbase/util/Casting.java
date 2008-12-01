@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.120 2008-12-01 17:26:21 michiel Exp $
+ * @version $Id: Casting.java,v 1.121 2008-12-01 22:52:13 michiel Exp $
  */
 
 import java.util.*;
@@ -938,7 +938,27 @@ public class Casting {
         if (i instanceof BigDecimal) {
             return (BigDecimal) i;
         } else if (i instanceof CharSequence) {
-            return new BigDecimal("" + i).stripTrailingZeros();
+            try {
+                return new BigDecimal("" + i).stripTrailingZeros();
+            } catch (NumberFormatException nfe) {
+                if(i instanceof String){
+                    String s = ((String)i).toLowerCase();
+                    if (s.equals("true") || s.equals("yes")) {
+                        return BigDecimal.ONE;
+                    } else if(s.equals("false") || s.equals("no")) {
+                        return BigDecimal.ZERO;
+                    }
+                }
+                return BigDecimal.ONE.negate();
+            }
+        } else if (i instanceof Long) {
+            return new BigDecimal((Long) i);
+        } else if (i instanceof Integer) {
+            return new BigDecimal((Integer) i);
+        } else if (i instanceof Double) {
+            return new BigDecimal((Double) i);
+        } else if (i instanceof Float) {
+            return new BigDecimal((Float) i);
         } else {
             return new BigDecimal(toDouble(i));
         }
