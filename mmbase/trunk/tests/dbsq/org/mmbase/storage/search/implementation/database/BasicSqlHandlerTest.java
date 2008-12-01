@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class BasicSqlHandlerTest extends TestCase {
 
@@ -867,7 +867,7 @@ public class BasicSqlHandlerTest extends TestCase {
     }
 
     /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
-    public void testAppendConstraintToSql() {
+    public void testAppendConstraintToSql() throws SearchQueryException {
 
         BasicSearchQuery query = new BasicSearchQuery();
         StringBuilder sb = new StringBuilder();
