@@ -29,7 +29,7 @@ public class Fields {
     private final static String[] TYPES = {
         "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BINARY" /* BYTE */, "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST", "DECIMAL"
     };
-    public final static int TYPE_MAXVALUE    = TYPES.length + 1;
+    public final static int TYPE_MAXVALUE    = TYPES.length;
 
 
     /**
