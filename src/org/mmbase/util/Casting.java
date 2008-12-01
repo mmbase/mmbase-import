@@ -16,13 +16,14 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.119 2008-10-22 12:27:20 michiel Exp $
+ * @version $Id: Casting.java,v 1.120 2008-12-01 17:26:21 michiel Exp $
  */
 
 import java.util.*;
 import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
+import java.math.BigDecimal;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.NodeWrapper;
@@ -207,6 +208,8 @@ public class Casting {
                 return (C) toMap(value);
             } else if (type.equals(Collection.class)) {
                 return (C) toCollection(value);
+            } else if (type.equals(BigDecimal.class)) {
+                return (C) toDecimal(value);
             } else if (type.equals(java.util.regex.Pattern.class)) {
                 if (java.util.regex.Pattern.class.isInstance(value)) {
                     return (C) value;
@@ -927,6 +930,19 @@ public class Casting {
         return toDouble(i, -1);
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    static public BigDecimal toDecimal(Object i) {
+        if (i instanceof BigDecimal) {
+            return (BigDecimal) i;
+        } else if (i instanceof CharSequence) {
+            return new BigDecimal("" + i).stripTrailingZeros();
+        } else {
+            return new BigDecimal(toDouble(i));
+        }
+    }
 
 
     /**

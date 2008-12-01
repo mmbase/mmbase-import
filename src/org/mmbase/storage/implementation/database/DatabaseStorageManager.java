@@ -15,6 +15,7 @@ import java.util.*;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.datatypes.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -32,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.201 2008-10-09 09:51:42 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.202 2008-12-01 17:27:16 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1249,6 +1250,10 @@ public class DatabaseStorageManager implements StorageManager {
             setListValue(statement, index, value, field, node);
             break;
         }
+        case Field.TYPE_DECIMAL : {
+            setDecimalValue(statement, index, value, field, node);
+            break;
+        }
         default :    // unknown field type - error
             throw new StorageException("unknown fieldtype");
         }
@@ -1427,6 +1432,17 @@ public class DatabaseStorageManager implements StorageManager {
             }
             statement.setTimestamp(index, new Timestamp(time - factory.getTimeZoneOffset(time)));
             node.storeValue(field.getName(), date);
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected void setDecimalValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) {
+            java.math.BigDecimal decimal = Casting.toDecimal(value);
+            statement.setBigDecimal(index, decimal);
+            node.storeValue(field.getName(), decimal);
         }
     }
 
@@ -2127,6 +2143,7 @@ public class DatabaseStorageManager implements StorageManager {
         String typeName = Fields.getTypeDescription(field.getType());
         long size = field.getMaxLength();
         TypeMapping mapping = new TypeMapping();
+        DataType dt = field.getDataType();
         mapping.name = typeName;
         mapping.setFixedSize(size);
         // search type mapping
@@ -2142,13 +2159,25 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         if (found > -1) {
-            String fieldDef = typeMappings.get(found).getType(size);
+            String fieldDef;
+            TypeMapping tm = typeMappings.get(found);
+            if (dt instanceof LengthDataType) {
+                fieldDef = tm.getType(size);
+            } else if (dt instanceof DecimalDataType) {
+                DecimalDataType dec = (DecimalDataType) dt;
+                fieldDef = tm.getType(dec.getPrecisionRestriction().getValue(), dec.getScaleRestriction().getValue());
+            } else {
+                fieldDef = tm.getType(size); // size does make much sense, but added for
+                                             // compatibility, e.g. if datatype is boolean, but
+                                             // storage type string.x
+            }
             if (field.isNotNull()) {
                 fieldDef += " NOT NULL";
             }
+            log.info("For field " + fieldDef);
             return fieldDef;
         } else {
-            throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined.");
+            throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + mapping + ") undefined." + typeMappings);
         }
     }
 
@@ -2427,7 +2456,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (mmbaseType == Field.TYPE_FLOAT || mmbaseType == Field.TYPE_DOUBLE) {
                 return mmbaseType;
             } else {
-                return Field.TYPE_DOUBLE;
+                return Field.TYPE_DECIMAL;
             }
         case Types.BINARY :
         case Types.LONGVARBINARY :
