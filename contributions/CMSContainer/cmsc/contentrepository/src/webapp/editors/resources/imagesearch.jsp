@@ -153,7 +153,7 @@ div.editor div.body #imgList div.grid div.imgInfo {
       <c:if test="${action != 'search'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-      <mm:url page="/editors/resources/ImageAction.do?action=search&channelid=${channelid}" id="search_image_url" write="false" />
+      <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
 		<ul class="shortcuts">
 			<li><a href="#"><fmt:message key="imageselect.link.allchannel" /></a></li>
