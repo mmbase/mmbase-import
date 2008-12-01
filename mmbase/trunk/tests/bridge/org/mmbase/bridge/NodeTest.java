@@ -23,7 +23,7 @@ import org.mmbase.security.AuthenticationData;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected static String[] fieldTypes = {"binary", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean"}; //, "list"};
+    protected static String[] fieldTypes = {"binary", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal"}; //, "list"};
     //protected static String[] fieldTypes = {"datetime"};
 
     public NodeTest(String name) {
@@ -49,6 +49,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -67,6 +68,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -85,6 +87,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -136,6 +139,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -154,6 +158,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetNodeValue();
         testGetBooleanValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -208,6 +213,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetXMLValue();
         testGetNodeValue();
         testGetDateTimeValue();
+        testGetDecimalValue();
         testGetListValue();
     }
 
@@ -228,6 +234,8 @@ public abstract class NodeTest extends BridgeTest {
         testGetBooleanValue();
         testGetListValue();
     }
+
+    abstract public void testGetDecimalValue();
 
     abstract public void testGetListValue();
 
