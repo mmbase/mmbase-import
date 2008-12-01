@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.14 2008-07-17 13:57:51 michiel Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.15 2008-12-01 22:41:58 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -140,7 +140,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
                 // not-null 'empty' booleans has value "false"
                 assertTrue("Empty " + element + " field queried as string did not return \"false\", but \"" + value +"\"",
                     "false".equals(value));
-            } else if (element.equals("long") || element.equals("int")) {
+            } else if (element.equals("long") || element.equals("int") || element.equals("decimal")) {
                 // not-null 'empty' numerics has value "-1"
                 assertTrue("Empty " + element + " field queried as string did not return \"-1\", but \"" + value +"\"",
                     "-1".equals(value));

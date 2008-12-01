@@ -12,6 +12,7 @@ package org.mmbase.bridge;
 
 import java.text.*;
 import java.util.*;
+import java.math.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,6 +31,8 @@ public class FilledNodeTest extends NodeTest {
 
     protected long TEST_TIME = (long) 20 * 356 * 24 * 60 * 60 * 1000;
     protected Date TEST_DATE = new Date(TEST_TIME);
+    protected BigDecimal TEST_DECIMAL = new BigDecimal("123123123.123456789");
+    protected Long TEST_LONG = Long.MAX_VALUE;
 
     public FilledNodeTest(String name) {
         super(name);
@@ -62,7 +65,7 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("doublefield", new Double(Double.MAX_VALUE));
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
-        node.setValue("longfield", new Long(Long.MAX_VALUE));
+        node.setValue("longfield", TEST_LONG);
         node.setValue("stringfield", "Bridge testing!");
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
@@ -70,6 +73,7 @@ public class FilledNodeTest extends NodeTest {
         //assertTrue("Not a datetime-datatype but " + dt.getClass(), dt.getClass().equals(org.mmbase.datatypes.DateTimeDataType.class)); // would give error in Node#setValue otherwise
 
         node.setValue("datetimefield", TEST_DATE);
+        node.setValue("decimalfield", TEST_DECIMAL);
         node.setValue("booleanfield", Boolean.TRUE);
         List<Boolean> list = new ArrayList<Boolean>();
         list.add(Boolean.TRUE);
@@ -100,8 +104,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue("getValue on int field should give " +  Integer.MAX_VALUE + " but gave " + object,
                     new Integer(Integer.MAX_VALUE).compareTo((Integer)object) == 0);
             } else if (element.equals("long")) {
-                assertTrue("getValue on long field should give " +  Long.MAX_VALUE + " but gave " + object,
-                    new Long(Long.MAX_VALUE).compareTo((Long)object) == 0);
+                assertTrue("getValue on long field should give " +  TEST_LONG + " but gave " + object,
+                           TEST_LONG.compareTo((Long)object) == 0);
             } else if (element.equals("string")) {
                 assertTrue("getValue on string field should give \"Bridge testing!\" but gave " + object,
                     "Bridge testing!".equals(object));
@@ -118,7 +122,10 @@ public class FilledNodeTest extends NodeTest {
                       ((Node) object).getNumber() == typedefNode.getNumber());
             } else if (element.equals("datetime")) {
                 assertTrue("getValue on datetime field should give " + TEST_DATE +" but gave " + object,
-                    TEST_DATE.equals(object));
+                           TEST_DATE.equals(object));
+            } else if (element.equals("decimal")) {
+                assertTrue("getValue on decimal field should give " + TEST_DECIMAL +" but gave " + object,
+                           TEST_DECIMAL.compareTo((BigDecimal) object) == 0);
             } else if (element.equals("boolean")) {
                 assertTrue("getValue on boolean field should give TRUE but gave " + object,object.equals(Boolean.TRUE));
             } else if (element.equals("list")) {
@@ -158,6 +165,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (element.equals("datetime")) {
                 assertTrue(bytes.length == 0);
+            } else if (element.equals("decimal")) {
+                assertTrue(bytes.length == 0);
             } else if (element.equals("list")) {
                 assertTrue(bytes.length == 0);
             } else {
@@ -190,6 +199,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("datetime")) {
                 assertTrue(element + "field queried as double did not return " + (double)TEST_TIME/1000 + " but " + d,
                         d == (double)TEST_TIME/1000);
+            } else if (element.equals("decimal")) {
+                assertTrue(d == TEST_DECIMAL.doubleValue());
             } else if (element.equals("list")) {
                 assertTrue(d == -1);
             } else {
@@ -210,7 +221,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("int")) {
                 assertTrue(f == Integer.MAX_VALUE);
             } else if (element.equals("long")) {
-                assertTrue(f == Long.MAX_VALUE);
+                assertTrue(f == TEST_LONG);
             } else if (element.equals("string")) {
                 assertTrue(f == -1);
             } else if (element.equals("xml")) {
@@ -222,6 +233,9 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("datetime")) {
                 assertTrue(element + "field queried as float did not return " + (float)TEST_TIME/1000 + " but " + f,
                         f == (float)TEST_TIME/1000);
+            } else if (element.equals("decimal")) {
+                assertTrue(element + "field queried as float did not return " + TEST_DECIMAL + " but " + f,
+                           f == TEST_DECIMAL.floatValue());
             } else if (element.equals("list")) {
                 assertTrue(f == -1);
             } else {
@@ -254,6 +268,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("datetime")) {
                 assertTrue(element + "field queried as double did not return " + TEST_TIME / 1000 + " but " + integer,
                         integer == (int) (TEST_TIME / 1000));
+            } else if (element.equals("decimal")) {
+                assertTrue("" + integer, integer == TEST_DECIMAL.intValue());
             } else if (element.equals("list")) {
                 assertTrue(integer == -1);
             } else {
@@ -274,7 +290,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("int")) {
                 assertTrue(l == Integer.MAX_VALUE);
             } else if (element.equals("long")) {
-                assertTrue(l == Long.MAX_VALUE);
+                assertTrue("Not found " + TEST_LONG + " but " + l, l == TEST_LONG);
             } else if (element.equals("string")) {
                 assertTrue(l == -1);
             } else if (element.equals("xml")) {
@@ -288,6 +304,8 @@ public class FilledNodeTest extends NodeTest {
                     l == TEST_TIME/1000);
             } else if (element.equals("list")) {
                 assertTrue(l == -1);
+            } else if (element.equals("decimal")) {
+                assertTrue(l == TEST_DECIMAL.longValue());
             } else {
                 fail();
             }
@@ -310,13 +328,13 @@ public class FilledNodeTest extends NodeTest {
                     String.valueOf(new Double(Float.MAX_VALUE)).equals(string) || String.valueOf(Float.MAX_VALUE).equals(string));
             } else if (element.equals("int")) {
                 assertTrue(element + "field queried as string did not return " + Integer.MAX_VALUE + " but " + string,
-                    String.valueOf(Integer.MAX_VALUE).equals(string));
+                           String.valueOf(Integer.MAX_VALUE).equals(string));
             } else if (element.equals("long")) {
-                assertTrue(element + "field queried as string did not return " + Long.MAX_VALUE + " but " + string,
-                    String.valueOf(Long.MAX_VALUE).equals(string));
+                assertTrue(element + "field queried as string did not return " + TEST_LONG + " but " + string,
+                           String.valueOf(TEST_LONG).equals(string));
             } else if (element.equals("string")) {
                 assertTrue(element + "field queried as string did not return \"Bridge testing!\" but " + string,
-                    "Bridge testing!".equals(string));
+                           "Bridge testing!".equals(string));
             } else if (element.equals("xml")) {
                 assertTrue(element + "field" +" field queried as string did not return empty document but " + string,
                     Casting.toString(getEmptyDocument()).equals(string));
@@ -342,6 +360,9 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("list")) {
                 assertTrue(element + "field queried as string did not return \"true,true\" but " + string,
                     "true,true".equals(string));
+            } else if (element.equals("decimal")) {
+                assertTrue(element + "field queried as string did not return " + TEST_DECIMAL + " but " + string,
+                           String.valueOf(TEST_DECIMAL).equals(string));
             } else {
                 fail();
             }
@@ -405,7 +426,12 @@ public class FilledNodeTest extends NodeTest {
                             value.getTime()==time);
             } else if (element.equals("long")) {
                 value = node.getDateValue(element + "field");
-                long time = Long.MAX_VALUE*1000; // oddd..
+                long time = Long.MAX_VALUE * 1000; // oddd..
+                assertTrue(element + " field queried as datetime did not return "+new Date(time) + ", but " + value,
+                            value.getTime()==time);
+            } else if (element.equals("decimal")) {
+                value = node.getDateValue(element + "field");
+                long time = TEST_DECIMAL.longValue() * 1000;
                 assertTrue(element + " field queried as datetime did not return "+new Date(time) + ", but " + value,
                             value.getTime()==time);
             } else {
@@ -419,6 +445,41 @@ public class FilledNodeTest extends NodeTest {
             assertTrue(element + " field queried as datetime returned null", value != null);
        }
     }
+
+    public void testGetDecimalValue() {
+        for (String element : fieldTypes) {
+            BigDecimal l = node.getDecimalValue(element + "field");
+            if (element.equals("binary")) {
+                assertTrue(new BigDecimal(-1).compareTo(l) == 0);
+            } else if (element.equals("double")) {
+                assertTrue("" + l + " != " + Double.MAX_VALUE, new BigDecimal(Double.MAX_VALUE).compareTo(l) == 0);
+            } else if (element.equals("float")) {
+                assertTrue(new BigDecimal(Float.MAX_VALUE).compareTo(l) == 0);
+            } else if (element.equals("int")) {
+                assertTrue(new BigDecimal(Integer.MAX_VALUE).compareTo(l) == 0);
+            } else if (element.equals("long")) {
+                assertTrue("" + l + " != " + TEST_LONG, new BigDecimal(TEST_LONG).compareTo(l) == 0);
+            } else if (element.equals("string")) {
+                assertEquals(new BigDecimal(-1), l);
+            } else if (element.equals("xml")) {
+                assertEquals(new BigDecimal(-1), l);
+            } else if (element.equals("node")) {
+                assertEquals(new BigDecimal(getCloud().getNodeManager("bb").getNumber()), l);
+            } else if (element.equals("boolean")) {
+                assertEquals(BigDecimal.ONE, l);
+            } else if (element.equals("datetime")) {
+                assertTrue(element + "field queried as double did not return " + TEST_TIME/1000 + " but " + l,
+                           new BigDecimal(TEST_TIME/1000).equals(l));
+            } else if (element.equals("decimal")) {
+                assertEquals(TEST_DECIMAL, l);
+            } else if (element.equals("list")) {
+                assertEquals(new BigDecimal(-1), 1);
+            } else {
+                fail();
+            }
+        }
+    }
+
 
     public void testGetListValue() {
         for (String element : fieldTypes) {

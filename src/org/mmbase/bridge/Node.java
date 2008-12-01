@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.79 2008-09-22 17:00:13 michiel Exp $
+ * @version $Id: Node.java,v 1.80 2008-12-01 22:41:06 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -230,6 +230,19 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.8
      */
     public void setDateValue(String fieldName, Date value);
+
+
+
+    /**
+     * Sets the value of the specified field using a <code>BigDecimal</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
+     * @since MMBase-1.9.1
+     */
+    public void setDecimalValue(String fieldName, java.math.BigDecimal value);
 
 
     /**
@@ -464,6 +477,15 @@ public interface Node extends Comparable<Node> {
      * field does not exist.
      */
     public Date getDateValue(String fieldName);
+
+    /**
+     * @param fieldName  the name of the field to be returned
+     * @return           the value of the specified field
+     * @since MMBase-1.9.1
+     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * field does not exist.
+     */
+    public java.math.BigDecimal getDecimalValue(String fieldName);
 
     /**
      * @param fieldName  the name of the field to be returned
