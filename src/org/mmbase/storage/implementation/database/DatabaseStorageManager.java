@@ -33,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.202 2008-12-01 17:27:16 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.203 2008-12-01 17:36:02 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1439,7 +1439,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @since MMBase-1.9.1
      */
     protected void setDecimalValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        if (!setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.DECIMAL)) {
             java.math.BigDecimal decimal = Casting.toDecimal(value);
             statement.setBigDecimal(index, decimal);
             node.storeValue(field.getName(), decimal);

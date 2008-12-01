@@ -16,6 +16,7 @@
   </descriptions>
 
   <fieldlist>
+
     <field name="string">
       <db>
         <type size="255">STRING</type>
@@ -466,6 +467,13 @@
           <class name="org.mmbase.datatypes.processors.CountCommitProcessor" />
         </commitprocessor>
       </datatype>
+    </field>
+
+    <field name="decimal">
+      <datatype base="decimal" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="currency">
+      <datatype base="currency" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
