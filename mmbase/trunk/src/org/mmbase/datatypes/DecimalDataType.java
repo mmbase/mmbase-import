@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.2 2008-12-01 17:50:51 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.3 2008-12-01 18:56:54 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
@@ -99,10 +99,12 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             return (Number) preCast;
         } else if (preCast instanceof CharSequence) {
             try {
-                BigDecimal dec = new BigDecimal("" + preCast, new MathContext(getPrecision(), roundingMode));
+                BigDecimal dec = new BigDecimal("" + preCast, new MathContext(Integer.MAX_VALUE, roundingMode));
                 return dec;
             } catch (NumberFormatException nfe) {
                 throw new CastException(nfe);
+            } catch (ArithmeticException ae) {
+                throw new CastException(ae);
             }
         } else {
             return Casting.toDecimal(preCast);
@@ -174,13 +176,12 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             if ((v == null) || (getValue() == null)) return true;
             BigDecimal compare = (BigDecimal) v;
             long max = getValue();
-            if (DecimalDataType.this.getRoundingMode() != RoundingMode.UNNECESSARY) {
-                if (compare.scale() > DecimalDataType.this.getScale()) {
-                    // will be rounded anyway, so we can allow for more precision left of the decimal
-                    max += (compare.scale() - DecimalDataType.this.getScale());
-                }
-            }
-            return compare.precision() < max;
+            int scale = DecimalDataType.this.getScale();
+            RoundingMode rm = DecimalDataType.this.getRoundingMode();
+            if (rm == RoundingMode.UNNECESSARY) rm = RoundingMode.UP;
+            compare = compare.setScale(scale, rm);
+            log.debug("Checking " + compare  + " " + compare.precision() + " <= " +max + " scale; " + scale);
+            return compare.precision() <= max;
         }
     }
 
@@ -196,7 +197,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             if ((v == null) || (getValue() == null)) return true;
             BigDecimal compare = (BigDecimal) v;
             int max = getValue();
-            return compare.scale() < max;
+            return compare.scale() <= max;
         }
     }
 
