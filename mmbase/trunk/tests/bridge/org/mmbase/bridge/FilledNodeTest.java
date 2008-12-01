@@ -32,7 +32,7 @@ public class FilledNodeTest extends NodeTest {
     protected long TEST_TIME = (long) 20 * 356 * 24 * 60 * 60 * 1000;
     protected Date TEST_DATE = new Date(TEST_TIME);
     protected BigDecimal TEST_DECIMAL = new BigDecimal("123123123.123456789");
-    protected Long TEST_LONG = Long.MAX_VALUE;
+    protected Long TEST_LONG = Long.MAX_VALUE - 10;
 
     public FilledNodeTest(String name) {
         super(name);
@@ -66,6 +66,7 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
         node.setValue("longfield", TEST_LONG);
+        assertTrue(node.getLongValue("longfield") == TEST_LONG.longValue());
         node.setValue("stringfield", "Bridge testing!");
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
@@ -80,6 +81,7 @@ public class FilledNodeTest extends NodeTest {
         list.add(Boolean.TRUE);
         //node.setValue("listfield", list);
         node.commit();
+        assertTrue(node.getLongValue("longfield") == TEST_LONG.longValue());
     }
 
     public void tearDown() {
@@ -187,7 +189,7 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("int")) {
                 assertTrue(d == Integer.MAX_VALUE);
             } else if (element.equals("long")) {
-                assertTrue(d == Long.MAX_VALUE);
+                assertTrue(d == TEST_LONG);
             } else if (element.equals("string")) {
                 assertTrue(d == -1);
             } else if (element.equals("xml")) {
