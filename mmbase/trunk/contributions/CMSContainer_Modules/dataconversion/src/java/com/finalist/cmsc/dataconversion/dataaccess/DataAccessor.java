@@ -207,6 +207,12 @@ public class DataAccessor {
                e.printStackTrace();
             }
             String s=out.toString();
+            if("0".equals(s.trim())){
+               return false;
+            }
+            if("-".equals(s.trim())){
+               return true;
+            }
             return org.mmbase.util.transformers.Xml.XMLEscape(s);
          }
       } catch (SQLException e) {
