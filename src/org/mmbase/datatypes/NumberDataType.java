@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.32 2008-09-12 09:21:37 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.33 2008-12-01 23:28:56 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number & Comparable<E>> extends ComparableDataType<E> {
@@ -61,9 +61,18 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                  }
              }
              return number;
+        } else if (preCast instanceof Float) {
+            if (((Float) preCast).isInfinite()) {
+                return (Float) preCast;
+            }
+        } else if (preCast instanceof Double) {
+            if (((Double) preCast).isInfinite()) {
+                return (Double) preCast;
+            }
         }
+        
 
-        return Casting.toDouble(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
+        return Casting.toDecimal(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
     }
 
 
