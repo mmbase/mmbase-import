@@ -68,6 +68,9 @@
         <xsd:element name="maxInclusive" type="Comparable" />
       </xsd:choice>
 
+      <xsd:element name="precision"  type="Comparable" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="scale"      type="Comparable" minOccurs="0" maxOccurs="1" />
+
       <xsd:element name="minLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
       <xsd:element name="maxLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
       <xsd:element name="length"     type="Comparable" minOccurs="0" maxOccurs="1" />
