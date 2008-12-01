@@ -17,7 +17,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: StringSplitter.java,v 1.10 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: StringSplitter.java,v 1.11 2008-12-01 09:16:12 michiel Exp $
  */
 public class StringSplitter {
 
@@ -77,12 +77,12 @@ public class StringSplitter {
         }
         return result;
     }
+
     /**
      * @since MMBase-1.9
      */
-
     static public Map<String, String> map(String string) {
-        Map<String, String>map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         List<String> keyValues = split(string);
         for (String kv : keyValues) {
             if ("".equals(kv)) continue;
