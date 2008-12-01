@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.21 2008-09-18 09:49:35 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.22 2008-12-01 22:41:06 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -54,6 +54,7 @@ public abstract class NodeWrapper implements Node {
     public void setLongValue(String fieldName, long value) { node.setLongValue(fieldName, value); }
     public void setStringValue(String fieldName, String value) { node.setStringValue(fieldName, value); }
     public void setDateValue(String fieldName, Date value) { node.setDateValue(fieldName, value); }
+    public void setDecimalValue(String fieldName, java.math.BigDecimal value) { node.setDecimalValue(fieldName, value); }
     public void setListValue(String fieldName, List<?> value) { node.setListValue(fieldName, value); }
     public boolean isNull(String fieldName) { return node.isNull(fieldName); }
     public long    getSize(String fieldName) { return node.getSize(fieldName); }
@@ -70,6 +71,7 @@ public abstract class NodeWrapper implements Node {
     public java.io.InputStream getInputStreamValue(String fieldName) { return node.getInputStreamValue(fieldName); }
     public String getStringValue(String fieldName) { return node.getStringValue(fieldName); }
     public Date getDateValue(String fieldName) { return node.getDateValue(fieldName); }
+    public java.math.BigDecimal getDecimalValue(String fieldName) { return node.getDecimalValue(fieldName); }
     public List<?> getListValue(String fieldName) { return node.getListValue(fieldName); }
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
         return node.getFieldValue(fieldName);

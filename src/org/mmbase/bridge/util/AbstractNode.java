@@ -12,6 +12,7 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import java.io.*;
+import java.math.BigDecimal;
 
 import java.text.Collator;
 
@@ -31,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.26 2008-09-24 22:34:50 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.27 2008-12-01 22:41:06 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -112,6 +113,7 @@ public abstract class AbstractNode implements Node {
             case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, getCloud())); break;
             case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+            case Field.TYPE_DECIMAL: setDecimalValue(fieldName, Casting.toDecimal(value)); break;
             case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
                 default:                 setObjectValue(fieldName, value);
             }
@@ -161,6 +163,11 @@ public abstract class AbstractNode implements Node {
     public final void setDateValue(String fieldName, final Date value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DATETIME).process(this, field, value);
+        setValueWithoutProcess(fieldName, v);
+    }
+    public final void setDecimalValue(String fieldName, final BigDecimal value) {
+        Field field = getNodeManager().getField(fieldName);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DECIMAL).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -312,6 +319,7 @@ public abstract class AbstractNode implements Node {
                 }
                 case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
                 case Field.TYPE_DATETIME:return getDateValue(fieldName);
+                case Field.TYPE_DECIMAL: return getDecimalValue(fieldName);
                 case Field.TYPE_LIST:    return getListValue(fieldName);
                 default:
                     log.error("Unknown fieldtype '" + type + "'");
@@ -354,6 +362,15 @@ public abstract class AbstractNode implements Node {
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
             result = (Date) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(this, field, result);
+        }
+        return result;
+    }
+    public BigDecimal getDecimalValue(String fieldName) {
+        BigDecimal result = Casting.toDecimal(getValueWithoutProcess(fieldName));
+        NodeManager nodeManager = getNodeManager();
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = (BigDecimal) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DECIMAL).process(this, field, result);
         }
         return result;
     }

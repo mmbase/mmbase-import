@@ -69,6 +69,8 @@ public class EmptyNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (element.equals("list")) {
                 assertTrue(bytes.length == 0);
+            } else if (element.equals("decimal")) {
+                assertTrue(bytes.length == 0);
             } else {
                 fail("Unknown fieldtype encountered " + element);
             }
@@ -144,6 +146,13 @@ public class EmptyNodeTest extends NodeTest {
             assertTrue("Empty " + element + " field queried as datetime returned null", value != null);
             assertTrue("Empty " + element + " field queried as datetime did not return "+new Date(-1)+", but " + value,
                         value.getTime()==-1);
+       }
+    }
+
+    public void testGetDecimalValue() {
+        for (String element : fieldTypes) {
+            java.math.BigDecimal value = node.getDecimalValue(element + "field");
+            assertTrue("Empty " + element + " field queried as datetime returned null", value != null);
        }
     }
 

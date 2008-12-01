@@ -109,6 +109,12 @@
         <type key="false" notnull="false" state="persistent">BOOLEAN</type>
       </db>
     </field>
+    <field>
+      <db>
+        <name>decimalfield</name>
+        <type key="false" notnull="false" state="persistent">DECIMAL</type>
+      </db>
+    </field>
     <!--
     <field>
       <gui>
