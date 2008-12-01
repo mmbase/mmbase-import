@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  *
  * @since  MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: Index.java,v 1.2 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: Index.java,v 1.3 2008-12-01 09:16:56 michiel Exp $
  */
 public class Index extends ArrayList<Field> {
 
@@ -28,8 +28,8 @@ public class Index extends ArrayList<Field> {
      */
     static final public String MAIN = "main";
 
-    private MMObjectBuilder builder;
-    private String name;
+    private final MMObjectBuilder builder;
+    private final String name;
     private boolean unique = false;
 
     public Index(MMObjectBuilder builder, String name) {
