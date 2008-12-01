@@ -207,10 +207,10 @@ public class DataAccessor {
                e.printStackTrace();
             }
             String s=out.toString();
-            if("0".equals(s.trim())){
+            if("0".equals(s.trim())||"-".equals(s.trim())){
                return false;
             }
-            if("-".equals(s.trim())){
+            if("1".equals(s.trim())){
                return true;
             }
             return org.mmbase.util.transformers.Xml.XMLEscape(s);
