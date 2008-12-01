@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.101 2008-11-06 13:31:32 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.102 2008-12-01 18:15:34 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -567,12 +567,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
         if (getProcessors != null) {
-            for (int i = 0; i < 13; i++) {
+            for (int i = 0; i < Fields.TYPE_MAXVALUE; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
             }
         }
         if (setProcessors != null) {
-            for (int i = 0; i < 13; i++) {
+            for (int i = 0; i < Fields.TYPE_MAXVALUE; i++) {
                 buf.append(setProcessors[i] == null ? "" : ("; set [" + Fields.typeToClass(i) + "]:" + setProcessors[i] + " "));
             }
         }
@@ -891,11 +891,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     private Processor[] newProcessorsArray() {
-        return new Processor[] {
-             null /* object   */, null /* string  */, null /* integer */, null /* not used */, null /* byte */,
-             null /* float    */, null /* double  */, null /* long    */, null /* xml      */, null /* node */,
-             null /* datetime */, null /* boolean */, null /* list    */
-        };
+        return new Processor[Fields.TYPE_MAXVALUE + 1];
     }
 
     /**
