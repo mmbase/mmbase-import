@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.45 2008-11-03 16:43:48 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.46 2008-12-01 09:23:49 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -244,6 +244,8 @@ public class ComponentRepository {
                     } else {
                         log.debug("" + url + " does not exist");
                     }
+                } catch (ClassNotFoundException cnfe) {
+                    log.error("For " + url + ": " + cnfe.getClass() + " " + cnfe.getMessage());
                 } catch (Exception e) {
                     log.error("For " + url + ": " + e.getMessage(), e);
                 }
