@@ -74,6 +74,7 @@
     <type-mapping name="BINARY" min-size="16777217" max-size="4294967296" type="longblob" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
+    <type-mapping name="DECIMAL"  type="DECIMAL({0}, {1})" />
   </type-mappings>
 
   <!-- MySQL disallowed fields (copied from the old configurations)   -->
@@ -85,6 +86,7 @@
     <disallowed-field name="create" replacement="m_create"/> <!-- standard SQL keyword -->
     <disallowed-field name="data" replacement="m_data"/>
     <disallowed-field name="day" replacement="m_day"/> <!-- standard SQL keyword -->
+    <disallowed-field name="decimal" replacement="m_decimal"/>
     <disallowed-field name="delayed" replacement="m_delayed"/>
     <disallowed-field name="fields" replacement="m_fields"/>
     <disallowed-field name="float" replacement="m_float"/>

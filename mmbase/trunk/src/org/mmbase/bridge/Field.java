@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.38 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: Field.java,v 1.39 2008-12-01 17:29:01 michiel Exp $
  */
 public interface Field extends Descriptor, Comparable<Field> {
 
@@ -58,6 +58,14 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @since MMBase-1.8
      */
     public final static int TYPE_LIST      = 12;
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public final static int TYPE_DECIMAL      = 13;
+
+
     /** MMBase base type identifier for data types whose type is unknown */
     public final static int TYPE_UNKNOWN = -1;
 
@@ -198,7 +206,8 @@ public interface Field extends Descriptor, Comparable<Field> {
      * Returns the maximum length of data this field can contain.
      * For example if a field contains characters the size indicates the
      * maximum number of characters it can contain.
-     * If the field is a numeric field (such as an integer), the result is -1.
+     * If the field is a numeric field (such as an integer), the result is -1. For a 'decimal' type
+     * though, this returns the same as the precision of the associated datatype.
      *
      * @return  the maximum length of data this field can contain
      */
