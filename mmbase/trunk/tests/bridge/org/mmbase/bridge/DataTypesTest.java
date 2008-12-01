@@ -207,7 +207,11 @@ public class DataTypesTest extends BridgeTest {
                 }
             }
             for (Object element2 : invalidValues) {
-                field.getDataType().validate(element2); // should not give exception
+                try {
+                    field.getDataType().validate(element2); // should not give exception
+                } catch (Exception e) {
+                    fail("Validation of value " + element2 + " for " + field + " gave exception " + e.getClass() + " " + e.getMessage());
+                }
                 if (field.getDataType().validate(element2, null, field).size() == 0) {
                     err.append("I Field " + field.getName() + " value '" + (element2 == null ? "" : element2.getClass().getName() + " ") +  Casting.toString(element2) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
