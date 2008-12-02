@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.18 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.19 2008-12-02 09:10:36 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -202,6 +202,12 @@ public class CronEntry implements java.io.Serializable {
     public boolean isAlive() {
         return isAlive(0);
     }
+
+    public boolean isActive() {
+        String machineName = MMBaseContext.getMachineName();
+        return servers.matcher(machineName).matches();
+    }
+
     public boolean isMustBeOne() {
         return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
@@ -325,11 +331,13 @@ public class CronEntry implements java.io.Serializable {
         return maxDuration;
     }
 
+
+
     boolean mustRun(Date date) {
         String machineName = MMBaseContext.getMachineName();
 
-        if (! servers.matcher(machineName).matches()) {
-            log.debug("This cron entry " + this + " must not run because this machine " + machineName + " does not match " + servers);
+        if (! isActive()) {
+            log.debug("This cron entry " + this + " must not run because it is not active on this machine " + machineName);
             return false;
         } else {
             log.debug(" " + machineName + " matched " + servers + " so must run");
