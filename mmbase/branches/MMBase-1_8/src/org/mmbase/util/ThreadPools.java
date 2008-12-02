@@ -15,14 +15,14 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.3 2008-12-02 11:03:57 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.4 2008-12-02 11:05:13 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
 
 
-    public static String identify(Future r, String s) {
+    public static String identify(Object r, String s) {
         // ignored, implemented only in 1.9
         return null;
     }
