@@ -65,6 +65,7 @@
         <th>id</th>
         <th>type</th>
         <th>time</th>
+        <th>servers</th>
         <th>run</th>
         <th>last run started on</th>
         <th>cost of last run (ms)</th>
@@ -79,7 +80,9 @@
           <td>${cronentry.cronTime}</td>
           <td>
             <jsp:text>${cronentry.servers}</jsp:text>
-            <c:if test="${not cronentry.mustBeOne or not cronentry.alive}">
+          </td>
+          <td>
+            <c:if test="${(not cronentry.mustBeOne or not cronentry.alive) and cronentry.active}">
               <mm:link>
                 <mm:param name="kick" value="${cronentry.id}" />
                 <a href="${_}">Kick</a>
