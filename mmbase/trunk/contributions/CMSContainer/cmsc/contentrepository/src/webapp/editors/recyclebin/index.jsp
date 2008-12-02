@@ -90,9 +90,17 @@
                                     <td>
                                       <mm:nodeinfo type="guitype"/>
                                     </td>
-                                    <td>
-                                       <mm:field name="title"/>
-                                    </td>
+            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
+               <c:set var="assettype" ><mm:nodeinfo type="guitype"/></c:set>
+               <mm:field id="title" write="false" name="title"/>
+               <c:if test="${assettype == 'URL'}">
+                  <c:set var="title" ><mm:field name="name"/></c:set>
+               </c:if>
+               <c:if test="${fn:length(title) > 50}">
+                  <c:set var="title">${fn:substring(title,0,49)}...</c:set>
+               </c:if>
+               ${title}
+            </td>
                                     <td>
                                        <mm:field name="lastmodifier" />
                                     </td>

@@ -56,6 +56,12 @@ public class AssetSearchAction extends PagerAction {
       AssetSearchForm searchForm = (AssetSearchForm) form;
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
+      String show = request.getParameter("show");
+      if(StringUtils.isNotEmpty(show)){
+         show = "thumbnail";
+      }else{
+         show = null;
+      }
 
       if (StringUtils.isNotEmpty(deleteAssetRequest)) {
          if (deleteAssetRequest.startsWith("massDelete:")) {
@@ -82,6 +88,7 @@ public class AssetSearchAction extends PagerAction {
          }
       }
       addToRequest(request, "typesList", typesList);
+      addToRequest(request, "show", show);
 
       // Switching tab, no searching.
       if ("false".equalsIgnoreCase(searchForm.getSearch())) {
@@ -163,11 +170,16 @@ public class AssetSearchAction extends PagerAction {
 
       // Add the title constraint:
       if (StringUtils.isNotEmpty(searchForm.getTitle())) {
-
          queryStringComposer.addParameter(AssetElementUtil.TITLE_FIELD, searchForm.getTitle().trim());
          Field field = nodeManager.getField(AssetElementUtil.TITLE_FIELD);
          Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle().trim());
          SearchUtil.addConstraint(query, titleConstraint);
+      }
+      if (StringUtils.isNotEmpty(searchForm.getTitle())) {
+         queryStringComposer.addParameter(AssetElementUtil.CREATOR_FIELD, searchForm.getTitle().trim());
+         Field field = nodeManager.getField(AssetElementUtil.CREATOR_FIELD);
+         Constraint creatorConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle().trim());
+         SearchUtil.addORConstraint(query, creatorConstraint);
       }
 
       // Set the objectid constraint
@@ -229,7 +241,6 @@ public class AssetSearchAction extends PagerAction {
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
       request.setAttribute(GETURL, queryStringComposer.getQueryString());
-
       return super.execute(mapping, form, request, response, cloud);
    }
 
@@ -275,7 +286,14 @@ public class AssetSearchAction extends PagerAction {
       Cloud cloud = provider.getCloud();
 
       Node objectNode = cloud.getNode(nunmber);
-      RepositoryUtil.removeCreationRelForContent(objectNode);
+
+     // NodeList channels = RepositoryUtil.getDeletionChannels(objectNode);
+      Node channelNode = RepositoryUtil.getCreationChannel(objectNode);
+      if (channelNode != null ) {
+         RepositoryUtil.addAssetDeletionRelation(objectNode,channelNode);
+         RepositoryUtil.removeCreationRelForAsset(objectNode);
+      }
+
       RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrash(cloud));
 
       // unpublish and remove from workflow

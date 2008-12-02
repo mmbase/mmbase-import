@@ -23,31 +23,25 @@ import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.util.http.BulkUploadUtil;
 
-public class AssetUploadAction extends MMBaseAction {
+public class ImageUploadAction extends MMBaseAction {
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
-      AssetUploadForm assetUploadForm = (AssetUploadForm) form;
-      String assetType = assetUploadForm.getAssetType();
-      String parentchannel = assetUploadForm.getParentchannel();
-      FormFile file = assetUploadForm.getFile();
+      ImageUploadForm imageUploadForm = (ImageUploadForm) form;
+      String parentchannel = imageUploadForm.getParentchannel();
+      FormFile file = imageUploadForm.getFile();
 
-      NodeManager manager = cloud.getNodeManager(assetType);
+      NodeManager manager = cloud.getNodeManager("images");
 
       if (file.getFileSize() != 0 && file.getFileName() != null) {
          String uploadFileType = file.getContentType();
          List<Integer> nodes = null;
-         if (assetType.equalsIgnoreCase("images")) {
-            if (uploadFileType.equalsIgnoreCase("image/bmp") || uploadFileType.equalsIgnoreCase("image/jpeg")
-                  || uploadFileType.equalsIgnoreCase("image/gif") || uploadFileType.equalsIgnoreCase("image/png")) {
-               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-               request.setAttribute("uploadedAssets", nodes);
-            }
-         } else if (assetType.equalsIgnoreCase("attachments")) {
+         if (uploadFileType.equalsIgnoreCase("image/bmp") || uploadFileType.equalsIgnoreCase("image/jpeg")
+               || uploadFileType.equalsIgnoreCase("image/gif") || uploadFileType.equalsIgnoreCase("image/png")) {
             nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-            request.setAttribute("uploadedAssets", nodes);
+            request.setAttribute("uploadedImages", nodes);
          }
          // to archive the upload asset
          if (nodes != null && nodes.size() > 0) {
@@ -56,9 +50,7 @@ public class AssetUploadAction extends MMBaseAction {
             }
          }
       }
-
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&parentchannel="
-            + parentchannel, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath(), true);
    }
 
 }
