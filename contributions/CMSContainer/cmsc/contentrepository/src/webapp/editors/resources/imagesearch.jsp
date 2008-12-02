@@ -45,7 +45,7 @@
 	}
 
 	function selectChannel(channelid, path) {
-	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channelid="+channelid;
+	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&channelid="+channelid;
 	}
 </script>
    <link rel="stylesheet" type="text/css" href="imagesearch.css" />
