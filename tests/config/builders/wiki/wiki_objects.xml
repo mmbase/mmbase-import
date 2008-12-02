@@ -24,10 +24,4 @@
 
   <xi:include href="http://www.mmbase.org/builders/versioning/object.fields.xml" />
 
-  <functionlist>
-    <function name="url">
-      <class>nl.eo.patmos.UrlFunction</class>
-    </function>
-  </functionlist>
-
 </builder>
