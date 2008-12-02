@@ -21,18 +21,18 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.48 2008-11-11 07:46:30 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.49 2008-12-02 16:52:20 michiel Exp $
  */
 public class TransactionManager {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
-    static final String EXISTS_NO = "no";
-    static final int I_EXISTS_NO = 0;
-    static final String EXISTS_YES = "yes";
-    static final int I_EXISTS_YES = 1;
-    public static final String EXISTS_NOLONGER = "nolonger";
-    static final int I_EXISTS_NOLONGER = 2;
+    static final String        EXISTS_NO         = "no";
+    private static final int   I_EXISTS_NO       = 0;
+    static final String        EXISTS_YES        = "yes";
+    private static final int   I_EXISTS_YES      = 1;
+    static final String        EXISTS_NOLONGER   = "nolonger";
+    private static final int   I_EXISTS_NOLONGER = 2;
 
     private TemporaryNodeManager tmpNodeManager;
     private TransactionResolver transactionResolver;
@@ -305,7 +305,7 @@ public class TransactionManager {
             NodeState state = new NodeState();
             state.state = State.UNCOMMITED;
             state.changed = node.isChanged() || node.isNew();
-            String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
+            String exists = (String) node.getValue(MMObjectBuilder.TMP_FIELD_EXISTS);
             if (exists == null) {
                 throw new IllegalStateException("The _exists field does not exist on node "+node);
             } else if (exists.equals(EXISTS_NO)) {
@@ -315,7 +315,7 @@ public class TransactionManager {
             } else if (exists.equals(EXISTS_NOLONGER)) {
                 state.exists = I_EXISTS_NOLONGER;
             } else {
-                throw new IllegalStateException("Invalid value for _exists on node "+node);
+                throw new IllegalStateException("Invalid value for _exists '" + exists + "' on node " + node);
             }
             stati.put(node.getNumber(), state);
         }
