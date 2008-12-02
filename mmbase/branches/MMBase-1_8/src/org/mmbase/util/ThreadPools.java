@@ -15,11 +15,17 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.2 2008-08-12 13:05:18 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.3 2008-12-02 11:03:57 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
+
+
+    public static String identify(Future r, String s) {
+        // ignored, implemented only in 1.9
+        return null;
+    }
 
     private static Thread newThread(Runnable r, String id) {
         Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r, id) {
