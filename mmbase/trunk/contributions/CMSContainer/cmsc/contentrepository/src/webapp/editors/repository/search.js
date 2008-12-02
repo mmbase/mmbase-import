@@ -60,3 +60,15 @@ function selectElement(element, title, url, width, height, description) {
    window.top.opener.selectElement(element, title, url, width, height, description);
    window.top.close();
 }
+
+function selectAssettype(initUrl) {
+    // parentchannel is only there when linking is active...
+    try {
+       document.forms[0].parentchannel.value='';
+    } catch (e) {
+       ;
+    }
+    // This doesn't work in IE...
+    // document.forms[0].action=initUrl;
+    document.forms[0].submit();
+ }

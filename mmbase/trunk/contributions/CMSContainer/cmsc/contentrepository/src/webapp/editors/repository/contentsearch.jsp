@@ -36,14 +36,14 @@
     <div class="${(contenttypes == 'contentelement' || contenttypes == null)?'tab_active':'tab'}">
         <div class="body">
             <div>
-                <a href="SearchInitAction.do"><fmt:message key="content.title"/></a>
+                <a href="SearchInitAction.do"><fmt:message key="content.search.title"/></a>
             </div>
         </div>
     </div>
     <div class="${contenttypes == 'asset'?'tab_active':'tab'}">
       <div class="body">
          <div>
-            <a href="AssetSearchInitAction.do"><fmt:message key="asset.title" /></a>
+            <a href="AssetSearchInitAction.do"><fmt:message key="asset.search.title" /></a>
          </div>
       </div>
    </div>
