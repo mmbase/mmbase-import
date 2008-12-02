@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.19 2008-12-02 09:10:36 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.20 2008-12-02 09:23:22 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -211,8 +211,8 @@ public class CronEntry implements java.io.Serializable {
     public boolean isMustBeOne() {
         return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
-    public Pattern getServers() {
-        return servers;
+    public String getServers() {
+        return servers.pattern();
     }
 
 

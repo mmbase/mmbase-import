@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.4 2008-12-02 09:10:36 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.5 2008-12-02 09:23:22 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -44,12 +44,26 @@ public class NodeCronEntry extends CronEntry {
         return org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNode(getId());
     }
 
+    @Override public String getServers() {
+        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
+        if (! servers.hasNext()) return "";
+        StringBuilder bul = new StringBuilder();
+        while (servers.hasNext()) {
+            Node server = servers.nextNode();
+            if (bul.length() > 0) bul.append(" ");
+            bul.append(server.getStringValue("name"));
+        }
+        return bul.toString();
+
+    }
 
     @Override public boolean isActive() {
-        NodeList servers = getNode().getRelatedNodes("mmservers");
+        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
+        if (! servers.hasNext()) return true;
+
         String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-        for (int i=0; i < servers.size(); i++) {
-            Node server = servers.getNode(i);
+        while (servers.hasNext()) {
+            Node server = servers.nextNode();
             String name = server.getStringValue("name");
             if (name != null && name.equalsIgnoreCase(machineName)) {
                 log.service("Active [" + this + "] for server [" + name + "]");
