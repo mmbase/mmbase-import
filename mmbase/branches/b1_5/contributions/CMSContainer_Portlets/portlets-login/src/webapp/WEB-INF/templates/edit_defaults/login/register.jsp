@@ -1,11 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-
-<%-- 
-  I realize this is a weird place for this file. However I didn't want
-  to encourage the 'send password' option in the general (edit-defaults-)login.jsp
-  and have therefore moved this to the 4en5mei project.
---%>
-
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.register.title" /></h3>
 
@@ -17,18 +10,6 @@
 >
 
 <table class="editcontent">
-   <c:if test="${fn:length(views) gt 0}">
-      <tr>
-         <td><fmt:message key="edit_defaults.view" />:</td>
-         <td>
-            <cmsc:select var="view">
-               <c:forEach var="v" items="${views}">
-                  <cmsc:option value="${v.id}" name="${v.title}" />
-               </c:forEach>
-            </cmsc:select>
-         </td>
-      </tr>
-   </c:if>
    <tr>
       <td colspan="2"><h4><fmt:message key="edit_defaults.register.subject" /></h4></td>
    </tr>

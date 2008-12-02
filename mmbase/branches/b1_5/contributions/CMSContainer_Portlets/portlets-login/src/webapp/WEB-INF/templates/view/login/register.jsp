@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-
 <h3><fmt:message key="register.title" /></h3>
 
 <form name="<portlet:namespace />form" 
@@ -15,6 +14,7 @@
    <table>
    </c:if>
    <div id="user">
+      <input type="hidden" name="page" value="${page}" />
       <table class="formcontent">     
          <tr>
             <td class="fieldname"><fmt:message key="register.email" />
