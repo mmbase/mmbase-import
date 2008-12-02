@@ -81,4 +81,6 @@ public interface PersonService {
    public List < Person > getPersonsByAuthenticationIds(Set < Integer > authenticationIds, String name, String email);
 
    public void addRelationRecord(String level, PersonExportImportVO importPerson);
+
+   void changeStateByAuthenticationId(Long authenticationId, String active);
 }
