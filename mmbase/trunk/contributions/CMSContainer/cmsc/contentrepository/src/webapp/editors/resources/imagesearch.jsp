@@ -103,7 +103,7 @@
                   </mm:listnodes>
             </div>
          </c:if>
-	      <c:if test="${resultCount == 0 && param.title != null}">
+	      <c:if test="${resultCount == 0 && (param.action == 'often' || param.title != null)}">
 	         <fmt:message key="imagesearch.noresult" />
 	      </c:if>
 	      <c:if test="${resultCount > 0}">
