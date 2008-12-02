@@ -15,12 +15,22 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.4 2008-12-02 11:05:13 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.5 2008-12-02 11:16:35 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
 
 
+    /**
+     * Wrapper around Thread.scheduler.scheduleAtFixedRate. Provided for forward compatibility.
+     * @deprecated
+     */
+
+    public static ScheduledFuture scheduleAtFixedRate(Runnable pub, int time1, int time2) {
+        return scheduler.scheduleAtFixedRate(pub,
+                                             time1,
+                                             time2, TimeUnit.SECONDS);
+    }
 
     public static String identify(Object r, String s) {
         // ignored, implemented only in 1.9
