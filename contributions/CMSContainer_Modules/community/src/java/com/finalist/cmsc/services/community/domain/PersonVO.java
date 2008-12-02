@@ -9,6 +9,15 @@ public class PersonVO extends ActionForm {
    private String groups;
    private Long authId;
    private boolean inGroup;
+   private String active;
+
+   public String getActive() {
+      return active;
+   }
+
+   public void setActive(String active) {
+      this.active = active;
+   }
 
    public String getFullname() {
       return fullname;

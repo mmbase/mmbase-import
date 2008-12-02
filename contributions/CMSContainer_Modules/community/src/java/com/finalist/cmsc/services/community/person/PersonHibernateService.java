@@ -431,4 +431,10 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          creatRelationRecord(importPerson);
       }
    }
+   @Transactional
+   public void changeStateByAuthenticationId(Long authenticationId, String active) {
+      Person per=getPersonByAuthenticationId(authenticationId);
+      per.setActive(active);
+      updatePerson(per);      
+   }
 }
