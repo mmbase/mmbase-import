@@ -10,6 +10,11 @@
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:import id="format">yyyy-MM-dd HH:mm:ss</mm:import>
   <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
+  <style>
+    .inactive {
+    color: #aaa;
+    }
+  </style>
   <h1>Crontab admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
   <mm:cloud rank="administrator">
     <mm:import externid="kick" />
@@ -68,7 +73,7 @@
         <th>configuration</th>
       </tr>
       <mm:listfunction id="cronentry" module="crontab" name="list">
-        <tr>
+        <tr class="${cronentry.active ? 'active' : 'inactive'}">
           <td>${cronentry.id}</td>
           <td>${cronentry.type}</td>
           <td>${cronentry.cronTime}</td>

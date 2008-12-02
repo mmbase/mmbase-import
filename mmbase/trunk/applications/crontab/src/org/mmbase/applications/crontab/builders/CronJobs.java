@@ -20,7 +20,7 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.10 2008-12-02 08:42:59 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.11 2008-12-02 09:10:36 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder  {
 
@@ -31,40 +31,23 @@ public class CronJobs extends MMObjectBuilder  {
      */
     @Override public boolean init() {
         boolean res = super.init();
-        CronDaemon cronDaemon = CronDaemon.getInstance();
-        NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
-        while (nodeIterator.hasNext()) {
-            Node node = nodeIterator.nextNode();
-            CronEntry entry = null;
-            try {
-                entry = new NodeCronEntry(node);
-                NodeList servers = node.getRelatedNodes("mmservers");
-                if (servers.size() > 0) {
-                    String machineName = MMBaseContext.getMachineName();
-                    boolean found = false;
-                    for (int i=0; i < servers.size(); i++) {
-                        Node server = servers.getNode(i);
-                        String name = server.getStringValue("name");
-                        if (name != null && name.equalsIgnoreCase(machineName)) {
-                            log.service("Adding cron entry [" + entry + "] for server [" + name + "]");
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    CronDaemon cronDaemon = CronDaemon.getInstance();
+                    NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
+                    while (nodeIterator.hasNext()) {
+                        Node node = nodeIterator.nextNode();
+                        CronEntry entry = null;
+                        try {
+                            entry = new NodeCronEntry(node);
+                            log.service("Adding cron entry [" + entry + "]");
                             cronDaemon.add(entry);
-                            found = true;
-                            break;
-                        } else {
-                            log.service("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
+                        } catch (Exception e) {
+                            log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
                         }
                     }
-                    if (!found) {
-                        log.service("NOT Adding cron entry [" + entry + "], not related to server [" + machineName + "]");
-                    }
-                } else {
-                    log.service("Adding cron entry [" + entry + "]");
-                    cronDaemon.add(entry);
                 }
-            } catch (Exception e) {
-                log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
-            }
-        }
+            });
         return res;
     }
 
@@ -128,6 +111,7 @@ public class CronJobs extends MMObjectBuilder  {
     }
 
     private Cloud getCloud() {
+        LocalContext.getCloudContext().assertUp();
         return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
 
