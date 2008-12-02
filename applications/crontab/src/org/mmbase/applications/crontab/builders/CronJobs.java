@@ -20,32 +20,18 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.9 2008-09-12 12:24:45 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.10 2008-12-02 08:42:59 michiel Exp $
  */
-public class CronJobs extends MMObjectBuilder implements Runnable {
+public class CronJobs extends MMObjectBuilder  {
 
-    private static Logger log = Logging.getLoggerInstance(CronJobs.class);
-
-    CronDaemon cronDaemon = null;
-
-    public CronJobs() {
-        org.mmbase.util.ThreadPools.jobsExecutor.execute(this);
-    }
+    private static final Logger log = Logging.getLoggerInstance(CronJobs.class);
 
     /**
-     * This thread wait's for MMBase to be started and then adds all the crontEntries to the CronDaemon
+     * Adds all the crontEntries to the CronDaemon
      */
-    public void run() {
-        while (!MMBase.getMMBase().getState()) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                log.warn("thread interrupted, cronjobs will not be loaded");
-                return;
-            }
-        }
-
-        cronDaemon = CronDaemon.getInstance();
+    @Override public boolean init() {
+        boolean res = super.init();
+        CronDaemon cronDaemon = CronDaemon.getInstance();
         NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
         while (nodeIterator.hasNext()) {
             Node node = nodeIterator.nextNode();
@@ -56,7 +42,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
                 if (servers.size() > 0) {
                     String machineName = MMBaseContext.getMachineName();
                     boolean found = false;
-                    for (int i=0; i<servers.size(); i++) {
+                    for (int i=0; i < servers.size(); i++) {
                         Node server = servers.getNode(i);
                         String name = server.getStringValue("name");
                         if (name != null && name.equalsIgnoreCase(machineName)) {
@@ -79,10 +65,12 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
                 log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
             }
         }
+        return res;
     }
 
-    public void notify(NodeEvent event) {
+    @Override public void notify(NodeEvent event) {
         log.debug("Received " + event);
+        CronDaemon cronDaemon = CronDaemon.getInstance();
         switch(event.getType()) {
         case Event.TYPE_NEW: {
             try {
