@@ -10,7 +10,7 @@
       <form-bean name="QuickSearchForm" type="com.finalist.cmsc.struts.QuickSearchForm" />
       <form-bean name="ReorderForm" type="com.finalist.cmsc.repository.forms.ReorderForm" />
       <form-bean name="SearchForm" type="com.finalist.cmsc.repository.forms.SearchForm" />
-
+      <form-bean name="AssetSearchForm" type="com.finalist.cmsc.repository.forms.AssetSearchForm" />
       <form-bean name="ImageForm" type="com.finalist.cmsc.resources.forms.ImageForm" />
       <form-bean name="AttachmentForm" type="com.finalist.cmsc.resources.forms.AttachmentForm" />
       <form-bean name="UrlForm" type="com.finalist.cmsc.resources.forms.UrlForm" />
@@ -22,6 +22,7 @@
       <form-bean name="RepositoryPasteForm" type="com.finalist.cmsc.repository.forms.PasteForm" />
 
       <form-bean name="AssetUploadForm" type="com.finalist.cmsc.repository.forms.AssetUploadForm" />
+      <form-bean name="ImageUploadForm" type="com.finalist.cmsc.repository.forms.ImageUploadForm" />
    </form-beans>
 
    <!-- ========== Global Exceptions Definitions =================================== -->
@@ -201,7 +202,6 @@
       </action>
 
       <!-- ==== Security role management ==== -->
-
       <action path="/editors/usermanagement/ContentRolesInitAction"
          type="com.finalist.cmsc.security.forms.ContentRolesInitAction" name="RolesForm" scope="session"
          input="/editors/usermanagement/repository/roles.jsp" unknown="false" validate="false">
@@ -217,7 +217,6 @@
       </action>
          
       <!-- ==== Asset Repository ==== -->
-      
       <action path="/editors/repository/Asset" type="com.finalist.cmsc.repository.forms.AssetAction" 
          unknown="false" validate="false">
          <forward name="success" path="/editors/repository/elementlist.jsp" redirect="false" />
@@ -243,15 +242,19 @@
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
       </action>
       <action path="/editors/repository/ImageUploadAction" type="com.finalist.cmsc.repository.forms.ImageUploadAction" 
-         name="AssetUploadForm" unknown="false" validate="true">
-         <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
+         name="ImageUploadForm" unknown="false" validate="true">
+         <forward name="success" path="/editors/resources/imageupload.jsp" redirect="false" />
       </action>
       <action path="/editors/recyclebin/RestoreAssetAction" type="com.finalist.cmsc.recyclebin.forms.RestoreAssetAction" 
          unknown="false" validate="false">
          <forward name="restore" path="/editors/recyclebin/restore.jsp" redirect="false" />
          <forward name="success" path="/editors/recyclebin/index.jsp" redirect="false" />
       </action>
-
+      <action path="/editors/repository/AssetSearchInitAction" type="com.finalist.cmsc.repository.forms.AssetSearchInitAction"
+         name="AssetSearchForm" scope="request" unknown="false" validate="false">
+         <forward name="searchoptions" path="/editors/repository/assetsearch.jsp" redirect="false" />
+         <forward name="dosearch" path="/editors/repository/AssetSearchAction.do" redirect="false" />
+      </action>
    </action-mappings>
 
    <message-resources parameter="cmsc-repository" key="REPOSITORY" />

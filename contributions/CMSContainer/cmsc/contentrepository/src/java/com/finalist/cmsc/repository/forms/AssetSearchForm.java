@@ -18,7 +18,6 @@ public class AssetSearchForm extends PagerForm {
    private String mode = "basic";
    private String search = "true";
    private String parentchannelpath = "";
-
    public String getAssettypes() {
       return assettypes;
    }
@@ -122,5 +121,4 @@ public class AssetSearchForm extends PagerForm {
    public void setParentchannelpath(String parentchannelpath) {
       this.parentchannelpath = parentchannelpath;
    }
-
 }
