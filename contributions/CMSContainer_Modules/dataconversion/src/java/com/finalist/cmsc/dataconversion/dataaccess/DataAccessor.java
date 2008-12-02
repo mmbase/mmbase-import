@@ -192,6 +192,11 @@ public class DataAccessor {
       try {
          if (INT_TO_DATA.equals(changeMethod)) {
             int i=rs.getInt(fieldName);
+            if (i>0) {
+               String redate = String.valueOf(i)+"000";
+               Long l=Long.parseLong(redate);
+               return new java.sql.Date(l);
+            }
             return new java.sql.Date(i);
          } else if (BLOB_TO_STRING.equals(changeMethod)) {
             Blob blob = rs.getBlob(fieldName);
