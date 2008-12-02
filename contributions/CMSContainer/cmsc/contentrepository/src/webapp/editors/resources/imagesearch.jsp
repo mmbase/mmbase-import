@@ -48,69 +48,7 @@
 	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channelid="+channelid;
 	}
 </script>
-		<style type="text/css">
-div.editor div.body ul.shortcuts li {
-	padding-left: 5px;
-	font-size: 12px;
-	font-weight: normal;
-}
-
-div.editor div.body ul.shortcuts li a {
-	background-image: url(../gfx/button_side_block.gif);
-	background-position: right center;
-	background-repeat: no-repeat;
-	padding-right: 15px;
-}
-
-div.editor div.body #imgList div.grid {
-	width: 200px;
-	height: 200px;
-	float: left;
-	text-align: center
-}
-
-div.editor div.body #imgList div.grid:hover, div.editor div.body #imgList #selected{
-	background-color: #f1f400;
-}
-
-div.editor div.body #imgList div.grid div.thumbnail {
-	width: 100%;
-	height: 80%;
-	text-align: center;
-	vertical-align:middle;
-	padding: 0;
-}
-
-div.editor div.body #imgList div.grid div.imgInfo {
-	width: 100%;
-	height: 20%;
-	text-align: center;
-	padding: 0px;
-}
-
-div.buttonscontent  {
-   text-align: right;
-   height:39px;
-} 
-
-div.page_buttons div.button div.button_body
-{
-   background-image: url('../../../gfx/tab_2_right.gif');
-   background-repeat: no-repeat;
-   background-position: top right;
-   height: 39px;
-   float: left;   
-}
-
-div.page_buttons div.button div.button_body a
-{
-   float: left;
-   padding: 10px;
-   color: #313728;
-   font-size: 13px;  
-   display: block;
-}
-</style>
+   <link rel="stylesheet" type="text/css" href="imagesearch.css" />
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
