@@ -32,5 +32,13 @@
    <edit:ui-tcolumn titlekey="community.search.memberOf">
       ${person.groups}
    </edit:ui-tcolumn>
+   <edit:ui-tcolumn titlekey="community.search.state">
+		<select onchange="selectState('${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do?page=${page}&sortby=${param.sortby}&dir=${param.dir}&authid=${person.authId}',this)" >
+			<option selected="selected" value="ACTIVE">${person.active}</option>
+			<option value="ACTIVE"><fmt:message key="community.search.state.active"/> </option>
+			<option value="UNCONFIRMED"><fmt:message key="community.search.state.unconfirmed"/> </option>
+			<option value="BLOCKED"><fmt:message key="community.search.state.blocked"/></option>
+		</select>         
+   </edit:ui-tcolumn>
 </edit:ui-table>
 
