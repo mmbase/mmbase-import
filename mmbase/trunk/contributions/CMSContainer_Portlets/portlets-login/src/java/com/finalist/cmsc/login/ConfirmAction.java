@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -17,7 +19,7 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
 public class ConfirmAction extends Action{
-
+   private static final Log log = LogFactory.getLog(ConfirmAction.class);
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
@@ -50,6 +52,7 @@ public class ConfirmAction extends Action{
       }
       returnUrl += target;
       returnUrl = HttpUtil.getWebappUri(httpServletRequest) + returnUrl;
+      
       httpServletResponse.sendRedirect(httpServletResponse.encodeRedirectURL(returnUrl));
       return null;
    }
