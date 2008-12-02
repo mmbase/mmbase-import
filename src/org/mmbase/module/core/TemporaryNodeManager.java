@@ -17,10 +17,18 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.Casting;
 
 /**
+ * This class is severely underdocumented. Some remarks:
+
+ <ul>
+ <li>This is a singleton</li>
+ <li>It does not itself store the 'temporary nodes'. This is for some reason done in static map in MMObjectBuilder.</li>
+ <li>Most methods accept 'owner' and 'key' arguments. It is not entirely clear what those mean</li>
+ </ul>
+
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.55 2008-11-25 15:05:16 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.56 2008-12-02 16:38:31 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -69,7 +77,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    public String createTmpRelationNode(String role, String owner, String key, String source, String destination) throws Exception {
+    protected String createTmpRelationNode(String role, String owner, String key, String source, String destination) throws Exception {
         // decode type to a builder using reldef
         RelDef reldef = mmbase.getRelDef();
         int rnumber = reldef.getNumberByName(role, true);
