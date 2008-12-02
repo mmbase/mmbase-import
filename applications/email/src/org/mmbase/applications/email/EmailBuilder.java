@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.36 2008-12-02 11:17:15 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.37 2008-12-02 11:22:12 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -142,9 +142,9 @@ public class EmailBuilder extends MMObjectBuilder {
     @Override public void shutdown() {
         if (expireHandler != null) {
             try {
-                expireHandler.getClass().getMethod("cancel", Boolean.class).invoke(expireHandler, Boolean.TRUE);
+                expireHandler.getClass().getMethod("cancel", Boolean.TYPE).invoke(expireHandler, Boolean.TRUE);
             } catch (Exception e) {
-                log.warn(e);
+                log.error(e);
             }
         }
     }
