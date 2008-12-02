@@ -32,11 +32,15 @@
   </field>
 
   <field name="changer" state="system">
-    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="creator" />
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="creator">
+      <maxLength value="255" />
+    </datatype>
   </field>
 
   <field name="ip" state="system">
-    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="ip" />
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="ip">
+      <maxLength value="255" />
+    </datatype>
   </field>
 
   <field name="object" state="system">
