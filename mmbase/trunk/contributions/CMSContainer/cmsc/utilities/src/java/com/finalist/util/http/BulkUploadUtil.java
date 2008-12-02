@@ -101,15 +101,11 @@ public class BulkUploadUtil {
    }
 
    public static List<Integer> store(Cloud cloud, NodeManager manager, String parentchannel, FormFile file) {
-      ArrayList<Integer> nodes = new ArrayList<Integer>();
+      List<Integer> nodes ;
       if (StringUtils.isEmpty(parentchannel)) {
          throw new NullPointerException("parentchannel is null");
       }
-      Node node = getNode(Integer.valueOf(parentchannel), manager, file);
-
-      if (node != null) {
-         nodes.add(node.getNumber());
-      }
+      nodes = getNodeList(Integer.valueOf(parentchannel), manager, file);
       return nodes;
    }
 
@@ -162,21 +158,26 @@ public class BulkUploadUtil {
       return node;
    }
 
-   private static Node getNode(Integer parentChannel, NodeManager manager, FormFile file) {
-      Node node = null;
+   private static List<Integer> getNodeList(Integer parentChannel, NodeManager manager, FormFile file) {
+      List<Integer> nodes = null;
       try {
          if (isZipFile(file)) {
             ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new ByteArrayInputStream(file.getFileData())));
-            createNodesInZip(parentChannel, manager, zip);
+            nodes = createNodesInZip(parentChannel, manager, zip);
          } else {
-            createNode(parentChannel, manager, file.getFileName(), file.getInputStream(), file.getFileSize());
+
+            Node node = createNode(parentChannel, manager, file.getFileName(), file.getInputStream(), file.getFileSize());
+            if(node!=null){
+               nodes = new ArrayList<Integer>();
+               nodes.add(node.getNumber());
+            }
          }
       } catch (Exception ex) {
          log.error("Failed to read uploaded file", ex);
       } finally {
          file.destroy();
       }
-      return node;
+      return nodes;
    }
 
    private static ArrayList<Integer> createNodesInZip(NodeManager manager, ZipInputStream zip) {
