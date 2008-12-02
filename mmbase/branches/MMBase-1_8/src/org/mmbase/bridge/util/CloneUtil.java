@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Utility to clone mmbase bridge nodes.
  * @since MMBase-1.9.0
- * @version $Id: CloneUtil.java,v 1.2 2008-07-17 17:17:08 michiel Exp $
+ * @version $Id: CloneUtil.java,v 1.2.2.1 2008-12-02 11:00:19 michiel Exp $
  */
 public class CloneUtil {
 
