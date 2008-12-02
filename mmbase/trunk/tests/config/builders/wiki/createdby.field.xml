@@ -15,6 +15,7 @@
     <guiname xml:lang="nl">Aangemaakt door</guiname>
   </gui>
   <editor><positions><list>105</list></positions></editor>
-  <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes">
+  <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <maxLength value="255" />
   </datatype>
 </field>
