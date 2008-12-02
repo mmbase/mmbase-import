@@ -157,9 +157,9 @@
                               <td onMouseDown="objClick(this);">
                                  <mm:nodeinfo type="guitype"/></td>
                               <td onMouseDown="objClick(this);">
-                              <c:set var="assettype" ><mm:nodeinfo type="guitype"/></c:set>            
+                              <c:set var="assettype" ><mm:nodeinfo type="guitype"/></c:set>
                                  <mm:field id="title" write="false" name="title"/>
-                                 <c:if test="${assettype == 'URL'}">                                    
+                                 <c:if test="${assettype == 'URL'}">
                                     <c:set var="title" ><mm:field name="name"/></c:set>
                                  </c:if>
                                  <c:if test="${fn:length(title) > 50}">

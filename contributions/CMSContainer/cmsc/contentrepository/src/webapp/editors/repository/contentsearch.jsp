@@ -43,7 +43,7 @@
     <div class="${contenttypes == 'asset'?'tab_active':'tab'}">
       <div class="body">
          <div>
-            <a href="Asset.do?type=asset&parentchannel=${parentchannel}&direction=${direction}"><fmt:message key="asset.title" /></a>
+            <a href="AssetSearchInitAction.do"><fmt:message key="asset.title" /></a>
          </div>
       </div>
    </div>
@@ -83,7 +83,7 @@
                      <mm:compare referid="mode" value="advanced" >
                         <a href="#" onclick="selectTab('basic');"><input type="button" class="button" value="<fmt:message key="search.simple.search" />"/></a>
                      </mm:compare>
-					 <mm:compare referid="mode" value="basic" >
+                <mm:compare referid="mode" value="basic" >
                         <a href="#" onclick="selectTab('advanced');"><input type="button" class="button" value="<fmt:message key="search.advanced.search" />"/></a>
                      </mm:compare> 
             <table>
@@ -91,7 +91,7 @@
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
                   <td colspan="5"><html:text property="title" style="width:200px"/></td>
                </tr>
-			    <mm:compare referid="mode" value= "advanced">
+             <mm:compare referid="mode" value= "advanced">
                <tr>
                   <td><fmt:message key="searchform.keywords" /></td>
                   <td  colspan="3"><html:text property="keywords" style="width:200px"/></td>
