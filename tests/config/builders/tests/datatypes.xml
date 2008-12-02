@@ -58,7 +58,9 @@
       <descriptions>
         <description>Example of String pattern.</description>
       </descriptions>
-      <datatype base="emailaddress" />
+      <datatype base="emailaddress">
+	<maxLength value="255" />
+      </datatype>
     </field>
     <field name="stringrange">
       <descriptions>
@@ -403,6 +405,7 @@
     </field>
     <field name="nonode_typedef">
       <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+	<maxLength value="255" />
         <enumeration>
           <query path="typedef" element="" xmlns="http://www.mmbase.org/xmlns/searchquery">
             <distinct />
@@ -439,7 +442,9 @@
     </field>
 
     <field name="lastmodifier">
-      <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+	<maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="age" state="virtual">

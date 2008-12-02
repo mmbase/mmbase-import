@@ -16,5 +16,6 @@
   </gui>
   <editor><positions><list>106</list></positions></editor>
   <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <maxLength value="255" />
   </datatype>
 </field>
