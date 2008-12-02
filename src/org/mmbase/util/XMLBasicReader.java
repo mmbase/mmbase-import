@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.46 2006-01-26 10:21:50 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.46.2.1 2008-12-02 16:16:08 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
 
@@ -85,14 +85,16 @@ public class XMLBasicReader extends DocumentReader {
                 try {
                     path = new java.net.URL(path).getPath();
                 } catch (java.net.MalformedURLException mfe) {
-                }                   
+                }
             }
             is = new InputSource(new FileInputStream(path));
             try {
                 is.setSystemId(new File(path).toURL().toExternalForm());
             } catch (java.net.MalformedURLException mfe) {
-            }                   
-            is.setSystemId("file://" + path);            
+                log.warn(mfe);
+                if (! path.startsWith("/")) path = "/" + path;
+                is.setSystemId("file://" + path);
+            }
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
