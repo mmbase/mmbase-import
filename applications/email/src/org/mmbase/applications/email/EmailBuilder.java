@@ -31,18 +31,18 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.35 2008-11-28 14:25:45 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.36 2008-12-02 11:17:15 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(EmailBuilder.class);
 
-    public final static Parameter<String> TYPE_PARAMETER = new Parameter<String>("type", String.class, "oneshot");
+    public final static Parameter/*<String>*/ TYPE_PARAMETER = new Parameter/*<String>*/("type", String.class, "oneshot");
 
     static {
     }
 
-    public final static Parameter<List> MESSAGEFORMAT_ARGUMENTS_PARAMETER = new Parameter<List>("formatarguments", List.class, null);
+    public final static Parameter/*<List>*/ MESSAGEFORMAT_ARGUMENTS_PARAMETER = new Parameter/*<List>*/("formatarguments", List.class, null);
 
     public final static Parameter[] MAIL_PARAMETERS = { TYPE_PARAMETER, MESSAGEFORMAT_ARGUMENTS_PARAMETER };
 
@@ -83,7 +83,7 @@ public class EmailBuilder extends MMObjectBuilder {
     static String groupsBuilder;
 
     // reference to the expire handler
-    private ScheduledFuture  expireHandler;
+    private /*ScheduledFuture*/ Object  expireHandler;
 
     protected int expireTime = 60 * 30 ;
     protected int sleepTime = 60;
@@ -118,9 +118,7 @@ public class EmailBuilder extends MMObjectBuilder {
             // check every defined sleeptime
             log.service("Expirehandler started with sleep time " + sleepTime + "sec, expire time " + expireTime + "sec.");
             expireHandler =
-                ThreadPools.scheduler.scheduleAtFixedRate(new EmailExpireHandler(this, expireTime),
-                                                          sleepTime,
-                                                          sleepTime, TimeUnit.SECONDS);
+                ThreadPools.scheduleAtFixedRate(new EmailExpireHandler(this, expireTime), sleepTime, sleepTime);
             ThreadPools.identify(expireHandler, "Sent email deleter");
 
 
@@ -142,7 +140,13 @@ public class EmailBuilder extends MMObjectBuilder {
     }
 
     @Override public void shutdown() {
-        if (expireHandler != null) { expireHandler.cancel(true); }
+        if (expireHandler != null) {
+            try {
+                expireHandler.getClass().getMethod("cancel", Boolean.class).invoke(expireHandler, Boolean.TRUE);
+            } catch (Exception e) {
+                log.warn(e);
+            }
+        }
     }
 
 
@@ -157,7 +161,7 @@ public class EmailBuilder extends MMObjectBuilder {
             node = org.mmbase.bridge.util.CloneUtil.cloneNodeWithRelations(node);
         }
 
-        List a = parameters.get(MESSAGEFORMAT_ARGUMENTS_PARAMETER);
+        List a = (List) parameters.get(MESSAGEFORMAT_ARGUMENTS_PARAMETER);
         arguments = a == null ? null : a.toArray();
 
         log.debug("We're in mail - args: " + parameters);
@@ -242,7 +246,7 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param args	List with arguments
      */
     private static void setType(Node node, Parameters parameters) {
-        String type = parameters.get(TYPE_PARAMETER);
+        String type = (String) parameters.get(TYPE_PARAMETER);
         String typeField = getTypeField();
         if ("oneshot".equals(type)) {
             node.setValue(typeField, TYPE_ONESHOT);
