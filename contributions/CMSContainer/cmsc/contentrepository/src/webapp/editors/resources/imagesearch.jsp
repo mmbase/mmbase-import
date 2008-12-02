@@ -54,37 +54,39 @@
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">often</mm:import><%-- either often or search --%>
    <div class="editor" style="height:555px">
-      <div class="body">
+      <c:choose>
+         <c:when test="${empty param.channelid}">
+            <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
+         </c:when>
+         <c:otherwise>
+            <c:if test="${param.channelid eq 'current'}">
+               <mm:import id="channelid" externid="creation" from="session" />
+            </c:if>
+            <mm:node number="${channelid}">
+               <mm:field name="pathfragment" id="pathfragment" write="false" />
+               <mm:import id="channelMsg">
+                  <fmt:message key="images.channel.title">
+                     <fmt:param value="${pathfragment}" />
+                  </fmt:message>
+               </mm:import>
+            </mm:node>
+         </c:otherwise>
+      </c:choose>
+      <div class="body" <c:if test="${action != 'search'}">style="display:none"</c:if> >
          <html:form action="/editors/resources/ImageAction" method="post">
             <html:hidden property="action" value="${action}"/>
-            <html:hidden property="offset"/>
-            <html:hidden property="order"/>
-            <html:hidden property="direction"/>
-            <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
-            <c:if test="${action == 'search'}">
-               <%@include file="imageform.jsp" %>
+            <c:if test="${!empty channelid}">
+               <html:hidden property="channelid" value="${channelid}"/>
             </c:if>
+            <html:hidden property="offset"/>
+            <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
+               <%@include file="imageform.jsp" %>
          </html:form>
       </div>
-		<div class="ruler_green">
-		<c:choose>
-			<c:when test="${empty param.channelid}">
-				<div><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></div>
-			</c:when>
-			<c:otherwise>
-				<c:if test="${param.channelid eq 'current'}">
-					<mm:import id="channelid" externid="creation" from="session" />
-				</c:if>
-				<mm:node number="${channelid}">
-					<mm:field name="pathfragment" id="pathfragment" write="false" />
-					<div><fmt:message key="images.channel.title">
-						<fmt:param value="${pathfragment}" />
-					</fmt:message></div>
-				</mm:node>
-			</c:otherwise>
-		</c:choose>
+      <div class="ruler_green">
+         <div><c:out value="${channelMsg}" /></div>
    `  </div>
-		<div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
+      <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
          <mm:import externid="results" jspvar="nodeList" vartype="List"/>
          <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
          <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
