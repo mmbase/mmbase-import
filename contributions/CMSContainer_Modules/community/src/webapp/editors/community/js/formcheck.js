@@ -23,3 +23,8 @@ function create() {
    document.forms[0].method.value = "addInit";
    document.forms[0].submit();
 }
+function selectState(url,ele){
+   surl=url+"&state="+ele.value
+   //	alert(surl);
+	window.location.href =surl;
+}
