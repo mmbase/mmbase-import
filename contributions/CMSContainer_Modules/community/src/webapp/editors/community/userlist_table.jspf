@@ -34,10 +34,26 @@
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.state">
 		<select onchange="selectState('${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do?page=${page}&sortby=${param.sortby}&dir=${param.dir}&authid=${person.authId}',this)" >
-			<option selected="selected" value="ACTIVE">${person.active}</option>
-			<option value="ACTIVE"><fmt:message key="community.search.state.active"/> </option>
+			<c:if test="${not empty person.active}"> 
+			<option selected="selected" value="${person.active}">${person.active}</option>
+			</c:if>
+			<c:if test="${empty person.active}"> 
+			<option selected="selected" value="ACTIVE"><fmt:message key="community.search.state.active"/></option>
 			<option value="UNCONFIRMED"><fmt:message key="community.search.state.unconfirmed"/> </option>
 			<option value="BLOCKED"><fmt:message key="community.search.state.blocked"/></option>
+			</c:if>
+			<c:if test="${person.active == 'ACTIVE'}">
+			<option value="UNCONFIRMED"><fmt:message key="community.search.state.unconfirmed"/> </option>
+			<option value="BLOCKED"><fmt:message key="community.search.state.blocked"/></option>
+			</c:if>
+			<c:if test="${person.active == 'UNCONFIRMED'}">
+			<option value="ACTIVE"><fmt:message key="community.search.state.active"/> </option>
+			<option value="BLOCKED"><fmt:message key="community.search.state.blocked"/></option>
+			</c:if>
+			<c:if test="${person.active == 'BLOCKED'}">
+			<option value="ACTIVE"><fmt:message key="community.search.state.active"/> </option>
+			<option value="UNCONFIRMED"><fmt:message key="community.search.state.unconfirmed"/> </option>
+			</c:if>
 		</select>         
    </edit:ui-tcolumn>
 </edit:ui-table>
