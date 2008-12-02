@@ -48,7 +48,6 @@
 	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&order=title&direction=1&channelid="+channelid;
 	}
 </script>
-   <link rel="stylesheet" type="text/css" href="../../editors/editwizards_new/style/extra/wizard.css">
 		<style type="text/css">
 div.editor div.body ul.shortcuts li {
 	padding-left: 5px;
@@ -87,6 +86,29 @@ div.editor div.body #imgList div.grid div.imgInfo {
 	height: 20%;
 	text-align: center;
 	padding: 0px;
+}
+
+div.buttonscontent  {
+   text-align: right;
+   height:39px;
+} 
+
+div.page_buttons div.button div.button_body
+{
+   background-image: url('../../../gfx/tab_2_right.gif');
+   background-repeat: no-repeat;
+   background-position: top right;
+   height: 39px;
+   float: left;   
+}
+
+div.page_buttons div.button div.button_body a
+{
+   float: left;
+   padding: 10px;
+   color: #313728;
+   font-size: 13px;  
+   display: block;
 }
 </style>
 	</cmscedit:head>
