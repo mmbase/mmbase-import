@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.math.BigDecimal;
 import org.mmbase.bridge.Field;
 import org.mmbase.module.corebuilders.RelDef;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.56 2008-12-02 16:38:31 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.57 2008-12-02 16:58:02 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -225,6 +226,16 @@ public class TemporaryNodeManager {
                             long l = -1;
                             if (!stringValue.equals("")) l = Long.parseLong(stringValue);
                             node.setValue(field,l);
+                        } catch (NumberFormatException x) {
+                            log.debug("Value for field " + field + " is not a number " + stringValue);
+                            return INVALID_VALUE;
+                        }
+                        break;
+                    case Field.TYPE_DECIMAL:
+                        try {
+                            BigDecimal d = BigDecimal.ONE.negate();
+                            if (!stringValue.equals("")) d = new BigDecimal(stringValue);
+                            node.setValue(field, d);
                         } catch (NumberFormatException x) {
                             log.debug("Value for field " + field + " is not a number " + stringValue);
                             return INVALID_VALUE;
