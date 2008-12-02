@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProcessorTest.java,v 1.3 2008-11-25 16:02:37 michiel Exp $
+ * @version $Id: ProcessorTest.java,v 1.4 2008-12-02 08:06:28 michiel Exp $
  * @since MMBase-1.9.1
   */
 public class ProcessorTest extends BridgeTest {
@@ -32,7 +32,6 @@ public class ProcessorTest extends BridgeTest {
         super(name);
     }
 
-    /*
     protected Node testCommitProcessorIsChanged1(Cloud c) {
         NodeManager nm = c.getNodeManager("mustbechanged");
         Node n = nm.createNode();
@@ -107,13 +106,15 @@ public class ProcessorTest extends BridgeTest {
         org.mmbase.cache.CacheManager.getInstance().readConfiguration();
     }
 
-    */
+
     protected int testCommitCount(Cloud c) {
         NodeManager nm = c.getNodeManager("datatypes");
         int ccbefore = CountCommitProcessor.count;
         Node n = nm.createNode();
         n.commit();
-        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        if (c.getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        }
         return n.getNumber();
     }
 
@@ -126,8 +127,10 @@ public class ProcessorTest extends BridgeTest {
         Transaction t = getCloud().getTransaction("commitcount");
         testCommitCount(t);
         t.commit();
-        // there is no point in calling a commit processor twice
-        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            // there is no point in calling a commit processor twice
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        }
     }
     static int nn = 0;
     public void testCommitCountTransaction2() {
@@ -139,9 +142,10 @@ public class ProcessorTest extends BridgeTest {
         t.commit(); // but only the transaction.
 
         nn = n.getNumber();
-
-        // commit processor must have been called.
-        assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            // commit processor must have been called.
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
+        }
     }
 
     protected void testCommitCountOnChange(Cloud c, int nn) {
@@ -149,8 +153,10 @@ public class ProcessorTest extends BridgeTest {
         int changedbefore = CountCommitProcessor.changed;
         Node n = c.getNode(nn);
         n.commit();
-        assertEquals(ccbefore + 1, CountCommitProcessor.count);
-        assertEquals(changedbefore, CountCommitProcessor.changed);
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
+            assertEquals(changedbefore, CountCommitProcessor.changed);
+        }
     }
     protected void testCommitCountOnChange2(Cloud c, int nn) {
         int ccbefore = CountCommitProcessor.count;
@@ -158,8 +164,10 @@ public class ProcessorTest extends BridgeTest {
         Node n = c.getNode(nn);
         n.setStringValue("string", "foobar");
         n.commit();
-        assertEquals(ccbefore + 1, CountCommitProcessor.count);
-        assertEquals(changedbefore + 1, CountCommitProcessor.changed);
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
+            assertEquals(changedbefore + 1, CountCommitProcessor.changed);
+        }
     }
 
     public void testCommitCountOnChange() {
