@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.49 2008-12-02 16:52:20 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.50 2008-12-03 12:21:36 andre Exp $
  */
 public class TransactionManager {
 
@@ -31,7 +31,7 @@ public class TransactionManager {
     private static final int   I_EXISTS_NO       = 0;
     static final String        EXISTS_YES        = "yes";
     private static final int   I_EXISTS_YES      = 1;
-    static final String        EXISTS_NOLONGER   = "nolonger";
+    public static final String        EXISTS_NOLONGER   = "nolonger";
     private static final int   I_EXISTS_NOLONGER = 2;
 
     private TemporaryNodeManager tmpNodeManager;
