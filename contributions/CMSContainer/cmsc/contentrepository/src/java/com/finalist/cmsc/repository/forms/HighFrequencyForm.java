@@ -16,9 +16,4 @@ public class HighFrequencyForm extends PagerForm {
 
    }
 
-   @override
-   public void reset() {
-      channelid = null;
-   }
-
 }
