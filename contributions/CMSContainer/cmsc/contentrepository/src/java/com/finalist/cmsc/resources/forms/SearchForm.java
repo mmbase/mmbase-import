@@ -7,17 +7,6 @@ public class SearchForm extends PagerForm {
 
    private String contenttypes;
    private String objectid;
-   private String channelid;
-
-
-   public String getChannelid() {
-      return channelid;
-   }
-
-
-   public void setChannelid(String channelid) {
-      this.channelid = channelid;
-   }
 
 
    public SearchForm() {
