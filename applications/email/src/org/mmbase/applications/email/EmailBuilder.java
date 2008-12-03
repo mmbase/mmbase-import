@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.37 2008-12-02 11:22:12 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.38 2008-12-03 12:27:40 andre Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -83,7 +83,7 @@ public class EmailBuilder extends MMObjectBuilder {
     static String groupsBuilder;
 
     // reference to the expire handler
-    private /*ScheduledFuture*/ Object  expireHandler;
+    private ScheduledFuture /* Object */  expireHandler;
 
     protected int expireTime = 60 * 30 ;
     protected int sleepTime = 60;
