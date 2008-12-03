@@ -12,15 +12,12 @@ package com.finalist.cmsc.resources.forms;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -36,9 +33,6 @@ public abstract class SearchAction extends PagerAction {
 
    private static final String OBJECTID = "objectid";
    private static final String CONTENTTYPES = "contenttypes";
-   private static final String CONTENTCHANNEL = "contentchannel";
-   private static final String CREATIONREL = "creationrel";
-   private static final String DESTINATION = "destination";
 
    private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
@@ -64,19 +58,6 @@ public abstract class SearchAction extends PagerAction {
       // First add the proper step to the query.
       Step theStep = query.addStep(nodeManager);
       query.setNodeStep(theStep);
-
-      //search in one contentchannel
-      String channelid=searchForm.getChannelid();
-      if(!StringUtil.isEmpty(channelid)){
-      //search in the current channel
-      if("current".equals(channelid))
-         channelid = (String)request.getSession().getAttribute("creation");
-      NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
-      RelationStep relStep = query.addRelationStep(channelManager,CREATIONREL,DESTINATION);
-      Step channelStep = relStep.getNext();
-      Queries.addConstraints(query, channelManager.getName() + ".number=" + channelid);
-      request.setAttribute("channelid", channelid);
-      }
 
       // Order the result by:
       String order = searchForm.getOrder();
