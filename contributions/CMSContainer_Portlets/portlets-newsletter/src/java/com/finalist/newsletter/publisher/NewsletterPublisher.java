@@ -26,7 +26,6 @@ import javax.naming.NamingException;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -68,17 +67,24 @@ public class NewsletterPublisher {
          // if needed to prompt user this validate will be remove to Action
          String originalBody  = "";
          String status = newsletterEditionNode.getStringValue("process_status");
-         String static_html = newsletterEditionNode.getStringValue("static_html");
-         static_html = StringEscapeUtils.unescapeHtml(static_html);
+         String static_html = null;
+         if (newsletterEditionNode.getValueWithoutProcess("static_html") != null)
+            static_html = (String)newsletterEditionNode.getValueWithoutProcess("static_html");
          if (EditionStatus.INITIAL.value().equals(status) && StringUtils.isEmpty(static_html)) {
             originalBody = getBody(publication, subscription);
          }
          else {
-            originalBody = static_html;
+            if("text/plain".equals(subscription.getMimeType())){
+               OnlyText onlyText = new OnlyText();
+               originalBody = onlyText.html2Text(static_html);
+            }
+            else {
+               originalBody = static_html;
+            }
+
          }
          
 
-         //NewsletterService service = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
          // Newsletter newsletter = service.getNewsletterBySubscription(subscription.getId());
          Newsletter newsletter = publication.getNewsletter();
          String replyAddress = newsletter.getReplyAddress();
@@ -124,9 +130,9 @@ public class NewsletterPublisher {
    private void setBody(Publication publication, Subscription subscription, Multipart multipart,String originalBody) {
       MimeBodyPart mdp = new MimeBodyPart();
       try {
-         String type = subscription.getMimeType();
-         log.debug("the content using type " + type + " will be send as: " + originalBody + "\n");
-         mdp.setContent(originalBody, type);
+         String type=subscription.getMimeType();
+         mdp.setContent(originalBody, type+";charset=utf-8");
+         mdp.addHeader("Content-Transfer-Encoding", "quoted-printable");
          multipart.addBodyPart(mdp);
       }
       catch (MessagingException e) {
