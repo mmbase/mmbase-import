@@ -28,3 +28,19 @@ function selectState(url,ele){
    //	alert(surl);
 	window.location.href =surl;
 }
+function onState(){
+    var sels = document.getElementsByTagName("select");
+    for (i = 0; i < sels.length; i++) {
+        var sel = sels[i];
+        var options = sel.getElementsByTagName("option");
+        var v = options[0];
+        if ("" == v.value) {
+            options[0].parentNode.removeChild(options[0]);
+        }
+        for (j = 1; j < options.length; j++) {
+            if (v.value == options[j].value) {
+                options[j].parentNode.removeChild(options[j]);
+            }
+        }
+    }
+}
