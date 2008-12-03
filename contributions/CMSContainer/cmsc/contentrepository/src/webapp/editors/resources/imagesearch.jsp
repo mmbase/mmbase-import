@@ -52,35 +52,46 @@
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-<mm:import externid="action">often</mm:import><%-- either often or search --%>
+<mm:import externid="action">search</mm:import><%-- either often or search --%>
    <div class="editor" style="height:555px">
       <c:choose>
-         <c:when test="${empty param.channelid}">
+         <c:when test="${action eq 'search'}">
+            <mm:import id="formAction">/editors/resources/ImageAction</mm:import>
             <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
          </c:when>
          <c:otherwise>
-            <c:if test="${param.channelid eq 'current'}">
-               <mm:import id="channelid" externid="creation" from="session" />
+            <mm:import id="formAction">/editors/repository/HighFrequencyImag</mm:import>
+            <c:if test="${param.channelid eq 'all'}">
+                <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
-            <mm:node number="${channelid}">
-               <mm:field name="pathfragment" id="pathfragment" write="false" />
-               <mm:import id="channelMsg">
-                  <fmt:message key="images.channel.title">
-                     <fmt:param value="${pathfragment}" />
-                  </fmt:message>
-               </mm:import>
-            </mm:node>
+            <c:if test="${param.channelid ne 'all'}">
+               <c:if test="${param.channelid eq 'current'}">
+                  <mm:import id="channelid" externid="creation" from="session" />
+               </c:if>
+               <mm:node number="${channelid}">
+                  <mm:field name="pathfragment" id="pathfragment" write="false" />
+                  <mm:import id="channelMsg">
+                     <fmt:message key="images.channel.title">
+                        <fmt:param value="${pathfragment}" />
+                     </fmt:message>
+                  </mm:import>
+               </mm:node>
+            </c:if>
          </c:otherwise>
       </c:choose>
-      <div class="body" <c:if test="${action != 'search'}">style="display:none"</c:if> >
-         <html:form action="/editors/resources/ImageAction" method="post">
+      <div class="body" <c:if test="${action == 'often'}">style="display:none"</c:if> >
+         <html:form action="${formAction}" method="post">
             <html:hidden property="action" value="${action}"/>
-            <c:if test="${!empty channelid}">
-               <html:hidden property="channelid" value="${channelid}"/>
-            </c:if>
             <html:hidden property="offset"/>
+            <c:if test="${action eq 'often'}">
+            <html:hidden property="channelid" value="${channelid}"/>
+            </c:if>
+            <c:if test="${action eq 'search'}">
+            <html:hidden property="order"/>
+            <html:hidden property="direction"/>
             <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
                <%@include file="imageform.jsp" %>
+            </c:if>
          </html:form>
       </div>
       <div class="ruler_green">
@@ -112,13 +123,14 @@
 	         <%@include file="../repository/searchpages.jsp" %>
 	      </c:if>
       </div>
-      <c:if test="${action != 'search'}">
+      <c:if test="${action == 'often'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-      <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
+      <mm:url page="/editors/resources/ImageInitAction.do" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
+      <mm:url page="/editors/repository/HighFrequencyImag.do?action=often&channelid=all" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
-			<li><a href="#"><fmt:message key="imageselect.link.allchannel" /></a></li>
+			<li><a href="${often_show_images}"><fmt:message key="imageselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="imageselect.link.channel" /></a></li>
 			<li><a href="${search_image_url}"><fmt:message key="imageselect.link.search" /></a></li>
 			<li><a href="${new_image_url}"><fmt:message key="imageselect.link.new" /></a></li>
