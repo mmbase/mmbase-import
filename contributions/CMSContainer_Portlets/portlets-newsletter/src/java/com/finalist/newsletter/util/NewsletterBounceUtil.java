@@ -18,7 +18,7 @@ import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.newsletter.domain.NewsletterBounce;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
-
+import com.finalist.cmsc.util.ComparisonUtil;
 public class NewsletterBounceUtil {
 
    private static Log log = LogFactory.getLog(NewsletterBounceUtil.class);
