@@ -45,10 +45,10 @@
 	}
 
 	function selectChannel(channelid, path) {
-	    document.location = "../../resources/ImageAction.do?action=often&contenttypes=images&offset=0&channelid="+channelid;
+	    document.location = "../../repository/HighFrequencyImag.do?action=often&channelid="+channelid;
 	}
 </script>
-   <link rel="stylesheet" type="text/css" href="imagesearch.css" />
+   <link rel="stylesheet" type="text/css" href="../css/imagesearch.css" />
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
@@ -57,7 +57,7 @@
       <c:choose>
          <c:when test="${action eq 'search'}">
             <mm:import id="formAction">/editors/resources/ImageAction</mm:import>
-            <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
+            <mm:import id="channelMsg"><fmt:message key="images.results" /></mm:import>
          </c:when>
          <c:otherwise>
             <mm:import id="formAction">/editors/repository/HighFrequencyImag</mm:import>
@@ -65,9 +65,6 @@
                 <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
             <c:if test="${param.channelid ne 'all'}">
-               <c:if test="${param.channelid eq 'current'}">
-                  <mm:import id="channelid" externid="creation" from="session" />
-               </c:if>
                <mm:node number="${channelid}">
                   <mm:field name="pathfragment" id="pathfragment" write="false" />
                   <mm:import id="channelMsg">
@@ -86,9 +83,9 @@
             <c:if test="${action eq 'often'}">
             <html:hidden property="channelid" value="${channelid}"/>
             </c:if>
-            <c:if test="${action eq 'search'}">
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
+            <c:if test="${action eq 'search'}">
             <mm:import id="contenttypes" jspvar="contenttypes">images</mm:import>
                <%@include file="imageform.jsp" %>
             </c:if>
@@ -126,7 +123,7 @@
       <c:if test="${action == 'often'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-      <mm:url page="/editors/resources/ImageInitAction.do" id="search_image_url" write="false" />
+      <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
       <mm:url page="/editors/repository/HighFrequencyImag.do?action=often&channelid=all" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
@@ -145,13 +142,13 @@
             <div class="page_buttons">
                 <div class="button">
                     <div class="button_body">
-                        <a id="bottombutton-ok" class="bottombutton" title="Select the image." href="javascript:doSelectIt();" unselectable="on" titlesave="Select the image." titlenosave="Cannot be saved, since no image is selected." inactive="false"><fmt:message key="imageselect.ok" /></a>
+                        <a class="bottombutton" title="Select the image." href="javascript:doSelectIt();"><fmt:message key="imageselect.ok" /></a>
                     </div>
                 </div>
                
                 <div class="button">
                     <div class="button_body">
-                        <a id="bottombutton-cancel" class="bottombutton" href="javascript:doCancleIt();" title="Cancel this task, image will NOT be selected."><fmt:message key="imageselect.cancel" /></a>
+                        <a class="bottombutton" href="javascript:doCancleIt();" title="Cancel this task, image will NOT be selected."><fmt:message key="imageselect.cancel" /></a>
                     </div>
                 </div>
                 <div class="begin">
