@@ -11,7 +11,9 @@ public class NewsletterEditionApprove extends NewsletterEditionAction{
    protected void doSave(HttpServletRequest request, Node edition)
          throws Exception {
       if(!EditionStatus.APPROVED.value().equals(edition.getValue("process_status"))) {
-         NewsletterPublicationUtil.approveEdition(edition);
+         String appUser=request.getSession().getValue("cloud_mmbase").toString();
+         String[] result = appUser.split("\\s");
+         NewsletterPublicationUtil.approveEdition(edition,result[3]);
       }
    }
 
