@@ -63,7 +63,7 @@
             <mm:import id="channelMsg"><fmt:message key="images.results" /></mm:import>
          </c:when>
          <c:otherwise>
-            <mm:import id="formAction">/editors/repository/HighFrequencyImag</mm:import>
+            <mm:import id="formAction">/editors/repository/HighFrequencyImg</mm:import>
             <c:if test="${param.channelid eq 'all'}">
                 <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
