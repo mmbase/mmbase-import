@@ -504,7 +504,9 @@ table a.button
 	color: #313728;
 	font-size: 11px;
 	font-weight: bold;
+	/* Conflicts in some IE versions, see CMSC-668 
 	background-image: url('../../../gfx/button_side_block.gif');
+	*/
 	background-position: right center;
 	background-repeat: no-repeat;
 	padding-right: 15px;
