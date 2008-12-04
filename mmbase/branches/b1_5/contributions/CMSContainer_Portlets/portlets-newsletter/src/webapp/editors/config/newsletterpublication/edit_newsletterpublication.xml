@@ -30,6 +30,11 @@
 		<prompt xml:lang="nl">Status</prompt>
 		<prompt xml:lang="zh">Status</prompt>
 	</field>
+	 <field name="approved_by"  ftype="data" >
+		<prompt xml:lang="en">Approved By</prompt>
+		<prompt xml:lang="nl">Approved By</prompt>
+		<prompt xml:lang="zh">审核用户</prompt>
+	</field>
 	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Introduction</prompt>
 		<prompt xml:lang="nl">Inleiding</prompt>

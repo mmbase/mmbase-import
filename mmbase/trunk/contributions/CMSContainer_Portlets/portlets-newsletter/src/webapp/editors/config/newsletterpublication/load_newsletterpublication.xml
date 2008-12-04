@@ -14,6 +14,7 @@
 	<field name="intro" />
 	<field name="externalurl"/>
 	<field name="process_status"/>
+	<field name="approved_by"/>
 	<relation destination="images" role="namedrel" />
    <relation destination="attachments" role="posrel" />
 	<relation destination="layout" role="allowrel" />
