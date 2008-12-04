@@ -36,7 +36,7 @@ import com.finalist.cmsc.util.ComparisonUtil;
  * @author Eva 
  * @author Marco
  */
-public class HighFrequencyImagAction extends PagerAction {
+public class HighFrequencyImgAction extends PagerAction {
 
    private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
    private static final String CHANNELID = "channelid";
@@ -55,48 +55,53 @@ public class HighFrequencyImagAction extends PagerAction {
    private static final String NUMBER = "number";
    private static final String IMAGENUMBER = "imageNumber";
    private static final String COUNT = "count";
-   private static final String CON = "con";
+   private static final String COUNTALIAS = "countalias";
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
-      HighFrequencyForm highFrequencyForm = (HighFrequencyForm) form;
+      HighFrequencyImgForm highFrequencyImgForm = (HighFrequencyImgForm) form;
+      
+      String channelid = highFrequencyImgForm.getChannelid();
+      boolean existChannelConstraint = !StringUtil.isEmpty(channelid) && !ALL.equals(channelid);
+      
       Query query = cloud.createAggregatedQuery();
-      Step step;
+      Step imageStep;
       NodeManager imgManager = cloud.getNodeManager(IMAGES);
-      //search in one contentchannel
-      String channelid = highFrequencyForm.getChannelid();
-      if (!StringUtil.isEmpty(channelid) && !ALL.equals(channelid)) {
-         //search in the current channel
+      
+      // search in one contentchannel
+      if (existChannelConstraint) {
+         // search in the current channel
          if (CURRENTCHANNEL.equals(channelid)) {
             channelid = (String) request.getSession().getAttribute(CREATION);
          }
          NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
          query.addStep(channelManager);
          RelationStep creationrelStep = query.addRelationStep(imgManager, CREATIONREL, SOURCE);
-         step = creationrelStep.getNext();
+         imageStep = creationrelStep.getNext();
          Queries.addConstraints(query, channelManager.getName() + ".number=" + channelid);
-      } else {
-         step = query.addStep(imgManager);
+      } else {// search all contentchannels
+         imageStep = query.addStep(imgManager);
       }
-      NodeManager relManager = cloud.getNodeManager(CONTENTELEMENT);
-      RelationStep relStep = query.addRelationStep(relManager, IMAGEREL, SOURCE);
-      Step contentStep = relStep.getNext();
-      query.addAggregatedField(step, imgManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+      
+      NodeManager contentManager = cloud.getNodeManager(CONTENTELEMENT);
+      RelationStep imagerelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
+      Step contentStep = imagerelStep.getNext();
+      query.addAggregatedField(imageStep, imgManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
 
-      BasicAggregatedField field = (BasicAggregatedField) query.addAggregatedField(contentStep, relManager
+      BasicAggregatedField countField = (BasicAggregatedField) query.addAggregatedField(contentStep, contentManager
             .getField(NUMBER), AggregatedField.AGGREGATION_TYPE_COUNT);
-      field.setAlias(CON);
+      countField.setAlias(COUNTALIAS);
 
       NodeList middleResults = query.getList();
+      
       List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
       for (int i = 0; i < middleResults.size(); i++) {
          Map<Object, Object> result = new HashMap<Object, Object>();
          Node n = middleResults.getNode(i);
          result.put(IMAGENUMBER, n.getValue(NUMBER));
-         result.put(COUNT, n.getIntValue(CON));
+         result.put(COUNT, n.getIntValue(COUNTALIAS));
          results.add(result);
-
       }
 
       ComparisonUtil comparator = new ComparisonUtil();
@@ -138,8 +143,8 @@ public class HighFrequencyImagAction extends PagerAction {
       // Set the offset (used for paging).
       List<Node> resultAfterPaging = newresult;
       int offset = 0;
-      if (highFrequencyForm.getOffset() != null && highFrequencyForm.getOffset().matches("\\d+")) {
-         offset = Integer.parseInt(highFrequencyForm.getOffset());
+      if (highFrequencyImgForm.getOffset() != null && highFrequencyImgForm.getOffset().matches("\\d+")) {
+         offset = Integer.parseInt(highFrequencyImgForm.getOffset());
       }
       if (offset * maxnum + maxnum < newresult.size()) {
          resultAfterPaging = newresult.subList(offset * maxnum, offset * maxnum + maxnum);
