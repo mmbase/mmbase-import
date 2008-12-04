@@ -137,7 +137,7 @@
 
               </c:when>
               <c:otherwise>
-                <p>Cannot close this lesson yet</p>
+                <p><di:translate key="assessment.waitforfeedback" /></p>
               </c:otherwise>
             </c:choose>
           </mm:function>

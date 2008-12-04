@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
  * Functionality are made accessible to front-end jsps using (node) functions (see e.g. people.xml).
  *
- * @version $Id: LessonChecker.java,v 1.2 2008-12-04 16:13:01 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.3 2008-12-04 16:34:28 michiel Exp $
  */
 
 public class LessonChecker {
@@ -159,7 +159,20 @@ public class LessonChecker {
                                             @Required @Name("lesson") Node lesson) {
 
         Node classRel = getClassRel(lesson, user);
-        return classRel.countRelatedNodes("popfeedback") > 0;
+        Cloud cloud = user.getCloud();
+        if (cloud.hasNodeManager("popfeedback")) {
+            NodeList feedbacks = classRel.getRelatedNodes("popfeedback");
+            if (feedbacks.size() > 0 && ! "".equals(feedbacks.get(0).getStringValue("text").trim())) return true;
+        }
+        if (cloud.hasNodeManager("shouts")) {
+            NodeQuery q = Queries.createRelatedNodesQuery(user, cloud.getNodeManager("shouts"), "posrel", "destination");
+            Queries.addConstraint(q, Queries.createConstraint(q, "reference", Queries.getOperator("="), lesson));
+            org.mmbase.storage.search.Constraint c = Queries.createConstraint(q, "from", Queries.getOperator("="), user);
+            q.setInverse(c, true);
+            Queries.addConstraint(q, c);
+            if (Queries.count(q) > 0) return true;
+        }
+        return false;
     }
 
 
@@ -175,7 +188,9 @@ public class LessonChecker {
         Node education = lesson.getRelatedNodes("educations", "posrel", "source").getNode(0);
         wtf.put("education", education);
         boolean needsFeedback =  Casting.toBoolean(getComponent().getSetting("needs_feedback_to_close_next_lesson",  user.getCloud(), wtf));
-        if (! needsFeedback) return true;
+        if (! needsFeedback) {
+            return true;
+        }
         List<Node> lessons = getLessons(education);
         int i = lessons.indexOf(lesson);
         if (i == 0) return true;
