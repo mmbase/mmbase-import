@@ -13,6 +13,7 @@
     <setting name="relate_learnblocks" type="boolean" default="false" />
     <setting name="send_email"         type="boolean" default="true" />
     <setting name="send_student_email"  type="boolean" default="true" />
+    <setting name="needs_feedback_to_close_next_lesson"  type="boolean" default="false" />
   </scope>
 
 </component>
