@@ -24,7 +24,10 @@
 
    function doSelectIt() {
       var href = document.getElementById('imgList').getAttribute('href')+"";
-      if (href.length<10) return;
+      if (href.length<10) {
+          alert("You must select one image");
+          return;
+      }
       if (href.indexOf('javascript:') == 0) {
        eval(href.substring('javascript:'.length, href.length));
        return false;
