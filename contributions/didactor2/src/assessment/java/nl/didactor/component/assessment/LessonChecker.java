@@ -14,8 +14,17 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * @javadoc
- * @version $Id: LessonChecker.java,v 1.1 2008-12-04 16:00:23 michiel Exp $
+ * The assessment component attributes some statuses to 'learnblocks' directly related to the
+ * education ('lessons'). E.g. it can keep track on whether the lesson is 'closed' and whether
+ * feedback on a lesson was given by a coach (and it can also maintain this feedback).
+ *
+ * This class collects some functionalilty for this, it e.g. implements what are lessons {@link
+ * #getLessons}), which lessons are still inaccessible ({@link #getBlockedLearnblocksForUser}) and
+ * whether a lesson already given feedback on ({@link lessonHasFeedback}).
+
+ * Functionality are made accessible to front-end jsps using (node) functions (see e.g. people.xml).
+ *
+ * @version $Id: LessonChecker.java,v 1.2 2008-12-04 16:13:01 michiel Exp $
  */
 
 public class LessonChecker {
@@ -65,6 +74,21 @@ public class LessonChecker {
             }
         }
         return result;
+    }
+
+
+    protected static Node getClassRel(Node lesson, Node user) {
+        NodeList classRels = user.getCloud().getList("" + lesson.getNumber(),
+                                           "learnblocks,classrel,people",
+                                           "classrel.number",
+                                           "people.number='" + user.getNumber() + "'",
+                                           null,
+                                           null, null, true);
+        if (classRels.size() == 0) {
+            return null;
+        } else {
+            return classRels.get(0).getNodeValue("classrel.number");
+        }
     }
 
    /**
@@ -119,21 +143,10 @@ public class LessonChecker {
            } else {
                log.debug("Checking relation " + learnBlock.getNumber() + " -> " + user.getNumber());
 
-               NodeList classRels = cloud.getList("" + learnBlock.getNumber(),
-                                                  "learnblocks,classrel,people",
-                                                  "classrel.number",
-                                                  "people.number='" + user.getNumber() + "'",
-                                                  null,
-                                                  null, null, true);
-               boolean assessed = classRels.size() > 0;
-               log.debug("" + learnBlock.getNumber() + " assessed " + assessed);
-               if (assessed) {
-                   boolean hasFeedBack = classRels.getNode(0).getNodeValue("classrel.number").countRelatedNodes("popfeedback") > 0;
-                   if (! hasFeedBack) {
-                       log.debug("" + learnBlock.getNumber() + " has no popfeedback object yet, so next lessons are blocked");
-                       statusBlocked = true;
-                   }
-               } else {
+               Node classrel = getClassRel(learnBlock, user);
+               boolean closed = classrel != null;
+               log.debug("" + learnBlock.getNumber() + " closed " + closed);
+               if (! closed) {
                    statusBlocked = true;
                }
            }
@@ -145,8 +158,8 @@ public class LessonChecker {
     public static boolean lessonHasFeedback(@Required @Name("node") Node user,
                                             @Required @Name("lesson") Node lesson) {
 
-
-        return  true;
+        Node classRel = getClassRel(lesson, user);
+        return classRel.countRelatedNodes("popfeedback") > 0;
     }
 
 
