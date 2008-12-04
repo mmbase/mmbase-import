@@ -29,7 +29,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.57 2008-12-02 16:58:02 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.58 2008-12-04 16:40:57 michiel Exp $
  */
 public class TemporaryNodeManager {
 
@@ -78,7 +78,7 @@ public class TemporaryNodeManager {
     /**
      * @javadoc
      */
-    protected String createTmpRelationNode(String role, String owner, String key, String source, String destination) throws Exception {
+    public String createTmpRelationNode(String role, String owner, String key, String source, String destination) throws Exception {
         // decode type to a builder using reldef
         RelDef reldef = mmbase.getRelDef();
         int rnumber = reldef.getNumberByName(role, true);
