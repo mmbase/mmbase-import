@@ -180,6 +180,7 @@ public abstract class NewsletterPublicationUtil {
       edition.setStringValue("process_status", EditionStatus.FROZEN.value());
 //      edition.setValue("static_html", StringEscapeUtils.escapeHtml(static_html));
       edition.setValueWithoutProcess("static_html", static_html);
+      edition.setStringValue("approved_by", null);
       edition.commit();
    }
    
@@ -194,8 +195,9 @@ public abstract class NewsletterPublicationUtil {
    /**
     * Approve a edition
     */
-   public static void approveEdition(Node edition) {
+   public static void approveEdition(Node edition,String user) {
       edition.setStringValue("process_status", EditionStatus.APPROVED.value());
+      edition.setStringValue("approved_by", user);
       edition.commit();
    }
    /**
