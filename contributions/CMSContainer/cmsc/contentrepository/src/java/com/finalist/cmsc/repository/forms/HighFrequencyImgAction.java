@@ -51,6 +51,7 @@ public class HighFrequencyImgAction extends PagerAction {
    private static final String CREATION = "creation";
    private static final String CONTENTELEMENT = "contentelement";
    private static final String SOURCE = "source";
+   private static final String DESTINATION = "destination";
    private static final String IMAGEREL = "imagerel";
    private static final String NUMBER = "number";
    private static final String IMAGENUMBER = "imageNumber";
@@ -68,6 +69,7 @@ public class HighFrequencyImgAction extends PagerAction {
       Query query = cloud.createAggregatedQuery();
       Step imageStep;
       NodeManager imgManager = cloud.getNodeManager(IMAGES);
+      NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
       
       // search in one contentchannel
       if (existChannelConstraint) {
@@ -75,7 +77,6 @@ public class HighFrequencyImgAction extends PagerAction {
          if (CURRENTCHANNEL.equals(channelid)) {
             channelid = (String) request.getSession().getAttribute(CREATION);
          }
-         NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
          query.addStep(channelManager);
          RelationStep creationrelStep = query.addRelationStep(imgManager, CREATIONREL, SOURCE);
          imageStep = creationrelStep.getNext();
@@ -93,12 +94,12 @@ public class HighFrequencyImgAction extends PagerAction {
             .getField(NUMBER), AggregatedField.AGGREGATION_TYPE_COUNT);
       countField.setAlias(COUNTALIAS);
 
-      NodeList middleResults = query.getList();
+      NodeList usedImgResults = query.getList();
       
       List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
-      for (int i = 0; i < middleResults.size(); i++) {
+      for (int i = 0; i < usedImgResults.size(); i++) {
          Map<Object, Object> result = new HashMap<Object, Object>();
-         Node n = middleResults.getNode(i);
+         Node n = usedImgResults.getNode(i);
          result.put(IMAGENUMBER, n.getValue(NUMBER));
          result.put(COUNT, n.getIntValue(COUNTALIAS));
          results.add(result);
@@ -109,10 +110,17 @@ public class HighFrequencyImgAction extends PagerAction {
       Collections.sort(results, comparator);
       Collections.reverse(results);
 
-      //TODO:this imgResult contains all images,it can be changed to the conditional image list 
-      NodeQuery query1 = imgManager.createQuery();
-      query1.getNodeStep();
-      NodeList imgResult = query1.getList();
+      NodeQuery nodeQuery = cloud.createNodeQuery();
+      imageStep = nodeQuery.addStep(imgManager);
+      nodeQuery.setNodeStep(imageStep);
+      //search in one contentchannel
+      if(existChannelConstraint){
+         nodeQuery.addRelationStep(channelManager,CREATIONREL,DESTINATION);
+         Queries.addConstraints(nodeQuery, channelManager.getName() + ".number=" + channelid);
+         request.setAttribute("channelid", channelid);
+      }
+
+      NodeList imgResult = nodeQuery.getList();
 
       List<Node> newresult = new ArrayList<Node>();
       int x = 0;
