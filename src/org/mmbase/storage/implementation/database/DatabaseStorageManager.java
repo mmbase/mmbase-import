@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.14 2008-10-03 09:45:53 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.15 2008-12-04 11:23:14 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -3057,7 +3057,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
             dbtype = field.getType();
         }
 
-        if (dbtype == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+        if (dbtype == Field.TYPE_BINARY && checkStoreFieldAsFile(field.getParent())) {
             String fieldName = field.getName();
             File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
             return binaryFile == null;
