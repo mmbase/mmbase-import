@@ -106,26 +106,42 @@
 
       <c:if test="${! empty firstopenlesson}">
 
-        <jsp:directive.include file="evaluationtest.jspf" />
+        <mm:node number="$user">
+          <mm:function name="canCloseLesson" referids="firstopenlesson@lesson">
+            <c:choose>
+              <c:when test="${_}">
+                <!--
+                    <jsp:directive.include file="evaluationtest.jspf" />
+                -->
 
-        <mm:treefile page="/assessment/closelesson.jsp"
-                     objectlist="$includePath"
-                     write="false"
-                     >
+                <mm:treefile page="/assessment/closelesson.jsp"
+                             objectlist="$includePath"
+                             write="false"
+                             >
 
-          <form name="closelessonform" action="${_}"   method="post">
-            <input type="hidden" name="coachmode" value="false"  />
-            <input type="hidden" name="lesson" value="${firstopenlesson}"  />
-            <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
-              <input type="submit" class="formbutton" value="${_}" />
-            </di:translate>
-          </form>
+                  <form name="closelessonform" action="${_}"   method="post">
+                    <input type="hidden" name="coachmode" value="false"  />
+                    <input type="hidden" name="lesson" value="${firstopenlesson}"  />
+                    <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
+                        <input type="submit" class="formbutton" value="${_}" />
+                    </di:translate>
+                    </form>
 
-          <mm:node number="$assessment_evaluationtest" notfound="skip">
+                    <!--
+                        <mm:node number="$assessment_evaluationtest" notfound="skip">
 
-          </mm:node>
+                        </mm:node>
+                    -->
+                </mm:treefile>
 
-        </mm:treefile>
+
+              </c:when>
+              <c:otherwise>
+                <p>Cannot close this lesson yet</p>
+              </c:otherwise>
+            </c:choose>
+          </mm:function>
+        </mm:node>
       </c:if>
     </div>
   </div>
