@@ -33,7 +33,8 @@ import com.finalist.cmsc.util.ComparisonUtil;
 /**
  * Select the often used images in all channels or in the current channel.
  * 
- * @author Eva & Marco
+ * @author Eva 
+ * @author Marco
  */
 public class HighFrequencyImagAction extends PagerAction {
 
