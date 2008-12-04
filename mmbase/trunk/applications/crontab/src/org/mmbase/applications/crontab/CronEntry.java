@@ -20,10 +20,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.20 2008-12-02 09:23:22 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.21 2008-12-04 14:12:04 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
+
+
+    private static final long serialVersionUID = 5523591459873053633L;
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
 
