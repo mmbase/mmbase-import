@@ -9,8 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -64,7 +63,7 @@ public class HighFrequencyImgAction extends PagerAction {
       HighFrequencyImgForm highFrequencyImgForm = (HighFrequencyImgForm) form;
       
       String channelid = highFrequencyImgForm.getChannelid();
-      boolean existChannelConstraint = !StringUtil.isEmpty(channelid) && !ALL.equals(channelid);
+      boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
       
       Query query = cloud.createAggregatedQuery();
       Step imageStep;
