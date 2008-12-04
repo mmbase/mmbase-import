@@ -3,7 +3,7 @@ package com.finalist.cmsc.repository.forms;
 import com.finalist.cmsc.struts.PagerForm;
 
 @SuppressWarnings("serial")
-public class HighFrequencyForm extends PagerForm {
+public class HighFrequencyImgForm extends PagerForm {
 
    private String channelid;
 
