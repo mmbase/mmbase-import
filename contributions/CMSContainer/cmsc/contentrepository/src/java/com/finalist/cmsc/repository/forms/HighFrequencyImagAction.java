@@ -104,6 +104,7 @@ public class HighFrequencyImagAction extends PagerAction {
       Collections.sort(results, comparator);
       Collections.reverse(results);
 
+      //TODO:this imgResult contains all images,it can be changed to the conditional image list 
       NodeQuery query1 = imgManager.createQuery();
       query1.getNodeStep();
       NodeList imgResult = query1.getList();
@@ -121,8 +122,9 @@ public class HighFrequencyImagAction extends PagerAction {
             }
          }
       }
-
       int resultCount = newresult.size();
+      newresult.addAll(resultCount,imgResult);
+      resultCount = newresult.size(); 
       
       // used for paging about maxnum
       int maxnum = 0;
