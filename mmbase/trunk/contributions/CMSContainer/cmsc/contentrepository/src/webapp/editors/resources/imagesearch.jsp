@@ -48,7 +48,7 @@
 	}
 
 	function selectChannel(channelid, path) {
-	    document.location = "../../repository/HighFrequencyImag.do?action=often&channelid="+channelid;
+	    document.location = "../../repository/HighFrequencyImg.do?action=often&channelid="+channelid;
 	}
 </script>
    <link rel="stylesheet" type="text/css" href="../css/imagesearch.css" />
@@ -128,7 +128,7 @@
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
       <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
-      <mm:url page="/editors/repository/HighFrequencyImag.do?action=often&channelid=all" id="often_show_images" write="false"/>
+      <mm:url page="/editors/repository/HighFrequencyImg.do?action=often&channelid=all" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_images}"><fmt:message key="imageselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="imageselect.link.channel" /></a></li>
