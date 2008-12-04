@@ -14,6 +14,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.Authorization;
 import org.mmbase.security.Operation;
 import org.mmbase.security.Rank;
+import org.mmbase.security.SecurityException;
 import org.mmbase.security.implementation.cloudcontext.User;
 
 public class Contexts extends org.mmbase.security.implementation.cloudcontext.builders.Contexts {
@@ -22,6 +23,23 @@ public class Contexts extends org.mmbase.security.implementation.cloudcontext.bu
       return getContextNode("default");
    }
 
+   /**
+    * CMSC-1174 Removal of inline links fails for non administrators
+    * Workaround for http://www.mmbase.org/jira/browse/MMB-1713
+    * 
+    * MMBase code to handle transactions is changed and sometimes nodes which are not modified are committed
+    * CMSc deletes relations in the RichtextBuilder. These deleted relations are stilled loaded in the
+    * transaction are committed, The transaction code checks if the node exists which produces and exception.
+    * Read actions are always allowed. 
+    * 
+    * @see org.mmbase.security.implementation.cloudcontext.builders.Contexts#mayDo(org.mmbase.security.implementation.cloudcontext.User, int, org.mmbase.security.Operation)
+    */
+   public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
+      if (operation == Operation.READ) {
+          return true;
+      }
+      return super.mayDo(user, nodeId, operation);
+   }
 
    /**
     * @see org.mmbase.security.implementation.cloudcontext.builders.Contexts#mayDo(org.mmbase.security.implementation.cloudcontext.User,
