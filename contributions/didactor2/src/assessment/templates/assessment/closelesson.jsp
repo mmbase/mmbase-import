@@ -29,10 +29,12 @@
            Also make a 'popfeedback' object
            I don't quite know who or what is going to use this object.
       -->
-      <mm:maycreate type="popfeedback">
-        <mm:createnode type="popfeedback" id="this_feedback" />
-        <mm:createrelation role="related" source="this_classrel" destination="this_feedback"/>
-      </mm:maycreate>
+      <mm:hasnodemanager name="popfeedback">
+        <mm:maycreate type="popfeedback">
+          <mm:createnode type="popfeedback" id="this_feedback" />
+          <mm:createrelation role="related" source="this_classrel" destination="this_feedback"/>
+        </mm:maycreate>
+      </mm:hasnodemanager>
 
 
       <!--
