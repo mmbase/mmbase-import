@@ -12,27 +12,41 @@ package org.mmbase.util.functions;
 
 import java.lang.reflect.*;
 import java.lang.annotation.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
- * A function based on an abritrary method. Since the name of the parameters cannot be found by
- * reflection, this is only of limited use. Normally you would probably better use BeanFunction. A
- * method-function can come in handy on JSP's. With the advent of java 1.5 we can use annotations to
- * annotate acutal parameter names.
- *
+ * A function based on an abritrary method. Use the annotation {@link Name} to attribute the
+ * parameter names. A method function can e.g. be defined like so in the builder xml:
+<pre><![CDATA[
+  <function key="canCloseLesson" name="canCloseLesson">
+      <class>nl.didactor.component.assessment.LessonChecker</class>
+</function>]]>
+ </pre>
+And be implemented like so:
+<pre>
+  public static boolean canCloseLesson(@Required @Name("node") Node user,
+                                         @Required @Name("lesson") Node lesson) {
+   ...
+ }
+</pre>
+
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.11 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: MethodFunction.java,v 1.12 2008-12-04 15:23:50 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.7
  */
 public class MethodFunction extends AbstractFunction<Object> {
+    private static final Logger log = Logging.getLoggerInstance(MethodFunction.class);
 
 
     public static Function<Object> getFunction(Method method, String name) {
         return new MethodFunction(method, name); // could be cached...
     }
-    
+
     /**
      * @since MMBase-1.9
      */
@@ -58,7 +72,7 @@ public class MethodFunction extends AbstractFunction<Object> {
             String methodName = m.getName();
             if (methodName.equals(name)) {
                 Annotation[][] annots = m.getParameterAnnotations();
-                int found = 0; 
+                int found = 0;
                 int total = 1; // avoids division by zero and ensures that methods with more parameters are better.
                 for (Annotation[] anot : annots) {
                     for (Annotation a : anot) {
@@ -116,14 +130,24 @@ public class MethodFunction extends AbstractFunction<Object> {
         Parameter<?>[] def = new Parameter[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             String paramName = null;
+            boolean required = false;
             for (Annotation annot : annots[i]) {
+                // no other way to find the name of the parameter than with annotations
                 if (annot.annotationType().equals(Name.class)) {
                     paramName = ((Name) annot).value();
+                }
+                if (annot.annotationType().equals(Required.class)) {
+                    required = true;
                 }
             }
             if (paramName == null) paramName = "parameter" + (i + 1);
 
-            def[i] = new Parameter<String>(paramName, parameters[i]); // no way to find the name of the parameter
+            // make it possible to default also NodeFunction as MethodFunctions.
+            if (paramName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameters[i])) {
+                def[i] = Parameter.NODE;
+            } else {
+                def[i] = new Parameter<Object>(paramName, parameters[i], required);
+            }
         }
 
         setParameterDefinition(def);
@@ -135,7 +159,7 @@ public class MethodFunction extends AbstractFunction<Object> {
 
     public Object getFunctionValue(Parameters parameters) {
         try {
-            return method.invoke(instance, parameters.toArray());
+            return method.invoke(instance, parameters.subList(0, getParameterDefinition().length).toArray());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
