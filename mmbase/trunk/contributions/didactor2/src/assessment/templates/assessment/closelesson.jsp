@@ -38,7 +38,7 @@
       <!--
           Now send mail to coach
       -->
-      <c:if test="${di:setting('assessment', 'send_email') eq 'true')}">
+      <c:if test="${di:setting('assessment', 'send_email') eq 'true'}">
         <mm:node number="$user">
           <mm:import id="from"><mm:field name="email"/></mm:import>
           <mm:import id="subject"><di:translate key="assessment.give_feedback_subj" /> <di:person /> /></mm:import>
@@ -66,7 +66,7 @@
       <!--
         And to the student
       -->
-      <c:if test="${di:setting('assessment', 'send_student_email') eq 'true')}">
+      <c:if test="${di:setting('assessment', 'send_student_email') eq 'true'}">
         <mm:include page="send_student_mail.jspx" referids="user,lesson" />
       </c:if>
 
