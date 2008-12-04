@@ -4,7 +4,6 @@
 package nl.didactor.component;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.security.Action;
@@ -25,6 +24,7 @@ import java.util.*;
 
 /**
  * @javadoc
+ * @version $Id: Component.java,v 1.31 2008-12-04 13:06:35 michiel Exp $
  */
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
@@ -164,37 +164,6 @@ public abstract class Component {
                     }
                 }
 
-                for (int i=0; i< childNodes.getLength(); i++) {
-                    if ("builder".equals(childNodes.item(i).getNodeName())) {
-                        Node builderNode = childNodes.item(i);
-                        String builderName = getAttribute(builderNode, "name");
-                        log.debug("Builder name: " + builderName);
-                        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
-                        if (builder == null) {
-                            log.warn("Cannot load builder '" + builderName + "' for component '" + getName() + "')");
-                        }
-
-                        NodeList childNodes2 = builderNode.getChildNodes();
-                        for (int j = 0; j< childNodes2.getLength(); j++) {
-                            if ("field".equals(childNodes2.item(j).getNodeName())) {
-                                Node fieldNode = childNodes2.item(j);
-                                String fieldName = getAttribute(fieldNode, "name");
-                                String fieldType = getAttribute(fieldNode, "type");
-                                int ftype = FieldDefs.TYPE_UNKNOWN;
-                                if ("string".equals(fieldType)) {
-                                    ftype = FieldDefs.TYPE_STRING;
-                                } else if ("integer".equals(fieldType)) {
-                                    ftype = FieldDefs.TYPE_INTEGER;
-                                }
-
-                                FieldDefs fd = new FieldDefs(fieldName, fieldType, -1, -1, fieldName, ftype, 200, FieldDefs.DBSTATE_VIRTUAL);
-                                // position 300: used later on internally to figure out which virtual fields are didactor-managed
-                                fd.setDBPos(300);
-                                builder.addField(fd);
-                            }
-                        }
-                    }
-                }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -287,7 +256,7 @@ public abstract class Component {
      * @javadoc I'd say it may be somewhat necessary here. I don't for example really understand the
      * difference between this and {@link #getSetting}.
      */
-    public String getValue(String variablename, Cloud cloud, Map context, String[] arguments) {
+    public String getValue(String variablename, Cloud cloud, Map<String, ?> context, String[] arguments) {
         return "";
     }
 
@@ -302,7 +271,7 @@ public abstract class Component {
      * to retrieve the setting value. For instance the current username or
      * education node number.
      */
-    public Object getSetting(String settingName, Cloud cloud, Map context) {
+    public Object getSetting(String settingName, Cloud cloud, Map<String, ?> context) {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving value for setting '" + settingName + "', with in context: " + context.keySet());
         }
