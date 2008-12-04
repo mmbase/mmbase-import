@@ -12,7 +12,7 @@ import javax.servlet.http.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: PeopleClassFunction.java,v 1.9 2008-12-04 11:14:40 michiel Exp $
+ * @version $Id: PeopleClassFunction.java,v 1.10 2008-12-04 15:25:11 michiel Exp $
  */
 public class PeopleClassFunction {
     protected final static Logger log = Logging.getLoggerInstance(PeopleClassFunction.class);
@@ -92,19 +92,6 @@ public class PeopleClassFunction {
         return claz;
     }
 
-
-    public Set<Node> blockedLearnBlocks() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
-        // A user can have access to only "opened" top learnblocks (lession)
-        try {
-            Class classLessonChecker = Class.forName("nl.didactor.component.assessment.LessonChecker");
-            Method method = classLessonChecker.getMethod("getBlockedLearnblocksForThisUser", Node.class, Node.class);
-            return (Set<Node>) method.invoke(null, node.getCloud().getNode(e), node);
-        } catch (ClassNotFoundException cnfe) {
-            log.debug(cnfe);
-            // if assessment not installed, then no learnblocks are blocked.
-            return new HashSet<Node>();
-        }
-    }
 
 
 
