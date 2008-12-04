@@ -2,7 +2,8 @@ package com.finalist.cmsc.services.community.person;
 
 public enum RegisterStatus {
    ACTIVE("active"),
-   UNCONFIRMED("UNCONFIRMED");
+   UNCONFIRMED("unconfirmed"),
+   BLOCKED("blocked");
    private String name;
 
    private RegisterStatus(final String name) {
