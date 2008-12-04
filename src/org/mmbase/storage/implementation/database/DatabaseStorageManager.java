@@ -33,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.203 2008-12-01 17:36:02 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.204 2008-12-04 11:23:20 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -84,7 +84,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected static Cache<Integer, Integer> typeCache;
 
     static {
-        typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
+        typeCache = new Cache<Integer, Integer>(OBJ2TYPE_MAX_SIZE) {
             public String getName()        { return "TypeCache"; }
             public String getDescription() { return "Cache for node types";}
         };
@@ -3161,7 +3161,7 @@ public class DatabaseStorageManager implements StorageManager {
             dbtype = field.getType();
         }
 
-        if (dbtype == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+        if (dbtype == Field.TYPE_BINARY && checkStoreFieldAsFile(field.getParent())) {
             String fieldName = field.getName();
             File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
             return binaryFile == null;
