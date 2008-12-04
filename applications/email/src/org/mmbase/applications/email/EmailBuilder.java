@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.39 2008-12-04 09:41:44 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.40 2008-12-04 10:30:06 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -287,7 +287,7 @@ public class EmailBuilder extends MMObjectBuilder {
             cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new java.util.Date(age)).setOperator(FieldCompareConstraint.LESS));
         } catch (IllegalArgumentException e) {
             if (! warnedOnce) {
-                log.warn(e.getMessage() + " (subsequent these warnings logged on debug level)");
+                log.warn(e.getMessage() + " (subsequent these warnings will be logged on debug level)");
                 warnedOnce = true;
             } else {
                 log.debug(e.getMessage());
