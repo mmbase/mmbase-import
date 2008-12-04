@@ -195,9 +195,12 @@ HTMLArea.prototype._insertInlineLink = function(link) {
         var editor = this;
         var outparam = null;
         if (typeof link == "undefined") {
-                link = this.getParentElement();
-                if (link && !/^a$/i.test(link.tagName))
-                        link = null;
+            link = this.getParentElement();
+            while (link) {
+        	   if (/^a$/i.test(link.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
+        	   if (/^body$/i.test(link.tagName)) { link = null; break } //Stop searching when Body-tag is found, don't go too deep.
+        	   link = link.parentNode;
+            }
         }
         if (link) outparam = {
                 f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
@@ -212,17 +215,12 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                 if (!a) {
                         editor._doc.execCommand("createlink", false, param.f_href);
                         a = editor.getParentElement();
-                        var sel = editor._getSelection();
-                        var range = editor._createRange(sel);
-                        if (!HTMLArea.is_ie) {
-                                a = range.startContainer;
-                                if ( ! ( /^a$/i.test(a.tagName) ) ) {
-                                      a = a.nextSibling;
-                                      if ( a === null ) {
-                                            a = range.startContainer.parentNode;
-                                      }
-                                }
+                        while (a) {
+                     	   if (/^a$/i.test(a.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
+                     	   if (/^body$/i.test(a.tagName)) { a = null; break } //Stop searching when Body-tag is found, don't go too deep.
+                     	   a = a.parentNode;
                         }
+                        
                 } else a.href = param.f_href.trim();
 
                 a.title = param.f_title.trim();
@@ -241,7 +239,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                 a.target = param.f_target.trim();
                 editor.selectNodeContents(a);
                 editor.updateToolbar();
-  }, outparam, "width=398,height=220");
+  }, outparam);
 };
 
 HTMLArea.prototype._insertImage = function(image) {
@@ -488,5 +486,3 @@ HTMLArea.prototype._insertTable = function()
     null
   );
 };
-
-
