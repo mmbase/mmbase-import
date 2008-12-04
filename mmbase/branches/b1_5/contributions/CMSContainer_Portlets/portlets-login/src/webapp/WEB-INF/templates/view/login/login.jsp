@@ -5,7 +5,7 @@
 <form name="<portlet:namespace />form" 
       action="<cmsc:actionURL><cmsc:param name="action" value="login"/></cmsc:actionURL>" 
       method="post">
-
+<input type="hidden" name="send_password" id="send_password"/>
 <table>
 <c:if test="${!empty errormessage}">
   <tr class="inputrow" style="color: red;" >
@@ -24,9 +24,9 @@
     <td><input type="password" name="j_password"/></td>
   </tr>
   <tr>
-    <td></td>
-    <td id="Submit" align="right">
+    <td id="Submit" align="right" colspan="2">
       <input type="submit" value="<fmt:message key="view.submit" />" />
+      <input type="button" value="<fmt:message key="view.send_password" />" onclick="javascript:this.form['send_password'].value='send';this.form.submit()"/>
     </td>
   </tr>
 </table>
