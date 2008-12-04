@@ -154,25 +154,6 @@
          </mm:hasnode>
 
 
-         <mm:hasnode number="component.assessment">
-           <!-- <di:hasrole role="systemadministrator"> -->
-           <table border="0" cellpadding="0" cellspacing="0">
-             <tr>
-               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-
-               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td>
-                 <nobr>
-                   <jsp:text> </jsp:text>
-                   <a href='../../assessment/email_notification/index.jsp' title="${di:translate('education.wizard_people_assessment')}"
-                      target="text"><di:translate key="education.wizard_people_assessment" /></a>
-                 </nobr>
-               </td>
-             </tr>
-           </table>
-           <!-- </di:hasrole> -->
-         </mm:hasnode>
        </div>
     </di:has>
     </div>
