@@ -13,53 +13,13 @@
     <name>${pom.artifactId}</name>
 	<groupId>finalist</groupId>
 	<currentVersion>${application.version}</currentVersion>
-	<organization>
-		<name>Finalist IT Group</name>
-		<url>http://www.finalist.com</url>
-		<logo>http://www.finalist.com/beeld-basis/logo-finalist.gif</logo>
-	</organization>
-	<inceptionYear>2005</inceptionYear>
 	<package>com.finalist</package>
-	<logo>http://www.finalist.com/beeld-basis/logo-finalist.gif</logo>
-	<shortDescription>Application site</shortDescription>
 	<licenses>
 		<license>
 			<name>Mozilla Public License 1.0 (MPL)</name>
 			<url>http://www.mozilla.org/MPL/</url>
 		</license>
 	</licenses>
-	<issueTrackingUrl>http://jira.finalist.com</issueTrackingUrl>
-	<repository>
-		<connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</connection>
-		<developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</developerConnection>
-		<url>http://cvs.mmbase.org/viewcvs/contributions/CMSContainer</url>
-	</repository>
-	<developers>
-		<developer>
-			<name>Nico Klasens</name>
-			<id>nklasens</id>
-			<email>nico@finalist.com</email>
-			<organization>Finalist IT Group</organization>
-			<url>http://www.finalist.com</url>
-			<timezone>1</timezone>
-		</developer>
-		<developer>
-			<name>Wouter Heijke</name>
-			<id>wheijke</id>
-			<email>wouter@finalist.com</email>
-			<organization>Finalist IT Group</organization>
-			<url>http://www.finalist.com</url>
-			<timezone>1</timezone>
-		</developer>
-		<developer>
-			<name>Freek Punt</name>
-			<id>fpunt</id>
-			<email>freek@finalist.com</email>
-			<organization>Finalist IT Group</organization>
-			<url>http://www.finalist.com</url>
-			<timezone>1</timezone>
-		</developer>
-	</developers>
 	<dependencies>
 	
 <!-- Application dependencies -->	
