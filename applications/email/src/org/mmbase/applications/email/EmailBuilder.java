@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.38 2008-12-03 12:27:40 andre Exp $
+ * @version $Id: EmailBuilder.java,v 1.39 2008-12-04 09:41:44 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -74,16 +74,14 @@ public class EmailBuilder extends MMObjectBuilder {
                                                 // the type.
 
 
-
-
-
-
     static String usersBuilder;
     static String usersEmailField;
     static String groupsBuilder;
 
     // reference to the expire handler
-    private ScheduledFuture /* Object */  expireHandler;
+    // For the moment, this stored in Object, because ScheduledFuture cannot be returned by
+    // ThreadPools of 1.8 (since it is java 1.4).
+    private /* ScheduledFuture*/ Object  expireHandler;
 
     protected int expireTime = 60 * 30 ;
     protected int sleepTime = 60;
@@ -119,7 +117,12 @@ public class EmailBuilder extends MMObjectBuilder {
             log.service("Expirehandler started with sleep time " + sleepTime + "sec, expire time " + expireTime + "sec.");
             expireHandler =
                 ThreadPools.scheduleAtFixedRate(new EmailExpireHandler(this, expireTime), sleepTime, sleepTime);
-            ThreadPools.identify(expireHandler, "Sent email deleter");
+            try {
+                ThreadPools.class.getMethod("identify", Future.class).invoke(null, expireHandler, "Sent email deleter");
+            } catch (Exception e) {
+                // never mind, this happens in 1.8
+
+            }
 
 
 
