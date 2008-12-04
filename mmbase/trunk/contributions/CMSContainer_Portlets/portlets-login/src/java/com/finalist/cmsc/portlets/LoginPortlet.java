@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -22,41 +23,110 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.finalist.cmsc.login.EmailUtils;
+import com.finalist.cmsc.login.PasswordGenerator;
+import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.Community;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
+import com.finalist.cmsc.services.community.security.Authentication;
+import com.finalist.cmsc.services.community.security.AuthenticationService;
 
 /**
  * Login portlet
  *
  * @author Remco Bos
  */
-public class LoginPortlet extends CmscPortlet {
+public class LoginPortlet extends AbstractLoginPortlet {
    protected static final String ACTION_PARAMETER = "action";
 
    private static final String ACEGI_SECURITY_FORM_USERNAME_KEY = "j_username";
    private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "j_password";
+   private static final String EMAIL_TEMPLATE_DIR = "../templates/view/login/forgotpassword.txt";
+   
+   private static final String SEND_PASSWORD = "send_password";
 
    private static final Log log = LogFactory.getLog(LoginPortlet.class);
-
+   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException,
+   PortletException {
+      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
+      super.doEditDefaults(req, res);
+   }
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       String action = request.getParameter(ACTION_PARAMETER);
+      PortletPreferences preferences = request.getPreferences();
       if ("login".equals(action)) {
          String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
          String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
-         request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
-         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
-            Community.login(userName, password);
+         String send_password =  request.getParameter(SEND_PASSWORD);
+         if (StringUtils.isEmpty(send_password)) {
+            request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
+            if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
+               Community.login(userName, password);
+            }
+            if (Community.isAuthenticated()) {
+               log.info(String.format("Login successful for user %s", userName));
+            } else {
+               log.info(String.format("Login failed for user %s", userName));
+               response.setRenderParameter("errormessage", "login.failed");
+            }
          }
-         if (Community.isAuthenticated()) {
-            log.info(String.format("Login successful for user %s", userName));
-         } else {
-            log.info(String.format("Login failed for user %s", userName));
-            response.setRenderParameter("errormessage", "login.failed");
+         else {
+            response.setRenderParameter(SEND_PASSWORD, "send");
          }
       } else if ("logout".equals(action)) {
          request.getPortletSession().removeAttribute("username", PortletSession.APPLICATION_SCOPE);
          Community.logout();
-      } else {
+      } else if ("send_password".equals(action)) {
+         //TODO  send password
+         String email =  request.getParameter("username");
+         String sendMessage = "send_success";
+         AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory
+         .getBean("authenticationService");
+         PersonService personHibernateService = (PersonService) ApplicationContextFactory
+               .getBean("personService");
+
+         if (authenticationService.authenticationExists(email)) {
+            Person person = personHibernateService.getPersonByUserId(email);
+            Authentication authentication = authenticationService.findAuthentication(email);
+           if(RegisterStatus.ACTIVE.getName().equalsIgnoreCase(person.getActive()))
+           {
+              //todo reset password and send mail 
+              PasswordGenerator generator = new PasswordGenerator();
+              String newPassword = null;
+              try {
+                 newPassword = generator.generate(PasswordGenerator.PRINTABLE_CHARACTERS, 7);
+                 authenticationService.updateAuthentication(email, authentication.getPassword(), newPassword);
+                 authentication.setPassword(newPassword);
+                 String emailSubject = preferences.getValue(EMAIL_SUBJECT,"Your account details associated with the given email address.\n");
+                 String emailText = preferences.getValue(EMAIL_TEXT, null);
+                 String emailFrom = preferences.getValue(EMAIL_FROMEMAIL, null);
+                 String nameFrom = preferences.getValue(EMAIL_FROMNAME, null);
+                 emailText = getEmailBody(emailText,request, authentication, person);
+                 EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
+                             email, "text/plain;charset=utf-8");
+                 sendMessage = "view.account.success";
+              } 
+              catch (Exception e) {
+                  log.error("password generation errors");
+              }
+           }
+           else if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())){
+              sendMessage = "view.account.unconfirmed";
+           }
+           else if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())){
+              sendMessage = "view.account.blocked"; 
+           }
+         } 
+         else {
+            //log.info("add authenticationId failed");
+            sendMessage = "view.account.notexist"; 
+         }
+         response.setRenderParameter(SEND_PASSWORD, sendMessage);
+      } 
+      else {
          // Unknown
          log.error(String.format("Unknown action '%s'", action));
       }
@@ -67,16 +137,27 @@ public class LoginPortlet extends CmscPortlet {
       
       String template;
       String error = request.getParameter("errormessage");
+      String send_password = request.getParameter(SEND_PASSWORD);
       if (StringUtils.isNotBlank(error)) {
          request.setAttribute("errormessage", error);
       }
-
       if (Community.isAuthenticated()) {
          template = "login/logout.jsp";
       } else {
          template = "login/login.jsp";
       }
-
+      if (StringUtils.isNotBlank(send_password)) {
+         setAttribute(request, "sendMessage", send_password);
+         template = "login/send_password.jsp";
+      }
       doInclude("view", template, request, response);
    }
+   protected String getEmailBody(String emailText,ActionRequest request,
+         Authentication authentication, Person person) {
+      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
+      return String.format(emailText == null?getConfirmationTemplate():emailText, authentication
+            .getUserId(), authentication.getPassword(), person.getFirstName(),
+            person.getInfix(), person.getLastName());
+   }
+
 }
