@@ -73,7 +73,7 @@
           write="false"
           page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
         <mm-sr:relatednodes
-            item="/assessment/matrix.div.jspx"
+            item="/assessment/matrix.div.jspx?sub=${sub}"
             icondir="${_}"
             path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
           <jsp:attribute name="constraints">
@@ -110,9 +110,6 @@
           <mm:function name="canCloseLesson" referids="firstopenlesson@lesson">
             <c:choose>
               <c:when test="${_}">
-                <!--
-                    <jsp:directive.include file="evaluationtest.jspf" />
-                -->
 
                 <mm:treefile page="/assessment/closelesson.jsp"
                              objectlist="$includePath"
@@ -126,12 +123,6 @@
                         <input type="submit" class="formbutton" value="${_}" />
                     </di:translate>
                     </form>
-
-                    <!--
-                        <mm:node number="$assessment_evaluationtest" notfound="skip">
-
-                        </mm:node>
-                    -->
                 </mm:treefile>
 
 
