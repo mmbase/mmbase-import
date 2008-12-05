@@ -23,6 +23,8 @@
         <mm:param name="org.mmbase.shoutbox.reference" value="${reference}" />
 
         <mm:import externid="source"/>
+        <mm:import externid="self">not</mm:import> <!-- hmm -->
+
 
         <script type="text/javascript">
           $(document).ready(function() {
@@ -61,10 +63,11 @@
             </fmt:message>
           </h2>
 
-          <form>
+          <form action="index">
             <c:if test="${! empty source}">
               <input type="hidden" name="source" value="${source}" />
             </c:if>
+
 
             <mm:fieldlist nodetype="shouts"
                           fields="reference" jspvar="field">
@@ -72,7 +75,6 @@
               <jsp:text> </jsp:text>
               <mm:fieldinfo type="searchinput" />
             </mm:fieldlist>
-            <mm:import externid="self">not</mm:import> <!-- hmm -->
 
             <select name="self" id="self">
               <mm:option value=""     compare="${self}">--</mm:option>
