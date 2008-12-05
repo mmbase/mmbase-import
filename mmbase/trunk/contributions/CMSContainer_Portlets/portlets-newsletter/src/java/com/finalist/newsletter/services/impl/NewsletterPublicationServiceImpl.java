@@ -94,6 +94,9 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       for (Subscription subscription : subscriptions) {
          Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
          Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
+         if(subscripber == null) {
+            continue;
+         }
          subscription.setEmail(subscripber.getEmail());
          subscription.setTerms(terms);
          try {
