@@ -49,8 +49,12 @@ public class UserDetailsHibernateService extends HibernateService implements Use
          throw new UsernameNotFoundException("User not found");
       }
       Person person = personService.getPersonByAuthenticationId(authentication.getId());
-      if (RegisterStatus.UNCONFIRMED.getName().equals(person.getActive())) {
-         throw new UsernameNotFoundException("User not confirm");
+      System.out.println(person.getActive());
+      if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
+         throw new UsernameNotFoundException("User is not confirmed");
+      }
+      if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())) {
+         throw new UsernameNotFoundException("User is blocked");
       }
       /* Get authorities */
       Set < Authority > authorities = authentication.getAuthorities();

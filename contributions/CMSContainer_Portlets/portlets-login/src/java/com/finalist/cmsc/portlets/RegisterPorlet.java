@@ -98,6 +98,9 @@ public class RegisterPorlet extends AbstractLoginPortlet {
 
             emailText = getEmailBody(emailText,request, authentication, person);
             try {
+               if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
+                  throw new AddressException("Email address "+emailFrom+"is not availalbe");
+               }
                   EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                         email, "text/plain;charset=utf-8");
             } 
