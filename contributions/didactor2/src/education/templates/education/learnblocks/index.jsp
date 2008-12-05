@@ -19,9 +19,10 @@
         </mm:treeinclude>
 
         <mm:node number="$learnobject">
+          <div class="subnavigationPage">
 
-          <di:include debug="html" page="/education/learnblocks/subnavigation.jspx" />
-
+            <di:include debug="html" page="/education/learnblocks/subnavigation.jspx" />
+          </div>
 
           <di:background>
             <di:include debug="xml" page="/education/learnblocks/node.jspx" />
