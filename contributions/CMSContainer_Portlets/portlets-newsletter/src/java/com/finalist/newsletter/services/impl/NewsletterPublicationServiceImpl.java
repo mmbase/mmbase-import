@@ -12,6 +12,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
@@ -94,7 +95,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       for (Subscription subscription : subscriptions) {
          Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
          Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
-         if(subscripber == null) {
+         if(subscripber == null || RegisterStatus.BLOCKED.getName().equals(subscripber.getActive())) {
             continue;
          }
          subscription.setEmail(subscripber.getEmail());
