@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.444 2008-11-26 14:09:43 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.445 2008-12-05 13:59:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4682,6 +4682,19 @@ like the parameter list or the session (where ever it is available) --&gt;
       </possiblevalue>
     </attribute>
     <attribute>
+      <name>absolute</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          Whether the used url will be 'absolute' or not. Defaults to 'server'.
+        </p>
+      </info>
+      <see tag="url" attribute="absolute" />
+      <since>MMBase-1.9.1</since>
+    </attribute>
+    <attribute>
       <name>element</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -4841,6 +4854,19 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
       <since>MMBase-1.7.4</since>
+    </attribute>
+    <attribute>
+      <name>absolute</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          Whether the used url will be 'absolute' or not. Defaults to 'server'.
+        </p>
+      </info>
+      <see tag="url" attribute="absolute" />
+      <since>MMBase-1.9.1</since>
     </attribute>
     <info>
       <p>
