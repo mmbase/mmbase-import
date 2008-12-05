@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.79 2008-08-14 13:42:18 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.80 2008-12-05 13:59:27 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -50,41 +50,24 @@ public class ImageTag extends FieldTag {
     private static Boolean makeRelative = null;
     private static Boolean urlConvert   = null;
 
-    /** Holds value of property template. */
-    private Attribute template = Attribute.NULL;
-
-    /** Holds value of property mode. */
-    private Attribute mode = Attribute.NULL;
-
-    /** Holds value of property width. */
-    private Attribute width = Attribute.NULL;
-
-    /** Holds value of property height. */
-    private Attribute height = Attribute.NULL;
-
-    /** Holds value of property crop. */
-    private Attribute crop = Attribute.NULL;
-
-    /** Holds value of property style. */
-    private Attribute style = Attribute.NULL;
-
-    /** Holds value of property clazz. */
-    private Attribute styleClass = Attribute.NULL;
-
-    /** Holds value of property align. */
-    private Attribute align = Attribute.NULL;
-
-    /** Holds value of property border. */
-    private Attribute border = Attribute.NULL;
-
-    /** Holds value of property hspace. */
-    private Attribute hspace = Attribute.NULL;
-
-    /** Holds value of property vspace. */
-    private Attribute vspace = Attribute.NULL;
+    private Attribute template    = Attribute.NULL;
+    private Attribute mode        = Attribute.NULL;
+    private Attribute width       = Attribute.NULL;
+    private Attribute height      = Attribute.NULL;
+    private Attribute crop        = Attribute.NULL;
+    private Attribute style       = Attribute.NULL;
+    private Attribute styleClass  = Attribute.NULL;
+    private Attribute align       = Attribute.NULL;
+    private Attribute border      = Attribute.NULL;
+    private Attribute hspace      = Attribute.NULL;
+    private Attribute vspace      = Attribute.NULL;
 
 
     private Attribute altAttribute = Attribute.NULL;
+
+    private Attribute absolute     = Attribute.NULL;
+
+
     private Object prevDimension;
 
     /**
@@ -142,6 +125,13 @@ public class ImageTag extends FieldTag {
     }
     public void setAlt(String a) throws JspTagException {
         altAttribute = getAttribute(a);
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setAbsolute(String a) throws JspTagException {
+        absolute = getAttribute(a, true);
     }
 
     private int getMode() throws JspTagException {
@@ -227,6 +217,8 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath = getServletPath(node, servletArgument);
+
+
         String outputValue = getOutputValue(getMode(), originalNode, servletPath, dim);
 
         if (outputValue != null) {
@@ -267,7 +259,30 @@ public class ImageTag extends FieldTag {
         Function servletPathFunction = getServletFunction(node);
         Parameters args = getServletArguments(servletArgument, servletPathFunction);
         fillStandardParameters(args);
-        return servletPathFunction.getFunctionValue( args).toString();
+        String url = servletPathFunction.getFunctionValue( args).toString();
+        if (absolute != Attribute.NULL) {
+            String a = absolute.getString(this);
+            HttpServletRequest req = (HttpServletRequest) getPageContext().getRequest();
+            if ("true".equals(a)) {
+                StringBuilder show = new StringBuilder();
+                String scheme = req.getScheme();
+                show.append(scheme).append("://");
+                show.append(req.getServerName());
+                int port = req.getServerPort();
+                show.append((port == 80 && "http".equals(scheme)) ||
+                            (port == 443 && "https".equals(scheme))
+                            ? "" : ":" + port);
+                show.append(url);
+                url = show.toString();
+            } else if ("context".equals(a)) {
+                url = url.substring(req.getContextPath().length(), url.length());
+            } else if ("server".equals(a)) {
+                // Ok, that's it already.
+            } else {
+                throw new TaglibException("Invalid value for absolute attribute '" + a + "'");
+            }
+        }
+        return url;
     }
 
     public Function getServletFunction(Node node) {
