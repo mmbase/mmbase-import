@@ -18,7 +18,7 @@
               <mm:relatednodes path="posrel,object">
                 <mm:hasrelationmanager sourcemanager="${_node}" destinationmanager="images" role="background">
                   <mm:relatednodes path="background,images">
-                    <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+                    <mm:import id="background">url('<mm:image  absolute="true" template="${di:setting('education', 'background_image_template')}" />')</mm:import>
                   </mm:relatednodes>
                 </mm:hasrelationmanager>
               </mm:relatednodes>
@@ -27,7 +27,7 @@
           <c:otherwise>
             <mm:relatednodes>
               <!-- f(png)+s(500)+fill(rgba(255,255,255,80))+draw(rectangle 0,0,1000,1000)+draw(rectangle 240,0,1000,1000) -->
-              <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+              <mm:import id="background">url('<mm:image  absolute="true" template="${di:setting('education', 'background_image_template')}" />')</mm:import>
             </mm:relatednodes>
           </c:otherwise>
         </c:choose>
@@ -35,7 +35,7 @@
     </mm:relatednodescontainer>
   </mm:hasrelationmanager>
   <div
-      style="background-image: ${empty background ? '' : background}"
+      style="${empty background ? '' : 'background-image:'}${empty background ? '' : background}"
       class="${empty styleClass ? 'learnenvironment' : styleClass}">
 	<jsp:doBody />
   </div>
