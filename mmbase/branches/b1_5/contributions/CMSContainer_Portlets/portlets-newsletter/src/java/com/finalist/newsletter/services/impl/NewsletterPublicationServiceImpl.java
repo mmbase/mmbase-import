@@ -33,8 +33,6 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    private NewsletterPublisher publisher;
    private NewsletterPublicationCAO publicationCAO;
    private NewsletterSubscriptionCAO subscriptionCAO;
-   private NewsLetterStatisticCAO statisticCAO;
-
    // CAO setters
 
    public void setPublisher(NewsletterPublisher publisher) {
@@ -47,10 +45,6 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
    public void setSubscriptionCAO(NewsletterSubscriptionCAO subscriptionCAO) {
       this.subscriptionCAO = subscriptionCAO;
-   }
-
-   public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
-      this.statisticCAO = statisticCAO;
    }
 
    // service method.
