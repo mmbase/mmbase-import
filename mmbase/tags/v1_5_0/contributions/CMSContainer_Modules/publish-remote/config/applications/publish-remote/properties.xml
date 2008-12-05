@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/publish-remote" timestamp="20050101000000">
+
+	<node number="300" owner="admin">
+		<key>system.livepath</key>
+		<value>MISSING.SYSTEM.LIVEPATH</value>
+	</node>
+
+</properties>

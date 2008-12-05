@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+   <extend>${basedir}/../maven-base/project.xml</extend>
+   <artifactId>cmsc-portlets-preferences</artifactId>
+   <name>Profile portlet</name>
+   <shortDescription>Profile portlet</shortDescription>
+   <dependencies>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-community</artifactId>
+         <version>${cmsc.version}</version>
+         <type>jar</type>
+      </dependency>
+      <dependency>
+         <groupId>hibernate</groupId>
+         <artifactId>ejb3-persistence</artifactId>
+         <version>3.0</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+      <dependency>
+         <groupId>acegisecurity</groupId>
+         <artifactId>acegi-security</artifactId>
+         <version>1.0.6</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+      <!-- Spring dependencies -->
+      <dependency>
+         <groupId>springframework</groupId>
+         <artifactId>spring</artifactId>
+         <version>2.5.1</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+      <dependency>
+         <groupId>springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>2.5.1</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+      <dependency>
+         <groupId>springframework</groupId>
+         <artifactId>spring-webmvc-struts</artifactId>
+         <version>2.5.1</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+   </dependencies>
+</project>

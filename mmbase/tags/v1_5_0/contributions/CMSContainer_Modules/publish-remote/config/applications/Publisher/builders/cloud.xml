@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * MMBase Remote Publishing
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+-->
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+	name="cloud" maintainer="mmbase.org" version="1" extends="object">
+   
+   <status>active</status>
+<!--  <class>RemotePublish.Cloud</class> -->
+   <searchage>14</searchage>
+
+   <names>
+      <singular xml:lang="us">Cloud</singular>
+      <singular xml:lang="en">Cloud</singular>
+      <singular xml:lang="nl">Wolk</singular>
+      <plural xml:lang="us">Clouds</plural>
+      <plural xml:lang="en">Clouds</plural>
+      <plural xml:lang="nl">Wolken</plural>
+   </names>
+   
+   <descriptions>
+      <description xml:lang="us">clouds</description>
+      <description xml:lang="en">clouds</description>
+      <description xml:lang="nl">wolken</description>
+   </descriptions>
+   
+   <fieldlist>
+      <field>
+         <gui>
+            <guiname xml:lang="us">name</guiname>
+            <guiname xml:lang="en">name</guiname>
+            <guiname xml:lang="nl">name</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>1</list>
+               <search>1</search>
+            </positions>
+         </editor>
+		<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>name</name>
+            <type state="persistent" notnull="true" size="50" key="true">STRING</type>
+         </db>
+      </field>
+      
+      <field>
+         <gui>
+            <guiname xml:lang="us">username</guiname>
+            <guiname xml:lang="en">username</guiname>
+            <guiname xml:lang="nl">username</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>2</input>
+               <list>2</list>
+               <search>2</search>
+            </positions>
+         </editor>
+		<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+	         <name>username</name>
+	         <type state="persistent" notnull="true" size="20">STRING</type>
+         </db>
+      </field>
+      <field>
+         <gui>
+            <guiname xml:lang="us">password</guiname>
+            <guiname xml:lang="en">password</guiname>
+            <guiname xml:lang="nl">wachtwoord</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>3</input>
+               <list>3</list>
+               <search>3</search>
+            </positions>
+         </editor>
+		<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>password</name>
+            <type state="persistent" notnull="true" size="20">STRING</type>
+         </db>
+      </field>
+      <field>
+         <gui>
+            <guiname xml:lang="us">rmiurl</guiname>
+            <guiname xml:lang="en">rmiurl</guiname>
+            <guiname xml:lang="nl">rmiurl</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>4</input>
+               <list>4</list>
+               <search>4</search>
+            </positions>
+         </editor>
+		<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>rmiurl</name>
+            <type state="persistent" notnull="true" size="100">STRING</type>
+         </db>
+      </field>
+   </fieldlist>
+</builder>

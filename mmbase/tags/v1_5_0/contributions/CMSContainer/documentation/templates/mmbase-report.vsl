@@ -1,0 +1,163 @@
+##
+##
+## UML2MMBase module.
+##
+## The contents of this file are subject to the Mozilla Public License
+##
+## Version 1.0 (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://www.mozilla.org/MPL/
+##
+## Software distributed under the License is distributed on an "AS IS"
+## basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+## License for the specific language governing rights and limitations
+## under the License.
+##
+## Velocity Template for de mmbase application XML generation 
+## based on a UML class diagram with the MMBase sterotype
+## 
+## @author  Rudie Ekkelenkamp
+## @version 0.1
+##
+#macro ( generateDocumentation $item $indent)
+${indent}$transform.documentationHelper.getXML($transform.getJavaDoc($item))
+#end
+<html>
+<body bgcolor="#f0f0f0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" link="#003366" vlink="#003366" alink="#660000">
+   <table cellpadding=5 cellspacing=5 border=0 width=100% align=center>
+    <tr>
+    <td valign=top width=50%>
+        <table bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+        <table  border="0" cellpadding="3" cellspacing="1" width="100%">
+            <tr bgcolor="#a0c0f0">
+                <td colspan=2>Overzicht van alle builders</td>
+            </tr>
+            <tr bgcolor="#ffffff">
+                <td colspan=2>
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE)
+#set ($class = $modelElement)
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+<a href="#$classnameLowercase">$classnameLowercase</a> |
+#end
+#end
+                </td>
+            </tr>
+
+         </table>
+         </table>
+</table>
+<p>
+<p>
+<div id="scrolldiv" style="width: 100%; height: 500px; overflow: auto;">
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE)
+#set ($class = $modelElement)
+#set ($packagename = $transform.findPackageName(${class.package}))
+#if (!$packagename || $packagename=="")
+
+#else
+
+#end
+#end
+#end
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE)
+#set ($class = $modelElement)
+#set ($packagename = $transform.findPackageName(${class.package}))
+## Voor nu zetten we het altijd op MMBase.org.
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+#set ($extendedObject = $transform.getGeneralizationName($class.id))
+#if (!$extendedObject || $extendedObject=="")
+#set ($extendedObject = "object")
+#end
+#set ($attributes = $transform.getAllAttributes($class.id,"true","true","false",""))
+
+<p id="${classnameLowercase}">
+   <table cellpadding=5 cellspacing=5 border=0 width=100% align=center>
+    <tr>
+    <td valign=top width=50%>
+
+        <table bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+        <table  border="0" cellpadding="3" cellspacing="1" width="100%">
+            <tr bgcolor="#a0c0f0">
+                <td colspan=2>
+                    Builder :
+                    <b><a target="_new" href="WEB-INF/config/applications/$mmbaseApplication/builders/${classnameLowercase}.xml">$classnameLowercase</a></b>
+                </td>
+            </tr>
+            <tr bgcolor="#ffffff">
+                <td colspan=2>
+                    <b>Omschrijving:</b> #generateDocumentation ($class "")<br>
+                </td>
+            </tr>
+            <tr bgcolor="#ffffff">
+                <td colspan=2>
+                    <b>Extends:</b> <a href="builders/${extendedObject}.xml">$extendedObject</a>
+                </td>
+            </tr>
+            <tr bgcolor="#ffffff">
+                <td colspan=2>
+                    <b>Dependency Relaties:</b><ul>
+               #foreach ( $dep in $class.dependencies )
+               #set ($class2 = $transform.findClassById($dep.targetType))
+               #set ($classnameLowercase = $transform.toLowerCase(${class2.name}))
+               #set ($relationName = $transform.getDependencyName($dep.id))
+               #if  (!$relationName || $relationName=="")
+               #set ($relationName = $transform.profile.DEFAULT_RELATION_TYPE)
+               #end
+               #set ($relationNameLowercase = $transform.toLowerCase(${relationName}))
+               <li>${relationNameLowercase} -&gt; <a href="#${class2.name}">${class2.name}</a></li>
+               #set ($relationName = "")
+               #end
+               </ul>
+                </td>
+            </tr>
+
+            <tr bgcolor="#ffffff">
+                <td colspan=2>
+                    <b>Associaties:</b><ul>
+#foreach ( $assocLink in $class.associationLinks )
+#set ($adata = $transform.getAssociationData($assocLink))
+#if ($adata.target.navigable == "true")
+#set ($navigable = "true")
+#else
+#set ($navigable = "false")
+#end
+#set ($class2 = $adata.target.type)
+#if ($class2)
+<li>#if($adata.name) $adata.name#else $transform.profile.DEFAULT_RELATION_TYPE#end -> $transform.toLowerCase(${class2.name}) - Multiplicity: $transform.associationHelper.getCardinalityLower(${adata.source})..$transform.associationHelper.getCardinalityUpper(${adata.source}) : $transform.associationHelper.getCardinalityLower(${adata.target})..$transform.associationHelper.getCardinalityUpper(${adata.target}) - Navigeerbaar: $navigable</li>
+#end
+#end
+               </ul>
+                </td>
+            </tr>
+
+
+
+            <tr bgcolor="ffffff">
+                <td colspan=2>
+                <b>Attributen:</b><ul>
+#foreach ( $att in $attributes )
+#set ($atttypename = $transform.getAttributeType($att))
+#set ($notNullValue = "optional")
+## Determine if the field has a Required stereotype. In that casse notNull will be set to true.
+#if ($att.hasStereotype($transform.profile.STEREOTYPE_ATTRIBUTE_REQUIRED))
+	#set ($notNullValue = "required")
+#end
+<li>$transform.toLowerCase($transform.getAttributeName($att)): $transform.getMMBaseDatabaseType($atttypename)(#if($att.size)$att.size#else$transform.getMMBaseDatabaseSize($atttypename)#end)#if ($transform.getAttributeDocumentation($att) != "") - $transform.getAttributeDocumentation($att)#end
+#end
+
+                </ul>
+                </td>
+            </tr>
+        </table>
+        </table>
+
+        </td valign=top width=50%>
+    </tr>
+   </table>
+#end
+#end	
+</div>
+</html>

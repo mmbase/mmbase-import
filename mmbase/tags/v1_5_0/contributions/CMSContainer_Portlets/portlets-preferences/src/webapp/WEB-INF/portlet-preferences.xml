@@ -1,0 +1,30 @@
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" version="1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+   <portlet>
+      <description>Profile portlet</description>
+      <portlet-name>profileportlet</portlet-name>
+      <display-name>Profile Portlet</display-name>
+      <portlet-class>com.finalist.portlets.preferences.ProfilePortlet</portlet-class>
+      <init-param>
+         <name>template.view</name>
+         <value>community/preferences.jsp</value>
+      </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>com.finalist.portlets.preferences.ProfilePortlet</resource-bundle>
+      <portlet-info>
+         <title>ProfilePortlet</title>
+         <short-title>ProfilePortlet</short-title>
+         <keywords>profile</keywords>
+      </portlet-info>
+   </portlet>
+</portlet-app>

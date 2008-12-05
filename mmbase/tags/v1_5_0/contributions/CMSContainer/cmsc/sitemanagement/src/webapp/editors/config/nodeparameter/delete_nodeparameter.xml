@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="delete">
+	<prompt xml:lang="nl">Weet u zeker dat u deze Nodeparameter wilt verwijderen?</prompt>
+	<prompt xml:lang="en">Are you sure to remove this Node Parameter?</prompt>
+	<description xml:lang="nl">Klik hier om deze Nodeparameter te verwijderen.</description>
+	<description xml:lang="en">Click here to remove this Node Parameter.</description>
+</action>
