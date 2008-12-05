@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <!-- configuration properties for the NEBO importer -->
+    <!-- the xsl stylesheet to use -->
+    <property name="xsl">nebo2mmbase.xsl</property>
+    <!-- the file to import --> 
+    <property name="inputXML">/e/import/xmlfeeds/UitzendingGemistStreams/stream_Uitzendinggemistfeed.xml</property>
+    <!-- the intermediate file that gets written, should be in a by MMBase writable directory -->
+    <property name="resultXML">/e/ap/teleacnot-shared/data/xml/streams.xml</property>
+    <!-- the email address for confirmation mails -->
+    <property name="email_address">webmaster@teleacnot.nl</property>
+    <!-- optional Cc address for confirmation mails -->
+    <property name="ccmail_address">andret@teleacnot.nl</property>
+    <!-- location of editor to relate streams to episodes -->
+    <property name="editor">http://edit.teleacnot.nl/streams/relate.jsp</property>
+  </properties>
+</util>
