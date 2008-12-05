@@ -131,3 +131,13 @@ alter table mm_portletparameter modify  m_value varchar(4000)
 *
 *
 *
+Name: Add the approved_by filed to the mm_newsletterpublication table.
+Goal: .
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD COLUMN approved_by text;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
