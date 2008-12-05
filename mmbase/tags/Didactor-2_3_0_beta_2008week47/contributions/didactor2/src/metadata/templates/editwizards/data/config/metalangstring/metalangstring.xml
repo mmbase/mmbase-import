@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Tekenreeks Editor</title>
+  <title xml:lang="en">Langstring Editor</title>
+  <action type="load">
+  </action>
+
+  <action type="create">
+    <object type="metalangstring"/>
+  </action>
+
+  <steps>
+    <step form-schema="step1" />
+  </steps>
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Metadata Invoeren</title>
+    <title xml:lang="en">Metadata</title>
+    <field name="value" ftype="line">
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
+    </field>
+    <field name="language" ftype="line">
+      <prompt xml:lang="nl">Taal van de bovenstaande waarde</prompt>
+      <prompt xml:lang="en">Language of the value</prompt>
+    </field>
+
+    </form-schema>
+</wizard-schema>

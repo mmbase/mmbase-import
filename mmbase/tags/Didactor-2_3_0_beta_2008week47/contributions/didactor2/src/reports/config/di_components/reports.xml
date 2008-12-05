@@ -1,0 +1,12 @@
+<component 
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
+    name="reports" templatepath="reports" templatebar="provider">
+  <scope name="component" referid="component">
+  </scope>
+  <scope name="providers" referid="provider">
+  </scope>
+  <scope name="educations" referid="education">
+  </scope>
+</component>

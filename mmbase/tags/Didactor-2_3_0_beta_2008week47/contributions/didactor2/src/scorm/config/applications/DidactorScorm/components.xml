@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20051210170724">
+    <node number="99000" owner="system" alias="component.scorm">
+        <name>scorm</name>
+        <classname></classname>
+    </node>
+</components>

@@ -1,0 +1,23 @@
+<jsp:root version="1.2"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+          >
+  <mm:import externid="link" />
+  <mm:import externid="field" />
+  <mm:import externid="mailid" />
+  <mm:import externid="addr_class" />
+  <form action="${link}" method="GET">
+    <mm:present referid="field">
+      <input type="hidden" name="field" value="${field}" />
+    </mm:present>
+    <mm:present referid="mailid">
+      <input type="hidden" name="mailid" value="${mailid}" />
+    </mm:present>
+    <mm:present referid="addr_class">
+      <input type="hidden" name="addr_class" value="${addr_class}" />
+    </mm:present>
+    <input type="text" size="20" name="addr_search"/><br/>
+    <input type="submit" value="${di:translate('address.search')}" />
+  </form>
+</jsp:root>

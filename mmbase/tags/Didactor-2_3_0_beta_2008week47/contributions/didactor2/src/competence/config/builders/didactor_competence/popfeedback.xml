@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="popfeedback" maintainer="didactor.nl" version="2" extends="object">
+  <searchage>31</searchage>
+
+  <names>
+    <singular xml:lang="nl">POP Feedback</singular>
+    <singular xml:lang="en">POP Feedback</singular>
+    <plural xml:lang="nl">POP Feedbacks</plural>
+    <plural xml:lang="en">POP Feedbacks</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Automatische POP Feedback</description>
+    <description xml:lang="en">Automatic popfeedback</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="rank">
+      <gui>
+        <guiname xml:lang="nl">Rank</guiname>
+        <guiname xml:lang="en">Rank</guiname>
+      </gui>
+      <editor>
+        <positions><list>2</list></positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="255" />
+        <!--
+            I don't know what 'rank' is supposed to mean. Perhaps an enumeration?
+        -->
+      </datatype>
+    </field>
+    <field name="text">
+      <descriptions>
+        <description xml:lang="nl">Tekst van de popfeedback</description>
+        <description xml:lang="en">POP Feedback text</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Text</guiname>
+        <guiname xml:lang="en">Text</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
+    </field>
+    <field name="status">
+      <descriptions>
+        <description xml:lang="nl">Status</description>
+        <description xml:lang="en">Status</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Status</guiname>
+        <guiname xml:lang="en">Status</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <!-- I do not know what values this field can take -->
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>

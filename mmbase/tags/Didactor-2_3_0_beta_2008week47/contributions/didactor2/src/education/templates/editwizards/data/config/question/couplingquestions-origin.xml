@@ -1,0 +1,90 @@
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+  <title xml:lang="nl">Koppelvraag Editor</title>
+  <title xml:lang="en">Coupling question editor</title>
+
+  <action type="create">
+    <object type="couplingquestions">
+      <relation destination="$origin" role="posrel" createdir="source"/>
+      <field name="showtitle">1</field>
+      <field name="layout">0</field>
+    </object>
+  </action>
+
+  <action type="load">
+    <relation destination="couplinganswers" role="related" />
+    <relation destination="feedback" role="related" />
+    &extra_loads;
+  </action>
+
+  <action type="delete" />
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Koppel vraag invoeren</title>
+    <title xml:lang="en">Enter coupling question</title>
+    <field name="title" >
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="en">Title</prompt>
+    </field>
+    <field name="showtitle" />
+    <field name="text" ftype="html" dtminlength="0">
+      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="en">Text</prompt>
+    </field>
+
+    <list destination="couplinganswers" role="related" minoccurs="0" maxoccurs="*" ordertype="number" orderby="number">
+      <title xml:lang="nl">Bijbehorende antwoorden</title>
+      <title xml:lang="en">Related answers</title>
+      <item>
+        <field name="text1" ftype="line">
+          <prompt xml:lang="nl">Tekst Links</prompt>
+          <prompt xml:lang="en">Left text</prompt>
+          <description xml:lang="nl">De linker antwoord tekst</description>
+          <description xml:lang="en">The answer text on the left</description>
+        </field>
+        <field name="text2" ftype="line">
+          <prompt xml:lang="nl">Tekst Rechts</prompt>
+          <prompt xml:lang="en">Right text</prompt>
+          <description xml:lang="nl">De rechter antwoord tekst</description>
+          <description xml:lang="en">The answer text on the right</description>
+        </field>
+      </item>
+
+      <action type="create">
+        <relation role="related">
+          <object type="couplinganswers" />
+        </relation>
+      </action>
+
+      <action type="add">
+        <relation role="related">
+          <object type="couplinganswers" />
+        </relation>
+      </action>
+
+      <command name="search" nodepath="couplinganswers" fields="text1,text2" age="-1" orderby="number" directions="down">
+        <prompt xml:lang="nl">Zoeken naar Antwoorden</prompt>
+        <prompt xml:lang="en">Search answers</prompt>
+        <search-filter>
+          <name xml:lang="nl">Linkertekst bevat</name>
+          <name xml:lang="en">Left text contains</name>
+          <search-fields>text1</search-fields>
+        </search-filter>
+        <search-filter>
+          <name xml:lang="nl">Rechtertekst bevat</name>
+          <name xml:lang="en">Right text contains</name>
+          <search-fields>text2</search-fields>
+        </search-filter>
+      </command>
+
+      <command name="insert" />
+    </list>
+    <list role="related" extends="config/feedback/feedback-list.xml" />
+  </form-schema>
+
+  &extra_schemas;
+</wizard-schema>

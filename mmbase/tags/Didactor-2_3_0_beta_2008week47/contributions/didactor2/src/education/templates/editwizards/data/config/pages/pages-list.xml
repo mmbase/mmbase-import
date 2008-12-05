@@ -1,0 +1,33 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="pages" role="posrel" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']">
+  <title xml:lang="nl">Bijbehorende paginas </title>
+  <title xml:lang="en">Related pages</title>
+  <item>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+      <description xml:lang="nl">Naam van de pagina</description>
+      <description xml:lang="en">Name of the page</description>
+    </field>
+    <field fdatapath="field[@name='pos']"  ftype="line" />
+    <field wizardname="config/pages/pages" ftype="startwizard" />
+  </item>
+
+  <action type="create">
+    <relation destinationtype="pages" role="posrel">
+      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+    </relation>
+  </action>
+
+  <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new" />
+
+  <command name="search" nodepath="pages" fields="name" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar Paginas</prompt>
+    <prompt xml:lang="en">Search for pages</prompt>
+    <search-filter>
+      <name xml:lang="nl">Naam bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>name</search-fields>
+    </search-filter>
+  </command>
+</list>
