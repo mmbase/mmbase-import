@@ -49,7 +49,6 @@ public class UserDetailsHibernateService extends HibernateService implements Use
          throw new UsernameNotFoundException("User not found");
       }
       Person person = personService.getPersonByAuthenticationId(authentication.getId());
-      System.out.println(person.getActive());
       if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
          throw new UsernameNotFoundException("User is not confirmed");
       }
