@@ -10,7 +10,7 @@
    <script type="text/javascript">
 	function showInfo(objectnumber) {
 		openPopupWindow('imageinfo', '900', '500',
-				'imageinfo.jsp?objectnumber=' + objectnumber);
+				'../resources/imageinfo.jsp?objectnumber=' + objectnumber);
 	}
 	
 	function initParentHref(elem) {
@@ -109,8 +109,8 @@
                         <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); %>
                         <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
                      </mm:field>
-                     <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)">
-                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')"><mm:image  mode="img" template="s(100x100)" alt="double click to show the info"/></div>
+                     <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
+                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')"><mm:image mode="img" template="s(100x100)" alt="double click to show the info" /></div>
                         <div class="imgInfo"><mm:field name="title"/><br/><mm:field name="itype"/></div>
                      </div>
                   </mm:listnodes>
