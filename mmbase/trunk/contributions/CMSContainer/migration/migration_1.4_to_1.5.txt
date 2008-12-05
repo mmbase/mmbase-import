@@ -116,8 +116,8 @@ Name: Add the static_html field and the process_status field in newsletterpublic
 Goal: the static_html,save the Frozen edition ; process_status,save the status of edition,CMSC-1143
 Type: sql-script
 --- Start script ---
-ALTER TABLE mm_newsletterpublication ADD static_html text
-ALTER TABLE mm_newsletterpublication ADD process_status varchar(50)
+ALTER TABLE mm_newsletterpublication ADD static_html text;
+ALTER TABLE mm_newsletterpublication ADD process_status varchar(50);
 --- End script ---
 *
 *
@@ -126,7 +126,7 @@ Name: Modify the m_value field in portletparameter builder
 Goal: Used to save confirmation text,CMSC-948
 Type: sql-script
 --- Start script ---
-alter table mm_portletparameter modify  m_value varchar(4000)
+alter table mm_portletparameter modify  m_value varchar(4000);
 --- End script ---
 *
 *
