@@ -36,6 +36,10 @@
           });
         </script>
 
+        <c:if test="${! empty source and source ne user}">
+          <h1><mm:node referid="source"><mm:nodeinfo type="gui" /></mm:node></h1>
+        </c:if>
+
 
         <mm:node number="${source}">
           <!-- source may be empty, in which case it will be the current node, as provided by the framework. -->
