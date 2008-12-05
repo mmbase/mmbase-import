@@ -11,6 +11,8 @@ package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
@@ -69,8 +71,19 @@ public class LoginPortlet extends AbstractLoginPortlet {
             if (Community.isAuthenticated()) {
                log.info(String.format("Login successful for user %s", userName));
             } else {
-               log.info(String.format("Login failed for user %s", userName));
-               response.setRenderParameter("errormessage", "login.failed");
+               PersonService personHibernateService = (PersonService) ApplicationContextFactory
+               .getBean("personService");
+               Person person = personHibernateService.getPersonByUserId(userName);
+               if (person == null) {
+                  log.info(String.format("Login failed for user %s", userName));
+                  response.setRenderParameter("errormessage", "login.failed");
+               }
+               else if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
+                  response.setRenderParameter("errormessage", "view.account.unconfirmed");
+               }
+               else if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())) {
+                  response.setRenderParameter("errormessage", "view.account.blocked");
+               }
             }
          }
          else {
@@ -91,7 +104,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
          if (authenticationService.authenticationExists(email)) {
             Person person = personHibernateService.getPersonByUserId(email);
             Authentication authentication = authenticationService.findAuthentication(email);
-           if(RegisterStatus.ACTIVE.getName().equalsIgnoreCase(person.getActive()))
+           if(RegisterStatus.ACTIVE.getName().equalsIgnoreCase(person.getActive()) || RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive()))
            {
               //todo reset password and send mail 
               PasswordGenerator generator = new PasswordGenerator();
@@ -105,16 +118,22 @@ public class LoginPortlet extends AbstractLoginPortlet {
                  String emailFrom = preferences.getValue(EMAIL_FROMEMAIL, null);
                  String nameFrom = preferences.getValue(EMAIL_FROMNAME, null);
                  emailText = getEmailBody(emailText,request, authentication, person);
+                 if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
+                    throw new AddressException("Email address "+emailFrom+"is not availalbe");
+                 }
                  EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                              email, "text/plain;charset=utf-8");
                  sendMessage = "view.account.success";
               } 
-              catch (Exception e) {
-                  log.error("password generation errors");
+              catch (AddressException e) {
+                 log.error("Email address failed",e);
+              } 
+              catch (MessagingException e) {
+                 log.error("Email MessagingException failed",e);
               }
-           }
-           else if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())){
-              sendMessage = "view.account.unconfirmed";
+              catch (Exception e) {
+                 log.error(e);
+              } 
            }
            else if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())){
               sendMessage = "view.account.blocked"; 

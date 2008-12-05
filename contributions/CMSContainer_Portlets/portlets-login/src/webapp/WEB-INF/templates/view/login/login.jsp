@@ -6,14 +6,14 @@
       action="<cmsc:actionURL><cmsc:param name="action" value="login"/></cmsc:actionURL>" 
       method="post">
 <input type="hidden" name="send_password" id="send_password"/>
-<table>
+
 <c:if test="${!empty errormessage}">
-  <tr class="inputrow" style="color: red;" >
-  <td colspan="2">
-	<fmt:message key="${errormessage}" />
-  </td>
-  </tr>
+<span class="inputrow" style="color: red;" >
+   <fmt:message key="${errormessage}" />
+</span>
 </c:if>
+
+<table>
 
   <tr class="inputrow">
     <td><fmt:message key="view.username" /></td>
