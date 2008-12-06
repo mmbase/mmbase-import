@@ -28,7 +28,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 	private static final Logger log = Logging.getLoggerInstance(AuthenticationInterceptor.class);
 	private String loginPage;
 
-	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 
 		boolean isAuthenticated = isAuthenticated(request);
