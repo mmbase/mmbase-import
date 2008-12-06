@@ -1,11 +1,14 @@
 package org.mmbase.applications.vprowizards.spring.cache;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import junit.framework.TestCase;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
-
-import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 
 public class FlushNameTemplateBeanTest extends TestCase {
 
