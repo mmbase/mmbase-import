@@ -1,8 +1,8 @@
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import org.mmbase.applications.vprowizards.spring.cache.modifiers.PrefixSuffixModifier;
-
 import junit.framework.TestCase;
+
+import org.mmbase.applications.vprowizards.spring.cache.modifiers.PrefixSuffixModifier;
 
 public class PrefixSuffixModifierTest extends TestCase {
 

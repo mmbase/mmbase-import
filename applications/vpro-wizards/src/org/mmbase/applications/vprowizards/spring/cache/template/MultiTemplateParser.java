@@ -1,7 +1,5 @@
 package org.mmbase.applications.vprowizards.spring.cache.template;
 
-import java.util.ArrayList;
-import java.util.List;
 
 //TODO: the list of supported TemplateParsers is now hard coded.
 public class MultiTemplateParser extends AbstractTemplateParser implements TemplateParser {
