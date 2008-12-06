@@ -8,6 +8,24 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
 
     private TemplateQueryRunner templateQueryRunner;
 
+    public static boolean isTemplate(String template) {
+        MultiTemplateValidator validator = new MultiTemplateValidator(template);
+        validator.validate();
+        return validator.isValidMultitemplate();
+    }
+
+    /**
+     * Convenience method to clean the node numbers from a multi template. For this you don't need 
+     * things like node type,node number or a {@link TemplateQueryRunner} instance. 
+     * @param template
+     * @return
+     */
+    public static String cleanTemplate(String template) {
+        MultiTemplateParser mtp = new MultiTemplateParser("", "", template, null);
+        mtp.removeNumber();
+        return mtp.getTemplate();
+    }
+
     public MultiTemplateParser(String nodeType, String nodeNumber, String template,
             TemplateQueryRunner templateQueryRunner) {
         super(nodeType, nodeNumber, template);
@@ -23,12 +41,6 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
         });
     }
 
-//    public void setTemplate(String template) {
-//        if (!MultiTemplateParser.isTemplate(template)) {
-//            throw new IllegalStateException(String.format("template %s is not a multi template.", template));
-//        }
-//        this.template = template;
-//    }
 
     public void removeNumber() {
         process(new Processor() {
@@ -39,76 +51,6 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
         });
     }
 
-    public static boolean isTemplate(String template) {
-        boolean result = true, insideTemplate = false;
-        int templatesOpened = 0, templatesClosed = 0;
-        boolean nextCharEscaped = false;
-        String subTemplate = "";
-        List<String> templates = new ArrayList<String>();
-
-        char[] chars = template.toCharArray();
-        for (char c : chars) {
-            switch (c) {
-            case '\\':
-                if (!nextCharEscaped) {
-                    nextCharEscaped = true;
-                    break;
-                }
-            case '[':
-                // if escape is on, and you are not inside a subtemplate, start a new subtemplate
-                //if you are inside a template: disregard escape, write it
-                if(insideTemplate){
-                    subTemplate = subTemplate + c;
-                }else{
-                    if(!nextCharEscaped){
-                        insideTemplate = true;
-                        templatesOpened++;
-                    }
-                }
-                nextCharEscaped = false;
-                break;
-
-            case ']':
-                    // if escape is off, and you are inside a subtemplate, finish this.
-                    // if escape is on and you are inside a template, write it.
-                if (insideTemplate) {
-                    if (nextCharEscaped) {
-                        subTemplate = subTemplate + c;
-                    } else {
-                        insideTemplate = false;
-                        templates.add(subTemplate);
-                        subTemplate = "";
-                        templatesClosed++;
-                    }
-                }
-                nextCharEscaped = false;
-                break;
-
-            default:
-                if (insideTemplate) {
-                    subTemplate = subTemplate + c;
-                }
-                nextCharEscaped = false;
-            }
-        }
-
-        for (String t : templates) {
-            if (!SimpleTemplateParser.isTemplate(t) && !QueryTemplateParser.isTemplate(t))
-                result = false;
-        }
-        if (templatesOpened != templatesClosed)
-            result = false;
-        if (templates.size() == 0)
-            result = false; /* multitemplate should contain at least one sub template in square brackets */
-        return result;
-    }
-
-    public static String cleanTemplate(String template) {
-        MultiTemplateParser mtp = new MultiTemplateParser("", "", template, null);
-        mtp.removeNumber();
-        return mtp.getTemplate();
-    }
-
     private void process(Processor processor) {
         int offset = 0;
         while (offset < template.getTemplate().length() && MultiTemplateParser.isTemplate(template.getTemplate().substring(offset))) {
@@ -117,17 +59,18 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
             String subTemplate = template.getTemplate().substring(begin, end);
             String templatePrefix = template.getTemplate().substring(0, begin);
             String templateSuffix = template.getTemplate().substring(begin + subTemplate.length());
-
+    
             processor.setTemplateParser(createParserForSubtemplate(subTemplate));
             processor.process();
             String processedTemplate = processor.getTemplateParser().getTemplate();
-
+    
             template = new Template(templatePrefix + processedTemplate + templateSuffix);
             offset = begin + processedTemplate.length() + 1;
         }
     }
 
     private TemplateParser createParserForSubtemplate(String subTemplate) {
+        //TODO: i would like a factory class for all this type specific stuff.
         if (QueryTemplateParser.isTemplate(subTemplate)) {
             QueryTemplate queryTemplate = new QueryTemplate(subTemplate);
             return new QueryTemplateParser(nodeType, nodeNumber, subTemplate, queryTemplate, templateQueryRunner);
@@ -136,7 +79,6 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
             return new SimpleTemplateParser(nodeType, nodeNumber, subTemplate);
         }
         throw new RuntimeException(String.format("Could not find right parser for template %s", subTemplate));
-
     }
 
 
@@ -161,6 +103,8 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
 
     @Override
     protected Template instantiateTemplate(String templateStr) {
+        //TODO: there should be a MultiTemplate type, that holds the structure of text/subtemplates as a model.
+        
         return new Template(templateStr);
     }
 }
