@@ -7,9 +7,10 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */ 
-package org.mmbase.applications.vprowizards.spring.cache;
+package org.mmbase.applications.vprowizards.spring.cache.modifiers;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.applications.vprowizards.spring.cache.Modifier;
 
 /**
  * A simple modifier that lets you add a preconfigured prefix and suffix to a string

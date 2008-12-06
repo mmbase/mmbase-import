@@ -13,7 +13,7 @@
 		<property name="modifiers">
 			<list>
 				<bean
-					class="org.mmbase.applications.vprowizards.spring.cache.PrefixSuffixModifier">
+					class="org.mmbase.applications.vprowizards.spring.cache.modifiers.PrefixSuffixModifier">
 					<property name="prefix" value="pre_" />
 					<property name="suffix" value="_suf" />
 				</bean>

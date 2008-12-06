@@ -34,7 +34,7 @@ public class FlushNameTemplateBeanTest extends TestCase {
         bean.setNodeType("user");
         tryForIllegalStateOnProcessAndGet();
 
-        bean.setTemplate("template");
+        bean.setTemplate("[template]");
         tryForIllegalStateOnProcessAndGet();
 
         Cloud cloud = createMock(Cloud.class);
@@ -42,7 +42,7 @@ public class FlushNameTemplateBeanTest extends TestCase {
         try {
             bean.processAndGetTemplate();
         } catch (Exception e) {
-            fail("illegal state exception should not occur");
+            fail("illegal state exception should not occur but is: "+e.getMessage());
         }
     }
 
@@ -112,7 +112,8 @@ public class FlushNameTemplateBeanTest extends TestCase {
         
         bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
         bean.setTemplate("een:[disco.posrel.thing:300]");
-        assertEquals("old node number must be deleted", "een:[disco.posrel.thing:50]", bean.processAndGetTemplate());
+        String t = bean.processAndGetTemplate();
+        assertEquals("old node number must be deleted", "een:[disco.posrel.thing:50]", t);
         verifyMockObjects();
         
         bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
