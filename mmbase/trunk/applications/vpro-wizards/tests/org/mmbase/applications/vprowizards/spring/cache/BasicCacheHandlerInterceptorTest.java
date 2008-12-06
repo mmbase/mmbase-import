@@ -1,9 +1,9 @@
 package org.mmbase.applications.vprowizards.spring.cache;
 
+import junit.framework.TestCase;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import junit.framework.TestCase;
 
 public class BasicCacheHandlerInterceptorTest extends TestCase {
     
