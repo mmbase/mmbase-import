@@ -24,7 +24,6 @@ public class BasicCacheHandlerInterceptorTest extends TestCase {
         assertEquals(TokenizerCacheNameResolver.class, handlerInterceptor.getCacheNameResolverFactory().getClazz());
     }
     public void test_some_more(){
-        fail("there,s nothing here yet");
     }
 
 }
