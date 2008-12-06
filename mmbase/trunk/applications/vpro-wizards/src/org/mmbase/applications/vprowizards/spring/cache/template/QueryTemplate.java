@@ -1,7 +1,5 @@
 package org.mmbase.applications.vprowizards.spring.cache.template;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class QueryTemplate extends Template{
     

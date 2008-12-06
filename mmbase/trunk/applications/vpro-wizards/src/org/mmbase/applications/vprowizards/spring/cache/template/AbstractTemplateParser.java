@@ -27,7 +27,7 @@ public abstract class AbstractTemplateParser implements TemplateParser {
     }
     
     //TODO: this is all a bit weird. Better solution for static isTemplate() methods 
-    //(should be in interface, but you dont want to instantiate a parser to see if it can parse a template...
+    //(should be in interface, but you don't want to instantiate a parser to see if it can parse a template...
     protected abstract boolean matches(String template);
     protected abstract Template instantiateTemplate(String templateStr);
     

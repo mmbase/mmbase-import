@@ -97,11 +97,6 @@ public class FlushNameTemplateBeanTest extends TestCase {
     
     public void test_query_templates(){
         bean = createConfiguredBean();
-//        bean.setTemplate("een:[disco.posrel.thing]");
-//        assertEquals("nodetype doesn't match", "een:[disco.posrel.thing]", bean.processAndGetTemplate());
-//        
-//        bean.setTemplate("een:[disco.posrel.thing:12]");
-//        assertEquals("nodenr should be cleaned out", "een:[disco.posrel.thing]", bean.processAndGetTemplate());
         
         bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
         bean.setTemplate("een:[disco.posrel.thing]");
