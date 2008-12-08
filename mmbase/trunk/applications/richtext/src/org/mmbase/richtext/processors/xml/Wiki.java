@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.15 2008-09-29 08:55:17 michiel Exp $
+ * @version $Id: Wiki.java,v 1.16 2008-12-08 10:06:08 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -174,7 +174,10 @@ class Wiki {
             NodeQuery q = Queries.createRelationNodesQuery(editedNode, objects, "idrel", "destination");
             NodeList links = cloud.getNodeManager("idrel").getList(q);
             createdLinks.addAll(links);
+            cleanDuplicateIdRels(createdLinks);
             cloud.setProperty("createdlinks", createdLinks);
+        } else {
+            log.debug("Found create lnsk in cloud already");
         }
 
         // search all anchors
@@ -219,7 +222,36 @@ class Wiki {
 
         }
 
+
+
         return source;
+    }
+
+
+    /**
+     * Duplicate idrels should not have been created, but perhaps in some old version of this code
+     * it could happen. Get it over with, and simply make sure there are none
+     */
+    private void cleanDuplicateIdRels(NodeList list) {
+        Set<String> ids = new HashSet<String> ();
+        NodeIterator i = list.nodeIterator();
+
+        while (i.hasNext()) {
+            Node n = i.nextNode();
+            String id = n.getStringValue("id");
+            if (ids.contains(id)) {
+                try {
+                    n.delete(true);
+                    log.info("Removed duplicate id " + id);
+                    i.remove();
+                } catch (Exception e) {
+                    log.warn(e);
+                }
+            } else {
+                ids.add(id);
+            }
+        }
+        log.debug("Found ids " + ids);
     }
 
 
