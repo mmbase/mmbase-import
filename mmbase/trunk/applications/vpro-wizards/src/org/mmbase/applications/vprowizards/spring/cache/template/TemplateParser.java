@@ -7,7 +7,8 @@ package org.mmbase.applications.vprowizards.spring.cache.template;
  *
  */
 public interface TemplateParser {
-    public void insertNumber();
-    public void removeNumber();
+    public void insertNodeNumber();
+    public void removeNodeNumber();
+    public void stripTemplateLeaveNodenr();
     public String getTemplate();
 }

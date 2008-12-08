@@ -13,10 +13,10 @@ public class QueryTemplateParser extends AbstractTemplateParser implements Templ
         this.templateQueryRunner = templateQueryRunner;
     }
 
-    public void insertNumber() {
-        removeNumber();
+    public void insertNodeNumber() {
+        removeNodeNumber();
         if(nodeType.equals(((QueryTemplate)template).getSourceType())){
-            template.setNodenr(templateQueryRunner.runQuery(nodeNumber, queryTemplate));
+            template.setNodeNumber(templateQueryRunner.runQuery(nodeNumber, queryTemplate));
         }
     }
 

@@ -10,7 +10,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
-public class FlushNameTemplateBeanTest extends TestCase {
+public class FlushNameTemplateBeanIntegrationTest extends TestCase {
 
     private FlushNameTemplateBean bean;
     private Cloud mockCloud;
@@ -49,39 +49,44 @@ public class FlushNameTemplateBeanTest extends TestCase {
         }
     }
 
-    public void test_simple_template_without_nodenumber() {
+    public void test_simple_template_with_matching_nodetype_without_nodenumber_has_number_inserted() {
         bean = createConfiguredBean();
         bean.setTemplate("een:[user]");
-        assertEquals("with matching nodetype number should be inserted", "een:[user:100]", bean.processAndGetTemplate());
-        bean.setTemplate("een:[person]");
-        assertEquals("Non matching node type should be ignored","een:[person]", bean.processAndGetTemplate());
-    }
-
-
-
-    public void test_simple_template_that_dousnt_match() {
-        bean = createConfiguredBean();
-        bean.setTemplate("een:[disco:600]");
-        assertEquals("Node type dousn't match. template should be ignored but number should be stripped", 
-                "een:[disco]", bean.processAndGetTemplate());
-        bean.setTemplate("een:[disco]");
-        assertEquals("Node type dousn't match. template should be ignored", "een:[disco]", bean.processAndGetTemplate());
+        assertEquals("een:[user:100]", bean.processAndGetTemplate());
     }
     
-    public void test_simple_template_with_several_subtemplates(){
+    public void test_simple_template_without_matching_nodetype_is_ignored() {
+        bean = createConfiguredBean();
+        bean.setTemplate("een:[person]");
+        assertEquals("een:[person]", bean.processAndGetTemplate());
+    }
+
+    public void test_simple_template_if_nodetype_dousnt_match_template_must_be_cleaned_of_nodenrs() {
+        bean = createConfiguredBean();
+        bean.setTemplate("een:[disco:600]");
+        assertEquals("een:[disco]", bean.processAndGetTemplate());
+    }
+    
+    public void test_multi_template_nodenr_should_be_inserted_where_nodetype_matches(){
         bean = createConfiguredBean();
         bean.setTemplate("een:[disco], twee:[user]");
         assertEquals("een:[disco], twee:[user:100]", bean.processAndGetTemplate());
-        bean.setTemplate("een:[disco:5], twee:[user:5]");
-        String result = bean.processAndGetTemplate();
-        assertEquals("een:[disco], twee:[user:100]", result );
         
-        //different node type
-        bean.setNodeType("disco");
-        bean.setTemplate("een:[disco], twee:[user]");
-        assertEquals("een:[disco:100], twee:[user]", bean.processAndGetTemplate());
+        bean = createConfiguredBean();
+        bean.setTemplate("een:[user], twee:[user]");
+        assertEquals("een:[user:100], twee:[user:100]", bean.processAndGetTemplate());
+        
+        bean = createConfiguredBean();
+        bean.setCloud(createMockCloudForQueryTemplates("test", "nogwat", 100, 50));
+        bean.setTemplate("een:[user.test.nogwat], twee:[nogwat.user.test]");
+        assertEquals("een:[user.test.nogwat:50], twee:[nogwat.user.test]", bean.processAndGetTemplate());
+        verifyMockObjects();
+    }
+    
+    public void test_multi_template_nodenumbers_should_be_stripped_for_all_subtemplates(){
+        bean = createConfiguredBean();
         bean.setTemplate("een:[disco:5], twee:[user:5]");
-        assertEquals("een:[disco:100], twee:[user]", bean.processAndGetTemplate());
+        assertEquals("een:[disco], twee:[user:100]", bean.processAndGetTemplate() );
     }
     
     public void test_malfomed_templates_are_ignored(){
@@ -98,21 +103,8 @@ public class FlushNameTemplateBeanTest extends TestCase {
         
     }
     
-    public void test_query_templates(){
+    public void test_query_should_not_be_run_bet_nodenr_deleted_when_querytemplate_dousnt_match(){
         bean = createConfiguredBean();
-        
-        bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
-        bean.setTemplate("een:[disco.posrel.thing]");
-        bean.setNodeNumber(""+100);
-        bean.setNodeType("disco");
-        assertEquals("template should match", "een:[disco.posrel.thing:50]", bean.processAndGetTemplate());
-        verifyMockObjects();
-        
-        bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
-        bean.setTemplate("een:[disco.posrel.thing:300]");
-        String t = bean.processAndGetTemplate();
-        assertEquals("old node number must be deleted", "een:[disco.posrel.thing:50]", t);
-        verifyMockObjects();
         
         bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
         bean.setNodeType("thing");
@@ -124,17 +116,6 @@ public class FlushNameTemplateBeanTest extends TestCase {
         } catch (AssertionError e) {
             //ignore
         }
-        
-        bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
-        bean.setTemplate("een:[disco.posrel.thing:25]");
-        assertEquals("old nodenumber must be deleted.", "een:[disco.posrel.thing]", bean.processAndGetTemplate());
-        try {
-            verifyMockObjects();
-            fail("The nodetype dous not match the template, so the query is not executed.");
-        } catch (AssertionError e) {
-            //ignore
-        }
-        
     }
 
     private Cloud createMockCloudForQueryTemplates(String relationRole, String destinationType, int sourceNodeNumber, int destinationNodeNumber) {
@@ -143,13 +124,13 @@ public class FlushNameTemplateBeanTest extends TestCase {
         mockDestinationNode = createMock(Node.class);
         mockNodeList = createMock(NodeList.class);
         
-        expect(mockCloud.getNode(""+sourceNodeNumber)).andReturn(mockSourceNode);
-        expect(mockSourceNode.getRelatedNodes(destinationType, relationRole, "both")).andReturn(mockNodeList);
+        expect(mockCloud.getNode(""+sourceNodeNumber)).andReturn(mockSourceNode).atLeastOnce();
+        expect(mockSourceNode.getRelatedNodes(destinationType, relationRole, "both")).andReturn(mockNodeList).atLeastOnce();
         
-        expect(mockNodeList.size()).andReturn(1);
+        expect(mockNodeList.size()).andReturn(1).atLeastOnce();
         expect(mockNodeList.getNode(0)).andReturn(mockDestinationNode);
         
-        expect(mockDestinationNode.getNumber()).andReturn(destinationNodeNumber);
+        expect(mockDestinationNode.getNumber()).andReturn(destinationNodeNumber).atLeastOnce();
         replay(mockCloud);
         replay(mockSourceNode);
         replay(mockDestinationNode);

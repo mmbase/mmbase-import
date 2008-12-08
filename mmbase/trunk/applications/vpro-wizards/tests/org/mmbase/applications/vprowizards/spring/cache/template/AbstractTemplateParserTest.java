@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.mmbase.datatypes.processors.CreationTimeGuesser;
+
 import junit.framework.TestCase;
 
 
@@ -13,6 +15,7 @@ public abstract class AbstractTemplateParserTest extends TestCase{
     protected String nonMatchingTemplate = getNonMatchingTemplate();
     protected String nonMatchingTemplateWithNodenr = getNonMatchingTemplateWithNodenr();
     protected String matchingTemplateResult = getMatchingTemplateResult();
+    protected String matchingTemplateWithTemplateRemoved = getMatchingTemplateWithTemplateRemoved();
     protected String nodeType = getNodeType();
     protected String nodeNumber= getNodeNumber();
     protected List<String> legalPatterns = getLegalPatterns();
@@ -69,15 +72,23 @@ public abstract class AbstractTemplateParserTest extends TestCase{
         assertEquals(nonMatchingTemplate, templateParser.getTemplate());
     }
     
+    public void test_strip_template_leave_nodenr_withNodenr(){
+        createInstanceAndInsertNodenr(nodeType, nodeNumber, matchingTemplate);
+        templateParser.stripTemplateLeaveNodenr();
+        assertEquals(matchingTemplateWithTemplateRemoved, templateParser.getTemplate());
+    }
+    
     protected abstract String getMatchingTemplate();
     protected abstract String getMatchingTemplateWithNodenr();
     protected abstract String getNonMatchingTemplate();
     protected abstract String getNonMatchingTemplateWithNodenr();
     protected abstract String getMatchingTemplateResult();
+    protected abstract String getMatchingTemplateWithTemplateRemoved();
     protected abstract String getNodeType();
     protected abstract String getNodeNumber();
     protected abstract void createInstanceAndInsertNodenr(String nodeType, String nodeNumber, String template);
     protected abstract List<String> getLegalPatterns();
     protected abstract List<String> getIllegalPatterns();
     protected abstract Class<? extends TemplateParser> getTemplateParserClass();
+    
 }
