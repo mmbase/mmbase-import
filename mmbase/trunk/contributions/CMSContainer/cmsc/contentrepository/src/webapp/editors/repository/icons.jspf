@@ -5,7 +5,7 @@
     <a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="../gfx/icons/preview.png"
                                                                          alt="<fmt:message key="asset.preview.title" />"
                                                                          title="<fmt:message key="asset.preview.title" />"/></a>
-    <a href="javascript:showInfo('<mm:nodeinfo type="guitype"/>', '<mm:field name="number" />');">
+    <a href="javascript:showInfo('<mm:nodeinfo type="type"/>', '<mm:field name="number" />');">
                               <img src="../gfx/icons/info.png" title="<fmt:message key="asset.info"/>" alt="<fmt:message key="asset.info"/>"/></a>
     <mm:haspage page="/editors/versioning">
         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
