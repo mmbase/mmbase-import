@@ -12,15 +12,9 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
         return validator.isValidMultitemplate();
     }
 
-    /**
-     * Convenience method to clean the node numbers from a multi template. For this you don't need 
-     * things like node type,node number or a {@link TemplateQueryRunner} instance. 
-     * @param template
-     * @return
-     */
-    public static String cleanTemplate(String template) {
+    public static String stripTemplatesLeaveNodeNr(String template) {
         MultiTemplateParser mtp = new MultiTemplateParser("", "", template, null);
-        mtp.removeNumber();
+        mtp.stripTemplateLeaveNodenr();
         return mtp.getTemplate();
     }
 
@@ -30,21 +24,43 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
         this.templateQueryRunner = templateQueryRunner;
     }
 
-    public void insertNumber() {
+    public void stripTemplateLeaveNodenr() {
         process(new Processor() {
             @Override
             void process() {
-                templateParser.insertNumber();
+                templateParser.stripTemplateLeaveNodenr();
+            }
+
+            @Override
+            String processPrefix(String prefix) {
+                //strip the opening bracket
+                return prefix.substring(0, prefix.length()-1);
+            }
+
+            @Override
+            String processSuffix(String suffix) {
+                return suffix.substring(1);
+            }
+            
+            
+        });
+    }
+
+    public void insertNodeNumber() {
+        process(new Processor() {
+            @Override
+            void process() {
+                templateParser.insertNodeNumber();
             }
         });
     }
 
 
-    public void removeNumber() {
+    public void removeNodeNumber() {
         process(new Processor() {
             @Override
             void process() {
-                templateParser.removeNumber();
+                templateParser.removeNodeNumber();
             }
         });
     }
@@ -62,7 +78,9 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
             processor.process();
             String processedTemplate = processor.getTemplateParser().getTemplate();
     
-            template = new Template(templatePrefix + processedTemplate + templateSuffix);
+            template = new Template(processor.processPrefix(templatePrefix) + 
+                    processedTemplate + 
+                    processor.processSuffix(templateSuffix));
             offset = begin + processedTemplate.length() + 1;
         }
     }
@@ -80,20 +98,6 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
     }
 
 
-    private static abstract class Processor {
-        protected TemplateParser templateParser;
-
-        void setTemplateParser(TemplateParser templateParser) {
-            this.templateParser = templateParser;
-        }
-
-        public TemplateParser getTemplateParser() {
-            return templateParser;
-        }
-
-        abstract void process();
-    }
-
     @Override
     protected boolean matches(String template) {
         return MultiTemplateParser.isTemplate(template);
@@ -104,5 +108,28 @@ public class MultiTemplateParser extends AbstractTemplateParser implements Templ
         //TODO: there should be a MultiTemplate type, that holds the structure of text/subtemplates as a model.
         
         return new Template(templateStr);
+    }
+
+
+    private static abstract class Processor {
+        protected TemplateParser templateParser;
+    
+        void setTemplateParser(TemplateParser templateParser) {
+            this.templateParser = templateParser;
+        }
+    
+         TemplateParser getTemplateParser() {
+            return templateParser;
+        }
+        
+         String processPrefix(String prefix){
+            return prefix;
+        }
+        
+         String processSuffix(String suffix){
+            return suffix;
+        }
+    
+        abstract void process();
     }
 }

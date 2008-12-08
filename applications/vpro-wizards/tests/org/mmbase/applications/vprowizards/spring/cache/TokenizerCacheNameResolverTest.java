@@ -92,12 +92,12 @@ public void assert_asking_values_for_namespace_that_has_no_values_should_return_
         assertNotNull(l.contains("noppes[jaja]"));
     }
     
-//    public void test_templates_with_paht(){
-//        tcnr.setInput("een:");
-//        List<String> l = tcnr.getNames("vier");
-//        assertEquals(2, l.size());
-//        assertNotNull(l.contains("noop[test:4576]"));
-//    }
+    public void test_templates_with_paht(){
+        tcnr.setInput("vier:noop[test.disco.nogwat:4576]");
+        List<String> l = tcnr.getNames("vier");
+        assertEquals(1, l.size());
+        assertNotNull(l.contains("noop[test.disco.nogwat:4576]"));
+    }
     
     public void test_tokenizer_resets_with_new_input(){
         tcnr.setInput("een:a,b twee:c");

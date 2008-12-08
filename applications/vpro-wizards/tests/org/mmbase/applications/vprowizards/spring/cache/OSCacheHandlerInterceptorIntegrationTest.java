@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class BasicCacheHandlerInterceptorTest extends TestCase {
+public class OSCacheHandlerInterceptorIntegrationTest extends TestCase {
     
     private ApplicationContext context;
 

@@ -2,21 +2,20 @@ package org.mmbase.applications.vprowizards.spring.cache.template;
 
 public class SimpleTemplateParser extends AbstractTemplateParser implements TemplateParser {
     public static final String SIMPLE_TEMPLATE_REGEXP = "\\w+(:[0-9]+)?";
-    
 
     public SimpleTemplateParser(String nodeType, String nodeNumber, String template) {
         super(nodeType, nodeNumber, template);
     }
 
-    public void insertNumber() {
-        removeNumber();
+    public void insertNodeNumber() {
+        removeNodeNumber();
         if (nodeType.equals(template.getTemplate())) {
-            template.setNodenr(nodeNumber);
+            template.setNodeNumber(nodeNumber);
         }
     }
-    
-    public static boolean isTemplate(String template){
-        return template.matches("^"+SIMPLE_TEMPLATE_REGEXP+"$");
+
+    public static boolean isTemplate(String template) {
+        return template.matches("^" + SIMPLE_TEMPLATE_REGEXP + "$");
     }
 
     @Override
@@ -29,5 +28,4 @@ public class SimpleTemplateParser extends AbstractTemplateParser implements Temp
         return new Template(templateStr);
     }
 
-    
 }

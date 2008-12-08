@@ -58,55 +58,52 @@ public class FlushNameTemplateBean {
     private String nodeNumber;
 
     private Cloud cloud;
-    
+
+    private TemplateQueryRunner templateQueryRunner = null;
+
     private static final Logger log = Logging.getLoggerInstance(FlushNameTemplateBean.class);
 
     public void setCloud(Cloud cloud) {
         this.cloud = cloud;
     }
 
-
     public void setNodeType(String type) {
         this.nodeType = type;
     }
-
 
     public void setTemplate(String template) {
         this.template = template;
     }
 
-
     public void setNodeNumber(String nodenr) {
         this.nodeNumber = nodenr;
     }
 
-
-    public String processAndGetTemplate(){
+    public String processAndGetTemplate() {
         checkNull(template, "template");
         checkNull(nodeType, "nodeType");
         checkNull(nodeNumber, "nodeNumber");
         checkNull(cloud, "cloud");
-        if(MultiTemplateParser.isTemplate(template)) {
-            TemplateQueryRunner templateQueryRunner = new MMBaseTemplateQueryRunner(cloud);
-            TemplateParser parser = new MultiTemplateParser(nodeType, nodeNumber, template, templateQueryRunner );
-            parser.insertNumber();
+        if (MultiTemplateParser.isTemplate(template)) {
+            templateQueryRunner = new MMBaseTemplateQueryRunner(cloud);
+            TemplateParser parser = new MultiTemplateParser(nodeType, nodeNumber, template, templateQueryRunner);
+            parser.insertNodeNumber();
             return parser.getTemplate();
-        } 
+        }
         return template;
     }
-    
-    
-    private void checkNull(Object obj, String name){
+
+    void setTemplateQueryRunner(TemplateQueryRunner templateQueryRunner) {
+        this.templateQueryRunner = templateQueryRunner;
+    }
+
+    private void checkNull(Object obj, String name) {
         if (obj == null) {
             throw new IllegalStateException(String.format("property %s has not been set.", name));
         }
-        if (String.class.isAssignableFrom(obj.getClass()) && StringUtils.isBlank((String)obj)) {
+        if (String.class.isAssignableFrom(obj.getClass()) && StringUtils.isBlank((String) obj)) {
             throw new IllegalStateException(String.format("property %s is an empty string.", name));
         }
     }
 
-
-    
-    
-   
 }

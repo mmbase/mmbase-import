@@ -9,7 +9,7 @@ public class MultiTemplateParserTest extends AbstractTemplateParserTest {
     protected void createInstanceAndInsertNodenr(String nodeType, String nodeNumber, String template) {
         MockTemplateQueryRunner mockQueryRunner = new MockTemplateQueryRunner(getNodeNumber());
         templateParser = new MultiTemplateParser(nodeType, nodeNumber, template, mockQueryRunner);
-        templateParser.insertNumber();
+        templateParser.insertNodeNumber();
     }
 
     @Override
@@ -91,6 +91,11 @@ public class MultiTemplateParserTest extends AbstractTemplateParserTest {
     @Override
     protected Class<? extends TemplateParser> getTemplateParserClass() {
         return MultiTemplateParser.class;
+    }
+
+    @Override
+    protected String getMatchingTemplateWithTemplateRemoved() {
+        return "pre100and100post";
     }
 
 }
