@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.121 2008-12-01 22:52:13 michiel Exp $
+ * @version $Id: Casting.java,v 1.122 2008-12-08 10:56:11 michiel Exp $
  */
 
 import java.util.*;
@@ -936,7 +936,7 @@ public class Casting {
      */
     static public BigDecimal toDecimal(Object i) {
         if (i instanceof BigDecimal) {
-            return (BigDecimal) i;
+            return ((BigDecimal) i).plus().stripTrailingZeros();
         } else if (i instanceof CharSequence) {
             try {
                 return new BigDecimal("" + i).stripTrailingZeros();
@@ -960,7 +960,7 @@ public class Casting {
         } else if (i instanceof Float) {
             return new BigDecimal((Float) i);
         } else {
-            return new BigDecimal(toDouble(i));
+            return new BigDecimal(toDouble(i)).stripTrailingZeros();
         }
     }
 
