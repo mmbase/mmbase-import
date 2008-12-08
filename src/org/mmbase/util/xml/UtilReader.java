@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.25.2.4 2008-11-24 17:32:09 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25.2.5 2008-12-08 12:59:12 michiel Exp $
  */
 public class UtilReader {
 
@@ -183,6 +183,13 @@ public class UtilReader {
         }
     }
 
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected Map.Entry getEntry(DocumentReader reader, String k, String v) {
+        return new Entry(k, v);
+    }
+
     protected void readProperties(String s) {
         properties.clear();
         maps.clear();
@@ -234,7 +241,7 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null) {
-                                    entryList.add(new Entry(key, value));
+                                    entryList.add(getEntry(reader, key, value));
                                 }
                             }
                             if (maps.containsKey(name) && ! type.equals("mergingmap")) {
@@ -244,10 +251,11 @@ public class UtilReader {
                             }
                         } else {
                             String value = reader.getElementValue(p);
-                            if (properties.containsKey(name)) {
-                                log.service("Property '" + name + "'(" + value + "') of " + url + " is shadowed");
+                            Map.Entry entry = getEntry(reader, name, value);
+                            if (properties.containsKey(entry.getKey())) {
+                                log.service("Property '" + entry.getKey() + "'(" + entry.getValue()+ "') of " + url + " is shadowed");
                             } else {
-                                properties.put(name, value);
+                                properties.put(entry.getKey(), entry.getValue());
                             }
                         }
                     }
