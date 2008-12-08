@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.24 2008-12-02 13:04:19 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.25 2008-12-08 10:55:41 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -38,7 +38,8 @@ public abstract class ThreadPools {
 
     /**
      * Wrapper around Thread.scheduler.scheduleAtFixedRate.
-     * @deprecated
+     * @deprecated Used ThreadPools.scheduler#scheduleAtFixedRate  This method is only provided to
+     * use this in both 1.8 (concurrecy backport) and 1.9 (java 1.5).
      */
     public static ScheduledFuture scheduleAtFixedRate(Runnable pub, int time1, int time2) {
         return scheduler.scheduleAtFixedRate(pub,
