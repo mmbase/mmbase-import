@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.46 2008-06-24 09:54:44 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.47 2008-12-08 15:34:26 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  * @todo Perhaps we could put the 'typeCounter' stuff in a sub-class.
@@ -62,7 +62,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     private final ChainedReleaseStrategy releaseStrategy;
 
-    QueryResultCache(int size) {
+    public QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
         log.service("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times

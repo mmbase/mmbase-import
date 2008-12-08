@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34.2.5 2008-06-24 09:52:22 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.34.2.6 2008-12-08 15:33:51 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -59,7 +59,7 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
      */
     private final ChainedReleaseStrategy releaseStrategy;
 
-    QueryResultCache(int size) {
+    public QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
         log.debug("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
