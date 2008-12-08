@@ -187,6 +187,32 @@
       </datatype>
     </field>
 
+    <field name="rank" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Rank</guiname>
+        <guiname xml:lang="en">Rank</guiname>
+      </gui>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration enforce="never">
+          <query type="mmbaseranks"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <sortorder field="rank" />
+          </query>
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="role">rank</param>
+            <param name="type">mmbaseranks</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="role">rank</param>
+            <param name="type">mmbaseranks</param>
+          </class>
+        </getprocessor>
+      </datatype>
+    </field>
+
   </fieldlist>
   <indexlist>
     <index name="name">

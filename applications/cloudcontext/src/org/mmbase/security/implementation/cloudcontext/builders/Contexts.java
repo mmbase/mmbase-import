@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.56 2008-08-07 20:01:51 michiel Exp $
+ * @version $Id: Contexts.java,v 1.57 2008-12-08 17:02:46 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -193,7 +193,7 @@ public class Contexts extends MMObjectBuilder {
             if (user.getNode() != null && user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false; // nobody may delete own node
             if (builder instanceof Contexts) {
                 try {
-                    Users users = Users.getBuilder();
+                    MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
                     BasicSearchQuery query = new BasicSearchQuery(true);
                     Step step = query.addStep(users);
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
@@ -521,8 +521,9 @@ public class Contexts extends MMObjectBuilder {
                         Constraint newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
 
-                        if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
-                            Users users = Users.getBuilder();
+                        Provider users = Authenticate.getInstance().getUserProvider();
+
+                        if (step.getTableName().equals(users.getUserBuilder().getTableName())) { // anybody may see own node
                             Constraint own = query.createConstraint(query.createStepField(step, "number"),
                                                                     new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
                             newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
@@ -604,7 +605,8 @@ public class Contexts extends MMObjectBuilder {
         if (found == null) {
             found = new HashSet<MMObjectNode>();
 
-            found.addAll(getGroupsOrUsers(contextNode, operation, Users.getBuilder()));
+            MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+            found.addAll(getGroupsOrUsers(contextNode, operation, users));
             found.addAll(getGroupsOrUsers(contextNode, operation, Groups.getBuilder()));
             operationsCache.put(contextNode, operation, found);
         }
@@ -790,7 +792,7 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     protected boolean mayGrant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
-        Users users = Users.getBuilder();
+        Provider users = Authenticate.getInstance().getUserProvider();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
         Groups groups = Groups.getBuilder();
 
@@ -855,7 +857,7 @@ public class Contexts extends MMObjectBuilder {
      * @todo untested
      */
     protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
-        Users users = Users.getBuilder();
+        Provider users = Authenticate.getInstance().getUserProvider();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
         if (groupOrUserNode.getBuilder() instanceof Groups) {
             if (! Groups.getBuilder().contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group
@@ -914,7 +916,7 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     protected MMObjectNode getUserNode(UserContext user) {
-        Users users = Users.getBuilder();
+        Provider users = Authenticate.getInstance().getUserProvider();
         return users.getUser(user.getIdentifier());
     }
 
@@ -985,7 +987,8 @@ public class Contexts extends MMObjectBuilder {
                 throw new SecurityException("Self was not supplied");
             }
             // find the user first, the check if the current user actually has rights on the object
-            MMObjectNode userToCheck = Users.getBuilder().getNode(a.getString("usertocheck"));
+            Provider users = Authenticate.getInstance().getUserProvider();
+            MMObjectNode userToCheck = users.getUserBuilder().getNode(a.getString("usertocheck"));
             if (userToCheck == null) { // the user is null?
                 // I don't know then,
                 // yes perhaps?
@@ -993,9 +996,9 @@ public class Contexts extends MMObjectBuilder {
             }
 
             // admin bypasses security system (maydo(mmobjectnode ... does not check for this)
-            if (Users.getBuilder().getRank(checkingUser).getInt() < Rank.ADMIN_INT) {
+            if (users.getRank(checkingUser).getInt() < Rank.ADMIN_INT) {
                 if ((! mayDo(checkingUser, getContextNode(userToCheck), Operation.READ, true))) {
-                    throw new SecurityException("You " + checkingUser + " / " + Users.getBuilder().getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + getContextNode(userToCheck) + "' (you have no read rights on that context)");
+                    throw new SecurityException("You " + checkingUser + " / " + users.getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + getContextNode(userToCheck) + "' (you have no read rights on that context)");
                 }
 
             }
