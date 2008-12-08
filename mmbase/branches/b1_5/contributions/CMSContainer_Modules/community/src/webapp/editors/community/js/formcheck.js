@@ -38,7 +38,7 @@ function onState(){
             options[0].parentNode.removeChild(options[0]);
         }
         for (j = 1; j < options.length; j++) {
-            if (v.value == options[j].value) {
+            if (v.value.toUpperCase() == options[j].value.toUpperCase()) {
                 options[j].parentNode.removeChild(options[j]);
             }
         }
