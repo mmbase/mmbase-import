@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.21 2008-12-04 14:12:04 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.22 2008-12-08 10:55:10 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -119,10 +119,10 @@ public class CronEntry implements java.io.Serializable {
     }
 
     public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString) throws Exception {
-        this(id, cronTime, name, className, configuration, typeString == null ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()));
+        this(id, cronTime, name, className, configuration, (typeString == null || "".equals(typeString)) ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()));
     }
     public CronEntry(String id, String cronTime, String name, String className, String configuration, String typeString, Pattern servers) throws Exception {
-        this(id, cronTime, name, className, configuration, typeString == null  ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()), servers);
+        this(id, cronTime, name, className, configuration, (typeString == null  || "".equals(typeString)) ? Type.DEFAULT : Type.valueOf(typeString.toUpperCase()), servers);
     }
 
     /**
