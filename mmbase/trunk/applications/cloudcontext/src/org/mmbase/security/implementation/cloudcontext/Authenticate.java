@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.26 2008-11-13 15:18:36 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.27 2008-12-08 17:02:46 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -59,6 +59,19 @@ public class Authenticate extends Authentication {
             log.error(ioe);
         }
     }
+    /**
+     * @since MMBase-1.8.7
+     */
+    public final static Authenticate getInstance() {
+        return (Authenticate) MMBase.getMMBase().getMMBaseCop().getAuthentication();
+    }
+
+    /**
+     * @since MMBase-1.8.7
+     */
+    public  Provider getUserProvider() {
+        return Users.getBuilder();
+    }
 
 
     /**
@@ -66,7 +79,7 @@ public class Authenticate extends Authentication {
      */
     @Override protected void load() throws SecurityException {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
-        Users users = Users.getBuilder();
+        Provider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
@@ -102,6 +115,7 @@ public class Authenticate extends Authentication {
         return "mmbaseusers";
     }
 
+    private boolean warnedNoAnonymousUser = false;
 
     /**
      * {@inheritDoc}
@@ -111,15 +125,22 @@ public class Authenticate extends Authentication {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
-        Users users = Users.getBuilder();
+        Provider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getInitParameter("allowencodedpassword"));
+        allowEncodedPassword = users.allowEncodedPassword();
         if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
+            if (node == null) {
+                if (! warnedNoAnonymousUser) {
+                    log.warn("No user node for anonymous found");
+                    warnedNoAnonymousUser = true;
+                }
+                return new LocalAdmin("anonymous", s, Rank.getRank("anonymous"));
+            }
         } else if ("name/password".equals(s)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("password");
@@ -134,7 +155,7 @@ public class Authenticate extends Authentication {
                     return user;
                 }
             }
-            node = users.getUser(userName, password);
+            node = users.getUser(userName, password, false);
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
@@ -306,7 +327,7 @@ public class Authenticate extends Authentication {
     }
     public  class AdminVirtualNode extends VirtualNode {
         AdminVirtualNode() {
-            super(Users.getBuilder());
+            super(Authenticate.this.getUserProvider().getUserBuilder());
         }
     }
 

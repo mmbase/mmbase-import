@@ -17,6 +17,7 @@ import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.cache.Cache;
+import org.mmbase.cache.QueryResultCache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,10 +32,10 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.58 2008-10-27 18:24:22 michiel Exp $
+ * @version $Id: Users.java,v 1.59 2008-12-08 17:02:46 michiel Exp $
  * @since  MMBase-1.7
  */
-public class Users extends MMObjectBuilder {
+public class Users extends MMObjectBuilder implements Provider {
 
     private static final Logger log = Logging.getLoggerInstance(Users.class);
 
@@ -63,6 +64,11 @@ public class Users extends MMObjectBuilder {
             public String getDescription() { return "Caches the users. UserName --> User Node"; }
         };
 
+    protected static QueryResultCache userRankCache = new QueryResultCache(100) {
+            public String getName()        { return "CCS:UserRankCache"; }
+            public String getDescription() { return "Caches the rank objects related to queries"; }
+
+        };
 
     protected Function<String> encodeFunction = new AbstractFunction<String>("encode", new Parameter[] {new Parameter<String>("password", String.class, true) }, ReturnType.STRING) {
             {
@@ -583,6 +589,19 @@ public class Users extends MMObjectBuilder {
         }
         return true;
 
+    }
+    /**
+     * @since MMBase-1.8.7
+     */
+    public boolean allowEncodedPassword() {
+        return org.mmbase.util.Casting.toBoolean(getInitParameter("allowencodedpassword"));
+    }
+
+    /**
+     * @since MMBase-1.8.7
+     */
+    public MMObjectBuilder getUserBuilder() {
+        return this;
     }
 
 
