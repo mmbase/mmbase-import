@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.14 2008-11-14 10:14:39 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.15 2008-12-08 12:59:12 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1677,11 +1677,23 @@ public class ResourceLoader extends ClassLoader {
     // ClassLoader
     private static org.mmbase.util.xml.UtilReader.PropertiesMap classWeightProperties =
         new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
-            public void run() {
-                ResourceLoader.readClassWeights();
+                public void run() {
+                    ResourceLoader.readClassWeights();
+                }
             }
-        }
-        ).getMaps();
+            ) {
+            protected Map.Entry getEntry(org.mmbase.util.xml.DocumentReader reader, String key, String value) {
+                String u = reader.getDocument().getDocumentURI();
+                String[] parts = u.split("!", 2);
+                log.info(u + "-> " + Arrays.asList(parts));
+                if (parts.length == 2) {
+                    if (key.startsWith("!")) {
+                        key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
+                    }
+                }
+                return new Entry(key, value);
+            }
+        }.getMaps();
 
     private static final Map classWeights = new ConcurrentHashMap();
 
