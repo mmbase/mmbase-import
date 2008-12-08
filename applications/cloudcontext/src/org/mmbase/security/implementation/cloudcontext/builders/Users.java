@@ -17,6 +17,7 @@ import org.mmbase.security.SecurityException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.cache.Cache;
+import org.mmbase.cache.QueryResultCache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,10 +32,10 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.48.2.4 2008-09-24 09:55:59 rico Exp $
+ * @version $Id: Users.java,v 1.48.2.5 2008-12-08 16:30:55 michiel Exp $
  * @since  MMBase-1.7
  */
-public class Users extends MMObjectBuilder {
+public class Users extends MMObjectBuilder implements Provider {
 
     private static final Logger log = Logging.getLoggerInstance(Users.class);
 
@@ -61,6 +62,12 @@ public class Users extends MMObjectBuilder {
     protected static Cache userCache = new Cache(20) {
             public String getName()        { return "CCS:SecurityUser"; }
             public String getDescription() { return "Caches the users. UserName --> User Node"; }
+        };
+
+    protected static QueryResultCache userRankCache = new QueryResultCache(100) {
+            public String getName()        { return "CCS:UserRankCache"; }
+            public String getDescription() { return "Caches the rank objects related to queries"; }
+
         };
 
 
@@ -92,6 +99,7 @@ public class Users extends MMObjectBuilder {
     public boolean init() {
         rankCache.putCache();
         userCache.putCache();
+        userRankCache.putCache();
 
         String s = (String)getInitParameters().get("encoding");
         if (s == null) {
@@ -336,11 +344,21 @@ public class Users extends MMObjectBuilder {
         query.setConstraint(cons);
         // sometimes, I quite hate the 'core version' query-framework.
 
+
+
         try {
-            List result = mmb.getClusterBuilder().getClusterNodesFromQueryHandler(query);
-            if (log.isDebugEnabled()) {
-                log.debug("Executing " + query + " --> " + result);
+            boolean useCache = query.getCachePolicy().checkPolicy(query);
+            List result = useCache ?  (List) userRankCache.get(query) : null;
+            if (result == null) {
+                result = mmb.getClusterBuilder().getClusterNodesFromQueryHandler(query);
+                if (log.isDebugEnabled()) {
+                    log.debug("Executing " + query + " --> " + result);
+                }
             }
+            if (useCache) {
+                userRankCache.put(query, result);
+            }
+
             if (result.size() > 0) {
                 return ((MMObjectNode) result.get(0)).getNodeValue("mmbaseusers");
             } else {
@@ -587,6 +605,16 @@ public class Users extends MMObjectBuilder {
         return true;
 
     }
+
+    public boolean allowEncodedPassword() {
+        return org.mmbase.util.Casting.toBoolean(getInitParameter("allowencodedpassword"));
+    }
+
+    public MMObjectBuilder getUserBuilder() {
+        return this;
+    }
+
+
 
 
 }

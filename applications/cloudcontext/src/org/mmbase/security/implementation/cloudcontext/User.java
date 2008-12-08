@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.22.2.3 2008-07-22 12:03:37 michiel Exp $
+ * @version $Id: User.java,v 1.22.2.4 2008-12-08 16:31:47 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements WeakNodeEventListener {
@@ -73,7 +73,7 @@ public class User extends BasicUser implements WeakNodeEventListener {
         if (node == null) {
             return Rank.ANONYMOUS;
         } else {
-            return Users.getBuilder().getRank(node);
+            return Authenticate.getInstance().getUserProvider().getRank(node);
         }
     }
 
@@ -82,7 +82,7 @@ public class User extends BasicUser implements WeakNodeEventListener {
         if (node == null) {
             return "system";
         } else {
-            return Users.getBuilder().getDefaultContext(node);
+            return Authenticate.getInstance().getUserProvider().getDefaultContext(node);
         }
     }
 
@@ -100,7 +100,7 @@ public class User extends BasicUser implements WeakNodeEventListener {
      * @javadoc
      */
     public boolean isValidNode() {
-        return (node == null) ||  Users.getBuilder().isValid(node);
+        return (node == null) ||  Authenticate.getInstance().getUserProvider().isValid(node);
     }
 
 
@@ -125,7 +125,8 @@ public class User extends BasicUser implements WeakNodeEventListener {
                 log.service("Node was invalidated!");
                 node = null; // invalidate
             } else if (ne.getType() == Event.TYPE_CHANGE) {
-                node = Users.getBuilder().getNode(ne.getNodeNumber());
+                MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+                node = users.getNode(ne.getNodeNumber());
             }
         }
     }
@@ -140,7 +141,8 @@ public class User extends BasicUser implements WeakNodeEventListener {
             org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                     public void run() {
                         org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
-                        node = Users.getBuilder().getNode(number);
+                        MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
+                        node = users.getNode(number);
                     }
                 });
         }
