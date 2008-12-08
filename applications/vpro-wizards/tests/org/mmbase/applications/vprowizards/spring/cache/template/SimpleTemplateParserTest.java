@@ -9,7 +9,7 @@ public class SimpleTemplateParserTest extends AbstractTemplateParserTest{
     @Override
     protected final void createInstanceAndInsertNodenr(String nodeType, String nodeNumber, String template) {
         templateParser = new SimpleTemplateParser (nodeType, nodeNumber, template);
-        templateParser.insertNumber();
+        templateParser.insertNodeNumber();
     }
 
     @Override
@@ -70,6 +70,11 @@ public class SimpleTemplateParserTest extends AbstractTemplateParserTest{
     @Override
     protected Class<? extends TemplateParser> getTemplateParserClass() {
         return SimpleTemplateParser.class;
+    }
+
+    @Override
+    protected String getMatchingTemplateWithTemplateRemoved() {
+        return getNodeNumber();
     }
 
     

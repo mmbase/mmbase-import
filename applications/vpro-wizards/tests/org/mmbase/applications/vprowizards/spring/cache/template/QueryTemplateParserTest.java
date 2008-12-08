@@ -10,7 +10,7 @@ public class QueryTemplateParserTest extends AbstractTemplateParserTest {
         QueryTemplate qt = new QueryTemplate(template);
         QueryTemplateParser queryTemplateParser = new QueryTemplateParser(nodeType, nodeNumber, template, qt, new MockTemplateQueryRunner(nodeNumber));
         templateParser = queryTemplateParser;
-        templateParser.insertNumber();
+        templateParser.insertNodeNumber();
     }
 
     @Override
@@ -75,5 +75,10 @@ public class QueryTemplateParserTest extends AbstractTemplateParserTest {
     @Override
     protected Class<? extends TemplateParser> getTemplateParserClass() {
         return QueryTemplateParser.class;
+    }
+
+    @Override
+    protected String getMatchingTemplateWithTemplateRemoved() {
+        return getNodeNumber();
     }
 }

@@ -10,7 +10,7 @@ public class TemplateCleanerModifier implements Modifier {
     }
 
     public String modify(String input) {
-        return MultiTemplateParser.cleanTemplate(input);
+        return MultiTemplateParser.stripTemplatesLeaveNodeNr(input);
     }
 
 }

@@ -15,7 +15,7 @@ public abstract class AbstractTemplateParser implements TemplateParser {
     public String getTemplate() {
         return template.getTemplate();
     }
-    public void removeNumber() {
+    public void removeNodeNumber() {
         template.removeNodenr();
     }
    
@@ -24,6 +24,10 @@ public abstract class AbstractTemplateParser implements TemplateParser {
         if(! matches(template)){
             throw new IllegalStateException(String.format("Template %s can not be parsed by parser %s", template, this.getClass().getName()));
         }
+    }
+    
+    public void stripTemplateLeaveNodenr() {
+        template.removeTemplate();
     }
     
     //TODO: this is all a bit weird. Better solution for static isTemplate() methods 
