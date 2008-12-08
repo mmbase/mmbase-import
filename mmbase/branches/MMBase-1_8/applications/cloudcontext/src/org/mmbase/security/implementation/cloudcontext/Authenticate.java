@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.17 2006-02-20 18:34:16 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.17.2.1 2008-12-08 16:31:46 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -60,10 +60,18 @@ public class Authenticate extends Authentication {
         }
     }
 
+    public final static Authenticate getInstance() {
+        return (Authenticate) MMBase.getMMBase().getMMBaseCop().getAuthentication();
+    }
+
+    public  Provider getUserProvider() {
+        return Users.getBuilder();
+    }
+
 
     // javadoc inherited
     protected void load() throws SecurityException {
-        Users users = Users.getBuilder();
+        Provider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
@@ -88,21 +96,30 @@ public class Authenticate extends Authentication {
 
     }
 
+    private boolean warnedNoAnonymousUser = false;
+
     // javadoc inherited
     public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
         if (log.isDebugEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
-        Users users = Users.getBuilder();
+        Provider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getInitParameter("allowencodedpassword"));
+        allowEncodedPassword = users.allowEncodedPassword();
         if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
+            if (node == null) {
+                if (! warnedNoAnonymousUser) {
+                    log.warn("No user node for anonymous found");
+                    warnedNoAnonymousUser = true;
+                }
+                return new LocalAdmin("anonymous", s, Rank.getRank("anonymous"));
+            }
         } else if ("name/password".equals(s)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("password");
@@ -117,7 +134,7 @@ public class Authenticate extends Authentication {
                     return user;
                 }
             }
-            node = users.getUser(userName, password);
+            node = users.getUser(userName, password, true);
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
@@ -153,12 +170,18 @@ public class Authenticate extends Authentication {
                 return user;
             } else {
                 if (userName != null) {
-                    node = users.getUser(userName);
-                    if (rank != null) {
+                    try {
+                        node = users.getUser(userName);
+                    } catch (SecurityException se) {
+                        log.service(se);
+                        return new LocalAdmin(userName, s, rank == null ? Rank.ADMIN : Rank.getRank(rank));
                     }
                 } else if (rank != null) {
                     node = users.getUserByRank(rank, userName);
                     log.debug("Class authentication to rank " + rank + " found node " + node);
+                    if (node == null) {
+                        return new LocalAdmin(rank, s, Rank.getRank(rank));
+                    }
                 }
             }
         } else {
@@ -182,7 +205,7 @@ public class Authenticate extends Authentication {
         if (user.node == null) {
             log.debug("No node associated to user object, --> user object is invalid");
             return false;
-        } 
+        }
         if (! user.isValidNode()) {
             log.debug("Node associated to user object, is invalid");
             return false;
@@ -240,14 +263,19 @@ public class Authenticate extends Authentication {
 
         private String userName;
         private long   l;
+        private Rank   r = Rank.ADMIN;
         LocalAdmin(String user, String app) {
             super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
+        LocalAdmin(String user, String app, Rank r) {
+            this(user, app);
+            this.r = r;
+        }
         public String getIdentifier() { return userName; }
         public String  getOwnerField() { return userName; }
-        public Rank getRank() throws SecurityException { return Rank.ADMIN; }
+        public Rank getRank() throws SecurityException { return r; }
         public boolean isValidNode() { return l == extraAdminsUniqueNumber; }
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             userName = in.readUTF();
@@ -279,7 +307,7 @@ public class Authenticate extends Authentication {
     }
     public  class AdminVirtualNode extends VirtualNode {
         AdminVirtualNode() {
-            super(Users.getBuilder());
+            super(Authenticate.this.getUserProvider().getUserBuilder());
         }
     }
 
