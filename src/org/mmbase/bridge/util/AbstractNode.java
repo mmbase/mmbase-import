@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.27 2008-12-01 22:41:06 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.28 2008-12-09 15:42:31 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -300,30 +300,30 @@ public abstract class AbstractNode implements Node {
                 return processNull(type, nm.getField(fieldName));
             }
             switch(type) {
-                case Field.TYPE_STRING:  return getStringValue(fieldName);
-                case Field.TYPE_BINARY:    return getByteValue(fieldName);
-                case Field.TYPE_INTEGER: return Integer.valueOf(getIntValue(fieldName));
-                case Field.TYPE_FLOAT:   return Float.valueOf(getFloatValue(fieldName));
-                case Field.TYPE_DOUBLE:  return Double.valueOf(getDoubleValue(fieldName));
-                case Field.TYPE_LONG:    return Long.valueOf(getLongValue(fieldName));
-                case Field.TYPE_XML:     return getXMLValue(fieldName);
-                case Field.TYPE_NODE:   {
-                    // number is a NODE field, but should be returned as
-                    // a number (in this case, a long)
-                    // in the future, we may change the basic MMBase type for the number field to ID
-                    if ("number".equals(fieldName)) {
-                        return Long.valueOf(getLongValue(fieldName));
-                    } else {
-                        return getNodeValue(fieldName);
-                    }
+            case Field.TYPE_STRING:  return getStringValue(fieldName);
+            case Field.TYPE_BINARY:    return getByteValue(fieldName);
+            case Field.TYPE_INTEGER: return Integer.valueOf(getIntValue(fieldName));
+            case Field.TYPE_FLOAT:   return Float.valueOf(getFloatValue(fieldName));
+            case Field.TYPE_DOUBLE:  return Double.valueOf(getDoubleValue(fieldName));
+            case Field.TYPE_LONG:    return Long.valueOf(getLongValue(fieldName));
+            case Field.TYPE_XML:     return getXMLValue(fieldName);
+            case Field.TYPE_NODE:   {
+                // number is a NODE field, but should be returned as
+                // a number (in this case, a long)
+                // in the future, we may change the basic MMBase type for the number field to ID
+                if ("number".equals(fieldName)) {
+                    return Long.valueOf(getLongValue(fieldName));
+                } else {
+                    return getNodeValue(fieldName);
                 }
-                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
-                case Field.TYPE_DATETIME:return getDateValue(fieldName);
-                case Field.TYPE_DECIMAL: return getDecimalValue(fieldName);
-                case Field.TYPE_LIST:    return getListValue(fieldName);
-                default:
-                    log.error("Unknown fieldtype '" + type + "'");
-                    return value;
+            }
+            case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
+            case Field.TYPE_DATETIME:return getDateValue(fieldName);
+            case Field.TYPE_DECIMAL: return getDecimalValue(fieldName);
+            case Field.TYPE_LIST:    return getListValue(fieldName);
+            default:
+                log.error("Unknown fieldtype '" + type + "'");
+                return value;
             }
         } else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
