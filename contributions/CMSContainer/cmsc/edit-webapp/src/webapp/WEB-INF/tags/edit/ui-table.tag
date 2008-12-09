@@ -4,7 +4,7 @@
 <%@ attribute name="var" rtexprvalue="false" required="true" type="java.lang.String" %>
 <%@ attribute name="size" rtexprvalue="true" required="true" type="java.lang.Integer" %>
 <%@ attribute name="requestURI" rtexprvalue="true" required="false" type="java.lang.String" %>
-
+<%@ attribute name="bulkbox" rtexprvalue="true" required="false" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -28,16 +28,15 @@
       <c:set var="link" value="${link}${element.key}=${element.value}&"/>
    </c:if>
 </c:forEach>
-
 <c:set var="sortlink" value="${link}" scope="request"/>
-
-
 <c:choose>
    <c:when test="${fn:length(items) > 0}">
       <%@ include file="ui-table-paging.tagf" %>
       <table>
          <thead class="listheader">
             <c:set var="tag_op_status" value="header" scope="request"/>
+            <c:set var="bulkbox" value="${bulkbox}" scope="request"/>
+            <c:set var="size" value="${size}" scope="request"/>
             <jsp:doBody/>
          </thead>
          <tbody class="hover">
