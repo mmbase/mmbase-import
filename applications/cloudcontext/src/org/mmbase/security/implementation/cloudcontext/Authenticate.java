@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.28 2008-12-09 11:44:27 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.29 2008-12-09 11:51:43 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -108,7 +108,7 @@ public class Authenticate extends Authentication {
      * @since MMBase-1.9
      */
     @Override public int getNode(UserContext user) throws SecurityException {
-        return Integer.valueOf(user.getIdentifier());
+        return ((User) user).getNode().getNumber();
     }
 
     @Override public String getUserBuilder() {
