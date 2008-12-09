@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.25 2008-11-03 14:00:57 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.26 2008-12-09 14:06:46 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -70,7 +70,7 @@ public class ClassAuthentication {
     protected static synchronized void load(String configFile) throws SecurityException {
         List<URL> resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
         log.info("Loading " + configFile + "( " + resourceList + ")");
-        authenticatedClasses = new ArrayList<Login>();
+        List<Login> ac = new ArrayList<Login>(); // temporary stores 'authenticatedClasses'
         ListIterator<URL> it = resourceList.listIterator();
         while (it.hasNext()) it.next();
         while (it.hasPrevious()) {
@@ -101,21 +101,26 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    authenticatedClasses.add(new Login(u, Pattern.compile(clazz), method, map, weight, i));
+                    ac.add(new Login(u, Pattern.compile(clazz), method, map, weight, i));
                 }
             } catch (Exception e) {
                 log.error(u + " " + e.getMessage(), e);
             }
         }
 
-        Collections.sort(authenticatedClasses);
+        Collections.sort(ac);
 
         { // last fall back, everybody may get the 'anonymous' cloud.
             Map<String, String> map = new HashMap<String, String>();
             map.put("rank", "anonymous");
-            authenticatedClasses.add(new Login(null, Pattern.compile(".*"), "class", map, Integer.MIN_VALUE, 0));
+            ac.add(new Login(null, Pattern.compile(".*"), "class", map, Integer.MIN_VALUE, 0));
         }
 
+
+        // This method is responsible for this list, so we return an unmodifable version
+        // Also, the authenticatedClasses member must remain null as long as it is not yet fully
+        // read (classChecked is locked then)
+        authenticatedClasses = Collections.unmodifiableList(ac);
         log.service("Class authentication: " + authenticatedClasses);
 
     }
@@ -137,15 +142,14 @@ public class ClassAuthentication {
         if (authenticatedClasses == null) {
             synchronized(ClassAuthentication.class) { // if load is running this locks
                 if (authenticatedClasses == null) { // if locked, load was running and this now skips, so load is not called twice.
-                    String configFile = "classauthentication.xml";
-                    load(configFile);
                     watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
                             public void onChange(String resource) {
                                 load(resource);
                             }
                         };
-                    watcher.add(configFile);
+                    watcher.add("classauthentication.xml");
                     watcher.start();
+                    watcher.onChange();
                 }
             }
         }
