@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.446 2008-12-09 14:29:11 bert Exp $
+version: $Id: mmbase-taglib.xml,v 1.447 2008-12-09 15:30:59 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4695,6 +4695,26 @@ like the parameter list or the session (where ever it is available) --&gt;
       <since>MMBase-1.9.1</since>
     </attribute>
     <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        </p>
+      </info>
+
+      <since>MMBase-1.9.1</since>
+      <possiblevalue>
+        <value>attachment</value>
+        <info>The image will be served out as an attachment.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>inline</value>
+        <info>The image will be served out inline.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
       <name>element</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -8942,6 +8962,12 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>nodemanager</name>
       <required>true</required>
+    </attribute>
+    <attribute>
+      <name>descendants</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="typeconstraint" attribute="descendants" />
     </attribute>
   </tag>
 
