@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.15 2007-07-27 14:07:07 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.16 2008-12-09 10:05:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -190,7 +190,13 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
             {
                 Matcher fields = fieldsPattern.matcher(template);
                 while (fields.find()) {
-                    fields.appendReplacement(sb, node.getStringValue(fields.group(1)));
+                    String s = node.getStringValue(fields.group(1));
+                    if (s == null) {
+                        // I think getStringValue should perhaps never return null, but if it does,
+                        // avoid the NPE
+                        s = "";
+                    }
+                    fields.appendReplacement(sb, s);
                 }
                 fields.appendTail(sb);
             }
