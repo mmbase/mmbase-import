@@ -2,17 +2,21 @@ package com.finalist.cmsc.util;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class ComparisonUtil implements Comparator {
    private static Log log = LogFactory.getLog(DateUtil.class);
+
+   private static final String GET = "get";
    /*
     * @param the Comparator ,a javaBean or a map that get itself.
     */
-   String[] fields_user = null;
+   private String[] fields_user = null;
 
    public String[] getFields_user() {
       return fields_user;
@@ -48,9 +52,12 @@ public class ComparisonUtil implements Comparator {
     */
    private static boolean compareField(Object o1, Object o2, String fieldName) {
       try {
-         if (Integer.class != getFieldValueByName(fieldName, o1).getClass()) {
-            String value1 = getFieldValueByName(fieldName, o1).toString();
-            String value2 = getFieldValueByName(fieldName, o2).toString();
+         Object fieldObj1 = getFieldValueByName(fieldName, o1);
+         Object fieldObj2 = getFieldValueByName(fieldName, o2);
+         if (fieldObj1 == null || fieldObj2 == null) return false;
+         if (!(fieldObj1 instanceof Integer)) {
+            String value1 = fieldObj1.toString();
+            String value2 = fieldObj2.toString();
             /*
              * Collator myCollator = Collator.getInstance(java.util.Locale.ENGLISH); will make sort by Chinese?
              */
@@ -58,8 +65,8 @@ public class ComparisonUtil implements Comparator {
                return true;
             }
          } else {
-            Integer value1 = (Integer) getFieldValueByName(fieldName, o1);
-            Integer value2 = (Integer) getFieldValueByName(fieldName, o2);
+            Integer value1 = (Integer) fieldObj1;
+            Integer value2 = (Integer) fieldObj2;
             if (value1.intValue() - value2.intValue() > 0) {
                return true;
             }
@@ -77,17 +84,19 @@ public class ComparisonUtil implements Comparator {
     *           object attribute there are could get two type (HashMap,javaBean)
     */
    private static Object getFieldValueByName(String fieldName, Object obj) {
-      String methodStr = "get";
+      if (obj == null || StringUtil.isEmptyOrWhitespace(fieldName)) return null;
+      int length = fieldName.length();
+      String methodStr = GET;
       Object value = null;
       try {
-         if (HashMap.class != obj.getClass()) {
-            String Letter = fieldName.substring(0, 1).toUpperCase();
-            methodStr = "get" + Letter + fieldName.substring(1);
-            Method method = obj.getClass().getMethod(methodStr, new Class[] {});
-            value = method.invoke(obj, new Object[] {});
+         if (!(obj instanceof Map)) {
+            String headLetter = fieldName.substring(0, 1).toUpperCase();
+            methodStr = GET + headLetter + (length > 1 ? fieldName.substring(1) : "");
+            Method method = obj.getClass().getMethod(methodStr);
+            value = method.invoke(obj);
          } else {
-            Method method = obj.getClass().getMethod(methodStr, new Class[] { Object.class });
-            value = method.invoke(obj, new Object[] { fieldName });
+            Method method = obj.getClass().getMethod(methodStr, String.class);
+            value = method.invoke(obj, fieldName);
          }
          return value;
       } catch (Exception e) {
