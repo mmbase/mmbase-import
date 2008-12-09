@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.59 2008-11-15 10:58:40 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.60 2008-12-09 15:56:31 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -363,6 +363,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             fileName = fileName.substring(backSlash + 1);
         }
 
+
         buf.append(urlEscaper.transform(legalizeFileName.matcher(fileName).replaceAll("_")));
         return buf;
     }
@@ -449,6 +450,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                                                  new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
                                                  new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
                                                  new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                                 new Parameter<String>("disposition", String.class),
                                                  Parameter.REQUEST,
                                                  Parameter.CLOUD
                                              },
@@ -517,6 +519,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             }
 
                             servlet.append(argument);
+
+                            String disposition = (String) a.get("disposition");
+                            if (disposition != null) {
+                                String defaultDisposition = node.getNodeManager().getProperty("Content-Disposition");
+                                if (! disposition.equals(defaultDisposition)) {
+                                    servlet.append('/');
+                                    servlet.append(disposition);
+                                    addFileName = true;
+                                }
+                            }
                             if (addFileName) {
                                 servlet.append('/');
                                 getFileName(mmnode, servlet);
