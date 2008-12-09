@@ -9,6 +9,7 @@
  */
 package com.finalist.cmsc.module.luceusmodule;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -364,12 +365,22 @@ public class IndexUpdateTask implements Runnable {
          }
       }
 
-      if (cch != null) {
-         Set<Node> custom = cch.findLinkedContent(contentElement);
-         for (Node customNode : custom) {
-            if (module.isDoSecondaryWithPrimary()) {
-               LuceusUtil.nodeFields(customNode, doc);
-            }
+      // Assume there are no custom related elements
+      Set<Node> custom = Collections.emptySet();
+
+      // Then try to find related content, based on the handler implementation if any
+      if (cch instanceof PageAwareCustomContentHandler) {
+         PageAwareCustomContentHandler pcch = (PageAwareCustomContentHandler) cch;
+         custom = pcch.findLinkedContent(contentElement, pageNode);
+      }
+      else if (cch != null) {
+         custom = cch.findLinkedContent(contentElement);
+      }
+
+      // Finally fields of the custom content to the document
+      for (Node customNode : custom) {
+         if (module.isDoSecondaryWithPrimary()) {
+            LuceusUtil.nodeFields(customNode, doc);
          }
       }
 
