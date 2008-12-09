@@ -19,17 +19,18 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.*;
 
 /**
- * Lives under a nodeprovider. Can give information about the node,
- * like what its nodemanager is.
+ * Lives under a nodeprovider, as a condition tag, reporting whether or not the node is of a certain builder.
  *
  * @author Bert Huijgen
- * @version $Id: InstanceOfTag.java,v 1.2 2008-12-09 14:29:11 bert Exp $
+ * @version $Id: InstanceOfTag.java,v 1.3 2008-12-09 15:30:02 michiel Exp $
+ * @since MMBase-1.9.1
  */
 
 public class InstanceOfTag extends NodeReferrerTag implements Condition {
 
-    private Attribute inverse = Attribute.NULL;
+    private Attribute inverse     = Attribute.NULL;
     private Attribute nodemanager = Attribute.NULL;
+    private Attribute descendants = Attribute.NULL;
 
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
@@ -43,12 +44,16 @@ public class InstanceOfTag extends NodeReferrerTag implements Condition {
         nodemanager = getAttribute(nm);
     }
 
+    public void setDescendants(String d) throws JspTagException {
+        descendants = getAttribute(d, true);
+    }
+
     public int doStartTag() throws JspTagException{
 
- 	Node node = getNode();
+        Node node = getNode();
         NodeManager nm = node.getNodeManager();
-	NodeManager compareTo = node.getCloud().getNodeManager(nodemanager.getString(this));
-	boolean result = nm.equals(compareTo) || compareTo.getDescendants().contains(nm);
+        NodeManager compareTo = node.getCloud().getNodeManager(nodemanager.getString(this));
+        boolean result = nm.equals(compareTo) || (descendants.getBoolean(this, true) && compareTo.getDescendants().contains(nm));
 
         if (result != getInverse()) {
             return EVAL_BODY;
