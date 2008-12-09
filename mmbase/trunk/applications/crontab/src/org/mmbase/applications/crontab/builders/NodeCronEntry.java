@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.5 2008-12-02 09:23:22 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.6 2008-12-09 13:38:10 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -66,13 +66,13 @@ public class NodeCronEntry extends CronEntry {
             Node server = servers.nextNode();
             String name = server.getStringValue("name");
             if (name != null && name.equalsIgnoreCase(machineName)) {
-                log.service("Active [" + this + "] for server [" + name + "]");
+                log.debug("Active [" + this + "] for server [" + name + "]");
                 return true;
             } else {
-                log.service("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
+                log.debug("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
             }
         }
-        log.service("NOT active  cron entry [" + this + "], not related to server [" + machineName + "]");
+        log.debug("NOT active  cron entry [" + this + "], not related to server [" + machineName + "]");
         return false;
     }
 
