@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.48.2.2 2008-12-08 16:31:47 michiel Exp $
+ * @version $Id: Contexts.java,v 1.48.2.3 2008-12-09 09:33:30 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -915,8 +915,7 @@ public class Contexts extends MMObjectBuilder {
      * util
      */
     protected MMObjectNode getUserNode(UserContext user) {
-        Provider users = Authenticate.getInstance().getUserProvider();
-        return users.getUser(user.getIdentifier());
+        return ((User) user).getNode();
     }
 
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
@@ -997,7 +996,7 @@ public class Contexts extends MMObjectBuilder {
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }
-            // find the user first, the check if the current user actually has rights on the object
+            // find the user first, the check if the current user actually has rights on the objec
             Provider users = Authenticate.getInstance().getUserProvider();
             MMObjectNode userToCheck = users.getUserBuilder().getNode(a.getString("usertocheck"));
             if (userToCheck == null) { // the user is null?
