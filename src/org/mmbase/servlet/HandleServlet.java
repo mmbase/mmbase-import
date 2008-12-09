@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.29.2.2 2008-11-25 09:01:06 sdeboer Exp $
+ * @version $Id: HandleServlet.java,v 1.29.2.3 2008-12-09 16:02:22 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -64,7 +64,7 @@ public class HandleServlet extends BridgeServlet {
         } else {
             expires = Integer.valueOf(expiresParameter).intValue() * 1000;
         }
-        
+
         String ieCompat = getInitParameter("IECompatibleJpeg");
         if (ieCompat != null) {
             isIECompatibleJpeg = Boolean.valueOf(ieCompat).booleanValue();
@@ -131,16 +131,20 @@ public class HandleServlet extends BridgeServlet {
     }
 
     /**
-     *@since MMBase-1.8.8
+     *@since MMBase-1.8.7
      */
     protected String getContentDisposition(QueryParts query, Node node, String def) {
         String fileNamePart = query.getFileName();
-        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
-            return "inline";
-        } else {
-            String cd = node.getNodeManager().getProperty("Content-Disposition");
-            return cd == null ? def : cd;
+        if(fileNamePart != null) {
+            if (fileNamePart.startsWith("/inline/")) {
+                return "inline";
+            }
+            if (fileNamePart.startsWith("/attachment/")) {
+                return "attachment";
+            }
         }
+        String cd = node.getNodeManager().getProperty("Content-Disposition");
+        return cd == null ? def : cd;
     }
 
     /**

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.73.2.2 2007-07-24 10:00:25 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.73.2.3 2008-12-09 16:10:18 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -83,6 +83,8 @@ public class ImageTag extends FieldTag {
     private Attribute vspace = Attribute.NULL;
 
     private Attribute altAttribute = Attribute.NULL;
+
+    private Attribute disposition  = Attribute.NULL;
 
 
     private Object prevDimension;
@@ -143,6 +145,13 @@ public class ImageTag extends FieldTag {
 
     public void setAlt(String a) throws JspTagException {
         altAttribute = getAttribute(a);
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setDisposition(String d) throws JspTagException {
+        disposition = getAttribute(d);
     }
 
     private int getMode() throws JspTagException {
@@ -275,11 +284,15 @@ public class ImageTag extends FieldTag {
         return servletPathFunction;
     }
 
-    public Parameters getServletArguments(String servletArgument, Function servletPathFunction) {
+    public Parameters getServletArguments(String servletArgument, Function servletPathFunction) throws JspTagException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         Parameters args = servletPathFunction.createParameters();
         args.set("context",  makeRelative() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
             .set("argument", servletArgument);
+        String d = disposition.getString(this);
+        if (! "".equals(d)) {
+            args.set("disposition", d);
+        }
         return args;
     }
 

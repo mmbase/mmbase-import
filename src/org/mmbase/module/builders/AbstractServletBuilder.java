@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.42.2.6 2008-11-15 11:00:45 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42.2.7 2008-12-09 16:05:19 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -440,6 +440,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                                              new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
                                              new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
                                              new Parameter("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                             new Parameter("disposition", String.class),
                                              Parameter.REQUEST,
                                              Parameter.CLOUD
                                          },
@@ -497,14 +498,23 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (usesBridgeServlet &&  session != null) {
                         servlet.append("session=" + session + "+");
                     }
+                    servlet.append(argument);
 
-                    if (! addFileName) {
-                        return servlet.append(argument).toString();
-                    } else {
-                        servlet.append(argument).append('/');
-                        getFileName(mmnode, servlet);
-                        return servlet.toString();
+                    String disposition = (String) a.get("disposition");
+                    if (disposition != null) {
+                        String defaultDisposition = node.getNodeManager().getProperty("Content-Disposition");
+                        if (! disposition.equals(defaultDisposition)) {
+                            servlet.append('/');
+                            servlet.append(disposition);
+                            addFileName = true;
+                        }
                     }
+
+                    if (addFileName) {
+                        servlet.append('/');
+                        getFileName(mmnode, servlet);
+                    }
+                    return servlet.toString();
                 }
 
                 public Object getFunctionValue(Parameters a) {
