@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.57 2008-12-08 17:02:46 michiel Exp $
+ * @version $Id: Contexts.java,v 1.58 2008-12-09 09:34:18 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -916,8 +916,7 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     protected MMObjectNode getUserNode(UserContext user) {
-        Provider users = Authenticate.getInstance().getUserProvider();
-        return users.getUser(user.getIdentifier());
+        return ((User) user).getNode();
     }
 
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
