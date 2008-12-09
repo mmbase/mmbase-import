@@ -20,7 +20,7 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.11 2008-12-02 09:10:36 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.12 2008-12-09 13:38:49 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder  {
 
@@ -33,22 +33,41 @@ public class CronJobs extends MMObjectBuilder  {
         boolean res = super.init();
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
-                    CronDaemon cronDaemon = CronDaemon.getInstance();
-                    NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
-                    while (nodeIterator.hasNext()) {
-                        Node node = nodeIterator.nextNode();
-                        CronEntry entry = null;
-                        try {
-                            entry = new NodeCronEntry(node);
-                            log.service("Adding cron entry [" + entry + "]");
-                            cronDaemon.add(entry);
-                        } catch (Exception e) {
-                            log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
-                        }
-                    }
+                    CronJobs.this.readJobs();
                 }
             });
         return res;
+    }
+
+    private final Set<NodeCronEntry> myJobs = new HashSet<NodeCronEntry>();
+
+
+    public static CronJobs getBuilder() {
+        return (CronJobs) MMBase.getMMBase().getBuilder("cronjobs");
+    }
+
+    public void readJobs() {
+        Cloud cloud = getCloud();
+
+        CronDaemon cronDaemon = CronDaemon.getInstance();
+        for(NodeCronEntry e : myJobs) {
+            cronDaemon.remove(e);
+        }
+        myJobs.clear();
+
+        log.service("Loading jobs from " + this);
+        NodeIterator nodeIterator = cloud.getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
+        while (nodeIterator.hasNext()) {
+            Node node = nodeIterator.nextNode();
+            try {
+                NodeCronEntry entry = new NodeCronEntry(node);
+                log.service("Adding cron entry [" + entry + "]");
+                myJobs.add(entry);
+                cronDaemon.add(entry);
+            } catch (Exception e) {
+                log.warn("did not add cronjob with id " + node.getNumber() + " because of error " + e.getMessage());
+            }
+        }
     }
 
     @Override public void notify(NodeEvent event) {
