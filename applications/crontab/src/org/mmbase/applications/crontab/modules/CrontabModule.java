@@ -13,6 +13,7 @@ import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.DynamicDate;
 import org.mmbase.util.functions.*;
 import org.mmbase.applications.crontab.*;
+import org.mmbase.applications.crontab.builders.CronJobs;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.19 2008-08-04 14:12:38 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.20 2008-12-09 13:38:49 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -50,7 +51,7 @@ public class CrontabModule extends WatchedReloadableModule {
     }
 
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
-    protected CronDaemon cronDaemon = null;
+    protected final CronDaemon cronDaemon;
 
     /**
      * Need to remember which crontab entries where 'mine', to known which must be removed if
@@ -144,11 +145,14 @@ public class CrontabModule extends WatchedReloadableModule {
      */
     public void reload() {
         log.info("Reloading crontab");
-        Iterator<CronEntry> i = myEntries.iterator();
-        while (i.hasNext()) {
-            cronDaemon.remove(i.next());
+        for (CronEntry e : myEntries) {
+            cronDaemon.remove(e);
         }
         myEntries.clear();
+        CronJobs cronJobs = CronJobs.getBuilder();
+        if (cronJobs != null) {
+            cronJobs.readJobs();
+        }
         init();
     }
 
