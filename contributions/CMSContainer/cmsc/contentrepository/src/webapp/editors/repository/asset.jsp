@@ -36,9 +36,6 @@
             <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
          </cmscedit:head>
 
-
-
-
          <div class="editor">
             <div class="body">
                <!-- check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
@@ -46,7 +43,6 @@
                <mm:haspage page="/editors/workflow">
                   <c:set var="hasWorkflow" value="true"/>
                </mm:haspage>
-
 
                <mm:node number="$parentchannel" jspvar="parentchannelnode">
                <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
@@ -58,7 +54,7 @@
                <%@ include file="assetupload.jsp" %>
                <% if (role != null && SecurityUtil.isWriter(role)) { %>
                   <ul class="shortcuts">
-                     <li class="new" style="text-decoration: none;"><fmt:message key="asset.new"/>
+                     <li class="new" style="text-decoration: none;">
                         <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
                            <input type="hidden" name="action" value="create"/>
                            <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
@@ -66,11 +62,6 @@
                            <input type="hidden" name="order" value="${orderby}" />
                            <input type="hidden" name="direction" value="${direction}"/>
                            <input type="hidden" name="offset" value="${param.offset}"/>
-                           <select name="assettype" id="atype" onchange="document.getElementById('assetType').value=this.value">
-                              <c:forEach var="type" items="${typesList}">
-                                 <option value="${type.value}">${type.label}</option>
-                              </c:forEach>
-                           </select>
                            <input type="submit" name="submitButton" value="<fmt:message key="asset.create" />" class="button"/>
                         </form>
                      </li>
@@ -207,8 +198,6 @@
                </div>
             </c:if>
 
-
-
             <c:if test="${!empty show}">
                <div class="body">
                   <mm:import externid="elements" from="request" required="true"/>
@@ -270,8 +259,6 @@
             </c:if>
          </mm:node>
          </div>
-
-
 
       </html:html>
    </mm:cloud>
