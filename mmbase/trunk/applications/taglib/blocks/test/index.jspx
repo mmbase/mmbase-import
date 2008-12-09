@@ -15,6 +15,7 @@
     <li><mm:link page="test_listcontainers"><a href="${_}">list containers</a></mm:link></li>
     <li><mm:link page="test_vars"><a href="${_}">variables</a></mm:link></li>
     <li><mm:link page="test_form"><a href="${_}">mm:form</a></mm:link></li>
+    <li><mm:link page="test_image"><a href="${_}">mm:image</a></mm:link></li>
   </ol>
 
 </div>
