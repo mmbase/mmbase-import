@@ -33,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.204 2008-12-04 11:23:20 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.205 2008-12-09 15:43:34 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2154,7 +2154,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (size > maxMax) {
                 mapping.setFixedSize(maxMax);
                 found = typeMappings.indexOf(mapping);
-                log.warn("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined. Setting size to " + maxMax);
+                log.warn("Type for field " + field.getName() + ": in " + field.getParent().getTableName() + " " + typeName + " (" + size + ") undefined. Setting size to " + maxMax);
                 size = maxMax;
             }
         }
