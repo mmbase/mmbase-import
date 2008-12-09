@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.48.2.4 2008-12-09 10:14:09 michiel Exp $
+ * @version $Id: Contexts.java,v 1.48.2.5 2008-12-09 11:21:15 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -195,27 +195,29 @@ public class Contexts extends MMObjectBuilder {
             if (builder instanceof Contexts) {
                 try {
                     MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                    BasicSearchQuery query = new BasicSearchQuery(true);
-                    Step step = query.addStep(users);
-                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
-                    query.setConstraint(constraint);
-                    BasicAggregatedField baf = query.addAggregatedField((Step) query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
-                    baf.setAlias("count");
+                    if (users.hasField("defaultcontext")) {
+                        BasicSearchQuery query = new BasicSearchQuery(true);
+                        Step step = query.addStep(users);
+                        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
+                        query.setConstraint(constraint);
+                        BasicAggregatedField baf = query.addAggregatedField((Step) query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
+                        baf.setAlias("count");
 
-                    AggregatedResultCache cache = AggregatedResultCache.getCache();
-                    List resultList = (List) cache.get(query);
-                    if (resultList == null) {
-                        ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
-                        resultList = mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
-                        cache.put(query, resultList);
+                        AggregatedResultCache cache = AggregatedResultCache.getCache();
+                        List resultList = (List) cache.get(query);
+                        if (resultList == null) {
+                            ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
+                            resultList = mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
+                            cache.put(query, resultList);
+                        }
+
+                        ResultNode result = (ResultNode) resultList.get(0);
+                        int count = result.getIntValue("count");
+                        if (count > 0) return false;
+
                     }
-
-                    ResultNode result = (ResultNode) resultList.get(0);
-                    int count = result.getIntValue("count");
-                    if (count > 0) return false;
-
-                    // perhaps should also return false if there are still nodes with this context?
-                    // this check is not done in editors, but perhaps it should be bit harder!
+                        // perhaps should also return false if there are still nodes with this context?
+                        // this check is not done in editors, but perhaps it should be bit harder!
 
                 } catch (SearchQueryException sqe) {
                     // leave to rest of impl.
