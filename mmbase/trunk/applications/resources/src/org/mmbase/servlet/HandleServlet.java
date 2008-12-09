@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.3 2008-09-26 10:12:26 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.4 2008-12-09 15:59:54 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -43,7 +43,7 @@ public class HandleServlet extends BridgeServlet {
 
     private static Cache<Integer, Integer> jpegSizes = null;
 
-    protected Map getAssociations() {
+    protected Map<String, Integer> getAssociations() {
         Map a = super.getAssociations();
         // Can do the following:
         a.put("attachments", 0);
@@ -150,12 +150,16 @@ public class HandleServlet extends BridgeServlet {
      */
     protected String getContentDisposition(QueryParts query, Node node, String def) {
         String fileNamePart = query.getFileName();
-        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
-            return "inline";
-        } else {
-            String cd = node.getNodeManager().getProperty("Content-Disposition");
-            return cd == null ? def : cd;
+        if(fileNamePart != null) {
+            if (fileNamePart.startsWith("/inline/")) {
+                return "inline";
+            }
+            if (fileNamePart.startsWith("/attachment/")) {
+                return "attachment";
+            }
         }
+        String cd = node.getNodeManager().getProperty("Content-Disposition");
+        return cd == null ? def : cd;
     }
 
 
@@ -208,6 +212,10 @@ public class HandleServlet extends BridgeServlet {
         }
     }
 
+
+    protected long getSize(NodeManager manager, Node node) {
+        return node.getSize("handle");
+    }
 
     /**
      * Serves a node with a byte[] handle field as an attachment.
@@ -262,11 +270,18 @@ public class HandleServlet extends BridgeServlet {
                 l = byteArray.length;
                 jpegSizes.put(node.getNumber(), l);
                 bytes = new ByteArrayInputStream(byteArray);
+                res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
             } else {
-                bytes = new IECompatibleJpegInputStream(node.getInputStreamValue("handle"));
+                int s = (int) getSize(manager, node);
+                if (s != l) {
+                    bytes = new IECompatibleJpegInputStream(node.getInputStreamValue("handle"));
+                    res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise (" + (s - l) + " bytes thrown away)");
+                } else {
+                    bytes = node.getInputStreamValue("handle");
+                }
+
             }
             jpegLength = l;
-            res.setHeader("X-MMBase-IECompatibleJpeg", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         } else {
             bytes = node.getInputStreamValue("handle");
         }
@@ -278,14 +293,11 @@ public class HandleServlet extends BridgeServlet {
         setCacheControl(res, node);
 
         if (jpegLength == -1) {
-            int size = -1;
-            if (manager.hasField("size")) {
-                size = node.getIntValue("size");
-            } else if (manager.hasField("filesize")) {
-                size = node.getIntValue("filesize");
-            }
+            int size = (int) getSize(manager, node);
             if (size >= 0) {
                 res.setContentLength(size);
+            } else {
+                log.warn("Size of handles not stored in " + manager);
             }
             log.debug("Serving node " + node.getNumber() + " with bytes " + size);
         } else {

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.34 2008-12-09 09:35:58 bert Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.35 2008-12-09 16:10:18 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4572,6 +4572,26 @@ like the parameter list or the session (where ever it is available) --&gt;
       </possiblevalue>
     </attribute>
     <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        </p>
+      </info>
+
+      <since>MMBase-1.9.1</since>
+      <possiblevalue>
+        <value>attachment</value>
+        <info>The image will be served out as an attachment.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>inline</value>
+        <info>The image will be served out inline.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
       <name>element</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -4731,6 +4751,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
       <since>MMBase-1.7.4</since>
+    </attribute>
+    <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <see tag="image" attribute="disposition" />
     </attribute>
     <info>
       <p>
@@ -8457,7 +8484,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
     </attribute>
   </tag>
- 
+
   <tag>
     <name>instanceof</name>
     <extends>nodereferrer</extends>
