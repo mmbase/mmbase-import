@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.445 2008-12-05 13:59:27 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.446 2008-12-09 14:29:11 bert Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8927,6 +8927,21 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>field</name>
       <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>instanceof</name>
+    <extends>nodereferrer</extends>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.InstanceOfTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+    </info>
+    <since>MMBase-1.8.7</since>
+    <attribute>
+      <name>nodemanager</name>
+      <required>true</required>
     </attribute>
   </tag>
 
