@@ -34,12 +34,13 @@ import com.finalist.cmsc.struts.MMBaseAction;
 public class AssetAction extends MMBaseAction {
 
    private final static String MOVEASSETTOCHANNEL = "moveAssetToChannel";
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
-      if(StringUtils.isNotEmpty(action) && action.equals(MOVEASSETTOCHANNEL)) {
+      if (StringUtils.isNotEmpty(action) && action.equals(MOVEASSETTOCHANNEL)) {
          return mapping.findForward(MOVEASSETTOCHANNEL);
       }
       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
@@ -59,9 +60,11 @@ public class AssetAction extends MMBaseAction {
       String orderby = request.getParameter("orderby");
       String direction = request.getParameter("direction");
       String show = request.getParameter("show");
-      if(StringUtils.isNotEmpty(show)){
+      String exist = request.getParameter("exist");
+
+      if (StringUtils.isNotEmpty(show)) {
          show = "thumbnail";
-      }else{
+      } else {
          show = null;
       }
       if (StringUtils.isEmpty(orderby)) {
@@ -101,6 +104,7 @@ public class AssetAction extends MMBaseAction {
          addToRequest(request, "elements", assets);
          addToRequest(request, "elementCount", Integer.toString(assetCount));
          addToRequest(request, "show", show);
+         addToRequest(request, "exist", exist);
 
          Map<String, Node> createdNumbers = new HashMap<String, Node>();
          for (Iterator<Node> iter = created.iterator(); iter.hasNext();) {

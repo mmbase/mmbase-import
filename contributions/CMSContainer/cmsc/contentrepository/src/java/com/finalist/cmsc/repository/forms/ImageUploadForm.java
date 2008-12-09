@@ -6,7 +6,7 @@ import org.apache.struts.upload.FormFile;
 @SuppressWarnings("serial")
 public class ImageUploadForm extends ActionForm {
 
-   private String parentchannel="723";
+   private String parentchannel;
    private FormFile file;
 
    public String getParentchannel() {
