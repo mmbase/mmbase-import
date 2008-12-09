@@ -1,5 +1,5 @@
 <edit:ui-table items="${personForShow}" var="person" size="${totalCount}"
-               requestURI="/editors/community/SearchConditionalUser.do">
+               requestURI="/editors/community/SearchConditionalUser.do" bulkbox="true">
    <edit:ui-tcolumn title="">
       <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
       <c:if test="${not hiddenOperation}">
@@ -43,4 +43,12 @@
 </edit:ui-table>
 <script language="JavaScript">
  onState();
+ function selectAll(value, formName, elementPrefix) {
+   var elements = document.forms[formName].elements;
+   for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name.indexOf(elementPrefix) == 0) {
+          elements[i].checked = value;
+      }
+   }
+}
 </script>
