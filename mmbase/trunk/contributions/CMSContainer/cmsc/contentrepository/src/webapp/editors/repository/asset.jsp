@@ -54,7 +54,7 @@
                <%@ include file="assetupload.jsp" %>
                <% if (role != null && SecurityUtil.isWriter(role)) { %>
                   <ul class="shortcuts">
-                     <li class="new" style="text-decoration: none;">
+                     <li class="new" style="text-decoration: none;"><fmt:message key="asset.new"/>
                         <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
                            <input type="hidden" name="action" value="create"/>
                            <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
@@ -62,6 +62,7 @@
                            <input type="hidden" name="order" value="${orderby}" />
                            <input type="hidden" name="direction" value="${direction}"/>
                            <input type="hidden" name="offset" value="${param.offset}"/>
+                           <input type="hidden" name="assettype" value="urls"/>
                            <input type="submit" name="submitButton" value="<fmt:message key="asset.create" />" class="button"/>
                         </form>
                      </li>
