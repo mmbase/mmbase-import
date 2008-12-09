@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.76 2008-12-01 20:01:21 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.77 2008-12-09 11:28:54 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -17,6 +17,8 @@
     required?
     minInclusive|minExclusive?
     maxInclusive|maxExclusive?
+    precision?
+    scale?
     minLength?
     maxLength?
     length?
@@ -866,9 +868,10 @@
 
 
     <specialization id="currency">
+      <property name="roundingMode" value="HALF_UP" />
       <precision value="20" />
       <scale     value="5" enforce="never" />
-      <property name="roundingMode" value="HALF_UP" />
+
       <!--
           Need a getprocessor to round to scale 2 for displaying.
       -->
