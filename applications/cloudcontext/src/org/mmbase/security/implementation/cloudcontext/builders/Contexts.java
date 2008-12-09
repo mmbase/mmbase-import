@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.58 2008-12-09 09:34:18 michiel Exp $
+ * @version $Id: Contexts.java,v 1.59 2008-12-09 10:25:35 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -922,8 +922,10 @@ public class Contexts extends MMObjectBuilder {
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
         MMObjectNode groupOrUser = getNode(a.getString(PARAMETER_GROUPORUSER));
         if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get(PARAMETER_GROUPORUSER) + "'");
+
         MMObjectBuilder parent = groupOrUser.getBuilder();
-        if (! (parent instanceof Groups || parent instanceof Users)) {
+        MMObjectBuilder userBuilder = Authenticate.getInstance().getUserProvider().getUserBuilder();
+        if (! (parent instanceof Groups || userBuilder.getClass().isInstance(parent))) {
             throw new IllegalArgumentException("Node '" + a.get(PARAMETER_GROUPORUSER) + "' does not represent a group or a user");
         }
         return groupOrUser;
