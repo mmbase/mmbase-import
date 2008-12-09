@@ -59,7 +59,15 @@
   </block>
   <block name="test_form" mimetype="text/html"
          classification="taglib.test">
-    <body jsp="test/form.jspx" />
+    <body jsp="test/form.jspx">
+      <param name="article"      type="String" />
+    </body>
+  </block>
+
+  <block name="test_image" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/image.jspx">
+    </body>
   </block>
 
 </component>
