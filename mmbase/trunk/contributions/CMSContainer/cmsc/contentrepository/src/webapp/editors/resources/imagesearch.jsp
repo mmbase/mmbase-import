@@ -69,10 +69,10 @@
             </c:if>
             <c:if test="${param.channelid ne 'all'}">
                <mm:node number="${channelid}">
-                  <mm:field name="pathfragment" id="pathfragment" write="false" />
+                  <mm:field name="path" id="path" write="false" />
                   <mm:import id="channelMsg">
                      <fmt:message key="images.channel.title">
-                        <fmt:param value="${pathfragment}" />
+                        <fmt:param value="${path}" />
                      </fmt:message>
                   </mm:import>
                </mm:node>
