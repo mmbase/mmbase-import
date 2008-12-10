@@ -55,7 +55,7 @@ public class BasicCacheHandlerInterceptor extends CacheHandlerInterceptor {
                     throws Exception {
 
                 log.debug("handling request type flush hint");
-                if (shouldFlush(request) && request.getParameterMap().get("flushname") != null) {
+                if (shouldFlush(request)) {
                     CacheNameResolver resolver = cacheNameResolverFactory.newInstance();
                     resolver.setInput(ServletRequestUtils.getStringParameter(request, "flushname", ""));
                     flushForNames(resolver.getNames("request"));

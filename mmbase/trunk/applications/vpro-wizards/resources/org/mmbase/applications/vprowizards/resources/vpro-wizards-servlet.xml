@@ -34,11 +34,8 @@
     </bean>
 	
     <bean name="redactieAuthenticationInterceptor" class="org.mmbase.applications.vprowizards.spring.AuthenticationInterceptor">
-		<!-- 
-			<property name="loginPage"><value>/mmbase/vpro-wizards/system/login.jsp</value></property>
-		-->
         <property name="loginPage">
-            <value>loginja</value>
+            <value>login</value>
         </property>
     </bean>
 	
@@ -97,4 +94,26 @@
         </property>
     </bean>
     
+    
+    <!-- 
+        Uncomment this section if you want to use the cache flush mechanism
+    
+    <bean id="tokenizerCacheNameResolverFactory" class="org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory">
+        <property name="className" value="org.mmbase.applications.vprowizards.spring.cache.TokenizerCacheNameResolver"/>
+    </bean>
+    
+    <bean id="osCacheWrapper"
+        class="org.mmbase.applications.vprowizards.spring.cache.OSCacheWrapper" />
+
+    <bean id="handlerInterceptor"
+        class="org.mmbase.applications.vprowizards.spring.cache.BasicCacheHandlerInterceptor">
+        <property name="cacheWrapper" ref="osCacheWrapper" />
+        <property name="cacheNameResolverFactory" ref="tokenizerCacheNameResolverFactory"/>
+        <property name="modifiers">
+            <list>
+                <bean class="org.mmbase.applications.vprowizards.spring.cache.modifiers.TemplateCleanerModifier"/>
+            </list>
+        </property>
+    </bean>
+     -->
 </beans>
