@@ -64,7 +64,8 @@ public class NodeService {
                while (properties.hasNext()) {
                   Map.Entry<String,Object> entry= properties.next();
                   if(!entry.getKey().toString().equals("lastmodifieddate")) {
-                     node.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
+                     node.setValueWithoutProcess(entry.getKey().toString(), entry.getValue());
+                     //node.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
                   }
                   else {
                      modifyDate = entry.getValue();
@@ -95,7 +96,7 @@ public class NodeService {
             Node desNode = cloud.getNode(dnumber.intValue());
             type = data.getDestinationRelationType();
             Relation relate;
-            if ("true".equals(data.getReverse())) {
+            if ("destinationtype".equals(data.getReverse())) {
                relate = RelationUtil.createRelation(desNode, sourceNode, data.getDestinationRelationType());
             }else{
                relate = RelationUtil.createRelation(sourceNode, desNode, data.getDestinationRelationType());
@@ -117,7 +118,8 @@ public class NodeService {
                         relate.setObjectValue(name, "intro") ;
                      }
                      else {
-                        relate.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
+                        relate.setValueWithoutProcess(entry.getKey().toString(), entry.getValue());
+                       // relate.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
                      }
                   }
                   relate.commit();
@@ -168,7 +170,7 @@ public class NodeService {
                   Node desNode = cloud.getNode(dnumber.intValue());
                   type = reldata.getDestinationRelationType();
                   Relation relate;
-                  if ("true".equals(reldata.getReverse())) {
+                  if ("destinationtype".equals(reldata.getReverse())) {
                      relate = RelationUtil.createRelation(desNode, sourceNode, type);
                   } else {
                      relate = RelationUtil.createRelation(sourceNode, desNode, type);
