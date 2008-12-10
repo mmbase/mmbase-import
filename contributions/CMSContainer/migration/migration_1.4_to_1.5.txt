@@ -141,3 +141,31 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+*
+*
+*
+Name: Add the active filed to the people table.
+Goal: .
+Type:  sql-script
+--- Start script ---
+ALTER TABLE people ADD COLUMN active varchar(255) ;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+*
+*
+*
+Name: Moved users without a status to active .
+Goal: .
+Type:  sql-script
+--- Start script ---
+UPDATE people SET active='Active' WHERE active is null or active='' ;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
