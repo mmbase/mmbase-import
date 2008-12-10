@@ -150,7 +150,7 @@ public class UserAddAction extends AbstractCommunityAction {
             if (authentication.getId() != null) {
                authId = authentication.getId();
                Person person = ps.createPerson(userForm.getFirstName(), userForm.getPrefix(), userForm.getLastName(),
-                     authentication.getId(),RegisterStatus.UNCONFIRMED.getName(),new Date());
+                     authentication.getId(),RegisterStatus.ACTIVE.getName(),new Date());
                person.setEmail(userForm.getEmail());
                ps.updatePerson(person);
 
