@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.5 2008-12-10 09:54:59 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.6 2008-12-10 11:28:01 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -207,71 +207,87 @@ Widgets.prototype.boxes = function(selector, multiple, min, max) {
     });
 };
 
+
+Widgets.prototype.moveFromAToB = function(option, a, b) {
+    var options = b[0].options;
+    var appended = false;
+    for(var i = 0; i < options.length; i++) {
+        var o = options[i];
+        if (o.originalPosition > option.originalPosition) {
+            $(o).before(option);
+            appended = true;
+            break;
+        }
+    }
+    if (! appended) {
+        b.append(option);
+    }
+    Widgets.prototype.aToB(option, b, a);
+}
+
 /**
  * Sets up the dbl-click event on option to move it from a to b.
  */
 Widgets.prototype.aToB = function(option, a, b) {
-    $(option).dblclick(function() {
-        var options = b[0].options;
-        var appended = false;
-        for(var i = 0; i < options.length; i++) {
-            var o = options[i];
-            if (o.originalPosition > option.originalPosition) {
-                $(o).before(option);
-                appended = true;
-                break;
-            }
-        }
-        if (! appended) {
-            b.append(option);
-        }
-        Widgets.prototype.aToB(option, b, a);
+    // IE simply does not properly support events on options.
+    // I can't be bothered any more. Double clicking on the options will only work in decent browsers.
+
+    // I HATE MICROSOFT INTERNET EXPLORER
+
+    $(option).dblclick(function(ev) {
+        Widgets.prototype.moveFromAToB(option, a, b);
     });
 }
 
 Widgets.prototype.twoMultiples = function(selector) {
     $(document).ready(function() {
         $(selector).each(function() {
+            var select = this;
             var t = $(this);
             var text  = $("<div class='mm_twomultiples'></div>");
             var left  = $("<select multiple='multiple' />");
             left.attr("name", t.attr("name"));
             left.attr("id", t.attr("id"));
             t.parents("form").submit(function() {
-                $(left[0].options).each(function() {
-                    this.selected = true;
-                });
-            });
-            var right = $("<select multiple='multiple' />");
-            $(this.options).each(function() {
-                this.originalPosition = this.index;
-            });
-            $(this.options).each(function() {
-                if (this.value == null || this.value == '') {
-                } else if (this.selected) {
-                    left.append(this);
-                    Widgets.prototype.aToB(this, left, right);
-                } else {
-                    right.append(this);
-                    Widgets.prototype.aToB(this, right, left);
+                for (var i = 0; i < left[0].options.length; i++) {
+                    left[0].options[i].selected = true;
                 }
             });
+            var right = $("<select multiple='multiple' />");
+            for (var i = 0; i < select.options.length; i++) {
+                var option = select.options[i];
+                option.originalPosition = option.index;
+            }
+            for (var i = 0; i < select.options.length; i++) {
+                var option = select.options[i];
+
+                if (option.value == null || option.value == '') {
+                } else if (option.selected) {
+                    left.append(option);
+                    Widgets.prototype.aToB(option, left, right);
+                } else {
+                    right.append(option)[0];
+                    Widgets.prototype.aToB(option, right, left);
+                }
+            }
             var nobr = $("<nobr />");
             var buttonToLeft  = $("<input type='button' value=' &lt; ' />")
             buttonToLeft.click(function() {
-                $(right[0].options).each(function() {
-                    if (this.selected) {
-                        $(this).dblclick();
+                for (var i = 0; i < right[0].options.length; i++) {
+                    var o = right[0].options[i];
+                    if (o.selected) {
+                        Widgets.prototype.moveFromAToB(o, right, left);
                     }
-                });
+                }
             });
             var buttonToRight = $("<input type='button' value=' &gt; ' />")
             buttonToRight.click(function() {
-                $(left[0].options).each(function() {
-                    if (this.selected) {
-                        $(this).dblclick();
+                for (var i = 0; i < left[0].options.length; i++) {
+                    var o = left[0].options[i];
+                    if (o.selected) {
+                        Widgets.prototype.moveFromAToB(o, left, right);
                     }
-                });
+                }
             });
             text.append(left).append(buttonToLeft).append(buttonToRight).append(right);
             t.after(text);
