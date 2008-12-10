@@ -2,7 +2,6 @@ package com.finalist.newsletter.forms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -23,13 +22,13 @@ import org.springframework.web.struts.DispatchActionSupport;
 
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
-import com.finalist.cmsc.util.ComparisonUtil;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.SubscriptionHibernateService;
+import com.finalist.newsletter.util.ComparisonUtil;
 
 
 /**
