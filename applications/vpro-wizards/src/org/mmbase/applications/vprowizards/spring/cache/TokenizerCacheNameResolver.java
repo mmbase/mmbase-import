@@ -40,11 +40,7 @@ public class TokenizerCacheNameResolver implements CacheNameResolver {
     private String input = null;
 
     private static final String REGEX_NAMESPACE = "^[\\w_]+:";
-    private static final String REGEX_VALUE = "[\\w_]+";
-    private static final String REGEX_TEMPLATE = "(" + REGEX_VALUE + "(\\[[\\w_]+(:[0-9])?\\])?)?";
-    private static final String REGEX_COMPOSITE = REGEX_NAMESPACE + REGEX_TEMPLATE + "(," + REGEX_TEMPLATE + ")*";
-
-    private static Logger log = Logging.getLoggerInstance(TokenizerCacheNameResolver.class);
+    private static final String REGEX_COMPOSITE = REGEX_NAMESPACE +  ".+$";
 
     public List<String> getNames(String nameSpace) {
         if (StringUtils.isEmpty(nameSpace)) {
