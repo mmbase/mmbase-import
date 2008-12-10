@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.6 2008-12-10 11:28:01 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.7 2008-12-10 11:53:43 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -222,22 +222,8 @@ Widgets.prototype.moveFromAToB = function(option, a, b) {
     if (! appended) {
         b.append(option);
     }
-    Widgets.prototype.aToB(option, b, a);
 }
 
-/**
- * Sets up the dbl-click event on option to move it from a to b.
- */
-Widgets.prototype.aToB = function(option, a, b) {
-    // IE simply does not properly support events on options.
-    // I can't be bothered any more. Double clicking on the options will only work in decent browsers.
-
-    // I HATE MICROSOFT INTERNET EXPLORER
-
-    $(option).dblclick(function(ev) {
-        Widgets.prototype.moveFromAToB(option, a, b);
-    });
-}
 
 Widgets.prototype.twoMultiples = function(selector) {
     $(document).ready(function() {
@@ -264,10 +250,8 @@ Widgets.prototype.twoMultiples = function(selector) {
                 if (option.value == null || option.value == '') {
                 } else if (option.selected) {
                     left.append(option);
-                    Widgets.prototype.aToB(option, left, right);
                 } else {
                     right.append(option)[0];
-                    Widgets.prototype.aToB(option, right, left);
                 }
             }
             var nobr = $("<nobr />");
@@ -289,6 +273,27 @@ Widgets.prototype.twoMultiples = function(selector) {
                     }
                 }
             });
+            right.dblclick(function(ev) {
+                var option;
+                if (ev.target.tagName.toUpperCase() == 'SELECT') {
+                    // Happens in ***** IE
+                    option = $(ev.target).find("option[value=" + ev.target.value + "]")[0];
+                } else {
+                    option = ev.target;
+                }
+                Widgets.prototype.moveFromAToB(option, right, left);
+            });
+            left.dblclick(function(ev) {
+                var option;
+                if (ev.target.tagName.toUpperCase() == 'SELECT') {
+                    // Happens in ***** IE
+                    option = $(ev.target).find("option[value=" + ev.target.value + "]")[0];
+                } else {
+                    option = ev.target;
+                }
+                Widgets.prototype.moveFromAToB(option, left, right);
+            });
+
             text.append(left).append(buttonToLeft).append(buttonToRight).append(right);
             t.after(text);
             t.remove();
