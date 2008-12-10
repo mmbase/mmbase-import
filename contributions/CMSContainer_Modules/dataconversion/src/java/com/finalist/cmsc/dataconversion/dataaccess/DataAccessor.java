@@ -276,8 +276,15 @@ public class DataAccessor {
       try {
          connection = dataSource.getConnection();
          statement = connection.createStatement();
-         sql = "select * from " + " " + relData.getSourceRelationType() + " " + "where snumber in (select number from "
-               + relData.getRelateTable() + ") and dnumber in (select number from " + relData.getTableName() + ")";
+         if ("sourcetype".equals(relData.getReverse())) {
+            sql = "select * from " + " " + relData.getSourceRelationType() + " "
+                  + "where snumber in (select number from " + relData.getTableName()
+                  + ") and dnumber in (select number from " +  relData.getRelateTable()+ ")";
+         }else{
+            sql = "select * from " + " " + relData.getSourceRelationType() + " "
+            + "where snumber in (select number from " + relData.getRelateTable()
+            + ") and dnumber in (select number from " + relData.getTableName() + ")";
+         }
          rs = statement.executeQuery(sql);
          while (rs.next()) {
             sv = rs.getInt("snumber");
