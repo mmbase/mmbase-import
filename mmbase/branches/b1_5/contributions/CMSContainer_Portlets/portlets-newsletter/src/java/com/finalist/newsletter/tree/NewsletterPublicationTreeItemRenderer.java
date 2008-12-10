@@ -1,6 +1,5 @@
 package com.finalist.newsletter.tree;
 
-import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -60,12 +59,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished)) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
                      "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-            element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter",
-                     "../newsletter/NewsletterPublicationPublish.do?number=" + id));
-            element.addOption(renderer.createTreeOption("type/email_go.png", "site.newsletteredition.test", "newsletter",
-                     "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
-
+         element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter",
+               "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+         element.addOption(renderer.createTreeOption("type/email_go.png", "site.newsletteredition.test", "newsletter",
+               "../newsletter/NewsletterPublicationTest.do?number=" + id));
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
             element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
          }
