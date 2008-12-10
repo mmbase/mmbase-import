@@ -20,13 +20,14 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterPublicationService;
@@ -61,14 +62,31 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
       Node publicationNode = cloud.getNode(number);
 
       if (isSendAction(request)) {
-
          UserRole role = NavigationUtil.getRole(publicationNode.getCloud(), publicationNode, false);
          boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
+         boolean isChiefEditor = (role != null && SecurityUtil.isChiefEditor(role));
+
+         if (!isWebMaster && !isChiefEditor) {
+            String process_status =publicationNode.getStringValue("process_status");
+            if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.freezing"))) {
+               if (EditionStatus.INITIAL.value().equals(process_status)) {
+                  request.setAttribute("message", "confirm_send.skip.freezing"); 
+                  request.setAttribute("restriction", true);
+                  return mapping.findForward("confirm_send");
+               }
+            }
+            else if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.approving"))) {
+               if (EditionStatus.INITIAL.value().equals(process_status) || EditionStatus.APPROVED.value().equals(process_status)) {
+                  request.setAttribute("message", "confirm_send.skip.approving"); 
+                  request.setAttribute("restriction", true);
+                  return mapping.findForward("confirm_send");
+               }
+            }
+         }
 
          if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("confirmationpage");
          }
-
          if (ServerUtil.isSingle()) {
             sendResults = publicationService.deliver(number);
             publicationService.setStatus(number, Publication.STATUS.DELIVERED);
