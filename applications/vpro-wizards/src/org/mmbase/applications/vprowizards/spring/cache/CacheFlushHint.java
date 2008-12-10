@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * FIXME: why is there no indicator for the type of mutation (add:update:delete)?
+ * TODO: create an enum for the types
  * @author Ernst Bunders
  *
  */
