@@ -14,7 +14,7 @@
 <input type="hidden" id="parentchannel" name="parentchannel" value="${parentchannel}"/>
 <table border="0">
    <tr>
-      <td><fmt:message key="asset.upload.explanation" /></td><br/>
+      <td><fmt:message key="asset.upload.explanation" /></td>
    </tr>
          <c:if test="${exist=='1'}">
             <tr>
