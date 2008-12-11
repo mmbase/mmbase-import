@@ -82,7 +82,6 @@ public class DownloadThread extends Thread {
             buffer.append(line);
          }
       } catch (IOException e) {
-         // TODO Auto-generated catch block
          log.info("Some errors happened while reading the subfix.txt");
       } finally {
          if (is != null) {
@@ -102,7 +101,7 @@ public class DownloadThread extends Thread {
          File file = new File(downloadSettings.getTempPath());//get the files which wget last download
          setupSuffix();
          modifyDownloadPath();
-         downloadAssociatedCss(file,new FileNameFilter(".css",".html"));
+         downloadAssociatedCss(file,new FileNameFilter(".css",".html"));//find the hidden css (@import)
          findAssociatedFiles(file, new MyFilenameFilter(".css", ".js", ".html"));
          redownload(redownloadfiles);
          redownloadfiles.clear();//this will avoid to redownload picture in different request
@@ -422,7 +421,7 @@ public class DownloadThread extends Thread {
    }
 
    /**
-    * the method is used to filter files by the suffixes
+    * the class is used to filter files by the suffixes
     */
    static class MyFilenameFilter implements FilenameFilter {
       private String suffix = "";
@@ -436,7 +435,6 @@ public class DownloadThread extends Thread {
       }
 
       public boolean accept(File dir, String name) {
-         // TODO Auto-generated method stub
          if (new File(dir, name).isFile()) {
             return name.endsWith(suffix) || name.endsWith(suffix1)
                   || name.endsWith(suffix2);
@@ -480,10 +478,12 @@ public class DownloadThread extends Thread {
       String path = webPath + str1;
       if (!redownloadfiles.contains(path))
          redownloadfiles.add(path);
+         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee-->"+path); 
    }
 
    private String getUrl() {
-      return downloadSettings.getLiveUrl();
+      modifyDownloadPath();
+      return webPath;
    }
 
    /**Use the filter to find the associated files which last wget downloads,
@@ -640,16 +640,22 @@ public class DownloadThread extends Thread {
          String tempString, File file) {
       String downloadPath;
       if (StringUtils.isEmpty(webappName)) {
-         downloadPath = webPath + targetStringNew.substring(1);
+         String webPathNew = getRootFile(file,webPath);
+         if(!webPathNew.endsWith("/")){
+            webPathNew += "/";
+         }
+         downloadPath = webPathNew + targetStringNew.substring(1);
       } else {
          downloadPath = webPath
                + targetStringNew.substring(targetStringNew.indexOf(webappName) +webappName.length()+ 1);
       }
-      if (!redownloadfiles.contains(downloadPath))
+      if (!redownloadfiles.contains(downloadPath)){
          redownloadfiles.add(downloadPath);
-      
+         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee-->"+downloadPath);
+      }
       String filePath = file.getParent();
       String lurl = changeUrl(getUrl());
+      lurl = getRootFile(file,lurl);
       if(lurl.contains("/")){
          lurl = regularReplace(lurl,"/","\\\\");
       }
@@ -684,16 +690,32 @@ public class DownloadThread extends Thread {
       }
       return tempString;
    }
-
+   private String getRootFile(File file,String url){
+      String filepath = file.getAbsolutePath();
+      if(StringUtils.isEmpty(webappName)){
+         String[] paraUrl = url.split("/");
+         for(String pUrl:paraUrl){
+            String newPath = filepath.substring(0,filepath.indexOf(pUrl)+pUrl.length());
+            File fileRoot = new File(newPath);
+            if(fileRoot.listFiles().length>1){
+               return pUrl;
+            }
+            
+         }
+      }
+      return url;
+   }
    private void addDownloadPath(String str, File file, String targetPath) {
       String filepath = file.getAbsolutePath();
       String url = changeUrl(getUrl());
 //    String url = "web.finalist.hk\\finalist"; 
+
+//      log.info("##########################-->  url="+url);
+//      log.info("##########################-->  filepath="+filepath);
+      url = getRootFile(file,url);
       if(url.contains("/")){
          url = regularReplace(url,"/","\\\\");
       }
-      log.info("##########################-->  url="+url);
-      log.info("##########################-->  filepath="+filepath);
       int tagStart = filepath.indexOf(url);
       String u = filepath.substring(tagStart);
       int tagEnd = u.indexOf("\\" + str);
@@ -701,9 +723,12 @@ public class DownloadThread extends Thread {
       String ss = regularReplace(m, "\\\\", "/");
       String str1 = regularReplace(targetPath, "\\.\\.", ss);
        
-      if (!redownloadfiles.contains(str1))
+      if (!redownloadfiles.contains(str1)){
          redownloadfiles.add(str1);
+         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee-->"+str1);
+      }
    }
+   /*this method intercept the protocol such as http:// according to "//"*/
    private String changeUrl(String url){
       String exUrl = url;
       if(url.contains("//")){
@@ -721,7 +746,7 @@ public class DownloadThread extends Thread {
    private String getTargetStringAndWriteFile(File file, String suffix)
          throws IOException {
       BufferedReader reader = null;
-      String outputData = "";
+      String outputData = ""; 
       try {
          reader = new BufferedReader(new FileReader(file));
          String tempString = null;
@@ -769,32 +794,18 @@ public class DownloadThread extends Thread {
             if (StringUtils.isNotEmpty(targetString)) {
                String targetStringNew = regularJudge("[\\w/\\.-]+\\."
                      + suffix, targetString);
-               if (StringUtils.isNotEmpty(targetStringNew)) {
-                  if (targetStringNew.startsWith("/" + webappName)
-                        && StringUtils.isNotEmpty(webappName)) {
-                     tempString = this.downloadAndModifyPath(
-                           targetStringNew, tempString, file);
-                  } else if (targetStringNew.startsWith("/")
-                        && StringUtils.isEmpty(webappName)) {
-                     tempString = this.downloadAndModifyPath(
-                           targetStringNew, tempString, file);
-                  }
+               if (StringUtils.isNotEmpty(targetStringNew)&& targetStringNew.startsWith("/")) {
+                  tempString = this.downloadAndModifyPath(
+                        targetStringNew, tempString, file);
                }
             }
             String str = regularJudge("[\\s.]*background(-image)?:\\s*url.*",
                   tempString);
             if (StringUtils.isNotEmpty(str)) {
                String targetName = regularJudge("[\\w/]*\\." + suffix, str);
-               if (StringUtils.isNotEmpty(targetName)) {
-                  if (targetName.startsWith("/" + webappName)
-                        && StringUtils.isNotEmpty(webappName)) {
+               if (StringUtils.isNotEmpty(targetName)&& targetName.startsWith("/")) {
                      tempString = this.downloadAndModifyPath(targetName,
                            tempString, file);
-                  } else if (targetName.startsWith("/")
-                        && StringUtils.isEmpty(webappName)) {
-                     tempString = this.downloadAndModifyPath(targetName,
-                           tempString, file);
-                  }
                }
             }
             str = regularJudge("[\\w/_:.]*#top_anchor",tempString);
@@ -825,7 +836,7 @@ public class DownloadThread extends Thread {
    }
 
    
-   private void recurFindCss(File file,FileNameFilter fileNameFilter) {
+   private void recurFindCss(File file,FileNameFilter fileNameFilter) throws IOException {
         if (!file.exists()) {
             return;
          }
@@ -838,7 +849,7 @@ public class DownloadThread extends Thread {
                      reader = new BufferedReader(new FileReader(files[i]));
                      String tempString = null;
                      while ((tempString = reader.readLine()) != null) {
-                        String regex = "\\s*@import\\s+url\\(\"(\\S+)\"\\)\\s*;?\\s*";
+                        String regex = "\\s*@import\\s+url\\s*\\(?\"(\\S+)\"\\)?[\\s\\S]*;?\\s*";
                         Pattern p2 = Pattern.compile(regex);
                         Matcher matcher = p2.matcher(tempString);
                        // System.out.print("--->"+matcher.group(1));
@@ -866,6 +877,10 @@ public class DownloadThread extends Thread {
                   } 
                   catch (IOException e) {
                      log.info("IOException-------->"+e.getMessage());
+                  }finally{
+                     if (reader != null) {
+                        reader.close();
+                     }
                   }
 
             } else if (files[i].isDirectory()) {
