@@ -19,9 +19,15 @@
                         <input type="checkbox" name="ids" value="${result.id}"/>
                      </td>
                      <td>
+                     <cmsc:rights nodeNumber="${result.id}" var="rights"/>
+
                         <a href="../site/NavigatorPanel.do?nodeId=${result.id}"><img height="16" width="16" title="<fmt:message key='newsletter.icons.title.editproperty'/>" src="../gfx/icons/edit.gif"/></a>
+                       <c:if test="${rights == 'chiefeditor' || rights == 'webmaster'}">
                         <a href="javascript:ask('${result.id}')"><img src="../gfx/icons/delete.png" align="top" title="<fmt:message key='site.newsletter.remove'/>"/></a>
+                        </c:if>
+                      <c:if test="${rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster'}">
                         <a href="NewsletterEdit.do?number=${result.id}&amp;forward=manage"><img src="../gfx/icons/edit_defaults.png" align="top" title="<fmt:message key='site.newsletter.edit'/>"/></a>
+                      </c:if>
                      </td>
                      <td>
                         <a href="NewsletterPublicationManagement.do?newsletterId=${result.id}">
