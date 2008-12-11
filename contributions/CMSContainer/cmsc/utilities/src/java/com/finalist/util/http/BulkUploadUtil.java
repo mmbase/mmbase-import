@@ -32,7 +32,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.util.transformers.ByteToCharTransformer;
+import org.mmbase.util.transformers.ChecksumFactory;
 
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.util.UploadUtil;
@@ -47,7 +52,7 @@ public class BulkUploadUtil {
    private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
 
    private static final String ZIP_MIME_TYPES[] = new String[] { "application/x-zip-compressed", "application/zip",
-         "application/x-zip" };
+         "\"application/octet-stream", "application/x-zip" };
 
    private static Set<String> supportedImages;
 
@@ -101,11 +106,11 @@ public class BulkUploadUtil {
    }
 
    public static List<Integer> store(Cloud cloud, NodeManager manager, String parentchannel, FormFile file) {
-      List<Integer> nodes ;
+      List<Integer> nodes;
       if (StringUtils.isEmpty(parentchannel)) {
          throw new NullPointerException("parentchannel is null");
       }
-      nodes = getNodeList(Integer.valueOf(parentchannel), manager, file);
+      nodes = getNodeList(Integer.valueOf(parentchannel), manager, file, cloud);
       return nodes;
    }
 
@@ -154,20 +159,25 @@ public class BulkUploadUtil {
       node.commit();
 
       RelationUtil.createRelation(node, manager.getCloud().getNode(parentChannel), "creationrel");
-      
+
       return node;
    }
 
-   private static List<Integer> getNodeList(Integer parentChannel, NodeManager manager, FormFile file) {
+   private static List<Integer> getNodeList(Integer parentChannel, NodeManager manager, FormFile file, Cloud cloud) {
       List<Integer> nodes = null;
       try {
          if (isZipFile(file)) {
-            ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new ByteArrayInputStream(file.getFileData())));
-            nodes = createNodesInZip(parentChannel, manager, zip);
+            byte[] fileData = file.getFileData();
+            ByteArrayInputStream bis = new ByteArrayInputStream(fileData);
+            InputStream is = new BufferedInputStream(bis);
+            ZipInputStream zip = new ZipInputStream(is);
+
+            nodes = createNodesInZip(parentChannel, manager, zip, cloud);
          } else {
 
-            Node node = createNode(parentChannel, manager, file.getFileName(), file.getInputStream(), file.getFileSize());
-            if(node!=null){
+            Node node = createNode(parentChannel, manager, file.getFileName(), file.getInputStream(), file
+                  .getFileSize());
+            if (node != null) {
                nodes = new ArrayList<Integer>();
                nodes.add(node.getNumber());
             }
@@ -181,7 +191,6 @@ public class BulkUploadUtil {
    }
 
    private static ArrayList<Integer> createNodesInZip(NodeManager manager, ZipInputStream zip) {
-
       ZipEntry entry = null;
       int count = 0;
       ArrayList<Integer> nodes = new ArrayList<Integer>();
@@ -215,14 +224,15 @@ public class BulkUploadUtil {
          }
 
       } catch (IOException ex) {
-         log.info("Failed to read uploaded zipfile, skipping it"+ ex.getMessage());
+         log.info("Failed to read uploaded zipfile, skipping it" + ex.getMessage());
       } finally {
          close(zip);
       }
       return nodes;
    }
 
-   private static ArrayList<Integer> createNodesInZip(Integer parentChannel, NodeManager manager, ZipInputStream zip) {
+   private static ArrayList<Integer> createNodesInZip(Integer parentChannel, NodeManager manager, ZipInputStream zip,
+         Cloud cloud) {
 
       ZipEntry entry = null;
       int count = 0;
@@ -239,29 +249,40 @@ public class BulkUploadUtil {
                }
                continue;
             }
-            count++;
-            // create temp file for zip entry, create a node from it and
-            // remove the temp file
-            File tempFile = File.createTempFile("cmsc", null);
-            FileOutputStream out = new FileOutputStream(tempFile);
-            copyStream(zip, out);
-            zip.closeEntry();
-            out.close();
-            FileInputStream in = new FileInputStream(tempFile);
-            Node node = createNode(parentChannel, manager, entry.getName(), in, tempFile.length());
-            if (node != null) {
-               nodes.add(node.getNumber());
+            if (isImage(entry.getName())) {
+               manager = cloud.getNodeManager("images");
+            } else {
+               manager = cloud.getNodeManager("attachments");
             }
-            in.close();
-            tempFile.delete();
+            count++;
+            ChecksumFactory checksumFactory = new ChecksumFactory();
+            ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
+                  .createTransformer(checksumFactory.createParameters());
+            long size = entry.getSize();
+            byte[] buffer = new byte[(int) size];
+            zip.read(buffer, 0, (int) size);
+            String checkSum = transformer.transform(buffer);
+            NodeQuery query = manager.createQuery();
+            SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
+            NodeList assets = query.getList();
+
+            boolean isNewFile = (assets.size() == 0);
+            InputStream is = new ByteArrayInputStream(buffer);
+            if (isNewFile) {
+               Node node = createNode(parentChannel, manager, entry.getName(), is, size);
+               if (node != null) {
+                  nodes.add(node.getNumber());
+               }
+               is.close();
+            }
+            zip.closeEntry();
          }
 
       } catch (IOException ex) {
          log.error("IOException--Failed to read uploaded zipfile, skipping it", ex);
-      }catch(Exception e) {
-         log.error("Failed to read uploaded zipfile, skipping it",e);
-      }
-      finally {
+      } catch (Exception e) {
+         log.error("Failed to read uploaded zipfile, skipping it", e);
+      } finally {
          close(zip);
       }
       return nodes;

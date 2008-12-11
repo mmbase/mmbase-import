@@ -1,11 +1,9 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.recyclebin.forms;
 
@@ -27,15 +25,15 @@ public class DeleteAction extends MMBaseFormlessAction {
 
    private static Log log = LogFactory.getLog(DeleteAction.class);
 
-
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       if (!RepositoryUtil.hasRecyclebinRights(cloud, "webmaster")) {
          return redirectLogin(request);
-      }       
-       
+      }
+
       String action = getParameter(request, "action");
+      String type = request.getParameter("type");
 
       if ("deleteall".equals(action)) {
          Node objectNode = null;
@@ -49,13 +47,11 @@ public class DeleteAction extends MMBaseFormlessAction {
                   Workflow.complete(objectNode);
                }
                objectNode.delete(true);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                log.warn("Unable to remove from trash " + ((objectNode == null) ? null : objectNode.getNumber()));
             }
          }
-      }
-      else {
+      } else {
          String objectnumber = getParameter(request, "objectnumber");
          Node objectNode = cloud.getNode(objectnumber);
          if (Workflow.hasWorkflow(objectNode)) {
@@ -64,6 +60,11 @@ public class DeleteAction extends MMBaseFormlessAction {
          }
          objectNode.delete(true);
       }
-      return mapping.findForward(SUCCESS);
+      if (type.equalsIgnoreCase("content")) {
+         return mapping.findForward("content");
+      } else {
+         return mapping.findForward("asset");
+      }
    }
+
 }
