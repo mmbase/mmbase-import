@@ -1,5 +1,5 @@
    function restore(objectnumber, offset, type, url) {
-	   if(type=="Attachment"||type=="Image"||type=="Url"){
+       if(type=="Attachment"||type=="Image"||type=="Url"){
           url = "RestoreAssetAction.do";
        }
        else{
@@ -30,12 +30,13 @@
 	   }
     }
     
-    function permanentDelete(objectnumber, message, offset) {
+    function permanentDelete(objectnumber, message, offset, type) {
        if (confirm(message)) {
           var url = "DeleteAction.do";
           url += "?objectnumber=" + objectnumber;
           url += "&returnurl=" + escape(document.location);
 	      url += "&offset=" + offset;
+	      url += "&type=" + type;
 
           document.location.href = url;
        }

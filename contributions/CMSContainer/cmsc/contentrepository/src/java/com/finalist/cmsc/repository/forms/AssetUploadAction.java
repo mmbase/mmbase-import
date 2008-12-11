@@ -39,9 +39,9 @@ public class AssetUploadAction extends MMBaseAction {
       String parentchannel = assetUploadForm.getParentchannel();
       FormFile file = assetUploadForm.getFile();
 
-      String assetType = "";
 
       if (file.getFileSize() != 0 && file.getFileName() != null) {
+         String assetType = "";
          if (isImage(file.getFileName())) {
             assetType = "images";
          } else {

@@ -199,7 +199,8 @@
 
       <action path="/editors/recyclebin/DeleteAction" type="com.finalist.cmsc.recyclebin.forms.DeleteAction" 
          unknown="false" validate="false">
-         <forward name="success" path="/editors/recyclebin/index.jsp" redirect="false" />
+         <forward name="content" path="/editors/recyclebin/index.jsp" redirect="false" />
+         <forward name="asset" path="/editors/recyclebin/assettrash.jsp" redirect="false" />
       </action>
 
       <!-- ==== Security role management ==== -->
