@@ -27,7 +27,7 @@ import org.mmbase.storage.search.implementation.BasicAggregatedField;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.struts.PagerAction;
-import com.finalist.cmsc.util.ComparisonUtil;
+import com.finalist.cmsc.util.ComparableComparator;
 
 /**
  * Select the often used images in all channels or in the current channel.
@@ -104,8 +104,7 @@ public class HighFrequencyImgAction extends PagerAction {
          results.add(result);
       }
 
-      ComparisonUtil comparator = new ComparisonUtil();
-      comparator.setFields_user(new String[] { COUNT });
+      ComparableComparator comparator = new ComparableComparator(new String[] { COUNT });
       Collections.sort(results, comparator);
       Collections.reverse(results);
 
