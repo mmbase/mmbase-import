@@ -58,6 +58,11 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    }
 
    private void addChiefEditorOptions(NavigationRenderer renderer, String id, TreeElement element) {
+      element.addOption(
+            renderer.createTreeOption("delete.png", "site.newsletter.remove", "newsletter",
+                     "../newsletter/NewsletterDelete.do?number=" + id
+            )
+      );
       element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
       element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
       element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
@@ -88,11 +93,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    }
 
    private void addWebmasterOptions(NavigationRenderer renderer, String id, TreeElement element) {
-      element.addOption(
-               renderer.createTreeOption("delete.png", "site.newsletter.remove", "newsletter",
-                        "../newsletter/NewsletterDelete.do?number=" + id
-               )
-      );
+
       //todo remove the code
       //This  has been implement in the wizard.
 

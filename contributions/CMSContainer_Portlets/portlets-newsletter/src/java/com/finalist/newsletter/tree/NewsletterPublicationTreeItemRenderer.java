@@ -59,7 +59,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          log.debug("Publication " + parentNode.getNumber() + "'s publication status:" + isPublished + " in single:" + isSingleApplication);
 
-         if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished && SecurityUtil.isEditor(role))) {
+         if (SecurityUtil.isChiefEditor(role) || (model.getChildCount(parentNode) == 0 && !isPublished && SecurityUtil.isEditor(role))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
                      "../newsletter/NewsletterPublicationDelete.do?number=" + id));
          }  
