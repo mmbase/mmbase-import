@@ -34,7 +34,7 @@
    </edit:ui-tcolumn>
    <edit:ui-tcolumn titlekey="community.search.state">
 		<select onchange="selectState('${pageContext.request.contextPath }/editors/community/SearchConditionalUser.do?page=${page}&sortby=${param.sortby}&dir=${param.dir}&authid=${person.authId}',this)" >
-			<option selected="selected" value="${person.active}">${person.active}</option>
+			<option value="${person.active}">${person.active}</option>
 			<option value="Unconfirmed"><fmt:message key="community.search.state.unconfirmed"/> </option>
 			<option value="Active"><fmt:message key="community.search.state.active"/></option>
 			<option value="Blocked"><fmt:message key="community.search.state.blocked"/></option>

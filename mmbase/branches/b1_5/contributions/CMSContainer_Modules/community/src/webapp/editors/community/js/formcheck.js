@@ -39,7 +39,8 @@ function onState(){
         }
         for (j = 1; j < options.length; j++) {
             if (v.value.toUpperCase() == options[j].value.toUpperCase()) {
-                options[j].parentNode.removeChild(options[j]);
+                options[j].selected=true;
+                options[0].parentNode.removeChild(options[0]);
             }
         }
     }
