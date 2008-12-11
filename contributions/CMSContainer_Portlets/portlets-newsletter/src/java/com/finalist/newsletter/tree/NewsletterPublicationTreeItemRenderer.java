@@ -39,10 +39,13 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
       String id = String.valueOf(parentNode.getNumber());
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
+
       String process_status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
-      if (SecurityUtil.isEditor(role)) {
+      if (SecurityUtil.isWriter(role)) {
+         if (SecurityUtil.isEditor(role)) {
             element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
                   "../newsletter/NewsletterPublicationEdit.do?number=" + id));
+         }
          boolean isSingleApplication = true;
          boolean isPublished;
          isSingleApplication = ServerUtil.isSingle();
@@ -56,43 +59,40 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
          log.debug("Publication " + parentNode.getNumber() + "'s publication status:" + isPublished + " in single:" + isSingleApplication);
 
-         if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished)) {
+         if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !isPublished && SecurityUtil.isEditor(role))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
                      "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-         }
+         }  
          element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter",
                "../newsletter/NewsletterPublicationPublish.do?number=" + id));
          element.addOption(renderer.createTreeOption("type/email_go.png", "site.newsletteredition.test", "newsletter",
                "../newsletter/NewsletterPublicationTest.do?number=" + id));
-         if (NavigationUtil.getChildCount(parentNode) >= 2) {
-            element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
-         }
 
-         if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+         if (SecurityUtil.isChiefEditor(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+            if (NavigationUtil.getChildCount(parentNode) >= 2) {
+               element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
+            }
             element.addOption(renderer.createTreeOption("publish.png", "site.newsletteredition.publish", "newsletter",
                      "../workflow/publish.jsp?number=" + id));
          }
-         if (SecurityUtil.isWebmaster(role)) {
-            if(EditionStatus.INITIAL.value().equals(process_status)) {
-               element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
-                     "../newsletter/NewsletterEditionFreeze.do?number=" + id));
-            }
-            if(EditionStatus.FROZEN.value().equals(process_status)) {
-               element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
-                  "../newsletter/NewsletterEditionDefrost.do?number=" + id));
-            }
+         if(EditionStatus.INITIAL.value().equals(process_status)) {
+            element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
+                  "../newsletter/NewsletterEditionFreeze.do?number=" + id));
          }
-      }
-      if(SecurityUtil.isWebmaster(role)){
+         if(EditionStatus.FROZEN.value().equals(process_status)) {
+            element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
+               "../newsletter/NewsletterEditionDefrost.do?number=" + id));
+         }
+            
          String status = NewsletterPublicationUtil.getEditionStatus(Integer.parseInt(id));
          if("approved".equalsIgnoreCase(status)){
             element.addOption(renderer.createTreeOption("status_onlive.png", "site.newsletteredition.revokeapproval", "newsletter","../newsletter/NewsletterEditionRevoke.do?number=" + id));
-         }else if("frozen".equalsIgnoreCase(status)){
+         }
+         else if("frozen".equalsIgnoreCase(status)){
             element.addOption(renderer.createTreeOption("status_published.png", "site.newsletteredition.approve", "newsletter","../newsletter/NewsletterEditionApprove.do?number=" + id));
          }
       }
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
-
       return element;
    }
 
