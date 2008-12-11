@@ -4,17 +4,23 @@
  */
 package com.finalist.cmsc.editwizard;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts.util.LabelValueBean;
 import org.mmbase.applications.editwizard.Config;
 import org.mmbase.applications.editwizard.Config.WizardConfig;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.implementation.BasicNode;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.security.Rank;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,6 +34,7 @@ import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.versioning.VersioningException;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 /**
  * @author Nico Klasens This class contains code which extends wizard.jsp
@@ -222,7 +229,44 @@ public class WizardController {
             }else if (AssetElementUtil.isAssetElement(editNode)) {
                closeAssetElement(session, editNode, objectnr, ewconfig, wizardConfig);
             }
+            // create createrel for asset elements.and add asset elements to workflow.
             elementtype = editNode.getNodeManager().getName();
+            List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
+            List<NodeManager> types = AssetElementUtil.getAssetTypes(editNode.getCloud());
+            List<String> hiddenTypes = AssetElementUtil.getHiddenAssetTypes();
+            for (NodeManager manager : types) {
+               String name = manager.getName();
+               if (!hiddenTypes.contains(name)) {
+                  LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+                  typesList.add(bean);
+               }
+            }
+            for (int i = 0 ; i < typesList.size(); i++) {
+               NodeList assets = editNode.getRelatedNodes(typesList.get(i).getValue());
+               if(assets.size() > 0 ){
+                  for( int j = 0 ; j < assets.size() ;j++) {
+                     Node node = assets.getNode(j);
+                     if (!RepositoryUtil.hasCreationChannel(node)) {
+                        String channelnr = (String) session.getAttribute(SESSION_CREATION);
+                        //if the channel is not exist get root channel .used for adding pages
+                        if (channelnr == null ||"".equals(channelnr) ) {
+                           channelnr = RepositoryUtil.getRoot(node.getCloud());
+                        }
+                        log.debug("Creation " + channelnr);
+
+                        if (StringUtils.isNotEmpty(channelnr)) {
+                           RepositoryUtil.addCreationChannel(node, channelnr);
+                        } 
+                     }
+                     if (!Workflow.hasWorkflow(node)) { 
+                        Workflow.create(node, ""); 
+                     } 
+                     else { 
+                        Workflow.addUserToWorkflow(node);
+                        }
+                  }
+               }
+            }
          }
          log.debug("contenttype " + elementtype);
 
@@ -266,7 +310,7 @@ public class WizardController {
                }
             }
          }
-
+        
          try {
             if (wizardConfig.wiz.committed()) {
                Versioning.addVersion(editNode);
