@@ -75,8 +75,8 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
                   return mapping.findForward("confirm_send");
                }
             }
-            else if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.approving"))) {
-               if (EditionStatus.INITIAL.value().equals(process_status) || EditionStatus.APPROVED.value().equals(process_status)) {
+            if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.approving"))) {
+               if (EditionStatus.INITIAL.value().equals(process_status) || EditionStatus.FROZEN.value().equals(process_status)) {
                   request.setAttribute("message", "confirm_send.skip.approving"); 
                   request.setAttribute("restriction", true);
                   return mapping.findForward("confirm_send");
