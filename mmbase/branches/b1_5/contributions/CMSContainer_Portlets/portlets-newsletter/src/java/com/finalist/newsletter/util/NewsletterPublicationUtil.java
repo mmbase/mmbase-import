@@ -195,8 +195,9 @@ public abstract class NewsletterPublicationUtil {
    /**
     * Approve a edition
     */
-   public static void approveEdition(Node edition,String user) {
+   public static void approveEdition(Node edition) {
       edition.setStringValue("process_status", EditionStatus.APPROVED.value());
+      String user=edition.getCloud().getUser().getIdentifier();
       edition.setStringValue("approved_by", user);
       edition.commit();
    }
