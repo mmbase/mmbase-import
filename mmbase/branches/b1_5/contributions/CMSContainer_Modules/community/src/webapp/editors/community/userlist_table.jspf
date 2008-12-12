@@ -42,7 +42,23 @@
    </edit:ui-tcolumn>
 </edit:ui-table>
 <script language="JavaScript">
- onState();
+ (function onState(){
+    var sels = document.getElementsByTagName("select");
+    for (i = 0; i < sels.length; i++) {
+        var sel = sels[i];
+        var options = sel.getElementsByTagName("option");
+        var v = options[0];
+        if ("" == v.value) {
+            options[0].parentNode.removeChild(options[0]);
+        }
+        for (j = 1; j < options.length; j++) {
+            if (v.value.toUpperCase() == options[j].value.toUpperCase()) {
+                options[j].selected=true;
+                options[0].parentNode.removeChild(options[0]);
+            }
+        }
+    }
+})();
  function selectAll(value, formName, elementPrefix) {
    var elements = document.forms[formName].elements;
    for (var i = 0; i < elements.length; i++) {
