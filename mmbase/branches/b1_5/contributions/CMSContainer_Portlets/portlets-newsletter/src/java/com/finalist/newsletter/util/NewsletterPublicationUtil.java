@@ -239,16 +239,18 @@ public abstract class NewsletterPublicationUtil {
       Node edition = cloud.getNode(number);  
       setIsSent(edition);
    }
+   
    /**
     * get the process status  of a edition
     */
    public static String getEditionStatus(Node edition) {
       return edition.getStringValue("process_status");
    }
+   
    /**
-    * get the process status  of a edition
+    * get the process status of an edition
     */
-   public static String getEditionStatus(Integer number) {
+   public static String getEditionStatus(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node edition = cloud.getNode(number);      
       return edition.getStringValue("process_status");
@@ -265,6 +267,7 @@ public abstract class NewsletterPublicationUtil {
       subscription.setMimeType(MIMEType.HTML.type());
       return getBody(publication, subscription);
    }
+   
    private static String getBody(Publication publication, Subscription subscription)
             throws MessagingException {     
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
