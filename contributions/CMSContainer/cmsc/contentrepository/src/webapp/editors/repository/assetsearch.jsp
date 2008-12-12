@@ -82,15 +82,16 @@
             <html:hidden property="search" value="true"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
+            <html:hidden property="show" value="${show}"/>
             <html:hidden property="direction"/>
             <input type="hidden" name="deleteAssetRequest"/>
             <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-                     <mm:compare referid="mode" value="advanced" >
-                        <a href="#" onclick="selectTab('basic');"><input type="button" class="button" value="<fmt:message key="search.simple.search" />"/></a>
-                     </mm:compare>
+                <mm:compare referid="mode" value="advanced" >
+                   <a href="#" onclick="selectTab('basic');"><input type="button" class="button" value="<fmt:message key="search.simple.search" />"/></a>
+                </mm:compare>
                 <mm:compare referid="mode" value="basic" >
                         <a href="#" onclick="selectTab('advanced');"><input type="button" class="button" value="<fmt:message key="search.advanced.search" />"/></a>
-                     </mm:compare>
+                </mm:compare>
             <table>
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
@@ -334,7 +335,6 @@
 
    <mm:list referid="results">
       <mm:first>
-         <c:set var="extraparams" value="&direction=${param.direction}" />
          <%@include file="searchpages.jsp" %>
 <mm:hasrank minvalue="siteadmin">
                <c:if test="${fn:length(results) >1}">
@@ -489,7 +489,6 @@
 
    <mm:list referid="results">
       <mm:first>
-      <c:set var="extraparams" value="&direction=${param.direction}&show=0"/>
          <%@include file="searchpages.jsp" %>
          <form name="linkForm">
       </mm:first>

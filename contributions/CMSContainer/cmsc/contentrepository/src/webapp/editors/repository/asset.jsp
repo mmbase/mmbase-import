@@ -46,11 +46,6 @@
 
                <mm:node number="$parentchannel" jspvar="parentchannelnode">
                <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
-               <p>
-                  <fmt:message key="asset.channel">
-                     <fmt:param><mm:field name="path"/></fmt:param>
-                  </fmt:message>
-               </p>
                <%@ include file="assetupload.jsp" %>
                <% if (role != null && SecurityUtil.isWriter(role)) { %>
                   <ul class="shortcuts">
@@ -71,7 +66,11 @@
             </div>
 
             <div class="ruler_green">
-               <div><fmt:message key="asset.asset"/></div>
+               <div>
+                  <fmt:message key="asset.asset">
+                     <fmt:param><mm:field name="path"/></fmt:param>
+                  </fmt:message>
+               </div>
             </div>
 
             <div>

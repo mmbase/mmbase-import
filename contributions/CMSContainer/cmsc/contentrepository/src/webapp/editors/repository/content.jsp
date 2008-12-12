@@ -20,11 +20,6 @@
 
 <mm:node number="$parentchannel" jspvar="parentchannelnode">
 <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
-<p>
-    <fmt:message key="content.channel">
-        <fmt:param><mm:field name="path"/></fmt:param>
-    </fmt:message>
-</p>
 <% if (role != null && SecurityUtil.isWriter(role)) { %>
 <ul class="shortcuts">
     <li class="new" style="text-decoration: none;"><fmt:message key="content.new"/>
@@ -86,7 +81,11 @@
 </div>
 
 <div class="ruler_green">
-    <div><fmt:message key="content.content"/></div>
+   <div>
+   <fmt:message key="content.content">
+      <fmt:param><mm:field name="path"/></fmt:param>
+   </fmt:message>
+   </div>
 </div>
 <div class="body">
 <mm:import externid="elements" from="request" required="true"/>

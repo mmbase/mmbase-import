@@ -67,7 +67,10 @@ public class AssetSearchAction extends PagerAction {
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
       String show = request.getParameter("show");
-      if(StringUtils.isNotEmpty(show)){
+      if (show == null) {
+         show = searchForm.getShow();
+      }
+      if (StringUtils.isNotEmpty(show)) {
          show = "thumbnail";
       }else{
          show = null;
