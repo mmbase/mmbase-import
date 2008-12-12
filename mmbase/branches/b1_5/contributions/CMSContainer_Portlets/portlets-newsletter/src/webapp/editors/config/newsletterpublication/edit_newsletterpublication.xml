@@ -32,7 +32,7 @@
 	</field>
 	 <field name="approved_by"  ftype="data" >
 		<prompt xml:lang="en">Approved By</prompt>
-		<prompt xml:lang="nl">Approved By</prompt>
+		<prompt xml:lang="nl">Goedgekeurd door</prompt>
 		<prompt xml:lang="zh">审核用户</prompt>
 	</field>
 	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">

@@ -6,8 +6,6 @@ import java.util.List;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -19,8 +17,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import com.finalist.newsletter.domain.NewsletterBounce;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 public class NewsletterBounceUtil {
-
-   private static Log log = LogFactory.getLog(NewsletterBounceUtil.class);
 
    public static List<NewsletterBounce> getBounceRecord(int offset, int pageSize, String order, String direction) {
       List<NewsletterBounce> bounces = new ArrayList<NewsletterBounce>();

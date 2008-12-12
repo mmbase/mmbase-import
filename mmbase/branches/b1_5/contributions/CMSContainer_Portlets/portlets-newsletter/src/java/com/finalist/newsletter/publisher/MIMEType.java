@@ -2,7 +2,7 @@ package com.finalist.newsletter.publisher;
 
 public enum MIMEType {
    HTML ("text/html"),
-   PLANTEXT ("text/plain");
+   PLAINTEXT ("text/plain");
 
    private String type;
 

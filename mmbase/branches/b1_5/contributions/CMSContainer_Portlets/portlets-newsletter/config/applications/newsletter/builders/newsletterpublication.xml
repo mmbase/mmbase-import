@@ -92,7 +92,7 @@
          <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
          <db>
             <name>status</name>
-            <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
       <field>
@@ -174,7 +174,7 @@
       		<description xml:lang="en"></description>
       	</descriptions>
       	<gui>
-      		<guiname xml:lang="nl">Approved By</guiname>
+      		<guiname xml:lang="nl">Goedgekeurd door</guiname>
       		<guiname xml:lang="en">Approved By</guiname>
       		<guiname xml:lang="zh">审核用户</guiname>
       	</gui>
@@ -188,10 +188,7 @@
       	<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
       	<db>
       		<name>approved_by</name>
-      		<type key="false" notnull="false" size="255"
-      			state="persistent">
-      			STRING
-      		</type>
+      		<type key="false" notnull="false" size="255"	state="persistent">STRING</type>
       	</db>
       </field>
       <field>
@@ -201,7 +198,7 @@
             <description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">static html</guiname>
+            <guiname xml:lang="nl">statische html</guiname>
             <guiname xml:lang="en">static html</guiname>
             <guiname xml:lang="zh">static html</guiname>
          </gui>
