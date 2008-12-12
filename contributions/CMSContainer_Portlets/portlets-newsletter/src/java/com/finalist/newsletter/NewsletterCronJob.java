@@ -20,7 +20,7 @@ import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
-public class NewsletterCronJob extends AbstractCronJob implements CronJob {
+public class NewsletterCronJob extends AbstractCronJob {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterCronJob.class.getName());
 
