@@ -42,15 +42,12 @@ public class RegisterPorlet extends AbstractLoginPortlet {
       
       PortletPreferences preferences = request.getPreferences();
       
-      String email = request.getParameter(ACEGI_SECURITY_FORM_EMAIL_KEY);
-      String firstName = request
-            .getParameter(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
+      String email = request.getParameter(ACEGI_SECURITY_FORM_EMAIL_KEY).trim();
+      String firstName = request.getParameter(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
       String infix = request.getParameter(ACEGI_SECURITY_FORM_INFIX_KEY);
       String lastName = request.getParameter(ACEGI_SECURITY_FORM_LASTNAME_KEY);
-      String passwordText = request
-            .getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
-      String passwordConfirmation = request
-            .getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
+      String passwordText = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
+      String passwordConfirmation = request.getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
       String errorMessages = "";
       Long authId = null;
       if (StringUtils.isBlank(email)) {
@@ -99,7 +96,7 @@ public class RegisterPorlet extends AbstractLoginPortlet {
             emailText = getEmailBody(emailText,request, authentication, person);
             try {
                if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
-                  throw new AddressException("Email address "+emailFrom+"is not availalbe");
+                  throw new AddressException("Email address '" + emailFrom + "' is not available or working!");
                }
                   EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                         email, "text/plain;charset=utf-8");
