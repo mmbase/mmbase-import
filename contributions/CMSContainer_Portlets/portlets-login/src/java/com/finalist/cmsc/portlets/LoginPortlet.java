@@ -95,7 +95,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
       } else if ("send_password".equals(action)) {
          //TODO  send password
          String email =  request.getParameter("username");
-         String sendMessage = "send_success";
+         String sendMessage = "view.account.success";
          AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory
          .getBean("authenticationService");
          PersonService personHibernateService = (PersonService) ApplicationContextFactory
