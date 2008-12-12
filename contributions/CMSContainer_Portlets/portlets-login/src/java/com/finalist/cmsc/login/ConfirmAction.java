@@ -39,7 +39,7 @@ public class ConfirmAction extends Action{
          if(authenticationId > 0) {
             Person person = personService.getPersonByAuthenticationId(authenticationId);
             if(person != null) {
-               if (person.getActive().equals(RegisterStatus.ACTIVE.getName())) {
+               if (person.getActive().equalsIgnoreCase(RegisterStatus.ACTIVE.getName())) {
                   target = "actived";
                }
                else {
