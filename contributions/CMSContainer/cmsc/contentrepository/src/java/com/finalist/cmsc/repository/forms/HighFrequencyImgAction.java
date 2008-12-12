@@ -1,10 +1,10 @@
 package com.finalist.cmsc.repository.forms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,16 +24,16 @@ import org.mmbase.storage.search.AggregatedField;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.implementation.BasicAggregatedField;
+import org.mmbase.util.NodeComparator;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.struts.PagerAction;
-import com.finalist.cmsc.util.ComparableComparator;
 
 /**
  * Select the often used images in all channels or in the current channel.
  * 
- * @author Eva 
- * @author Marco
+ * @author Eva Guo
+ * @author Marco Fang
  */
 public class HighFrequencyImgAction extends PagerAction {
 
@@ -55,6 +55,7 @@ public class HighFrequencyImgAction extends PagerAction {
    private static final String NUMBER = "number";
    private static final String IMAGENUMBER = "imageNumber";
    private static final String COUNT = "count";
+   private static final String TITLE = "title";
    private static final String COUNTALIAS = "countalias";
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -66,6 +67,7 @@ public class HighFrequencyImgAction extends PagerAction {
       boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
       
       Query query = cloud.createAggregatedQuery();
+      List<Node> result = new ArrayList<Node>();
       Step imageStep;
       NodeManager imgManager = cloud.getNodeManager(IMAGES);
       NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
@@ -88,54 +90,56 @@ public class HighFrequencyImgAction extends PagerAction {
       RelationStep imagerelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
       Step contentStep = imagerelStep.getNext();
       query.addAggregatedField(imageStep, imgManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
-
       BasicAggregatedField countField = (BasicAggregatedField) query.addAggregatedField(contentStep, contentManager
             .getField(NUMBER), AggregatedField.AGGREGATION_TYPE_COUNT);
       countField.setAlias(COUNTALIAS);
 
-      NodeList usedImgResults = query.getList();
-      
-      List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
-      for (int i = 0; i < usedImgResults.size(); i++) {
-         Map<Object, Object> result = new HashMap<Object, Object>();
-         Node n = usedImgResults.getNode(i);
-         result.put(IMAGENUMBER, n.getValue(NUMBER));
-         result.put(COUNT, n.getIntValue(COUNTALIAS));
-         results.add(result);
+      NodeList usedImgCountResult = query.getList();
+
+      if(usedImgCountResult!=null&&!usedImgCountResult.isEmpty()){
+         Vector<String> fields = new Vector();
+         fields.addAll(Arrays.asList(COUNTALIAS, TITLE));
+         Vector<String> sortDirs = new Vector();
+         sortDirs.addAll(Arrays.asList(NodeComparator.DOWN, NodeComparator.UP));
+         NodeComparator comparator = new NodeComparator(fields, sortDirs);
+         Collections.sort(usedImgCountResult, comparator);
       }
-
-      ComparableComparator comparator = new ComparableComparator(new String[] { COUNT });
-      Collections.sort(results, comparator);
-      Collections.reverse(results);
-
+      
       NodeQuery nodeQuery = cloud.createNodeQuery();
       imageStep = nodeQuery.addStep(imgManager);
-      nodeQuery.setNodeStep(imageStep);
       //search in one contentchannel
       if(existChannelConstraint){
          nodeQuery.addRelationStep(channelManager,CREATIONREL,DESTINATION);
          Queries.addConstraints(nodeQuery, channelManager.getName() + ".number=" + channelid);
-         request.setAttribute("channelid", channelid);
       }
-
-      NodeList imgResult = nodeQuery.getList();
-
-      List<Node> newresult = new ArrayList<Node>();
-      int x = 0;
-      for (int i = 0; i < results.size(); i++) {
-         int mid = (Integer) results.get(i).get(IMAGENUMBER);
-         for (int j = 0; j < imgResult.size(); j++) {
-            Node img = imgResult.getNode(j);
-            if (mid == img.getIntValue(NUMBER)) {
-               newresult.add(x++, img);
-               imgResult.remove(img);
+      nodeQuery.setNodeStep(imageStep);
+      
+      NodeList unusedImgResult = nodeQuery.getList();
+      
+      for (int i = 0; i < usedImgCountResult.size(); i++) {
+         int imgNumber = usedImgCountResult.getNode(i).getIntValue(NUMBER);
+         for (int j = 0; j < unusedImgResult.size(); j++) {
+            Node imgNode = unusedImgResult.getNode(j);
+            if (imgNumber == imgNode.getIntValue(NUMBER)) {
+               result.add(imgNode);
+               unusedImgResult.remove(imgNode);
                break;
             }
          }
       }
-      int resultCount = newresult.size();
-      newresult.addAll(resultCount,imgResult);
-      resultCount = newresult.size(); 
+      
+      if(unusedImgResult!=null&&!unusedImgResult.isEmpty()){
+         Vector<String> titleField = new Vector();
+         titleField.add(TITLE);
+         com.finalist.cmsc.util.NodeComparator titleComparator = new com.finalist.cmsc.util.NodeComparator(titleField);
+         Collections.sort(unusedImgResult, titleComparator);
+      }
+      
+      if(unusedImgResult!=null&&!unusedImgResult.isEmpty()){
+      result.addAll(unusedImgResult);
+      }
+      
+      int resultCount = result.size();
       
       // used for paging about maxnum
       int maxnum = 0;
@@ -147,15 +151,15 @@ public class HighFrequencyImgAction extends PagerAction {
       }
 
       // Set the offset (used for paging).
-      List<Node> resultAfterPaging = newresult;
+      List<Node> resultAfterPaging = result;
       int offset = 0;
       if (highFrequencyImgForm.getOffset() != null && highFrequencyImgForm.getOffset().matches("\\d+")) {
          offset = Integer.parseInt(highFrequencyImgForm.getOffset());
       }
-      if (offset * maxnum + maxnum < newresult.size()) {
-         resultAfterPaging = newresult.subList(offset * maxnum, offset * maxnum + maxnum);
+      if (offset * maxnum + maxnum < result.size()) {
+         resultAfterPaging = result.subList(offset * maxnum, offset * maxnum + maxnum);
       } else {
-         resultAfterPaging = newresult.subList(offset * maxnum, newresult.size());
+         resultAfterPaging = result.subList(offset * maxnum, result.size());
       }
       request.setAttribute(CHANNELID, channelid);
       request.setAttribute(RESULTCOUNT, resultCount);
