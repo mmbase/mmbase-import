@@ -22,9 +22,13 @@
           <span>
             <mm:fieldinfo type="${empty new ? 'guivalue' : 'input'}"/>
             <mm:fieldinfo type="errors"/>
+
           </span>
         </li>
       </mm:fieldlist>
+      <c:if test="${new ge ''}" >
+      	<li><a class="create" href="">verstuur</a></li>
+      </c:if>
     </ul>
 		<mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}"/>
 	</fieldset>
