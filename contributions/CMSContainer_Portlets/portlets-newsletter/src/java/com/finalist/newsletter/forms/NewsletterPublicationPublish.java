@@ -45,6 +45,12 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
     * name of submit button in jsp to cancel removal
     */
    private static final String ACTION_CANCEL = "cancel";
+   
+   /**
+    * System property to allow skipping the Freeze or Approve action 
+    */
+   public static final String NEWSLETTER_FREEZE_PROPERTY = "newsletter.workflow.allow.skip.freezing";
+   public static final String NEWSLETTER_APPROVE_PROPERTY = "newsletter.workflow.allow.skip.approving";
 
    /**
     * @Override
@@ -67,15 +73,15 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          boolean isChiefEditor = (role != null && SecurityUtil.isChiefEditor(role));
 
          if (!isWebMaster && !isChiefEditor) {
-            String process_status =publicationNode.getStringValue("process_status");
-            if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.freezing"))) {
+            String process_status = publicationNode.getStringValue("process_status");
+            if("true".equalsIgnoreCase(PropertiesUtil.getProperty(NEWSLETTER_FREEZE_PROPERTY))) {
                if (EditionStatus.INITIAL.value().equals(process_status)) {
                   request.setAttribute("message", "confirm_send.skip.freezing"); 
                   request.setAttribute("restriction", true);
                   return mapping.findForward("confirm_send");
                }
             }
-            if("true".equalsIgnoreCase(PropertiesUtil.getProperty("newsletter.workflow.skip.approving"))) {
+            if("true".equalsIgnoreCase(PropertiesUtil.getProperty(NEWSLETTER_APPROVE_PROPERTY))) {
                if (EditionStatus.INITIAL.value().equals(process_status) || EditionStatus.FROZEN.value().equals(process_status)) {
                   request.setAttribute("message", "confirm_send.skip.approving"); 
                   request.setAttribute("restriction", true);
