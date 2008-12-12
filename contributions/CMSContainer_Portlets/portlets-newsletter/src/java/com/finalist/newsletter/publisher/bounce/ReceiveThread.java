@@ -5,7 +5,6 @@ import org.mmbase.util.logging.Logging;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
 
 import com.finalist.newsletter.services.NewsletterService;
 
