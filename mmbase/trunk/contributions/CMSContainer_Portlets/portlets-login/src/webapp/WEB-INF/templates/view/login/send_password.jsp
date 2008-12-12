@@ -4,11 +4,15 @@
 <form name="<portlet:namespace />form" 
       action="<cmsc:actionURL><cmsc:param name="action" value="send_password"/></cmsc:actionURL>" 
       method="post">
+<c:if test="${sendMessage eq 'send'}">
+   <p><fmt:message key="view.send_password.entertext"/></p>
+</c:if>
 <table>
 <c:if test="${!empty sendMessage && sendMessage ne 'send'}">
-  <tr class="inputrow" >
-     <td colspan="2">
-      <fmt:message key="${sendMessage}" />
+  <tr class="inputrow">
+     <td><fmt:message key="${sendMessage}" /></td>
+     <td id="Submit">
+        <a href="<cmsc:renderURL page="${page}"/>"/><fmt:message key="view.send_password.back"/></a>
      </td>
   </tr>
 </c:if>
@@ -19,7 +23,7 @@
   </tr>
   <tr>
     <td></td>
-    <td id="Submit" align="right">
+    <td id="Submit">
       <input type="submit" value="<fmt:message key="view.send_password.submit" />" />
     </td>
   </tr>

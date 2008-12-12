@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 <div class="portlet-config-canvas">
-<h3><fmt:message key="view.account.sendpassword" /></h3>
+<h3><fmt:message key="edit_defaults.title" /></h3>
 <form 
   method="post" 
   name="<portlet:namespace />form" 
@@ -33,7 +33,7 @@
    <tr>
       <td><fmt:message key="edit_defaults.register.emailtext" />:</td>
       <td>
-         <textarea name="emailText" rows="5" cols="20"><c:out value="${emailText}" /></textarea>
+         <textarea name="emailText" rows="8" cols="25"><c:out value="${emailText}" /></textarea>
       </td>
    </tr>
    <tr>
