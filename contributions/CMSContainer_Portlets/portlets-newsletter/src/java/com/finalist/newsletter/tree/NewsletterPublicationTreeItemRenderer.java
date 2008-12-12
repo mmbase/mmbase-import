@@ -4,6 +4,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationRenderer;
 import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
 import com.finalist.cmsc.navigation.NavigationUtil;
@@ -14,6 +15,7 @@ import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.forms.NewsletterPublicationPublish;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
@@ -37,15 +39,16 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       String name = parentNode.getStringValue(PagesUtil.TITLE_FIELD);
       String fragment = parentNode.getStringValue(NavigationUtil.getFragmentFieldname(parentNode));
 
-      String id = String.valueOf(parentNode.getNumber());
+      int id = parentNode.getNumber();
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
 
-      String process_status = NewsletterPublicationUtil.getEditionStatus(Integer.valueOf(id));
       if (SecurityUtil.isWriter(role)) {
          if (SecurityUtil.isEditor(role)) {
             element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletteredition.edit", "newsletter",
                   "../newsletter/NewsletterPublicationEdit.do?number=" + id));
          }
+         
+         String edition_status = NewsletterPublicationUtil.getEditionStatus(parentNode);
          boolean isSingleApplication = true;
          boolean isPublished;
          isSingleApplication = ServerUtil.isSingle();
@@ -62,9 +65,26 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isChiefEditor(role) || (model.getChildCount(parentNode) == 0 && !isPublished && SecurityUtil.isEditor(role))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletteredition.remove", "newsletter",
                      "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-         }  
-         element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter",
-               "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+         } 
+         
+         boolean skipFreezing = "true".equalsIgnoreCase(PropertiesUtil.getProperty(NewsletterPublicationPublish.NEWSLETTER_FREEZE_PROPERTY));
+         boolean skipApproving = "true".equalsIgnoreCase(PropertiesUtil.getProperty(NewsletterPublicationPublish.NEWSLETTER_APPROVE_PROPERTY)); 
+
+         //Only show Send Newsletter Edition when user is webmaster or when newsletter is in proper state, or when property allows it.
+         if (SecurityUtil.isWebmaster(role)) {
+            element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter", "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+         } else {
+            
+            if(skipFreezing && skipApproving ) {
+               element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter", "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+            } else
+            {
+               if(EditionStatus.APPROVED.value().equals(edition_status)) {
+                  element.addOption(renderer.createTreeOption("type/email_error.png", "site.newsletteredition.sendmail", "newsletter", "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+               }
+            }
+         }
+         
          element.addOption(renderer.createTreeOption("type/email_go.png", "site.newsletteredition.test", "newsletter",
                "../newsletter/NewsletterPublicationTest.do?number=" + id));
 
@@ -75,23 +95,25 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
             element.addOption(renderer.createTreeOption("publish.png", "site.newsletteredition.publish", "newsletter",
                      "../workflow/publish.jsp?number=" + id));
          }
-         if(EditionStatus.INITIAL.value().equals(process_status)) {
-            element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter",
-                  "../newsletter/NewsletterEditionFreeze.do?number=" + id));
-         }
-         if(EditionStatus.FROZEN.value().equals(process_status)) {
-            element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter",
-               "../newsletter/NewsletterEditionDefrost.do?number=" + id));
+         
+         if (EditionStatus.INITIAL.value().equals(edition_status)) {
+            element.addOption(renderer.createTreeOption("status_finished.png", "site.newsletteredition.freeze", "newsletter", "../newsletter/NewsletterEditionFreeze.do?number=" + id));
+         } 
+         else if (EditionStatus.FROZEN.value().equals(edition_status)) {
+            element.addOption(renderer.createTreeOption("status_approved.png", "site.newsletteredition.defrost", "newsletter", "../newsletter/NewsletterEditionDefrost.do?number=" + id));
          }
             
-         String status = NewsletterPublicationUtil.getEditionStatus(Integer.parseInt(id));
-         if("approved".equalsIgnoreCase(status)){
-            element.addOption(renderer.createTreeOption("status_onlive.png", "site.newsletteredition.revokeapproval", "newsletter","../newsletter/NewsletterEditionRevoke.do?number=" + id));
-         }
-         else if("frozen".equalsIgnoreCase(status)){
+         if (EditionStatus.FROZEN.value().equals(edition_status) ||
+            skipFreezing && EditionStatus.INITIAL.value().equals(edition_status))
+         {
             element.addOption(renderer.createTreeOption("status_published.png", "site.newsletteredition.approve", "newsletter","../newsletter/NewsletterEditionApprove.do?number=" + id));
          }
+         else if(EditionStatus.APPROVED.value().equals(edition_status)){
+            element.addOption(renderer.createTreeOption("status_onlive.png", "site.newsletteredition.revokeapproval", "newsletter","../newsletter/NewsletterEditionRevoke.do?number=" + id));
+         }
+          
       }
+      
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
       return element;
    }
