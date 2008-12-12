@@ -38,6 +38,9 @@ ALTER TABLE mm_savedfieldvalue CHANGE column value m_value varchar(255);
 ALTER TABLE mm_pagewizardportlet CHANGE column position m_position varchar(28);
 ALTER TABLE mm_pagewizardparameter CHANGE column value m_value varchar(45);
 
+ALTER TABLE mm_rating CHANGE column user m_user text;
+ALTER TABLE mm_rating CHANGE column timestamp m_timestamp datetime;
+ALTER TABLE mm_favorite CHANGE column user m_user text;
 
 RENAME TABLE live_numberTable TO live_numbertable;
 ALTER TABLE live_archive CHANGE column date m_date datetime;
@@ -62,6 +65,9 @@ ALTER TABLE live_formfieldvalue CHANGE column text m_text varchar(255);
 ALTER TABLE live_savedform CHANGE column count m_count int(11);
 ALTER TABLE live_savedfieldvalue CHANGE column value m_value varchar(255);
 
+ALTER TABLE live_rating CHANGE column user m_user text;
+ALTER TABLE live_rating CHANGE column timestamp m_timestamp datetime;
+ALTER TABLE live_favorite CHANGE column user m_user text;
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
@@ -151,11 +157,11 @@ Exceptions/errors/other problems and what to do:
 
 
 Name: Upgrade Lucene & Luceus
-Goal: Luceus 0.42 works on Lucene 2.3.1
+Goal: Luceus 0.42 works on Lucene 2.3.2
 Type:  action
 --- Start script ---
 - Search for the Lucene references in the customer project that uses Luceus
-- Update Lucene to version 2.3.1 where you find a Lucene version
+- Update Lucene to version 2.3.2 where you find a Lucene version
 - Remember to upgrade the Luceus as well in your project.properties: "luceus.version=0.42"
 - Remove the indexes of Lucene /temp/ or perform a Clean Full Index, found in the war-live Editors. 
 --- End script ---
