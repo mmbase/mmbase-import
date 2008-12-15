@@ -3,6 +3,7 @@
 <wizard-schema id="site">
 	<title xml:lang="nl">Site</title>
 	<title xml:lang="en">Site</title>
+	<title xml:lang="zh">站点</title>
 
    <action include="config/site/create_site.xml"/>
    <action include="config/site/delete_site.xml"/>

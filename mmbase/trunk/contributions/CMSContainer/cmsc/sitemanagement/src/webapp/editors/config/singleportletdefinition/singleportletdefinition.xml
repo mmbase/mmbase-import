@@ -3,6 +3,7 @@
 <wizard-schema id="singleportletdefinition">
 	<title xml:lang="nl">Single Portlet Definities</title>
 	<title xml:lang="en">Single Portlet Definitions</title>
+	<title xml:lang="zh">单Portlet定义</title>
 
    <action include="config/singleportletdefinition/create_singleportletdefinition.xml"/>
    <action include="config/singleportletdefinition/delete_singleportletdefinition.xml"/>

@@ -3,6 +3,7 @@
 <wizard-schema id="view">
 	<title xml:lang="nl">Views</title>
 	<title xml:lang="en">Views</title>
+	<title xml:lang="zh">视图</title>
 
    <action include="config/view/create_view.xml"/>
    <action include="config/view/delete_view.xml"/>

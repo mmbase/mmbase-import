@@ -3,6 +3,7 @@
 <wizard-schema id="portlet">
 	<title xml:lang="nl">Portlet</title>
 	<title xml:lang="en">Portlet</title>
+	<title xml:lang="zh">Portlet</title>
 
    <action include="config/portlet/create_portlet.xml"/>
    <action include="config/portlet/delete_portlet.xml"/>

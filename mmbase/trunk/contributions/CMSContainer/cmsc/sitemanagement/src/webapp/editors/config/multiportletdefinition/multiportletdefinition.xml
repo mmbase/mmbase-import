@@ -3,6 +3,7 @@
 <wizard-schema id="multiportletdefinition">
 	<title xml:lang="nl">Multi Portlet Definities</title>
 	<title xml:lang="en">Multi Portlet Definitions</title>
+	<title xml:lang="zh">多重Portlet定义</title>
 
    <action include="config/multiportletdefinition/create_multiportletdefinition.xml"/>
    <action include="config/multiportletdefinition/delete_multiportletdefinition.xml"/>
