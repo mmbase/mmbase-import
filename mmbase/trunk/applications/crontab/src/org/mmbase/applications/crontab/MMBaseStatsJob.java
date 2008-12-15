@@ -39,7 +39,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.8 2007-07-27 10:15:30 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.9 2008-12-15 14:01:33 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -70,10 +70,13 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         } else if (w.equals("JOBSPOOL")) {
             job = new Runnable() {
                     public void run() {
-                        java.util.concurrent.ThreadPoolExecutor j = 
-                            (java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
-                        statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' + 
-                                            j.getPoolSize() + '\t' + j.getLargestPoolSize() + '\t' + j.getCorePoolSize() + '\t' + j.getMaximumPoolSize());
+                        statsLogger.service("" + ThreadPools.jobsExecutor.getCompletedTaskCount() + '\t' +
+                                            ThreadPools.jobsExecutor.getActiveCount() + '\t'+
+                                            ThreadPools.jobsExecutor.getQueue().size() + '\t' +
+                                            ThreadPools.jobsExecutor.getPoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getLargestPoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getCorePoolSize() + '\t' +
+                                            ThreadPools.jobsExecutor.getMaximumPoolSize());
                     }
                 };
         } else if (w.startsWith("CACHE.")) {
