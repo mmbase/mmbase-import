@@ -3,6 +3,7 @@
 <wizard-schema id="html">
    <title xml:lang="nl">HTML fragment</title>
    <title xml:lang="en">HTML Fragment</title>
+   <title xml:lang="zh">HTML 片段</title>
 
    <action include="config/html/create_html.xml"/>
    <action include="config/html/delete_html.xml"/>

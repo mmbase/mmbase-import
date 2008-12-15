@@ -3,22 +3,27 @@
 <form-schema id="edit_view">
    <title xml:lang="en">View</title>
    <title xml:lang="nl">View</title>
+	<title xml:lang="zh">视图</title>
    
 	<field name="title" dtmaxlength="40">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
 	</field>
 	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="zh">描述</prompt>
 	</field>
 	<field name="resource" dtmaxlength="255" ftype="line">
 		<prompt xml:lang="en">View file</prompt>
 		<prompt xml:lang="nl">View bestand</prompt>
+		<prompt xml:lang="zh">视图文件</prompt>
 	</field>
 	<field name="detailsupport" ftype="enum">
 		<prompt xml:lang="en">Detail available</prompt>
 		<prompt xml:lang="nl">Detailweergave</prompt>
+		<prompt xml:lang="zh">Detail available</prompt>
 		<optionlist select="boolean" />
 	</field>
 	<field name="expirationcache" />
