@@ -43,6 +43,7 @@
    <field name="maxlength" ftype="line" dttype="int" dtmin="-1">
       <prompt xml:lang="en">Max length</prompt>
       <prompt xml:lang="nl">Maximum lengte</prompt>
+      <prompt xml:lang="zh">最大长度</prompt>
       <description>The maxlength of the field</description>
    </field>
    <field name="defaultvalue" ftype="line">
