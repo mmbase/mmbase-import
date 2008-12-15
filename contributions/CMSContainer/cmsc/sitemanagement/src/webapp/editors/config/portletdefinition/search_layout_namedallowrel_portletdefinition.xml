@@ -5,24 +5,29 @@
 	
 	<title xml:lang="en">Portlet Definition</title>
 	<title xml:lang="nl">Portlet Definitie</title>
+	<title xml:lang="zh">Portlet定义</title>
 	
 	<item>
 		<field ftype="data" name="title">
 			<prompt xml:lang="en">Title</prompt>
 			<prompt xml:lang="nl">Titel</prompt>
+			<prompt xml:lang="zh">标题</prompt>
 		</field>
 		<field fdatapath="field[@name=&apos;name&apos;]" ftype="line" dtmaxlength="255">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
+			<prompt xml:lang="zh">名称</prompt>
 		</field>
 	</item>
 	
 	<command name="search" nodepath="portletdefinition" age="-1" fields="title" pagelength="20" orderby="title">
 		<prompt xml:lang="en">Search Portlet Definition</prompt>
 		<prompt xml:lang="nl">Zoek Portlet Definitie</prompt>
+		<prompt xml:lang="zh">查找Portlet定义</prompt>
 		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
+			<name xml:lang="zh">标题包含</name>
 			<search-fields>[title]</search-fields>
 		</search-filter>
 	</command>

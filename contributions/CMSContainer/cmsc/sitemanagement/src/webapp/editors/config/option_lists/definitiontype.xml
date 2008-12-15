@@ -4,9 +4,11 @@
    <option id="single">
       <prompt xml:lang="nl">Maximaal 1 portlet</prompt>
       <prompt xml:lang="en">Single porlet</prompt>
+      <prompt xml:lang="zh">单porlet</prompt>
    </option>
    <option id="multiple">
       <prompt xml:lang="nl">Meerdere portlets</prompt>
       <prompt xml:lang="en">Multiple portlets</prompt>
+      <prompt xml:lang="zh">多重porlet</prompt>
    </option>
 </optionlist>

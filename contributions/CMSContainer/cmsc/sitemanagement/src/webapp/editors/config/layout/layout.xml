@@ -3,6 +3,7 @@
 <wizard-schema id="layout">
 	<title xml:lang="nl">Layouts</title>
 	<title xml:lang="en">Layouts</title>
+	<title xml:lang="zh">布局</title>
 
    <action include="config/layout/create_layout.xml"/>
    <action include="config/layout/delete_layout.xml"/>
