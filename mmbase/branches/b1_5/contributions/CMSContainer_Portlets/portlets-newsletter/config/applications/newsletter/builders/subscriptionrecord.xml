@@ -12,12 +12,15 @@
    <names>
       <singular xml:lang="nl">subscriptionrecord</singular>
       <singular xml:lang="en">subscriptionrecord</singular>
+      <singular xml:lang="zh">订阅记录</singular>
       <plural xml:lang="nl">subscriptionrecord</plural>
       <plural xml:lang="en">subscriptionrecord</plural>
+     <plural xml:lang="zh">订阅记录</plural>
    </names>
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
+      <description xml:lang="zh"></description>
    </descriptions>
    <properties></properties>
    <fieldlist>
@@ -25,10 +28,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">status</guiname>
             <guiname xml:lang="en">status</guiname>
+            <guiname xml:lang="zh">状态</guiname>
          </gui>
          <editor>
             <positions>
@@ -47,10 +52,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">interval</guiname>
             <guiname xml:lang="en">interval</guiname>
+            <guiname xml:lang="zh">时间间隔</guiname>
          </gui>
          <editor>
             <positions>
@@ -69,10 +76,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">subscriber</guiname>
             <guiname xml:lang="en">subscriber</guiname>
+            <guiname xml:lang="zh">订阅者</guiname>
          </gui>
          <editor>
             <positions>
@@ -91,10 +100,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">formaat</guiname>
             <guiname xml:lang="en">format</guiname>
+            <guiname xml:lang="zh">格式</guiname>
          </gui>
          <editor>
             <positions>
@@ -113,10 +124,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">pause tot</guiname>
             <guiname xml:lang="en">pause till</guiname>
+            <guiname xml:lang="zh">暂停到</guiname>
          </gui>
          <editor>
             <positions>
@@ -135,10 +148,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">bounces</guiname>
             <guiname xml:lang="en">bounces</guiname>
+            <guiname xml:lang="zh">退信</guiname>
          </gui>
          <editor>
             <positions>
@@ -157,10 +172,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">last sent</guiname>
             <guiname xml:lang="en">last sent</guiname>
+            <guiname xml:lang="zh">上次发送日期</guiname>
          </gui>
          <editor>
             <positions>
@@ -179,10 +196,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">last bounce</guiname>
             <guiname xml:lang="en">last bounce</guiname>
+            <guiname xml:lang="zh">上次退信日期</guiname>
          </gui>
          <editor>
             <positions>
