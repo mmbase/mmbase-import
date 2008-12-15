@@ -16,31 +16,34 @@
    <names>
       <singular xml:lang="nl">portletparameter</singular>
       <singular xml:lang="en">portletparameter</singular>
+      <singular xml:lang="zh">portlet参数</singular>
       <plural xml:lang="nl">portletparameter</plural>
       <plural xml:lang="en">portletparameter</plural>
+      <plural xml:lang="zh">portlet参数</plural>
    </names>
    <descriptions>
-      <description xml:lang="nl"> 
-</description>
-      <description xml:lang="en"> 
-</description>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+      <description xml:lang="zh"></description>
    </descriptions>
 
 	<properties>
-			</properties>
+	</properties>
    <fieldlist>
       <field>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">Naam</guiname>
             <guiname xml:lang="en">Key</guiname>
+            <guiname xml:lang="zh">关键字</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>4</input>
+               <input>4</input>
                <list>4</list>
                <search>4</search>
             </positions>
@@ -55,14 +58,16 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">Waarde</guiname>
             <guiname xml:lang="en">Value</guiname>
+            <guiname xml:lang="zh">值</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>5</input>
+               <input>5</input>
                <list>5</list>
                <search>5</search>
             </positions>
