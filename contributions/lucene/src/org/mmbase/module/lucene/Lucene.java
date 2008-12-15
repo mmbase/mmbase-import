@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.124 2008-09-22 11:59:38 pierre Exp $
+ * @version $Id: Lucene.java,v 1.125 2008-12-15 14:08:11 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1029,8 +1029,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                         String[] sn = snodes.split(",");
                                         if (snodes != null && !"".equals(snodes)) {
                                             log.debug("Found startnodes '" + snodes + "' of list in index: " + indexName);
-                                            for (i = 0; i < sn.length; i++) {
-                                                String snr = cloud.getNodeByAlias(sn[i]).getStringValue("number");
+                                            for (int l = 0; l < sn.length; l++) {
+                                                String snr = cloud.getNodeByAlias(sn[l]).getStringValue("number");
                                                 log.debug("checking for: " + snr);
                                                 if (!startNodes.contains(snr)) startNodes.add(snr);
                                             }
