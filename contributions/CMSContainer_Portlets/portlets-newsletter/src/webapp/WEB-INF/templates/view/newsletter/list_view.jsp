@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <mm:content type="text/html" encoding="UTF-8">
 <mm:cloud method="asis">
