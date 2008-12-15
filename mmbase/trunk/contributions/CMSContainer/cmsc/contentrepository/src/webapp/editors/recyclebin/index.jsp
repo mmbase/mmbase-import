@@ -66,7 +66,7 @@
                      <div class="body">   
                       <mm:node number="$parentchannel">
                            <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
-                             
+                             <mm:sortorder field="contentelement.${sortBy}" direction="${direction}" />
             
                               <c:set var="listSize"><mm:size/></c:set>
                               <c:set var="resultsPerPage" value="50"/>
