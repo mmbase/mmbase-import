@@ -172,7 +172,9 @@ function inits(){
       }
    }
 
-  if(calvalue == null  || calvalue == "") return;
+  if(calvalue == null  || calvalue == "") {
+    return;
+  }
 
   var calendartype =document.getElementById("calendar-type");
   var calendarexpression =document.getElementById("calendar-expression");
@@ -182,8 +184,7 @@ function inits(){
      if(expression != null && expression.length >0) {
        type = expression[0];
      }
-     calendartype.options[type-1].selected = true;
-
+     calendartype.options[type].selected = true;
      if(type == '1') {
         message += "Once,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
      }
@@ -345,4 +346,11 @@ function inits(){
 
      }
   calendarexpression.innerHTML  = message;
+}
+
+function resetCalendar(calendarType,fieldName) {
+   if(calendarType == '0') {
+      document.getElementById('calendar-expression').innerHTML='';
+      document.getElementById(fieldName).value='';
+   }
 }
