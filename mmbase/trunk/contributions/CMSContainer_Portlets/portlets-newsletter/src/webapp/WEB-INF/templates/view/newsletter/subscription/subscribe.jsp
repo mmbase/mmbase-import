@@ -1,11 +1,5 @@
-<%@ page import="com.finalist.newsletter.domain.Subscription" %>
-<%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<%--@elvariable id="subscriptionList" type="java.util.List"--%>
+<%@ page import="com.finalist.newsletter.domain.Subscription" 
+%><%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 <c:set var="contextPath">
@@ -171,6 +165,3 @@
 </c:choose>
 </div>
 </form>
-
-
-

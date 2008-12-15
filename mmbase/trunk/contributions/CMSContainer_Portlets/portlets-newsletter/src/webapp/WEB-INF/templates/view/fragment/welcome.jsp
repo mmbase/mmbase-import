@@ -1,13 +1,9 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 
 <%@ page import="java.util.*" %>
 <%@ page import="com.finalist.newsletter.domain.Newsletter" %>
 <%@ page import="com.finalist.newsletter.domain.Term" %>
 <%@ page import="com.finalist.newsletter.domain.Subscription" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 <html>
 <SCRIPT LANGUAGE="JavaScript">

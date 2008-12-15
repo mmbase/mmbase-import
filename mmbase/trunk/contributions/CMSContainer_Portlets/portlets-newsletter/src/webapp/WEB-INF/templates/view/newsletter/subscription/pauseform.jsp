@@ -1,9 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 <form method="POST" name="<portlet:namespace />form_subscribe"
       action="<cmsc:actionURL><cmsc:param name="action" value="pause"/></cmsc:actionURL>"
