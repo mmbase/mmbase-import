@@ -3,7 +3,6 @@
 <%@ page import="com.finalist.newsletter.domain.Newsletter"%>
 <%@ page import="com.finalist.newsletter.domain.Term"%>
 <%@ page import="com.finalist.newsletter.domain.Subscription"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request" />
 <html>
 <SCRIPT LANGUAGE="JavaScript">
