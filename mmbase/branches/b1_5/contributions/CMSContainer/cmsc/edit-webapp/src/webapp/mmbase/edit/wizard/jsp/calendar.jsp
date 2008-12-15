@@ -1,18 +1,16 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
-%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%><%@include file="../../../../globals.jsp" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <fmt:setBundle basename="cmsc-calendar" scope="request"/>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title><fmt:message key="calendar.head.title"/></title>
-<link href="../../../../editors/editwizards_new/style/layout/wizard.css" type="text/css" rel="stylesheet">
-<link href="../../../../editors/editwizards_new/style/color/wizard.css" type="text/css" rel="stylesheet">
-<link href="../../../../editors/editwizards_new/style/extra/wizard.css" type="text/css" rel="stylesheet">
-<link href="../../../../editors/editwizards_new/style/color/searchlist.css" type="text/css" rel="stylesheet">
-<link href="../../../../editors/editwizards_new/style/extra/searchlist.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+<link href="../../../../editors/editwizards_new/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+<link href="../../../../editors/editwizards_new/style/extra/wizard.css" type="text/css" rel="stylesheet"/>
+<link href="../../../../editors/editwizards_new/style/color/searchlist.css" type="text/css" rel="stylesheet"/>
+<link href="../../../../editors/editwizards_new/style/extra/searchlist.css" type="text/css" rel="stylesheet"/>
 <style xml:space="preserve" type="text/css">
    input.calendar {
        width: 22px;

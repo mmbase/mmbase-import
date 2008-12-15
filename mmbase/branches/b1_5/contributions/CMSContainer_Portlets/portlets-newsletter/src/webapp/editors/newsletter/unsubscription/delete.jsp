@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8" %>
 <%@include file="../globals.jsp" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html:html xhtml="true">
    <%
       String userId = request.getParameter("userId");

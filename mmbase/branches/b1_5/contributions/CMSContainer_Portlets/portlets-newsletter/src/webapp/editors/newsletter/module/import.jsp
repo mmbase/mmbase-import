@@ -1,8 +1,5 @@
 <%@include file="globals.jsp"
-%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
 %><%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"
-%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"
 %><%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"
 %><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">

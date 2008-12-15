@@ -1,6 +1,4 @@
 <%@include file="globals.jsp" 
-%><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
-%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
 %><%@ taglib prefix="edit" tagdir="/WEB-INF/tags/edit" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">

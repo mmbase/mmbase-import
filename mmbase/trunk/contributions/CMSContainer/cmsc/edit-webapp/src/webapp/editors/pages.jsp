@@ -1,8 +1,6 @@
-<%@ page import="org.apache.commons.lang.RandomStringUtils" %>
-<%@ page import="com.finalist.cmsc.paging.PagingUtils" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<%@ page import="org.apache.commons.lang.RandomStringUtils" 
+%><%@ page import="com.finalist.cmsc.paging.PagingUtils" 
+%><%@include file="globals.jsp"%>
 <!--todo : get default page size from system properties.-->
 <c:set var="currentPage" value="${empty param.offset ? 1 : param.offset +1 }"/>
 <c:set var="pagessize" value="${ cmsc:ceil(listSize/resultsPerPage)}"/>
