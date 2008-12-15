@@ -3,6 +3,8 @@ package com.finalist.newsletter;
 import java.text.*;
 import java.util.*;
 
+import javax.mail.MessagingException;
+
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -237,6 +239,11 @@ public class NewsletterCronJob extends AbstractCronJob {
             log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
             //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
             Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
+            try {
+               NewsletterPublicationUtil.freezeEdition(publicationNode);
+            } catch (MessagingException e) {
+               log.error(e);
+            }
             if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
                Publish.publish(publicationNode);
             }
