@@ -14,9 +14,10 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 
 /**
+ * The implemention of 'users' is pluggable, and should be returned by {@link Authenticate#getUserProvider}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Provider.java,v 1.2 2008-12-08 17:02:46 michiel Exp $
+ * @version $Id: Provider.java,v 1.3 2008-12-15 10:27:40 michiel Exp $
  * MMBase-1.8.7
  */
 public interface Provider {
