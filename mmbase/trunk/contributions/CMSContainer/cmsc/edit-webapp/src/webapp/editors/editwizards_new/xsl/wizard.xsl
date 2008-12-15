@@ -100,7 +100,7 @@
     <script type="text/javascript" src="{$ew_context}/js/prototype.js"><xsl:comment>help IE</xsl:comment></script>
     <script type="text/javascript" src="{$ew_context}{$templatedir}javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
     <script type="text/javascript" src="{$ew_context}{$templatedir}javascript/my-validator.js"><xsl:comment>help IE</xsl:comment></script>
-	<script type="text/javascript">
+   <script type="text/javascript">
       var isWebmaster = "<xsl:value-of select="$WEBMASTER"/>";
     </script>
     <xsl:call-template name="extrajavascript-custom"/>
@@ -382,18 +382,18 @@
     </tr>
     
               
-   	<xsl:if test="@status=&apos;invalid&apos;">
+      <xsl:if test="@status=&apos;invalid&apos;">
     <tr>
       <td colspan="2">
         <div class="messagebox_red">
           <div class="box">
-            <div class="top"><div></div></div>						
+            <div class="top"><div></div></div>                  
               <div class="body">
                 <xsl:call-template name="prompt_invalid_list">
                   <xsl:with-param name="minoccurs" select="@minoccurs" />
                   <xsl:with-param name="maxoccurs" select="@maxoccurs" />
                 </xsl:call-template>
-              </div>												
+              </div>                                    
             <div class="bottom"><div></div></div>
           </div>
         </div>
@@ -587,15 +587,15 @@
   </xsl:template>
 
   <xsl:template name="listnewselectors-custom">
-  	<!-- Crash CMSc 1.1 customer wizard-custom.xsl, because we use xsl:apply-templates now -->
+     <!-- Crash CMSc 1.1 customer wizard-custom.xsl, because we use xsl:apply-templates now -->
   </xsl:template>
 
   <xsl:template match="command[@name=&apos;add-item&apos;]" mode="listnewbuttons">
-  	<!-- add-item is used to check for a new action -->
+     <!-- add-item is used to check for a new action -->
   </xsl:template>
 
   <xsl:template match="command[@name=&apos;search&apos;]" mode="listnewbuttons">
-  	<!-- Search is handled by the listsearch template -->
+     <!-- Search is handled by the listsearch template -->
   </xsl:template>
 
   <xsl:template match="command[@name=&apos;startwizard&apos;]" mode="listnewbuttons">
@@ -765,24 +765,25 @@
   <xsl:template name="ftype-unknown">
     <xsl:choose>
       <xsl:when test="@ftype=&apos;calendar&apos;">
-      	<xsl:call-template name="ftype-calendar"/>
+         <xsl:call-template name="ftype-calendar"/>
       </xsl:when>
       <xsl:otherwise>
-      	 <xsl:call-template name="ftype-other"/>
+          <xsl:call-template name="ftype-other"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
   <xsl:template name="ftype-calendar">
-     <nobr><select name="calendar-type" id="calendar-type">
-	<option value="1"><xsl:value-of select="$prompt_newsletter_once" /></option>
-	<option value="2"><xsl:value-of select="$prompt_newsletter_daily" /></option>
-	<option value="3"><xsl:value-of select="$prompt_newsletter_weekly" /></option>
-	<option value="4"><xsl:value-of select="$prompt_newsletter_monthly" /></option>
+     <nobr><select name="calendar-type" id="calendar-type" onchange="resetCalendar(this.value,'{@fieldname}')">
+   <option value="0"><xsl:value-of select="$prompt_newsletter_never" /></option>
+   <option value="1"><xsl:value-of select="$prompt_newsletter_once" /></option>
+   <option value="2"><xsl:value-of select="$prompt_newsletter_daily" /></option>
+   <option value="3"><xsl:value-of select="$prompt_newsletter_weekly" /></option>
+   <option value="4"><xsl:value-of select="$prompt_newsletter_monthly" /></option>
       </select> &#x0020;
       <input type="hidden" name="{@fieldname}" value="{value}" title="new-calendar" id="{@fieldname}"/>
-      <a href="#" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button" href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
-      <div id="calendar-expression"></div>   	
+      <a href="#" id="calendarSelect" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button" href="#" id="calendarDelete" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
+      <div id="calendar-expression"></div>      
   </xsl:template>
 
    <xsl:template name="ftype-image">

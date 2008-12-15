@@ -772,14 +772,15 @@
   </xsl:template>
   
   <xsl:template name="ftype-calendar">
-     <nobr><select name="calendar-type" id="calendar-type">
+     <nobr><select name="calendar-type"  id="calendar-type" onchange="resetCalendar(this.value,'{@fieldname}')">
+   <option value="0"><xsl:value-of select="$prompt_newsletter_never" /></option>
 	<option value="1"><xsl:value-of select="$prompt_newsletter_once" /></option>
 	<option value="2"><xsl:value-of select="$prompt_newsletter_daily" /></option>
 	<option value="3"><xsl:value-of select="$prompt_newsletter_weekly" /></option>
 	<option value="4"><xsl:value-of select="$prompt_newsletter_monthly" /></option>
       </select> &#x0020;
       <input type="hidden" name="{@fieldname}" value="{value}" title="new-calendar" id="{@fieldname}"/>
-      <a href="#" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button" href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
+      <a href="#" id="calendarSelect" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button"  id="calendarDelete"  href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
       <div id="calendar-expression"></div>   	
   </xsl:template>
 </xsl:stylesheet>

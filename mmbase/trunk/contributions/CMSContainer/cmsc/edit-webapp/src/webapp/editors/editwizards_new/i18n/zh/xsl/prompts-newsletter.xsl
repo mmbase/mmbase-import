@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform" >
-
+  <xsl:variable name="prompt_newsletter_never" >无</xsl:variable>
   <xsl:variable name="prompt_newsletter_once" >一次</xsl:variable>
   <xsl:variable name="prompt_newsletter_daily" >每日</xsl:variable>
   <xsl:variable name="prompt_newsletter_weekly" >每周</xsl:variable>
