@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.60 2008-12-09 11:23:00 michiel Exp $
+ * @version $Id: Contexts.java,v 1.61 2008-12-15 10:27:28 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -108,7 +108,7 @@ public class Contexts extends MMObjectBuilder {
 
 
 
-    /*
+    /**
      * Things which must be cleared when some security objects change, can all be collected in this map
      */
 
@@ -197,7 +197,7 @@ public class Contexts extends MMObjectBuilder {
                     if (users.hasField("defaultcontext")) {
                         BasicSearchQuery query = new BasicSearchQuery(true);
                         Step step = query.addStep(users);
-                        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
+                        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), Integer.valueOf(nodeId));
                         query.setConstraint(constraint);
                         BasicAggregatedField baf = query.addAggregatedField(query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
                         baf.setAlias("count");
@@ -480,12 +480,12 @@ public class Contexts extends MMObjectBuilder {
                             newConstraint = query.createConstraint(query.createStepField(step, "number"), userContext.getGroups()); // must be member of group to see group
                             if(operation != Operation.READ) { //
                                 if (userContext.getRank().getInt() <= Rank.BASICUSER.getInt()) { // may no nothing, simply making the query result nothing: number = -1
-                                    Constraint mayNothing = query.createConstraint(query.createStepField(step, "number"), new Integer(-1));
+                                    Constraint mayNothing = query.createConstraint(query.createStepField(step, "number"), Integer.valueOf(-1));
                                     return new Authorization.QueryCheck(true, mayNothing);
                                 }
                             }
                         } else if (step.getTableName().equals("mmbaseranks")) { // higher ranks are none of your businuess (especially usefull for editors)
-                            newConstraint = query.createConstraint(query.createStepField(step, "rank"), FieldCompareConstraint.LESS_EQUAL, new Integer(userContext.getRank().getInt()));
+                            newConstraint = query.createConstraint(query.createStepField(step, "rank"), FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(userContext.getRank().getInt()));
                         } else {
                             continue;
                         }
@@ -508,7 +508,7 @@ public class Contexts extends MMObjectBuilder {
                         }
                     } else {
                         // may read nothing, simply making the query result nothing: number = -1
-                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), new Integer(-1));
+                        Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), Integer.valueOf(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
                 }
@@ -526,7 +526,7 @@ public class Contexts extends MMObjectBuilder {
 
                         if (step.getTableName().equals(users.getUserBuilder().getTableName())) { // anybody may see own node
                             Constraint own = query.createConstraint(query.createStepField(step, "number"),
-                                                                    new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
+                                                                    Integer.valueOf(users.getUser(userContext.getIdentifier()).getNumber()));
                             newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
                         }
 
@@ -573,7 +573,7 @@ public class Contexts extends MMObjectBuilder {
         BasicSearchQuery query = new BasicSearchQuery();
         Step step = query.addStep(this);
         BasicStepField numberStepField = new BasicStepField(step, getField("number"));
-        BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(contextNode.getNumber()));
+        BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, Integer.valueOf(contextNode.getNumber()));
 
         BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
         relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
@@ -886,8 +886,8 @@ public class Contexts extends MMObjectBuilder {
             BasicStepField snumber = q.getField(rights.getField("snumber"));
             BasicStepField dnumber = q.getField(rights.getField("dnumber"));
             BasicStepField op      = q.getField(rights.getField("operation"));
-            BasicFieldValueConstraint c1 = new BasicFieldValueConstraint(snumber, new Integer(contextNode.getNumber()));
-            BasicFieldValueConstraint c2 = new BasicFieldValueConstraint(dnumber, new Integer(groupOrUserNode.getNumber()));
+            BasicFieldValueConstraint c1 = new BasicFieldValueConstraint(snumber, Integer.valueOf(contextNode.getNumber()));
+            BasicFieldValueConstraint c2 = new BasicFieldValueConstraint(dnumber, Integer.valueOf(groupOrUserNode.getNumber()));
             BasicFieldValueConstraint c3 = new BasicFieldValueConstraint(op, operation.toString());
             BasicCompositeConstraint cons = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
             cons.addChild(c1);
