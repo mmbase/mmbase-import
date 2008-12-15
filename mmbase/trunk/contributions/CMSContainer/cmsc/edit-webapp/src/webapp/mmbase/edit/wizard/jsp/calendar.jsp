@@ -115,16 +115,11 @@
       }
       if(type == '2'){
         var interval   = document.getElementById("interval");
-        var strategy = document.getElementsByName("strategy");
-        for(var i = 0 ; i < strategy.length;i++) {
-            if(strategy[i].checked && strategy[i].value == '2') {
-                if(!checkNumber(interval.value)) {
-                   alert('<fmt:message key="calendar.validator.interval"/>');
-                   interval.focus();
-                   return;
-                }
-            }
-         }
+           if(!checkNumber(interval.value)) {
+              alert('<fmt:message key="calendar.validator.interval"/>');
+              interval.focus();
+               return;
+           }
       }
       if(type == '3'){
         var interval   = document.getElementById("interval");
@@ -175,17 +170,9 @@
       }
       else if(type == '2') {
          parameters += "&date="+date.value;
-         var approach = 0;
-         var strategy = document.getElementsByName("strategy");
-         for(var i = 0 ; i < strategy.length;i++) {
-            if(strategy[i].checked) {
-               parameters += "&strategy="+strategy[i].value;
-               approach = strategy[i].value;
-               break;
-            }
-         }
+         var approach = "2";
          var interval = document.getElementById("interval");
-         parameters += "&interval="+interval.value;
+         parameters += "&strategy=2&interval="+interval.value;
          message += '<fmt:message key="calendar.daily"/>,<fmt:message key="calendar.start.datetime"/>'+date.value+' '+hour.value+':'+minute.value;
 
          if(approach == "0") {
@@ -496,14 +483,17 @@
         </td>
         <td > <input type="text" name="date" id="date" size="12" class="date"/><input type="image" class="calendar" src="../media/datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', -105 , -30  , document.forms[0], 'date',event);return false;"/>
         </td></tr>
+        <tr><td colspan="2"></td></tr>
         <tr class="fieldcanvas"><td class="fieldprompt"><span  class="valid" >
         <fmt:message key="calendar.starttime"/></span></td><td ><select id="hour" name="hour"></select>:<select id="minute" name="minute"></select></td>
-        </tr><tr class="fieldcanvas"><td  class="fieldprompt">
-        <span  class="valid" ><fmt:message key="calendar.approach"/></span></td><td>                
-        <input type="radio" name="strategy" checked id ="strategy" value="0" class="calendar"/><span  class="valid" ><fmt:message key="calendar.daily"/></span><br>
-        <input type="radio" name="strategy" id ="strategy"  value="1" class="calendar"/><span  class="valid" ><fmt:message key="calendar.approach.weekday"/></span><br>
-        <input type="radio" name="strategy" id ="strategy"  value="2" class="calendar"/><span  class="valid" ><fmt:message key="calendar.approach.interval.pre"/></span><input type="text" size="4" name="interval" id="interval" value="1" class="calendar"/><span  class="valid" > <fmt:message key="calendar.approach.interval.day"/></span></td>         
+        </tr>
+            <tr><td colspan="2"></td></tr>
+        <tr class="fieldcanvas"><td  class="fieldprompt" >
+        <span  class="valid"  ><fmt:message key="calendar.approach"/></span></td><td>                
+
+       <span  class="valid" ><fmt:message key="calendar.approach.interval.pre"/></span><input type="text" size="4" name="interval" id="interval" value="1" class="calendar"/><span  class="valid" > <fmt:message key="calendar.approach.interval.day"/></span></td>         
         </tr> </table>  
+        <br/>
         <table  width="50%"><tr class="fieldcanvas"><td width="40%"  ><a href="#"  onclick="createCalendar('2')"/><span  class="valid" ><fmt:message key="calendar.ok"/></span></a></td><td>  <a href="#"  onclick="javascript:window.close()"/><span  class="valid" ><fmt:message key="calendar.cancel"/></span></a></td></tr></table>
     </c:when>
     <c:when test="${type == '3'}">
