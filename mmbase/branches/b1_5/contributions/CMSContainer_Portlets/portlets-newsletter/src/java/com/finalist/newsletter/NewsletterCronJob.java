@@ -11,7 +11,7 @@ import org.mmbase.applications.crontab.CronJob;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
+import javax.mail.MessagingException;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.publisher.bounce.BounceChecker;
@@ -242,6 +242,12 @@ public class NewsletterCronJob extends AbstractCronJob {
          log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
          //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
          Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
+         try {
+            NewsletterPublicationUtil.freezeEdition(publicationNode);
+         }
+         catch (MessagingException e) {
+            log.error(e);
+         }
          Publish.publish(publicationNode);
       }
    }
