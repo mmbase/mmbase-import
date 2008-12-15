@@ -7,7 +7,6 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.mmbase.applications.crontab.AbstractCronJob;
-import org.mmbase.applications.crontab.CronJob;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
