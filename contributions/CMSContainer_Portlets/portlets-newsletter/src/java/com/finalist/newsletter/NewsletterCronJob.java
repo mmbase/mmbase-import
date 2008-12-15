@@ -1,7 +1,12 @@
 package com.finalist.newsletter;
 
-import java.text.*;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -9,8 +14,11 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.mmbase.applications.crontab.AbstractCronJob;
-import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
