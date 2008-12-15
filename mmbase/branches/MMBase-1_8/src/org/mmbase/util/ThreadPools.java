@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.6 2008-12-04 09:43:26 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.5.2.7 2008-12-15 13:59:52 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -59,7 +59,7 @@ public abstract class ThreadPools {
     /**
      * For jobs there are 'scheduled', and typically happen on larger time-scales.
      */
-    public static final Executor jobsExecutor = new ThreadPoolExecutor(2, 10, 5, TimeUnit.MINUTES, new  LinkedBlockingQueue(), new ThreadFactory() {
+    public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 10, 5, TimeUnit.MINUTES, new  LinkedBlockingQueue(), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JOBTHREAD");
