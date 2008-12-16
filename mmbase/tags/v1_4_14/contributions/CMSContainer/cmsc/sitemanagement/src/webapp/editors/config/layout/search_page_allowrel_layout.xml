@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="allowrel" destination="layout" minoccurs="0" maxoccurs="1">
+	<title xml:lang="nl">Template</title>
+	<title xml:lang="en">Layout</title>
+
+	<item>
+		<field ftype="data" name="title">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+		</field>
+		<field ftype="data" name="resource">
+			<prompt xml:lang="en">Resource</prompt>
+			<prompt xml:lang="nl">Template</prompt>
+		</field>
+	</item>
+	
+	<command name="search" nodepath="layout" age="-1" fields="title" orderby="title">
+		<prompt xml:lang="en">Search Layout</prompt>
+		<prompt xml:lang="nl">Zoek Template</prompt>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="layout" role="allowrel">
+         <field name="allow">1</field>
+      </relation>
+	</action>
+</list>

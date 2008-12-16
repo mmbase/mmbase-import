@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_playlist">
+	<title xml:lang="nl">Playlist</title>
+	<title xml:lang="en">Playlist</title>
+	<title xml:lang="zh">播放列表列表</title>
+
+	<field name="title">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
+	</field>
+	<field name="body" ftype="html" rows="20">
+		<prompt xml:lang="en">Body</prompt>
+		<prompt xml:lang="nl">Tekst</prompt>
+		<prompt xml:lang="zh">主体</prompt>
+	</field>
+	<field name="location" ftype="line" dtrequired="true">
+		<prompt xml:lang="en">Location of XML playlist</prompt>
+		<prompt xml:lang="nl">Locatie van XML playlist</prompt>
+		<prompt xml:lang="zh">定位播放列表相关XML文件</prompt>
+	</field>
+</form-schema>
