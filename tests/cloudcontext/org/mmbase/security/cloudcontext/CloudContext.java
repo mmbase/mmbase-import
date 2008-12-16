@@ -26,8 +26,13 @@ import org.w3c.dom.Document;
 
 public class CloudContext extends BridgeTest {
 
+    static boolean started = false;
+
     public void setUp() throws Exception  {
-        startMMBase();
+        if (! started) {
+            startMMBase();
+            started = true;
+        }
     }
 
     public void testImplementation() {
@@ -51,6 +56,8 @@ public class CloudContext extends BridgeTest {
         }
         Node n2 = cloud.getNodeManager("news").createNode();
         n2.commit();
+        Node n3 = cloud.getNodeManager("news").createNode();
+        n3.commit();
     }
 
     public void testWriteRights() {
@@ -64,10 +71,49 @@ public class CloudContext extends BridgeTest {
         } catch (SecurityException se) {
             // ok
         }
+        
         news.setStringValue("title", "blaa");
         news.commit();
         
     }
+
+    public void testDeleteRights() {
+        Cloud cloud = getCloud("foo");
+        Node context = cloud.getNodeManager("mmbasecontexts").getList(null).get(0);
+        Node news = cloud.getNodeManager("news").getList(null).get(0);
+        assertFalse(context.mayDelete());
+        assertTrue(news.mayDelete());
+        try {
+            context.delete(true);
+        } catch (SecurityException se) {
+            // ok
+        }
+        
+        news.delete(true);
+        news.commit();
+        
+    }
+
+
+    public void testChangeContextRights() {
+        Cloud cloud = getCloud("foo");
+        Node context = cloud.getNodeManager("mmbasecontexts").getList(null).get(0);
+        Node news = cloud.getNodeManager("news").getList(null).get(0);
+        assertFalse(context.mayChangeContext());
+        assertTrue(news.mayChangeContext());
+        try {
+            context.setContext("default");
+        } catch (SecurityException se) {
+            // ok
+        }
+        
+        news.setContext("admin");
+        news.commit();
+        // changed to a context which we may not change again
+        assertFalse(news.mayChangeContext());                                               
+        
+    }
+
 
 }
 
