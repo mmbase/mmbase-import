@@ -610,6 +610,8 @@ Build-compiler: ${build.compiler}
     <sleep seconds="10" />
     <echo message="========================================CONVERTIMAGE========================================" />
     <antcall target="run.convertimage" inheritRefs="true"/>
+    <echo message="========================================CLOUD CONTEXT SECURITY========================= ====" />
+    <antcall target="run.cloudcontext" inheritRefs="true" />
   </target>
 
   <target name="run.all.bridge">
