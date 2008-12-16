@@ -33,16 +33,17 @@ public class CloudContext extends BridgeTest {
     public void testImplementation() {
         assertEquals(org.mmbase.security.implementation.cloudcontext.Authenticate.class, 
                      getCloud().getCloudContext().getAuthentication().getClass());
+        Cloud cloud = getCloud("foo");
+        assertEquals("foo", cloud.getUser().getIdentifier());
     }
 
 
     public void testCreateRights() {
         Cloud cloud = getCloud("foo");
-        assertEquals("foo", cloud.getUser().getIdentifier());
         assertFalse(cloud.getNodeManager("mmbasecontexts").mayCreateNode());
         assertTrue(cloud.getNodeManager("news").mayCreateNode());
+        Node n1 = cloud.getNodeManager("mmbasecontexts").createNode();
         try {
-            Node n1 = cloud.getNodeManager("mmbasecontexts").createNode();
             n1.commit();
             fail("Should not have been possible to create node of type 'mmbasecontexts', but it did not throw exception: " + n1);
         } catch(SecurityException se)  {
@@ -50,6 +51,22 @@ public class CloudContext extends BridgeTest {
         }
         Node n2 = cloud.getNodeManager("news").createNode();
         n2.commit();
+    }
+
+    public void testWriteRights() {
+        Cloud cloud = getCloud("foo");
+        Node context = cloud.getNodeManager("mmbasecontexts").getList(null).get(0);
+        Node news = cloud.getNodeManager("news").getList(null).get(0);
+        assertFalse(context.mayWrite());
+        assertTrue(news.mayWrite());
+        try {
+            context.setStringValue("name", "bla bla");
+        } catch (SecurityException se) {
+            // ok
+        }
+        news.setStringValue("title", "blaa");
+        news.commit();
+        
     }
 
 }
