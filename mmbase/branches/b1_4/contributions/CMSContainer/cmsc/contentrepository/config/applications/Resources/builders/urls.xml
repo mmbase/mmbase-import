@@ -188,10 +188,12 @@
     			<search>-1</search>
     		</positions>
     	</editor>
-    	<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    	<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    	  <default value="1"/>
+    	</datatype>
     	<db>
     		<name>valid</name>
-    		<type key="false" notnull="false" size="1" state="persistent">STRING</type>
+    		<type key="false" required="true" state="persistent">BOOLEAN</type>
     	</db>
     </field>
   </fieldlist>
