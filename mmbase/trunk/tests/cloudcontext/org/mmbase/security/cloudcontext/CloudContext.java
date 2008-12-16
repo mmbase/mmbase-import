@@ -216,5 +216,54 @@ public class CloudContext extends BridgeTest {
         }
     }
 
+    public void testGrantToGroup() throws InterruptedException {
+        Cloud adminCloud = getCloud();
+        Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
+        Node groupNode   = SearchUtil.findNode(adminCloud, "mmbasegroups",   "name", "users");
+        Parameters params = contextNode.createParameters("grant");
+        params.set("grouporuser", "" + groupNode.getNumber());
+        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("user", adminCloud.getUser());
+
+        assertTrue(contextNode.getFunctionValue("grant", params).toBoolean());
+        // a certain latency is allowed
+        Thread.sleep(10000); // TODO
+        // now foo should be allowed to create new contexts again, because is in the 'users' group
+        Cloud cloud = getCloud("foo");
+        assertTrue(cloud.getNodeManager("mmbasecontexts").mayCreateNode());
+
+        Node n3 = cloud.getNodeManager("mmbasecontexts").createNode();
+        n3.setStringValue("name", "testcontextoffoo3");
+        n3.commit();
+    }
+
+    public void testRevokeFromGroup() throws InterruptedException {
+
+        Cloud adminCloud = getCloud();
+        Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
+        Node groupNode   = SearchUtil.findNode(adminCloud, "mmbasegroups",   "name", "users");
+        Parameters params = contextNode.createParameters("revoke");
+        params.set("grouporuser", "" + groupNode.getNumber());
+        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("user", adminCloud.getUser());
+
+        assertTrue(contextNode.getFunctionValue("revoke", params).toBoolean());
+        // a certain latency is allowed
+        Thread.sleep(10000); // TODO
+
+        // now foo should be disallowed to create new contexts again
+        Cloud cloud = getCloud("foo");
+        assertFalse(cloud.getNodeManager("mmbasecontexts").mayCreateNode());
+
+        try {
+            Node n3 = cloud.getNodeManager("mmbasecontexts").createNode();
+            n3.setStringValue("name", "testcontextoffoo4");
+            n3.commit();
+            fail("Should not have been allowed to create new mmbase contexts");
+        } catch (SecurityException se) {
+            // ok
+        }
+    }
+
 }
 
