@@ -37,6 +37,7 @@
       <xsd:attribute name="maintainer" type="xsd:string" />
       <xsd:attribute name="version"    type="xsd:string" />
       <xsd:attribute name="extends"    type="xsd:string" />
+      <xsd:attribute name="defaultcontextintypedef"    type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="status" />

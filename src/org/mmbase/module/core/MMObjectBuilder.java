@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.436 2008-11-12 18:36:56 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.437 2008-12-16 16:40:23 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -439,8 +439,25 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
                 oType = typeDef.getIntValue(tableName);
                 if (oType == -1) { // no object type number defined yet
-                    if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
-                    MMObjectNode node = typeDef.getNewNode(SYSTEM_OWNER);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Creating typedef entry for " + tableName);
+                    }
+                    String owner;
+                    try {
+                        org.w3c.dom.Document xml = ResourceLoader.getConfigurationRoot().getDocument(getConfigResource());
+                        String a = xml.getDocumentElement().getAttribute("defaultcontextintypedef");
+                        if (! "".equals(a)) {
+                            owner = a;
+                        } else {
+                            owner = SYSTEM_OWNER;
+                        }
+                    } catch (Exception e) {
+                        owner = SYSTEM_OWNER;
+                    }
+                    
+
+                    MMObjectNode node = typeDef.getNewNode(owner);
+        
                     node.storeValue("name", tableName);
 
                     // This sucks:
@@ -461,7 +478,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     if (this == typeDef) {
                         node.storeValue(FIELD_OBJECT_TYPE, oType);
                     }
-                    typeDef.insert(SYSTEM_OWNER, node, false);
+                    typeDef.insert(owner, node, false);
                     // for typedef, call it's parents init again, as otype is only now set
                     if (this == typeDef) {
                         initAncestors();
