@@ -1,7 +1,7 @@
 function showInfo(assetType, objectnumber) {
       var infoURL;
       infoURL = '../resources/';
-      infoURL += assetType.toLowerCase();
+      infoURL += assetType.toLowerCase().substring(0,assetType.length-1);
       infoURL += 'info.jsp?objectnumber=';
       infoURL += objectnumber;
       openPopupWindow(assetType.toLowerCase()+'info', '900', '500', infoURL);

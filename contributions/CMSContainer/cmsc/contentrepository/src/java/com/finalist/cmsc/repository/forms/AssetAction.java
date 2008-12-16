@@ -8,6 +8,7 @@
 package com.finalist.cmsc.repository.forms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,11 +62,15 @@ public class AssetAction extends MMBaseAction {
       String direction = request.getParameter("direction");
       String show = request.getParameter("show");
       String exist = request.getParameter("exist");
+      String imageOnly = request.getParameter("imageOnly");
 
       if (StringUtils.isNotEmpty(show)) {
          show = "thumbnail";
       } else {
          show = null;
+      }
+      if (StringUtils.isEmpty(imageOnly)) {
+         imageOnly = "no";
       }
       if (StringUtils.isEmpty(orderby)) {
          orderby = null;
@@ -92,8 +97,14 @@ public class AssetAction extends MMBaseAction {
 
       if (StringUtils.isNotEmpty(parentchannel)) {
          Node channel = cloud.getNode(parentchannel);
-         NodeList assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false,
+         NodeList assets;
+         if("yes".equals(imageOnly)){
+         assets = RepositoryUtil.getCreatedAssets(channel, Arrays.<String>asList("images"), orderby, direction, false,
                offset * maxNumber, maxNumber, -1, -1, -1);
+         }else{
+            assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false,
+                  offset * maxNumber, maxNumber, -1, -1, -1);
+         }
          NodeList created = RepositoryUtil.getCreatedAssets(channel);
          int assetCount = 0;
          if (!created.isEmpty()) {
@@ -105,6 +116,7 @@ public class AssetAction extends MMBaseAction {
          addToRequest(request, "elementCount", Integer.toString(assetCount));
          addToRequest(request, "show", show);
          addToRequest(request, "exist", exist);
+         addToRequest(request, "imageOnly", imageOnly);
 
          Map<String, Node> createdNumbers = new HashMap<String, Node>();
          for (Iterator<Node> iter = created.iterator(); iter.hasNext();) {
