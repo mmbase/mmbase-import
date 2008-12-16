@@ -15,14 +15,14 @@
 <body onload="refreshChannels();">
 <div class="tabs">
     <!-- active TAB -->
-   <div class="tab">
+   <div class="tab_active">
       <div class="body">
          <div>
             <a href="index.jsp"><fmt:message key="recyclebin.content.title" /></a>
          </div>
       </div>
    </div>
-   <div class="tab_active">
+   <div class="tab">
       <div class="body">
          <div>
                 <a href="assettrash.jsp"><fmt:message key="recyclebin.asset.title"/></a>
@@ -50,7 +50,7 @@
                          </p>
                         <form name="deleteForm" action="DeleteAction.do" method="post">
                            <input type="hidden" name="action" value="deleteall" />
-                           <input type="hidden" name="type" value="asset" />
+                           <input type="hidden" name="type" value="content" />
                            <ul class="shortcuts">
                                  <li class="trashbinempty">
                                  <a href="javascript:deleteAll('<fmt:message key="recyclebin.removeallconfirm" />');"><fmt:message key="recyclebin.clear" /></a>
@@ -61,13 +61,13 @@
                       </div>
                         
                      <div class="ruler_green">
-                         <div><fmt:message key="recyclebin.asset" /></div>
+                         <div><fmt:message key="recyclebin.content" /></div>
                      </div>
                
                      <div class="body">   
-                        <mm:node number="$parentchannel">
-                           <mm:relatednodescontainer path="creationrel,assetelement" searchdirs="source" element="assetelement">
-                              <mm:sortorder field="assetelement.${sortBy}" direction="${direction}" />
+                      <mm:node number="$parentchannel">
+                           <mm:relatednodescontainer path="contentrel,contentelement" searchdirs="destination" element="contentelement">
+                             <mm:sortorder field="contentelement.${sortBy}" direction="${direction}" />
             
                               <c:set var="listSize"><mm:size/></c:set>
                               <c:set var="resultsPerPage" value="50"/>
@@ -75,7 +75,8 @@
                               
                               <mm:listnodes jspvar="node" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
                                  <mm:first>
-                                    <%@include file="../pages.jsp" %>
+                                   
+                                 <%@include file="../pages.jsp" %>
                                      <table>
                                        <thead>
                                           <tr>
@@ -93,23 +94,15 @@
                                  <tr <mm:even inverse="true">class="swap"</mm:even>>
                                     <td nowrap>
                                        <a href="javascript:info('<mm:field name="number" />', '<mm:nodeinfo type="guitype"/>')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />" title="<fmt:message key="recyclebin.info" />"/></a>
-                                       <a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}','asset');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
-                                       <a href="javascript:restore('<mm:field name="number" />', '${offset}','<mm:nodeinfo type="guitype"/>');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />" title="<fmt:message key="recyclebin.restore" />"/></a>
+                                       <a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}', 'content');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
+                                       <a href="javascript:restore('<mm:field name="number" />', '${offset}', '<mm:nodeinfo type="guitype"/>');"><img src="../gfx/icons/restore.png" width="16" height="16" alt="<fmt:message key="recyclebin.restore" />" title="<fmt:message key="recyclebin.restore" />"/></a>
                                     </td>
                                     <td>
                                       <mm:nodeinfo type="guitype"/>
                                     </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
-               <c:set var="assettype" ><mm:nodeinfo type="guitype"/></c:set>
-               <mm:field id="title" write="false" name="title"/>
-               <c:if test="${assettype == 'URL'}">
-                  <c:set var="title" ><mm:field name="name"/></c:set>
-               </c:if>
-               <c:if test="${fn:length(title) > 50}">
-                  <c:set var="title">${fn:substring(title,0,49)}...</c:set>
-               </c:if>
-               ${title}
-            </td>
+                                    <td>
+                                       <mm:field name="title"/>
+                                    </td>
                                     <td>
                                        <mm:field name="lastmodifier" />
                                     </td>
@@ -124,10 +117,10 @@
                               <mm:last>
                                     </tbody>
                                  </table>
-           <%@include file="../pages.jsp" %>
+                                 <%@include file="../pages.jsp" %>
                               </mm:last>
                           </mm:listnodes>
-                        </mm:relatednodescontainer>                   
+                        </mm:relatednodescontainer>
                      </mm:node>
 
                      </div>

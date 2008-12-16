@@ -93,7 +93,7 @@
                      <li class="trashbin">
                         <mm:countrelations id="contentNum"type="contentelement" searchdir="destination" role="contentrel"><mm:write write="false" /></mm:countrelations>
                         <mm:countrelations id="assetNum" type="assetelement" searchdir="source" role="creationrel"><mm:write write="false" /></mm:countrelations>
-                        <a href="<mm:url page="../recyclebin/index.jsp"/>" target="content" >
+                        <a href="<mm:url page="../recyclebin/contenttrash.jsp"/>" target="content" >
                            <fmt:message key="selector.recyclebin" />
                            (<c:out value="${contentNum+assetNum}" />)
                         </a>
