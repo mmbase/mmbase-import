@@ -1,5 +1,10 @@
 <project name="MMBaseTest" default="run.all" basedir=".">
 
+  <assertions>
+    <enable/>
+  </assertions>
+
+
   <!-- =================================================================== -->
   <!-- Init                                                                -->
   <!-- =================================================================== -->
@@ -76,6 +81,9 @@
     <antcall target="rmmci-client" />
     <antcall target="install.jar">
       <param name="name" value="mmbase-clustering" />
+    </antcall>
+    <antcall target="install.jar">
+      <param name="name" value="mmbase-cloudcontext" />
     </antcall>
     <antcall target="install.jar">
       <param name="name" value="mmbase-richtext" />
@@ -167,6 +175,12 @@
           <include name="mmbase-clustering-*.jar" />
         </fileset>
       </classpath>
+      <classpath id="run.classpath.cloudcontext">
+        <path refid="run.classpath"/>
+        <fileset dir="${lib}">
+          <include name="mmbase-cloudcontext-*.jar" />
+        </fileset>
+      </classpath>
       <classpath id="run.rmmci.client">
         <fileset dir="${lib}">
           <include name="junit*.jar" />
@@ -203,6 +217,14 @@
     <echo level="debug" message="copying" />
 
     <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
+      <fileset dir="${tests.source.dir}/common">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+      </fileset>
       <fileset dir="${tests.source.dir}/vpro-wizards">
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
@@ -287,6 +309,7 @@
       <src path="${tests.source.dir}/releasestrategy"/>
       <src path="${tests.source.dir}/vpro-wizards" />
       <src path="${tests.source.dir}/richtext" />
+      <src path="${tests.source.dir}/cloudcontext" />
       <include name="**/*.java"/>
     </javac>
     <property name="compiled" value="yes" />
@@ -531,6 +554,21 @@ Build-compiler: ${build.compiler}
         <antcall target="stop.database" inheritRefs="true"/>
       </sequential>
     </parallel>
+  </target>
+
+  <target name="run.cloudcontext" depends="jar,init" description="Cloudcontext test-cases">
+    <antcall target="clean.database" />
+    <echo message="Starting ${ui.class}: " />
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath.cloudcontext"
+        >
+      <arg value="org.mmbase.security.cloudcontext.CloudContext" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
   </target>
 
 
