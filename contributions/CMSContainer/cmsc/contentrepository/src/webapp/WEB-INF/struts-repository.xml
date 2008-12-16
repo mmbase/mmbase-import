@@ -194,12 +194,12 @@
       <action path="/editors/recyclebin/RestoreAction" type="com.finalist.cmsc.recyclebin.forms.RestoreAction" 
          unknown="false" validate="false">
          <forward name="restore" path="/editors/recyclebin/restore.jsp" redirect="false" />
-         <forward name="success" path="/editors/recyclebin/index.jsp" redirect="false" />
+         <forward name="success" path="/editors/recyclebin/contenttrash.jsp" redirect="false" />
       </action>
 
       <action path="/editors/recyclebin/DeleteAction" type="com.finalist.cmsc.recyclebin.forms.DeleteAction" 
          unknown="false" validate="false">
-         <forward name="content" path="/editors/recyclebin/index.jsp" redirect="false" />
+         <forward name="content" path="/editors/recyclebin/contenttrash.jsp" redirect="false" />
          <forward name="asset" path="/editors/recyclebin/assettrash.jsp" redirect="false" />
       </action>
 
@@ -254,7 +254,7 @@
       <action path="/editors/recyclebin/RestoreAssetAction" type="com.finalist.cmsc.recyclebin.forms.RestoreAssetAction" 
          unknown="false" validate="false">
          <forward name="restore" path="/editors/recyclebin/restore.jsp" redirect="false" />
-         <forward name="success" path="/editors/recyclebin/index.jsp" redirect="false" />
+         <forward name="success" path="/editors/recyclebin/assettrash.jsp" redirect="false" />
       </action>
       <action path="/editors/repository/HighFrequencyImg" type="com.finalist.cmsc.repository.forms.HighFrequencyImgAction"
          unknown="false" validate="false" name="HighFrequencyImgForm">

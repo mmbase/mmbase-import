@@ -38,7 +38,12 @@ public class DeleteAction extends MMBaseFormlessAction {
       if ("deleteall".equals(action)) {
          Node objectNode = null;
          Node trash = RepositoryUtil.getTrashNode(cloud);
-         NodeList garbage = RepositoryUtil.getLinkedElements(trash);
+         NodeList garbage;
+         if ("content".equals(type)) {
+            garbage = RepositoryUtil.getLinkedElements(trash);
+         } else {
+            garbage = RepositoryUtil.getCreatedAssetElements(trash);
+         }
          for (Iterator<Node> iter = garbage.iterator(); iter.hasNext();) {
             try {
                objectNode = iter.next();
