@@ -134,6 +134,7 @@
           <include name="servletapi*.jar" />
           <include name="junit*.jar"/>
           <include name="mmbase-${version}.jar"/>
+          <include name="mmbase-cloudcontext-${version}.jar"/>
           <include name="hsqldb-*.jar"/>
         </fileset>
       </classpath>
