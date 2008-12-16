@@ -35,6 +35,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
 public class AssetAction extends MMBaseAction {
 
    private final static String MOVEASSETTOCHANNEL = "moveAssetToChannel";
+   private static final String IMAGES = "images";
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -98,14 +99,16 @@ public class AssetAction extends MMBaseAction {
       if (StringUtils.isNotEmpty(parentchannel)) {
          Node channel = cloud.getNode(parentchannel);
          NodeList assets;
+         NodeList created;
          if("yes".equals(imageOnly)){
-         assets = RepositoryUtil.getCreatedAssets(channel, Arrays.<String>asList("images"), orderby, direction, false,
+         assets = RepositoryUtil.getCreatedAssets(channel, Arrays.<String>asList(IMAGES), orderby, direction, false,
                offset * maxNumber, maxNumber, -1, -1, -1);
+         created = RepositoryUtil.getCreatedAssets(channel, IMAGES);
          }else{
             assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false,
                   offset * maxNumber, maxNumber, -1, -1, -1);
+            created = RepositoryUtil.getCreatedAssets(channel);
          }
-         NodeList created = RepositoryUtil.getCreatedAssets(channel);
          int assetCount = 0;
          if (!created.isEmpty()) {
             assetCount = created.size();

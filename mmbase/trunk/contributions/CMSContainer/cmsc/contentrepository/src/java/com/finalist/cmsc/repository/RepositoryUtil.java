@@ -635,6 +635,10 @@ public final class RepositoryUtil {
         return channel.getRelatedNodes(ASSETELEMENT, CREATIONREL, SOURCE);
     }
 
+    public static NodeList getCreatedAssets(Node channel, String assettype) {
+       return channel.getRelatedNodes(assettype, CREATIONREL, SOURCE);
+   }
+    
     public static boolean hasLinkedContent(Node channelNode) {
         // check if the content channel has related content elements
         return countLinkedContent(channelNode) != 0;
