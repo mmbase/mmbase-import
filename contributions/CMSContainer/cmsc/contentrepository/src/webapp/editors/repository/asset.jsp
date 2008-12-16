@@ -25,7 +25,10 @@
          var assetsMode = document.getElementsByTagName("option");
          for(i = 0; i < assetsMode.length; i++){
             if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                document.getElementById("chk_showImageOnly").checked=false;
+                if(document.getElementById("chk_showImageOnly").checked){
+                    document.getElementById("chk_showImageOnly").checked=false;
+                    offset=0;
+                }
                 document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset+'&imageOnly=no';
             }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
                if(document.getElementById("chk_showImageOnly").checked==false){
@@ -37,8 +40,8 @@
             }
          }
       }
-      function showImageOnly(offset){
-          if(offset==null){offset=0;}
+      function showImageOnly(){
+          var offset=0;
           var assetsMode = document.getElementById("assetMode");
           assetsMode.selectedIndex=1;
          if(document.getElementById("chk_showImageOnly").checked == true){
@@ -99,7 +102,7 @@
                      <option id = "a_thumbnail" selected="selected" >thumbnail</option>
                   </c:if>
                </select>
-               <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly(${param.offset});"/><fmt:message key="asset.image.show"/>
+               <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
             </div>
 
             <c:if test="${empty show}">
