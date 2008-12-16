@@ -230,7 +230,7 @@ public class NewsletterCronJob extends AbstractCronJob {
    public void init() {
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       BounceChecker checker = new BounceChecker(newsletterService);
-      if (!checker.isRunning() && ServerUtil.isLive()) {
+      if (!checker.isRunning() && (ServerUtil.isStaging() || ServerUtil.isSingle())) {
          checker.start();
       }
    }
