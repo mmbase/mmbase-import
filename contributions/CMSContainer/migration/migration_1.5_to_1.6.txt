@@ -1,0 +1,103 @@
+Migration document:
+
+Part: core
+From version: 1.5
+To version: 1.6
+
+
+Execute the following steps below in the given order:
+
+Name: Creat a new Asset super type, AssetElement
+Goal: Creat a new Asset super type, AssetElement
+Type:  sql-script
+--- Start script ---
+CREATE TABLE mm_assetelement(number int(11) NOT NULL,otype int(11) NOT NULL,owner varchar(12) NOT NULL,creationdate datetime default NULL,lastmodifieddate datetime default NULL,publishdate datetime default NULL,expiredate datetime default NULL,lastmodifier text,creator text,use_expirydate bit(1) NOT NULL,title text,description text,m_status text,PRIMARY KEY(number),KEY otype(otype));
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add publishdate, expiredate, use_expirydate and m_status column to urls, images and attachments
+Goal: Add publishdate, expiredate, use_expirydate and m_status column to urls, images and attachments
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_attachments ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+ALTER TABLE mm_images ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+ALTER TABLE mm_urls ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+
+ALTER TABLE live_attachments ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+ALTER TABLE live_images ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+ALTER TABLE live_urls ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add nodeType column to workflowitem
+Goal: Add nodeType column to workflowitem
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_workflowitem ADD column nodetype varchar(64) default NULL;
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add asset relations
+Goal: Create  relations of asset
+Type: contentrepository/config/applications/contentrepository.xml (installed under <APP_HOME>/WEB-INF/config/applications/contentrepository.xml)
+--- Start script ---
+	   <relation from="assetelement" to="contentchannel" type="creationrel" />
+      <relation from="assetelement" to="contentchannel" type="deletionrel" />
+      <relation from="assetelement" to="user" type="ownerrel" />
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Create  relations 
+Goal: Create  relations from  workflowitem to assetelement
+Type: workflow/config/applications/workflow.xml (installed under <APP_HOME>/WEB-INF/config/applications/workflow.xml)
+--- Start script ---
+      <relation from="workflowitem" to="assetelement" type="workflowrel" />
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+Name: Create extends  relations  of asset
+Goal: Create extends  relations  of asset
+Type: contentrepository/config/applications/Resources/builders/attachments.xml,images.xml,urls.xml (installed under <APP_HOME>/WEB-INF/config/applications/Resources/builders/attachments.xml,images.xml,urls.xml)
+--- Start script ---
+    <builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="images" maintainer="mmbase.org" version="0" extends="assetelement">
+
+    <builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="urls" maintainer="www.mmbase.org" version="1" extends="assetelement">
+
+    <builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="attachments" maintainer="www.mmbase.org" version="1" extends="assetelement">
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
