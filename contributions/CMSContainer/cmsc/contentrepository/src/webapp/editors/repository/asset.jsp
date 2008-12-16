@@ -11,29 +11,44 @@
          referid="parentchannel"/>&direction=down</mm:import>
 
          <cmscedit:head title="images.title">
-            <script type="text/javascript">
-
-               function showEditItems(id){
-                  document.getElementById('asset-info-'+id).style.display = 'block';
-                  document.getElementById('asset-info-'+id).style.display = 2001;
-               }
-               function hideEditItems(id){
-                  document.getElementById('asset-info-'+id).style.display = 'none';
-                  document.getElementById('asset-info-'+id).style.display = 2000;
-               }
-               function changeMode(offset){
-                  if(offset==null){offset=0;}
-                  var assetsMode = document.getElementsByTagName("option");
-                  for(i = 0; i < assetsMode.length; i++){
-                     if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset;
-                     }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset;
-                     }
-                  }
-               }
-            </script>
-            <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
+   <script type="text/javascript">
+      function showEditItems(id){
+         document.getElementById('asset-info-'+id).style.display = 'block';
+         document.getElementById('asset-info-'+id).style.display = 2001;
+      }
+      function hideEditItems(id){
+         document.getElementById('asset-info-'+id).style.display = 'none';
+         document.getElementById('asset-info-'+id).style.display = 2000;
+      }
+      function changeMode(offset){
+         if(offset==null){offset=0;}
+         var assetsMode = document.getElementsByTagName("option");
+         for(i = 0; i < assetsMode.length; i++){
+            if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
+                document.getElementById("chk_showImageOnly").checked=false;
+                document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset+'&imageOnly=no';
+            }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
+               if(document.getElementById("chk_showImageOnly").checked==false){
+                   document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
+                    }
+                    if(document.getElementById("chk_showImageOnly").checked==true){
+                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes';
+                    }
+            }
+         }
+      }
+      function showImageOnly(offset){
+          if(offset==null){offset=0;}
+          var assetsMode = document.getElementById("assetMode");
+          assetsMode.selectedIndex=1;
+         if(document.getElementById("chk_showImageOnly").checked == true){
+	         document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes'
+         }else{
+            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
+          }
+      }
+   </script>
+   <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
          </cmscedit:head>
 
          <div class="editor">
@@ -74,7 +89,7 @@
             </div>
 
             <div>
-               <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
+               <select name="assesMode" id="assetMode" onchange="javascript:changeMode(${param.offset})">
                   <c:if test="${empty show}">
                      <option id="a_list" selected="selected">list</option>
                      <option id = "a_thumbnail" >thumbnail</option>
@@ -84,7 +99,9 @@
                      <option id = "a_thumbnail" selected="selected" >thumbnail</option>
                   </c:if>
                </select>
+               <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly(${param.offset});"/><fmt:message key="asset.image.show"/>
             </div>
+
             <c:if test="${empty show}">
                <div class="body" >
                   <mm:import externid="elements" from="request" required="true"/>
@@ -92,7 +109,12 @@
                   <mm:import externid="resultsPerPage" from="request" vartype="Integer">25</mm:import>
                   <c:set var="listSize" value="${elementCount}"/>
                   <c:set var="offset" value="${param.offset}"/>
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}"/>
+                  <c:if test="${imageOnly eq 'no'}">
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&imageOnly=no"/>
+                  </c:if>
+                  <c:if test="${imageOnly eq 'yes'}">
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&imageOnly=yes"/>
+                  </c:if>
                   <c:set var="orderby" value="${param.orderby}" scope="page" />
                   <c:set var="type" value="asset" scope="page" />
                   <%@ include file="../pages.jsp" %>
@@ -207,7 +229,12 @@
                   <c:set var="offset" value="${param.offset}"/>
                   <c:set var="orderby" value="${param.orderby}" scope="page" />
                   <c:set var="type" value="asset" scope="page" />
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=0"/>
+                  <c:if test="${imageOnly eq 'no'}">
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=0&imageOnly=no"/>
+                  </c:if>
+                  <c:if test="${imageOnly eq 'yes'}">
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=0&imageOnly=yes"/>
+                  </c:if>
                   <%@ include file="../pages.jsp" %>
                   <form>
                      <input type="hidden" name="offset" value="${param.offset}"/>
@@ -227,7 +254,7 @@
                                     <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
                                     <c:if test="${typedef eq 'images'}">
                                        <img src="<mm:image template="s(120x100)"/>" alt=""/>
-                                    </c:if> n
+                                    </c:if> 
                                     <c:if test="${typedef eq 'attachments'}">
                                        <img src="../gfx/alert_green_left.gif" alt=""/>change
                                     </c:if>
