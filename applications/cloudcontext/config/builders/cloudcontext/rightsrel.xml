@@ -4,7 +4,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                       http://www.mmbase.org/xmlns/builder.xsd"
-  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel">
+  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel"
+  defaultcontextintypedef="security"
+  >
   <class>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</class>
   <searchage>14</searchage>
   <names>

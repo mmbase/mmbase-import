@@ -4,7 +4,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                       http://www.mmbase.org/xmlns/builder.xsd"
-  name="mmbaseactions" maintainer="www.mmbase.org" version="0" extends="object">
+  name="mmbaseactions" maintainer="www.mmbase.org" version="0" extends="object"
+  defaultcontextintypedef="security"
+  >
   <class>org.mmbase.security.implementation.cloudcontext.builders.Actions</class>
   <names>
     <singular xml:lang="en">Security Action</singular>
