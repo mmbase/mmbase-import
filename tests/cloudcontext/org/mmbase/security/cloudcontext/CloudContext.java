@@ -104,8 +104,7 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayChangeContext());
         try {
             context.setContext("default");
-            context.commit();
-            fail("Should not have been been allowed to set context of an mmbasecontext node");
+            fail("Should not have been been allowed to set context of an mmbasecontext node"); //MMB-1752
         } catch (SecurityException se) {
             // ok
         }
