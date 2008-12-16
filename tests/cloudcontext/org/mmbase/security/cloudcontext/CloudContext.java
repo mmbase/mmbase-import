@@ -68,6 +68,7 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayWrite());
         try {
             context.setStringValue("name", "bla bla");
+            fail("Should not have been been allowed to write in an mmbasecontext node");
         } catch (SecurityException se) {
             // ok
         }
@@ -85,12 +86,12 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayDelete());
         try {
             context.delete(true);
+            fail("Should not have been been allowed to delete an mmbasecontext node");
         } catch (SecurityException se) {
             // ok
         }
         
         news.delete(true);
-        news.commit();
         
     }
 
@@ -103,6 +104,8 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayChangeContext());
         try {
             context.setContext("default");
+            context.commit();
+            fail("Should not have been been allowed to set context of an mmbasecontext node");
         } catch (SecurityException se) {
             // ok
         }
@@ -112,6 +115,24 @@ public class CloudContext extends BridgeTest {
         // changed to a context which we may not change again
         assertFalse(news.mayChangeContext());                                               
         
+    }
+
+    public void testSetOwnPassord() {
+        Cloud cloud = getCloud("foo");
+        Node userNode = cloud.getNode(cloud.getCloudContext().getAuthentication().getNode(cloud.getUser()));
+        assertEquals("foo", userNode.getStringValue("username"));        
+        userNode.setStringValue("password", "bar2");
+        userNode.commit();
+    }
+    public void testDeleteOwnNode() {
+        Cloud cloud = getCloud("foo");
+        Node userNode = cloud.getNode(cloud.getCloudContext().getAuthentication().getNode(cloud.getUser()));
+        try {
+            userNode.delete();
+            fail("Should not have been been allowed to delete own node");
+        } catch (SecurityException se) {
+            // ok
+        }       
     }
 
 
