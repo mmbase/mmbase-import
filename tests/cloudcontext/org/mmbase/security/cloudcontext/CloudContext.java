@@ -10,14 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.security.cloudcontext;
 
-import org.mmbase.tests.BridgeTest;
-import junit.framework.TestCase;
 import java.util.*;
+import org.mmbase.security.Operation;
+import org.mmbase.tests.BridgeTest;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.Casting;
-import org.w3c.dom.Document;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.util.functions.Parameters;
+
 /**
  *
  * @author Michiel Meeuwissen
@@ -68,7 +67,7 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayWrite());
         try {
             context.setStringValue("name", "bla bla");
-            fail("Should not have been been allowed to write in an mmbasecontext node");
+            fail("Should not have been allowed to write in an mmbasecontext node");
         } catch (SecurityException se) {
             // ok
         }
@@ -86,7 +85,7 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayDelete());
         try {
             context.delete(true);
-            fail("Should not have been been allowed to delete an mmbasecontext node");
+            fail("Should not have been allowed to delete an mmbasecontext node");
         } catch (SecurityException se) {
             // ok
         }
@@ -104,7 +103,7 @@ public class CloudContext extends BridgeTest {
         assertTrue(news.mayChangeContext());
         try {
             context.setContext("default");
-            fail("Should not have been been allowed to set context of an mmbasecontext node"); //MMB-1752
+            fail("Should not have been allowed to set context of an mmbasecontext node"); //MMB-1752
         } catch (SecurityException se) {
             // ok
         }
@@ -115,6 +114,14 @@ public class CloudContext extends BridgeTest {
         assertFalse(news.mayChangeContext());                                               
         
     }
+    public void testReadRights() {
+        // TODO, cannot be tested right now, because read all property
+    }
+
+    public void testChangeRelationRights() {
+        // TODO, cannot be tested right now, probably because I don't
+        // understand it properly
+    }
 
     public void testSetOwnPassord() {
         Cloud cloud = getCloud("foo");
@@ -122,18 +129,64 @@ public class CloudContext extends BridgeTest {
         assertEquals("foo", userNode.getStringValue("username"));        
         userNode.setStringValue("password", "bar2");
         userNode.commit();
+        
+        assertEquals(new org.mmbase.util.transformers.MD5().transform("bar2"), userNode.getStringValue("password"));
     }
+
     public void testDeleteOwnNode() {
         Cloud cloud = getCloud("foo");
         Node userNode = cloud.getNode(cloud.getCloudContext().getAuthentication().getNode(cloud.getUser()));
         try {
             userNode.delete();
-            fail("Should not have been been allowed to delete own node");
+            fail("Should not have been allowed to delete own node");
         } catch (SecurityException se) {
             // ok
         }       
     }
+    public void testChangedPassword() {
+        Map<String, Object> loginInfo = new HashMap<String, Object>();
+        loginInfo.put("username", "foo");
+        loginInfo.put("password", "bar");
+        
+        try {
+            Cloud cloud = getCloudContext().getCloud("mmbase", "name/password", loginInfo);
+            fail("Should not have been allowed to login with wrong (old)  password ");
+        } catch (SecurityException se) {
+            //
+        }
 
+        loginInfo.put("password", "bar2");
+        Cloud cloud = getCloudContext().getCloud("mmbase", "name/password", loginInfo);
+        assertNotNull(cloud);
+        
+    }
+
+    public void testGrant() throws InterruptedException {
+        Cloud cloud = getCloud("foo");
+        Node userNode = cloud.getNode(cloud.getCloudContext().getAuthentication().getNode(cloud.getUser()));
+
+        Cloud adminCloud = getCloud();
+        Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
+        Parameters params = contextNode.createParameters("grant");
+        params.set("grouporuser", "" + userNode.getNumber());
+        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("user", adminCloud.getUser());
+
+        assertTrue(contextNode.getFunctionValue("grant", params).toBoolean());
+
+        //assertFalse(cloud.getUser().isValid());
+
+        // a certain latency is allowed
+        Thread.sleep(1000);
+        org.mmbase.cache.CacheManager.getInstance().clear(".*"); //  TODO TODO,  this should _NOT_ be necessary.
+        // now foo should be allowed to create new contexts
+        cloud = getCloud("foo");
+        assertTrue(cloud.getNodeManager("mmbasecontexts").mayCreateNode());
+
+        Node n3 = cloud.getNodeManager("mmbasecontexts").createNode();
+        n3.setStringValue("name", "testcontextoffoo");
+        n3.commit();
+    }
 
 }
 
