@@ -38,7 +38,7 @@ public class PageEdit extends MMBaseFormlessAction {
 		} else {
 			int nodeId = Integer.parseInt(request.getParameter("objectnumber"));
 			SecurityUtil.clearUserRoles(cloud);
-			ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);
+			ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId+ "&fresh=fresh");
 			return ret;
 		}
 	}
