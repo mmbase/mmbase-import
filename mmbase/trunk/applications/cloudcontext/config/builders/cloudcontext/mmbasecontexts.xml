@@ -4,7 +4,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
 					  http://www.mmbase.org/xmlns/builder.xsd"                        
-  name="mmbasecontexts" maintainer="www.mmbase.org" version="0" extends="object">
+  name="mmbasecontexts" maintainer="www.mmbase.org" version="0" extends="object"
+  defaultcontextintypedef="security"
+  >
   <class>org.mmbase.security.implementation.cloudcontext.builders.Contexts</class>
 
   <!-- if you associate (by 'account' field) people nodes you might like this -->
