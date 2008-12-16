@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
