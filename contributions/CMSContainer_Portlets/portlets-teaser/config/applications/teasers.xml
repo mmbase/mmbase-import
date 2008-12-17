@@ -4,7 +4,7 @@
    <requirements>
       <requires name="Basics" maintainer="mmbase.org" version="1" type="application"/>
       <requires name="Resources" maintainer="mmbase.org" version="1" type="application"/>
-      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />
    </requirements>
    <neededbuilderlist>
       <!-- These are the teasers specific builders -->
