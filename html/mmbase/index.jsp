@@ -61,6 +61,7 @@
               </ul>
              </div>
              <div id="content">
+               <mm:blocks classification="mmbase.index.default" />
               <c:catch var="exception">
                 <mm:component debug="xml" name="core" block="welcome" />
               </c:catch>
