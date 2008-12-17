@@ -24,10 +24,10 @@ import org.mmbase.storage.search.AggregatedField;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.implementation.BasicAggregatedField;
-import org.mmbase.util.NodeComparator;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.struts.PagerAction;
+import com.finalist.cmsc.util.NodeComparator;
 
 /**
  * Select the often used images in all channels or in the current channel.
@@ -90,6 +90,7 @@ public class HighFrequencyImgAction extends PagerAction {
       RelationStep imagerelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
       Step contentStep = imagerelStep.getNext();
       query.addAggregatedField(imageStep, imgManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+      query.addAggregatedField(imageStep, imgManager.getField(TITLE), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
       BasicAggregatedField countField = (BasicAggregatedField) query.addAggregatedField(contentStep, contentManager
             .getField(NUMBER), AggregatedField.AGGREGATION_TYPE_COUNT);
       countField.setAlias(COUNTALIAS);
@@ -131,7 +132,7 @@ public class HighFrequencyImgAction extends PagerAction {
       if(unusedImgResult!=null&&!unusedImgResult.isEmpty()){
          Vector<String> titleField = new Vector();
          titleField.add(TITLE);
-         com.finalist.cmsc.util.NodeComparator titleComparator = new com.finalist.cmsc.util.NodeComparator(titleField);
+         NodeComparator titleComparator = new NodeComparator(titleField);
          Collections.sort(unusedImgResult, titleComparator);
       }
       
