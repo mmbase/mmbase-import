@@ -3,7 +3,7 @@
 <application name="basecontentelements" maintainer="finalist.com" version="1" auto-deploy="true">
    <requirements>
       <requires name="cmscrichtext" maintainer="finalist.com" version="1" type="application"/>
-      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application"/>
       <requires name="sitemanagement" maintainer="finalist.com" version="1" type="application"/>
    </requirements>
    <neededbuilderlist>
