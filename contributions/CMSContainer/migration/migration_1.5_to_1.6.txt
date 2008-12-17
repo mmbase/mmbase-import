@@ -37,47 +37,24 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
-Name: Add title column to urls
-Goal: Add title column to urls
+
+Name: Add title and description column to urls / images
+Goal: Asset improvements
 Type:  sql-script
 --- Start script ---
 ALTER TABLE mm_urls ADD column title text;
-
-ALTER TABLE live_urls ADD column title text;
-
---- End script ---
-Exceptions/errors/other problems and what to do:
-*
-*
-*
-
-Name: Modify description field for urls
-Goal: Modify description field for urls
-Type:  sql-script
---- Start script ---
 ALTER TABLE mm_urls MODIFY description text;
-
-ALTER TABLE live_urls MODIFY description text;
-
---- End script ---
-Exceptions/errors/other problems and what to do:
-*
-*
-*
-
-Name: Modify title field for images
-Goal: Modify title field for images
-Type:  sql-script
---- Start script ---
 ALTER TABLE mm_images MODIFY title text;
 
 ALTER TABLE live_images MODIFY title text;
-
+ALTER TABLE live_urls ADD column title text;
+ALTER TABLE live_urls MODIFY description text;
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
 *
 *
+
 
 Name: Add workflowrel relation between workflowitem and assetelement to typerel
 Goal: Add workflowrel relation between workflowitem and assetelement to typerel
