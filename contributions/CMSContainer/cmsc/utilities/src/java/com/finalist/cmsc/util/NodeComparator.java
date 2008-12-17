@@ -66,14 +66,8 @@ public class NodeComparator implements Comparator<Node> {
         String field;
         while ((result == 0) && (fieldnr < fields.size())) {
             field = fields.get(fieldnr);
-            f1 = o1.getValue(field);
-            f2 = o2.getValue(field);
-            if(f1==null){
-               f1 = o1.getObjectValue(field);
-            }
-            if(f2==null){
-               f2 = o2.getObjectValue(field);
-            }
+            f1 = o1.getObjectValue(field);
+            f2 = o2.getObjectValue(field);
             if (f1 instanceof Comparable) {
                try {
                    result=((Comparable)f1).compareTo(f2);
