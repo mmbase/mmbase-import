@@ -10,7 +10,7 @@ import org.mmbase.bridge.Node;
  * This class implements the Comparator interface for comparing Nodes.
  * At forehand you specify in which fields a specified nodes should be compared,
  * these fields may not have a null value.
- * The function almost similar to org.mmbase.util.NodeComparator.
+ * The function mostly similar to org.mmbase.util.NodeComparator.
  *
  * @author Marco Fang
  */
@@ -68,7 +68,28 @@ public class NodeComparator implements Comparator<Node> {
             field = fields.get(fieldnr);
             f1 = o1.getValue(field);
             f2 = o2.getValue(field);
-            result=((Comparable)f1).compareTo(f2);
+            if(f1==null){
+               f1 = o1.getObjectValue(field);
+            }
+            if(f2==null){
+               f2 = o2.getObjectValue(field);
+            }
+            if (f1 instanceof Comparable) {
+               try {
+                   result=((Comparable)f1).compareTo(f2);
+               } catch (ClassCastException e) {
+                   // types do not compare -
+                   // possibly the in-memory value type differs from the
+                   // database value type (this can occur if you use setValue
+                   // with a deviating type).
+                   // Solving this could bring this compare to a crawl, so we
+                   // don't. Just edit stuff the right way.
+               }
+           } else if (!f1.equals(f2)) {
+               if (f1 instanceof Boolean) {
+                   result=((Boolean)f1).booleanValue() ? 1 : -1;
+               }
+           }
             fieldnr++;
         }
         if ((fieldnr>0) &&
