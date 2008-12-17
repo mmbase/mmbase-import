@@ -51,7 +51,6 @@
 <body>
 <mm:import id="assetsearchinit"><c:url value='/editors/repository/AssetSearchInitAction.do'/></mm:import>
 
-
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 
    <div class="tabs">
@@ -75,7 +74,6 @@
    <div class="editor">
    <br />
       <div class="body">
-
          <html:form action="/editors/repository/AssetSearchAction" method="post">
             <html:hidden property="action" value="${action}"/>
             <html:hidden property="mode"/>
@@ -300,7 +298,7 @@
    <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
 
 
-   <div>
+   <div style="padding-left:11px">
       <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
          <c:if test="${empty show}">
             <option id="a_list" selected="selected">list</option>
@@ -320,8 +318,6 @@
 <mm:haspage page="/editors/workflow">
    <c:set var="hasWorkflow" value="true"/>
 </mm:haspage>
-
-
 
    <%-- Now print if no results --%>
    <mm:isempty referid="results">
@@ -351,8 +347,10 @@
             <thead>
                <tr>
                   <th>
-                     <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>  
+                     <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
+                  <c:if test="${fn:length(results) >1}">
                       <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
+                  </c:if>
                   </th>
                   <th></th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
@@ -375,7 +373,7 @@
                 <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
                 <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
                 <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
-                <c:set var="channelUrl" value="../recyclebin/index.jsp"/>
+                <c:set var="channelUrl" value="../recyclebin/assettrash.jsp"/>
             </mm:compare>
             <mm:field name="number" jspvar="channelNumber" write="false"/>
             <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
@@ -383,25 +381,17 @@
                 <mm:field name="name" jspvar="channelName" write="false"/>
                 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
                 <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
-                <c:set var="channelUrl" value="Asset.do?parentchannel=${channelNumber}"/>
+                <c:set var="channelUrl" value="Asset.do?type=asset&parentchannel=${channelNumber}&direction=down"/>
             </mm:compare>
          </mm:relatednodes>
          <tr <mm:even inverse="true">class="swap"</mm:even>>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
-         
-               <mm:compare referid="action" value="link">
-                   <input type="checkbox" value="<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-               </mm:compare>
-               <mm:compare referid="action" value="link" inverse="true">
+            <td style="white-space: nowrap;">
                   <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
                       <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                   <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                     <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
-               </mm:compare>
-            </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
                <%@ include file="searchIconsBar.jspf" %>
             </td>
             <td style="white-space: nowrap;" onMouseDown="objClick(this);">
@@ -498,20 +488,8 @@
 
          <mm:relatednodes role="creationrel" type="contentchannel">
             <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-            <mm:compare referid="trashnumber" referid2="creationnumber">
-                <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
-                <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
-                <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
-                <c:set var="channelUrl" value="../recyclebin/index.jsp"/>
-            </mm:compare>
             <mm:field name="number" jspvar="channelNumber" write="false"/>
             <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
-            <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
-                <mm:field name="name" jspvar="channelName" write="false"/>
-                <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
-                <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
-                <c:set var="channelUrl" value="Asset.do?parentchannel=${channelNumber}"/>
-            </mm:compare>
          </mm:relatednodes>
 
          <div style="width:160px; height:180px;float:left;text-align:center;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">

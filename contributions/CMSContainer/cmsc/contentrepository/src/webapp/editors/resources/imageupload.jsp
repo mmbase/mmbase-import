@@ -39,7 +39,7 @@
                   <input type="hidden" id="parentchannel" name="parentchannel" value="${param.channelid}"/>
                   <table border="0">
                   <tr>
-                     <td><fmt:message key="asset.upload.explanation" /></td>
+                     <td><fmt:message key="images.upload.explanation" /></td>
                   </tr>
                   <c:if test="${param.exist=='1'}">
                      <tr>
@@ -108,12 +108,12 @@
                   </c:choose>
                            <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/>
                         </a>
+                        <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
+                           <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/>
+                        </a>
                         <a href="javascript:unpublish('${param.channelid}','${param.uploadedNodes}');"
                            title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
                            alt="<fmt:message key="asset.delete" />"/>
-                        </a>
-                        <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
-                           <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/>
                         </a>
                </td>
                <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
