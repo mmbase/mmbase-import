@@ -46,6 +46,11 @@
                         <td style="color:red;"><fmt:message key="asset.upload.existed" /></td>
                      </tr>
                   </c:if>
+                  <c:if test="${param.uploadedNodes=='0' && param.exist == '0'}">
+                     <tr>
+                        <td style="color:red;"><fmt:message key="image.upload.notimage" /></td>
+                     </tr>
+                  </c:if>
                   <tr>
                      <td><html:file property="file" /></td>
                   </tr>
@@ -62,7 +67,7 @@
             <div id="busy">
                 <fmt:message key="uploading.message.wait"/><br />
             </div>
-<c:if test="${param.exist =='0'}">
+<c:if test="${param.exist =='0' && param.uploadedNodes != 0}">
 <table>
    <tr class="listheader">
       <th></th>
@@ -78,11 +83,6 @@
 
             <mm:field name="description" escape="js-single-quotes" jspvar="description">
                <mm:field name="title" escape="js-single-quotes" jspvar="title">
-<%
-   description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); 
-   description = ((String)description).replaceAll("[\"]","@quot;");
-   title = ((String)title).replaceAll("[\"]","@quot;");
-%>
             <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
                </mm:field>
             </mm:field>
