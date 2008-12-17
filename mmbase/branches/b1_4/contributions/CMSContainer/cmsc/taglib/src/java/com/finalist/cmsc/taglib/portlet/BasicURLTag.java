@@ -170,6 +170,14 @@ public abstract class BasicURLTag extends TagSupport {
       return link;
    }
 
+   public String getHost() {
+      String host = null;
+      if (ServerUtil.useServerName()) {
+         NavigationItem item = SiteManagement.convertToNavigationItem(page);
+         host = SiteManagement.getSite(item);
+      }
+      return host;
+   }
 
    /**
     * Returns the portletMode.

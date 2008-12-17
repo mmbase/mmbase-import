@@ -127,15 +127,20 @@ public class XsltPortlet extends CmscPortlet {
             /** get renderUrl */
             PortletURL renderUrl = null;
             if (page != null && window != null) {
-				String link = "";
-				NavigationItem item = SiteManagement.convertToNavigationItem(page);
-					if (item != null) {
-					link = SiteManagement.getPath(item, !ServerUtil.useServerName());
-					}
-				else {
-					link = page;
-				}
-                renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) request,
+               String link = "";
+               NavigationItem item = SiteManagement.convertToNavigationItem(page);
+               if (item != null) {
+                  link = SiteManagement.getPath(item, !ServerUtil.useServerName());
+               }
+               else {
+                  link = page;
+               }
+               String host = null;
+               if (ServerUtil.useServerName()) {
+                  host = SiteManagement.getSite(item);
+               }
+               
+               renderUrl = new PortletURLImpl(host, link, window, (HttpServletRequest) request,
                      (HttpServletResponse) response, false);
             } else {
             	renderUrl = response.createRenderURL();

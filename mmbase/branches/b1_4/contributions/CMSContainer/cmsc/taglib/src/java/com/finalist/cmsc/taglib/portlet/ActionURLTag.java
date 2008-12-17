@@ -18,7 +18,8 @@ public class ActionURLTag extends BasicURLTag {
       PortletURL renderUrl = null;
       if (page != null && window != null) {
          String link = getLink();
-         renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) pageContext.getRequest(),
+         String host = getHost();
+         renderUrl = new PortletURLImpl(host, link, window, (HttpServletRequest) pageContext.getRequest(),
                (HttpServletResponse) pageContext.getResponse(), true);
       }
       else {
