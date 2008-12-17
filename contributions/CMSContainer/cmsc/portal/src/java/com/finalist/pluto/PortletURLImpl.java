@@ -24,6 +24,7 @@ public class PortletURLImpl extends org.apache.pluto.core.impl.PortletURLImpl {
 
    protected String windowid;
    protected String page;
+   protected String host;
 
 
    public PortletURLImpl(PortletWindow portletWindow, javax.servlet.http.HttpServletRequest servletRequest,
@@ -32,10 +33,11 @@ public class PortletURLImpl extends org.apache.pluto.core.impl.PortletURLImpl {
    }
 
 
-   public PortletURLImpl(String page, String windowid, javax.servlet.http.HttpServletRequest servletRequest,
+   public PortletURLImpl(String host, String page, String windowid, javax.servlet.http.HttpServletRequest servletRequest,
          javax.servlet.http.HttpServletResponse servletResponse, boolean isAction) {
       super(null, servletRequest, servletResponse, isAction);
       this.windowid = windowid;
+      this.host = host;
       this.page = page;
    }
 
@@ -81,6 +83,7 @@ public class PortletURLImpl extends org.apache.pluto.core.impl.PortletURLImpl {
             .getPortletURLProvider(portletWindow);
       if (urlProvider instanceof PortletURLProviderImpl && page != null && windowid != null) {
          PortletURLProviderImpl extendedUrlProvider = (PortletURLProviderImpl) urlProvider;
+         extendedUrlProvider.setHost(host);
          extendedUrlProvider.setPage(page);
          extendedUrlProvider.setWindowid(windowid);
       }
