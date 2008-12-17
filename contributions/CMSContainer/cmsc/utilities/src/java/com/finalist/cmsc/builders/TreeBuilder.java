@@ -148,7 +148,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
                 String managerOfRootNode = getRootManagerName();
                 if (!getTableName().equals(managerOfRootNode)) {
                     throw new IllegalArgumentException("Path is requested, but the " +
-                            "node is not yet added to the tree.");
+                            "node (" + node.getNumber() + ") is not yet added to the tree.");
                 }
             }
             return p;
