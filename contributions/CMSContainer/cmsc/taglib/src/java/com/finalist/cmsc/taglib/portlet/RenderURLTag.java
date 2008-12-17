@@ -20,7 +20,8 @@ public class RenderURLTag extends BasicURLTag {
       PortletURL renderUrl = null;
       if (StringUtils.isNotEmpty(page) && StringUtils.isNotEmpty(window)) {
          String link = getLink();
-         renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) pageContext.getRequest(),
+         String host = getHost();
+         renderUrl = new PortletURLImpl(host, link, window, (HttpServletRequest) pageContext.getRequest(),
                (HttpServletResponse) pageContext.getResponse(), false);
       }
       else {
