@@ -33,4 +33,4 @@ http://adam.theficus.com/archives/2004/09/firefox_tutoria.html
 
 
 TODO:
-
+Translate extra information in Dutch about this module to English, written in ITM-131 by Nico.
