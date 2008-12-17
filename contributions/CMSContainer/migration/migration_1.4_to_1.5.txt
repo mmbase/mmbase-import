@@ -119,6 +119,8 @@ Type: sql-script
 --- Start script ---
 ALTER TABLE mm_newsletterpublication ADD static_html text;
 ALTER TABLE mm_newsletterpublication ADD process_status varchar(50);
+ALTER TABLE live_newsletterpublication ADD static_html text;
+ALTER TABLE live_newsletterpublication ADD process_status varchar(50);
 --- End script ---
 *
 *
@@ -138,30 +140,10 @@ Goal: .
 Type:  sql-script
 --- Start script ---
 ALTER TABLE mm_newsletterpublication ADD COLUMN approved_by varchar(255);
+ALTER TABLE live_newsletterpublication ADD COLUMN approved_by varchar(255);
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
 *
 *
 
-Name: Add the active field to the people table of the Community database
-Goal: .
-Type:  sql-script
---- Start script ---
-ALTER TABLE people ADD COLUMN active varchar(255);
---- End script ---
-Exceptions/errors/other problems and what to do:
-*
-*
-*
-
-Name: Moved users without a status to active, in the Community database
-Goal: .
-Type:  sql-script
---- Start script ---
-UPDATE people SET active='Active' WHERE active is null or active='';
---- End script ---
-Exceptions/errors/other problems and what to do:
-*
-*
-*
