@@ -3,7 +3,7 @@
 <application name="emailalert" maintainer="finalist.com" version="1" auto-deploy="true">
    <requirements>
       <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
-      <requires name="contentrepository" maintainer="finalist.com" version="1" type="application" />
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />
    </requirements>
    
    <neededbuilderlist>
