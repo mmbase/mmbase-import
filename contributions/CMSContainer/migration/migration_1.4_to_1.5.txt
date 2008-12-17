@@ -109,7 +109,17 @@ ALTER TABLE mm_stylesheet ADD COLUMN overwriteable bit(1);
 ALTER TABLE live_stylesheet ADD COLUMN overwriteable bit(1);
 --- End script ---
 Exceptions/errors/other problems and what to do:
+*
+*
+*
 
+Name: Add the static_html field and the process_status field in newsletterpublication builder
+Goal: the static_html,save the Frozen edition ; process_status,save the status of edition,CMSC-1143
+Type: sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD static_html text;
+ALTER TABLE mm_newsletterpublication ADD process_status varchar(50);
+--- End script ---
 *
 *
 *
@@ -120,6 +130,38 @@ Type: sql-script
 ALTER TABLE mm_portletparameter modify m_value varchar(4000);
 ALTER TABLE live_portletparameter modify m_value varchar(4000);
 --- End script ---
+*
+*
+*
+Name: Add the approved_by filed to the mm_newsletterpublication table.
+Goal: .
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD COLUMN approved_by varchar(255);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add the active field to the people table of the Community database
+Goal: .
+Type:  sql-script
+--- Start script ---
+ALTER TABLE people ADD COLUMN active varchar(255);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Moved users without a status to active, in the Community database
+Goal: .
+Type:  sql-script
+--- Start script ---
+UPDATE people SET active='Active' WHERE active is null or active='';
+--- End script ---
+Exceptions/errors/other problems and what to do:
 *
 *
 *
