@@ -365,7 +365,7 @@
                    <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
                    <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
                    <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
-                   <c:set var="channelUrl" value="../recyclebin/index.jsp"/>
+                   <c:set var="channelUrl" value="../recyclebin/contenttrash.jsp"/>
                </mm:compare>
                <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
                    <mm:field name="number" jspvar="channelNumber" write="false"/>
@@ -374,7 +374,7 @@
 
                    <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
                    <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
-                   <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
+                   <c:set var="channelUrl" value="Content.do?type=content&parentchannel=${channelNumber}&direction=down"/>
                </mm:compare>
             </mm:relatednodes>
 

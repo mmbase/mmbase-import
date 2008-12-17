@@ -91,7 +91,7 @@
                </div>
             </div>
 
-            <div>
+            <div style="padding-left:11px">
                <select name="assesMode" id="assetMode" onchange="javascript:changeMode(${param.offset})">
                   <c:if test="${empty show}">
                      <option id="a_list" selected="selected">list</option>
@@ -102,7 +102,9 @@
                      <option id = "a_thumbnail" selected="selected" >thumbnail</option>
                   </c:if>
                </select>
+            <div style="padding-left:100px;display:inline;font-size:12px;">
                <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
+            </div>
             </div>
 
             <c:if test="${empty show}">
