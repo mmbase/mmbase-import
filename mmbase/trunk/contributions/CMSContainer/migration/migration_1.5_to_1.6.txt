@@ -78,3 +78,57 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+Name: Add workflowrel relation between workflowitem and assetelement to typerel
+Goal: Add workflowrel relation between workflowitem and assetelement to typerel
+Type:  sql-script
+--- Start script ---
+INSERT INTO mm_typerel SELECT 10001, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM mm_typedef typedef1, mm_typedef typedef2, mm_reldef reldef WHERE typedef1.name='workflowitem' AND typedef2.name='assetelement' AND reldef.sname='workflowrel';
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add creationrel relation between assetelement and contentchannel to typerel
+Goal: Add creationrel relation between assetelement and contentchannel to typerel
+Type:  sql-script
+--- Start script ---
+INSERT INTO mm_typerel SELECT 10002, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM mm_typedef typedef1, mm_typedef typedef2, mm_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='contentchannel' AND reldef.sname='creationrel';
+
+INSERT INTO live_typerel SELECT 10002, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM live_typedef typedef1, live_typedef typedef2, live_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='contentchannel' AND reldef.sname='creationrel';
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add deletionrel relation between assetelement and contentchannel to typerel
+Goal: Add deletionrel relation between assetelement and contentchannel to typerel
+Type:  sql-script
+--- Start script ---
+INSERT INTO mm_typerel SELECT 10003, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM mm_typedef typedef1, mm_typedef typedef2, mm_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='contentchannel' AND reldef.sname='deletionrel';
+
+INSERT INTO live_typerel SELECT 10003, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM live_typedef typedef1, live_typedef typedef2, live_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='contentchannel' AND reldef.sname='deletionrel';
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add ownerrel relation between assetelement and user to typerel
+Goal: Add ownerrel relation between assetelement and user to typerel
+Type:  sql-script
+--- Start script ---
+INSERT INTO mm_typerel SELECT 10004, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM mm_typedef typedef1, mm_typedef typedef2, mm_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='user' AND reldef.sname='ownerrel';
+
+INSERT INTO live_typerel SELECT 10004, 7, 'system', typedef1.number, typedef2.number, reldef.number, -1 FROM live_typedef typedef1, live_typedef typedef2, live_reldef reldef WHERE typedef1.name='assetelement' AND typedef2.name='user' AND reldef.sname='ownerrel';
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
