@@ -37,7 +37,7 @@
               </mm:field>
             </td>
             <td><mm:field name="state"><mm:fieldinfo type="guivalue" /></mm:field></td>
-            <td><mm:field name="atime"><mm:time format=":MEDIUM.MEDIUM" /></mm:field></td>
+            <td><mm:field name="atime"><mm:isnotempty><mm:time format=":MEDIUM.MEDIUM" /></mm:isnotempty></mm:field></td>
             <td><mm:field name="host" /></td>
             <td><mm:field name="os" /></td>
             <td class="center">
