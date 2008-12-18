@@ -7,20 +7,16 @@
           >
   <di:html
       styleClass="education"
-      type="text/html"
+      type="application/xhtml+xml"
       title_key="education.learnenvironmenttitle"
       expires="0"
       component="education">
-    <!--
-         serving out as tex/html because of:
-         https://bugzilla.mozilla.org/show_bug.cgi?id=456008
-         Flash will not be visible then in FF 3.0.2. Bug is fixed. In a few months it can be removed again.
-
-    -->
 
     <!-- wtf -->
     <mm:hasnode number="component.drm">
-      <di:include page="/drm/testlicense.jsp" />
+      <mm:haspage page="/drm/testlicense.jsp">
+        <di:include page="/drm/testlicense.jsp" />
+      </mm:haspage>
     </mm:hasnode>
 
     <di:include page="/education/bookmark.jspx" />
