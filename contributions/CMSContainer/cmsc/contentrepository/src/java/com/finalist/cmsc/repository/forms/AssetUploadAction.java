@@ -24,6 +24,7 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.transformers.ByteToCharTransformer;
 import org.mmbase.util.transformers.ChecksumFactory;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseAction;
@@ -39,8 +40,10 @@ public class AssetUploadAction extends MMBaseAction {
       String parentchannel = assetUploadForm.getParentchannel();
       FormFile file = assetUploadForm.getFile();
 
+      int fileSize = file.getFileSize();
+      String exceed = "no";
 
-      if (file.getFileSize() != 0 && file.getFileName() != null) {
+      if (fileSize != 0 && file.getFileName() != null) {
          String assetType = "";
          if (isImage(file.getFileName())) {
             assetType = "images";
@@ -51,24 +54,28 @@ public class AssetUploadAction extends MMBaseAction {
          List<Integer> nodes = null;
          NodeManager manager = cloud.getNodeManager(assetType);
 
-         ChecksumFactory checksumFactory = new ChecksumFactory();
-         ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory.createTransformer(checksumFactory
-               .createParameters());
-         String checkSum = transformer.transform(file.getFileData());
-         NodeQuery query = manager.createQuery();
-         SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
-         NodeList assets = query.getList();
+         long maxFileSize = Integer.parseInt(PropertiesUtil.getProperty("uploaded.file.max.size"))*1024*1024;
+         if (fileSize < maxFileSize) {
+            ChecksumFactory checksumFactory = new ChecksumFactory();
+            ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
+                  .createTransformer(checksumFactory.createParameters());
+            String checkSum = transformer.transform(file.getFileData());
+            NodeQuery query = manager.createQuery();
+            SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
+            NodeList assets = query.getList();
 
-         boolean isNewFile = (assets.size() == 0);
+            boolean isNewFile = (assets.size() == 0);
 
-         if (isNewFile) {
-            nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-            request.setAttribute("uploadedAssets", nodes);
+            if (isNewFile) {
+               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+               request.setAttribute("uploadedAssets", nodes);
+            } else {
+               return new ActionForward(mapping.findForward(SUCCESS).getPath()
+                     + "?type=asset&direction=down&exist=1&exceed=" + exceed + "&parentchannel=" + parentchannel, true);
+            }
          } else {
-            return new ActionForward(mapping.findForward(SUCCESS).getPath()
-                  + "?type=asset&direction=down&exist=1&parentchannel=" + parentchannel, true);
+            exceed = "yes";
          }
-
          // to archive the upload asset
          if (nodes != null && nodes.size() > 0) {
             for (Integer node : nodes) {
@@ -83,7 +90,7 @@ public class AssetUploadAction extends MMBaseAction {
          }
       }
       return new ActionForward(mapping.findForward(SUCCESS).getPath()
-            + "?type=asset&direction=down&exist=0&parentchannel=" + parentchannel, true);
+            + "?type=asset&direction=down&exist=0&exceed=" + exceed + "&parentchannel=" + parentchannel, true);
    }
 
    private static Set<String> supportedImages;

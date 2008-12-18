@@ -10,4 +10,8 @@
 		<key>system.contenttypes.hide</key>
 		<value></value>
 	</node>
+	<node number="302" owner="admin">
+		<key>uploaded.file.max.size</key>
+		<value>8</value>
+	</node>
 </properties>
