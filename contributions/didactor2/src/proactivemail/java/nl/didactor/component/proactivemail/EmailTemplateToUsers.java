@@ -2,7 +2,7 @@ package nl.didactor.component.proactivemail;
 
 /**
  * EmailTemplateToUsers class
- * 
+ *
  * @author Goran Kostadinov     (Levi9 Balkan Global Sourcing)
  *
  * @version $Id$
@@ -29,28 +29,27 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import org.w3c.dom.Document; 
-import org.w3c.dom.Element; 
-import org.w3c.dom.Node; 
-import org.w3c.dom.NodeList; 
-import nl.didactor.mail.ExtendedJMSendMail;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class EmailTemplateToUsers {
     private static Logger log = Logging.getLoggerInstance(EmailTemplateToUsers.class);
-    
+
     private String templateName = "";
-    protected static String internalUrl = ""; 
+    protected static String internalUrl = "";
     private String emailSubject = "";
     private String emailBody = "";
     private String emailFrom = "";
     private long startTime = System.currentTimeMillis()/1000;
     private long endTime = System.currentTimeMillis()/1000;
     private int messageCount = 0;
-    
+
     public String getEmailSubject() {
         return this.emailSubject;
     }
-    
+
     public String getEmailBody() {
         return this.emailBody;
     }
@@ -60,23 +59,23 @@ public class EmailTemplateToUsers {
     }
 
     public EmailTemplateToUsers(String templateName) {
-        if ( templateName != null ) 
+        if ( templateName != null )
             this.templateName = templateName;
     }
 
     /* Purpose is to get template from db, and all related people to this template
-    *  (relation via provider, education, classes, role, people). People will be 
+    *  (relation via provider, education, classes, role, people). People will be
     *  already filtered in return result
-    *  
+    *
     *  Result will be obtain from param:relative url
     */
     public Document getRelatedPeople(String url) {
         return this.getRelatedPeople(url, null);
     }
-        
+
     public Document getRelatedPeople(String url, String param) {
         Document result = null;
-        if (  templateName.length() == 0 || url == null ) 
+        if (  templateName.length() == 0 || url == null )
             return result;
         if ( url == null ) url = "";
         if ( param == null ) param = "";
@@ -88,7 +87,7 @@ public class EmailTemplateToUsers {
                        "password=admin2k&"+
                        "authenticate=plain&"+
                        "command=login&"+
-                       "templatename="+this.templateName + 
+                       "templatename="+this.templateName +
                        param;
           XMLReader reader = XMLReaderFactory.createXMLReader();
           DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -100,7 +99,7 @@ public class EmailTemplateToUsers {
         }
         return result;
     }
-    
+
     /*
      * param XML Document, with needed schema
      * <template>
@@ -121,16 +120,16 @@ public class EmailTemplateToUsers {
      *      </user>
      *      ...
      *  </users>
-     * </template> 
+     * </template>
      */
     public boolean sendEmailToUsers(org.w3c.dom.Document d) {
-        if ( d == null ) { 
+        if ( d == null ) {
             log.error("Error: proactivemailtemplate '" + this.templateName + "' - document is null");
             return false;
         }
 
         this.startTime = System.currentTimeMillis()/1000;
-        
+
         try {
             Element elRoot = d.getDocumentElement();
             this.emailSubject = this.getTextValue(elRoot, "subject");
@@ -139,7 +138,7 @@ public class EmailTemplateToUsers {
             Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase");
             String usernameSystem = "system", admin = "admin";
             NodeList nlUsers = elRoot.getElementsByTagName("users");
-            if ( nlUsers.getLength() > 0 ) { 
+            if ( nlUsers.getLength() > 0 ) {
                 Element elUsers = (Element)nlUsers.item(0);
                 NodeList nlUser = elUsers.getElementsByTagName("user");
                 for ( int n = 0; n < nlUser.getLength(); n++ ) {
@@ -157,9 +156,9 @@ public class EmailTemplateToUsers {
                     sendsubject = ( specialsubject != null ) ? specialsubject : this.emailSubject;
                     sendbody = ( specialbody != null ) ? specialbody : this.emailBody;
                     sendfrom = ( specialfrom != null ) ? specialfrom : this.emailFrom;
-                    
+
                     if ( sendsubject == null || sendsubject.length() == 0 ||
-                         sendbody == null    || sendbody.length() == 0 || 
+                         sendbody == null    || sendbody.length() == 0 ||
                          email.length() == 0
                           ) {
                            log.warn("Proactivemailtemplate '" + this.templateName + "' - wrong values, emailSubject: '"+sendsubject+"', emailBody: '"+sendbody+"'");
@@ -194,7 +193,7 @@ public class EmailTemplateToUsers {
         return getTextValue(ele, tagName, false);
 
     }
-    
+
     private String getTextValue(Element ele, String tagName, boolean retNull) {
         String textVal = null;
         NodeList nl = ele.getElementsByTagName(tagName);
@@ -205,8 +204,8 @@ public class EmailTemplateToUsers {
                 textVal = n.getNodeValue();
         }
         return !retNull && textVal == null ? "" : textVal;
-    }    
-    
+    }
+
     public long getBatches() {
         try {
             MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
@@ -240,9 +239,9 @@ public class EmailTemplateToUsers {
             nsQuery.setConstraint(constraint);
             List batchesList = batchesBuilder.getNodes(nsQuery);
             MMObjectNode batchNode = null;
-            if ( batchesList.size() > 0 ) 
+            if ( batchesList.size() > 0 )
                 batchNode  = (MMObjectNode) batchesList.get(batchesList.size()-1);
-            else 
+            else
                 batchNode = batchesBuilder.getNewNode(admin);
             if ( batchNode != null ) {
                 batchNode.setValue("name", this.templateName);
@@ -252,12 +251,12 @@ public class EmailTemplateToUsers {
             }
             if ( batchesList.size() > 0 )
                 batchNode.commit();
-            else 
+            else
                 batchesBuilder.insert(admin, batchNode);
-                
+
         } catch ( Exception e ) {
             log.error("Error while setting batches for template '"+this.templateName+"'.\r\n    "+e.toString());
         }
     }
-    
+
 }
