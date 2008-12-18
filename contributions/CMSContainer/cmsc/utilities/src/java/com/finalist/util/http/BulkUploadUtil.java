@@ -39,6 +39,7 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.transformers.ByteToCharTransformer;
 import org.mmbase.util.transformers.ChecksumFactory;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.util.UploadUtil;
 import com.finalist.cmsc.util.UploadUtil.BinaryData;
@@ -255,25 +256,27 @@ public class BulkUploadUtil {
                manager = cloud.getNodeManager("attachments");
             }
             count++;
-            ChecksumFactory checksumFactory = new ChecksumFactory();
-            ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
-                  .createTransformer(checksumFactory.createParameters());
             long size = entry.getSize();
-            byte[] buffer = new byte[(int) size];
-            zip.read(buffer, 0, (int) size);
-            String checkSum = transformer.transform(buffer);
-            NodeQuery query = manager.createQuery();
-            SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
-            NodeList assets = query.getList();
+            if (size < Integer.parseInt(PropertiesUtil.getProperty("uploaded.file.max.size")) * 1024 * 1024) {
+               ChecksumFactory checksumFactory = new ChecksumFactory();
+               ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
+                     .createTransformer(checksumFactory.createParameters());
+               byte[] buffer = new byte[(int) size];
+               zip.read(buffer, 0, (int) size);
+               String checkSum = transformer.transform(buffer);
+               NodeQuery query = manager.createQuery();
+               SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
+               NodeList assets = query.getList();
 
-            boolean isNewFile = (assets.size() == 0);
-            InputStream is = new ByteArrayInputStream(buffer);
-            if (isNewFile) {
-               Node node = createNode(parentChannel, manager, entry.getName(), is, size);
-               if (node != null) {
-                  nodes.add(node.getNumber());
+               boolean isNewFile = (assets.size() == 0);
+               InputStream is = new ByteArrayInputStream(buffer);
+               if (isNewFile) {
+                  Node node = createNode(parentChannel, manager, entry.getName(), is, size);
+                  if (node != null) {
+                     nodes.add(node.getNumber());
+                  }
+                  is.close();
                }
-               is.close();
             }
             zip.closeEntry();
          }
