@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.applications.crontab.AbstractCronJob;
 
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 
@@ -23,8 +24,11 @@ public class PublicationSentCronJob extends AbstractCronJob {
 
    @Override
    public void run() {
-      log.debug("Delivering all publications.");
-      NewsletterPublicationService service = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-      service.deliverAllPublication();
+      if(ServerUtil.isSingle() || ServerUtil.isStaging()) {
+         log.debug("Delivering all publications.");
+         NewsletterPublicationService service = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+         service.deliverAllPublication();
+      }
+      
    }
 }
