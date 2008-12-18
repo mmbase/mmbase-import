@@ -27,7 +27,7 @@ public class PublicationSentCronJob extends AbstractCronJob {
       if(ServerUtil.isSingle() || ServerUtil.isStaging()) {
          log.debug("Delivering all publications.");
          NewsletterPublicationService service = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
-         service.deliverAllPublication();
+         service.deliverAllPublications();
       }
    }
 }
