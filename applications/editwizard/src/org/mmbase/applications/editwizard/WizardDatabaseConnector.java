@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.53 2008-07-11 14:24:59 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.54 2008-12-18 21:26:38 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -567,11 +567,22 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     inside_object=data.createElement("object");
                     ((Element)inside_object).setAttribute("number","");
                     ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("searchtype",Utils.getAttribute(relation, "destinationtype", ""));
                     ((Element)inside_object).setAttribute("disposable","true");
                 } else {
                     inside_object = createObject(data,relationNode, inside_objectdef, params, loadedData);
                     dnumber = Utils.getAttribute(inside_object, "number");
                     ((Element)relationNode).setAttribute("destination",dnumber);
+                    if (inside_object instanceof Element) {
+                       String destinationType = Utils.getAttribute(relation, "destinationtype", "");
+                       ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
+                    }
+                }
+            }
+            else {
+               if (inside_object instanceof Element) {
+                  String destinationType = Utils.getAttribute(relation, "destinationtype", "");
+                  ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
                 }
             }
             relationNode.appendChild(inside_object);
@@ -817,8 +828,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
-
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
             if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
@@ -894,6 +904,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                             fields.item(j).getParentNode().removeChild(fields.item(j));
                             }
                     }
+                } else {
+                   // remove it from the list.
+                   node.getParentNode().removeChild(node);
         	}
             }
         }
