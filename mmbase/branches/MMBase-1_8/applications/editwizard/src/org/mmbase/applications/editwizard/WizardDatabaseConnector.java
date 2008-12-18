@@ -31,12 +31,11 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.46.2.3 2008-03-03 10:27:28 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46.2.4 2008-12-18 21:26:30 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector {
 
-    // logging
     private static final Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class);
 
     int didcounter=1;
@@ -70,6 +69,7 @@ public class WizardDatabaseConnector {
     /**
      * This method tags datanodes starting from the current node.
      * A internal counter is used to make sure identifiers are still unique.
+     * @param node current node
      */
     public void tagDataNode(Node node) {
         NodeList nodes = Utils.selectNodeList(node, ".|.//*");
@@ -86,8 +86,8 @@ public class WizardDatabaseConnector {
      * This method loads relations from MMBase and stores the result in the given object node.
      *
      * @param  object          The objectNode where the results should be appended to.
-     * @param  objectnumber    The objectnumber of the parentobject from where the relations should originate.
-     * @param  loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     * @param  objectNumber    The objectnumber of the parentobject from where the relations should originate.
+     * @param  loadAction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
      * @return  The new relations (in the data object), or <code>null</code> if none.
      * @throws WizardException if loading the relations fails
      */
@@ -271,6 +271,7 @@ public class WizardDatabaseConnector {
      * @param  targetNode      The targetnode where the results should be appended.
      * @param  objectNumber    The objectnumber of the parent object from where the relations originate.
      * @param  queryRelations  A list of 'relation' DOM-nodes, defining the relations which must be fetched.
+     * @return Collection of relation nodes
      * @throws WizardException if the relations could not be obtained
      */
     public Collection getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
@@ -326,6 +327,7 @@ public class WizardDatabaseConnector {
      * @param sourceType              the type of the sourceobject
      * @param destinationObjectNumber the number of the destination object
      * @param destinationType         the type of the destination object
+     * @param createDir               The direction of the new relation
      * @return The resulting relation node.
      * @throws WizardException   if the relation could not be created
      */
@@ -358,6 +360,7 @@ public class WizardDatabaseConnector {
      * @param params The parameters to use when creating the objects and relations.
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
+     * @throws WizardException   if the object fields could not be filled
      */
     private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
                                   Node objectNode, Map params, int createorder)  throws WizardException {
@@ -399,10 +402,11 @@ public class WizardDatabaseConnector {
 
     /**
      * This method can create a object (or a tree of objects and relations)
-     *
+     * @param data data of current wizard
      * @param targetParentNode The place where the results should be appended.
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
+     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
@@ -434,11 +438,13 @@ public class WizardDatabaseConnector {
      * *) if dnumber is supplied, no new object is created (shouldn't be included in the relation node either),
      *  but the relation will be created and directly linked to an object with number "dnumber".
      *
+     * @param data data of current wizard
      * @param targetParentNode The place where the results should be appended.
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
+     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
@@ -523,6 +529,7 @@ public class WizardDatabaseConnector {
                 }
 
                 // but annotate that this one is loaded from mmbase. Not a new one
+
                 Utils.setAttribute(inside_object, "already-exists", "true");
                 loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
 
@@ -557,12 +564,23 @@ public class WizardDatabaseConnector {
                     inside_object=data.createElement("object");
                     ((Element)inside_object).setAttribute("number","");
                     ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("searchtype",Utils.getAttribute(relation, "destinationtype", ""));
                     ((Element)inside_object).setAttribute("disposable","true");
                 } else {
                     inside_object = createObject(data,relationNode, inside_objectdef, params, loadedData);
                     dnumber = Utils.getAttribute(inside_object, "number");
                     ((Element)relationNode).setAttribute("destination",dnumber);
+                    if (inside_object instanceof Element) {
+                       String destinationType = Utils.getAttribute(relation, "destinationtype", "");
+                       ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
+                    }
                 }
+            }
+            else {
+               if (inside_object instanceof Element) {
+                  String destinationType = Utils.getAttribute(relation, "destinationtype", "");
+                  ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
+               }
             }
             relationNode.appendChild(inside_object);
         }
@@ -578,6 +596,8 @@ public class WizardDatabaseConnector {
      * class, and retuirns the result as an Element.
      * @param cmd the command Element to execute
      * @param binaries a HashMap containing files (binaries) uploaded in the wizard
+     * @return response
+     * @throws WizardException   if the command failed to execute
      */
     private Element sendCommand(Element cmd, Map binaries) throws WizardException {
         Dove    dove    = new Dove(Utils.emptyDocument());
@@ -595,6 +615,8 @@ public class WizardDatabaseConnector {
 
     /**
      * This is an internal method which is used to fire a command to connect to mmbase via Dove.
+     * @param command command for connector
+     * @return response
      * @throws WizardException   if the command failed
      */
     private Document fireCommand(ConnectorCommand command) throws WizardException {
@@ -605,6 +627,8 @@ public class WizardDatabaseConnector {
 
     /**
      * This is an internal method which is used to fire commands to connect to mmbase via Dove.
+     * @param commands list pf commands for connector
+     * @return response
      * @throws WizardException   if one or more commands failed
      */
     private Document fireCommandList(List commands) throws WizardException {
@@ -618,8 +642,6 @@ public class WizardDatabaseConnector {
             ConnectorCommand cmd = (ConnectorCommand) i.next();
             docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
         }
-
-        String res="";
 
         Element results=sendCommand(docel,null);
 
@@ -652,6 +674,7 @@ public class WizardDatabaseConnector {
      * @param     loadedData              The data loaded by actions on the wizard
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
+     * @throws WizardException   if the data could not be stored
      */
     public Element put(Document originalData, Document loadedData, Document newData, Map binaries) throws WizardException {
         Node putcmd = getPutData(originalData, loadedData, newData);
@@ -751,6 +774,8 @@ public class WizardDatabaseConnector {
      * @param     originalData    The original data.
      * @param     loadedData      The data loaded by actions
      * @param     newData         The new data.
+     * @return put request for mmbase
+     * @throws WizardException   if the data could not be stored
      */
     public Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
         Document workDoc = Utils.emptyDocument();
@@ -800,7 +825,7 @@ public class WizardDatabaseConnector {
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
             if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
@@ -860,28 +885,30 @@ public class WizardDatabaseConnector {
                 String already_exists = Utils.getAttribute(node, "already-exists", "false");
                 if (!already_exists.equals("true")) {
                     // go ahead. this seems to be a really new one...
+            
                     // this is a new relation or object.
                     Utils.setAttribute(node, "status", "new");
 
-
-                // check if fields values have been set
-                // insert values are not sent - this allows use of virtual fields to edit
-                // other fields
-                NodeList fields=Utils.selectNodeList(node,"field");
-                for (int j=0; j<fields.getLength(); j++) {
-                    // if a ne field is empty, don't enter it, but use the default value
-                    // as set in the builder's setDefault() method
-                    // note that strictly speaking, this may not be correct
-                    // a better way is perhaps to first retrieve a new node and compare the values
-                    if ("".equals(Utils.getText(fields.item(j)))) {
-                        fields.item(j).getParentNode().removeChild(fields.item(j));
-                    }
-                }
-                }
+                   // check if fields values have been set
+                   // insert values are not sent - this allows use of virtual fields to edit
+                   // other fields
+                   NodeList fields=Utils.selectNodeList(node,"field");
+                   for (int j=0; j<fields.getLength(); j++) {
+                       // if a new field is empty, don't enter it, but use the default value
+                       // as set in the builder's setDefault() method
+                       // note that strictly speaking, this may not be correct
+                       // a better way is perhaps to first retrieve a new node and compare the values
+                       if ("".equals(Utils.getText(fields.item(j)))) {
+                           fields.item(j).getParentNode().removeChild(fields.item(j));
+                       }
+                   }
+                } else {
+                   // remove it from the list.
+                   node.getParentNode().removeChild(node);
+               }
             }
-        }
-
-        markDeletedNodes(req, reqnew, reqorig);
+			}
+         markDeletedNodes(req, reqnew, reqorig);
 
         // now, do our final calculations:
         //
@@ -961,6 +988,7 @@ public class WizardDatabaseConnector {
      *
      * @param     sourcenode              The sourcenode from which should be flattened.
      * @param     targetParentNode        The targetParentNode where the results should be appended.
+     * @param     xpath                   The xpath query to find the nodes
      * @param     allowedChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
      */
     public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
@@ -994,7 +1022,6 @@ public class WizardDatabaseConnector {
      */
     public boolean isDifferent(Node node1, Node node2) {
         // only checks textnodes and childnumbers
-        boolean res = false;
         if (node1.getChildNodes().getLength() != node2.getChildNodes().getLength()) {
             // ander aantal kindjes!
             return true;
@@ -1027,6 +1054,7 @@ public class WizardDatabaseConnector {
      * @param       origrel         The original relation
      * @param       rel             The new relation
      * @return     True if the relations are different, false if they are the same.
+     * @throws WizardException   if the check failed.
      */
     private boolean checkRelationFieldsChanged(Node origrel, Node rel) throws WizardException{
         NodeList origflds = Utils.selectNodeList(origrel, "field");
