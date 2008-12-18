@@ -19,7 +19,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.RelationManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -248,11 +247,7 @@ public class NewsletterCronJob extends AbstractCronJob {
             log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
             //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
             Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
-
-            Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-            RelationManager relManager = cloud.getRelationManager("newsletter", "newsletterpublication", "related");
-            relManager.createRelation(cloud.getNode(newsletterNumber), cloud.getNode(publicationNode.getNumber())).commit();
-           
+            NewsletterUtil.addNewsletterCreationChannel(newsletterNode.getNumber(),publicationNode.getNumber());
             try {
                NewsletterPublicationUtil.freezeEdition(publicationNode);
             } catch (MessagingException e) {
