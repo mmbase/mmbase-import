@@ -1327,4 +1327,26 @@ public final class RepositoryUtil {
    public static void removeAssetFromChannel(Node asset, Node channelNode) {
       RepositoryUtil.addDeletionRelation(asset, channelNode);
    }
+   public static int countLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day,int maxDays){
+      NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
+      String destinationManager = CONTENTELEMENT;
+      if (contenttypes != null && contenttypes.size() == 1) {
+         destinationManager = contenttypes.get(0);
+      }
+      if(maxDays > 0){
+         SearchUtil.addDayConstraint(query, channel.getCloud().getNodeManager(destinationManager), ContentElementUtil.CREATIONDATE_FIELD, "-" + maxDays);
+      }
+      return Queries.count(query);
+   }
+   public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, int maxDays) {
+      NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day);
+      String destinationManager = CONTENTELEMENT;
+      if (contenttypes != null && contenttypes.size() == 1) {
+         destinationManager = contenttypes.get(0);
+      }
+      if(maxDays > 0){
+         SearchUtil.addDayConstraint(query, channel.getCloud().getNodeManager(destinationManager), ContentElementUtil.CREATIONDATE_FIELD, "-" + maxDays);
+      }
+      return query.getNodeManager().getList(query);
+   }
 }
