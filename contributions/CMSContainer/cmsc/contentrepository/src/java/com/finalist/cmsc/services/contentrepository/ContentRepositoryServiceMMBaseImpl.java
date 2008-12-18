@@ -104,7 +104,25 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
         return -1;
     }
 
-	@Override
+    @Override
+    public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction,
+          boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, int maxDays) {
+       Cloud cloud = getCloud();
+       if (channel != null) {
+           Node chan = cloud.getNode(channel);
+           return countContentElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, maxDays);
+       }
+       return -1;
+    }
+   private int countContentElements(Node channel, List<String> contenttypes, String orderby, String direction,
+         boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, int maxDays) {
+      if (channel != null) {
+         return RepositoryUtil.countLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, maxDays);
+     }
+     return -1;
+   }
+
+   @Override
     public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
 		Cloud cloud = getCloud();
 		if (channel != null) {
@@ -221,4 +239,22 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 		return cloud;
 	}
 
+   @Override
+   public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day,int maxDays) {
+      Cloud cloud = getCloud();
+      List<ContentElement> result = new ArrayList<ContentElement>();
+      if (channel != null) {
+         Node chan = cloud.getNode(channel);
+      
+         if (chan != null) {
+            NodeList l = RepositoryUtil.getLinkedElements(chan, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, maxDays);
+            for (int i = 0; i < l.size(); i++) {
+               Node currentNode = l.getNode(i);
+               ContentElement e = MMBaseNodeMapper.copyNode(currentNode, ContentElement.class);
+               result.add(e);
+            }
+         }
+      }
+      return result;
+   }
 }
