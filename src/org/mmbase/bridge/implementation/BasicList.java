@@ -18,9 +18,9 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.34 2008-11-06 12:24:03 michiel Exp $
+ * @version $Id: BasicList.java,v 1.35 2008-12-18 13:59:47 michiel Exp $
  */
-public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> implements BridgeList<E>  {
+public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
@@ -28,12 +28,20 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
 
     private boolean converted = false;
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private final List<Object> backing;
+
     BasicList() {
         super();
+        backing = new ArrayList<Object>();
     }
 
     protected BasicList(Collection c) {
-        super(c);
+        super();
+        backing = new ArrayList<Object>(c);
     }
 
     public Object getProperty(Object key) {
@@ -63,38 +71,31 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
             newO = null;
         }
         if (newO != o) {
-            set(index, newO);
+            backing.set(index, newO);
         }
         return newO;
     }
 
-    @Override
-    public boolean contains(Object o ) {
-        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
-        convertAll();
-        return super.contains(o);
+    @Override public  E get(int i) {
+        return convert(backing.get(i), i);
     }
 
-    @Override
-    public boolean remove(Object o) {
-        // make sure every element is of the right type, otherwise 'equals' is very odd..
-        convertAll();
-        return super.remove(o);
-    }
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        // make sure every element is of the right type, otherwise 'equals' is very odd..
-        convertAll();
-        return super.removeAll(c);
-    }
 
-    @Override
-    public E get(int index) {
-        return convert(super.get(index), index);
+    @Override public int size() {
+        return backing.size();
+    }
+    @Override public E set(int i, E e) {
+        return convert(backing.set(i, e));
+    }
+    @Override public void add(int i, E e) {
+        backing.add(i, e);
+    }
+    @Override public E remove(int i) {
+        return convert(backing.remove(i));
     }
 
     public void sort() {
-        Collections.sort( this);
+        Collections.sort(this);
     }
 
     public void sort(Comparator<? super E> comparator) {
@@ -109,15 +110,14 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
         if (! converted) {
             log.debug("convert all");
             for (int i = 0; i < size(); i++) {
-                convert(super.get(i), i);
+                convert(backing.get(i), i);
             }
             converted = true;
         }
     }
 
 
-    @Override
-    public Object[] toArray() { // needed when you e.g. want to sort the list.
+    @Override public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
         convertAll();
         return super.toArray();
