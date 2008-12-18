@@ -4,7 +4,6 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.module.*;
 import org.mmbase.util.*;
-import nl.didactor.mail.ExtendedJMSendMail;
 import java.util.Date;
 
 /**
@@ -13,7 +12,7 @@ import java.util.Date;
  */
 public class ProActiveMailSchedulerBuilder extends MMObjectBuilder {
     private static Logger log=Logging.getLoggerInstance(ProActiveMailSchedulerBuilder.class.getName());
-    
+
     public boolean init() {
         return super.init();
     }
@@ -28,7 +27,7 @@ public class ProActiveMailSchedulerBuilder extends MMObjectBuilder {
         nl.didactor.component.proactivemail.cron.ProActiveMailRefreshJob.refresh();
         return nr;
     }
-    
+
     public void removeNode(MMObjectNode node) {
         nl.didactor.component.proactivemail.cron.ProActiveMailRefreshJob.refresh();
         super.removeNode(node);

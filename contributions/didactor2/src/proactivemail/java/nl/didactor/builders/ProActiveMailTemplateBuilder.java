@@ -7,7 +7,6 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
 import org.mmbase.module.*;
 import org.mmbase.util.*;
-import nl.didactor.mail.ExtendedJMSendMail;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public class ProActiveMailTemplateBuilder extends MMObjectBuilder {
     private static Logger log=Logging.getLoggerInstance(ProActiveMailTemplateBuilder.class.getName());
-    
+
     public boolean init() {
         return super.init();
     }
@@ -27,12 +26,12 @@ public class ProActiveMailTemplateBuilder extends MMObjectBuilder {
 
         String username = "system";
         String admin = "admin";
-        String templateName = node.getStringValue("name"); 
-            
+        String templateName = node.getStringValue("name");
+
         // add new entry in batches
         try {
             MMObjectBuilder batchesbuilder = mmb.getBuilder("proactivemailbatches");
-            MMObjectNode batNode = batchesbuilder.getNewNode(username);               
+            MMObjectNode batNode = batchesbuilder.getNewNode(username);
             batNode.setValue("name", templateName);
             batNode.setValue("start_time", System.currentTimeMillis()/1000);
             batNode.setValue("end_time", System.currentTimeMillis()/1000);
