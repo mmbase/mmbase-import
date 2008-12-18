@@ -19,6 +19,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.FieldValueConstraint;
@@ -39,18 +40,29 @@ import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 
 public abstract class NewsletterUtil {
-   private static Log log = LogFactory
-            .getLog(NewsletterUtil.class);
+   
+   private static Log log = LogFactory.getLog(NewsletterUtil.class);
+   
+   public static final String DOWN = "DOWN";
+   public static final String POSREL = "posrel";
+   public static final String SCHEDULE = "schedule";
+   public static final String SYSTEM_LIVEPATH = "system.livepath";
+   public static final String PORTLETREL = "portletrel";
+   public static final String PORTLETDEFINITION = "portletdefinition";
+   public static final String PORTLET = "portlet";
+   public static final String TITLE = "title";
+   public static final String SOURCE = "source";
+   public static final String NEWSLETTERCONTENT = "newslettercontent";
+   public static final String NUMBER = "number";
+   public static final String ARTICLE = "article";
    public static final String NEWSLETTER = "newsletter";
    public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
-
-   public static final String THEMETYPE_NEWSLETTER = "newslettertheme";
-   public static final String THEMETYPE_NEWSLETTERPUBLICATION = "newsletterpublicationtheme";
+   public static final String RELATED = "related";
 
    public static int countNewsletters() {
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList newsletterList = SearchUtil.findNodeList(cloud, "newsletter");
+      NodeList newsletterList = SearchUtil.findNodeList(cloud, NEWSLETTER);
       if (newsletterList != null) {
          return (0 + newsletterList.size());
       }
@@ -59,7 +71,7 @@ public abstract class NewsletterUtil {
 
    public static int countPublications() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList publicationList = SearchUtil.findNodeList(cloud, "newsletterpublication");
+      NodeList publicationList = SearchUtil.findNodeList(cloud, NEWSLETTERPUBLICATION);
       if (publicationList != null) {
          return (0 + publicationList.size());
       }
@@ -69,7 +81,7 @@ public abstract class NewsletterUtil {
    public static int countPublications(int newsletterNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
-      NodeList publicationsList = newsletterNode.getRelatedNodes("newsletterpublication");
+      NodeList publicationsList = newsletterNode.getRelatedNodes(NEWSLETTERPUBLICATION);
 
       if (publicationsList != null) {
          return (publicationsList.size());
@@ -92,8 +104,8 @@ public abstract class NewsletterUtil {
       NodeQuery query = cloud.createNodeQuery();
       Step step = query.addStep(newsletterLogManager);
       query.setNodeStep(step);
-      SearchUtil.addEqualConstraint(query, newsletterLogManager.getField("newsletter"), newsletterNumber);
-
+      SearchUtil.addEqualConstraint(query, newsletterLogManager.getField(NEWSLETTER), newsletterNumber);
+  
       NodeList logs = query.getList();
       if (logs != null) {
          for (int i = 0; i < logs.size(); i++) {
@@ -145,7 +157,7 @@ public abstract class NewsletterUtil {
    public static List<Integer> getAllPublications() {
       List<Integer> publications = new ArrayList<Integer>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList publicationList = SearchUtil.findNodeList(cloud, "newsletterpublication");
+      NodeList publicationList = SearchUtil.findNodeList(cloud, NEWSLETTERPUBLICATION);
       if (publicationList != null && publicationList.size() > 0) {
          for (int n = 0; n < publicationList.size(); n++) {
             Node publicationNode = publicationList.getNode(n);
@@ -161,7 +173,7 @@ public abstract class NewsletterUtil {
          List<Integer> articles = new ArrayList<Integer>();
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node themeNode = cloud.getNode(themeNumber);
-         NodeManager articleNodeManager = cloud.getNodeManager("article");
+         NodeManager articleNodeManager = cloud.getNodeManager(ARTICLE);
          NodeList articleList = themeNode.getRelatedNodes(articleNodeManager);
          if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
@@ -199,14 +211,14 @@ public abstract class NewsletterUtil {
       List<ContentElement> articles = new ArrayList<ContentElement>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
-      NodeManager articleNodeManager = cloud.getNodeManager("article");
+      NodeManager newsletterNodeManager = cloud.getNodeManager(NEWSLETTER);
+      NodeManager articleNodeManager = cloud.getNodeManager(ARTICLE);
       NodeQuery query = cloud.createNodeQuery();
       Step parameterStep = query.addStep(articleNodeManager);
       query.setNodeStep(parameterStep);
       RelationStep relationStep = query.addRelationStep(newsletterNodeManager, null, null);
       Step step = relationStep.getNext();
-      StepField stepField = query.createStepField(step, newsletterNodeManager.getField("number"));
+      StepField stepField = query.createStepField(step, newsletterNodeManager.getField(NUMBER));
       FieldValueConstraint constraint = query.createConstraint(stepField, number);
       SearchUtil.addConstraint(query, constraint);
       Queries.addSortOrders(query, orderBy, direction);
@@ -256,15 +268,15 @@ public abstract class NewsletterUtil {
 
    public static List<Node> getArticles(int newsletterNumber, SortedSet<Integer> sort, String orderBy, String direction) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeManager articleNodeManager = cloud.getNodeManager("article");
+      NodeManager articleNodeManager = cloud.getNodeManager(ARTICLE);
 
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
+      NodeManager newsletterNodeManager = cloud.getNodeManager(NEWSLETTER);
       NodeQuery articleQuery = cloud.createNodeQuery();
       Step articleStep = articleQuery.addStep(articleNodeManager);
       articleQuery.setNodeStep(articleStep);
       RelationStep relationStep = articleQuery.addRelationStep(newsletterNodeManager, null, null);
       Step step = relationStep.getNext();
-      StepField stepField = articleQuery.createStepField(step, newsletterNodeManager.getField("number"));
+      StepField stepField = articleQuery.createStepField(step, newsletterNodeManager.getField(NUMBER));
       FieldValueConstraint constraint = articleQuery.createConstraint(stepField, newsletterNumber);
       SearchUtil.addConstraint(articleQuery, constraint);
       Queries.addSortOrders(articleQuery, orderBy, direction);
@@ -275,8 +287,8 @@ public abstract class NewsletterUtil {
       NodeQuery query = cloud.createNodeQuery();
       Step parameterStep = query.addStep(articleNodeManager);
       query.setNodeStep(parameterStep);
-      query.addRelationStep(termNodeManager, "newslettercontent", SearchUtil.DESTINATION);
-      SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
+      query.addRelationStep(termNodeManager, NEWSLETTERCONTENT, SearchUtil.DESTINATION);
+      SearchUtil.addInConstraint(query, termNodeManager.getField(NUMBER), sort);
       NodeList termRelatedArticles = query.getList();
 
       List<Node> articles = new ArrayList<Node>();
@@ -302,9 +314,9 @@ public abstract class NewsletterUtil {
 
    public static int countArticles(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeManager articleNodeManager = cloud.getNodeManager("article");
+      NodeManager articleNodeManager = cloud.getNodeManager(ARTICLE);
       Node newsletterNode = cloud.getNode(number);
-      int count = newsletterNode.countRelatedNodes(articleNodeManager, "newslettercontent", "source");
+      int count = newsletterNode.countRelatedNodes(articleNodeManager, NEWSLETTERCONTENT, SOURCE);
 
       return count;
    }
@@ -333,7 +345,7 @@ public abstract class NewsletterUtil {
    public static String getTitle(int newsletterNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
-      String title = newsletterNode.getStringValue("title");
+      String title = newsletterNode.getStringValue(TITLE);
       return (title);
    }
 
@@ -341,7 +353,7 @@ public abstract class NewsletterUtil {
       boolean result = false;
       if (number > 0) {
          String key = "" + determineNodeType(number);
-         if (key.equals("newsletter")) {
+         if (key.equals(NEWSLETTER)) {
             result = true;
          }
       }
@@ -362,7 +374,7 @@ public abstract class NewsletterUtil {
       boolean result = false;
       if (number > 0) {
          String key = "" + determineNodeType(number);
-         if (key.equals("newsletterpublication")) {
+         if (key.equals(NEWSLETTERPUBLICATION)) {
             result = true;
          }
       }
@@ -434,7 +446,7 @@ public abstract class NewsletterUtil {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node publicationNode = cloud.getNode(publicationId);
 
-         List<Node> relatedportlets = publicationNode.getRelatedNodes("portlet");
+         List<Node> relatedportlets = publicationNode.getRelatedNodes(PORTLET);
 
          String termIds = "";
          for (Term term : terms) {
@@ -444,10 +456,10 @@ public abstract class NewsletterUtil {
             termIds = termIds.substring(0, termIds.length() - 1);
          }
          for (Node portlet : relatedportlets) {
-            List<Node> portletdefNodes = portlet.getRelatedNodes("portletdefinition");
+            List<Node> portletdefNodes = portlet.getRelatedNodes(PORTLETDEFINITION);
             String portletDefinition = portletdefNodes.get(0).getStringValue("definition");
             if (portletDefinition.equals(NewsletterContentPortlet.DEFINITION)) {
-               RelationList relations = portlet.getRelations("portletrel", publicationNode.getNodeManager());
+               RelationList relations = portlet.getRelations(PORTLETREL, publicationNode.getNodeManager());
                String name = relations.getRelation(0).getStringValue("name");
                url += "/_rp_".concat(name).concat("_").concat(NewsletterContentPortlet.NEWSLETTER_TERMS_PARAM).concat("/1_").concat(termIds);
             }
@@ -458,7 +470,7 @@ public abstract class NewsletterUtil {
 
 
    public static String getServerURL() {
-      String hostUrl = PropertiesUtil.getProperty("system.livepath");
+      String hostUrl = PropertiesUtil.getProperty(SYSTEM_LIVEPATH);
 
       if (StringUtils.isEmpty(hostUrl)) {
          throw new NewsletterSendFailException("get property <system.livepath> from system property and get nothing");
@@ -505,18 +517,18 @@ public abstract class NewsletterUtil {
    }
 
    public static void addScheduleForNewsletter(Node newsletterNode) {
-      NodeManager scheduleNodeManager = newsletterNode.getCloud().getNodeManager("schedule");
-      NodeList schedules = SearchUtil.findRelatedOrderedNodeList(newsletterNode, "schedule", "posrel", "createdatetime", "DOWN");
+      NodeManager scheduleNodeManager = newsletterNode.getCloud().getNodeManager(SCHEDULE);
+      NodeList schedules = SearchUtil.findRelatedOrderedNodeList(newsletterNode, SCHEDULE, POSREL, "createdatetime", DOWN);
       if (schedules.size() == 0) {
          addScheduleNode(newsletterNode, scheduleNodeManager);
       } else {
          Node firstScheduleNode = schedules.getNode(0);
-         if (firstScheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue("schedule"))) {
+         if (firstScheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue(SCHEDULE))) {
             return;
          }
          for (int i = 0; i < schedules.size(); i++) {
             Node scheduleNode = schedules.getNode(i);
-            if (scheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue("schedule"))) {
+            if (scheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue(SCHEDULE))) {
                scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
                scheduleNode.commit();
                return;
@@ -527,25 +539,25 @@ public abstract class NewsletterUtil {
    }
 
    public static void addScheduleNode(Node newsletterNode, NodeManager scheduleNodeManager) {
-      if (StringUtils.isEmpty(newsletterNode.getStringValue("schedule"))) {
+      if (StringUtils.isEmpty(newsletterNode.getStringValue(SCHEDULE))) {
          return;
       }
       Node scheduleNode = scheduleNodeManager.createNode();
-      scheduleNode.setStringValue("expression", newsletterNode.getStringValue("schedule"));
+      scheduleNode.setStringValue("expression", newsletterNode.getStringValue(SCHEDULE));
       scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
       scheduleNode.commit();
-      RelationUtil.createRelation(newsletterNode, scheduleNode, "posrel");
+      RelationUtil.createRelation(newsletterNode, scheduleNode, POSREL);
    }
 
    public static List<Schedule> getSchedulesBynewsletterId(int id) {
       List<Schedule> schedules = new ArrayList<Schedule>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(id);
-      NodeList scheduleList = SearchUtil.findRelatedOrderedNodeList(newsletterNode, "schedule", "posrel", "createdatetime", "DOWN");
+      NodeList scheduleList = SearchUtil.findRelatedOrderedNodeList(newsletterNode, SCHEDULE, POSREL, "createdatetime", DOWN);
       for (int i = 1; i < scheduleList.size(); i++) {
          Node scheduleNode = scheduleList.getNode(i);
          Schedule schedule = new Schedule();
-         schedule.setId(scheduleNode.getIntValue("number"));
+         schedule.setId(scheduleNode.getIntValue(NUMBER));
          schedule.setExpression(scheduleNode.getStringValue("expression"));
          schedule.setScheduleDescription(getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
          schedules.add(schedule);
@@ -699,13 +711,19 @@ public abstract class NewsletterUtil {
    public static void restoreSchedule(int scheduleId) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node scheduleNode = cloud.getNode(scheduleId);
-      Node newsletterNode = SearchUtil.findRelatedNode(scheduleNode, "newsletter", "posrel");
+      Node newsletterNode = SearchUtil.findRelatedNode(scheduleNode, NEWSLETTER, POSREL);
       if (newsletterNode != null) {
-         newsletterNode.setStringValue("schedule", scheduleNode.getStringValue("expression"));
+         newsletterNode.setStringValue(SCHEDULE, scheduleNode.getStringValue("expression"));
          newsletterNode.setStringValue("scheduledescription", getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
          newsletterNode.commit();
       }
       scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
       scheduleNode.commit();
+   }
+   
+   public static void addNewsletterCreationChannel(int newsletterId ,int editionId) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      RelationManager relManager = cloud.getRelationManager(NEWSLETTER, NEWSLETTERPUBLICATION, RELATED);
+      relManager.createRelation(cloud.getNode(newsletterId), cloud.getNode(editionId)).commit();
    }
 }
