@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -58,7 +62,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    /**
     * deliver all READY publications in the system
     */
-   public void deliverAllPublication() {
+   public void deliverAllPublications() {
       log.info("starting deliver all publications in READY status");
 
       List<Integer> publications = publicationCAO.getIntimePublicationIds();
@@ -83,15 +87,15 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       Map<String, List<String>> sendResults = new HashMap<String, List<String>>();
       List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
       log.debug("deliver publication " + publicationId + " which has " + subscriptions.size() + " subscriptions");
-      NewsletterPublicationUtil.setBeingSent(publicationId);
+      NewsletterPublicationUtil.setBeingSend(publicationId);
       Publication publication = publicationCAO.getPublication(publicationId);
       for (Subscription subscription : subscriptions) {
          Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
-         Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
-         if(subscripber == null || RegisterStatus.BLOCKED.getName().equalsIgnoreCase(subscripber.getActive())) {
+         Person subscriber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
+         if(subscriber == null || RegisterStatus.BLOCKED.getName().equalsIgnoreCase(subscriber.getActive())) {
             continue;
          }
-         subscription.setEmail(subscripber.getEmail());
+         subscription.setEmail(subscriber.getEmail());
          subscription.setTerms(terms);
          try {
             publisher.deliver(publication, subscription);
@@ -101,7 +105,9 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
             log.error(e.getMessage());
          }
       }
-      NewsletterPublicationUtil.setIsSent(publicationId);
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node edition = cloud.getNode(publicationId);  
+      NewsletterPublicationUtil.setIsSent(edition);
       sendResults.put(SEND_SUCCESS, sendSuccess);
       sendResults.put(SEND_FAIL, sendFails);
 

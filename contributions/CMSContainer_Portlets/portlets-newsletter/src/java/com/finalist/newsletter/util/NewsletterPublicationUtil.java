@@ -148,16 +148,19 @@ public abstract class NewsletterPublicationUtil {
 
       return pub;
    }
-   public static String getPublicationURL(Cloud cloud,int publciationId) {
-      Node publicationNode = cloud.getNode(publciationId);
+   
+   public static String getPublicationURL(Cloud cloud, int publicationId) {
+      Node publicationNode = cloud.getNode(publicationId);
       String hostUrl = NewsletterUtil.getServerURL();
       String newsletterPath = getNewsletterPath(publicationNode);
       return "".concat(hostUrl).concat(newsletterPath);
    }
+   
    public static String getNewsletterPath(Node newsletterPublicationNode) {
       return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
    }
-   public static STATUS getStatus(Cloud cloud,int publicationId) {
+   
+   public static STATUS getStatus(Cloud cloud, int publicationId) {
       return getPublication(cloud,publicationId).getStatus();
    }
    
@@ -166,7 +169,7 @@ public abstract class NewsletterPublicationUtil {
          Publish.publish(node);
       }
    }
-   public static void publish(Cloud cloud ,Integer number) {
+   public static void publish(Cloud cloud, int number) {
       Node node = cloud.getNode(number);
       publish(node);
    }
@@ -193,6 +196,7 @@ public abstract class NewsletterPublicationUtil {
       edition.setStringValue("static_html", null);
       edition.commit();
    }
+   
    /**
     * Approve a edition
     */
@@ -202,6 +206,7 @@ public abstract class NewsletterPublicationUtil {
       edition.setStringValue("approved_by", user);
       edition.commit();
    }
+   
    /**
     * Revoke approval of a edition
     */
@@ -211,19 +216,19 @@ public abstract class NewsletterPublicationUtil {
    }
    
    /**
-    * change the status of the edition to be beingsent
+    * change the status of the edition to be beingsend
     */
-   public static void setBeingSent(Node edition) {
+   public static void setBeingSend(Node edition) {
       edition.setStringValue("process_status", EditionStatus.BEING_SENT.value());
       edition.commit();
    }
    /**
-    * change the status of the edition to be beingsent
+    * change the status of the edition to be beingsend
     */
-   public static void setBeingSent(Integer number) {
+   public static void setBeingSend(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node edition = cloud.getNode(number);    
-      setBeingSent(edition);
+      setBeingSend(edition);
    }
    /**
     * change the status  of a edition to be issent
@@ -231,14 +236,6 @@ public abstract class NewsletterPublicationUtil {
    public static void setIsSent(Node edition) {
       edition.setStringValue("process_status", EditionStatus.IS_SENT.value());
       edition.commit();
-   }
-   /**
-    * change the status  of a edition to be issent
-    */
-   public static void setIsSent(Integer number) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node edition = cloud.getNode(number);  
-      setIsSent(edition);
    }
    
    /**

@@ -12,7 +12,7 @@ public interface NewsletterPublicationService {
    public static final String SEND_SUCCESS = "sendSucess";
    public static final String SEND_FAIL = "sendFail";
 
-   public void deliverAllPublication();
+   public void deliverAllPublications();
 
    public void deliver(int publicationId, String email, String mimeType);
 
