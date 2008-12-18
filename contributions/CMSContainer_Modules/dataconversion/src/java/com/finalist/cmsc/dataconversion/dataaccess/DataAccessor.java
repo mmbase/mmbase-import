@@ -2,6 +2,7 @@ package com.finalist.cmsc.dataconversion.dataaccess;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,7 +27,8 @@ import com.finalist.cmsc.dataconversion.service.Data;
 public class DataAccessor {
    
    private static final Logger log = Logging.getLoggerInstance(DataAccessor.class.getName());
-     
+   
+   public static String encoding;
    private DataSource dataSource;   
    private ElementMeta elementMeta;   
    private Query query;   
@@ -170,11 +172,11 @@ public class DataAccessor {
          Elements element = new Elements();
          for(String fieldName : elementMeta.getFieldNames()) {
             if(StringUtils.isNotEmpty(fieldName)) {
-               if(StringUtils.isEmpty(elementMeta.getStyle(fieldName))&&StringUtils.isEmpty(elementMeta.getPrefix(fieldName)) || (rs.getObject(fieldName) != null && rs.getObject(fieldName).toString().startsWith(URL_PROTOCOL))) {
-                  element.setValue(elementMeta.getDesFieldName(fieldName),rs.getObject(fieldName));
+               if(StringUtils.isEmpty(elementMeta.getStyle(fieldName))&&StringUtils.isEmpty(elementMeta.getPrefix(fieldName)) || (encoding(rs, fieldName) != null && encoding(rs, fieldName).toString().startsWith(URL_PROTOCOL))) {
+                  element.setValue(elementMeta.getDesFieldName(fieldName),encoding(rs, fieldName));
                }
                else if(!StringUtils.isEmpty(elementMeta.getPrefix(fieldName))){
-                  element.setValue(elementMeta.getDesFieldName(fieldName),elementMeta.getPrefix(fieldName)+rs.getObject(fieldName));
+                  element.setValue(elementMeta.getDesFieldName(fieldName),elementMeta.getPrefix(fieldName)+encoding(rs, fieldName));
                }else if(!StringUtils.isEmpty(elementMeta.getStyle(fieldName))){
                   String changeMethod=elementMeta.getStyle(fieldName);
                   Object o=changeStyle(changeMethod,rs,fieldName);
@@ -186,6 +188,20 @@ public class DataAccessor {
          }
          list.add(element);
       }
+   }
+
+   private Object encoding(ResultSet rs, String fieldName) throws SQLException {
+      Object obj=rs.getObject(fieldName);
+      if (obj instanceof String&&StringUtils.isBlank(encoding)) {
+         try {
+            String untrimmedResult = new String(((String) obj).getBytes(encoding), "utf-8");
+            return untrimmedResult;
+         } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+      return obj;
    }
    
    private Object changeStyle(String changeMethod, ResultSet rs, String fieldName) {
@@ -205,7 +221,7 @@ public class DataAccessor {
             byte[] b = new byte[4096];
             try {
                for (int n; (n = inStream.read(b)) != -1;) {
-                  out.append(new String(b, 0, n));
+                  out.append(new String(b, 0, n, "utf-8"));
                }
             } catch (IOException e) {
                log.error("changeMethod failure!"+changeMethod+"can't make datatype chnge!"+e.getMessage());
@@ -218,7 +234,7 @@ public class DataAccessor {
             if("1".equals(s.trim())){
                return true;
             }
-            return org.mmbase.util.transformers.Xml.XMLEscape(s);
+            return s;
          }
       } catch (SQLException e) {
          log.error("changeMethod failure!"+changeMethod+"can't make datatype chnge!"+e.getMessage());
@@ -233,11 +249,11 @@ public class DataAccessor {
          Elements element = new Elements();
          for(String fieldName : elementMeta.getRelateFields()) {
             if(StringUtils.isNotEmpty(fieldName)) {
-               if(StringUtils.isEmpty(elementMeta.getPrefix(fieldName))  || (rs.getObject(fieldName) != null && rs.getObject(fieldName).toString().startsWith(URL_PROTOCOL))) {
-                  element.setValue(elementMeta.getDesFieldName(fieldName),rs.getObject(fieldName));
+               if(StringUtils.isEmpty(elementMeta.getPrefix(fieldName))  || (encoding(rs, fieldName) != null && encoding(rs, fieldName).toString().startsWith(URL_PROTOCOL))) {
+                  element.setValue(elementMeta.getDesFieldName(fieldName),encoding(rs, fieldName));
                }
                else {
-                  element.setValue(elementMeta.getDesFieldName(fieldName),elementMeta.getPrefix(fieldName)+rs.getObject(fieldName));
+                  element.setValue(elementMeta.getDesFieldName(fieldName),elementMeta.getPrefix(fieldName)+encoding(rs, fieldName));
                }
             }
          }

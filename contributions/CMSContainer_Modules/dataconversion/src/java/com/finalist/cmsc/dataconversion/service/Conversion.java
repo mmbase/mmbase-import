@@ -66,6 +66,8 @@ public class Conversion {
          dom = XMLParser.parseXMLToDOM(context.getResourceAsStream(IMPORT_FILE));
          // XMLParser.DTDValidator(dom);
          Element element = (Element) dom.getElementsByTagName("import").item(0);
+         String encoding=element.getAttribute("encoding");
+         DataAccessor.encoding=encoding;
          NodeList list = element.getChildNodes();
          List<Data> sources = new ArrayList<Data>();
          List<Data> clondSources = new ArrayList<Data>();
