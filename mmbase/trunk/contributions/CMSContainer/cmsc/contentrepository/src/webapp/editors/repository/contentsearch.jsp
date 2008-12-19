@@ -426,17 +426,6 @@
                      <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blank"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
                   </mm:field>
                <a href="#" onclick="showItem(<mm:field name="number"/>);"><img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" /></a>
-
-            <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
-               <a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
-                  <img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
-               </a>
-            </c:if>
-            <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
-               <a href="javascript:deleteContent('<mm:field name='number'/>')"><img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/></a>
-            </c:if>
-                     
-
                   <mm:compare referid="action" value="search">
                      <mm:haspage page="/editors/versioning">
                         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
@@ -457,6 +446,15 @@
                              </c:if>
                      </cmsc:hasfeature>
                   </mm:compare>
+            <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
+               <a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
+                  <img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
+               </a>
+            </c:if>
+            <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+               <a href="javascript:deleteContent('<mm:field name='number'/>')"><img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/></a>
+            </c:if>
+
                </td>
                <td style="white-space: nowrap;">
                  <mm:nodeinfo type="guitype"/>
