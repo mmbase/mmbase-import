@@ -15,8 +15,8 @@
         document.getElementById("busy").style.visibility="visible";
         document.getElementById("notbusy").style.visibility="hidden";
     }
-    
-         
+
+
    function showInfo(objectnumber) {
       openPopupWindow('imageinfo', '900', '500', 'imageinfo.jsp?objectnumber='+objectnumber);
     }
@@ -27,13 +27,13 @@
        url += "&objectnumber=" + objectnumber;
        document.location.href = url;
    }
-   
+
     var blockSelect = false;
   </script>
 </cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-      <div class="editor" style="height:500px">
+      <div class="editor" style="height:580px">
           <div class="body">
               <html:form action="/editors/repository/ImageUploadAction.do" enctype="multipart/form-data" method="post">
                   <input type="hidden" id="parentchannel" name="parentchannel" value="${param.channelid}"/>
