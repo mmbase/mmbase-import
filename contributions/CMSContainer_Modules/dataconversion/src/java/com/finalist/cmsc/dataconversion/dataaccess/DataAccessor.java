@@ -192,7 +192,7 @@ public class DataAccessor {
 
    private Object encoding(ResultSet rs, String fieldName) throws SQLException {
       Object obj=rs.getObject(fieldName);
-      if (obj instanceof String&&StringUtils.isBlank(encoding)) {
+      if (obj instanceof String&&StringUtils.isNotBlank(encoding)) {
          try {
             String untrimmedResult = new String(((String) obj).getBytes(encoding), "utf-8");
             return untrimmedResult;
