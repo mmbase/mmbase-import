@@ -10,6 +10,7 @@
   -->
   <jsp:output omit-xml-declaration="yes" />
   <c:if test="${fn:length(_) ge di:setting('education', 'max_depth')}">
+    <mm:node id="parent" />
     <mm:tree type="learnobjects"
              role="posrel" searchdir="destination" orderby="posrel.pos" directions="up"
              maxdepth="${di:setting('education', 'max_depth') + 1}">
@@ -20,12 +21,12 @@
             <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
           </mm:grow>
           <![CDATA[<li>]]>
-          <a href="#learnblock_${_node}"><mm:field name="name" /></a>
+          <a href="${'#'}${parent}_learnblock_${_node}"><mm:field name="name" /></a>
           <mm:onshrink><![CDATA[</li>]]></mm:onshrink>
           <mm:shrink />
 
         </mm:isgreaterthan>
-      </mm:depth>
+        </mm:depth>
     </mm:tree>
   </c:if>
 </mm:function>
