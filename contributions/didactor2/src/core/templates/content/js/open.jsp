@@ -270,8 +270,7 @@ function openContent(type, number, el) {
         href = addParameter(href, 'type=' + type);
     }
     requestContent(href, number);
-
-    $("#content" + currentnumber).addClass("selectedContent");
+    $("#content-" + currentnumber).addClass("selectedContent");
 
 }
 
