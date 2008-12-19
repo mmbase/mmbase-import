@@ -26,13 +26,7 @@
         <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
-	        <mm:haspage page="/editors/versioning">
-	            <input type="hidden" name="returnurl" value="picktags.jsp"/>
-	            <c:set var="hasTags" value="true"/>
-	        </mm:haspage>
-	        <c:if test="${empty hasTags}">
-	            <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
-	        </c:if>
+            <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
             <input type="hidden" name="order" value="${orderby}" />
             <input type="hidden" name="direction" value="${direction}"/>
             <input type="hidden" name="offset" value="${param.offset}"/>
@@ -160,13 +154,6 @@
                                                                  title="<fmt:message key="content.info" />"
                                                                  alt="<fmt:message key="content.info" />"/></a>
 
-	<% if (role != null && SecurityUtil.isWriter(role)) { %>                                                                 
-	    <mm:haspage page="/editors/picktags.jsp">
-	        <a href="/editors/picktags.jsp?ewnodelastedited=<mm:field name="number"/>"><img
-	                src="../gfx/icons/tagcloud.png" title="tags" alt="tags"/></a>
-	    </mm:haspage>
-	<% } %>
-                                                                     
     <mm:haspage page="/editors/versioning">
         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
             <c:param name="nodenumber"><mm:field name="number"/></c:param>
