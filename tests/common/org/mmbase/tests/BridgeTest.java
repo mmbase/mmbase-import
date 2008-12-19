@@ -103,7 +103,7 @@ public abstract class BridgeTest extends MMBaseTest {
         while(c == null) {
             try {
                 Map<String, Object> loginInfo = new HashMap<String, Object>();
-                loginInfo.put("username", "admin");
+                loginInfo.put("rank", "administrator");
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", loginInfo);
                 break;
             } catch (BridgeException be) {
