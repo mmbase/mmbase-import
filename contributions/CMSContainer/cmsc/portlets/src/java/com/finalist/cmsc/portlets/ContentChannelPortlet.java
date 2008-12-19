@@ -188,9 +188,9 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             useLifecycleBool = false;
          }
 
-         int maxDays = Integer.parseInt(preferences.getValue(MAX_DAYS, "-1"));
-         if(maxDays <= 0){
-            maxDays = Integer.MAX_VALUE;
+         int maxDays = Integer.parseInt(preferences.getValue(MAX_DAYS, "0"));
+         if(maxDays < 0){
+            maxDays = 0;
          }
          int totalItems = countContentElements(req, contenttypes, channel, offset, orderby, direction, archive,
                elementsPerPage, year, month, day, useLifecycleBool, maxDays);
@@ -199,7 +199,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
          }
 
          List<ContentElement> elements = getContentElements(req, contenttypes, channel, offset, orderby, direction,
-               archive, elementsPerPage, year, month, day, useLifecycleBool,maxDays);
+               archive, elementsPerPage, year, month, day, useLifecycleBool, maxDays);
 
          setAttribute(req, ELEMENTS, elements);
          if (contenttypes != null && !contenttypes.isEmpty()) {
