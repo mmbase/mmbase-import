@@ -239,7 +239,7 @@ public class ContentSearchAction extends PagerAction {
          QueryStringComposer queryStringComposer, NodeQuery query) {
       List<String> keywords = null;
       String mode = request.getParameter(MODE);
-      if (StringUtils.isNotEmpty(mode) && ("basic").equals(mode)) {
+      if (StringUtils.isNotEmpty(mode) && ("basic").equals(mode) && StringUtils.isNotEmpty(searchForm.getTitle())) {
          keywords = KeywordUtil.getKeywords(searchForm.getTitle());
       }
       // And some keyword searching
