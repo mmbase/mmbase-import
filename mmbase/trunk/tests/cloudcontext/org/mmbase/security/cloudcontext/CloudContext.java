@@ -16,6 +16,7 @@ import org.mmbase.tests.BridgeTest;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.security.implementation.cloudcontext.Caches;
 
 /**
  *
@@ -34,8 +35,15 @@ public class CloudContext extends BridgeTest {
         }
     }
 
+    protected void waitForCache() {
+        //Caches.waitForCacheInvalidation();
+        Thread.sleep(10000);
+
+    }
+
+
     public void testImplementation() {
-        assertEquals(org.mmbase.security.implementation.cloudcontext.Authenticate.class, 
+        assertEquals(org.mmbase.security.implementation.cloudcontext.Authenticate.class,
                      getCloud().getCloudContext().getAuthentication().getClass());
         Cloud cloud = getCloud("foo");
         assertEquals("foo", cloud.getUser().getIdentifier());
@@ -71,10 +79,10 @@ public class CloudContext extends BridgeTest {
         } catch (SecurityException se) {
             // ok
         }
-        
+
         news.setStringValue("title", "blaa");
         news.commit();
-        
+
     }
 
     public void testDeleteRights() {
@@ -89,9 +97,9 @@ public class CloudContext extends BridgeTest {
         } catch (SecurityException se) {
             // ok
         }
-        
+
         news.delete(true);
-        
+
     }
 
 
@@ -107,12 +115,12 @@ public class CloudContext extends BridgeTest {
         } catch (SecurityException se) {
             // ok
         }
-        
+
         news.setContext("admin");
         news.commit();
         // changed to a context which we may not change again
-        assertFalse(news.mayChangeContext());                                               
-        
+        assertFalse(news.mayChangeContext());
+
     }
     public void testReadRights() {
         // TODO, cannot be tested right now, because read all property
@@ -126,10 +134,10 @@ public class CloudContext extends BridgeTest {
     public void testSetOwnPassord() {
         Cloud cloud = getCloud("foo");
         Node userNode = cloud.getNode(cloud.getCloudContext().getAuthentication().getNode(cloud.getUser()));
-        assertEquals("foo", userNode.getStringValue("username"));        
+        assertEquals("foo", userNode.getStringValue("username"));
         userNode.setStringValue("password", "bar2");
         userNode.commit();
-        
+
         assertEquals(new org.mmbase.util.transformers.MD5().transform("bar2"), userNode.getStringValue("password"));
     }
 
@@ -141,13 +149,13 @@ public class CloudContext extends BridgeTest {
             fail("Should not have been allowed to delete own node");
         } catch (SecurityException se) {
             // ok
-        }       
+        }
     }
     public void testChangedPassword() {
         Map<String, Object> loginInfo = new HashMap<String, Object>();
         loginInfo.put("username", "foo");
         loginInfo.put("password", "bar");
-        
+
         try {
             Cloud cloud = getCloudContext().getCloud("mmbase", "name/password", loginInfo);
             fail("Should not have been allowed to login with wrong (old)  password ");
@@ -158,7 +166,7 @@ public class CloudContext extends BridgeTest {
         loginInfo.put("password", "bar2");
         Cloud cloud = getCloudContext().getCloud("mmbase", "name/password", loginInfo);
         assertNotNull(cloud);
-        
+
     }
 
     public void testGrantToUser() throws InterruptedException {
@@ -176,8 +184,7 @@ public class CloudContext extends BridgeTest {
 
         //assertFalse(cloud.getUser().isValid());
 
-        // a certain latency is allowed
-        Thread.sleep(5000);
+        waitForCache();
 
         // now foo should be allowed to create new contexts
         cloud = getCloud("foo");
@@ -200,7 +207,8 @@ public class CloudContext extends BridgeTest {
 
         assertTrue(contextNode.getFunctionValue("revoke", params).toBoolean());
         // a certain latency is allowed
-        Thread.sleep(5000);
+
+        waitForCache();
 
         // now foo should be disallowed to create new contexts again
         cloud = getCloud("foo");
@@ -227,7 +235,7 @@ public class CloudContext extends BridgeTest {
 
         assertTrue(contextNode.getFunctionValue("grant", params).toBoolean());
         // a certain latency is allowed
-        Thread.sleep(10000); // TODO
+        waitForCache();
         // now foo should be allowed to create new contexts again, because is in the 'users' group
         Cloud cloud = getCloud("foo");
         assertTrue(cloud.getNodeManager("mmbasecontexts").mayCreateNode());
@@ -249,7 +257,7 @@ public class CloudContext extends BridgeTest {
 
         assertTrue(contextNode.getFunctionValue("revoke", params).toBoolean());
         // a certain latency is allowed
-        Thread.sleep(10000); // TODO
+        waitForCache();
 
         // now foo should be disallowed to create new contexts again
         Cloud cloud = getCloud("foo");
