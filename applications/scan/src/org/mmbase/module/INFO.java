@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.55 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: INFO.java,v 1.56 2008-12-22 18:52:37 michiel Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -98,7 +98,8 @@ public class INFO extends ProcessorModule {
      * @return a <code>Vector</code> containing the requested values.
      * @throws ParseException
      */
-     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    @Override public List<String>  getList(PageInfo sp, StringTagger tagger, String value) {
+
         String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -118,7 +119,7 @@ public class INFO extends ProcessorModule {
      * @param vars the variables to process
      * @return alwyas <code>false</code>
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    @Override public boolean process(PageInfo sp, Hashtable cmds,Hashtable vars) {
         if (log.isDebugEnabled()) {
             log.debug("CMDS="+cmds);
             log.debug("VARS="+vars);
@@ -149,7 +150,7 @@ public class INFO extends ProcessorModule {
      * @param cmds the command to process
      * @return a <code>String</code> with the command's result value
        */
-    public String replace(scanpage sp, String cmds) {
+    @Override public String replace(PageInfo sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -300,7 +301,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doEscape(scanpage sp, StringTokenizer tok) {
+    String doEscape(PageInfo sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -321,7 +322,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doParamEncode(scanpage sp, StringTokenizer tok) {
+    String doParamEncode(PageInfo sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -342,7 +343,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doParamDecode(scanpage sp, StringTokenizer tok) {
+    String doParamDecode(PageInfo sp, StringTokenizer tok) {
         String result=null;
         while (tok.hasMoreTokens()) {
             String tmp=tok.nextToken();
@@ -363,7 +364,7 @@ public class INFO extends ProcessorModule {
      * @param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> which is the converted value
      */
-    String doOs(scanpage sp, StringTokenizer tok) {
+    String doOs(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             return "Illegal OS command";
@@ -407,7 +408,7 @@ public class INFO extends ProcessorModule {
      * param tok the StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> containing a random number
      */
-    String doRandom(scanpage sp, StringTokenizer tok) {
+    String doRandom(PageInfo sp, StringTokenizer tok) {
     int j=0;
     int s=0;
     int e=0;
@@ -439,7 +440,7 @@ public class INFO extends ProcessorModule {
      * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> containing the result
      */
-    String doBrowser(scanpage sp, StringTokenizer tok) {
+    String doBrowser(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("OS")) {
@@ -492,11 +493,11 @@ public class INFO extends ProcessorModule {
      * @author Eduard Witteveen 08-11-2000
      */
      // http://uk.php.net/manual/language.variables.predefined.php <-- a few defines from php
-    String doUser(scanpage sp, StringTokenizer tok) {
+    String doUser(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("NAME")) return HttpAuth.getRemoteUser(sp.req);
-            if (cmd.equals("SESSIONNAME")) return sp.getSessionName();
+            if (cmd.equals("SESSIONNAME")) return ((scanpage) sp).getSessionName();
             if (cmd.equals("HOSTNAME")) return sp.req.getRemoteHost();
             if (cmd.equals("REQUEST_URI")) return sp.req.getRequestURI();
             if (cmd.equals("SECLEVEL")) return sp.req.getAuthType();
@@ -561,7 +562,7 @@ public class INFO extends ProcessorModule {
     protected Map getProperties(String propertytable) {
          return null;
      }
- 
+
     /**
      * Returns a continues range of values with two set numerical boundaries and a step-increase, or
      * the range of characters of the alphabet. <br />
@@ -1068,7 +1069,7 @@ public class INFO extends ProcessorModule {
      * Returns a description of the module.
      * @return a <code>String</code> describing the module's function.
      */
-    public String getModuleInfo() {
+    @Override public String getModuleInfo() {
         return "Support routines for servscan, Daniel Ockeloen";
     }
 
@@ -1192,7 +1193,7 @@ public class INFO extends ProcessorModule {
      * @return a <code>Vector</code> containing color names and RGB values
      * @deprecated hereditary code. Should be dropped or adapted.
      */
-    Vector doScanDate(scanpage sp,StringTagger tagger) {
+    Vector doScanDate(PageInfo sp,StringTagger tagger) {
         String temp = sp.req.getHeader("Pragma");
         if (temp!=null && temp.indexOf("no-cache")!=-1) {
             DirCache=new Hashtable();
@@ -1339,7 +1340,7 @@ public class INFO extends ProcessorModule {
      * @param tok the commands to be executed
      * @return a <code>String</code> withe the value 'YES' if the check succeeded, 'NO' if it failed.
      */
-    public String doExists(scanpage sp,StringTokenizer tok) {
+    protected String doExists(PageInfo sp,StringTokenizer tok) {
         String type=tok.nextToken();
         String path=tok.nextToken();
         boolean rtn=false;
@@ -1355,7 +1356,7 @@ public class INFO extends ProcessorModule {
             path=droot+path;
             // debug("INFO -> doExists full path : "+path);
         } else {
-            String r=sp.req_line;
+            String r= ((scanpage) sp).req_line;
             int i=r.lastIndexOf('/');
             path=documentroot+r.substring(0,i+1)+path;
             // debug("INFO -> doExists req path : "+path);
@@ -1405,7 +1406,7 @@ public class INFO extends ProcessorModule {
      * @param tok the commands to be executed
      * @return Always <code>null</code>. This comamnd is executed for its side effects, it does not return a value.
      */
-    private String doMove( scanpage sp, StringTokenizer tok ) {
+    private String doMove(PageInfo sp, StringTokenizer tok ) {
         String result = null;
 
         if( tok.hasMoreTokens() ) {
@@ -1415,9 +1416,9 @@ public class INFO extends ProcessorModule {
                 String toDir = tok.nextToken();
                     moveFile( from, toDir );
             } else
-                log.error("doMove(): ERROR: page("+sp.getUrl()+"): no destination specified in $MOD-INFO-MOVE-"+from+" !");
+                log.error("doMove(): ERROR: page(" + sp + "): no destination specified in $MOD-INFO-MOVE-"+from+" !");
         } else
-            log.error("doMove(): ERROR: page("+sp.getUrl()+"): no source directory given in $MOD-INFO-MOVE-.. !");
+            log.error("doMove(): ERROR: page("+ sp +"): no source directory given in $MOD-INFO-MOVE-.. !");
         return result;
     }
 

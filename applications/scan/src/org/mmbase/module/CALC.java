@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Calc.java
  * @author Daniel Ockeloen
- * @version $Id: CALC.java,v 1.11 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: CALC.java,v 1.12 2008-12-22 18:52:37 michiel Exp $
  */
 public class CALC extends ProcessorModule {
     // logging
@@ -30,7 +30,7 @@ public class CALC extends ProcessorModule {
      * @javadoc
      * @deprecated-now doesn't add any functionality
      */
-     public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    @Override public List<String> getList(PageInfo sp, StringTagger tagger, String value)  {
         String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -39,22 +39,12 @@ public class CALC extends ProcessorModule {
         return null;
     }
 
-    /**
-     * Execute the commands provided in the form values
-     * @javadoc
-     * @deprecated-now doesn't add any functionality
-     */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-        log.debug("CMDS="+cmds);
-        log.debug("VARS="+vars);
-        return false;
-    }
 
     /**
      * Handle a $MOD command
      * @javadoc
      */
-    public String replace(scanpage sp, String cmds) {
+    @Override public String replace(PageInfo  sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -81,7 +71,7 @@ public class CALC extends ProcessorModule {
     /**
      * @javadoc
      */
-    public String getModuleInfo() {
+    @Override public String getModuleInfo() {
         return "Support routines simple calc, Daniel Ockeloen";
     }
 }

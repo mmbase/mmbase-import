@@ -28,7 +28,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: StateManager.java,v 1.20 2008-12-22 18:52:37 michiel Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -109,7 +109,7 @@ public class StateManager implements CommandHandlerInterface {
      *  <li>ISCHANGED : ??? </li>
      * </ul>
      */
-    public String replace(scanpage sp, StringTokenizer commands) {
+    public String replace(PageInfo sp, StringTokenizer commands) {
         // Retrieve the username.
         // Or at least, that is the intention.
         // What this method REALLY does is authenticate the user (even if he was authenticated before).
@@ -138,7 +138,7 @@ public class StateManager implements CommandHandlerInterface {
             } else if (token.equals("CLEARBUILDERS")) {
                     state.clear();
             } else if (token.equals("ADDRELATION")) {
-                    log.warn("ADDRELATION is deprecated in "+sp.getUrl()+"; use NEWINSNODE");
+                    log.warn("ADDRELATION is deprecated in "+sp +"; use NEWINSNODE");
                     state.addRelation(userName);
             } else if (token.equals("SETHTMLVALUE")) {
                     state.setHtmlValue(commands.nextToken(),commands.nextToken());
@@ -353,7 +353,7 @@ public class StateManager implements CommandHandlerInterface {
      * List commands
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
+    public List<String> getList(PageInfo sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
@@ -373,7 +373,7 @@ public class StateManager implements CommandHandlerInterface {
      * The hook that passes all form related pages to the correct handler
      * @javadoc
      */
-    public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
 
