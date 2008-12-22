@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.49 2008-11-06 12:24:57 michiel Exp $;
+ * @version $Id: Url.java,v 1.50 2008-12-22 14:51:49 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -51,8 +51,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private final boolean encodeUrl;
     private final boolean escapeAmps;
 
-    private String cacheAmp = null;
-    private String cacheNoAmp = null;
+    private String cacheEscapeAmp = null;
+    private String cacheNoEscapeAmp = null;
     private String string = null;
     private final boolean internal;
     private boolean process = false;
@@ -89,6 +89,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         internal = intern;
     }
 
+
     public Url(ContextReferrerTag t, String p, String a) throws JspTagException {
         tag = t;
         abs = a;
@@ -98,6 +99,17 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         params = new HashMap<String, Object>();
         frameworkParams = null;
         internal = false;
+    }
+
+    Url(Url u, boolean encode) {
+        this.tag = u.tag;
+        this.abs = u.abs;
+        this.encodeUrl = encode;
+        this.escapeAmps = u.escapeAmps;
+        this.page = u.page;
+        this.params = u.params;
+        this.frameworkParams = u.params;
+        this.internal = u.internal;
     }
 
 
@@ -119,7 +131,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         this.legacy = true;
     }
 
-    public String getLegacy(boolean writeamp) throws JspTagException {
+    public String getLegacy(boolean escapeamp) throws JspTagException {
         Map<String, Object> m = new HashMap<String, Object>();
         if (params != null) {
             m.putAll(params);
@@ -127,7 +139,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (log.isDebugEnabled()) {
             log.debug("legacy url " + page + m);
         }
-        String res = BasicUrlConverter.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        String res = BasicUrlConverter.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), escapeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }
@@ -137,12 +149,12 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
      * Returns the URL as a String, always without the application context. Never <code>null</code>
      */
 
-    public String get(boolean writeamp) throws JspTagException, FrameworkException {
+    public String get(boolean escapeamp) throws JspTagException, FrameworkException {
         if (legacy) {
-            return getLegacy(writeamp);
+            return getLegacy(escapeamp);
         }
 
-        String result = writeamp ? cacheAmp : cacheNoAmp;
+        String result = escapeamp ? cacheEscapeAmp : cacheNoEscapeAmp;
         if (result != null) {
             log.debug("found cached " + result);
             return result;
@@ -176,19 +188,26 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             }
         } else {
             if (process) {
-                result = framework.getProcessUrl(page, params, frameworkParameters, writeamp);
+                result = framework.getProcessUrl(page, params, frameworkParameters, escapeamp);
             } else {
-                result = framework.getUrl(page, params, frameworkParameters, writeamp);
+                result = framework.getUrl(page, params, frameworkParameters, escapeamp);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Created normal url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result + " fw");
             }
         }
+        {
+            String amp = escapeamp ? "&amp;" : "&";
+            String connector = result.indexOf("?") > 0 ? amp : "?";
+            StringBuffer a = new StringBuffer(result);
+            tag.appendMoreParameters(connector , amp, a);
+            result = a.toString();
+        }
 
-        if (writeamp) {
-            cacheAmp = result;
+        if (escapeamp) {
+            cacheEscapeAmp = result;
         } else {
-            cacheNoAmp = result;
+            cacheNoEscapeAmp = result;
         }
 
         return result;
@@ -287,12 +306,16 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         return string;
     }
 
+    public boolean encodeUrl() {
+        return encodeUrl;
+    }
+
     protected void invalidate() {
         log.debug("invalidating");
         if (params instanceof UrlParameters) {
             ((UrlParameters) params).invalidate();
         }
-        string = cacheAmp = cacheNoAmp = null;
+        string = cacheEscapeAmp = cacheNoEscapeAmp = null;
     }
 
     public char charAt(int index) {
