@@ -61,7 +61,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         upload = (Upload)getModule("upload");
         sessions = (sessionsInterface)getModule("SESSION");
         transactionManager = TransactionManager.getInstance();
-        tmpObjectManager = TemporaryNodeManager.getInstance();
+        tmpObjectManager = transactionManager.getTemporaryNodeManager();
         //JB key test initializatioon
         needs_key = (getInitParameter("keycode") != null);
         securityMode = getInitParameter("security");
