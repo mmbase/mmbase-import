@@ -565,7 +565,7 @@ Build-compiler: ${build.compiler}
         fork="true"
         classpathref="run.classpath.cloudcontext"
         >
-      <arg value="org.mmbase.security.cloudcontext.CloudContext" />
+      <arg value="org.mmbase.security.implementation.cloudcontext.CloudContext" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <assertions><enable /></assertions>
