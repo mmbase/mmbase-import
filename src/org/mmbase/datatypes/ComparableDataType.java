@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.40 2008-09-08 08:59:56 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.41 2008-12-22 17:02:53 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable & Comparable<E>> extends BasicDataType<E> {
@@ -229,8 +229,9 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
                 // invalid value, but not because of min-restriction
                 return true;
             }
-            if (inclusive && (comparable.equals(minimum))) return true;
-            return comparable.compareTo(minimum) > 0;
+            int ct = comparable.compareTo(minimum);
+            if (inclusive && (ct == 0)) return true;
+            return ct > 0;
         }
         public boolean isInclusive() {
             return inclusive;
@@ -257,8 +258,9 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
                 // invalid value, but not because of max-restriction
                 return true;
             }
-            if (inclusive && (comparable.equals(maximum))) return true;
-            boolean res = comparable.compareTo(maximum) < 0;
+            int ct = comparable.compareTo(maximum);
+            if (inclusive && (ct == 0)) return true;
+            boolean res = ct < 0;
             return res;
         }
 
