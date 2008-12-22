@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.48.2.5 2008-12-09 11:21:15 michiel Exp $
+ * @version $Id: Contexts.java,v 1.48.2.6 2008-12-22 15:27:05 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -524,7 +524,7 @@ public class Contexts extends MMObjectBuilder {
                         Constraint newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
 
-                        Provider users = Authenticate.getInstance().getUserProvider();
+                        UserProvider users = Authenticate.getInstance().getUserProvider();
 
                         if (step.getTableName().equals(users.getUserBuilder().getTableName())) { // anybody may see own node
                             Constraint own = query.createConstraint(query.createStepField(step, "number"),
@@ -794,7 +794,7 @@ public class Contexts extends MMObjectBuilder {
     /**
      */
     protected boolean mayGrant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
-        Provider users = Authenticate.getInstance().getUserProvider();
+        UserProvider users = Authenticate.getInstance().getUserProvider();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
         Groups groups = Groups.getBuilder();
 
@@ -858,7 +858,7 @@ public class Contexts extends MMObjectBuilder {
      */
 
     protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
-        Provider users = Authenticate.getInstance().getUserProvider();
+        UserProvider users = Authenticate.getInstance().getUserProvider();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
         if (groupOrUserNode.getBuilder() instanceof Groups) {
             if (! Groups.getBuilder().contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group
@@ -1002,7 +1002,7 @@ public class Contexts extends MMObjectBuilder {
                 throw new SecurityException("Self was not supplied");
             }
             // find the user first, the check if the current user actually has rights on the objec
-            Provider users = Authenticate.getInstance().getUserProvider();
+            UserProvider users = Authenticate.getInstance().getUserProvider();
             MMObjectNode userToCheck = users.getUserBuilder().getNode(a.getString("usertocheck"));
             if (userToCheck == null) { // the user is null?
                 // I don't know then,
