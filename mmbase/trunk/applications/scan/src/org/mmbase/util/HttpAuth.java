@@ -14,7 +14,7 @@ package org.mmbase.util;
  * @author vpro
  * @application SCAN - used for authentication by JamesServlet
  * @deprecated should be done by implementing and using the MMBase security Authorization
- * @version $Id: HttpAuth.java,v 1.23 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: HttpAuth.java,v 1.24 2008-12-22 18:52:37 michiel Exp $
  */
 public class HttpAuth {
     private static org.mmbase.util.logging.Logger log = org.mmbase.util.logging.Logging.getLoggerInstance(HttpAuth.class.getName());
@@ -149,7 +149,7 @@ public class HttpAuth {
      * @param sp
      * @return the remote user
      */
-    public static String getRemoteUser(scanpage sp) {
+    public static String getRemoteUser(PageInfo sp) {
         return getRemoteUser(sp.req);
     }
 

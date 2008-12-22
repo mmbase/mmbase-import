@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.59 2008-09-03 21:57:05 michiel Exp $
+ * @version $Id: HtmlBase.java,v 1.60 2008-12-22 18:52:37 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -117,7 +117,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      * Generate a list of values from a command to the processor
      */
-    public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    @Override public List<String> getList(PageInfo sp,StringTagger tagger, String value)  {
         String line = Strip.doubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -134,7 +134,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      * show Objects
      */
-    public Vector doObjects(scanpage sp, StringTagger tagger) {
+    public Vector doObjects(PageInfo sp, StringTagger tagger) {
         String result=null;
         MMObjectNode node;
         Vector results=new Vector();
@@ -388,7 +388,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      * show Relations
      */
-    public Vector doRelations(scanpage sp, StringTagger tagger) {
+    public Vector doRelations(PageInfo sp, StringTagger tagger) {
         Object tmp;
         MMObjectNode node;
         MMObjectBuilder bul=null;
@@ -437,7 +437,7 @@ public class HtmlBase extends ProcessorModule {
             }
             tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
         } catch(Exception e) {
-            log.error("doRelations("+sp.getUrl()+"): ERROR: node("+snode+"), type("+type+"), where("+where+"):"+e);
+            log.error("doRelations("+sp+"): ERROR: node("+snode+"), type("+type+"), where("+where+"):"+e);
             if (bul!=null) {
                 log.error(Logging.stackTrace(e));
             }
@@ -446,7 +446,7 @@ public class HtmlBase extends ProcessorModule {
     }
 
 
-    public String doGetRelationValue(scanpage sp, StringTokenizer tok) {
+    public String doGetRelationValue(PageInfo sp, StringTokenizer tok) {
         MMObjectBuilder bul = mmb.getBuilder("typedef");
 
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
@@ -510,7 +510,7 @@ public class HtmlBase extends ProcessorModule {
         return "";
     }
 
-    public String doGetRelationCount(scanpage sp, StringTokenizer tok) {
+    public String doGetRelationCount(PageInfo sp, StringTokenizer tok) {
         MMObjectBuilder bul=mmb.getBuilder("typedef");
         // reads $MOD-MMBASE-GETRELATIONCOUNT-12-images where 12 is the nodenumber
         // and images is optional (if not it will return the total number of
@@ -547,7 +547,7 @@ public class HtmlBase extends ProcessorModule {
         }
     }
 
-    public String doSetRelationValue(scanpage sp, StringTokenizer tok) {
+    public String doSetRelationValue(PageInfo sp, StringTokenizer tok) {
         MMObjectBuilder bul=mmb.getBuilder("typedef");
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
         // number, 23 the target number and title the key of the relation
@@ -612,7 +612,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      * show Relations
      */
-    public Vector doRelations_replace(scanpage sp, StringTokenizer tok) {
+    public Vector doRelations_replace(PageInfo sp, StringTokenizer tok) {
         Object tmp;
         MMObjectNode node;
         MMObjectBuilder bul=null;
@@ -656,7 +656,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    @Override public boolean process(PageInfo sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
 
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
@@ -676,7 +676,7 @@ public class HtmlBase extends ProcessorModule {
     /**
      *	Handle a $MOD command
      */
-    public String replace(scanpage sp, String cmds) {
+    @Override public String replace(PageInfo sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -738,7 +738,7 @@ public class HtmlBase extends ProcessorModule {
         return "No command defined";
     }
 
-    String doCache(scanpage sp, StringTokenizer tok) {
+    String doCache(PageInfo sp, StringTokenizer tok) {
         String result="";
         String cmd = tok.nextToken();
         if (cmd.equals("SIZE")) {
@@ -758,7 +758,7 @@ public class HtmlBase extends ProcessorModule {
         return result;
     }
 
-    String getObjectType(scanpage sp, StringTokenizer tok) {
+    String getObjectType(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
             MMObjectNode node=mmb.getTypeDef().getNode(number);
@@ -767,7 +767,7 @@ public class HtmlBase extends ProcessorModule {
         return "unknown";
     }
 
-    String getObjectTypeName(scanpage sp, StringTokenizer tok) {
+    String getObjectTypeName(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
             MMObjectNode node=mmb.getTypeDef().getNode(number);
@@ -776,7 +776,7 @@ public class HtmlBase extends ProcessorModule {
         return "unknown";
     }
 
-    String getGuiIndicator(scanpage sp, StringTokenizer tok) {
+    String getGuiIndicator(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
             MMObjectNode node=mmb.getTypeDef().getNode(number);
@@ -785,7 +785,7 @@ public class HtmlBase extends ProcessorModule {
         return "unknown";
     }
 
-    String getBuilderValue(scanpage sp, StringTokenizer tok) {
+    String getBuilderValue(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
             String field="number";
@@ -796,7 +796,7 @@ public class HtmlBase extends ProcessorModule {
         return "";
     }
 
-    String getObjectField(scanpage sp, StringTokenizer tok) {
+    String getObjectField(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String nodeNr=tok.nextToken();
             if( tok.hasMoreTokens()){
@@ -804,7 +804,7 @@ public class HtmlBase extends ProcessorModule {
                 String result=null;
                 MMObjectBuilder bul=mmb.getBuilder("typedef");
                 MMObjectNode node=bul.getNode(nodeNr);
-                sessionInfo pagesession=getPageSession(sp);
+                sessionInfo pagesession=getPageSession((scanpage) sp);
                 if (pagesession!=null) {
                     pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
                 }
@@ -820,18 +820,18 @@ public class HtmlBase extends ProcessorModule {
                         return "";
                     }
                 }
-            } else log.error("getObjectField(): no token fieldname found, nodenr("+nodeNr+"), url("+sp.getUrl()+")");
-        } else log.error("getObjectField(): no token nodenr found, url("+sp.getUrl()+")");
+            } else log.error("getObjectField(): no token fieldname found, nodenr("+nodeNr+"), url("+sp +")");
+        } else log.error("getObjectField(): no token nodenr found, url("+sp +")");
         return "no command defined";
     }
 
-    String getObjectProperty(scanpage sp, StringTokenizer tok) {
+    String getObjectProperty(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String nodeNr=tok.nextToken();
             String fieldname=tok.nextToken();
             MMObjectBuilder bul=mmb.getBuilder("fielddef");
             MMObjectNode node=bul.getNode(nodeNr);
-            sessionInfo pagesession=getPageSession(sp);
+            sessionInfo pagesession=getPageSession((scanpage) sp);
             if (pagesession!=null) {
                 pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
             }
@@ -893,7 +893,7 @@ public class HtmlBase extends ProcessorModule {
         return null;
     }
 
-    public Vector doMultiLevel(scanpage sp, StringTagger tagger) throws MultiLevelParseException {
+    public Vector doMultiLevel(PageInfo sp, StringTagger tagger) throws MultiLevelParseException {
         String result=null,fieldname;
         MMObjectNode node;
         Integer hash;
@@ -901,7 +901,7 @@ public class HtmlBase extends ProcessorModule {
         Enumeration e,f;
         boolean reload=true;
 
-        if (scancache) reload=getReload(sp,tagger);
+        if (scancache) reload=getReload((scanpage) sp,tagger);
 
         Vector type=tagger.Values("TYPE");
         if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
@@ -984,7 +984,7 @@ public class HtmlBase extends ProcessorModule {
             long end=System.currentTimeMillis();
             len=(end-begin);
             if (len>200) {
-                log.debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp.req_line+")");
+                log.debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp +")");
             }
         } else {
             log.debug("doMultiLevel cache HIT  "+hash);
@@ -1019,7 +1019,7 @@ public class HtmlBase extends ProcessorModule {
         return new Integer(hash);
     }
 
-    public String doBuilderReplace(scanpage sp,StringTokenizer tok) {
+    public String doBuilderReplace(PageInfo sp,StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
             MMObjectBuilder bul=mmb.getBuilder(type);
@@ -1046,7 +1046,7 @@ public class HtmlBase extends ProcessorModule {
         return "FALSE";
     }
 
-    public Vector doBuilder(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+    public Vector doBuilder(PageInfo sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
             MMObjectBuilder bul=mmb.getBuilder(type);

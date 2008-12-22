@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN - Removing this from Core requires changes in Casting
  * @author Daniel Ockeloen
- * @version $Id: MMLanguage.java,v 1.12 2005-10-26 07:35:36 michiel Exp $
+ * @version $Id: MMLanguage.java,v 1.13 2008-12-22 18:52:37 michiel Exp $
  */
 public class MMLanguage extends ProcessorModule {
 
@@ -66,7 +66,7 @@ public class MMLanguage extends ProcessorModule {
      * @param cmds the tokenized command
      * @return the result of the command as a String
      */
-    public String replace(scanpage sp, String cmds) {
+    @Override public String replace(PageInfo sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();

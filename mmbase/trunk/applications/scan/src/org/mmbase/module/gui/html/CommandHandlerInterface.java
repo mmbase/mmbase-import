@@ -21,23 +21,23 @@ import org.mmbase.util.*;
  *
  * @application SCAN
  * @author Hans Speijer
- * @version $Id: CommandHandlerInterface.java,v 1.6 2004-10-01 08:43:44 pierre Exp $
+ * @version $Id: CommandHandlerInterface.java,v 1.7 2008-12-22 18:52:37 michiel Exp $
  */
 public interface CommandHandlerInterface {
 
     /**
      * List commands
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException;
+    public List<String> getList(PageInfo sp, StringTagger args, StringTokenizer command) throws ParseException;
 
     /**
      * Replace/Trigger commands
      */
-    public String replace(scanpage sp, StringTokenizer command);
+    public String replace(PageInfo sp, StringTokenizer command);
 
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars);
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars);
 
 }
