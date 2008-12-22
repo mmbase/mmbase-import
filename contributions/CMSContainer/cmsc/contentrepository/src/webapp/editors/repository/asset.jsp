@@ -21,31 +21,24 @@
          document.getElementById('asset-info-'+id).style.display = 2000;
       }
       function changeMode(offset){
-         if(offset==null){offset=0;}
+         if(offset==null){
+             offset=0;
+         }
          var assetsMode = document.getElementsByTagName("option");
          for(i = 0; i < assetsMode.length; i++){
             if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                if(document.getElementById("chk_showImageOnly").checked){
-                    document.getElementById("chk_showImageOnly").checked=false;
-                    offset=0;
-                }
-                document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset+'&imageOnly=no';
+                document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset;
             }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-               if(document.getElementById("chk_showImageOnly").checked==false){
                    document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
-                    }
-                    if(document.getElementById("chk_showImageOnly").checked==true){
-                        document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes';
-                    }
             }
          }
-      }
+         }
       function showImageOnly(){
           var offset=0;
           var assetsMode = document.getElementById("assetMode");
           assetsMode.selectedIndex=1;
-         if(document.getElementById("chk_showImageOnly").checked == true){
-	         document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes'
+          if(document.getElementById("chk_showImageOnly").checked == true){
+            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes'
          }else{
             document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
           }
@@ -103,7 +96,9 @@
                   </c:if>
                </select>
             <div style="padding-left:100px;display:inline;font-size:12px;">
-               <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
+               <c:if test="${!empty show}">
+                  <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
+               </c:if>
             </div>
             </div>
 
