@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.security.cloudcontext;
+package org.mmbase.security.implementation.cloudcontext;
 
 import java.util.*;
 import org.mmbase.security.Operation;
@@ -16,7 +16,6 @@ import org.mmbase.tests.BridgeTest;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.functions.Parameters;
-import org.mmbase.security.implementation.cloudcontext.Caches;
 
 /**
  *
