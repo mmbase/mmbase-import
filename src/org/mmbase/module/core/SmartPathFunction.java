@@ -25,7 +25,7 @@ import org.mmbase.util.functions.Required;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.12 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: SmartPathFunction.java,v 1.13 2008-12-22 14:52:19 michiel Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -111,7 +111,7 @@ public class SmartPathFunction {
     }
 
     /**
-     * The found path as a <code>String</code>, or <code>null</code> if not found    
+     * The found path as a <code>String</code>, or <code>null</code> if not found
      */
     public final String smartpath() {
         String result;
@@ -127,7 +127,7 @@ public class SmartPathFunction {
             log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
         }
         result = getSmartPath();
-        
+
         if (key != null) {
             smartPathCache.put(key, result);
         }
@@ -135,7 +135,7 @@ public class SmartPathFunction {
     }
 
     /**
-     * The found path as a <code>String</code>, or <code>null</code> if not found    
+     * The found path as a <code>String</code>, or <code>null</code> if not found
      */
     protected String getSmartPath() {
         log.debug("Determining smartpath for node " + nodeNumber + " " + parent.getTableName());
@@ -151,7 +151,7 @@ public class SmartPathFunction {
                 return null;
             } else {
                 return path + s.iterator().next() + "/";
-            }                
+            }
         }
     }
 
