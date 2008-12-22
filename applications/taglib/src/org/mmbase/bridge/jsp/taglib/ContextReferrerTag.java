@@ -36,7 +36,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.110 2008-08-14 11:29:10 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.111 2008-12-22 14:51:02 michiel Exp $
  * @see ContextTag
  */
 
@@ -438,7 +438,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         Tag cTag = findAncestorWithClass(this, clazz);
         if (cTag == null) {
             if (exception) {
-                throw new JspTagException ("Could not find parent of type " + clazz.getName());
+                throw new JspTagException ("Could not find parent of type " + clazz.getName() + " for " + this);
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not find parent of type " + clazz.getName());
@@ -825,5 +825,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
         return query;
 
+    }
+
+    /**
+     * Can be overriden in extensions.
+     * @return new connector
+     * @since MMBase-1.8.5
+     * @deprecated
+     */
+    public  String appendMoreParameters(String connector, String amp, StringBuffer buf) throws JspTagException {
+        return connector;
     }
 }
