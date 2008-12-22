@@ -1,17 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@page import="com.finalist.cmsc.navigation.*" %>
 <%@include file="globals.jsp" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="stacked.title">
-      <script src="content.js" type="text/javascript"></script>
-      <script src="search.js" type="text/javascript"></script>
-    <c:if test="${not empty requestScope.refreshChannels}">
-        <script>
-        refreshFrame('channels');
-        </script>
-    </c:if>
+   <script src="content.js" type="text/javascript"></script>
+   <script src="search.js" type="text/javascript"></script>
+   <c:if test="${not empty requestScope.refreshChannels}">
+      <script type="text/javascript">
+         refreshFrame('pages');
+      </script>
+   </c:if>
 </cmscedit:head>
 <body>
 
@@ -50,7 +50,7 @@
 		          <table>
 		            <thead>
 		               <tr>
-		                  <th width="76px"></th>
+		                  <th width="76"></th>
 		                  <th><a href="?parent=${param.parent}&orderby=title&orderdir=${(orderby == 'title' && orderdir == 'up')?'down':'up'}"><fmt:message key="stacked.header.title" /></a></th>
 		                  <th><a href="?parent=${param.parent}&orderby=urlfragment&orderdir=${(orderby == 'urlfragment' && orderdir == 'up')?'down':'up'}" class="headerlink" onclick="orderBy('urlfragment');" ><fmt:message key="stacked.header.urlfragment" /></a></th>
 		                  <th><fmt:message key="stacked.header.target"/></th>
