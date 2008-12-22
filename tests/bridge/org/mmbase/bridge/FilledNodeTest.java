@@ -470,8 +470,9 @@ public class FilledNodeTest extends NodeTest {
             } else if (element.equals("boolean")) {
                 assertEquals(BigDecimal.ONE, l);
             } else if (element.equals("datetime")) {
-                assertTrue(element + "field queried as double did not return " + TEST_TIME/1000 + " but " + l,
-                           new BigDecimal(TEST_TIME/1000).equals(l));
+                assertEquals(element + "field queried as double did not return " + TEST_TIME/1000 + " but " + l,
+                             0,
+                             new BigDecimal(TEST_TIME / 1000).compareTo(l));
             } else if (element.equals("decimal")) {
                 assertEquals(TEST_DECIMAL, l);
             } else if (element.equals("list")) {
