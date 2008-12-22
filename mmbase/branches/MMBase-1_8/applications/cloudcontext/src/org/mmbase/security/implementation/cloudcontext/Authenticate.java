@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.17.2.1 2008-12-08 16:31:46 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.17.2.2 2008-12-22 15:27:04 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -64,23 +64,18 @@ public class Authenticate extends Authentication {
         return (Authenticate) MMBase.getMMBase().getMMBaseCop().getAuthentication();
     }
 
-    public  Provider getUserProvider() {
+    public  UserProvider getUserProvider() {
         return Users.getBuilder();
     }
 
 
     // javadoc inherited
     protected void load() throws SecurityException {
-        Provider users = getUserProvider();
+        UserProvider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
            throw new SecurityException(msg);
-        }
-        if (!users.check()) {
-           String msg = "builder mmbaseusers was not configured correctly";
-            log.error(msg);
-            throw new SecurityException(msg);
         }
 
         ResourceWatcher adminsWatcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
@@ -104,13 +99,13 @@ public class Authenticate extends Authentication {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
-        Provider users = getUserProvider();
+        UserProvider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        allowEncodedPassword = users.allowEncodedPassword();
+        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getUserBuilder().getInitParameter("allowencodedpassword"));
         if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
             if (node == null) {
