@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * Furthermore it does some nameserving.
  * @deprecated-now use org.mmbase.applications.xmlimporter.TransactionHandler
  *
- * @author  John Balder: 3MPS 
+ * @author  John Balder: 3MPS
  * @author 	Rob Vermeulen: VPRO
  */
 
@@ -61,7 +61,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         upload = (Upload)getModule("upload");
         sessions = (sessionsInterface)getModule("SESSION");
         transactionManager = TransactionManager.getInstance();
-        tmpObjectManager = transactionManager.getTemporaryNodeManager();
+        tmpObjectManager = TemporaryNodeManager.getInstance();
         //JB key test initializatioon
         needs_key = (getInitParameter("keycode") != null);
         securityMode = getInitParameter("security");
@@ -71,7 +71,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         //end JB key test initializatioon
     }
 
-    /**	
+    /**
      * onLoad
      */
     public void onload() {
@@ -89,9 +89,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
     /**
      * handleTransaction can be called externally and will execute the TCP commands.
-     * @param template The template containing the TCP commands 
+     * @param template The template containing the TCP commands
      * @param session variables of an user
-     * @param sp the scanpage 
+     * @param sp the scanpage
      */
     public void handleTransaction(String template, sessionInfo session, scanpage sp) {
 
@@ -259,7 +259,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
             }
             // XML Parsing done
 
-            // Execution of XML 
+            // Execution of XML
             if (id == null) {
                 anonymousTransaction = true;
                 id = uniqueId();
@@ -341,7 +341,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                 // Evaluate all objects
                 evaluateObjects(objectContextList, userTransactionInfo, currentTransactionContext, transactionInfo);
 
-                // ENDING TRANSACTION		
+                // ENDING TRANSACTION
                 //if (tName.equals("deleteTransaction")) // this is done above
                 //if (tName.equals("commitTransaction")) // this is done above
                 if (tName.equals("create") || tName.equals("open")) {
@@ -360,7 +360,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                 		if (!anonymousTransaction) {
                 			userTransactionInfo.knownTransactionContexts.remove(id);
                 		}
-                } 
+                }
                 */
                 log.debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")");
                 // End execution of XML
@@ -489,7 +489,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
                             currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(), id, oMmbaseId);
                             // add to tmp cloud
                             transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(), currentObjectContext);
-                            // if object has a user define handle administrate object in transaction 
+                            // if object has a user define handle administrate object in transaction
                             if (!anonymousObject)
                                 transactionInfo.knownObjectContexts.put(id, currentObjectContext);
                         } else {
@@ -664,13 +664,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         return transactionsOfUser.get(user);
     }
 
-    /**	
+    /**
     	 * create unique number
      */
     private synchronized String uniqueId() {
         try {
             Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             log.debug("What's the reason I may not sleep?");
         }
         return "ID" + java.lang.System.currentTimeMillis();
@@ -680,7 +680,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
      * Dummy User object, this object needs to be replace by
      * the real User object (when that is finished)
      */
-    class User {
+    class User implements org.mmbase.security.UserContext {
         private String name;
 
         public User(String name) {
@@ -692,9 +692,29 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
             String tempname = "TR" + name.substring(length - 8, length);
             return tempname;
         }
+        public String getIdentifier() {
+            return name;
+        }
+
+        public org.mmbase.security.Rank getRank() {
+            return org.mmbase.security.Rank.BASICUSER;
+        }
+
+
+        public boolean isValid() {
+            return true;
+        }
+        public String getOwnerField() {
+            return "default";
+        }
+
+        public String getAuthenticationType() {
+            return "scan";
+        }
+
     }
 
-    /** 
+    /**
      * container class for transactions per user
      */
     class UserTransactionInfo {
@@ -710,7 +730,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
      * container class for objects per transaction
      */
     class TransactionInfo implements Runnable {
-        // The transactionname 
+        // The transactionname
         String transactionContext = null;
         // All objects belonging to a certain transaction
         Hashtable<String, String> knownObjectContexts = new Hashtable<String, String>();
@@ -733,7 +753,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
             start();
         }
 
-        /** 
+        /**
         	 * start the TransactionInfo to sleep untill it may timeout
          */
         public void start() {
