@@ -27,14 +27,14 @@ import org.mmbase.datatypes.LengthDataType;
  * as the essence of being a {@link org.mmbase.bridge.Field}).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.10 2008-10-20 08:44:17 michiel Exp $
+ * @version $Id: DataTypeField.java,v 1.11 2008-12-22 14:53:52 michiel Exp $
  * @since   MMBase-1.8.7
  */
 
 public  class DataTypeField extends org.mmbase.core.AbstractField {
     protected final NodeManager nodeManager;
     protected final Field field;
-    public DataTypeField(final Cloud cloud, final DataType<Object> dataType)  {
+    public DataTypeField(final Cloud cloud, final DataType<? extends Object> dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
                 private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
@@ -53,7 +53,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
      * This constructor only wraps the given field to have another datatype.
      * @since MMBase-1.9
      */
-    public DataTypeField(final Field field, final DataType<Object> dataType)  {
+    public DataTypeField(final Field field, final DataType<? extends Object> dataType)  {
         super(field.getName(), dataType.getBaseType(), field.getType(), field.getState(), dataType);
         nodeManager = field.getNodeManager();
         this.field = field;
@@ -105,7 +105,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         return dataType.getName();
     }
     public Collection<String> validate(Object value) {
-        Collection<LocalizedString> errors = dataType.validate(value, null, this);
+        Collection<LocalizedString> errors = dataType.validate(value, (Node) null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());
     }
 
