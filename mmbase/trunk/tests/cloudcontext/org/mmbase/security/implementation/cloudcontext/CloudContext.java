@@ -35,8 +35,12 @@ public class CloudContext extends BridgeTest {
     }
 
     protected void waitForCache() {
-        //Caches.waitForCacheInvalidation();
-        Thread.sleep(10000);
+        //Caches.waitForCacheInvalidation(); // not yet checked in.
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            // never mind
+        }
 
     }
 
