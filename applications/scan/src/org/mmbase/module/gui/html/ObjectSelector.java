@@ -9,19 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.util.HttpAuth;
-import org.mmbase.util.StringTagger;
-import org.mmbase.util.scanpage;
+import org.mmbase.util.*;
 
 /**
  * The ObjectSelector class offers the functionality to search for objects
@@ -31,7 +26,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.24 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ObjectSelector.java,v 1.25 2008-12-22 18:52:37 michiel Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -48,7 +43,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * General List pages coming from MMEdit.
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
+    public List<String> getList(PageInfo sp, StringTagger args, StringTokenizer commands) throws ParseException {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
 
@@ -376,7 +371,7 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * General proces pages coming from MMEdit.
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
@@ -396,7 +391,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * Handle a $MOD command.
      * ObjectSelector does not offer any commands.
      */
-    public String replace(scanpage sp, StringTokenizer cmds) {
+    public String replace(PageInfo sp, StringTokenizer cmds) {
         return "Command not defined (ObjectSelector)";
         // bedoeld voor het clearen van de serachvalues
     }

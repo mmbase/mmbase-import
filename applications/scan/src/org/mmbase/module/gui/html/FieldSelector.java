@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.13 2006-09-11 10:44:48 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.14 2008-12-22 18:52:37 michiel Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -39,7 +39,7 @@ public class FieldSelector implements CommandHandlerInterface {
     /**
      * General List pages coming from MMEdit.
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
+    public List<String> getList(PageInfo sp, StringTagger args, StringTokenizer commands) throws ParseException {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = stateMngr.getEditState(userName);
@@ -170,14 +170,14 @@ public class FieldSelector implements CommandHandlerInterface {
     /**
      * Replace/Trigger commands
      */
-    public String replace(scanpage sp, StringTokenizer cmds) {
+    public String replace(PageInfo sp, StringTokenizer cmds) {
         return "Command not defined (FieldSelector)";
     }
 
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 

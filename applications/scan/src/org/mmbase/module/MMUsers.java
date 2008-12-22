@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.16 2008-08-01 21:46:51 michiel Exp $
+ * @version $Id: MMUsers.java,v 1.17 2008-12-22 18:52:37 michiel Exp $
  */
 public class MMUsers extends ProcessorModule {
 
@@ -273,7 +273,7 @@ public class MMUsers extends ProcessorModule {
      * <LIST GETPROPERTY PARENT=[value] FIELD=[values] PROCESSOR="MMUsers">
      * </LIST>
      */
-    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException{
+    @Override public List<String> getList(PageInfo sp, StringTagger tagger, String value) {
         StringTokenizer tokens = new StringTokenizer (value, "-\n\r");
         String          tok    = tokens.nextToken ();
         Vector          res    = new Vector ();
@@ -348,7 +348,7 @@ public class MMUsers extends ProcessorModule {
     /**
      *	Handle a $MOD command
      */
-    public String replace (scanpage sp, String command) {
+    @Override public String replace (PageInfo sp, String command) {
         StringTokenizer tokens = new StringTokenizer (command, "-\n\r");
 
         if (tokens.hasMoreTokens ()) {
@@ -358,10 +358,10 @@ public class MMUsers extends ProcessorModule {
                 String param2 = tokens.nextToken ();
                 if      (param2.equals ("GET")) return replaceGet(param1, tokens);
                 else if (param2.equals ("PUT")) return replacePut(param1, tokens);
-                else if (param1.equals ("SWITCH")) return replaceSwitch(sp, param2);
+                else if (param1.equals ("SWITCH")) return replaceSwitch((scanpage) sp, param2);
                 else if (param1.equals ("SEARCHUSERNUMBER"))
                     return doSearchUserNumber(addRemainingTokens(param2, tokens));
-                else if (param1.equals ("CREATELOGIN")) return createLogin (param2, tokens, sp);
+                else if (param1.equals ("CREATELOGIN")) return createLogin (param2, tokens, (scanpage) sp);
 
                 // Everything else is an error:
                 else return error ("MMUSERS-" + param1 + " has illegal parameter " + param2 + " following");
@@ -527,7 +527,7 @@ public class MMUsers extends ProcessorModule {
 
     /**
      */
-    public String getModuleInfo () {
+    @Override public String getModuleInfo () {
         return "Support routines for MMUsers, by Daniel Ockeloen & Arjan Houtman";
     }
 

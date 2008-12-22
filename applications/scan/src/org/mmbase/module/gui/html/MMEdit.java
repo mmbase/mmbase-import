@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.14 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id: MMEdit.java,v 1.15 2008-12-22 18:52:37 michiel Exp $
  */
 public class MMEdit extends ProcessorModule {
 
@@ -118,8 +118,8 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all list related pages to the correct handler
      */
-    public Vector getList(scanpage sp,StringTagger tagger, String command) throws ParseException {
-        Vector result = new Vector();
+    @Override public List<String> getList(PageInfo sp,StringTagger tagger, String command) throws ParseException {
+        List<String> result = new Vector();
         CommandHandlerInterface handler;
 
         StringTokenizer tok = new StringTokenizer(Strip.doubleQuote(command,Strip.BOTH),"-\n\r");
@@ -147,7 +147,7 @@ public class MMEdit extends ProcessorModule {
                     if (reverse!=null) {
                         if(reverse.equals("YES")) {
                             int items = 3;
-                            result = imglister.reverse(result,items);
+                            Collections.reverse(result);
                         }
                     }
                 } else {
@@ -157,7 +157,7 @@ public class MMEdit extends ProcessorModule {
                     if (handler != null) {
                         result = handler.getList(sp, tagger, tok);
                     } else {
-                        result.addElement("List not defined (MMEdit)");
+                        result.add("List not defined (MMEdit)");
                     }
                 }
 
@@ -170,7 +170,7 @@ public class MMEdit extends ProcessorModule {
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+    @Override public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
 
         CommandHandlerInterface handler;
         String token, cmdline;
@@ -208,7 +208,7 @@ public class MMEdit extends ProcessorModule {
      * The hook that passes all replace and trigger related pages to the
      * correct handler
      */
-    public String replace(scanpage sp, String command) {
+    @Override public String replace(PageInfo sp, String command) {
         CommandHandlerInterface handler;
         String token;
 
