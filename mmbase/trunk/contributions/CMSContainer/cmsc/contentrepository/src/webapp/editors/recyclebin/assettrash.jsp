@@ -18,7 +18,7 @@
    <div class="tab">
       <div class="body">
          <div>
-            <a href="index.jsp"><fmt:message key="recyclebin.content.title" /></a>
+            <a href="contenttrash.jsp"><fmt:message key="recyclebin.content.title" /></a>
          </div>
       </div>
    </div>
