@@ -32,10 +32,10 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.48.2.5 2008-12-08 16:30:55 michiel Exp $
+ * @version $Id: Users.java,v 1.48.2.6 2008-12-22 15:27:05 michiel Exp $
  * @since  MMBase-1.7
  */
-public class Users extends MMObjectBuilder implements Provider {
+public class Users extends MMObjectBuilder implements UserProvider {
 
     private static final Logger log = Logging.getLoggerInstance(Users.class);
 
@@ -614,6 +614,11 @@ public class Users extends MMObjectBuilder implements Provider {
         return this;
     }
 
+
+    public boolean isOwnNode(User user, MMObjectNode node) {
+        MMObjectNode userNode = user.getNode();
+        return  (userNode != null && getUserBuilder().getClass().isInstance(userNode.getBuilder()) && userNode.equals(node));
+    }
 
 
 
