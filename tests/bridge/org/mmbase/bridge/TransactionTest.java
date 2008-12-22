@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.17 2008-11-25 14:10:33 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.18 2008-12-22 17:38:19 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -56,7 +56,7 @@ public class TransactionTest extends BridgeTest {
 
     public void testCancel() {
         Cloud cloud = getCloud();
-        Transaction t = cloud.getTransaction("bar1");
+        Transaction t = cloud.getTransaction("cancel1");
         Node node = t.getNode(newNode);
         node.setStringValue("title", "xxxxx");
         node.commit();
@@ -71,16 +71,32 @@ public class TransactionTest extends BridgeTest {
     public void testCancel2() {
         Cloud cloud = getCloud();
         {
-            Transaction t = cloud.getTransaction("bar2");
+            Transaction t = cloud.getTransaction("cancel2");
             Node node = t.getNode(newNode);
             node.setStringValue("title", "xxxxx");
             node.commit();
             t.cancel();
         }
         {
-            Transaction t = cloud.getTransaction("bar2");
+            Transaction t = cloud.getTransaction("cancel2");
             Node node = t.getNode(newNode);
             assertEquals("foo", node.getStringValue("title"));
+            t.cancel();
+        }
+    }
+
+    public void testGetTransaction() {
+        Cloud cloud = getCloud();
+
+        {
+            Transaction t = cloud.getTransaction("gettransactiontest");
+            Node node = t.getNode(newNode);
+            node.setStringValue("title", "xxxxx");
+        }
+        {
+            Transaction t = cloud.getTransaction("gettransactiontest");
+            Node node = t.getNode(newNode);
+            assertEquals("xxxxx", node.getStringValue("title"));
             t.cancel();
         }
     }
