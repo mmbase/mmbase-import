@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.47 2008-09-03 20:04:56 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.48 2008-12-22 17:12:36 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -250,8 +250,7 @@ public class ContextAuthorization extends Authorization {
 
         // is our usercontext still valid?
         if(!manager.getAuthentication().isValid(user)) {
-            String msg = "the usercontext was expired";
-            throw new java.lang.SecurityException(msg);
+            throw new java.lang.SecurityException("the usercontext was expired");
         }
         // operations can be granted for the whole system...
         if(globalAllowedOperations.contains(operation)) {
@@ -430,8 +429,7 @@ public class ContextAuthorization extends Authorization {
                     }
                     log.debug("\tdid found the user with name " + named + " but is not we are looking for.");
                 } else {
-                    String msg = "dont know the type:" + type;
-                    throw new SecurityException(msg);
+                    throw new SecurityException("dont know the type:" + type);
                 }
             }
         }
@@ -468,21 +466,17 @@ public class ContextAuthorization extends Authorization {
         if (operation == Operation.CREATE) {
             // may link on both nodes
             if(!check(user, srcNodeNumber, "link")) {
-                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
-                throw new SecurityException(msg);
+                throw new SecurityException("Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier());
             }
             if (! check(user, dstNodeNumber, "link")) {
-                String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
-                throw new SecurityException(msg);
+                throw new SecurityException("Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier());
             }
         } else if (operation == Operation.CHANGE_RELATION) {
             if(!check(user, srcNodeNumber, "link")) {
-                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
-                throw new SecurityException(msg);
+                throw new SecurityException("Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier());
             }
             if (! check(user, dstNodeNumber, "link")) {
-                String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
-                throw new SecurityException(msg);
+                throw new SecurityException("Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier());
             }
             verify(user, nodeNumber, Operation.WRITE);
         } else {
@@ -520,16 +514,12 @@ public class ContextAuthorization extends Authorization {
             MMBase mmb = MMBase.getMMBase();
             builder =  mmb.getMMObject("typedef");
             if(builder == null) {
-                String msg = "builder 'typedef' not found";
-                //throw new NotFoundException(msg);
-                throw new SecurityException(msg);
+                throw new SecurityException("builder 'typedef' not found");
             }
         }
         MMObjectNode node = builder.getNode(n);
         if(node == null) {
-            String msg = "node " + n + " not found";
-            //throw new NotFoundException(msg);
-            throw new SecurityException(msg);
+            throw new SecurityException("node " + n + " not found");
         }
         return node;
     }
