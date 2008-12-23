@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.54 2008-12-18 21:26:38 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.55 2008-12-23 17:29:24 michiel Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -902,11 +902,15 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                         // a better way is perhaps to first retrieve a new node and compare the values
                         if ("".equals(Utils.getText(fields.item(j)))) {
                             fields.item(j).getParentNode().removeChild(fields.item(j));
-                            }
+                        }
                     }
                 } else {
-                   // remove it from the list.
-                   node.getParentNode().removeChild(node);
+                    // remove it from the list.
+
+                    // MM: I think this happens sometimes a bit too often, and the 'parent' node can
+                    // sometimes be removed, and subsequently inadvertedly be deleted
+                    //
+                    node.getParentNode().removeChild(node);
         	}
             }
         }
