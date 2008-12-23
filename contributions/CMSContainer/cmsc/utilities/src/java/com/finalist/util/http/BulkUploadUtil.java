@@ -10,6 +10,7 @@ package com.finalist.util.http;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -168,7 +169,19 @@ public class BulkUploadUtil {
       List<Integer> nodes = null;
       try {
          if (isZipFile(file)) {
-            byte[] fileData = file.getFileData();
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            InputStream in = file.getInputStream();
+            byte[] temp = new byte[1024];
+            int read;
+
+            while ((read = in.read(temp)) > -1) {
+               buffer.write(temp, 0, read);
+            }
+
+            byte[] fileData = buffer.toByteArray();
+
+            // byte[] fileData = file.getFileData();
             ByteArrayInputStream bis = new ByteArrayInputStream(fileData);
             InputStream is = new BufferedInputStream(bis);
             ZipInputStream zip = new ZipInputStream(is);
@@ -240,6 +253,7 @@ public class BulkUploadUtil {
       ArrayList<Integer> nodes = new ArrayList<Integer>();
 
       try {
+         byte[] buffer = new byte[2048 * 1024];
          while ((entry = zip.getNextEntry()) != null) {
             if (entry.isDirectory()) {
                continue;
@@ -257,19 +271,23 @@ public class BulkUploadUtil {
             }
             count++;
             long size = entry.getSize();
+
             if (size < Integer.parseInt(PropertiesUtil.getProperty("uploaded.file.max.size")) * 1024 * 1024) {
                ChecksumFactory checksumFactory = new ChecksumFactory();
                ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
                      .createTransformer(checksumFactory.createParameters());
-               byte[] buffer = new byte[(int) size];
-               zip.read(buffer, 0, (int) size);
-               String checkSum = transformer.transform(buffer);
+               ByteArrayOutputStream fileData = new ByteArrayOutputStream();
+               int len = 0;
+               while ((len = zip.read(buffer)) > 0) {
+                  fileData.write(buffer, 0, len);
+               }
+               String checkSum = transformer.transform(fileData.toByteArray());
                NodeQuery query = manager.createQuery();
                SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
                NodeList assets = query.getList();
 
                boolean isNewFile = (assets.size() == 0);
-               InputStream is = new ByteArrayInputStream(buffer);
+               InputStream is = new ByteArrayInputStream(fileData.toByteArray());
                if (isNewFile) {
                   Node node = createNode(parentChannel, manager, entry.getName(), is, size);
                   if (node != null) {
@@ -280,7 +298,6 @@ public class BulkUploadUtil {
             }
             zip.closeEntry();
          }
-
       } catch (IOException ex) {
          log.error("IOException--Failed to read uploaded zipfile, skipping it", ex);
       } catch (Exception e) {
