@@ -8,32 +8,43 @@
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html:html xhtml="true">
 	<cmscedit:head title="workflow.module.title">
+      <script src="../../js/prototype.js" type="text/javascript"></script>
 		<script src="workflow.js" type="text/javascript"></script>
 		<link href="../css/workflow.css" rel="stylesheet" type="text/css" />
+      <c:url value="/editors/workflow/WorkflowTreeStatusAction.do" var="treeStatusAction"/>
 		<script type="text/javascript">
       function info(objectNumber) {
          openPopupWindow("info", 500, 500, "../repository/showitem.jsp?objectnumber=" + objectNumber);
       }
       var treeHandler = {
-   toggle    : function (oItem) { 
-      var parentTableId = oItem.id.replace('-plus', '');
-      var originImgSrc = oItem.src;
-      if(originImgSrc.toLowerCase().indexOf('plus.png')>=0){
-         oItem.src = originImgSrc.replace('plus', 'minus');
-         document.getElementById(parentTableId + '-cont').style.display = 'block';
-      }else{
-         oItem.src = originImgSrc.replace('minus', 'plus');
-         document.getElementById(parentTableId + '-cont').style.display = 'none';
-      }
-   }
-};
+          toggle: function (oItem) { 
+		      var parentTableId = oItem.id.replace('-plus', '');
+		      var originImgSrc = oItem.src;
+		      if(originImgSrc.toLowerCase().indexOf('plus.png')>=0){
+		         oItem.src = originImgSrc.replace('plus', 'minus');
+		         document.getElementById(parentTableId + '-cont').style.display = 'block';
+		      }else{
+		         oItem.src = originImgSrc.replace('minus', 'plus');
+		         document.getElementById(parentTableId + '-cont').style.display = 'none';
+		      }
+		      new Ajax.Request(
+		              "${treeStatusAction}",
+		              {
+		                 method:'put',
+		                 parameters: 'treeItem=' + parentTableId.replace('tree-', ''),
+		                 asynchronous : true
+		              }
+		           );
+		      }
+      };
+      
    </script>
 	</cmscedit:head>
 
 	<body>
-
 	<div id="left"><cmscedit:sideblock title="workflow.status.header">
 		<mm:import externid="statusInfo" required="true" />
+      <c:set var="treeStatus" value="${sessionScope.workflowTreeStatus}" />
 
    <div id="tree">
       <div id="tree-head">
@@ -60,7 +71,8 @@
 				<tr>
 					<td class="indent"><img id="tree-allcontent-plus"
 						onclick="treeHandler.toggle(this);"
-						src="../utils/ajaxtree/images/minus.png" /></td>
+						<c:if test="${treeStatus.allcontent eq 1}">src="../utils/ajaxtree/images/minus.png"</c:if>
+						<c:if test="${treeStatus.allcontent eq 0}">src="../utils/ajaxtree/images/plus.png"</c:if> /></td>
 					<td class="leftData"><fmt:message
 						key="workflow.status.allcontent" /></td>
 					<td class="indent" />
@@ -75,7 +87,7 @@
 			</tbody>
 		</table>
 		</div>
-		<div id="tree-allcontent-cont">
+		<div id="tree-allcontent-cont" <c:if test="${treeStatus.allcontent eq 0}">style="display:none"</c:if> >
 		<div id="tree-content">
 		<table class="centerData">
 			<tbody>
@@ -83,7 +95,8 @@
 					<td class="indent" />
 					<td class="indent"><img id="tree-content-plus"
 						onclick="treeHandler.toggle(this);"
-						src="../utils/ajaxtree/images/Tminus.png" /></td>
+						<c:if test="${treeStatus.content eq 1}">src="../utils/ajaxtree/images/Tminus.png"</c:if>
+			         <c:if test="${treeStatus.content eq 0}">src="../utils/ajaxtree/images/Tplus.png"</c:if> /></td>
 					<td class="leftData"><fmt:message
 						key="workflow.status.content" /></td>
 					<td class="indent" />
@@ -97,7 +110,7 @@
 			</tbody>
 		</table>
 		</div>
-		<div id="tree-content-cont">
+		<div id="tree-content-cont" <c:if test="${treeStatus.content eq 0}">style="display:none"</c:if>>
 		<table class="centerData">
 			<tbody>
 				<tr>
@@ -178,7 +191,8 @@
 					<td class="indent" />
 					<td class="indent"><img id="tree-asset-plus"
 						onclick="treeHandler.toggle(this);"
-						src="../utils/ajaxtree/images/Lminus.png" /></td>
+						<c:if test="${treeStatus.asset eq 1}">src="../utils/ajaxtree/images/Lminus.png"</c:if>
+			         <c:if test="${treeStatus.asset eq 0}">src="../utils/ajaxtree/images/Lplus.png"</c:if> /></td>
 					<td class="leftData"><fmt:message key="workflow.status.asset" /></td>
 					<td class="indent" />
 					<td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
@@ -191,7 +205,7 @@
 			</tbody>
 		</table>
 		</div>
-		<div id="tree-asset-cont">
+		<div id="tree-asset-cont" <c:if test="${treeStatus.asset eq 0}">style="display:none"</c:if> >
 		<table class="centerData">
 			<tbody>
 				<tr>
