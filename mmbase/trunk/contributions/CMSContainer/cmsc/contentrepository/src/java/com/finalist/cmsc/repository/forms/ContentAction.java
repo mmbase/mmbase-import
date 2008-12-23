@@ -94,6 +94,11 @@ public class ContentAction extends MMBaseAction {
          if(elementCount==2){
         	 request.setAttribute("refresh", true);
          }
+         //reset the show mode of assets in the session when enter another channel
+         if(request.getParameter("type")==null){
+            request.getSession().removeAttribute("show");
+            request.getSession().removeAttribute("imageOnly");
+           }
       }
       return mapping.findForward(SUCCESS);
    }

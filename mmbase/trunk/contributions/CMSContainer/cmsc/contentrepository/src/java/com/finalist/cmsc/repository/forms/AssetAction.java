@@ -65,20 +65,23 @@ public class AssetAction extends MMBaseAction {
       String exist = request.getParameter("exist");
       String imageOnly = request.getParameter("imageOnly");
 
-      if (StringUtils.isNotEmpty(show)) {
-         show = "thumbnail";
-      } else {
-         show = null;
-      }
-      if (StringUtils.isEmpty(imageOnly)) {
-         imageOnly = "no";
-      }
       if (StringUtils.isEmpty(orderby)) {
          orderby = null;
       }
       if (StringUtils.isEmpty(direction)) {
          direction = null;
-
+      }
+      if (StringUtils.isEmpty(show)) {
+         show = (String)request.getSession().getAttribute("show");
+         if(StringUtils.isEmpty(show)){
+            show="list";
+         } 
+      }
+      if (StringUtils.isEmpty(imageOnly)) {
+         imageOnly = (String)request.getSession().getAttribute("imageOnly");
+         if(StringUtils.isEmpty(imageOnly)){
+            imageOnly="no";
+         } 
       }
 
       // Set the offset (used for paging).
@@ -117,9 +120,9 @@ public class AssetAction extends MMBaseAction {
          addToRequest(request, "orderby", orderby);
          addToRequest(request, "elements", assets);
          addToRequest(request, "elementCount", Integer.toString(assetCount));
-         addToRequest(request, "show", show);
          addToRequest(request, "exist", exist);
-         addToRequest(request, "imageOnly", imageOnly);
+         request.getSession().setAttribute("show", show);
+         request.getSession().setAttribute("imageOnly", imageOnly);
 
          Map<String, Node> createdNumbers = new HashMap<String, Node>();
          for (Iterator<Node> iter = created.iterator(); iter.hasNext();) {
