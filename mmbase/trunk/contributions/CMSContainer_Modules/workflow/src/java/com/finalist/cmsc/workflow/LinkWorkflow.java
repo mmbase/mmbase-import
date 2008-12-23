@@ -105,7 +105,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
             wfItem = node;
          }
       }
-      changeWorkflow(wfItem, STATUS_FINISHED, remark);
+      changeWorkflowFailPublished(wfItem, STATUS_FINISHED, remark);
    }
 
 
