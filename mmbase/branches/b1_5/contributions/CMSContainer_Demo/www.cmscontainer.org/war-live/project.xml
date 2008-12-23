@@ -19,18 +19,20 @@
 			<type>mmbase-module</type>
 		</dependency>
 		
+      <!-- Luceus is not needed now 
 		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-luceus</artifactId>
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-
-		<!--  LUCEUS -->
+      -->
+      
+<!--  LUCEUS is not needed now 
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>2.3.2</version>
+			<version>${lucene.version}</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -39,7 +41,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-misc</artifactId>
-			<version>2.3.2</version>
+			<version>${lucene.version}</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -48,7 +50,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
-			<version>2.3.2</version>
+			<version>${lucene.version}</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -117,6 +119,7 @@
             <war.bundle>${war.bundle}</war.bundle>
          </properties>
       </dependency>
+-->
       
 		<dependency>
 			<groupId>net.htmlparser</groupId>
