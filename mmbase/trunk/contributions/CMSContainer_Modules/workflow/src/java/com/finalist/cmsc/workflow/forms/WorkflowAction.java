@@ -11,8 +11,10 @@ package com.finalist.cmsc.workflow.forms;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -142,6 +144,14 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          session.setAttribute("workflow.nodetype", nodetype);
       }
       session.setAttribute("workflow.status", status);
+      Map<String, Integer> treeStatus = (Map<String, Integer>)session.getAttribute("workflowTreeStatus");
+      if (treeStatus == null) {
+         treeStatus = new HashMap<String, Integer>();
+         treeStatus.put("allcontent", 1);
+         treeStatus.put("content", 1);
+         treeStatus.put("asset", 1);
+         session.setAttribute("workflowTreeStatus", treeStatus);
+      }
       return mapping.findForward(SUCCESS);
    }
 
