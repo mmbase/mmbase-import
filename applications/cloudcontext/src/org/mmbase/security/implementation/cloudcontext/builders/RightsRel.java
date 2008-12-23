@@ -21,15 +21,9 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.16 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.17 2008-12-23 17:30:42 michiel Exp $
  */
 public class RightsRel extends InsRel {
-
-
-    public boolean init() {
-        addEventListener(CacheInvalidator.getInstance());
-        return super.init();
-    }
 
 
     /**
@@ -62,7 +56,7 @@ public class RightsRel extends InsRel {
 
 
 
-    MMObjectNode getNewNode(String owner, int snumber, int dnumber, Operation operation) {
+    public MMObjectNode getNewNode(String owner, int snumber, int dnumber, Operation operation) {
         MMObjectNode rel = getNewNode(owner);
         rel.setValue("snumber", snumber);
         rel.setValue("dnumber", dnumber);

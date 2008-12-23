@@ -26,26 +26,10 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.22 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: Groups.java,v 1.23 2008-12-23 17:30:42 michiel Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
-
-
-    protected static Cache<String,Boolean> containsCache = new Cache<String,Boolean>(500) {
-            public String getName()        { return "CCS:ContainedBy"; }
-            public String getDescription() { return "group + group/user --> boolean"; }
-        };
-
-
-    // javadoc inherited
-    public boolean init() {
-        containsCache.putCache();
-        CacheInvalidator.getInstance().addCache(containsCache);
-        addEventListener(CacheInvalidator.getInstance());
-        return super.init();
-    }
-
 
     /**
      * @return the MMObjectBuilder mmbasegroups cast to a Groups
@@ -62,7 +46,7 @@ public class Groups extends MMObjectBuilder {
         return contains(group,  user.getNode());
     }
 
-    protected boolean contains(MMObjectNode containingGroup, MMObjectNode groupOrUser)  {
+    public  boolean contains(MMObjectNode containingGroup, MMObjectNode groupOrUser)  {
         return contains(containingGroup, groupOrUser.getNumber());
     }
 
@@ -81,6 +65,7 @@ public class Groups extends MMObjectBuilder {
     protected boolean contains(MMObjectNode containingGroupNode, int containedObject, Set<Integer> recurse) {
         int containingGroup = containingGroupNode.getNumber();
         String key = "" + containingGroup + "/" + containedObject;
+        Cache<String, Boolean> containsCache = Caches.getContainsCache();
         Boolean result = containsCache.get(key);
 
         if (result == null) {
