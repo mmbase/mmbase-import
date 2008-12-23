@@ -12,6 +12,6 @@
    </node>
    <node number="302" owner="admin">
       <key>uploaded.file.max.size</key>
-      <value>1</value>
+      <value>8</value>
    </node>
 </properties>
