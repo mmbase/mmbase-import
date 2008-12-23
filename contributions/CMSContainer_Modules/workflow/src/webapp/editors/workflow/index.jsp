@@ -8,7 +8,10 @@ if (status == null || "".equals(status)) {
 	status = (String) session.getAttribute("workflow.status");
 }
 
-String redirectTo = "ContentWorkflowAction.do";
+String redirectTo = "AllcontentWorkflowAction.do";
+if ("allcontent".equals(type)) {
+   redirectTo = "AllcontentWorkflowAction.do";
+}
 if ("content".equals(type)) {
     redirectTo = "ContentWorkflowAction.do";
 }
