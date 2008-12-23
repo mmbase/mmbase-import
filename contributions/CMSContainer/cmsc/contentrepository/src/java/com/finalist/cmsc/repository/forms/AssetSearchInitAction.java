@@ -56,6 +56,9 @@ public class AssetSearchInitAction extends MMBaseAction {
          }
       }
       addToRequest(request, "typesList", typesList);
+    //reset the show mode of assets in the session if exist
+      request.getSession().removeAttribute("show");
+      request.getSession().removeAttribute("imageOnly");
 
       return mapping.findForward("searchoptions");
    }

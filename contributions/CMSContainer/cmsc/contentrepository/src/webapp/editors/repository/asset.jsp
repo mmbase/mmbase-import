@@ -27,9 +27,9 @@
          var assetsMode = document.getElementsByTagName("option");
          for(i = 0; i < assetsMode.length; i++){
             if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&offset='+offset;
+                document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=list&offset='+offset;
             }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                   document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
+                   document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=thumbnail&offset='+offset;
             }
          }
          }
@@ -38,9 +38,9 @@
           var assetsMode = document.getElementById("assetMode");
           assetsMode.selectedIndex=1;
           if(document.getElementById("chk_showImageOnly").checked == true){
-            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=yes'
+            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=thumbnail&offset='+offset+'&imageOnly=yes'
          }else{
-            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=0&offset='+offset+'&imageOnly=no';
+            document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=down&show=thumbnail&offset='+offset+'&imageOnly=no';
           }
       }
    </script>
@@ -86,35 +86,30 @@
 
             <div style="padding-left:11px">
                <select name="assesMode" id="assetMode" onchange="javascript:changeMode(${param.offset})">
-                  <c:if test="${empty show}">
+                  <c:if test="${show eq 'list'}">
                      <option id="a_list" selected="selected">list</option>
                      <option id = "a_thumbnail" >thumbnail</option>
                   </c:if>
-                  <c:if test="${!empty show}">
+                  <c:if test="${show eq 'thumbnail'}">
                      <option id="a_list">list</option>
                      <option id = "a_thumbnail" selected="selected" >thumbnail</option>
                   </c:if>
                </select>
             <div style="padding-left:100px;display:inline;font-size:12px;">
-               <c:if test="${!empty show}">
+               <c:if test="${show eq 'thumbnail'}">
                   <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
                </c:if>
             </div>
             </div>
 
-            <c:if test="${empty show}">
+            <c:if test="${show eq 'list'}">
                <div class="body" >
                   <mm:import externid="elements" from="request" required="true"/>
                   <mm:import externid="elementCount" from="request" vartype="Integer">0</mm:import>
                   <mm:import externid="resultsPerPage" from="request" vartype="Integer">25</mm:import>
                   <c:set var="listSize" value="${elementCount}"/>
                   <c:set var="offset" value="${param.offset}"/>
-                  <c:if test="${imageOnly eq 'no'}">
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&imageOnly=no"/>
-                  </c:if>
-                  <c:if test="${imageOnly eq 'yes'}">
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&imageOnly=yes"/>
-                  </c:if>
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=list"/>
                   <c:set var="orderby" value="${param.orderby}" scope="page" />
                   <c:set var="type" value="asset" scope="page" />
                   <%@ include file="../pages.jsp" %>
@@ -224,7 +219,7 @@
                </div>
             </c:if>
 
-            <c:if test="${!empty show}">
+            <c:if test="${show eq 'thumbnail'}">
                <div class="body">
                   <mm:import externid="elements" from="request" required="true"/>
                   <mm:import externid="elementCount" from="request" vartype="Integer">0</mm:import>
@@ -234,10 +229,10 @@
                   <c:set var="orderby" value="${param.orderby}" scope="page" />
                   <c:set var="type" value="asset" scope="page" />
                   <c:if test="${imageOnly eq 'no'}">
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=0&imageOnly=no"/>
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=thumbnail&imageOnly=no"/>
                   </c:if>
                   <c:if test="${imageOnly eq 'yes'}">
-                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=0&imageOnly=yes"/>
+                  <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=thumbnail&imageOnly=yes"/>
                   </c:if>
                   <%@ include file="../pages.jsp" %>
                   <form>
