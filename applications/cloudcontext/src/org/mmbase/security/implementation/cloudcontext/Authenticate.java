@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.29 2008-12-09 11:51:43 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.30 2008-12-23 17:30:42 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -60,17 +60,17 @@ public class Authenticate extends Authentication {
         }
     }
     /**
-     * @since MMBase-1.8.7
+     * @since MMBase-1.9.1
      */
     public final static Authenticate getInstance() {
         return (Authenticate) MMBase.getMMBase().getMMBaseCop().getAuthentication();
     }
 
     /**
-     * @since MMBase-1.8.7
+     * @since MMBase-1.9.1
      */
-    public  Provider getUserProvider() {
-        return Users.getBuilder();
+    public  UserProvider getUserProvider() {
+        return Users.getBuilder().getProvider();
     }
 
 
@@ -79,16 +79,9 @@ public class Authenticate extends Authentication {
      */
     @Override protected void load() throws SecurityException {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
-        Provider users = getUserProvider();
+        UserProvider users = getUserProvider();
         if (users == null) {
-            String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
-            log.fatal(msg);
-           throw new SecurityException(msg);
-        }
-        if (!users.check()) {
-           String msg = "builder mmbaseusers was not configured correctly";
-            log.error(msg);
-            throw new SecurityException(msg);
+            throw new SecurityException("builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)");
         }
 
         ResourceWatcher adminsWatcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
@@ -112,7 +105,7 @@ public class Authenticate extends Authentication {
     }
 
     @Override public String getUserBuilder() {
-        return "mmbaseusers";
+        return getUserProvider().getUserBuilder().getTableName();
     }
 
     private boolean warnedNoAnonymousUser = false;
@@ -125,13 +118,13 @@ public class Authenticate extends Authentication {
             log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
-        Provider users = getUserProvider();
+        UserProvider users = getUserProvider();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        allowEncodedPassword = users.allowEncodedPassword();
+        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getUserBuilder().getInitParameter("allowencodedpassword"));
         if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
             if (node == null) {
