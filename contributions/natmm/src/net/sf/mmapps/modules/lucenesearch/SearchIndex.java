@@ -25,9 +25,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.Term;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseObserver;
@@ -37,7 +35,7 @@ import org.mmbase.module.core.MMBaseObserver;
  * defined for indexing
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SearchIndex extends IndexHelper implements MMBaseObserver {
 	private static Log log = LogFactory.getLog(SearchIndex.class);
@@ -155,9 +153,9 @@ public class SearchIndex extends IndexHelper implements MMBaseObserver {
 	 * 
 	 * @param className the full qualified name of the analyzer class
 	 * @throws InstantiationException when the analyzer class can not be
-	 *         instanciated
+	 *         instantiated
 	 * @throws IllegalAccessException when the analyzer class may not be
-	 *         instanciated
+	 *         instantiated
 	 * @throws ClassNotFoundException when the analyzer class is not available
 	 */
 	public void setAnalyzerClass(String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
