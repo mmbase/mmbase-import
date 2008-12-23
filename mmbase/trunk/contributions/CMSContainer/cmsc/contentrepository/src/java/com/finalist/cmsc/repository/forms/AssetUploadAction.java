@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -32,6 +33,13 @@ import com.finalist.util.http.BulkUploadUtil;
 
 public class AssetUploadAction extends MMBaseAction {
 
+   public static final String UPLOADED_FILE_MAX_SIZE = "uploaded.file.max.size";
+   public static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
+   protected static Set<String> supportedImages;
+   
+   protected static final Log log = LogFactory.getLog(AssetUploadAction.class);
+
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -54,7 +62,13 @@ public class AssetUploadAction extends MMBaseAction {
          List<Integer> nodes = null;
          NodeManager manager = cloud.getNodeManager(assetType);
 
-         long maxFileSize = Integer.parseInt(PropertiesUtil.getProperty("uploaded.file.max.size"))*1024*1024;
+         int maxFileSize = 16*1024*1024; //Default value of 16MB
+         try {
+            maxFileSize = Integer.parseInt(PropertiesUtil.getProperty(UPLOADED_FILE_MAX_SIZE))*1024*1024;
+         } catch (NumberFormatException e) {
+           log.warn("System property '" + UPLOADED_FILE_MAX_SIZE + "' is not set. Please add it (units = MB)."); 
+         }
+         
          if (fileSize < maxFileSize) {
             ChecksumFactory checksumFactory = new ChecksumFactory();
             ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
@@ -93,11 +107,7 @@ public class AssetUploadAction extends MMBaseAction {
             + "?type=asset&direction=down&exist=0&exceed=" + exceed + "&parentchannel=" + parentchannel, true);
    }
 
-   private static Set<String> supportedImages;
-   private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
-   private static final Log log = LogFactory.getLog(BulkUploadUtil.class);
-
-   private static void initSupportedImages() {
+   protected static void initSupportedImages() {
       supportedImages = new HashSet<String>();
       Properties properties = new Properties();
       String images = ".bmp,.jpg,.jpeg,.gif,.png,.svg,.tiff,.tif";
@@ -112,14 +122,22 @@ public class AssetUploadAction extends MMBaseAction {
       }
    }
 
-   private static boolean isImage(String fileName) {
+   protected static boolean isImage(String fileName) {
+      if (StringUtils.isBlank(fileName)) { 
+         return false;
+      }
+      
       if (supportedImages == null) {
          initSupportedImages();
       }
-      return fileName != null && supportedImages.contains(getExtension(fileName).toLowerCase());
+      return supportedImages.contains(getFilenameExtension(fileName).toLowerCase());
    }
 
-   private static String getExtension(String fileName) {
+   protected static String getFilenameExtension(String fileName) {
+      if (StringUtils.isBlank(fileName)) { 
+         return null;
+      }
+      
       int index = fileName.lastIndexOf('.');
       if (index < 0) {
          return null;
