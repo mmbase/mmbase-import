@@ -96,6 +96,14 @@
         <mm:param name="objectnumber">new</mm:param>
         <a href="${_}">NEW</a>
       </mm:link>
+
+      <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+        <mm:param name="wizard">samples/news_implicitcreates</mm:param>
+        <mm:param name="parent">default.mags</mm:param>
+        <mm:param name="newPos"><mm:time time="now" /></mm:param>
+        <mm:param name="objectnumber">new</mm:param>
+        <a href="${_}">NEW (with parent in stead of origin, with implicitely created urls and people objects)</a>
+      </mm:link>
     </td>
     <td>
       Only shows the news articles related to a specific node (the magazine, of course). This also
