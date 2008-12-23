@@ -37,11 +37,11 @@
          <type>mmbase-module</type>
       </dependency>
 
-<!-- luceus dependencies -->
+<!-- luceus dependencies | Not used now
    	<dependency>
    		<groupId>lucene</groupId>
    		<artifactId>lucene-core</artifactId>
-   		<version>2.3.2</version>
+   		<version>${lucene.version}</version>
    		<url>http://lucene.apache.org/java/docs/index.html</url>
    		<properties>
    			<war.bundle>${war.bundle}</war.bundle>
@@ -50,7 +50,7 @@
    	<dependency>
    		<groupId>lucene</groupId>
    		<artifactId>lucene-misc</artifactId>
-   		<version>2.3.2</version>
+   		<version>${lucene.version}</version>
    		<url>http://lucene.apache.org/java/docs/index.html</url>
    		<properties>
    			<war.bundle>${war.bundle}</war.bundle>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
-			<version>2.3.2</version>
+			<version>${lucene.version}</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -101,5 +101,6 @@
             <war.bundle>${war.bundle}</war.bundle>
          </properties>
       </dependency>
+-->
    </dependencies>
 </project>
