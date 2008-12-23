@@ -253,7 +253,7 @@ public class AssetSearchAction extends PagerAction {
       // Set everything on the request.
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
-      request.setAttribute(GETURL, queryStringComposer.getQueryString());
+      request.setAttribute(GETURL, queryStringComposer.getQueryString()+((show==null)?"":"&show="+show));
       return super.execute(mapping, form, request, response, cloud);
    }
 
