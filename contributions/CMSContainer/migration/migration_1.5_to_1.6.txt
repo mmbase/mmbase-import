@@ -71,3 +71,15 @@ insert into live_assetelement select number,otype,owner,creationdate,lastmodifie
 *
 *
 *
+
+
+Name: Move existing assets to a existing content channel
+Goal:  make all existing assets usable and searchable.
+Type:  run JSP file as admin user
+--- Start ---
+- Run editors/maintenance/create-relations-asset-channel.jsp
+  and enter the nodenumber of the channel in the repository where the unattached images should go to.
+--- End ---
+*
+*
+*
