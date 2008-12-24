@@ -11,6 +11,7 @@ import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 public class CreateRelationsForSecondaryContent {
 
@@ -49,15 +50,24 @@ public class CreateRelationsForSecondaryContent {
          Node asset = assets.getNode(i);
          if (!RepositoryUtil.hasCreationChannel(asset)) {
             Relation relation = RelationUtil.createRelation(asset, root, "creationrel");
-            Publish.publish(relation);
+            if(Publish.isPublished(asset)) {
+               Publish.publish(relation);
+            }
+            else {
+               if (!Workflow.hasWorkflow(asset)) { 
+                  Workflow.create(asset, ""); 
+               } 
+               else { 
+                  Workflow.addUserToWorkflow(asset);
+               }
+            }
          }
          int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
          if (owners < 1) {  
-            Relation ownerRelation = RelationUtil.createRelation(asset, user, "ownerrel");
-            Publish.publish(ownerRelation);
+            RelationUtil.createRelation(asset, user, "ownerrel");
          }
-        
       }
       
    }
+
 }
