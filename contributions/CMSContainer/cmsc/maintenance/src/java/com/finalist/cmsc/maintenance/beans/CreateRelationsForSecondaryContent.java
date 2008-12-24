@@ -5,13 +5,12 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.Relation;
 
 import com.finalist.cmsc.mmbase.RelationUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.cmsc.services.workflow.Workflow;
 
 public class CreateRelationsForSecondaryContent {
 
@@ -23,17 +22,14 @@ public class CreateRelationsForSecondaryContent {
    }
    
    public String execute() throws Exception {
-      createRelations(cloud);
-      if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
-         createRelations(Publish.getRemoteCloud(cloud));
-      }
+      createRelations();
       return "success";
    }
    
-   private void createRelations(Cloud localOrRemoteCloud)  throws Exception{
+   private void createRelations()  throws Exception{
 
-      NodeManager assetManager = localOrRemoteCloud.getNodeManager("assetelement");
-      NodeManager ownerManager = localOrRemoteCloud.getNodeManager("user");
+      NodeManager assetManager = cloud.getNodeManager("assetelement");
+      NodeManager ownerManager = cloud.getNodeManager("user");
       NodeQuery query = assetManager.createQuery();
 
       Node root = null;
@@ -52,37 +48,16 @@ public class CreateRelationsForSecondaryContent {
       for (int i = 0 ; i < assets.size() ; i++) {
          Node asset = assets.getNode(i);
          if (!RepositoryUtil.hasCreationChannel(asset)) {
-            RelationUtil.createRelation(asset, root, "creationrel");
+            Relation relation = RelationUtil.createRelation(asset, root, "creationrel");
+            Publish.publish(relation);
          }
          int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
-         if (owners < 1) {
-            RelationUtil.createRelation(asset, user, "ownerrel");
+         if (owners < 1) {  
+            Relation ownerRelation = RelationUtil.createRelation(asset, user, "ownerrel");
+            Publish.publish(ownerRelation);
          }
-         addNodeToWorflow(asset);
+        
       }
       
    }
-
-   private void addNodeToWorflow(Node asset) {
-      if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
-         if (!Workflow.hasWorkflow(asset)) { 
-            Workflow.create(asset, ""); 
-         } 
-         else { 
-            Workflow.addUserToWorkflow(asset);
-            }
-      }
-   }
-   
-   public boolean isChannel() {
-      return RepositoryUtil.isChannel(String.valueOf(parentNumber));      
-   }
-   /**
-    * @param args
-    */
-   public static void main(String[] args) {
-      // TODO Auto-generated method stub
-      
-   }
-
 }
