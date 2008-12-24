@@ -12,6 +12,7 @@
       <setprocessor type="string">
         <class name="com.finalist.cmsc.richtext.RichTextSetProcessor">
           <param name="replaceHeaders">false</param>
+          <param name="replaceParagraphs">true</param>
         </class>
       </setprocessor>
       <getprocessor type="string">
