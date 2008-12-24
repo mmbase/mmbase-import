@@ -104,6 +104,21 @@ public class WordHtmlCleaner {
     * @return clean html code
     */
    public static String cleanHtml(String textStr, boolean replaceHeaders) {
+      /* replaceParagraphs - is set to true, to keep old functionality working */
+      boolean replaceParagraphs = true;
+      return cleanHtml(textStr, replaceHeaders, replaceParagraphs);
+   }
+   
+   /**
+    * Cleans html code
+    * 
+    * @param textStr
+    *           ugly html code
+    * @param replaceHeaders 
+    * @param replaceParagraphs 
+    * @return clean html code
+    */
+   public static String cleanHtml(String textStr, boolean replaceHeaders, boolean replaceParagraphs) {
       log.debug("old value : " + textStr);
       if (textStr != null) {
          try {
@@ -116,7 +131,10 @@ public class WordHtmlCleaner {
             xmlStr = removeHtmlIfComments(xmlStr);
             xmlStr = fixBR(xmlStr);
             xmlStr = removeEmptyFonts(xmlStr);
-            xmlStr = replaceParagraph(xmlStr);
+            
+            if (replaceParagraphs) {
+               xmlStr = replaceParagraph(xmlStr);
+            }
             if (replaceHeaders) {
                 xmlStr = replaceHeaders(xmlStr);
             }

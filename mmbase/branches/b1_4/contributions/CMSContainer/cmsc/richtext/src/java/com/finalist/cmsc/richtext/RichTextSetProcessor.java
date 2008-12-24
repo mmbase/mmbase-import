@@ -33,12 +33,13 @@ public class RichTextSetProcessor implements ParameterizedProcessorFactory {
 
    public Processor createProcessor(Parameters parameters) {
        final boolean replaceHeaders = Boolean.parseBoolean(parameters.get("replaceHeaders").toString());
+       final boolean replaceParagraphs = Boolean.parseBoolean(parameters.get("replaceParagraphs").toString());
        return new Processor() {
 
            public Object process(Node node, Field field, Object value) {
               if (value instanceof String) {
                  String in = (String) value;
-                 String out = RichText.cleanRichText(in, replaceHeaders);
+                 String out = RichText.cleanRichText(in, replaceHeaders, replaceParagraphs);
                  if (log.isDebugEnabled() && !out.equals(in)) {
                     log.debug("Replaced " + field.getName() + " value \"" + in + "\"\n \t by \n\"" + out + "\"");
                  }

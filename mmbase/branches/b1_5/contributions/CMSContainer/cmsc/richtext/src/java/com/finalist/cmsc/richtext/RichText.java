@@ -65,13 +65,13 @@ public class RichText {
    }
 
 
-   public final static String cleanRichText(String originalValue, boolean replaceHeaders) {
+   public final static String cleanRichText(String originalValue, boolean replaceHeaders, boolean replaceParagraphs) {
       // if string is null or empty, (re)set it's value to empty string
       String newValue = "";
       if (originalValue != null && !"".equals(originalValue.trim())) {
          // Edited value: clean.
          log.debug("before cleaning: " + originalValue);
-         newValue = WordHtmlCleaner.cleanHtml(originalValue, replaceHeaders);
+         newValue = WordHtmlCleaner.cleanHtml(originalValue, replaceHeaders, replaceParagraphs);
          log.debug("after cleaning: " + newValue);
       }
       return newValue;
