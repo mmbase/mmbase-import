@@ -25,7 +25,9 @@ public class RichTextSetProcessor implements ParameterizedProcessorFactory {
    private static final Logger log = Logging.getLoggerInstance(RichTextSetProcessor.class.getName());
 
    protected static final Parameter[] PARAMS = new Parameter[] { 
-           new Parameter("replaceHeaders", String.class,"false") };
+           new Parameter("replaceHeaders", String.class,"false"), 
+           new Parameter("replaceParagraphs", String.class,"true")
+   };
 
    public Parameters createParameters() {
        return new Parameters(PARAMS);
