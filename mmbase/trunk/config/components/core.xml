@@ -346,6 +346,15 @@
   </block>
  -->
 
+  <block name="request"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">Shows the request headers as issued by the client</description>
+    <body jsp="request.jspx">
+
+    </body>
+  </block>
+
   <block name="events"
          classification="mmbase.tools"
          mimetype="text/html">
