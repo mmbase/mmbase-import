@@ -64,7 +64,10 @@ public class CreateRelationsForSecondaryContent {
          }
          int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
          if (owners < 1) {  
-            RelationUtil.createRelation(asset, user, "ownerrel");
+            Relation relation = RelationUtil.createRelation(asset, user, "ownerrel");
+            if(Publish.isPublished(asset)) {
+               Publish.publish(relation);
+            }
          }
       }
       
