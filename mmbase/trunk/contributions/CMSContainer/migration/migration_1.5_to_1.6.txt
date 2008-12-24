@@ -54,3 +54,20 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+Name: Migration from images/attachments/urls to assetelement table
+Goal:  migrate all images/attachments/URLs to new assetstable
+Type:  sql-script
+--- Start script ---
+insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_urls;
+insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_attachments;
+insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_images;
+
+insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_urls;
+insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_attachments;
+insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_images;
+
+--- End script ---
+*
+*
+*
