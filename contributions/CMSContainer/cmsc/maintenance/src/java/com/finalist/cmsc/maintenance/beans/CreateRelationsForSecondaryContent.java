@@ -8,6 +8,7 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Relation;
 
 import com.finalist.cmsc.mmbase.RelationUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.publish.Publish;
@@ -50,23 +51,27 @@ public class CreateRelationsForSecondaryContent {
          Node asset = assets.getNode(i);
          if (!RepositoryUtil.hasCreationChannel(asset)) {
             Relation relation = RelationUtil.createRelation(asset, root, "creationrel");
-            if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
-               Publish.publish(relation);
-            }
-            else {
-               if (!Workflow.hasWorkflow(asset)) { 
-                  Workflow.create(asset, ""); 
-               } 
-               else { 
-                  Workflow.addUserToWorkflow(asset);
+            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+               if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
+                  Publish.publish(relation);
+               }
+               else {
+                  if (!Workflow.hasWorkflow(asset)) { 
+                     Workflow.create(asset, ""); 
+                  } 
+                  else { 
+                     Workflow.addUserToWorkflow(asset);
+                  }
                }
             }
          }
          int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
          if (owners < 1) {  
             Relation relation = RelationUtil.createRelation(asset, user, "ownerrel");
-            if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
-               Publish.publish(relation);
+            if(ServerUtil.isStaging() && !ServerUtil.isSingle()) {
+               if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
+                  Publish.publish(relation);
+               }
             }
          }
       }
