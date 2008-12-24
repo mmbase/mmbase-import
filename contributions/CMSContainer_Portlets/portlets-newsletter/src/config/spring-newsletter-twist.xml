@@ -54,7 +54,6 @@
    <bean id="publicationService"
          class="com.finalist.newsletter.services.impl.NewsletterPublicationServiceImpl" lazy-init="true">
       <property name="subscriptionCAO" ref="subscriptionCAO"/>
-      <property name="statisticCAO" ref="statisticCAO"/>
       <property name="publicationCAO" ref="publicationCAO"/>
       <property name="publisher" ref="publisher"/>
    </bean>
