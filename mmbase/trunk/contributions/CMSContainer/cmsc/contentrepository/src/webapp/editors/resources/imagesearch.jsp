@@ -1,13 +1,38 @@
 <%@page language="java" contentType="text/html;charset=utf-8"
 %><%@include file="globals.jsp" 
-%><%@page import="java.util.Iterator,
-                 com.finalist.cmsc.mmbase.PropertiesUtil"
+%><%@page import="java.util.Iterator,com.finalist.cmsc.mmbase.PropertiesUtil"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="images.title">
    <script src="../repository/search.js" type="text/javascript"></script>
    <script type="text/javascript">
+   function changeOftenMode(channelid, offset){
+       if(offset==null){
+           offset=0;
+       }
+       var imageMode = document.getElementsByTagName("option");
+       for(i = 0; i < imageMode.length; i++){
+          if(imageMode[i].selected & imageMode[i].id=="a_list"){
+              document.location.href = '../repository/HighFrequencyImg.do?action=often&offset='+offset+'&channelid='+channelid+'&show=list';
+          }else if(imageMode[i].selected & imageMode[i].id=="a_thumbnail"){
+              document.location.href = '../repository/HighFrequencyImg.do?action=often&offset='+offset+'&channelid='+channelid+'&show=thumbnail';
+          }
+       }
+       }
+   function changeSearchMode(offset){
+       if(offset==null){
+           offset=0;
+       }
+       var imageMode = document.getElementsByTagName("option");
+       for(i = 0; i < imageMode.length; i++){
+          if(imageMode[i].selected & imageMode[i].id=="a_list"){
+              document.location.href = '../resources/ImageInitAction.do?action=search&offset='+offset+'&show=list';
+          }else if(imageMode[i].selected & imageMode[i].id=="a_thumbnail"){
+              document.location.href = '../resources/ImageInitAction.do?action=search&offset='+offset+'&show=thumbnail';
+          }
+       }
+       }
 	function showInfo(objectnumber) {
 		openPopupWindow('imageinfo', '900', '500',
 				'../resources/imageinfo.jsp?objectnumber=' + objectnumber);
@@ -48,7 +73,14 @@
 	}
 
 	function selectChannel(channelid, path) {
-	    document.location = "../../repository/HighFrequencyImg.do?action=often&offset=0&channelid="+channelid;
+		var imageMode = document.getElementsByTagName("option");
+	       for(i = 0; i < imageMode.length; i++){
+	          if(imageMode[i].selected & imageMode[i].id=="a_list"){
+	              document.location.href = '../../repository/HighFrequencyImg.do?action=often&offset=0&channelid='+channelid+'&show=list';
+	          }else if(imageMode[i].selected & imageMode[i].id=="a_thumbnail"){
+	              document.location.href = '../../repository/HighFrequencyImg.do?action=often&offset=0&channelid='+channelid+'&show=thumbnail';
+	          }
+	       }
 	}
 </script>
    <link rel="stylesheet" type="text/css" href="../css/imagesearch.css" />
@@ -82,6 +114,7 @@
       <div class="body" <c:if test="${action == 'often'}">style="display:none"</c:if> >
          <html:form action="${formAction}" method="post">
             <html:hidden property="action" value="${action}"/>
+            <html:hidden property="show" value="${show}"/>
             <html:hidden property="offset"/>
             <c:if test="${action eq 'often'}">
             <html:hidden property="channelid" value="${channelid}"/>
@@ -97,16 +130,31 @@
       <div class="ruler_green">
          <div><c:out value="${channelMsg}" /></div>
    `  </div>
+		<select name="imageMode" id="imageMode"
+			onchange="javascript:<c:if test="${action eq 'search'}">changeSearchMode(${offset})</c:if><c:if test="${action eq 'often'}">changeOftenMode('${channelid}', <mm:write value='${offset}' write='true'>0</mm:write>)</c:if>">
+			<c:if test="${show eq 'list'}">
+				<option id="a_list" selected="selected">list</option>
+				<option id="a_thumbnail">thumbnail</option>
+			</c:if>
+			<c:if test="${show eq 'thumbnail'}">
+				<option id="a_list">list</option>
+				<option id="a_thumbnail" selected="selected">thumbnail</option>
+			</c:if>
+		</select>
       <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
          <mm:import externid="results" jspvar="nodeList" vartype="List"/>
          <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
          <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
          <c:if test="${resultCount > 0}">
             <%@include file="../repository/searchpages.jsp" %>
+
+            <c:if test="${show eq 'thumbnail'}">
             <div id="imgList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
-                        <%description = ((String)description).replaceAll("[\\n\\r\\t]+"," "); %>
+                        <%
+                           description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
+                        %>
                         <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
                      </mm:field>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
@@ -115,7 +163,55 @@
                      </div>
                   </mm:listnodes>
             </div>
-         </c:if>
+            </c:if>
+
+			<c:if test="${show eq 'list'}">
+				<table>
+					<tr class="listheader">
+						<th width="55"></th>
+						<th nowrap="true"><a href="javascript:orderBy('title')"
+							class="headerlink"><fmt:message key="imagesearch.titlecolumn" /></a></th>
+						<th nowrap="true"><a href="javascript:orderBy('filename')"
+							class="headerlink"><fmt:message
+							key="imagesearch.filenamecolumn" /></a></th>
+						<th nowrap="true"><a href="javascript:orderBy('itype')"
+							class="headerlink"><fmt:message
+							key="imagesearch.mimetypecolumn" /></a></th>
+						<th></th>
+					</tr>
+					<tbody class="hover">
+						<c:set var="useSwapStyle">true</c:set>
+						<mm:listnodes referid="results">
+							<mm:field name="description" escape="js-single-quotes"
+								jspvar="description">
+								<%
+								   description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
+								%>
+								<mm:import id="url">javascript:selectElement('<mm:field
+										name="number" />', '<mm:field name="title"
+										escape="js-single-quotes" />','<mm:image />','<mm:field
+										name="width" />','<mm:field name="height" />', '<%=description%>');</mm:import>
+							</mm:field>
+							<tr <c:if test="${useSwapStyle}">class="swap"</c:if>
+								href="<mm:write referid="url"/>">
+								<td style="white-space: nowrap;">
+                        <a href="javascript:showInfo(<mm:field name="number" />)">
+                              <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
+								</td>
+                        <td onMouseDown="objClick(this);"><mm:field name="title" /></td>
+								<td onMouseDown="objClick(this);"><mm:field name="filename" /></td>
+								<td onMouseDown="objClick(this);"><mm:field name="itype" /></td>
+								<td onMouseDown="objClick(this);"><a
+									href="javascript:showInfo(<mm:field name="number" />)"><img
+									src="<mm:image template="s(100x100)"/>" alt="" /></a></td>
+							</tr>
+							<c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+						</mm:listnodes>
+					</tbody>
+				</table>
+			</c:if>
+
+		</c:if>
 	      <c:if test="${resultCount == 0 && (param.action == 'often' || param.title != null)}">
 	         <fmt:message key="imagesearch.noresult" />
 	      </c:if>
@@ -128,7 +224,7 @@
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
       <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
-      <mm:url page="/editors/repository/HighFrequencyImg.do?action=often&offset=0&channelid=all" id="often_show_images" write="false"/>
+      <mm:url page="/editors/repository/HighFrequencyImg.do?action=often&show=${show}&offset=0&channelid=all" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_images}"><fmt:message key="imageselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="imageselect.link.channel" /></a></li>

@@ -123,7 +123,11 @@ public abstract class SearchAction extends PagerAction {
       // Set everyting on the request.
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
-      request.setAttribute(GETURL, queryStringComposer.getQueryString());
+      String show = searchForm.getShow();
+      if(StringUtils.isEmpty(show)){
+         show="list";
+      }
+      request.setAttribute(GETURL, queryStringComposer.getQueryString()+"&show="+show);
 
       return super.execute(mapping, form, request, response, cloud);
    }
