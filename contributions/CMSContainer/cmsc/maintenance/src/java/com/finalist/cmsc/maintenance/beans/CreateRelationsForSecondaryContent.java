@@ -62,11 +62,11 @@ public class CreateRelationsForSecondaryContent {
                                        // otherwise, it doesn't harm anyone
          }
 
-         int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
+         /*int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
          if (owners < 1) {
             Relation relation = RelationUtil.createRelation(asset, user, "ownerrel");
             Publish.publish(relation);
-         }
+         }*/
       }
       log.info("Assets - Added relations to " + counter + " Asset elements.");
   
