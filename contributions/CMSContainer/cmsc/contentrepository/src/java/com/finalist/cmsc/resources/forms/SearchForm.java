@@ -7,6 +7,17 @@ public class SearchForm extends PagerForm {
 
    private String contenttypes;
    private String objectid;
+   private String show = "list";
+   
+
+   public String getShow() {
+      return show;
+   }
+
+
+   public void setShow(String show) {
+      this.show = show;
+   }
 
 
    public SearchForm() {
