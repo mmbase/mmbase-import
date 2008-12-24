@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="contentrepository" maintainer="finalist.com" version="2" auto-deploy="true">
+<application name="contentrepository" maintainer="finalist.com" version="3" auto-deploy="true">
    <requirements>
       <requires name="Security" maintainer="mmbase://security.mmbase.org/" version="1" type="application"/>
       <requires name="Resources" maintainer="mmbase.org" version="1" type="application"/>
@@ -21,6 +21,7 @@
       <builder maintainer="finalist.com" version="1">collectionchannel</builder>      
       <builder maintainer="finalist.com" version="1">contentchannel</builder>
       <builder maintainer="finalist.com" version="1">contentelement</builder>
+      <builder maintainer="finalist.com" version="1">assetelement</builder>
     </neededbuilderlist>
     <neededreldeflist>
         <reldef source="childrel" target="childrel" direction="bidirectional" guisourcename="childrel" guitargetname="childrel" builder="childrel" />
@@ -51,6 +52,10 @@
       <relation from="contentelement" to="attachments" type="inlinerel" />
       <relation from="contentelement" to="urls" type="inlinerel" />
       <relation from="contentelement" to="images" type="imageinlinerel" />
+      <!--assets-->
+      <relation from="assetelement" to="contentchannel" type="creationrel" />
+      <relation from="assetelement" to="contentchannel" type="deletionrel" />
+      <relation from="assetelement" to="user" type="ownerrel" />
    </allowedrelationlist>
 
    <datasourcelist>
