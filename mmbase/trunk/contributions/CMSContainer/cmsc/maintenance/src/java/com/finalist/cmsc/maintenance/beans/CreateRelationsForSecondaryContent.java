@@ -50,7 +50,7 @@ public class CreateRelationsForSecondaryContent {
          Node asset = assets.getNode(i);
          if (!RepositoryUtil.hasCreationChannel(asset)) {
             Relation relation = RelationUtil.createRelation(asset, root, "creationrel");
-            if(Publish.isPublished(asset)) {
+            if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
                Publish.publish(relation);
             }
             else {
@@ -65,7 +65,7 @@ public class CreateRelationsForSecondaryContent {
          int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
          if (owners < 1) {  
             Relation relation = RelationUtil.createRelation(asset, user, "ownerrel");
-            if(Publish.isPublished(asset)) {
+            if(Publish.isPublished(asset) && Publish.isPublishable(relation)) {
                Publish.publish(relation);
             }
          }
