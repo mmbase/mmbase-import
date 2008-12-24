@@ -55,18 +55,22 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
+
 Name: Migration from images/attachments/urls to assetelement table
-Goal:  migrate all images/attachments/URLs to new assetstable
+Goal:  migrate all images/attachments/URLs to new assets table
 Type:  sql-script
 --- Start script ---
-insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_urls;
-insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_attachments;
-insert into mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_images;
+* First start CMSC 1.6 for the first time (it needs to create the assets tables!)
+* Wait for finishing startup (editors should work)
+* Stop CMSC 1.6
+* Execute the following script on database:
+INSERT INTO mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_urls;
+INSERT INTO mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_attachments;
+INSERT INTO mm_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from mm_images;
 
-insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_urls;
-insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_attachments;
-insert into live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_images;
-
+INSERT INTO live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_urls;
+INSERT INTO live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_attachments;
+INSERT INTO live_assetelement select number,otype,owner,creationdate,lastmodifieddate,publishdate,expiredate,lastmodifier,creator,use_expirydate,title,description,m_status from live_images;
 --- End script ---
 *
 *
