@@ -35,9 +35,9 @@
                    var assetsMode = document.getElementsByTagName("option");3
                    for(i = 0; i < assetsMode.length; i++){
                       if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&show=list&offset='+offset;
+                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=list&offset='+offset;
                       }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&show=thumbnail&offset='+offset;
+                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=thumbnail&offset='+offset;
                       }
                    }
                 }
@@ -80,7 +80,7 @@
             <html:hidden property="search" value="true"/>
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
-            <html:hidden property="show" value="${show}"/>
+            <html:hidden property="searchShow" value="${searchShow}"/>
             <html:hidden property="direction"/>
             <input type="hidden" name="deleteAssetRequest"/>
             <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
@@ -300,11 +300,11 @@
    <div class="body">
    <div style="padding-left:11px">
       <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
-         <c:if test="${empty show || show eq 'list'}">
+         <c:if test="${empty searchShow || searchShow eq 'list'}">
             <option id="a_list" selected="selected">list</option>
             <option id = "a_thumbnail" >thumbnail</option>
          </c:if>
-         <c:if test="${show eq 'thumbnail'}">
+         <c:if test="${searchShow eq 'thumbnail'}">
             <option id="a_list">list</option>
             <option id = "a_thumbnail" selected="selected" >thumbnail</option>
          </c:if>
@@ -327,7 +327,7 @@
       <mm:field id="trashnumber" name="number" write="false"/>
    </mm:node>
 
-<c:if test="${show eq 'list'}">
+<c:if test="${searchShow eq 'list'}">
    <mm:list referid="results">
       <mm:first>
          <%@include file="searchpages.jsp" %>
@@ -454,7 +454,7 @@
    </mm:list>
 </c:if>
 
-<c:if test="${show eq 'thumbnail'}">
+<c:if test="${searchShow eq 'thumbnail'}">
    <mm:list referid="results">
       <mm:first>
          <%@include file="searchpages.jsp" %>
