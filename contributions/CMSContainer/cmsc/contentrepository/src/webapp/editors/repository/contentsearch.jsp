@@ -40,6 +40,7 @@
             </div>
         </div>
     </div>
+<c:if test="${param.index eq 'yes'}">
     <div class="${contenttypes == 'asset'?'tab_active':'tab'}">
       <div class="body">
          <div>
@@ -47,6 +48,7 @@
          </div>
       </div>
    </div>
+</c:if>
 </div>
    <div class="editor">
    <br />
