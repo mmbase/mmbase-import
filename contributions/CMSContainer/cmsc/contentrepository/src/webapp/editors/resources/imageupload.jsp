@@ -46,6 +46,11 @@
                         <td style="color:red;"><fmt:message key="asset.upload.existed" /></td>
                      </tr>
                   </c:if>
+                  <c:if test="${param.exceed=='yes'}">
+                     <tr>
+                        <td style="color:red;"><fmt:message key="asset.upload.exceed" /></td>
+                     </tr>
+                  </c:if>
                   <c:if test="${param.uploadedNodes=='0' && param.exist == '0'}">
                      <tr>
                         <td style="color:red;"><fmt:message key="image.upload.notimage" /></td>
