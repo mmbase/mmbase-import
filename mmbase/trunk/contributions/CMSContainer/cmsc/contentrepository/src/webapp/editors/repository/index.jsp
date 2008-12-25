@@ -60,7 +60,7 @@
       <mm:url page="/editors/repository/ContentSearchAction.do?title=${param.title}" id="contenturl" write="false" />
    </c:if>
    <c:if test="${empty param.title}">
-      <mm:url page="/editors/repository/SearchInitAction.do" id="contenturl" write="false" />
+      <mm:url page="/editors/repository/SearchInitAction.do?index=yes" id="contenturl" write="false" />
    </c:if>
 </mm:notpresent>
 
