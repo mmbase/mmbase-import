@@ -1,10 +1,3 @@
-/*
- * 
- * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
- * Initiative.
- * 
- * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
- */
 package com.finalist.cmsc.repository.forms;
 
 import java.io.IOException;
@@ -31,12 +24,19 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.transformers.ByteToCharTransformer;
 import org.mmbase.util.transformers.ChecksumFactory;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.util.http.BulkUploadUtil;
 
 public class ImageUploadAction extends MMBaseAction {
+
+   public static final String UPLOADED_FILE_MAX_SIZE = "uploaded.file.max.size";
+   public static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
+   protected static Set<String> supportedImages;
+
+   private static final Log log = LogFactory.getLog(BulkUploadUtil.class);
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -47,26 +47,39 @@ public class ImageUploadAction extends MMBaseAction {
       FormFile file = imageUploadForm.getFile();
       int nodeId = 0;
       String exist = "0";
+      String exceed = "no";
+
       NodeManager manager = cloud.getNodeManager("images");
       List<Integer> nodes = null;
 
       if (file.getFileSize() != 0 && file.getFileName() != null) {
          if (isImage(file.getFileName())) {
 
-            ChecksumFactory checksumFactory = new ChecksumFactory();
-            ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
-                  .createTransformer(checksumFactory.createParameters());
-            String checkSum = transformer.transform(file.getFileData());
-            NodeQuery query = manager.createQuery();
-            SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
-            NodeList images = query.getList();
+            int maxFileSize = 16 * 1024 * 1024; // Default value of 16MB
+            try {
+               maxFileSize = Integer.parseInt(PropertiesUtil.getProperty(UPLOADED_FILE_MAX_SIZE)) * 1024 * 1024;
+            } catch (NumberFormatException e) {
+               log.warn("System property '" + UPLOADED_FILE_MAX_SIZE + "' is not set. Please add it (units = MB).");
+            }
+            int fileSize = file.getFileSize();
+            if (fileSize < maxFileSize) {
+               ChecksumFactory checksumFactory = new ChecksumFactory();
+               ByteToCharTransformer transformer = (ByteToCharTransformer) checksumFactory
+                     .createTransformer(checksumFactory.createParameters());
+               String checkSum = transformer.transform(file.getFileData());
+               NodeQuery query = manager.createQuery();
+               SearchUtil.addEqualConstraint(query, manager.getField("checksum"), checkSum);
+               NodeList images = query.getList();
 
-            boolean isNewFile = (images.size() == 0);
-            if (isNewFile) {
-               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-               request.setAttribute("uploadedNodes", nodes.size());
+               boolean isNewFile = (images.size() == 0);
+               if (isNewFile) {
+                  nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+                  request.setAttribute("uploadedNodes", nodes.size());
+               } else {
+                  exist = "1";
+               }
             } else {
-               exist = "1";
+               exceed = "yes";
             }
          }
 
@@ -84,12 +97,8 @@ public class ImageUploadAction extends MMBaseAction {
          }
       }
       return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
-            + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);
+            + "&exceed=" + exceed + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);
    }
-
-   private static Set<String> supportedImages;
-   private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
-   private static final Log log = LogFactory.getLog(BulkUploadUtil.class);
 
    private static void initSupportedImages() {
       supportedImages = new HashSet<String>();
