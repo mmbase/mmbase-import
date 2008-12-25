@@ -67,15 +67,13 @@ public class AssetSearchAction extends PagerAction {
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
       String show = request.getParameter("show");
-      if (show == null) {
-         show = searchForm.getShow();
+      
+      if (StringUtils.isEmpty(show)) {
+         show = (String)request.getSession().getAttribute("show");
+         if(StringUtils.isEmpty(show)){
+            show="list";
+         } 
       }
-      if (StringUtils.isNotEmpty(show)) {
-         show = "thumbnail";
-      }else{
-         show = null;
-      }
-
       if (StringUtils.isNotEmpty(deleteAssetRequest)) {
          if (deleteAssetRequest.startsWith("massDelete:")) {
             massDeleteAsset(deleteAssetRequest.substring(11));
@@ -101,7 +99,7 @@ public class AssetSearchAction extends PagerAction {
          }
       }
       addToRequest(request, "typesList", typesList);
-      addToRequest(request, "show", show);
+      request.getSession().setAttribute("show", show);
 
       // Switching tab, no searching.
       if ("false".equalsIgnoreCase(searchForm.getSearch())) {
@@ -136,11 +134,11 @@ public class AssetSearchAction extends PagerAction {
 
       // set default order field
       if (StringUtils.isEmpty(order)) {
+         if (nodeManager.hasField("number")) {
+            order = "number";
+         }
          if (nodeManager.hasField("title")) {
             order = "title";
-         }
-         if (nodeManager.hasField("name")) {
-            order = "name";
          }
       }
       if (StringUtils.isNotEmpty(order)) {
