@@ -108,7 +108,7 @@
    <mm:import externid="resultsPerPage" from="request" vartype="Integer">25</mm:import>
    <c:set var="listSize" value="${elementCount}"/>
    <c:set var="offset" value="${param.offset}"/>
-   <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=list"/>
+   <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}&show=${show}"/>
    <c:set var="orderby" value="${param.orderby}" scope="page" />
    <c:set var="type" value="asset" scope="page" />
 
