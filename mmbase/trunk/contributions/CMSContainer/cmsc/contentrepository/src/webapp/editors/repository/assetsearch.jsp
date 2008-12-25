@@ -35,9 +35,9 @@
                    var assetsMode = document.getElementsByTagName("option");3
                    for(i = 0; i < assetsMode.length; i++){
                       if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&offset='+offset;
+                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&show=list&offset='+offset;
                       }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&show=0&offset='+offset;
+                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&show=thumbnail&offset='+offset;
                       }
                    }
                 }
@@ -297,22 +297,20 @@
    <div class="editor" style="height:500px">
    <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
 
-
+   <div class="body">
    <div style="padding-left:11px">
       <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
-         <c:if test="${empty show}">
+         <c:if test="${empty show || show eq 'list'}">
             <option id="a_list" selected="selected">list</option>
             <option id = "a_thumbnail" >thumbnail</option>
          </c:if>
-         <c:if test="${!empty show}">
+         <c:if test="${show eq 'thumbnail'}">
             <option id="a_list">list</option>
             <option id = "a_thumbnail" selected="selected" >thumbnail</option>
          </c:if>
       </select>
    </div>
 
-<c:if test="${empty show}">
-   <div class="body">
 <!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
 <c:set var="hasWorkflow" value="false"/>
 <mm:haspage page="/editors/workflow">
@@ -329,10 +327,11 @@
       <mm:field id="trashnumber" name="number" write="false"/>
    </mm:node>
 
+<c:if test="${show eq 'list'}">
    <mm:list referid="results">
       <mm:first>
          <%@include file="searchpages.jsp" %>
-<mm:hasrank minvalue="siteadmin">
+            <mm:hasrank minvalue="siteadmin">
                <c:if test="${fn:length(results) >1}">
                <div align="left">
                   <input type="submit" class="button" name="massdelete" 
@@ -342,15 +341,14 @@
                </c:if>
             </mm:hasrank>
          <form action="" name="linkForm" method="post">
-            
             <table>
             <thead>
                <tr>
                   <th>
                      <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-                  <c:if test="${fn:length(results) >1}">
-                      <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
-                  </c:if>
+                     <c:if test="${fn:length(results) >1}">
+                        <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
+                     </c:if>
                   </th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
@@ -443,43 +441,23 @@
    </table>
    </form>
    <mm:hasrank minvalue="siteadmin">
-               <c:if test="${fn:length(results) >1}">
-               <div align="left">
-                  <input type="submit" class="button" name="massdelete" 
-                        onclick="javascript:deleteAsset('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>')"
-                        value="<fmt:message key="asset.delete.massdelete" />"/>
-               </div>
-               </c:if>
-            </mm:hasrank>
-      <%@include file="searchpages.jsp" %>
+      <c:if test="${fn:length(results) >1}">
+      <div align="left">
+         <input type="submit" class="button" name="massdelete" 
+               onclick="javascript:deleteAsset('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>')"
+               value="<fmt:message key="asset.delete.massdelete" />"/>
+      </div>
+      </c:if>
+   </mm:hasrank>
+   <%@include file="searchpages.jsp" %>
    </mm:last>
    </mm:list>
-      </div>
 </c:if>
 
-<c:if test="${!empty show}">
-<div class="body">
-
-<!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
-<c:set var="hasWorkflow" value="false"/>
-<mm:haspage page="/editors/workflow">
-   <c:set var="hasWorkflow" value="true"/>
-</mm:haspage>
-
-   <%-- Now print if no results --%>
-   <mm:isempty referid="results">
-      <fmt:message key="searchform.searchpages.nonefound" />
-   </mm:isempty>
-
-   <%-- Now print the results --%>
-   <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-      <mm:field id="trashnumber" name="number" write="false"/>
-   </mm:node>
-
+<c:if test="${show eq 'thumbnail'}">
    <mm:list referid="results">
       <mm:first>
          <%@include file="searchpages.jsp" %>
-         <form name="linkForm">
       </mm:first>
 
    <mm:field name="${assettypes}.number" id="number" write="false">
@@ -528,14 +506,11 @@
             </div>
       </mm:node>
    </mm:field>
-   <mm:last>
-   </form>
-   </mm:last>
    </mm:list>
    <div style="clear:both;"></div>
-      <%@include file="searchpages.jsp" %>
-</div>
+   <%@include file="searchpages.jsp" %>
 </c:if>
+</div>
    </div>
 </mm:cloud>
 
