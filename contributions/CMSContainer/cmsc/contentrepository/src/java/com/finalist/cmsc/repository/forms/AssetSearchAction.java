@@ -66,12 +66,12 @@ public class AssetSearchAction extends PagerAction {
       AssetSearchForm searchForm = (AssetSearchForm) form;
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
-      String show = request.getParameter("show");
+      String searchShow = request.getParameter("searchShow");
       
-      if (StringUtils.isEmpty(show)) {
-         show = (String)request.getSession().getAttribute("show");
-         if(StringUtils.isEmpty(show)){
-            show="list";
+      if (StringUtils.isEmpty(searchShow)) {
+         searchShow = (String)request.getSession().getAttribute("searchShow");
+         if(StringUtils.isEmpty(searchShow)){
+            searchShow="list";
          } 
       }
       if (StringUtils.isNotEmpty(deleteAssetRequest)) {
@@ -99,7 +99,7 @@ public class AssetSearchAction extends PagerAction {
          }
       }
       addToRequest(request, "typesList", typesList);
-      request.getSession().setAttribute("show", show);
+      request.getSession().setAttribute("searchShow", searchShow);
 
       // Switching tab, no searching.
       if ("false".equalsIgnoreCase(searchForm.getSearch())) {
@@ -251,7 +251,7 @@ public class AssetSearchAction extends PagerAction {
       // Set everything on the request.
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
-      request.setAttribute(GETURL, queryStringComposer.getQueryString()+((show==null)?"":"&show="+show));
+      request.setAttribute(GETURL, queryStringComposer.getQueryString()+((searchShow==null)?"":"&searchShow="+searchShow));
       return super.execute(mapping, form, request, response, cloud);
    }
 
