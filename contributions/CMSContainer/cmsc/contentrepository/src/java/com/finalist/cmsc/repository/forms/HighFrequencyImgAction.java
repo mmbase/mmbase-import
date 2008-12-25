@@ -55,7 +55,7 @@ public class HighFrequencyImgAction extends PagerAction {
    private static final String NUMBER = "number";
    private static final String TITLE = "title";
    private static final String COUNTALIAS = "countalias";
-   private static final String SHOWMODE = "show";
+   private static final String IMAGESHOW = "imageShow";
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -64,9 +64,9 @@ public class HighFrequencyImgAction extends PagerAction {
       
       String channelid = highFrequencyImgForm.getChannelid();
       boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
-      String show = highFrequencyImgForm.getShow();
-      if(StringUtils.isEmpty(show)){
-         show="list";
+      String imageShow = highFrequencyImgForm.getImageShow();
+      if(StringUtils.isEmpty(imageShow)){
+         imageShow="list";
       }
       
       Query query = cloud.createAggregatedQuery();
@@ -166,7 +166,8 @@ public class HighFrequencyImgAction extends PagerAction {
          resultAfterPaging = result.subList(offset * maxnum, result.size());
       }
       request.setAttribute(CHANNELID, channelid);
-      request.setAttribute(SHOWMODE, show);
+      request.setAttribute(IMAGESHOW, imageShow);
+      request.setAttribute(OFFSET, offset);
       request.setAttribute(RESULTCOUNT, resultCount);
       request.setAttribute(RESULTS, resultAfterPaging);
       return mapping.findForward(SUCCESS);
