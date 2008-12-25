@@ -6,7 +6,7 @@ import com.finalist.cmsc.struts.PagerForm;
 public class HighFrequencyImgForm extends PagerForm {
 
    private String channelid;
-   private String show;
+   private String imageShow;
 
    public String getChannelid() {
       return channelid;
@@ -16,12 +16,12 @@ public class HighFrequencyImgForm extends PagerForm {
       this.channelid = channelid;
    }
 
-   public String getShow() {
-      return show;
+   public String getImageShow() {
+      return imageShow;
    }
 
-   public void setShow(String show) {
-      this.show = show;
+   public void setImageShow(String show) {
+      this.imageShow = show;
    }
 
 }
