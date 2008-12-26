@@ -23,7 +23,7 @@
 		</field>
 	</item>
 
-	<command name="search" nodepath="urls" age="-1" fields="name,url,description">
+	<command name="assetsselector" nodepath="urls" age="-1" fields="name,url,description">
 		<prompt xml:lang="en">Search url</prompt>
 		<prompt xml:lang="nl">Zoek url</prompt>
 		<prompt xml:lang="zh">查找Url</prompt>
