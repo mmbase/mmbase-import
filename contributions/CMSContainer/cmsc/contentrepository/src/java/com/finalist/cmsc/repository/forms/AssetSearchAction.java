@@ -44,6 +44,7 @@ public class AssetSearchAction extends PagerAction {
 
    public static final String PERSONAL = "personal";
    public static final String MODE = "mode";
+   public static final String STRICT = "strict";
    public static final String AUTHOR = "author";
    public static final String OBJECTID = "objectid";
    public static final String PARENTCHANNEL = "parentchannel";
@@ -67,7 +68,9 @@ public class AssetSearchAction extends PagerAction {
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
       String searchShow = request.getParameter("searchShow");
-      
+      if (StringUtils.isNotEmpty(request.getParameter(STRICT))) {
+         request.setAttribute(STRICT, request.getParameter(STRICT));
+      }
       if (StringUtils.isEmpty(searchShow)) {
          searchShow = (String)request.getSession().getAttribute("searchShow");
          if(StringUtils.isEmpty(searchShow)){
