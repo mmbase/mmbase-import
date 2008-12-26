@@ -52,7 +52,7 @@
 <mm:import id="assetsearchinit"><c:url value='/editors/repository/AssetSearchInitAction.do'/></mm:import>
 
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-
+<c:if test="${empty strict}">
    <div class="tabs">
     <!-- active TAB -->
  <div class="tab">
@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-
+</c:if>
 </div>
    <div class="editor">
    <br />
@@ -83,6 +83,10 @@
             <html:hidden property="searchShow" value="${searchShow}"/>
             <html:hidden property="direction"/>
             <input type="hidden" name="deleteAssetRequest"/>
+            <c:if test="${not empty strict}">
+			<input type="hidden" name="assettypes" value="${strict}"/>
+			<input type="hidden" name="strict" value="${strict}"/>
+			</c:if>
             <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
                 <mm:compare referid="mode" value="advanced" >
                    <a href="#" onclick="selectTab('basic');"><input type="button" class="button" value="<fmt:message key="search.simple.search" />"/></a>
@@ -99,10 +103,15 @@
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.assettype" /></td>
                   <td>
+                    <c:if test="${not empty strict}">
+					${strict}
+					</c:if>
+					<c:if test="${empty strict}">
                      <html:select property="assettypes" onchange="selectAssettype('${searchinit}');" >
                         <html:option value="assetelement">&lt;<fmt:message key="searchform.assettypes.all" />&gt;</html:option>
                         <html:optionsCollection name="typesList" value="value" label="label"/>
                      </html:select>
+                     </c:if>
                   </td>
                </tr>
                   <tr>
@@ -388,6 +397,10 @@
                   </c:if>
                   <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                     <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                  </c:if>
+                  <c:if test="${not empty strict}">
+                     <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
+                         <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
                   </c:if>
                <%@ include file="searchIconsBar.jspf" %>
             </td>
