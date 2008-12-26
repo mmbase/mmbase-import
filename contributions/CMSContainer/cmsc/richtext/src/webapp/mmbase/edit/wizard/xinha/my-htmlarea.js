@@ -193,82 +193,87 @@ function setWidthForTables(editor) {
 
 
 HTMLArea.prototype._insertInlineLink = function(link) {
-        var editor = this;
-        var outparam = null;
-        if (typeof link == "undefined") {
+      var editor = this;
+      var outparam = null;
+      if (typeof link == "undefined") {
             link = this.getParentElement();
             while (link) {
-        	   if (/^a$/i.test(link.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
-        	   if (/^body$/i.test(link.tagName)) { link = null; break } //Stop searching when Body-tag is found, don't go too deep.
-        	   link = link.parentNode;
+                  if (/^a$/i.test(link.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
+                  if (/^body$/i.test(link.tagName)) { link = null; break } //Stop searching when Body-tag is found, don't go too deep.
+                  link = link.parentNode;
             }
-        }
-	
-		var sel = editor._getSelection();
-		
-        if (link) outparam = {
-                f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
-                f_destination : HTMLArea.is_ie ? link.destination : link.getAttribute("destination"),
-				f_linkName : link.linkName ? link.linkName:sel,
-                f_title  : link.title,
-                f_target : link.target
-        };
-		
-		else
-			outparam = {
-                f_href   : "Click \"New Url\" to enter URL",
-                f_destination : null,
-				f_linkName : sel,
-                f_title  : null,
-                f_target : null
-        };
-		
-        this._popupDialog("insertinline_link.html", function(param) {
-                if (!param)
-                        return false;
-                var a = link;
-                if (!a) {
-                        editor._doc.execCommand("createlink", false, param.f_href);
-						
-                        a = editor.getParentElement();
-                        while (a) {
-                      	   if (/^a$/i.test(a.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
-                      	   if (/^body$/i.test(a.tagName)) { a = null; break } //Stop searching when Body-tag is found, don't go too deep.
-                      	   a = a.parentNode;
-                        }
-                        
-                        var sel = editor._getSelection();
+      }
 
-						if(sel == null || sel == ""){
-					       var aLink = document.createElement('a');
-						   editor.insertNodeAtSelection(aLink);
-						   a = aLink;
-						   a.href = param.f_href.trim();
-						}
-                } 
-				else{
-					 a.href = param.f_href.trim();
-				}
-				a.innerHTML = param.f_linkName.trim();
-               	a.title = param.f_title.trim();
-				
-                if (HTMLArea.is_ie) {
-                  a.destination = param.f_destination.trim();
-                  if (!a.destination && a.relationID) {
-                    a.relationID = "";
-                  }
-                }
-                else {
-                  a.setAttribute("destination", param.f_destination.trim());
-                  if (!a.getAttribute("destination") && a.getAttribute("relationID")) {
-                    a.removeAttribute("relationID");
-                  }
-                }
-					
-                a.target = param.f_target.trim();
-                editor.selectNodeContents(a);
-                editor.updateToolbar();
-  }, outparam);
+      var sel = editor._getSelection();
+
+      if (link){
+            outparam = {
+                  f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
+                  f_destination : HTMLArea.is_ie ? link.destination : link.getAttribute("destination"),
+                  f_linkName : sel,
+                  f_title  : link.title,
+                  f_target : link.target,
+                  f_usetarget : editor.config.makeLinkShowsTarget
+            };
+      }
+      else{
+            outparam = {
+                  f_href   : "Click \"New Url\" to enter URL",
+                  f_destination : null,
+                  f_linkName : sel,
+                  f_title  : null,
+                  f_target : null,
+                  f_usetarget : editor.config.makeLinkShowsTarget
+            };
+      }
+      this._popupDialog(
+			"insertinline_link.html", 
+                  function(param) {
+                        if (!param) { return false; }
+                        var a = link;
+                        if (!a) {
+                              editor._doc.execCommand("createlink", false, param.f_href);
+                              a = editor.getParentElement();
+                              while (a) {
+                                    if (/^a$/i.test(a.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
+                                    if (/^body$/i.test(a.tagName)) { a = null; break } //Stop searching when Body-tag is found, don't go too deep.
+                                    a = a.parentNode;
+                              }
+
+                              var sel = editor._getSelection();
+
+                              if(sel == null || sel == ""){
+                                    var aLink = document.createElement('a');
+                                    editor.insertNodeAtSelection(aLink);
+                                    a = aLink;
+                                    a.href = param.f_href.trim();
+                                    a.innerHTML = param.f_linkName.trim();
+                              }
+                        } 
+                        else{
+                              a.href = param.f_href.trim();
+                        }
+                       
+                        a.title = param.f_title.trim();
+
+                        if (HTMLArea.is_ie) {
+                              a.destination = param.f_destination.trim();
+                              if (!a.destination && a.relationID) {
+                                    a.relationID = "";
+                              }
+                        }
+                        else {
+                              a.setAttribute("destination", param.f_destination.trim());
+                              if (!a.getAttribute("destination") && a.getAttribute("relationID")) {
+                                    a.removeAttribute("relationID");
+                              }
+                        }
+
+                        a.target = param.f_target.trim();
+                        editor.selectNodeContents(a);
+                        editor.updateToolbar();
+                  }, 
+                  outparam);
 };
 
 HTMLArea.prototype._insertImage = function(image) {

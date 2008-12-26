@@ -34,33 +34,24 @@ function Init() {
 
   var param = window.dialogArguments;
   
- 
-  
   var target_select = document.getElementById("f_target");
   var use_target = true;
   if (param) { 
-    if ( typeof param["f_usetarget"] != "undefined" ) {
+	if ( typeof param["f_usetarget"] != "undefined" ) {
       use_target = param["f_usetarget"];
     }
-    if ( typeof param["f_href"] != "undefined" ) {
-      document.getElementById("f_href").value = param["f_href"];
-      if(typeof param["f_linkName"] != "undefined"){
-        document.getElementById("f_linkName").value = param["f_linkName"];
-      }
-      else{
-        document.getElementById("f_linkName").value = param["f_linkName"];
-      }
-      document.getElementById("f_title").value = param["f_title"];
-      document.getElementById("f_destination").value = param["f_destination"];
-      comboSelectValue(target_select, param["f_target"]);
-      if (target_select.value != param.f_target) {
-        var opt = document.createElement("option");
-        opt.value = param.f_target;
-        opt.innerHTML = opt.value;
-        target_select.appendChild(opt);
-        opt.selected = true;
-      }
-  }
+	document.getElementById("f_href").value = param["f_href"];
+	document.getElementById("f_linkName").value = param["f_linkName"];
+	document.getElementById("f_title").value = param["f_title"];
+	document.getElementById("f_destination").value = param["f_destination"];
+	comboSelectValue(target_select, param["f_target"]);
+	if (target_select.value != param.f_target) {
+		var opt = document.createElement("option");
+		opt.value = param.f_target;
+		opt.innerHTML = opt.value;
+		target_select.appendChild(opt);
+		opt.selected = true;
+	}
   }
   if (! use_target) {
     document.getElementById("f_target_label").style.visibility = "hidden";
@@ -78,58 +69,57 @@ function Init() {
 }
 
 function onOK() {
-    var elhref = document.getElementById("f_href");
-   if (HTMLArea.is_ie ? elhref.readOnly : elhref.hasAttribute("readonly")) {
-    var el = document.getElementById("f_destination");
-    if(!el.value) {
-      var message = i18n("You must select an item");
-      return false;
-    }
-    else {
-      var el = document.getElementById("f_linkName");
-      if(!el.value){
-         var message = i18n("You must enter the name of the link");
-         el.focus();
-         return false;
-         }
-            
-      else{      
-        var el = document.getElementById("f_title");
-        if (!el.value) {
-         var message = i18n("You must enter a title");
-         el.focus();
-         return false;
-          }
-        }
-    }
-  }
-  else {
-    if (!elhref.value) {
-      var message = i18n("You must enter the URL where this link points to");
-      elhref.focus();
-      return false;
-    }
-    else {
-      var re = new RegExp("\://|javascript\:|mailto\:");
-      if (!elhref.value.match(re)) {
-        var message = i18n("Url is missing protocol (eg http://)");
-        elhref.focus();
-        return false;
-      }
-    }
-  }
-  // pass data back to the calling window
-  var fields = ["f_href", "f_linkName","f_title", "f_target", "f_destination" ];//f_linkName is added by Rain.Tang
-  var param = new Object();
-  for (var i in fields) {
-    var id = fields[i];
-    var el = document.getElementById(id);
-    param[id] = el.value;
-  }
-  if (param.f_target == "_other")
-    param.f_target = document.getElementById("f_other_target").value;
-  __dlg_close(param);
-  return false;
+	var elhref = document.getElementById("f_href");
+	if (HTMLArea.is_ie ? elhref.readOnly : elhref.hasAttribute("readonly")) {
+		var el = document.getElementById("f_destination");
+		if(!el.value) {
+			var message = i18n("You must select an item");
+			return false;
+		}
+		else {
+			var el = document.getElementById("f_linkName");
+			if(!el.value){
+				var message = i18n("You must enter the name of the link");
+				el.focus();
+				return false;
+			}
+			else{      
+				var el = document.getElementById("f_title");
+				if (!el.value) {
+					var message = i18n("You must enter a title");
+					el.focus();
+					return false;
+				}
+			}
+		}
+	}
+	else {
+		if (!elhref.value) {
+			var message = i18n("You must enter the URL where this link points to");
+			elhref.focus();
+			return false;
+		}
+		else {
+			var re = new RegExp("\://|javascript\:|mailto\:");
+			if (!elhref.value.match(re)) {
+				var message = i18n("Url is missing protocol (eg http://)");
+				elhref.focus();
+				return false;
+			}
+		}
+	}
+	// pass data back to the calling window
+	var fields = ["f_href", "f_linkName","f_title", "f_target", "f_destination" ];//f_linkName is added by Rain.Tang
+	var param = new Object();
+	for (var i in fields) {
+		var id = fields[i];
+		var el = document.getElementById(id);
+		param[id] = el.value;
+	}
+	if (param.f_target == "_other")
+	param.f_target = document.getElementById("f_other_target").value;
+	__dlg_close(param);
+	return false;
 }
 
 function onCancel() {
