@@ -10,35 +10,51 @@
 <link href="../style.css" type="text/css" rel="stylesheet"/>
 </head>
     <body>
-       <h2>Create relations from assets to channels</h2>
+       <h2>Create relations from assets to channels.</h2>
 <mm:cloud jspvar="cloud" loginpage="../editors/login.jsp" rank="administrator">
 <mm:log jspvar="log">
-Note:please insert a channel number which you want to create relation from asset elements to.if you keep it blank, the root node will be used.
+Note:<ul>
+<li>if 'Relate to root channel' is choosed,the asset elements will be related to the channel node which you fill in the input text.if it's empty ,the root node will be used.</li>
+<li>if 'Self-determination' is choosed,The asset elements will be related to the channel node which relates to a article and the article relates to the asset</li>
+
+</ul>
 <br/><br/>
 <form method="post">
-	<input type="hidden" name="action" value="add"/>
-   Parent channel Node Number:<input type="text" name="number"/>
-	<input type="submit" name="action" value="Create"/>
+      <input type="hidden" name="action" value="add"/>
+   <select name="type">
+      <option value="root">Relate to root channel</option>
+      <option value="selfselect">Self-determination</option>
+   </select><br/><br/>
+   Parent channel Node Number:<input type="text" name="number"/><br/><br/>
+      <input type="submit" name="action" value="Create"/>
 </form>
 
 <mm:import externid="action"/>
 <mm:import externid="number"/>
 <mm:present referid="action">
+   <c:if test="${param.type == 'root'}">
    <mm:write referid="number" jspvar="number" vartype="Integer">
       <% if(number < 1) {
-	     new CreateRelationsForSecondaryContent(cloud,number).execute();
+        new CreateRelationsForSecondaryContent(cloud).execute(number,null);
       }
       else {
        if(RepositoryUtil.isChannel(String.valueOf(number))) {
-         new CreateRelationsForSecondaryContent(cloud,number).execute();
+         new CreateRelationsForSecondaryContent(cloud).execute(number,null);
        }
        else {
          out.println("The number should be a channel number!");
          }
       }
       %>
-
-	</mm:write>
+      </mm:write>
+   </c:if>
+   <c:if test="${param.type == 'selfselect'}">
+       <mm:write referid="number" jspvar="number" vartype="Integer">
+      <%
+          new CreateRelationsForSecondaryContent(cloud).execute(number,"selfselect");
+      %>
+            </mm:write>
+   </c:if>
 </mm:present>
 
 </mm:log>
