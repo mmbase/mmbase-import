@@ -89,6 +89,7 @@
             <html:hidden property="offset"/>
             <html:hidden property="order"/>
             <html:hidden property="direction"/>
+            <html:hidden property="index" value="${param.index}"/>
             <input type="hidden" name="deleteContentRequest"/>
             <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
                      <mm:compare referid="mode" value="advanced" >

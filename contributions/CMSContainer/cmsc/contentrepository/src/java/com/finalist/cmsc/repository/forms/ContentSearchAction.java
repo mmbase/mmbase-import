@@ -56,7 +56,11 @@ public class ContentSearchAction extends PagerAction {
       SearchForm searchForm = (SearchForm) form;
 
       String deleteContentRequest = request.getParameter("deleteContentRequest");
-
+      String index = searchForm.getIndex();
+      if(StringUtils.isEmpty(index)){
+         index = "no";
+      }
+      request.setAttribute("index", index);
       if (StringUtils.isNotEmpty(deleteContentRequest)) {
          if (deleteContentRequest.startsWith("massDelete:")) {
             massDeleteContent(deleteContentRequest.substring(11));
