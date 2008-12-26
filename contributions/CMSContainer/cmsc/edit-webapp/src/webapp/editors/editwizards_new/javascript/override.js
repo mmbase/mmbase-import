@@ -354,3 +354,20 @@ function resetCalendar(calendarType,fieldName) {
       document.getElementById(fieldName).value='';
    }
 }
+
+function selectAssets(ele,type){
+    Data[type] = ele.value;
+}
+
+var Data = {
+    attachments: "",
+	images:"",
+	urls:""
+}
+
+function getAssets(type){    
+    //alert(Data[type]);
+	var url='../../../../editors/repository/AssetSearchAction.do?assettypes='+type+'&title='+Data[type]+'&strict='+type;	
+	window.open(url, 
+	'contentselector', 'width=730,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');
+}
