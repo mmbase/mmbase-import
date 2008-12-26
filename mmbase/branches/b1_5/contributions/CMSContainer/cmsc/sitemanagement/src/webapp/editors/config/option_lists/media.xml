@@ -24,31 +24,31 @@
    <option id="aural">
       <prompt xml:lang="nl">Aural</prompt>
       <prompt xml:lang="en">Aural</prompt>
-      <prompt xml:lang="zh">Aural</prompt>
+      <prompt xml:lang="zh">伴音</prompt>
    </option>
    <option id="braille">
       <prompt xml:lang="nl">Braille</prompt>
       <prompt xml:lang="en">Braille</prompt>
-      <prompt xml:lang="zh">Braille</prompt>
+      <prompt xml:lang="zh">点字印刷</prompt>
    </option>
    <option id="embossed">
       <prompt xml:lang="nl">Embossed</prompt>
       <prompt xml:lang="en">Embossed</prompt>
-      <prompt xml:lang="zh">Embossed</prompt>
+      <prompt xml:lang="zh">浮凸</prompt>
    </option>
    <option id="projection">
       <prompt xml:lang="nl">Projection</prompt>
       <prompt xml:lang="en">Projection</prompt>
-      <prompt xml:lang="zh">Projection</prompt>
+      <prompt xml:lang="zh">投影</prompt>
    </option>
    <option id="tty">
       <prompt xml:lang="nl">Tty (teletypes, terminals etc)</prompt>
       <prompt xml:lang="en">Tty (teletypes, terminals etc)</prompt>
-      <prompt xml:lang="zh">Tty (teletypes, terminals etc)</prompt>
+      <prompt xml:lang="zh">电传打字电报机 (电传打字机, 终端设备等)</prompt>
    </option>
    <option id="Tv">
       <prompt xml:lang="nl">Television</prompt>
       <prompt xml:lang="en">Television</prompt>
-      <prompt xml:lang="zh">Television</prompt>
+      <prompt xml:lang="zh">电视</prompt>
    </option>
 </optionlist>
