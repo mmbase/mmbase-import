@@ -30,17 +30,16 @@
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
 
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-
    <div class="tabs">
+<c:if test="${param.index eq 'yes'}">
     <!-- active TAB -->
     <div class="${(contenttypes == 'contentelement' || contenttypes == null)?'tab_active':'tab'}">
         <div class="body">
             <div>
-                <a href="SearchInitAction.do"><fmt:message key="content.search.title"/></a>
+                <a href="SearchInitAction.do?index=yes"><fmt:message key="content.search.title"/></a>
             </div>
         </div>
     </div>
-<c:if test="${param.index eq 'yes'}">
     <div class="${contenttypes == 'asset'?'tab_active':'tab'}">
       <div class="body">
          <div>
@@ -48,6 +47,16 @@
          </div>
       </div>
    </div>
+</c:if>
+<c:if test="${empty param.index}">
+   <div class="tabs">
+    <div class="${(contenttypes == 'contentelement' || contenttypes == null)?'tab_active':'tab'}">
+        <div class="body">
+            <div>
+                <a href="SearchInitAction.do"><fmt:message key="content.search.title"/></a>
+            </div>
+        </div>
+    </div>
 </c:if>
 </div>
    <div class="editor">

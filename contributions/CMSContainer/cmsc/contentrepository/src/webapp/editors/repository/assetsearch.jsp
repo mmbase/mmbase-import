@@ -58,7 +58,7 @@
  <div class="tab">
       <div class="body">
          <div>
-            <a href="SearchInitAction.do"><fmt:message key="content.search.title" /></a>
+            <a href="SearchInitAction.do?index=yes"><fmt:message key="content.search.title" /></a>
          </div>
       </div>
    </div>
