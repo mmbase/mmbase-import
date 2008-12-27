@@ -36,7 +36,6 @@ import com.finalist.cmsc.security.SecurityUtil;
 
 public final class AssetElementUtil {
 
-   private static final String SOURCE = "SOURCE";
    private static final String DESTINATION = "DESTINATION";
 
    public static final String NUMBER_FIELD = "number";
@@ -58,6 +57,14 @@ public final class AssetElementUtil {
 
    private static final String PROPERTY_HIDDEN_ASSET_TYPES = "system.assettypes.hide";
 
+   private AssetElementUtil() {
+      // utility
+   }
+   
+   public static NodeManager getNodeManager(Cloud cloud) {
+      return cloud.getNodeManager(ASSETELEMENT);
+   }
+   
    public static List<NodeManager> getAssetTypes(Cloud cloud) {
       List<NodeManager> result = new ArrayList<NodeManager>();
       NodeManagerList nml = cloud.getNodeManagers();
