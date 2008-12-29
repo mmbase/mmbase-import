@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.122 2008-12-08 10:56:11 michiel Exp $
+ * @version $Id: Casting.java,v 1.123 2008-12-29 16:52:18 michiel Exp $
  */
 
 import java.util.*;
@@ -29,6 +29,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.NodeMap;
 import org.mmbase.bridge.util.MapNode;
+import org.mmbase.datatypes.DataType;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
@@ -224,8 +226,10 @@ public class Casting {
                 } catch (Exception e) {
                     throw new IllegalArgumentException(e);
                 }
+           } else if (type.equals(org.mmbase.datatypes.DataType.class)) {
+                return (C) toDataType(value);
             } else {
-                log.error("Don't know how to convert to " + type);
+                log.error("Don't know how to convert to " + type, new Exception());
                 if (value == null || "".equals(value)) {
                     // just to avoid the error
                     return null;
@@ -936,7 +940,7 @@ public class Casting {
      */
     static public BigDecimal toDecimal(Object i) {
         if (i instanceof BigDecimal) {
-            return ((BigDecimal) i).plus().stripTrailingZeros();
+            return (BigDecimal) i;
         } else if (i instanceof CharSequence) {
             try {
                 return new BigDecimal("" + i).stripTrailingZeros();
@@ -962,6 +966,18 @@ public class Casting {
         } else {
             return new BigDecimal(toDouble(i)).stripTrailingZeros();
         }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    static public DataType toDataType(Object o) {
+        if (o instanceof DataType) {
+            return (DataType) o;
+        } else {
+            return DataTypes.getDataType(toString(o));
+        }
+
     }
 
 
