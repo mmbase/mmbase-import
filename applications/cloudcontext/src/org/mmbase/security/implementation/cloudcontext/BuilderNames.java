@@ -15,7 +15,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: BuilderNames.java,v 1.1 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: BuilderNames.java,v 1.2 2008-12-29 09:27:42 michiel Exp $
  * MMBase-1.9.1
  */
 public class BuilderNames extends AbstractCollection<String> {
@@ -32,7 +32,8 @@ public class BuilderNames extends AbstractCollection<String> {
         return new Iterator<String>() {
             Iterator<MMObjectBuilder> i = BuilderNames.this.backing.iterator();
             public String next() {
-                return i.next().getTableName();
+                MMObjectBuilder bul = i.next();
+                return bul == null ? null : bul.getTableName();
             }
             public boolean hasNext() {
                 return i.hasNext();
