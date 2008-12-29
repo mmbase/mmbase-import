@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.77 2008-12-09 11:28:54 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.78 2008-12-29 16:40:49 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -44,6 +44,7 @@
         Principally, HTML could be valid XML.
       </description>
       <setprocessor type="string">
+
         <class name="org.mmbase.datatypes.processors.xml.HtmlSetString" />
       </setprocessor>
       <getprocessor type="string">
@@ -876,6 +877,12 @@
           Need a getprocessor to round to scale 2 for displaying.
       -->
     </specialization>
+  </datatype>
+
+  <datatype id="list">
+    <description xml:lang="en">List valued</description>
+    <class name="org.mmbase.datatypes.ListDataType" />
+
   </datatype>
 
 </datatypes>
