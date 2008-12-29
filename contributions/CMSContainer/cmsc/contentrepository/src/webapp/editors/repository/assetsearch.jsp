@@ -19,16 +19,17 @@
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
 
 <cmscedit:head title="search.title">
+      <link rel="stylesheet" href="<cmsc:staticurl page='../css/thumbnail.css'/>" type="text/css">
       <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
       <script src="search.js" type="text/javascript"></script>
             <script type="text/javascript">
                function showEditItems(id){
                   document.getElementById('asset-info-'+id).style.display = 'block';
-                  document.getElementById('asset-info-'+id).style.display = 2001;
+                  document.getElementById('asset-info-'+id).style.zIndex = 2001;
                }
                function hideEditItems(id){
                   document.getElementById('asset-info-'+id).style.display = 'none';
-                  document.getElementById('asset-info-'+id).style.display = 2000;
+                  document.getElementById('asset-info-'+id).style.zIndex = 2000;
                }
                function changeMode(offset){
                    if(offset==null){offset=0;}
@@ -482,36 +483,43 @@
             <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
          </mm:relatednodes>
 
-         <div style="width:160px; height:180px;float:left;text-align:center;" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
-            <div style="clear:both;float:left;width:77%;height:33px;">
+         <div class="thumbnail_show" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
+            <div class="thumbnail_operation">
                <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border: 1px solid #eaedff" >
                <%@ include file="searchIconsBar.jspf" %>
                </div>
             </div>
-            <div style="width:100%;height:100px;text-align:left;padding:0px 10px 5px 5px;vertical-align:middle;display:block;float:left;" >
-               <div style="width:80%;height:100px;text-align:center;">
-               <a href="javascript:showInfo(<mm:field name="number" />)">
-                  <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
-                  <c:if test="${typedef eq 'images'}">
-                     <img src="<mm:image template="s(120x100)"/>" alt=""/>
-                  </c:if>
-                  <c:if test="${typedef eq 'attachments'}">
-                     <img src="../gfx/alert_green_left.gif" alt=""/>change
-                  </c:if>
-                  <c:if test="${typedef eq 'urls'}">
-                     need to add
-                  </c:if>
-               </a>
+            <div class="thumbnail_body" >
+               <div class="thumbnail_img" onMouseOver="this.style.background = 'yellow';" onMouseOut="this.style.background = 'white';">
+                   <a href="javascript:showInfo('<mm:nodeinfo type="type"/>', '<mm:field name="number" />')">
+                     <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
+                     <c:if test="${typedef eq 'images'}">
+                        <img src="<mm:image template="s(120x100)"/>" alt=""/>
+                     </c:if> 
+                     <c:if test="${typedef eq 'attachments'}">
+                        <c:set var="filename"><mm:field name="filename"/></c:set>
+                        <c:set var="subfix">${fn:substringAfter(filename, '.')}</c:set>
+                        <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="false">
+                           <img src="../gfx/${subfix}${'.gif'}" alt=""/>
+                        </mm:haspage> 
+                        <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="true">
+                           <img src="../gfx/otherAttach.gif" alt=""/>
+                        </mm:haspage>
+                     </c:if>
+                     <c:if test="${typedef eq 'urls'}">
+                        <img src="../gfx/url.gif" alt=""/>
+                     </c:if>
+                  </a>
                </div>
-               <div style="width:80%;text-align:center;margin:0px 0px 0px 0px;padding-top:0px;padding-right:0px;overflow-x:hidden;">
-                 <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
+               <div class="thumnail_info">
+                  <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
                   <c:if test="${typedef eq 'images'}">
                      <mm:field name="title"/><br/><mm:field name="itype"/>
                   </c:if>
                   <c:if test="${typedef eq 'attachments'}">
                      <mm:field name="title"/>
                   </c:if>
-                   <c:if test="${typedef eq 'urls'}">
+                  <c:if test="${typedef eq 'urls'}">
                      <mm:field name="name"/>
                   </c:if>
                </div>
