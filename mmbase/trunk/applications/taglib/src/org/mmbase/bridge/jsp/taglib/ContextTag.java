@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.93 2008-10-13 12:04:30 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.94 2008-12-29 11:19:17 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -202,7 +202,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             if (id == null) {
                 id = referid.getString(this);
             }
-            ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap());
+            ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
             pageContext.setAttribute(id, storedContainer, s);
         }
         setCloudContext(getContextTag().cloudContext);
