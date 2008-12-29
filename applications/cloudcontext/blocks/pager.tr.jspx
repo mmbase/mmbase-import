@@ -4,7 +4,7 @@
     >
   <td colspan="100">
     <mm:previousbatches max="10">
-      <mm:link referids="_@offset">
+      <mm:link referids="_@offset,orderby?,directions?">
         <mm:fieldlist nodetype="$nodetype" type="search">
           <mm:fieldinfo type="reusesearchinput" />
         </mm:fieldlist>
@@ -17,7 +17,7 @@
     <mm:index />
     <mm:nextbatches max="10">
       <jsp:text>,</jsp:text>
-      <mm:link referids="_@offset">
+      <mm:link referids="_@offset,orderby?,directions?">
         <mm:fieldlist nodetype="$nodetype" type="search">
           <mm:fieldinfo type="reusesearchinput" />
         </mm:fieldlist>

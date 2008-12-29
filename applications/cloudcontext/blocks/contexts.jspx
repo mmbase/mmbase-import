@@ -8,8 +8,9 @@
 
   <jsp:output omit-xml-declaration="true" />
 
+  <mm:import externid="tab" vartype="integer" from="request">0</mm:import>
   <mm:function set="cloudcontext" name="authorization" write="false"><c:set var="nodetypes" value="${_.contextProvider.contextBuilders}"  /></mm:function>
-  <mm:import id="nodetype">${nodetypes[0].tableName}</mm:import>
+  <mm:import id="nodetype">${nodetypes[tab].tableName}</mm:import>
 
 
   <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>name</mm:isempty></mm:write></mm:import>
@@ -39,8 +40,8 @@
 
   </mm:form>
 
-  <mm:import id="orderby">number</mm:import>
-  <mm:import id="directions">down</mm:import>
+  <mm:import externid="orderby" from="request">number</mm:import>
+  <mm:import externid="directions" from="request">${orderby eq 'number' ? 'DOWN' : 'UP'}</mm:import>
   <mm:import externid="search" />
   <table summary="Users">
 
@@ -59,25 +60,20 @@
       <mm:maxnumber value="10" />
 
       <tr>
-        <th>
-          <mm:present referid="extrauserlink">
-            <mm:include  page="$extrauserlink" notfound="skip" />
-          </mm:present>
-        </th>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
           <th>
-            <mm:link referids="search" >
+            <mm:link>
               <mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
               <mm:fieldinfo type="name">
                 <mm:compare referid2="orderby">
-                  <mm:write referid="directions">
-                    <mm:compare value="UP">
-                      <mm:param name="directions">DOWN</mm:param>
-                    </mm:compare>
-                    <mm:compare value="DOWN">
+                  <c:choose>
+                    <c:when test="${orderby eq 'number' and directions eq 'DOWN'}">
                       <mm:param name="directions">UP</mm:param>
-                    </mm:compare>
-                  </mm:write>
+                    </c:when>
+                    <c:when test="${orderby ne 'number' and directions eq 'UP'}">
+                      <mm:param name="directions">DOWN</mm:param>
+                    </c:when>
+                  </c:choose>
                 </mm:compare>
               </mm:fieldinfo>
               <mm:fieldlist  nodetype="$nodetype" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
@@ -87,7 +83,6 @@
             </mm:link>
           </th>
         </mm:fieldlist>
-        <th><fmt:message key="rank" /></th>
         <th>
           <mm:link referids="search">
             <mm:compare referid="orderby" value="number">
@@ -106,17 +101,23 @@
         </th>
       </tr>
       <mm:sortorder field="$orderby" direction="$directions" />
-      <mm:listnodes id="user" varStatus="status">
+      <mm:listnodes varStatus="status">
         <tr id="object${_node}" class="${status.index % 2 eq 0 ? 'even' : 'odd'}">
-          <td>
-            <mm:present referid="extrauserlink">
-              <mm:include referids="user" page="$extrauserlink" notfound="skip"/>
-            </mm:present>
-          </td>
           <mm:fieldlist fields="$fields">
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
-          <td>
+          <td class="commands">
+            <mm:maywrite>
+              <mm:link referids="_node@node"
+                       page="context">
+                <a onclick="document.getElementById('object${_node}').className = 'active'; "
+                   href="${_}">
+                  <fmt:message key="update" />
+                  <img src="${mm:link('images/mmbase-edit.gif')}"
+                       alt="" title="" />
+                </a>
+              </mm:link>
+            </mm:maywrite>
           </td>
         </tr>
       </mm:listnodes>
