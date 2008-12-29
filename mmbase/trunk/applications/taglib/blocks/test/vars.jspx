@@ -42,5 +42,16 @@
   <p>a / a / a</p>
   <p>a / a / b</p>
 
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1760">Reuse of context (MMB-1760)</a></h3>
+  <mm:context id="r">
+    <mm:import id="x">XXXX</mm:import>
+    <p>x: ${x} (should be XXXX)</p>
+  </mm:context>
+
+  <mm:context referid="r">
+    <p>x: ${x} (should be XXXX)</p>
+  </mm:context>
+
+
 
 </div>
