@@ -10,7 +10,7 @@
   <mm:import externid="test" vartype="Integer" >1234</mm:import>
   <mm:import externid="list" vartype="List" >fiets,auto,,step</mm:import>
 
-  <table width="100%" border="1">
+  <table>
     <tr><th>description</th><th>Should be</th><th>Is really</th><th>EL version</th><th>Remarks</th></tr>
     <tr><td>referid</td><td>ABC</td><td><mm:write referid="abcde" /></td><td>${abcde}</td><td> </td></tr>
     <mm:write value="$abcde">
