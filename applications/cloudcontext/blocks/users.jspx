@@ -7,6 +7,13 @@
 
   <jsp:output omit-xml-declaration="true" />
 
+  <mm:import id="nodetype">
+    <mm:function set="cloudcontext" name="authenticate">${_.userProvider.userBuilder.tableName}</mm:function>
+  </mm:import>
+
+  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>username,defaultcontext,status,owner</mm:isempty></mm:write></mm:import>
+
+
   <p class="action">
     <mm:maycreate type="mmbaseusers">
       <mm:link page="create_user">
@@ -20,8 +27,6 @@
   <!--
   <%@include file="search.form.jsp" %>
   -->
-  <mm:import id="nodetype">mmbaseusers</mm:import>
-  <mm:import id="fields">username</mm:import>
   <mm:import id="orderby">number</mm:import>
   <mm:import id="directions">down</mm:import>
   <mm:import externid="search" />
