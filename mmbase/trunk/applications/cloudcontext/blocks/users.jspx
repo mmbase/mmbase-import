@@ -120,7 +120,7 @@
           </td>
           <td class="commands">
             <mm:maywrite>
-              <mm:link referids="user" page="user">
+              <mm:link referids="user@node" page="user">
                 <a onclick="document.getElementById('object${_node}').className = 'active'; "
                    href="${_}">
                   <fmt:message key="update" />

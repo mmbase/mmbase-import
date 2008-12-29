@@ -1,0 +1,22 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:sec="http://www.mmbase.org/tags/mm/security"
+    class="mm_c c_cloudcontent b_context ${requestScope.className}"
+    id="${requestScope.componentId}">
+
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="node" required="true" />
+  <mm:node referid="node">
+    <mm:form>
+      <table>
+        <mm:fieldlist type="edit">
+          <tr><th><mm:fieldinfo type="guiname" /></th><td><mm:fieldinfo type="input" /></td></tr>
+        </mm:fieldlist>
+      </table>
+      <sec:table />
+    </mm:form>
+  </mm:node>
+</div>
