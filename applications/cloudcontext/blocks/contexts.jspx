@@ -2,26 +2,27 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c c_cloudcontent b_users ${requestScope.className}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    class="mm_c c_cloudcontent b_contexts ${requestScope.className}"
     id="${requestScope.componentId}">
 
   <jsp:output omit-xml-declaration="true" />
 
-  <mm:import id="nodetype">
-    <mm:function set="cloudcontext" name="authentication">${_.userProvider.userBuilder.tableName}</mm:function>
-  </mm:import>
+  <mm:function set="cloudcontext" name="authorization" write="false"><c:set var="nodetypes" value="${_.contextProvider.contextBuilders}"  /></mm:function>
+  <mm:import id="nodetype">${nodetypes[0].tableName}</mm:import>
 
-  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>username,defaultcontext,status,owner</mm:isempty></mm:write></mm:import>
+
+  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>name</mm:isempty></mm:write></mm:import>
 
 
   <p class="action">
     <mm:maycreate type="$nodetype">
-      <mm:link page="create_user">
+      <mm:link page="create_context">
         <a href="${_}"><img src="${mm:link('images/mmbase-new.gif')}"  alt="+" title="create user"  /></a>
       </mm:link>
     </mm:maycreate>
     <mm:maycreate type="$nodetype" inverse="true">
-      <fmt:message key="notallowedtocreateusers" />
+      <fmt:message key="notallowedtocreatecontexts" />
     </mm:maycreate>
   </p>
   <mm:form>
@@ -116,34 +117,6 @@
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
           <td>
-            <mm:function name="rank" />
-          </td>
-          <td class="commands">
-            <mm:maywrite>
-              <mm:link referids="user" page="user">
-                <a onclick="document.getElementById('object${_node}').className = 'active'; "
-                   href="${_}">
-                  <fmt:message key="update" />
-                  <img src="${mm:link('images/mmbase-edit.gif')}"
-                       alt="" title="" />
-                </a>
-              </mm:link>
-            </mm:maywrite>
-            <mm:function name="rank" >
-              <mm:compare value="ADMIN_INT" inverse="true">
-                <mm:maydelete>
-                  <mm:import id="prompt">reallydeleteusers</mm:import>
-                  <mm:link referids="user" page="delete_user">
-                    <a onclick="confirm.js"
-                       href="${_}">
-                      <fmt:message key="delete" />
-                      <img src="${mm:link('location/images/mmbase-delete.gif')}"
-                           alt="" title="" />
-                    </a>
-                  </mm:link>
-                </mm:maydelete>
-            </mm:compare>
-            </mm:function>
           </td>
         </tr>
       </mm:listnodes>
