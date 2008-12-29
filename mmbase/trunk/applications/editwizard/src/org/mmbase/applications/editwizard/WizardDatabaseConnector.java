@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.55 2008-12-23 17:29:24 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.56 2008-12-29 12:45:34 michiel Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -55,7 +55,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param       cloud   The cloud from which the userinfo should be set.
      */
     public void setUserInfo(Cloud cloud) {
-        userCloud=cloud;
+        userCloud = cloud;
     }
 
     /**
@@ -73,7 +73,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * A internal counter is used to make sure identifiers are still unique.
      * @param node current node
      */
-    public void tagDataNode(Node node) {
+    private void tagDataNode(Node node) {
         NodeList nodes = Utils.selectNodeList(node, ".|.//*");
         didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
         // if value is a datetime or boolean value,it should be parsed and converted to an integer,
@@ -206,7 +206,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return The resulting node with the objectdata.
      * @throws WizardException if loading the object fails
      */
-    public Node getData(Node targetNode, String objectnumber) throws WizardException {
+    private Node getData(Node targetNode, String objectnumber) throws WizardException {
         return getData(targetNode, objectnumber, null);
     }
 
@@ -219,7 +219,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @throws WizardException if the object could not be retrieved
      * @return The resulting node with the objectdata.
      */
-    public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
+    private Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
         // fires getData command and places result in targetNode
         Node objectNode = getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
         // place object in targetNode
@@ -263,7 +263,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
      * @throws WizardException if the relations could not be obtained
      */
-    public void getRelations(Node targetNode, String objectnumber) throws WizardException {
+    private void getRelations(Node targetNode, String objectnumber) throws WizardException {
         getRelations(targetNode, objectnumber, null);
     }
 
@@ -276,7 +276,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return Collection of relation nodes
      * @throws WizardException if the relations could not be obtained
      */
-    public Collection<Node> getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
+    private Collection<Node> getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
 
         // fires getRelations command and places results inside targetNode
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectNumber, queryRelations);
@@ -302,7 +302,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return The resulting object node.
      * @throws WizardException   if the node could not be created
      */
-    public Node getNew(Node targetNode, String objecttype) throws WizardException {
+    private Node getNew(Node targetNode, String objecttype) throws WizardException {
         // fires getNew command and places result in targetNode
         ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
         fireCommand(cmd);
@@ -333,7 +333,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return The resulting relation node.
      * @throws WizardException   if the relation could not be created
      */
-    public Node getNewRelation(Node targetNode, String role,
+    private Node getNewRelation(Node targetNode, String role,
                               String sourceObjectNumber, String sourceType,
                               String destinationObjectNumber, String destinationType, String createDir) throws WizardException {
         // fires getNewRelation command and places result in targetNode
@@ -465,9 +465,10 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
         if (nodeName.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
-            Node firstobject = null;
+            Node firstobject = null; // The implementation suggests that this is the _last_ object.
             for (int i=0; i < objectdefs.getLength(); i++) {
                 firstobject = createObject(data, targetParentNode, objectdefs.item(i), params, loadedData);
+                log.info("first object: " + firstobject);
             }
             log.debug("This is an action");  // no relations to add here..
             return firstobject;
@@ -680,7 +681,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @throws WizardException   if the data could not be stored
      */
     public Element put(Document originalData, Document loadedData, Document newData, Map<String, byte[]> binaries) throws WizardException {
-        Node putcmd =getPutData(originalData, loadedData, newData);
+        Node putcmd = getPutData(originalData, loadedData, newData);
         return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
 
@@ -780,7 +781,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return put request for mmbase
      * @throws WizardException   if the data could not be stored
      */
-    public Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
+    private Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
         Document workDoc = Utils.emptyDocument();
         workDoc.appendChild(workDoc.importNode(newData.getDocumentElement().cloneNode(true), true));
 
@@ -998,7 +999,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     xpath                   The xpath query to find the nodes
      * @param     allowedChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
      */
-    public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
+    private void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, xpath);
         for (int i=0; i<list.getLength(); i++) {
             Node item = list.item(i);
@@ -1015,7 +1016,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     targetParentNode        The parent on which the results should be appended.
      * @param     allowedChildrenXpath    The xpath describing what children may be copied.
      */
-    public void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
+    private void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, allowedChildrenXpath);
         Utils.appendNodeList(list, targetParentNode);
     }
@@ -1027,7 +1028,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     node2   Compare with thisone.
      * @return   True if they are different, False if they are similar.
      */
-    public boolean isDifferent(Node node1, Node node2) {
+    private boolean isDifferent(Node node1, Node node2) {
         // only checks textnodes and childnumbers
         if (node1.getChildNodes().getLength() != node2.getChildNodes().getLength()) {
             // ander aantal kindjes!
