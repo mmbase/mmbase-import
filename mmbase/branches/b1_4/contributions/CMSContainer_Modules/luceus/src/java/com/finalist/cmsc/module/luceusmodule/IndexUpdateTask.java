@@ -24,11 +24,13 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NotFoundException;
 
+import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.module.luceusmodule.luceus.Indexer;
 import com.finalist.cmsc.module.luceusmodule.luceus.LuceusUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.search.PageInfo;
 import com.finalist.cmsc.services.search.Search;
 import com.luceus.core.om.Envelope;
@@ -207,12 +209,6 @@ public class IndexUpdateTask implements Runnable {
    }
 
 
-   private void executeUpdateContentChannelIndex(int nodeNumber) {
-      log.debug(id + " Update contentchannel index: " + nodeNumber);
-      executeUpdateRelatedContent(nodeNumber, "contentelement");
-   }
-
-
    private void executeUpdateSecondaryContentIndex(int nodeNumber) {
       log.debug(id + " Update secondary content: " + nodeNumber);
       Node node = fetchNode(nodeNumber);
@@ -233,11 +229,12 @@ public class IndexUpdateTask implements Runnable {
    }
 
 
-   private void executeUpdateRelatedContent(int nodeNumber, String type) {
-      log.debug(id + " Update related content: " + nodeNumber);
+   private void executeUpdateContentChannelIndex(int nodeNumber) {
+      log.debug(id + " Update contentchannel index: " + nodeNumber);
       Node node = fetchNode(nodeNumber);
       if (node != null) {
-         NodeList relatedNodes = node.getRelatedNodes(type);
+         
+         NodeList relatedNodes = RepositoryUtil.getLinkedElements(node);
          for (NodeIterator i = relatedNodes.nodeIterator(); i.hasNext();) {
             Node relatedNode = i.nextNode();
             if (relatedNode.getNumber() != nodeNumber) {
@@ -331,7 +328,7 @@ public class IndexUpdateTask implements Runnable {
       }
 
       if (module.isDoAttachments()) {
-         Set<Node> attachments = Search.findLinkedSecondaryContent(contentElement, "attachments");
+         Set<Node> attachments = Search.findLinkedSecondaryContent(contentElement, ResourcesUtil.ATTACHMENTS);
          for (Node attachment : attachments) {
             if (module.isDoSecondaryWithPrimary()) {
                LuceusUtil.nodeFields(attachment, doc);
@@ -343,7 +340,7 @@ public class IndexUpdateTask implements Runnable {
       }
 
       if (module.isDoUrls()) {
-         Set<Node> urls = Search.findLinkedSecondaryContent(contentElement, "urls");
+         Set<Node> urls = Search.findLinkedSecondaryContent(contentElement, ResourcesUtil.URLS);
          for (Node url : urls) {
             if (module.isDoSecondaryWithPrimary()) {
                LuceusUtil.nodeFields(url, doc);

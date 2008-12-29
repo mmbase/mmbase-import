@@ -19,7 +19,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.servlet.BridgeServlet;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
@@ -130,7 +129,15 @@ public class RedirectServlet extends BridgeServlet {
                     if (hostIndex > -1) {
                         // The same host as the contenturl. strip servername and port
                         int firstSlash = redirect.indexOf("/", hostIndex + "://".length());
-                        redirect = redirect.substring(firstSlash);
+                        if (firstSlash > -1) {
+                           redirect = redirect.substring(firstSlash);
+                        }
+                        else {
+                           // firstSlash is -1 when there is a contentportlet on the homepage
+                           // and servername is true
+                           response.sendRedirect(redirect);
+                           return;
+                        }
                     }
                     else {
                         // can not convert so just redirect.
