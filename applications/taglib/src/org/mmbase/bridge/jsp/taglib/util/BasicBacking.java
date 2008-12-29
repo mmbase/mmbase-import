@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.14 2008-10-13 12:04:31 michiel Exp $
+ * @version $Id: BasicBacking.java,v 1.15 2008-12-29 11:19:17 michiel Exp $
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {
@@ -72,26 +72,34 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
         }
 
     }
-    public BasicBacking(Map<String, Object> backing) {
+    /**
+     * @since MMBase-1.9
+     */
+    public BasicBacking(Map<String, Object> backing, boolean ignoreEL) {
+        if (log.isDebugEnabled()) {
+            log.debug("Explicit backing " + backing, new Exception());
+        }
         pageContext = null;
         b = backing;
-        isELIgnored = true;
+        isELIgnored = ignoreEL;
     }
 
     public void pushPageContext(PageContext pc) {
-        final PageContext origPageContext = pageContext;
         pageContext = pc;
-        if (isELIgnored) return; // never mind
+        if (isELIgnored) {
+            log.debug("EL ignored");
+            return; // never mind
+        } else {
+            log.debug("Pushing page context " + b);
+        }
 
         originalPageContextValues = (Map<String, Object>) pageContext.getAttribute(PAGECONTEXT_KEY + uniqueNumber);
         if (originalPageContextValues == null) {
             originalPageContextValues = new HashMap<String, Object>();
             pageContext.setAttribute(PAGECONTEXT_KEY + uniqueNumber, originalPageContextValues);
         }
-        if (! origPageContext.equals(pageContext)) {
-            for (Map.Entry<String, Object> entry : b.entrySet()) {
-                mirrorPut(entry.getKey(), entry.getValue());
-            }
+        for (Map.Entry<String, Object> entry : b.entrySet()) {
+            mirrorPut(entry.getKey(), entry.getValue());
         }
     }
     public void pullPageContext(PageContext pc) {
@@ -217,6 +225,13 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
             }
             originalPageContextValues.clear();
         }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public boolean isELIgnored() {
+        return isELIgnored;
     }
 
     public String toString() {
