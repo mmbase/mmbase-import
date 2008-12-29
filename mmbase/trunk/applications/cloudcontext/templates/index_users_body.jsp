@@ -6,9 +6,9 @@
 <mm:write session="orderby"    referid="orderby" />
 <mm:write session="directions" referid="directions" />
 
-  <mm:import id="fields" externid="user_fields">username,defaultcontext,status,owner</mm:import>
   <mm:import externid="search" />
-  <mm:import id="nodetype">mmbaseusers</mm:import>
+  <mm:import id="nodetype"><%=org.mmbase.security.implementation.cloudcontext.Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName()%></mm:import>
+  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>username,defaultcontext,status,owner</mm:isempty></mm:write></mm:import>
 
   <%@include file="you.div.jsp" %>
   <mm:import id="current">users</mm:import>
