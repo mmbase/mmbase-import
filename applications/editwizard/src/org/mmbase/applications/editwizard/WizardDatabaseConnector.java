@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.56 2008-12-29 12:45:34 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.57 2008-12-29 13:08:33 michiel Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -46,7 +46,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
     /**
      * Constructor: Creates the connector. Call #init also.
      */
-    public WizardDatabaseConnector(){
+    public WizardDatabaseConnector() {
     }
 
     /**
@@ -382,7 +382,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
             // if you add a list of items, the order of the list may be of import.
             // the variable $pos is used to make that distinction
-            params.put("pos",createorder+"");
+            params.put("pos", createorder+"");
             Node parent = data.getDocumentElement();
             if (log.isDebugEnabled()) {
                 log.debug("parent=" + parent.toString());
@@ -466,9 +466,8 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         if (nodeName.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
             Node firstobject = null; // The implementation suggests that this is the _last_ object.
-            for (int i=0; i < objectdefs.getLength(); i++) {
+            for (int i = 0; i < objectdefs.getLength(); i++) {
                 firstobject = createObject(data, targetParentNode, objectdefs.item(i), params, loadedData);
-                log.info("first object: " + firstobject);
             }
             log.debug("This is an action");  // no relations to add here..
             return firstobject;
@@ -486,11 +485,15 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             relations = Utils.selectNodeList(objectDef, ".");
         } else if (nodeName.equals("object")) {
             String objectType = Utils.getAttribute(objectDef, "type");
-            if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
-            if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
+            if (objectType.equals("")) {
+                throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Create object of type " + objectType);
+            }
             // create a new object of the given type
             objectNode = getNew(targetParentNode, objectType);
-            if (context!=null && !context.equals("")) {
+            if (context != null && !context.equals("")) {
                 Utils.setAttribute(objectNode, "context", context);
             }
             fillObjectFields(data, targetParentNode, objectDef, objectNode, params, createorder);
@@ -503,7 +506,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // Let's see if we need to create new relations (maybe even with new objects inside...
         Node lastCreatedRelation = null;
 
-        for (int i=0; i < relations.getLength(); i++) {
+        for (int i = 0; i < relations.getLength(); i++) {
             Node relation = relations.item(i);
             // create the relation now we can get all needed params
             String role = Utils.getAttribute(relation, "role", "related");
@@ -536,23 +539,24 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 }
                 // but annotate that this one is loaded from mmbase. Not a new one
                 Utils.setAttribute(inside_object, "already-exists", "true");
+                Utils.setAttribute(inside_object, "repository", "true");
                 loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
 
                 // grab the type
                 dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
                 // type should be determined from the destinationtype
-                dtype=Utils.getAttribute(relation, "destinationtype", "");
+                dtype = Utils.getAttribute(relation, "destinationtype", "");
                 // OR the objectdefiniton
                 if (dtype.equals("")) {
-                    if (inside_objectdef!=null) {
+                    if (inside_objectdef != null) {
                         dtype = Utils.getAttribute(inside_objectdef, "type");
                     }
                 }
             }
 
             Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype,createDir);
-            if (context!=null && !context.equals("")) {
+            if (context != null && ! context.equals("")) {
                 Utils.setAttribute(relationNode, "context", context);
             }
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
@@ -659,7 +663,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
             // find response for this command
             Node resp = Utils.selectSingleNode(response, "/*/"+cmd.getName() +"[@id]");
-            if (resp!=null) {
+            if (resp != null) {
                 // yes we found a response
                 cmd.setResponse(resp);
             } else {
@@ -796,7 +800,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // Remove disposable objects (disposable=true)
         // Remove all relations which have NO destination chosen (destination="-");
         NodeList disposables = Utils.selectNodeList(workRoot, ".//*[@disposable or @destination='-']");
-        for (int i=0; i<disposables.getLength(); i++) {
+        for (int i = 0; i < disposables.getLength(); i++) {
             Node disp = disposables.item(i);
             disp.getParentNode().removeChild(disp);
         }
@@ -824,13 +828,13 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
         // find all changed or new relations and objects
         NodeList nodes = Utils.selectNodeList(reqnew, ".//relation|.//object[not(@disposable)]");
-        for (int i=0; i<nodes.getLength(); i++) {
+        for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
             Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
-            if (orignode!=null) {
+            if (orignode != null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
                     String destination = Utils.getAttribute(node,"destination", "");
@@ -868,9 +872,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     } else {
                         // check if fields are different?
                         NodeList fields=Utils.selectNodeList(node,"field");
-                        for (int j=0; j<fields.getLength(); j++) {
+                        for (int j = 0; j < fields.getLength(); j++) {
                             Node origfield = Utils.selectSingleNode(orignode, "field[@name='"+Utils.getAttribute(fields.item(j), "name")+"']");
-                            if (origfield!=null) {
+                            if (origfield != null) {
                                 if (!isDifferent(fields.item(j), origfield)) {
                                     // the same. let's remove this field also
                                     fields.item(j).getParentNode().removeChild(fields.item(j));
@@ -888,6 +892,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 // original datanode (should be better in later versions, eg. by using a repository).
                 String already_exists = Utils.getAttribute(node, "already-exists", "false");
                 if (!already_exists.equals("true")) {
+
                     // go ahead. this seems to be a really new one...
                     // this is a new relation or object.
                     Utils.setAttribute(node, "status", "new");
@@ -896,7 +901,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     // insert values are not sent - this allows use of virtual fields to edit
                     // other fields
                     NodeList fields=Utils.selectNodeList(node,"field");
-                    for (int j=0; j<fields.getLength(); j++) {
+                    for (int j = 0; j < fields.getLength(); j++) {
                         // if a new field is empty, don't enter it, but use the default value
                         // as set in the builder's setDefault() method
                         // note that strictly speaking, this may not be correct
@@ -907,10 +912,6 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     }
                 } else {
                     // remove it from the list.
-
-                    // MM: I think this happens sometimes a bit too often, and the 'parent' node can
-                    // sometimes be removed, and subsequently inadvertedly be deleted
-                    //
                     node.getParentNode().removeChild(node);
         	}
             }
@@ -924,7 +925,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // 2. change "changed" relations into a delete + a create command.
         //    and, make sure the create command is in the right format.
         NodeList rels = Utils.selectNodeList(req, "//new/relation[@status='changed']");
-        for (int i=0; i<rels.getLength(); i++) {
+        for (int i = 0; i < rels.getLength(); i++) {
             Node rel = rels.item(i);
             Node newrel = rel.cloneNode(true);
 
@@ -953,11 +954,11 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // servlet.
         //
         rels = Utils.selectNodeList(req, "//new/relation[@status='fieldschangedonly']");
-        for (int i=0; i<rels.getLength(); i++) {
+        for (int i = 0; i < rels.getLength(); i++) {
             Node rel = rels.item(i);
             String number = Utils.getAttribute(rel,"number","");
             Node origrel = Utils.selectSingleNode(req, "//original/relation[@number='"+number+"']");
-            if (!number.equals("") && origrel!=null) {
+            if (!number.equals("") && origrel != null) {
                 // we found the original relation also. Now, we can process these nodes.
                 convertRelationIntoObject(origrel);
                 convertRelationIntoObject(rel);
@@ -969,18 +970,18 @@ public class WizardDatabaseConnector implements java.io.Serializable {
     private void markDeletedNodes(Document req, Node reqnew, Node reqorig) {
         // remove all repository nodes
         NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
-        for (int i=0; i<repnodes.getLength(); i++) {
+        for (int i = 0; i < repnodes.getLength(); i++) {
             Node repnode = repnodes.item(i);
             repnode.getParentNode().removeChild(repnode);
         }
 
         // find all deleted relations and objects
         NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
-        for (int i=0; i<orignodes.getLength(); i++) {
+        for (int i = 0; i < orignodes.getLength(); i++) {
             Node orignode = orignodes.item(i);
             String nodenumber = Utils.getAttribute(orignode, "number", "");
-            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='"+nodenumber+"']");
-            if (node==null) {
+            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='" + nodenumber + "']");
+            if (node == null) {
                 // item is apparently deleted.
                 // place relation node anyway but say that it should be deleted (and make it so more explicit)
                 Node newnode = req.createElement(orignode.getNodeName());
@@ -1001,7 +1002,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      */
     private void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, xpath);
-        for (int i=0; i<list.getLength(); i++) {
+        for (int i = 0; i < list.getLength(); i++) {
             Node item = list.item(i);
             Node newnode = targetParentNode.getOwnerDocument().importNode(item, false);
             targetParentNode.appendChild(newnode);
@@ -1047,7 +1048,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         NodeList kids = node1.getChildNodes();
         NodeList kids2 = node2.getChildNodes();
 
-        for (int i=0; i<kids.getLength(); i++) {
+        for (int i = 0; i < kids.getLength(); i++) {
             if (isDifferent(kids.item(i), kids2.item(i))) {
                 return true;
             }
