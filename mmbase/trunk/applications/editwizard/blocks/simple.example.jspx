@@ -77,6 +77,7 @@
       </td>
     </tr>
     <tr><td>
+      <p>
       <mm:link referids="referrer,templates" page="$jsps/list.jsp">
         <mm:param name="wizard">samples/news_origin</mm:param>
         <mm:param name="startnodes">default.mags</mm:param>
@@ -89,21 +90,25 @@
         <mm:param name="search">yes</mm:param>
         <a href="${_}">News (with origin = default.mags)</a>
       </mm:link>
-      <jsp:text> </jsp:text>
-      <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
-        <mm:param name="wizard">samples/news_origin</mm:param>
-        <mm:param name="origin">default.mags</mm:param>
-        <mm:param name="objectnumber">new</mm:param>
-        <a href="${_}">NEW</a>
-      </mm:link>
+      </p>
+      <p>
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">samples/news_origin</mm:param>
+          <mm:param name="origin">default.mags</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">NEW</a>
+        </mm:link>
+      </p>
+      <p>
 
-      <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
-        <mm:param name="wizard">samples/news_implicitcreates</mm:param>
-        <mm:param name="parent">default.mags</mm:param>
-        <mm:param name="newPos"><mm:time time="now" /></mm:param>
-        <mm:param name="objectnumber">new</mm:param>
-        <a href="${_}">NEW (with parent in stead of origin, with implicitely created urls and people objects)</a>
-      </mm:link>
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">samples/news_implicitcreates</mm:param>
+          <mm:param name="origin">default.mags</mm:param>
+          <mm:param name="newPos"><mm:time time="now" /></mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">NEW (with parent in stead of origin, with implicitely created urls and people objects)</a>
+        </mm:link>
+      </p>
     </td>
     <td>
       Only shows the news articles related to a specific node (the magazine, of course). This also
