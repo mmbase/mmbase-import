@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.9 2008-10-13 12:04:30 michiel Exp $
+ * @version $Id: Backing.java,v 1.10 2008-12-29 11:19:17 michiel Exp $
  */
 
 public interface Backing extends Map<String, Object> {
@@ -60,5 +60,10 @@ public interface Backing extends Map<String, Object> {
      * @since MMBase-1.9
      */
     public Map<String, Object> getOriginalMap();
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public boolean isELIgnored();
 }
 

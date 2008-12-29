@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.63 2008-10-07 17:28:25 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.64 2008-12-29 11:19:17 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -152,7 +152,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      */
     public void setParent(PageContext pc, ContextContainer p) {
         if (log.isDebugEnabled()) {
-            log.debug("Setting parent of " + getClass() + " "  + this + " to " + pc);
+            log.debug("Setting parent of " + getClass() + " "  + this + " to " + pc + " backing " + getBacking().getClass());
         }
         getBacking().pushPageContext(pc);
         parent = p;
