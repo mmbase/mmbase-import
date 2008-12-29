@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.57 2008-12-29 13:08:33 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.58 2008-12-29 13:49:19 michiel Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -535,11 +535,12 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 try {
                     inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
                 } catch (Exception e) {
-                    throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
+                    throw new WizardException("Could not load object (" + dnumber + "). Message: " + e.getMessage(), e);
                 }
                 // but annotate that this one is loaded from mmbase. Not a new one
                 Utils.setAttribute(inside_object, "already-exists", "true");
                 Utils.setAttribute(inside_object, "repository", "true");
+                Utils.setAttribute(inside_object, "disposable", "true");
                 loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
 
                 // grab the type
@@ -564,27 +565,26 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             tagDataNode(relationNode);
             lastCreatedRelation = relationNode;
 
-            if (inside_object==null) {
+            if (inside_object == null) {
                 // no dnumber given! create the object
-                if (inside_objectdef==null) {
+                if (inside_objectdef == null) {
                     // no destination is given AND no object to-be-created-new is placed.
                     // so, no destination should be added...
-                    inside_object=data.createElement("object");
+                    inside_object = data.createElement("object");
                     ((Element)inside_object).setAttribute("number","");
-                    ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
-                    ((Element)inside_object).setAttribute("searchtype",Utils.getAttribute(relation, "destinationtype", ""));
-                    ((Element)inside_object).setAttribute("disposable","true");
+                    ((Element)inside_object).setAttribute("type", Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("searchtype", Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("disposable", "true");
                 } else {
                     inside_object = createObject(data,relationNode, inside_objectdef, params, loadedData);
                     dnumber = Utils.getAttribute(inside_object, "number");
-                    ((Element)relationNode).setAttribute("destination",dnumber);
+                    ((Element)relationNode).setAttribute("destination", dnumber);
                     if (inside_object instanceof Element) {
                        String destinationType = Utils.getAttribute(relation, "destinationtype", "");
                        ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
                     }
                 }
-            }
-            else {
+            } else {
                if (inside_object instanceof Element) {
                   String destinationType = Utils.getAttribute(relation, "destinationtype", "");
                   ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
@@ -857,7 +857,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                             // really nothing changed.
                                 // remove relation from both orig as new
                             node.getParentNode().removeChild(node);
-                                orignode.getParentNode().removeChild(orignode);
+                            orignode.getParentNode().removeChild(orignode);
                         }
                     }
                 }
@@ -871,9 +871,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                         Utils.setAttribute(orignode, "repository", "true");
                     } else {
                         // check if fields are different?
-                        NodeList fields=Utils.selectNodeList(node,"field");
+                        NodeList fields = Utils.selectNodeList(node,"field");
                         for (int j = 0; j < fields.getLength(); j++) {
-                            Node origfield = Utils.selectSingleNode(orignode, "field[@name='"+Utils.getAttribute(fields.item(j), "name")+"']");
+                            Node origfield = Utils.selectSingleNode(orignode, "field[@name='" + Utils.getAttribute(fields.item(j), "name")+"']");
                             if (origfield != null) {
                                 if (!isDifferent(fields.item(j), origfield)) {
                                     // the same. let's remove this field also
@@ -957,7 +957,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         for (int i = 0; i < rels.getLength(); i++) {
             Node rel = rels.item(i);
             String number = Utils.getAttribute(rel,"number","");
-            Node origrel = Utils.selectSingleNode(req, "//original/relation[@number='"+number+"']");
+            Node origrel = Utils.selectSingleNode(req, "//original/relation[@number='" + number + "']");
             if (!number.equals("") && origrel != null) {
                 // we found the original relation also. Now, we can process these nodes.
                 convertRelationIntoObject(origrel);
