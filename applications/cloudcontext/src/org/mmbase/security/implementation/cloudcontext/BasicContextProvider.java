@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.1 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.2 2008-12-29 11:32:22 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -49,7 +49,20 @@ public  class BasicContextProvider implements ContextProvider {
 
     public BasicContextProvider(MMObjectBuilder... b) {
         List<MMObjectBuilder> temp = new ArrayList<MMObjectBuilder>();
-        temp.addAll(Arrays.asList(b));
+        for (MMObjectBuilder bul : b) {
+            if (bul == null) throw new IllegalArgumentException("Cannot add null to builder list");
+            temp.add(bul);
+        }
+        builders = Collections.unmodifiableList(temp);
+    }
+
+    public BasicContextProvider(String... b) {
+        List<MMObjectBuilder> temp = new ArrayList<MMObjectBuilder>();
+        for (String bulName : b) {
+            MMObjectBuilder bul = MMBase.getMMBase().getBuilder(bulName);
+            if (bul == null) log.warn("Cannot add 'bulName' to builder list (it does not exist)");
+            temp.add(bul);
+        }
         builders = Collections.unmodifiableList(temp);
     }
 
