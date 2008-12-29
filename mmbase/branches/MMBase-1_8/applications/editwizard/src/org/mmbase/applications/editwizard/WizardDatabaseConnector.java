@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.46.2.4 2008-12-18 21:26:30 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46.2.5 2008-12-29 13:13:04 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -531,6 +531,7 @@ public class WizardDatabaseConnector {
                 // but annotate that this one is loaded from mmbase. Not a new one
 
                 Utils.setAttribute(inside_object, "already-exists", "true");
+                Utils.setAttribute(inside_object, "repository", "true");
                 loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
 
                 // grab the type
@@ -885,7 +886,7 @@ public class WizardDatabaseConnector {
                 String already_exists = Utils.getAttribute(node, "already-exists", "false");
                 if (!already_exists.equals("true")) {
                     // go ahead. this seems to be a really new one...
-            
+
                     // this is a new relation or object.
                     Utils.setAttribute(node, "status", "new");
 
