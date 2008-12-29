@@ -23,7 +23,7 @@
       </mm:image>
       <br />
       image tag 3: <mm:image template="s(150x150)" mode="img" /><br />
-      <mm:image disposition="inline">
+      <mm:image disposition="attachment">
         <a href="${_}">Download the image</a>
       </mm:image>
       <br />
