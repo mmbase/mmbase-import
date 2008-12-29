@@ -127,7 +127,15 @@ public class RedirectServlet extends BridgeServlet {
                     if (hostIndex > -1) {
                         // The same host as the contenturl. strip servername and port
                         int firstSlash = redirect.indexOf("/", hostIndex + "://".length());
-                        redirect = redirect.substring(firstSlash);
+                        if (firstSlash > -1) {
+                           redirect = redirect.substring(firstSlash);
+                        }
+                        else {
+                           // firstSlash is -1 when there is a contentportlet on the homepage
+                           // and servername is true
+                           response.sendRedirect(redirect);
+                           return;
+                        }
                     }
                     else {
                         // can not convert so just redirect.
