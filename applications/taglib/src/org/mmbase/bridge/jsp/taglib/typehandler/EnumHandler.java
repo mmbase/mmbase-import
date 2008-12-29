@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.46 2008-10-06 17:06:45 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.47 2008-12-29 16:41:31 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -39,12 +39,18 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     private Iterator iterator;
     private boolean available;
 
+    private boolean multiple = false;
+
     /**
      * @since MMBase-1.8
      */
     public EnumHandler(FieldInfoTag tag) throws JspTagException {
         super(tag);
         available = true;
+    }
+
+    public void setMultiple(boolean m) {
+        multiple = m;
     }
 
     /**
@@ -138,6 +144,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
+        if (multiple) {
+            buffer.append("multiple=\"multiple\" ");
+        }
         addExtraAttributes(buffer);
         buffer.append(">");
         Object value  = cast(getFieldValue(node, field, true), node, field);
