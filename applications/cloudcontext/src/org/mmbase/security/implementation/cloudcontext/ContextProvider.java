@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext;
 
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
@@ -21,13 +22,13 @@ import org.mmbase.module.core.MMObjectBuilder;
  * esential properties of them are acquired.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.1 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.2 2008-12-30 17:49:44 michiel Exp $
  * MMBase-1.9.1
  */
 public interface ContextProvider {
 
 
-    Collection<MMObjectBuilder> getContextBuilders();
+    Collection<NodeSearchQuery> getContextQueries();
 
     void setContext(User user, MMObjectNode node, String context);
 

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.2 2008-12-29 11:32:22 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.3 2008-12-30 17:49:44 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -44,26 +44,35 @@ public  class BasicContextProvider implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(BasicContextProvider.class);
 
 
-    private final List<MMObjectBuilder> builders;
+    private final List<NodeSearchQuery> queries;
     private SortedSet<String> all;
 
+    public BasicContextProvider(NodeSearchQuery... q) {
+        List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
+        for (NodeSearchQuery query : q) {
+            temp.add(query);
+        }
+        queries = Collections.unmodifiableList(temp);
+    }
+
+
     public BasicContextProvider(MMObjectBuilder... b) {
-        List<MMObjectBuilder> temp = new ArrayList<MMObjectBuilder>();
+        List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (MMObjectBuilder bul : b) {
             if (bul == null) throw new IllegalArgumentException("Cannot add null to builder list");
-            temp.add(bul);
+            temp.add(new NodeSearchQuery(bul));
         }
-        builders = Collections.unmodifiableList(temp);
+        queries = Collections.unmodifiableList(temp);
     }
 
     public BasicContextProvider(String... b) {
-        List<MMObjectBuilder> temp = new ArrayList<MMObjectBuilder>();
+        List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (String bulName : b) {
             MMObjectBuilder bul = MMBase.getMMBase().getBuilder(bulName);
             if (bul == null) log.warn("Cannot add 'bulName' to builder list (it does not exist)");
-            temp.add(bul);
+            temp.add(new NodeSearchQuery(bul));
         }
-        builders = Collections.unmodifiableList(temp);
+        queries = Collections.unmodifiableList(temp);
     }
 
     protected boolean isAllContextsPossible() {
@@ -77,8 +86,8 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
 
-    public Collection<MMObjectBuilder> getContextBuilders() {
-        return builders;
+    public Collection<NodeSearchQuery> getContextQueries() {
+        return queries;
     }
 
 
@@ -124,8 +133,9 @@ public  class BasicContextProvider implements ContextProvider {
     protected SortedSet<String> getAllContexts() {
         if (all == null) {
             try {
-                for (MMObjectBuilder contextBuilder : getContextBuilders()) {
-                    Iterator<MMObjectNode> i = contextBuilder.getNodes(new NodeSearchQuery(contextBuilder)).iterator();  // list all  Contextes simply..
+                for (NodeSearchQuery q : getContextQueries()) {
+                    MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
+                    Iterator<MMObjectNode> i = contextBuilder.getNodes(q).iterator();  // list all  Contextes simply..
                     all = new TreeSet<String>();
                     while (i.hasNext()) {
                         MMObjectNode context = i.next();
@@ -188,9 +198,9 @@ public  class BasicContextProvider implements ContextProvider {
         Cache<String,MMObjectNode> contextCache = Caches.getContextCache();
         MMObjectNode contextNode = contextCache.get(context);
         if (contextNode == null && ! contextCache.contains(context)) {
-            for (MMObjectBuilder contextBuilder : getContextBuilders()) {
+            for (NodeSearchQuery query : getContextQueries()) {
                 try {
-                    NodeSearchQuery query = new NodeSearchQuery(contextBuilder);
+                    MMObjectBuilder contextBuilder = query.getBuilder();
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(contextBuilder.getField("name")), context);
                     query.setConstraint(constraint);
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(query).iterator();
@@ -513,10 +523,11 @@ public  class BasicContextProvider implements ContextProvider {
 
         ChainedList<MMObjectNode> result = new ChainedList<MMObjectNode>();
 
-        for (MMObjectBuilder contextBuilder : getContextBuilders()) {
+        for (NodeSearchQuery q : getContextQueries()) {
 
-            BasicSearchQuery query = new BasicSearchQuery();
-            Step step = query.addStep(contextBuilder);
+            MMObjectBuilder contextBuilder = q.getBuilder();
+            BasicSearchQuery query = new BasicSearchQuery(q, BasicSearchQuery.COPY_NORMAL);
+            Step step = query.getSteps().get(0);
             BasicStepField numberStepField = new BasicStepField(step, contextBuilder.getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, Integer.valueOf(contextNode.getNumber()));
 
@@ -738,7 +749,7 @@ public  class BasicContextProvider implements ContextProvider {
 
 
     private MMObjectNode getNode(int i) {
-        return builders.get(0).getNode(i);
+        return queries.get(0).getBuilder().getNode(i);
     }
 
 
