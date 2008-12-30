@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * listener to arrange invalidation of (entries of) them  when necessary.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Caches.java,v 1.1 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: Caches.java,v 1.2 2008-12-30 17:49:44 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class Caches {
@@ -129,7 +129,7 @@ public abstract class Caches {
         if (builder.equals(Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName())) {
             invalidateCaches(event.getNodeNumber());
         }
-        if (new BuilderNames(Verify.getInstance().getContextProvider().getContextBuilders()).contains((builder))
+        if (new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries()).contains((builder))
             || builder.equals("rightsrel")
             || builder.equals("groups")
             || builder.equals("ranks")
@@ -141,7 +141,7 @@ public abstract class Caches {
         String sourceType = event.getRelationSourceType();
         String destType = event.getRelationDestinationType();
         String userBuilder = Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName();
-        Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextBuilders());
+        Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries());
         if (sourceType.equals(userBuilder)) {
             invalidateCaches(event.getRelationSourceNumber());
         }

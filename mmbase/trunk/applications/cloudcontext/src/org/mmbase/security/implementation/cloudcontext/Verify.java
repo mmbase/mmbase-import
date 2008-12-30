@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.15 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: Verify.java,v 1.16 2008-12-30 17:49:44 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
@@ -68,7 +68,7 @@ public class Verify extends Authorization {
 
     @Override
     public boolean check(UserContext userContext, int nodeId, Operation operation)  {
-        return Contexts.getBuilder().mayDo((User) userContext, nodeId, operation);
+        return getContextProvider().mayDo((User) userContext, getContextNode(nodeId, true), operation);
     }
 
     @Override public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
@@ -113,7 +113,7 @@ public class Verify extends Authorization {
 
 
     protected MMObjectNode getContextNode(int nodeId, boolean exception) {
-        MMObjectNode node =  getContextProvider().getContextBuilders().iterator().next().getNode(nodeId);
+        MMObjectNode node =  getContextProvider().getContextQueries().iterator().next().getBuilder().getNode(nodeId);
         if (node == null) {
             if (exception) {
                 throw new SecurityException("node #" + nodeId + " not found");
