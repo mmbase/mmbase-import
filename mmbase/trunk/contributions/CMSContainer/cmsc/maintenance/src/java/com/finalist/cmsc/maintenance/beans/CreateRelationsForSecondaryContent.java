@@ -14,6 +14,8 @@ import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.versioning.Versioning;
+import com.finalist.cmsc.services.versioning.VersioningException;
 
 
 public class CreateRelationsForSecondaryContent {
@@ -74,18 +76,29 @@ public class CreateRelationsForSecondaryContent {
                
                Node channel = getRelatedChannel(asset);
                if(channel == null) {
+                  log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +root.getNumber()+ " Asset elements.");
                   relation = RelationUtil.createRelation(asset, root, CREATIONREL);
                }
                else {
+                  log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +channel.getNumber()+ " Asset elements.");
                   relation = RelationUtil.createRelation(asset, channel, CREATIONREL);
+                  log.info("Assets - added relations to Asset element."+ asset.getNumber());
                }
             }
             else {
-               relation = RelationUtil.createRelation(asset, root, "creationrel");
+               log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +root.getNumber()+ " Asset elements.");
+               relation = RelationUtil.createRelation(asset, root, CREATIONREL);
             }
 
             Publish.publish(relation); // This method checks if it need to publish
                                        // otherwise, it doesn't harm anyone
+         }
+         //Add a version for a asset element.
+         try {
+            Versioning.addVersion(asset);
+         } 
+         catch (VersioningException e) {
+           log.error("Add version error for node"+asset.getNumber(),e);
          }
 
          /*int owners = asset.countRelatedNodes(ownerManager, "ownerrel", "destination");
