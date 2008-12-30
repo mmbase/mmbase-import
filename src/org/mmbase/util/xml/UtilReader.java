@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.40 2008-11-24 11:07:12 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.41 2008-12-30 11:02:34 michiel Exp $
  */
 public class UtilReader {
 
@@ -104,7 +104,7 @@ public class UtilReader {
     }
 
     private final Map<String, String> properties = new HashMap<String, String>();
-    private final Map<String,Collection<Map.Entry<String,String>>> maps = new HashMap<String, Collection<Map.Entry<String,String>>>();
+    private final Map<String,Collection<Map.Entry<String, String>>> maps = new HashMap<String, Collection<Map.Entry<String,String>>>();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -222,7 +222,7 @@ public class UtilReader {
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("mergingmap") ||
                             type.equals("map")) {
-                            Collection<Map.Entry<String,String>> entryList = null;
+                            Collection<Map.Entry<String, String>> entryList = null;
                             if (type.equals("mergingmap")) {
                                 entryList = maps.get(name);
                             }
@@ -267,7 +267,7 @@ public class UtilReader {
             }
 
         }
-        if (properties.size() == 0) {
+        if (properties.size() == 0 && maps.size() == 0) {
             log.service("No properties read from " + configList);
         } else {
             log.service("Read " + properties.entrySet() + " from " + configList);
