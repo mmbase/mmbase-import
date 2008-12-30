@@ -72,16 +72,16 @@ public class AssetAction extends MMBaseAction {
          direction = null;
       }
       if (StringUtils.isEmpty(show)) {
-         show = (String)request.getSession().getAttribute("show");
-         if(StringUtils.isEmpty(show)){
-            show="list";
-         } 
+         show = (String) request.getSession().getAttribute("show");
+         if (StringUtils.isEmpty(show)) {
+            show = "list";
+         }
       }
       if (StringUtils.isEmpty(imageOnly)) {
-         imageOnly = (String)request.getSession().getAttribute("imageOnly");
-         if(StringUtils.isEmpty(imageOnly)){
-            imageOnly="no";
-         } 
+         imageOnly = (String) request.getSession().getAttribute("imageOnly");
+         if (StringUtils.isEmpty(imageOnly)) {
+            imageOnly = "no";
+         }
       }
 
       // Set the offset (used for paging).
@@ -103,18 +103,26 @@ public class AssetAction extends MMBaseAction {
          Node channel = cloud.getNode(parentchannel);
          NodeList assets;
          NodeList created;
-         if("yes".equals(imageOnly)){
-         assets = RepositoryUtil.getCreatedAssets(channel, Arrays.<String>asList(IMAGES), orderby, direction, false,
-               offset * maxNumber, maxNumber, -1, -1, -1);
-         created = RepositoryUtil.getCreatedAssets(channel, IMAGES);
-         }else{
-            assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false,
-                  offset * maxNumber, maxNumber, -1, -1, -1);
+         if ("yes".equals(imageOnly)) {
+            assets = RepositoryUtil.getCreatedAssets(channel, Arrays.<String> asList(IMAGES), orderby, direction,
+                  false, offset * maxNumber, maxNumber, -1, -1, -1);
+            created = RepositoryUtil.getCreatedAssets(channel, IMAGES);
+         } else {
+            assets = RepositoryUtil.getCreatedAssets(channel, null, orderby, direction, false, offset * maxNumber,
+                  maxNumber, -1, -1, -1);
             created = RepositoryUtil.getCreatedAssets(channel);
          }
          int assetCount = 0;
          if (!created.isEmpty()) {
             assetCount = created.size();
+         }
+         String ewnodelastedited = getParameter(request, "ewnodelastedited");
+         if (ewnodelastedited != null) {
+            Node node = cloud.getNode(ewnodelastedited);
+            if (node.getNodeManager().getName().equalsIgnoreCase("urls")) {
+               node.setValue("title", node.getStringValue("name"));
+               node.commit();
+            }
          }
          addToRequest(request, "direction", direction);
          addToRequest(request, "orderby", orderby);
