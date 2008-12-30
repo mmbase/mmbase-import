@@ -18,7 +18,7 @@ import org.w3c.dom.*;
 
 
 /**
- * This class handles all communition with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
+ * This class handles all communication with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
  * needed for rendering the wizard screens.
  * The WizardDatabaseConnector can connect to MMBase and get data, relations, constraints, lists. It can also
  * store changes, create new objects and relations.
@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.58 2008-12-29 13:49:19 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.59 2008-12-30 12:07:07 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -47,6 +47,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * Constructor: Creates the connector. Call #init also.
      */
     public WizardDatabaseConnector() {
+       // nothing to do
     }
 
     /**
@@ -63,9 +64,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param       data    The data document which should be tagged.
      */
-    public void tagDataNodes(Document data) {
-        didcounter = 1;
-        tagDataNode(data.getDocumentElement());
+    public void tagDataNodesWithoutDataID(Document data) {
+        NodeList nodes = Utils.selectNodeList(data.getDocumentElement(), ".|.//*[not(@did)]");
+        didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
     }
 
     /**
@@ -151,7 +152,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         if (loadAction != null) {
             loadRelations(object, objectNumber, loadAction);
         }
-        tagDataNodes(data);
+        tagDataNodesWithoutDataID(data);
         return data;
     }
 
@@ -525,7 +526,6 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             }
             String dtype = "";
 
-            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node inside_object = null;
             Node inside_objectdef = Utils.selectSingleNode(relation, "object");
             if (dnumber != null) {
@@ -534,17 +534,15 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 // we can do this here as it is a single retrieval
                 try {
                     inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
+                    // but annotate that this one is loaded from mmbase. Not a new one
+                    Utils.setAttribute(inside_object, "already-exists", "true");
+                    loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
+
+                    // grab the type
+                    dtype = Utils.getAttribute(inside_object, "type", "");
                 } catch (Exception e) {
                     throw new WizardException("Could not load object (" + dnumber + "). Message: " + e.getMessage(), e);
                 }
-                // but annotate that this one is loaded from mmbase. Not a new one
-                Utils.setAttribute(inside_object, "already-exists", "true");
-                Utils.setAttribute(inside_object, "repository", "true");
-                Utils.setAttribute(inside_object, "disposable", "true");
-                loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
-
-                // grab the type
-                dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
                 // type should be determined from the destinationtype
                 dtype = Utils.getAttribute(relation, "destinationtype", "");
@@ -556,6 +554,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 }
             }
 
+            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype,createDir);
             if (context != null && ! context.equals("")) {
                 Utils.setAttribute(relationNode, "context", context);
@@ -844,15 +843,17 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                         Utils.setAttribute(node, "status", "changed");
                         // store original destination also. easier to process later on
                         Utils.setAttribute(node, "olddestination", olddestination);
+                        Utils.setAttribute(orignode, "repository", "update");
                     } else {
                         // it's the same (or at least: the destination is the same)
                         // now check if some inside-fields are changed.
                         boolean valueschanged = checkRelationFieldsChanged(orignode, node);
 
                         if (valueschanged) {
-                            // values in the fields are changed, destination/source are still te same.
+                            // values in the fields are changed, destination/source are still the same.
                             // let's store that knowledge.
                             Utils.setAttribute(node,"status", "fieldschangedonly");
+                            Utils.setAttribute(orignode, "repository", "update");
                         } else {
                             // really nothing changed.
                                 // remove relation from both orig as new
@@ -866,9 +867,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     // check if it is changed
                     boolean different = isDifferent(node, orignode);
                     if (!different) {
-                        // remove both objects
+                        // remove object from both orig as new
                         node.getParentNode().removeChild(node);
-                        Utils.setAttribute(orignode, "repository", "true");
+                        orignode.getParentNode().removeChild(orignode);
                     } else {
                         // check if fields are different?
                         NodeList fields = Utils.selectNodeList(node,"field");
@@ -882,7 +883,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                                 }
                             }
                         }
-                        Utils.setAttribute(orignode, "repository", "false");
+                        Utils.setAttribute(orignode, "repository", "update");
                     }
                 }
             } else {
@@ -968,15 +969,8 @@ public class WizardDatabaseConnector implements java.io.Serializable {
     }
 
     private void markDeletedNodes(Document req, Node reqnew, Node reqorig) {
-        // remove all repository nodes
-        NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
-        for (int i = 0; i < repnodes.getLength(); i++) {
-            Node repnode = repnodes.item(i);
-            repnode.getParentNode().removeChild(repnode);
-        }
-
         // find all deleted relations and objects
-        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
+        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation[not(@repository)]|.//object[not(@repository)]");
         for (int i = 0; i < orignodes.getLength(); i++) {
             Node orignode = orignodes.item(i);
             String nodenumber = Utils.getAttribute(orignode, "number", "");

@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.174 2008-11-28 16:50:40 michiel Exp $
+ * @version $Id: Wizard.java,v 1.175 2008-12-30 12:07:07 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -447,7 +447,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 }
 
                 parent.appendChild(newobject);
-                databaseConnector.tagDataNodes(data);
+                databaseConnector.tagDataNodesWithoutDataID(data);
                 dataId = Utils.getAttribute(newobject, "number");
 
                 if (log.isDebugEnabled()) {
@@ -2530,7 +2530,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                         for (int j = 0; j < newSubObjects.getLength(); j++) {
                             Node newSubObject = newSubObjects.item(j);
                             Utils.setAttribute(newSubObject, "already-exists", "true");
-                            //loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubObject.cloneNode(true), true));
                         }
 
                         loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
