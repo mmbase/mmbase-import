@@ -21,7 +21,7 @@ import org.mmbase.bridge.util.Queries;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.23 2008-07-15 19:54:37 michiel Exp $
+ * @version $Id: ListRelationsTag.java,v 1.24 2008-12-30 16:19:54 michiel Exp $
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -32,8 +32,6 @@ public class ListRelationsTag extends AbstractNodeListTag {
     protected Attribute container = Attribute.NULL;
 
     private NodeManager nm;
-    private BridgeList<Node> relatedNodes = null;
-    private NodeQuery relatedQuery = null;
     private Node     relatedFromNode;
 
 
@@ -66,16 +64,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
     }
 
 
-    protected NodeQuery getRelatedQuery() throws JspTagException {
-        if (relatedQuery == null) {
-            relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-            if (orderby != Attribute.NULL) {
-                Queries.addSortOrders(relatedQuery, (String) orderby.getValue(this), (String) directions.getValue(this));
-            }
-            Queries.sortUniquely(relatedQuery);
-        }
-        return relatedQuery;
-    }
+
 
     public Node getRelatedNode() throws JspTagException {
         Relation rel = getNodeVar().toRelation();
@@ -90,15 +79,10 @@ public class ListRelationsTag extends AbstractNodeListTag {
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             relatedFromNode = (Node)      listHelper.getReturnList().getProperty("relatedFromNode");
-            relatedQuery    = (NodeQuery) listHelper.getReturnList().getProperty("relatedQuery");
-            relatedNodes    = (NodeList)  listHelper.getReturnList().getProperty("relatedNodes");
             return superresult;
         }
 
         ListRelationsContainerTag c = findParentTag(ListRelationsContainerTag.class, (String) container.getValue(this), false);
-
-        relatedNodes = null;
-        relatedQuery = null;
 
         NodeQuery query;
         if (c == null || type != Attribute.NULL || role != Attribute.NULL || searchDir != Attribute.NULL) { // containerless version
@@ -114,17 +98,9 @@ public class ListRelationsTag extends AbstractNodeListTag {
             }
 
             query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-            relatedQuery = null; // determin when needed
         } else { // working with container
             query = (NodeQuery) c.getQuery();
-            relatedQuery = c.getRelatedQuery();
-            relatedQuery.setOffset(query.getOffset());
-            relatedQuery.setMaxNumber(query.getMaxNumber());
             relatedFromNode = c.getRelatedFromNode();
-            if (orderby != Attribute.NULL) {
-                Queries.addSortOrders(relatedQuery, (String) orderby.getValue(this), (String) directions.getValue(this));
-            }
-            Queries.sortUniquely(relatedQuery);
         }
 
 
@@ -137,12 +113,6 @@ public class ListRelationsTag extends AbstractNodeListTag {
         NodesAndTrim result = getNodesAndTrim(query);
         result.nodeList.setProperty("relatedFromNode", relatedFromNode); // used to be used by mm:relatednode but not any more.
 
-
-        if (getId() != null) {
-            getRelatedQuery();
-            result.nodeList.setProperty("relatedQuery", relatedQuery);
-        }
-
         return setReturnValues(result.nodeList, result.needsTrim);
     }
 
@@ -152,8 +122,6 @@ public class ListRelationsTag extends AbstractNodeListTag {
 
     public void doFinally() {
         nm = null;
-        relatedNodes = null;
-        relatedQuery = null;
         relatedFromNode = null;
         super.doFinally();
     }
