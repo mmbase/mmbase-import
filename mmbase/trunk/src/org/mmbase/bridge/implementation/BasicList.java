@@ -18,9 +18,10 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.36 2008-12-19 15:53:26 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: BasicList.java,v 1.37 2008-12-30 11:12:52 michiel Exp $
  */
-public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>  {
+public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
