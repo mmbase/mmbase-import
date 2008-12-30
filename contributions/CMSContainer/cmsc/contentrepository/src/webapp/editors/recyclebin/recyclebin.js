@@ -1,5 +1,5 @@
    function restore(objectnumber, offset, type, url) {
-       if(type=="Attachment"||type=="Image"||type=="Url"){
+       if(type=="Attachment"||type=="Image"||type=="URL"){
           url = "RestoreAssetAction.do";
        }
        else{
@@ -13,7 +13,7 @@
     
    function info(objectNumber, type) {
       var url;
-	   if(type=="Attachment"||type=="Image"||type=="Url"){  
+	   if(type=="Attachment"||type=="Image"||type=="URL"){  
 		   url = '../resources/';
 		   url += type.toLowerCase();
 		   url += 'info.jsp?objectnumber=';
