@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.47 2008-12-29 16:41:31 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.48 2008-12-30 12:41:12 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -139,6 +139,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         return value;
     }
 
+
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
@@ -153,7 +154,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("using value " + (value == null ? "NULL" : value.getClass().getName() + " " + value));
         }
-        if (! field.getDataType().isRequired()) {
+        if (! field.getDataType().isRequired() && ! multiple) {
             buffer.append("<option value=\"\" ");
             if (value == null) buffer.append("selected=\"selected\" ");
             buffer.append(">--</option>");
@@ -162,7 +163,12 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             iterator = getIterator(node, field);
         }
 
-        String valueString = Casting.toString(value);
+        List<String> valueString = multiple ? new ArrayList<String>() : Collections.singletonList(Casting.toString(value));
+        if (multiple) {
+            for (Object v : Casting.toList(value)) {
+                valueString.add(Casting.toString(v));
+            }
+        }
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
@@ -174,7 +180,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append("<option value=\"");
             buffer.append(XML.transform(keyString));
             buffer.append("\"");
-            if (keyString.equals(valueString)) {
+            if (valueString.contains(keyString)) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
                 String searchs = Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
