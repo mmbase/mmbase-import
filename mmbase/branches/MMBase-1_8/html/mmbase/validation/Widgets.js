@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.2.2.10 2008-12-30 14:16:19 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.2.2.11 2008-12-30 17:54:21 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */
@@ -261,7 +261,7 @@ Widgets.prototype.twoMultiples = function(selector) {
             var nobr = $("<nobr />");
             var buttonToLeft  = $("<input type='button' value=' &lt; ' />")
             buttonToLeft.click(function() {
-                for (var i = 0; i < right[0].options.length; i++) {
+                for (var i = right[0].options.length - 1; i >= 0; i--) {
                     var o = right[0].options[i];
                     if (o.selected) {
                         Widgets.prototype.moveFromAToB(o, right, left);
@@ -270,7 +270,7 @@ Widgets.prototype.twoMultiples = function(selector) {
             });
             var buttonToRight = $("<input type='button' value=' &gt; ' />")
             buttonToRight.click(function() {
-                for (var i = 0; i < left[0].options.length; i++) {
+                for (var i = left[0].options.length - 1; i >= 0; i--) {
                     var o = left[0].options[i];
                     if (o.selected) {
                         Widgets.prototype.moveFromAToB(o, left, right);
