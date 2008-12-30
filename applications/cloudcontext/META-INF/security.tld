@@ -9,4 +9,8 @@
     <name>table</name>
     <path>/META-INF/tags/mm/security/table.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>commit</name>
+    <path>/META-INF/tags/mm/security/commit.tagx</path>
+  </tag-file>
 </taglib>

@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.62 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: Contexts.java,v 1.63 2008-12-30 17:49:44 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -51,12 +51,10 @@ public class Contexts extends MMObjectBuilder {
     public final static Parameter<String> PARAMETER_OPERATION   = new Parameter<String>("operation", String.class);
     public final static Parameter<String> PARAMETER_GROUPORUSER = new Parameter<String>("grouporuser", String.class);
 
-    public final static Parameter[] ALLOWS_PARAMETERS = {
+    private final static Parameter[] ALLOWS_PARAMETERS = {
         PARAMETER_GROUPORUSER,
         PARAMETER_OPERATION
     };
-
-    public final static Parameter[] PARENTSALLOW_PARAMETERS = ALLOWS_PARAMETERS;
 
 
     public final static Parameter[] GRANT_PARAMETERS = {
@@ -66,7 +64,6 @@ public class Contexts extends MMObjectBuilder {
     };
 
     public final static Parameter[] REVOKE_PARAMETERS    = GRANT_PARAMETERS;
-    public final static Parameter[] MAYGRANT_PARAMETERS  = GRANT_PARAMETERS;
     public final static Parameter[] MAYREVOKE_PARAMETERS = REVOKE_PARAMETERS;
 
 
@@ -147,7 +144,7 @@ public class Contexts extends MMObjectBuilder {
      * Implements check function with same arguments of Authorisation security implementation
      * @see Verify#check(UserContext, int, Operation)
      */
-    public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
+    private  boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
         // retrieve the node
         MMObjectNode node       = getNode(nodeId);
         return provider.mayDo(user, node, operation);
@@ -212,45 +209,6 @@ public class Contexts extends MMObjectBuilder {
     // EDIT FUNCTIONS
     //********************************************************************************
 
-    /**
-     * Whether users of the given group may do operation on a node of given context (so no following)
-     * @return boolean
-     */
-    protected boolean allows(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
-        return provider.getGroupsAndUsers(contextNode, operation).contains(groupOrUserNode);
-    }
-
-    /**
-     * Whether users of the given group may do operation on a node of given context, because
-     * (one of) the parents of this group allow it.
-     *
-     * @return boolean
-     */
-    protected boolean parentsAllow(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
-        try {
-            Groups groups = Groups.getBuilder();
-
-            Set<MMObjectNode> groupsAndUsers = provider.getGroupsAndUsers(contextNode, operation);
-            Iterator<MMObjectNode> i = groupsAndUsers.iterator();
-            while (i.hasNext()) {
-                MMObjectNode containingGroup = i.next();
-                if (groups.contains(containingGroup, groupOrUserNode)) return true;
-            }
-        } catch (Throwable e) {
-            log.error(Logging.stackTrace(e));
-        }
-        return false;
-    }
-
-    /**
-     * @javadoc
-     */
-    protected boolean mayGrant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, User user) {
-        return provider.mayGrant(user, contextNode, groupOrUserNode, operation);
-
-    }
-
-
 
     /**
      * @javadoc
@@ -312,11 +270,8 @@ public class Contexts extends MMObjectBuilder {
         if (function.equals("info")) {
             List<Object> empty = new ArrayList<Object>();
             Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
-            info.put("allows",       "" + ALLOWS_PARAMETERS + " Wether operation may be done according to this context");
-            info.put("parentsallow", "" + PARENTSALLOW_PARAMETERS + " Wether operation may be done by members of this group, also because of parents");
             info.put("grant",        "" + GRANT_PARAMETERS + " Grant a right");
             info.put("revoke",       "" + REVOKE_PARAMETERS + " Revoke a right");
-            info.put("maygrant",     "" + MAYGRANT_PARAMETERS + " Check if user may grant a right");
             info.put("mayrevoke",    "" + MAYREVOKE_PARAMETERS + " Check if user may revoke a right");
             info.put("may",          "" + MAY_PARAMETERS + " Checks a right for another user than yourself");
 
@@ -325,29 +280,12 @@ public class Contexts extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }
-        } else if (function.equals("allows")) {
-            Parameters a = Functions.buildParameters(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            if (allows(node, getNode(a.getString(PARAMETER_GROUPORUSER)), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            Parameters a = Functions.buildParameters(PARENTSALLOW_PARAMETERS, args);
-            return parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)));
         } else if (function.equals("grant")) {
             Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
             return grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"));
         } else if (function.equals("revoke")) {
             Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
             return revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"));
-        } else if (function.equals("maygrant")) {
-            Parameters a = Functions.buildParameters(MAYGRANT_PARAMETERS, args);
-            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
         } else if (function.equals("mayrevoke")) {
             Parameters a = Functions.buildParameters(MAYREVOKE_PARAMETERS, args);
             if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"))) {

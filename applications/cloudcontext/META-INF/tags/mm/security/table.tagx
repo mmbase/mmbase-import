@@ -4,22 +4,24 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.attribute name="operations"  />
-  <jsp:directive.attribute name="type"  />
+  <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
   <jsp:directive.attribute name="page"  />
 
   <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
 
   <table class="rights">
     <tr>
-      <th><mm:nodeinfo nodetype="${empty type ? 'mmbasecontexts' : type}" type="guinodemanager" /></th>
+      <th><mm:nodeinfo nodetype="${empty query ? 'mmbasecontexts' : query.builder.tableName}" type="guinodemanager" /></th>
       <mm:stringlist referid="ops">
         <th><mm:write /></th>
       </mm:stringlist>
     </tr>
     <mm:functioncontainer referids="_node@grouporuser">
-      <mm:listnodes id="thiscontext" type="${empty type ? 'mmbasecontexts' : type}"
-                    >
-        <tr>
+      <mm:listnodescontainer referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
+        <mm:listnodes id="thiscontext"
+                      max="200"
+                      >
+          <tr>
           <td class="text">
             <mm:import id="text">
               <mm:nodeinfo type="gui" />
@@ -55,7 +57,7 @@
           </mm:stringlist>
         </tr>
       </mm:listnodes>
+      </mm:listnodescontainer>
     </mm:functioncontainer>
-    <tr><td><input type="submit"  name="submit" /></td></tr>
   </table>
 </jsp:root>
