@@ -48,8 +48,8 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
 
                // unpublish and remove from workflow
                Publish.remove(objectNode);
-               Publish.unpublish(objectNode);
                Workflow.remove(objectNode);
+               Publish.unpublish(objectNode);
             }
             else {
                String destinationnumber = getParameter(request, "destionationchannel");
@@ -65,8 +65,8 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
 
                      // unpublish and remove from workflow
                      Publish.remove(objectNode);
-                     Publish.unpublish(objectNode);
                      Workflow.remove(objectNode);
+                     Publish.unpublish(objectNode);
                   }
                   else {
                      RepositoryUtil.addCreationChannel(objectNode, newCreationNode);

@@ -116,8 +116,8 @@ public class ChannelDelete extends MMBaseFormlessAction {
 
    private void deleteChannel(Node channelNode) {
       Publish.remove(channelNode);
-      Publish.unpublish(channelNode);
       Workflow.remove(channelNode);
+      Publish.unpublish(channelNode);
       
       channelNode.delete(true);
    }
@@ -130,8 +130,8 @@ public class ChannelDelete extends MMBaseFormlessAction {
 
       // unpublish and remove from workflow
       Publish.remove(elementNode);
-      Publish.unpublish(elementNode);
       Workflow.remove(elementNode);
+      Publish.unpublish(elementNode);
    }
 
    private void moveElementToTrash(Cloud cloud, Node channelNode, Node elementNode) {
@@ -144,8 +144,8 @@ public class ChannelDelete extends MMBaseFormlessAction {
 
       // unpublish and remove from workflow
       Publish.remove(elementNode);
-      Publish.unpublish(elementNode);
       Workflow.remove(elementNode);
+      Publish.unpublish(elementNode);
    }
     
 }

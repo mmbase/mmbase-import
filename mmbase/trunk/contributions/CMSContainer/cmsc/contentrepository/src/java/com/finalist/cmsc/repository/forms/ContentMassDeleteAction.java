@@ -55,8 +55,8 @@ public class ContentMassDeleteAction extends MMBaseFormlessAction {
          
                      // unpublish and remove from workflow
                      Publish.remove(contentNode);
-                     Publish.unpublish(contentNode);
                      Workflow.remove(contentNode);
+                     Publish.unpublish(contentNode);
                   }
                   else{
                      numbers.add(contentNode.getNumber());
