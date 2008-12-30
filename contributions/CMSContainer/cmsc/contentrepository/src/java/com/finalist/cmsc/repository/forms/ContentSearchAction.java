@@ -313,8 +313,8 @@ public class ContentSearchAction extends PagerAction {
 
       // unpublish and remove from workflow
       Publish.remove(objectNode);
-      Publish.unpublish(objectNode);
       Workflow.remove(objectNode);
+      Publish.unpublish(objectNode);
    }
 
 }

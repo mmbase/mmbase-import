@@ -312,8 +312,8 @@ public class AssetSearchAction extends PagerAction {
 
       // unpublish and remove from workflow
       Publish.remove(objectNode);
-      Publish.unpublish(objectNode);
       Workflow.remove(objectNode);
+      Publish.unpublish(objectNode);
    }
 
 }
