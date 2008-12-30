@@ -275,9 +275,17 @@ public class WizardController {
                      if (!Workflow.hasWorkflow(node)) { 
                         Workflow.create(node, ""); 
                      } 
-                     else { 
+                     else
+                     { 
                         Workflow.addUserToWorkflow(node);
-                        }
+                     }
+                     //add version for asset element
+                     try {
+                        Versioning.addVersion(node);
+                     } 
+                     catch (VersioningException e) {
+                       log.error("Add version error for node"+node.getNumber(),e);
+                     }
                   }
                }
             }
