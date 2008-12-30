@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.175 2008-12-30 12:07:07 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.176 2008-12-30 12:48:03 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -2520,22 +2520,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     Iterator<Node> i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = (Node) i.next();
-                        Utils.setAttribute(newSubRelation, "already-exists", "true");
-                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
-                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
-                            Node newSubSubRelation = newSubSubRelations.item(k);
-                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
-                        }
-                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
-                        for (int j = 0; j < newSubObjects.getLength(); j++) {
-                            Node newSubObject = newSubObjects.item(j);
-                            Utils.setAttribute(newSubObject, "already-exists", "true");
-                        }
-
                         loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
-
-
-
                     }
 
                 } else {
