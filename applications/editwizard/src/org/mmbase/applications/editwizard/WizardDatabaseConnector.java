@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.59 2008-12-30 12:07:07 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.60 2008-12-30 12:48:03 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -535,7 +535,6 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 try {
                     inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
                     // but annotate that this one is loaded from mmbase. Not a new one
-                    Utils.setAttribute(inside_object, "already-exists", "true");
                     loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
 
                     // grab the type
@@ -890,7 +889,10 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 // this is a new relation or object. Remember that
                 // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
                 // we don't have a new object, no no, this is a later-loaded object which is not added to the
-                // original datanode (should be better in later versions, eg. by using a repository).
+                // original datanode. 
+                // This "already-exists" check is here to support custom extensions which might still use
+                // this attribute. Earlier versions of this class used this attribute, but it is replaced with
+                // the loadedData Document.
                 String already_exists = Utils.getAttribute(node, "already-exists", "false");
                 if (!already_exists.equals("true")) {
 
