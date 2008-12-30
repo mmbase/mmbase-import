@@ -232,22 +232,36 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                         if (!param) { return false; }
                         var a = link;
                         if (!a) {
-                              editor._doc.execCommand("createlink", false, param.f_href);
-                              a = editor.getParentElement();
-                              while (a) {
-                                    if (/^a$/i.test(a.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
-                                    if (/^body$/i.test(a.tagName)) { a = null; break } //Stop searching when Body-tag is found, don't go too deep.
-                                    a = a.parentNode;
-                              }
-
                               var sel = editor._getSelection();
-
                               if(sel == null || sel == ""){
                                     var aLink = document.createElement('a');
                                     editor.insertNodeAtSelection(aLink);
                                     a = aLink;
                                     a.href = param.f_href.trim();
                                     a.innerHTML = param.f_linkName.trim();
+                              }
+                              else {
+	                              editor._doc.execCommand("createlink", false, param.f_href);
+	                              a = editor.getParentElement();
+                                  var range = editor._createRange(sel);
+                                  if (!HTMLArea.is_ie) {
+              	                    if (a == null || !(/^a$/i.test(a.tagName))) {
+              	                        a = range.startContainer;
+              	                        if ( ! ( /^a$/i.test(a.tagName) ) ) {
+              	                              a = a.nextSibling;
+              	                              if ( a === null ) {
+              	                                    a = range.startContainer.parentNode;
+              	                              }
+              	                        }
+              	                    }
+                                  }
+                                  else {
+                                      while (a) {
+                                   	   if (/^a$/i.test(a.tagName)) break; //Search for the enclosing A tag, if found: continue and use it.
+                                   	   if (/^body$/i.test(a.tagName)) { a = null; break } //Stop searching when Body-tag is found, don't go too deep.
+                                   	   a = a.parentNode;
+                                      }
+                                  }
                               }
                         } 
                         else{
