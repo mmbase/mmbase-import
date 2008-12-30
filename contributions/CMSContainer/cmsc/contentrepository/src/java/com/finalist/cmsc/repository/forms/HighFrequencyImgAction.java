@@ -66,7 +66,7 @@ public class HighFrequencyImgAction extends PagerAction {
       boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
       String imageShow = highFrequencyImgForm.getImageShow();
       if(StringUtils.isEmpty(imageShow)){
-         imageShow="list";
+         imageShow="thumbnail";
       }
       
       Query query = cloud.createAggregatedQuery();
