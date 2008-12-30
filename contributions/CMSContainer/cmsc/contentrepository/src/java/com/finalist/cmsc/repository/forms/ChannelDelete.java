@@ -166,7 +166,7 @@ public class ChannelDelete extends MMBaseFormlessAction {
 
    private void unpublish(Node elementNode) {
       Publish.remove(elementNode);
-      Publish.unpublish(elementNode);
       Workflow.remove(elementNode);
+      Publish.unpublish(elementNode);
    } 
 }
