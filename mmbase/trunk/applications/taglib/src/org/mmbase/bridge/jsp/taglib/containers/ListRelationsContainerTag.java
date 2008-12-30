@@ -25,13 +25,12 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.23 2008-11-26 14:20:37 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.24 2008-12-30 16:19:54 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
     private NodeQuery   query        = null;
     private Object      prevQuery    = null;
-    private NodeQuery   relatedQuery        = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
@@ -71,29 +70,12 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return getNode();
     }
 
-    public NodeQuery getRelatedQuery() {
-        NodeQuery r = (NodeQuery) relatedQuery.clone();
-        // copy constraint and sort-orders of the query.
-        List<Step> querySteps = query.getSteps();
-        List<Step> rSteps     = r.getSteps();
-        for (int i = 0 ; i < querySteps.size(); i++) {
-            Step queryStep = querySteps.get(i);
-            Step rStep = rSteps.get(i);
-            Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);
-            Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);
-        }
-
-        return r;
-    }
-
-    private static final String RELATEDQUERY_PREFIX = "___related___";
 
     public int doStartTag() throws JspException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
-            relatedQuery = (NodeQuery) getContextProvider().getContextContainer().getObject(RELATEDQUERY_PREFIX + getReferid());
         } else {
             Node relatedFromNode = getNode();
             Cloud cloud = relatedFromNode.getCloud();
@@ -102,16 +84,13 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
                 nm = cloud.getNodeManager(type.getString(this));
             }
             query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-            relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
         }
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
-            relatedQuery.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
-            getContextProvider().getContextContainer().register(RELATEDQUERY_PREFIX + getId(), relatedQuery);
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
@@ -136,7 +115,6 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         pageContext.setAttribute(KEY, prevQuery, SCOPE);
         prevQuery = null;
         query = null;
-        relatedQuery = null;
         return super.doEndTag();
     }
 
