@@ -19,14 +19,19 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Container cognate for ListNodesTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.28 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.29 2008-12-30 17:48:08 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
+
+    private static final Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
     // nodereferrer because RelatedNodesContainer extension
 
     protected NodeQuery   query       = null;
@@ -118,7 +123,23 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             }
             query = (NodeQuery) query.clone();
         } else if (getReferid() != null) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+            Object o = getContextProvider().getContextContainer().getObject(getReferid());
+
+            // TODO following code must be put in org.mmbase.bridge.util.Queries or
+            // org.mmbase.util.Casting or so.
+            if (o instanceof NodeQuery) {
+                query = (NodeQuery) o;
+            } else if (o instanceof SearchQuery) {
+                SearchQuery q = (SearchQuery) o;
+                if (q.getSteps().size() != 1) throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
+                query = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
+                query.setConstraint(Queries.copyConstraint(q.getConstraint(), q.getSteps().get(0), query, query.getNodeStep()));
+                query.setOffset(q.getOffset());
+                query.setMaxNumber(q.getMaxNumber());
+                query.setDistinct(q.isDistinct());
+
+            }
+
             if (query == null) {
                 throw new JspTagException("No query found in referred id " + getReferid());
             }
