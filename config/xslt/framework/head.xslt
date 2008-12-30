@@ -1,14 +1,14 @@
-<xsl:stylesheet 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     exclude-result-prefixes=""
-    version = "1.0" >  
+    version = "1.0" >
   <!--
       This xslt can be used in MMBase framework implementations, to merge the result 'head' of head
       renderers, as supplied by blocks on the page, with their own head.
-      
+
       See http://cvs.mmbase.org/viewcvs/html/mmbase/admin/index.jsp?revision=1.14&view=markup for a usage example.
-      
-      @version $Id: head.xslt,v 1.5 2008-06-13 11:50:18 andre Exp $
+
+      @version $Id: head.xslt,v 1.6 2008-12-30 13:58:33 michiel Exp $
       @author Michiel Meeuwissen
       @since MMBase-1.9
   -->
@@ -28,7 +28,7 @@
       <title>
         <xsl:for-each select="$descendants/title">
           <xsl:if test="position() &gt; 1 and string-length(text()) &gt; 0"> - </xsl:if>
-          <xsl:copy-of select="text()" /> 
+          <xsl:copy-of select="text()" />
         </xsl:for-each>
       </title>
 
@@ -38,14 +38,14 @@
       <!-- link -->
       <xsl:variable name="unique-links"
                     select="$descendants/link[not(. = ./following-sibling::link and
-                            string(./@rel)  = string(./following-sibling::link/@rel) and 
-                            string(./@href) = string(./following-sibling::link/@href) and 
+                            string(./@rel)  = string(./following-sibling::link/@rel) and
+                            string(./@href) = string(./following-sibling::link/@href) and
                             string(./@type) = string(./following-sibling::link/@type) and
                             string(./@target) = string(./following-sibling::link/@target) and
-                            string(./@rev)    = string(./following-sibling::link/@rev) and 
+                            string(./@rev)    = string(./following-sibling::link/@rev) and
                             string(./@hreflang) = string(./following-sibling::link/@hreflang) and
                             string(./@target)   = string(./following-sibling::link/@target)
-                            )]" />         
+                            )]" />
 
       <xsl:for-each select="$unique-links">
         <link>
@@ -71,21 +71,20 @@
       </xsl:for-each>
 
       <!-- script -->
-      <xsl:variable name="unique-script"
-                    select="$descendants/script[not(. = ./following-sibling::script and
-                            string(./@charset)   = string(./following-sibling::script/@charset) and
-                            string(./@defer)   = string(./following-sibling::script/@charset) and
-                            string(./@language)   = string(./following-sibling::script/@language) and
-                            string(./@src)   = string(./following-sibling::script/@src) and
-                            string(./@type)   = string(./following-sibling::script/@type) and
-                            string(./@id)   = string(./following-sibling::script/@id)
-                            )]" />
-
-      <xsl:for-each select="$unique-script">
-        <script>
-          <xsl:copy-of select="@*" />
-          <xsl:copy-of select="*|text()" />
-        </script>
+      <xsl:for-each select="$descendants/script">
+        <xsl:if test="count(preceding-sibling::script[
+                      string(@src)      = string(current()/@src) and
+                      string(@charset)  = string(current()/@charset) and
+                      string(@defer)    = string(current()/@defer) and
+                      string(@language) = string(current()/@language) and
+                      string(@type)     = string(current()/@type) and
+                      string(@id)       = string(current()/@id)
+                      ]) = 0">
+          <script>
+            <xsl:copy-of select="@*" />
+            <xsl:copy-of select="*|text()" />
+          </script>
+        </xsl:if>
       </xsl:for-each>
 
       <xsl:variable name="unique-no-script"
@@ -100,10 +99,10 @@
         </noscript>
       </xsl:for-each>
 
-      <!-- 
+      <!--
            meta
 
-           support for some of the more common, sensible,  meta-headers 
+           support for some of the more common, sensible,  meta-headers
            For most of them, the content can be merged.
            No support for http-equiv meta headers.
            Framework should issue real http headers.
@@ -150,9 +149,9 @@
       </xsl:if>
 
       <meta name="generator" content="MMBase" />
-    
+
     </head>
   </xsl:template>
-  
-  
+
+
 </xsl:stylesheet>
