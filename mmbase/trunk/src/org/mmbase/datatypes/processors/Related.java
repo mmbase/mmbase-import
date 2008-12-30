@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.4 2008-11-11 18:34:21 michiel Exp $
+ * @version $Id: Related.java,v 1.5 2008-12-30 12:39:25 michiel Exp $
  */
 
 public class Related {
@@ -67,7 +67,8 @@ public class Related {
                     }
                     RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
                                                                    cloud.getNodeManager(type),
-                                                               role);
+                                                                   role);
+                    if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new nodes.
                     Relation newrel = node.createRelation(dest, rel);
                     newrel.commit();
                 }
