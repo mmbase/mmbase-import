@@ -151,7 +151,17 @@
                      </mm:field>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
                         <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')"><mm:image mode="img" template="s(120x100)"/></div>
-                        <div class="imgInfo"><mm:field name="title"/><br/><mm:field name="itype"/></div>
+                        <div class="imgInfo">
+                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                              <mm:field id="title" write="false" name="title"/>
+                              <c:if test="${assettype == 'urls'}">
+                                 <c:set var="title" ><mm:field name="name"/></c:set>
+                              </c:if>
+                              <c:if test="${fn:length(title) > 15}">
+                                 <c:set var="title">${fn:substring(title,0,14)}...</c:set>
+                              </c:if>${title}
+                              <br/><mm:field name="itype" />
+                        </div>
                      </div>
                   </mm:listnodes>
             </div>
@@ -190,8 +200,20 @@
                         <a href="javascript:showInfo(<mm:field name="number" />)">
                               <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
 								</td>
-                        <td onMouseDown="objClick(this);"><mm:field name="title" /></td>
-								<td onMouseDown="objClick(this);"><mm:field name="filename" /></td>
+                        <td onMouseDown="objClick(this);">
+                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                           <mm:field id="title" write="false" name="title"/>
+                           <c:if test="${assettype == 'urls'}">
+                              <c:set var="title" ><mm:field name="name"/></c:set>
+                           </c:if>
+                           <c:if test="${fn:length(title) > 50}">
+                              <c:set var="title">${fn:substring(title,0,49)}...</c:set>
+                           </c:if>
+                           ${title}
+                        </td>
+                        <td onMouseDown="objClick(this);">
+                           ${title}
+                        </td>
 								<td onMouseDown="objClick(this);"><mm:field name="itype" /></td>
 								<td onMouseDown="objClick(this);"><a
 									href="javascript:showInfo(<mm:field name="number" />)"><img
@@ -207,6 +229,7 @@
 	      <c:if test="${resultCount == 0 && (param.action == 'often' || param.title != null)}">
 	         <fmt:message key="imagesearch.noresult" />
 	      </c:if>
+         <div style="clear:both" ></div>
 	      <c:if test="${resultCount > 0}">
 	         <%@include file="../repository/searchpages.jsp" %>
 	      </c:if>
