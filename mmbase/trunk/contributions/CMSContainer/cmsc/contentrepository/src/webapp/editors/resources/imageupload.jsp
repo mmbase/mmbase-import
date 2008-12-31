@@ -121,8 +121,18 @@
                            alt="<fmt:message key="asset.delete" />"/>
                         </a>
                </td>
-               <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
-               <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
+               <td onMouseDown="objClick(this);">
+                  <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                  <mm:field id="title" write="false" name="title"/>
+                  <c:if test="${assettype == 'urls'}">
+                     <c:set var="title" ><mm:field name="name"/></c:set>
+                  </c:if>
+                  <c:if test="${fn:length(title) > 50}">
+                     <c:set var="title">${fn:substring(title,0,49)}...</c:set>
+                  </c:if>
+                  ${title}
+               </td>
+               <td onMouseDown="objClick(this);">${title}</td>
                <td onMouseDown="objClick(this);"><mm:field name="itype"/></td>
                <td onMouseDown="objClick(this);"><img src="<mm:image template="s(100x100)"/>" alt="" /></td>
             </tr>

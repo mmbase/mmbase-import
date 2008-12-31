@@ -512,16 +512,17 @@
                   </a>
                </div>
                <div class="thumnail_info">
-                  <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
-                  <c:if test="${typedef eq 'images'}">
-                     <mm:field name="title"/><br/><mm:field name="itype"/>
-                  </c:if>
-                  <c:if test="${typedef eq 'attachments'}">
-                     <mm:field name="title"/>
-                  </c:if>
-                  <c:if test="${typedef eq 'urls'}">
-                     <mm:field name="name"/>
-                  </c:if>
+                  <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                              <mm:field id="title" write="false" name="title"/>
+                              <c:if test="${assettype == 'urls'}">
+                                 <c:set var="title" ><mm:field name="name"/></c:set>
+                              </c:if>
+                              <c:if test="${fn:length(title) > 15}">
+                                 <c:set var="title">${fn:substring(title,0,14)}...</c:set>
+                              </c:if>${title}
+                              <c:if test="${ assettype == 'images'}">
+                              <br/><mm:field name="itype" />
+                              </c:if>
                </div>
             </div>
             </div>
