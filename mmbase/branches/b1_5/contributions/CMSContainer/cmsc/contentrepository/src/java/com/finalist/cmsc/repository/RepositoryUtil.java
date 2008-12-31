@@ -202,11 +202,14 @@ public final class RepositoryUtil {
    }
 
 
-    public static void appendChild(Cloud cloud, String parent, String child) {
-        TreeUtil.appendChild(cloud, parent, child, CHILDREL);
-    }
+   public static void appendChild(Cloud cloud, String parent, String child) {
+      Node parentNode = cloud.getNode(parent);
+      Node childNode = cloud.getNode(child);
+      appendChild(parentNode, childNode);
+   }
 
     public static void appendChild(Node parentNode, Node childNode) {
+        TreeUtil.uniqueChild(parentNode, childNode, treeManagers, CHILDREL);
         TreeUtil.appendChild(parentNode, childNode, CHILDREL);
     }
 

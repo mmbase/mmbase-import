@@ -75,10 +75,13 @@ public final class NavigationUtil {
     }
 
     public static void appendChild(Cloud cloud, String parent, String child) {
-        TreeUtil.appendChild(cloud, parent, child, NAVREL);
+       Node parentNode = cloud.getNode(parent);
+       Node childNode = cloud.getNode(child);
+       appendChild(parentNode, childNode);
     }
 
     public static void appendChild(Node parentNode, Node childNode) {
+        TreeUtil.uniqueChild(parentNode, childNode, treeManagers, NAVREL);
         TreeUtil.appendChild(parentNode, childNode, NAVREL);
     }
 
@@ -496,7 +499,7 @@ public final class NavigationUtil {
      * @param request
      * @param response
      * @param parentNode
-     * @return
+     * @return the url of a navigation item
      */
 	public static String getNavigationItemUrl(HttpServletRequest request, HttpServletResponse response, Node parentNode) {
 
