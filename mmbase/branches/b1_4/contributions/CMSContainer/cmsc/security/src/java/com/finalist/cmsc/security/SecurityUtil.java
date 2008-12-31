@@ -88,7 +88,15 @@ public class SecurityUtil {
 
           // most specific keys are first in order so when the path of the channel startswith
           // the keypath we have the channel where the rights are from inherited.
-          if (path.startsWith(keyPath)) {
+          boolean onPath = false;
+          if (path.length() == keyPath.length()) {
+             onPath = path.equals(keyPath);
+          }
+          else {
+             onPath = path.startsWith(keyPath + "/");
+          }
+          
+          if (onPath) {
              UserRole userRole = channelsWithRole.get(keyPath);
              // when path is equal to the keypath than is the role not inherited
              resultRole = new UserRole(userRole.getRole(), !path.equals(keyPath));
