@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.49 2008-12-30 16:28:08 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.50 2009-01-02 11:04:49 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -40,10 +40,13 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /** Offset property. */
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
-    private   final List<Step> steps             = new ArrayList<Step>();
-    private   final List<Step> unmodifiableSteps = Collections.unmodifiableList(steps); // getSteps is called very  very often
-    protected final List<StepField> fields       = new ArrayList<StepField>();
-    private   final List<SortOrder> sortOrders   = new ArrayList<SortOrder>();
+    // Following fields would must logically be final, but that is incompatible with
+    // clone(). Perhaps we should drop usage of clone() altogether. clone() sucks.
+
+    private   List<Step> steps             = new ArrayList<Step>();
+    private   List<Step> unmodifiableSteps = Collections.unmodifiableList(steps); // getSteps is called very  very often
+    protected List<StepField> fields       = new ArrayList<StepField>();
+    private   List<SortOrder> sortOrders   = new ArrayList<SortOrder>();
 
     /** Constraint.. */
     private Constraint constraint = null;
@@ -77,6 +80,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public BasicSearchQuery() {
         this(false);
     }
+
 
     public final static int COPY_NORMAL = 0;
     public final static int COPY_AGGREGATING = 1;
@@ -142,7 +146,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
 
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
-        steps.clear();
+        steps = new ArrayList<Step>(q.getSteps().size());
         Iterator<Step> i = q.getSteps().iterator();
         while(i.hasNext()) {
             Step step = i.next();
@@ -181,11 +185,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             }
         }
         //log.info("copied steps " + q.getSteps() + " became " + steps);
-        //unmodifiableSteps = Collections.unmodifiableList(steps);
+        unmodifiableSteps = Collections.unmodifiableList(steps);
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
-        fields.clear();
+        fields = new ArrayList<StepField>(q.getFields().size());
         MMBase mmb = MMBase.getMMBase();
         for (StepField field : q.getFields()) {
             Step step = field.getStep();
@@ -202,7 +206,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
-        sortOrders.clear();
+        sortOrders = new ArrayList<SortOrder>(q.getSortOrders().size());
         MMBase mmb = MMBase.getMMBase();
         for (SortOrder sortOrder : q.getSortOrders()) {
             StepField field = sortOrder.getField();
