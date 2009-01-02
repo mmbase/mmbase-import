@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Several functions on mmbase nodes which are used by didactor.
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.6 2008-11-20 15:09:40 michiel Exp $
+ * @version $Id: Functions.java,v 1.7 2009-01-02 09:36:10 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -30,7 +30,9 @@ public class Functions {
         result.add(node.getNumber());
         NodeList parents = node.getRelatedNodes("learnobjects", "posrel", "source");
         while (parents.size() > 0) {
-            assert parents.size() == 1 : "Node " + node.getNumber() + " has more than 1 posrel parents";
+            if (parents.size() > 1) {
+                log.warn("Node " + node.getNumber() + " has more than 1 posrel parents: " + parents);
+            }
             Node parent = parents.getNode(0);
             if (result.contains(parent.getNumber())) break;
             result.add(parent.getNumber());

@@ -36,9 +36,7 @@
         <guiname xml:lang="nl">Intro</guiname>
         <guiname xml:lang="en">Intro</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="65535" enforce="never"/>
-      </datatype>
+      <datatype base="html" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
 
     <field name="layout">

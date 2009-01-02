@@ -8,6 +8,11 @@
                         http://www.mmbase.org/xmlns/component.xsd">
 
   <class name="nl.didactor.component.assessment.Assessment" />
+
+  <setting name="has_didactor_component">
+    <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </setting>
+
   <block name="after_page"
          classification="didactor.after_page:10"
          mimetype="text/html">

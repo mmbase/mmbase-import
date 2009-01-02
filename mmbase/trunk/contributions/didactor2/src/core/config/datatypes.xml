@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.10 2008-08-08 13:05:59 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.11 2009-01-02 09:36:10 michiel Exp $
 
        These are didactor specific datatypes.
 
@@ -20,11 +20,16 @@
     <class name="nl.didactor.datatypes.Education" />
   </datatype>
 
+  <datatype id="didactor_learnblocks_intro" base="field">
+    <maxLength value="65535" enforce="never"/>
+  </datatype>
+
   <datatype id="didactor_people_lastname" base="line">
     <class name="nl.didactor.datatypes.UserName" /> <!-- this makes sure that some values are 'disallowed' -->
     <required value="true" />                       <!-- Having a last name is required -->
     <maxLength value="255" />
   </datatype>
+
 
   <datatype id="didactor_people_email" base="internetaddress">
     <required value="false" />
