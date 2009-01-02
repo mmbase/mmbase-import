@@ -15,6 +15,7 @@
 
   <action type="delete" />
 
+
   <form-schema extends="config/learnblocks/step1.xml" />
 
   &extra_schemas;

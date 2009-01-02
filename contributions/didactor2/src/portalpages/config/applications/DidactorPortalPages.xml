@@ -5,7 +5,7 @@
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
-    <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
+    <requires name="RichTextBasics"    maintainer="mmbase.org"  version="-1" />
   </requirements>
 
   <neededbuilderlist>

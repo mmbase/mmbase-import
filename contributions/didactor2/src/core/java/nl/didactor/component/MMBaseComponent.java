@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * The didactor component wrapping an mmbase component.
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseComponent.java,v 1.7 2008-11-24 15:07:32 michiel Exp $
+ * @version $Id: MMBaseComponent.java,v 1.8 2009-01-02 09:36:10 michiel Exp $
  */
 
 public class MMBaseComponent extends nl.didactor.component.Component {
@@ -21,10 +21,11 @@ public class MMBaseComponent extends nl.didactor.component.Component {
 
     enum Scope {
         COMPONENT("component"),
-            PROVIDERS("provider"),
-            EDUCATIONS("education", PROVIDERS),
-            CLASSES("class", EDUCATIONS),
-            PEOPLE("people");
+        PROVIDERS("provider"),
+        EDUCATIONS("education", PROVIDERS),
+        CLASSES("class", EDUCATIONS),
+        PEOPLE("people");
+
         private final String ref;
         private final Scope implies;
         Scope(String r) {
