@@ -12,14 +12,7 @@
               />
   <fieldset>
     <c:forEach items="${di:setting('education', 'learnblocks_fields')}" var="fieldname">
-      <c:choose>
-        <c:when test="${fieldname eq 'intro'}">
-          <field name="${fieldname}" ftype="html" dtminlength="0" />
-        </c:when>
-        <c:otherwise>
-          <field name="${fieldname}"  />
-        </c:otherwise>
-      </c:choose>
+      <field name="${fieldname}"  />
     </c:forEach>
   </fieldset>
 </mm:content>

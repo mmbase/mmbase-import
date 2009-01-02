@@ -39,8 +39,11 @@
     <relation from="problemtypes" to="tests" type="related" /> <!-- tests available for this problemtype, check provider-education-test for language -->
 
     <relation from="people" to="learnblocks" type="classrel" /> <!-- results of persons on this learnblock -->
-    <relation from="classrel" to="popfeedback" type="related" /> <!-- feedback on results of person on this learnblock -->
 
+    <!-- feedback on results of person on this learnblock -->
+    <!--
+    <relation from="classrel" to="popfeedback" type="related" />
+    -->
     <!-- link from (the content in) the learnblocks to the cases -->
     <relation from="learnobjects" to="learnobjects" type="descriptionrel" />
 

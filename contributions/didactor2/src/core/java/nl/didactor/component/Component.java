@@ -24,7 +24,7 @@ import java.util.*;
 
 /**
  * @javadoc
- * @version $Id: Component.java,v 1.31 2008-12-04 13:06:35 michiel Exp $
+ * @version $Id: Component.java,v 1.32 2009-01-02 09:36:10 michiel Exp $
  */
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
@@ -96,7 +96,7 @@ public abstract class Component {
             if (ResourceLoader.getConfigurationRoot().getResource("di_components/" + xml).openConnection().getDoInput()) {
                 doc = ResourceLoader.getConfigurationRoot().getDocument("di_components/" + xml, true, Component.class);
             } else if (ResourceLoader.getConfigurationRoot().getResource("components/" + xml).openConnection().getDoInput()) {
-                // legacy support, didactor used to use that dir, but it is not resereved for mmbase components.
+                // legacy support, didactor used to use that dir, but it is now resereved for mmbase components.
                 doc = ResourceLoader.getConfigurationRoot().getDocument("components/" + xml, true, Component.class);
             }
 
@@ -345,13 +345,14 @@ public abstract class Component {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
             if (settingrel.size() == 0) {
-                // This is not a setting of this component itself, defaultVAlue is left to fall back.
+                // This is not a setting of this component itself, defaultValue is left to fall back.
                 return null;
             }
             if (settingrel.size() > 1) {
                 log.warn("Too many relations from " + id + " to " + node.getNumber() +" (" + settingrel.size() + "). Picking first one!");
             }
             org.mmbase.bridge.Node settingRelNode = settingrel.getNode(0);
+
             settingNodes = settingRelNode.getRelatedNodes("settings");
         }
 
