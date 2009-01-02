@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.22 2008-11-25 13:20:38 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.23 2009-01-02 10:35:19 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -154,12 +154,10 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
-            throw new IllegalStateException(
-            "Searchquery has no step (at leas 1 step is required).");
+            throw new IllegalStateException("Searchquery has no step (at least 1 step is required).");
         }
         if (query.getFields().isEmpty()) {
-            throw new IllegalStateException(
-            "Searchquery has no field (at least 1 field is required).");
+            throw new IllegalStateException("Searchquery has no field (at least 1 field is required).");
         }
 
         // SELECT
