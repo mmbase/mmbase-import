@@ -7,6 +7,9 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
 
+  <setting name="has_didactor_component">
+    <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </setting>
 
   <block name="add"
          classification="edit didactor.metadata"
