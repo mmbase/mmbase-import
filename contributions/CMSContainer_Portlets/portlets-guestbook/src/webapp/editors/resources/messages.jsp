@@ -38,7 +38,7 @@
                                 <a href="<mm:url page="DeleteGuestMessageAction.do" >
                                             <mm:param name="objectnumber">${row.number}</mm:param>
                                             <mm:param name="isRemote">${param.remote eq 'on'}</mm:param>
-                                            <mm:param name="returnurl" value="<%="/editors/resources/SearchGuestBookAction.do" + request.getAttribute("geturl")%>" />
+                                            <mm:param name="returnurl" value='<%="/editors/resources/SearchGuestBookAction.do" + request.getAttribute("geturl")%>' />
                                          </mm:url>">
                                 <img src="../gfx/icons/delete.png" title="<fmt:message key="reactionsearch.icon.delete" />"/></a>
                         </td>
