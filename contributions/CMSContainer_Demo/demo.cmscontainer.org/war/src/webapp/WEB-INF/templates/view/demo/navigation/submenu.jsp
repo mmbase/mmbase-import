@@ -3,7 +3,7 @@
 
 <cmsc:location var="cur" sitevar="site" />
 <cmsc:path var="listPath" />
-<cmsc:list-pages var="pages" origin="${listPath[0]}" />
+<cmsc:list-navigations var="pages" origin="${listPath[0]}" />
        
 <div id="menu">
   <div class="center">

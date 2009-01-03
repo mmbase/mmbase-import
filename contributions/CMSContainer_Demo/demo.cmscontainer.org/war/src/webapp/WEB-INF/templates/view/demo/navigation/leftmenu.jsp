@@ -3,7 +3,7 @@
 
 <cmsc:location var="cur" sitevar="site" />
 <cmsc:path var="listPath" />
-<cmsc:list-pages var="pages" origin="${listPath[1]}" />
+<cmsc:list-navigations var="pages" origin="${listPath[1]}" />
 
 <div id="navleft">
    <c:forEach var="page" items="${pages}">
@@ -25,7 +25,7 @@
       </c:choose>
 
       <c:if test="${fn:length(listPath) > 2 and (listPath[2] eq page or listPath[3] eq page)}">
-         <cmsc:list-pages var="subchannels" origin="${page}"/>
+         <cmsc:list-navigations var="subchannels" origin="${page}"/>
          <c:if test="${not empty subchannels}">
             <c:forEach var="subchan" items="${subchannels}">
                <c:choose>
