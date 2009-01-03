@@ -15,6 +15,11 @@ a.readon, a.back
   color: #497f36;
 }
 
+#background
+{
+  background-color: #f4f4f4;
+}
+
 /* submenu */
 
 #menu {
