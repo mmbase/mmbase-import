@@ -81,13 +81,13 @@
   						    <c:if test="${action != 'select'}">
 	                          <a href="<mm:url page="../WizardInitAction.do">
                                          <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                         <mm:param name="returnurl" value="<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                         <mm:param name="returnurl" value='<%="../editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>' />
                                       </mm:url>">
                               <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="attachmentsearch.icon.edit" />" title="<fmt:message key="attachmentsearch.icon.edit" />" /></a>
 						      <mm:hasrank minvalue="administrator">
 	                            <a href="<mm:url page="DeleteSecondaryContentAction.do" >
                                             <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                            <mm:param name="returnurl" value="<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>" />
+                                            <mm:param name="returnurl" value='<%="/editors/resources/AttachmentAction.do" + request.getAttribute("geturl")%>' />
                                          </mm:url>">
 	                            <img src="../gfx/icons/delete.png" alt="<fmt:message key="attachmentsearch.icon.delete" />" title="<fmt:message key="attachmentsearch.icon.delete" />"/></a>
 	                          </mm:hasrank>

@@ -89,7 +89,7 @@
                         <c:if test="${action != 'select'}">
                              <a href="<mm:url page="../WizardInitAction.do">
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                     <mm:param name="returnurl" value="<%="../editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
+                                                     <mm:param name="returnurl" value='<%="../editors/resources/ImageAction.do" + request.getAttribute("geturl")%>' />
                                                   </mm:url>">
                                  <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="imagesearch.icon.edit" />" title="<fmt:message key="imagesearch.icon.edit" />" /></a>
                        <a href="javascript:showInfo(<mm:field name="number" />)">
@@ -98,7 +98,7 @@
                          <a href="<mm:url page="DeleteSecondaryContentAction.do" >
                                                         <mm:param name="object_type" value="images"/>
                                                         <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                                        <mm:param name="returnurl" value="<%="/editors/resources/ImageAction.do" + request.getAttribute("geturl")%>" />
+                                                        <mm:param name="returnurl" value='<%="/editors/resources/ImageAction.do" + request.getAttribute("geturl")%>' />
                                                      </mm:url>">
                                  <img src="../gfx/icons/delete.png" alt="<fmt:message key="imagesearch.icon.delete" />" title="<fmt:message key="imagesearch.icon.delete" />"/></a>
                         </mm:hasrank>

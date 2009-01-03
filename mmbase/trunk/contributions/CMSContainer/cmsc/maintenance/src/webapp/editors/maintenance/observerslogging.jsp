@@ -83,7 +83,7 @@
                <% } else if (ctype != null) { %>
                <mm:param name="ctype" value="<%=ctype%>"/>
                <% } %>
-               <mm:param name="stacktrace" value="<%=""+logConstraint.isPrintStrackTrace()%>"/>
+               <mm:param name="stacktrace" value='<%=""+logConstraint.isPrintStrackTrace()%>'/>
                <mm:param name="local" value="local"/>
             </mm:url>">remove</a>
 
@@ -126,7 +126,7 @@
                <% } else if (ctype != null) { %>
                <mm:param name="ctype" value="<%=ctype%>"/>
                <% } %>
-               <mm:param name="stacktrace" value="<%=""+logConstraint.isPrintStrackTrace()%>"/>
+               <mm:param name="stacktrace" value='<%=""+logConstraint.isPrintStrackTrace()%>'/>
                <mm:param name="remote" value="remote"/>
             </mm:url>">remove</a>
          </td>

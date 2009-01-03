@@ -83,7 +83,7 @@
 						      <mm:hasrank minvalue="administrator">
 	                            <a href="<mm:url page="DeleteReactionAction.do" >
                                             <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-                                            <mm:param name="returnurl" value="<%="/editors/resources/ReactionAction.do" + request.getAttribute("geturl")%>" />
+                                            <mm:param name="returnurl" value='<%="/editors/resources/ReactionAction.do" + request.getAttribute("geturl")%>' />
                                          </mm:url>">
 	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="reactionsearch.icon.delete" />"/></a>
 	                          </mm:hasrank>
