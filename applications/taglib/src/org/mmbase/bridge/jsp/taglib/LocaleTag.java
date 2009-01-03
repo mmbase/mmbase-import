@@ -17,18 +17,14 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.31 2007-08-10 10:05:36 michiel Exp $
+ * @version $Id: LocaleTag.java,v 1.32 2009-01-03 11:08:49 nklasens Exp $
  */
 
 public class LocaleTag extends CloudReferrerTag  {
-    private static final Logger log = Logging.getLoggerInstance(LocaleTag.class);
 
     public static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.request";
     public static final String TZ_KEY = "org.mmbase.timezone";
@@ -40,7 +36,8 @@ public class LocaleTag extends CloudReferrerTag  {
     private Attribute timezone =  Attribute.NULL;
 
     protected Locale locale;
-    protected Locale prevLocale = null;
+    protected Locale prevCloudLocale = null;
+    protected Locale prevJstlLocale = null;
     protected Cloud  cloud;
     private String jspvar = null;
 
@@ -90,12 +87,12 @@ public class LocaleTag extends CloudReferrerTag  {
             }
             // compatibility with jstl fmt tags:
             // should use their constant, but that would make compile-time dependency.
-            prevLocale = (Locale) pageContext.findAttribute(KEY);
+            prevJstlLocale = (Locale) pageContext.findAttribute(KEY);
             pageContext.setAttribute(KEY, locale, SCOPE);
             CloudProvider cloudProvider = findCloudProvider(false);
             if (cloudProvider != null) {
                 cloud = cloudProvider.getCloudVar();
-                prevLocale = cloud.getLocale();
+                prevCloudLocale = cloud.getLocale();
                 cloud.setLocale(locale);
             } else {
                 cloud = null;
@@ -178,11 +175,14 @@ public class LocaleTag extends CloudReferrerTag  {
 
     public int doEndTag() throws JspTagException {
         if (locale != null) {
-            if (prevLocale != null) {
-                pageContext.setAttribute(KEY, prevLocale, SCOPE);
+            if (prevCloudLocale != null) {
                 if (cloud != null) {
-                    cloud.setLocale(prevLocale);
+                    cloud.setLocale(prevCloudLocale);
                 }
+            }
+            
+            if (prevJstlLocale != null) {
+                pageContext.setAttribute(KEY, prevJstlLocale, SCOPE);
             } else {
                 pageContext.removeAttribute(KEY, SCOPE);
             }
@@ -194,6 +194,9 @@ public class LocaleTag extends CloudReferrerTag  {
 
     public void doFinally() {
         cloud = null;
+        locale = null;
+        prevCloudLocale = null;
+        prevJstlLocale = null;
         jspvar = null;
         super.doFinally();
     }
