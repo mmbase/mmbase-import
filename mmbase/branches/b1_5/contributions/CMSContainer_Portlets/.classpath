@@ -181,5 +181,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/c3p0/jars/c3p0-0.9.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/freemarker/jars/freemarker-2.3.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/quartz/jars/quartz-1.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jforum/jars/jforum-2.1.8.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
