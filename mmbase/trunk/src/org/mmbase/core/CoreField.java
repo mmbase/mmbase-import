@@ -22,7 +22,7 @@ import java.util.Collection;
 /**
  * @since MMBase-1.8
  */
-public class CoreField extends AbstractField implements Field, Storable {
+public class CoreField extends AbstractField<Object> implements Field, Storable {
 
     private static final int NO_POSITION = -1;
 
