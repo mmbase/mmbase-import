@@ -20,9 +20,9 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.34 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: BasicField.java,v 1.35 2009-01-03 10:17:47 michiel Exp $
  */
-public class BasicField extends AbstractField implements Field {
+public class BasicField extends AbstractField<Object> implements Field {
 
     private final NodeManager nodeManager;
     protected final CoreField coreField;
