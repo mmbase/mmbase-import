@@ -106,7 +106,17 @@ public class PortletTag extends SimpleTagSupport {
 
       Portlet portlet = portletFragment.getPortlet();
       portletInfo.setId(portlet.getId());
-
+      
+      com.finalist.cmsc.beans.om.PortletDefinition definition = SiteManagement.getPortletDefinition(portlet.getDefinition());
+      if (definition != null) {
+         portletInfo.setDefinitionId(definition.getId());
+         portletInfo.setDefinitionTitle(definition.getTitle());
+      }
+      com.finalist.cmsc.beans.om.View view = SiteManagement.getView(portlet.getView());
+      if (view != null) {
+         portletInfo.setViewId(view.getId());
+         portletInfo.setViewTitle(view.getTitle());
+      }
       String responseContentType = response.getContentType();
       int indexOf = responseContentType.indexOf(";");
       if (indexOf > -1) {
@@ -209,6 +219,11 @@ public class PortletTag extends SimpleTagSupport {
 
       private int id;
       private String title;
+      private int viewId;
+      private String viewTitle;
+      private int definitionId;
+      private String definitionTitle;
+      
       private PortletModeInfo currentMode;
       private List<PortletModeInfo> availablePortletModes = new ArrayList<PortletModeInfo>();
       private List<PortletModeInfo> visiblePortletModes = new ArrayList<PortletModeInfo>();
@@ -272,6 +287,38 @@ public class PortletTag extends SimpleTagSupport {
 
       public PortletModeInfo getCurrentMode() {
          return currentMode;
+      }
+      
+      public int getViewId() {
+         return viewId;
+      }
+      
+      public void setViewId(int viewId) {
+         this.viewId = viewId;
+      }
+
+      public String getViewTitle() {
+         return viewTitle;
+      }
+      
+      public void setViewTitle(String viewTitle) {
+         this.viewTitle = viewTitle;
+      }
+
+      public int getDefinitionId() {
+         return definitionId;
+      }
+      
+      public void setDefinitionId(int definitionId) {
+         this.definitionId = definitionId;
+      }
+
+      public String getDefinitionTitle() {
+         return definitionTitle;
+      }
+      
+      public void setDefinitionTitle(String definitionTitle) {
+         this.definitionTitle = definitionTitle;
       }
 
    }

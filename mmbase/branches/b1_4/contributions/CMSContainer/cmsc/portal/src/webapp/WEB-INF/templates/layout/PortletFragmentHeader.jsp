@@ -27,18 +27,15 @@ ${requestScope.fragment.key}
 	<a href="${modeInfo.url}" title="<fmt:message key='portletmode.${modeInfo.name}' />" class="portlet-mode-type-${modeInfo.type}">
 		<img src="<cmsc:staticurl page='/editors/gfx/icons/${modeInfo.name}.png'/>" border="0" alt="<fmt:message key='portletmode.${modeInfo.name}' />"/></a>
 </c:forEach>
-<mm:cloud>
-<mm:node number="${portletInfo.id}" notfound="skip">
+
 <div class="portlet-info" id="portlet-info-${portletInfo.id}">
-	<mm:relatednodes type="portletdefinition">
-		<fmt:message key="portletinfo.definition"/>: <mm:field name="title"/><br/>
-	</mm:relatednodes>
-	<mm:relatednodes type="view">
-		<fmt:message key="portletinfo.view"/>: <mm:field name="title"/><br/>
-	</mm:relatednodes>
+<c:if test="${portletInfo.definitionId gt 0}">
+	<fmt:message key="portletinfo.definition"/>: ${portletInfo.definitionTitle}<br/>
+</c:if>
+<c:if test="${portletInfo.viewId gt 0}">
+	<fmt:message key="portletinfo.view"/>: ${portletInfo.viewTitle} <br/>
+</c:if>
 </div>
-</mm:node>
-</mm:cloud>
 </div>
 <br/>
 </div>
