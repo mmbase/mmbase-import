@@ -439,7 +439,7 @@
 		<input type="hidden" name="orderby" value="${orderby}" /> <input
 			type="hidden" name="status" value="${status}" /> <input type="hidden"
 			name="laststatus" /> <c:set var="lastvalue"
-			value="<%=request.getAttribute("laststatus")%>" /> <c:set
+			value='<%=request.getAttribute("laststatus")%>' /> <c:set
 			var="resultsPerPage" value="50" /> <c:set var="offset"
 			value="${param.offset}" /> <c:set var="listSize">${fn:length(nodeList)}</c:set>
 
