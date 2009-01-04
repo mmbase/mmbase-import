@@ -1,11 +1,11 @@
 package com.finalist.cmsc.taglib;
 
-import net.sf.mmapps.commons.bridge.NodeFieldComparator;
 import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.util.NodeFieldComparator;
 
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 
@@ -43,7 +43,7 @@ public class LinkedContentTag extends NodeReferrerTag {
    /**
     * Formatter used for layout of list. This attribute is not required. If it
     * is not supplied, the default is used which is
-    * net.sf.mmapps.commons.basicmodel.taglib.LinkedContentTag$DefaultFormatter.
+    * com.finalist.cmsc.taglib.LinkedContentTag$DefaultFormatter.
     */
    private Attribute formatter = Attribute.NULL;
 
@@ -51,7 +51,7 @@ public class LinkedContentTag extends NodeReferrerTag {
    private String getFormatter() throws JspTagException {
       String result = formatter.getString(this);
       if (StringUtils.isEmpty(result)) {
-         result = "net.sf.mmapps.commons.basicmodel.taglib.LinkedContentTag$DefaultFormatter";
+         result = "com.finalist.cmsc.taglib.LinkedContentTag$DefaultFormatter";
       }
       return result;
    }
@@ -198,7 +198,7 @@ public class LinkedContentTag extends NodeReferrerTag {
    public static class DefaultFormatter implements Formatter {
 
       /**
-       * @see net.sf.mmapps.commons.basicmodel.taglib.LinkedContentTag.Formatter#write(org.mmbase.bridge.NodeList,
+       * @see com.finalist.cmsc.taglib.LinkedContentTag.Formatter#write(org.mmbase.bridge.NodeList,
        *      java.lang.String)
        */
       public String write(NodeList list, String title) throws JspException {
