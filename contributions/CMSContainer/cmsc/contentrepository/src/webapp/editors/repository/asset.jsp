@@ -28,7 +28,7 @@
                   var assetsMode = document.getElementsByTagName("option");
                   for(i = 0; i < assetsMode.length; i++){
                      if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                         document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=up&show=list&offset='+offset;
+                         document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=up&show=list&offset='+offset+'&imageOnly=no';
                      }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
                             document.location.href = 'Asset.do?type=asset&parentchannel=<mm:write referid="parentchannel"/>&direction=up&show=thumbnail&offset='+offset;
                      }
