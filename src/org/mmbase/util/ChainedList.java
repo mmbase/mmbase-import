@@ -17,12 +17,17 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9
- * @version $Id: ChainedList.java,v 1.3 2007-12-05 20:39:35 michiel Exp $
+ * @version $Id: ChainedList.java,v 1.4 2009-01-04 18:51:56 nklasens Exp $
  * @see ChainedIterator
  */
 public class ChainedList<E> extends AbstractList<E> {
 
     private final List<List<? extends E>> lists = new ArrayList<List<? extends E>>();
+    
+    public ChainedList() {
+        // nothing to do yet
+    }
+    
     public ChainedList(List<? extends E>... ls) {
         for (List<? extends E> l : ls) {
             addList(l);
