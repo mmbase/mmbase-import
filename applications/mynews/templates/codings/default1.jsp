@@ -14,7 +14,7 @@
       This page is using ISO-8859-1.
     </p>
     <h1>In-page text</h1>
-    <p>Café tweeëntwintig</p>
+    <p>Cafï¿½ tweeï¿½ntwintig</p>
     <p>CP1252:  <%= org.mmbase.util.transformers.CP1252Surrogator.getTestString() %></p>
     <p>CP1252 escaped:  <mm:write value="<%= org.mmbase.util.transformers.CP1252Surrogator.getTestString() %>" escape="cp1252" /></p>
     <h1>MMBase data</h1>
@@ -37,7 +37,7 @@
       <% try { %>
       <mm:include referids="node" page="included.jsp" />
       <p><em>With mm:include (external, utf-8 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>
@@ -45,7 +45,7 @@
       <% try { %>
       <mm:include referids="node" page="included1.jsp" />
       <p><em>With mm:include (external, iso-8859-1 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included1.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included1.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>
@@ -112,7 +112,7 @@
   <mm:formatter format="escapexmlpretty">
     <?xml version="1.0" encoding="iso-8859-1"?>
     <mmxf version="1" >
-      <p>Café tweeëntwintig</p>
+      <p>Cafï¿½ tweeï¿½ntwintig</p>
     </mmxf>
 
   </mm:formatter>

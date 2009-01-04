@@ -62,7 +62,7 @@
       <% try { %>
       <mm:include referids="node" page="included.jsp" />
       <p><em>With mm:include (external, utf-8 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>
@@ -70,7 +70,7 @@
       <% try { %>
       <mm:include referids="node" page="included1.jsp" />
       <p><em>With mm:include (external, iso-8859-1 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included1.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included1.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>
@@ -127,19 +127,19 @@
 
 <p><em>With mm:include ('external' iso-8859-1 xml): </em></p>
 <pre>
-<mm:include page="<%= thisDir + "included1.xml"%>" escape="text/xml" />
+<mm:include page='<%= thisDir + "included1.xml"%>' escape="text/xml" />
 </pre>
  <p><em>With mm:include ('external' UTF-8 xml):</em></p>
 <pre>
-<mm:include page="<%= thisDir + "included8.xml"%>" escape="text/xml" />
+<mm:include page='<%= thisDir + "included8.xml"%>' escape="text/xml" />
 </pre>
 <p><em>With mm:include ('external' iso-8859-1 xml.jsp): </em></p>
 <pre>
-<mm:include page="<%= thisDir + "included1.xml.jsp"%>" escape="text/xml" />
+<mm:include page='<%= thisDir + "included1.xml.jsp"%>' escape="text/xml" />
 </pre>
  <p><em>With mm:include ('external' UTF-8 xml.jsp):</em></p>
 <pre>
-<mm:include page="<%= thisDir + "included8.xml.jsp"%>" escape="text/xml" />
+<mm:include page='<%= thisDir + "included8.xml.jsp"%>' escape="text/xml" />
 </pre>
 <mm:log>jsp:include-ing XML's</mm:log>
       <p><em>With jsp:include (iso-8859-1 xml):</em></p>
