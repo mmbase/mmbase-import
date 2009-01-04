@@ -33,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.205 2008-12-09 15:43:34 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.206 2009-01-04 18:46:14 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2174,7 +2174,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (field.isNotNull()) {
                 fieldDef += " NOT NULL";
             }
-            log.info("For field " + fieldDef);
+            log.debug("For field " + fieldDef);
             return fieldDef;
         } else {
             throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + mapping + ") undefined." + typeMappings);
