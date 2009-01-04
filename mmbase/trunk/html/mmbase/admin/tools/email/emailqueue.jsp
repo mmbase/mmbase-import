@@ -40,7 +40,7 @@
           <td><%=msg.getValue("item3")%></td>
           <td><%=msg.getValue("item4")%></td>
           <td>
-            <mm:link page="<%="fullmail.jsp?msg="+msg.getValue("item1")%>"><a href="${_}"><%= msg.getValue("item5") %></a></mm:link>
+            <mm:link page='<%="fullmail.jsp?msg="+msg.getValue("item1")%>'><a href="${_}"><%= msg.getValue("item5") %></a></mm:link>
           </td>
         </tr>
     <% } --%>

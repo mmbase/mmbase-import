@@ -37,7 +37,7 @@
       <% try { %>
       <mm:include referids="node" page="included.jsp" />
       <p><em>With mm:include (external, utf-8 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>
@@ -45,7 +45,7 @@
       <% try { %>
       <mm:include referids="node" page="included1.jsp" />
       <p><em>With mm:include (external, iso-8859-1 page):</em></p>
-      <mm:include referids="node" page="<%=thisDir + "included1.jsp"%>" />
+      <mm:include referids="node" page='<%=thisDir + "included1.jsp"%>' />
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>

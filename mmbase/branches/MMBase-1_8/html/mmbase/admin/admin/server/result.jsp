@@ -38,7 +38,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?server="+server%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="next" border="0" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?server="+server%>' />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="next" border="0" /></td>
 <td class="data">Return to Server Administration</td>
 </tr>
 
