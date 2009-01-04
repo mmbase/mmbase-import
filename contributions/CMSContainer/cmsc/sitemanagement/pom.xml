@@ -45,6 +45,27 @@
         <testSourceDirectory>src/tests</testSourceDirectory>
         <plugins>
             <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>native2ascii-maven-plugin</artifactId>
+			<version>1.0-alpha-1</version>
+			<configuration>
+				<dest>${basedir}/target/classes</dest>
+				<src>${basedir}/resources</src>
+			</configuration>
+			<executions>
+				<execution>
+				<id>native2ascii-utf8</id>
+					<goals>
+						<goal>native2ascii</goal>
+					</goals>
+					<configuration>
+							<encoding>UTF-8</encoding>
+							<includes>**/*.properties</includes>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webResources>
