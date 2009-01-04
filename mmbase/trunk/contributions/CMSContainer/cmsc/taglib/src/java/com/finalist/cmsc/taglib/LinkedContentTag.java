@@ -1,11 +1,11 @@
 package com.finalist.cmsc.taglib;
 
+import net.sf.mmapps.commons.bridge.NodeFieldComparator;
 import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.util.NodeFieldComparator;
 
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 
@@ -51,7 +51,7 @@ public class LinkedContentTag extends NodeReferrerTag {
    private String getFormatter() throws JspTagException {
       String result = formatter.getString(this);
       if (StringUtils.isEmpty(result)) {
-         result = "com.finalist.cmsc.taglib.LinkedContentTag$DefaultFormatter";
+         result = DefaultFormatter.class.getName();
       }
       return result;
    }
@@ -191,7 +191,7 @@ public class LinkedContentTag extends NodeReferrerTag {
        */
       String write(NodeList list, String title) throws JspException;
    }
-
+  
    /**
     * Implementation of the <code>Formatter</code> interface.
     */
