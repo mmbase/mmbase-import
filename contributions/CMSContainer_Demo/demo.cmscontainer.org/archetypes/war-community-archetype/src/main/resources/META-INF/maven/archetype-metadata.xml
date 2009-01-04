@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype-descriptor name="cmsc-community">
+  <fileSets>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>src/webapp</directory>
+      <includes>
+        <include>**/*.jsp</include>
+        <include>**/*.xml</include>
+        <include>**/*.properties</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>src/webapp</directory>
+      <includes>
+        <include>**/*.jpg</include>
+        <include>**/*.gif</include>
+        <include>**/*.css</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>maven.xml</include>
+        <include>project.properties</include>
+        <include>project.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</archetype-descriptor>
