@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * esential properties of them are acquired.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.2 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.3 2009-01-04 18:57:14 nklasens Exp $
  * MMBase-1.9.1
  */
 public interface ContextProvider {
@@ -35,6 +35,8 @@ public interface ContextProvider {
     String getContext(MMObjectNode node);
 
     MMObjectNode getContextNode(MMObjectNode node);
+    
+    MMObjectNode getContextNode(String context);
 
     Set<String> getPossibleContexts(User user, MMObjectNode node)  throws SecurityException;
 
@@ -42,6 +44,8 @@ public interface ContextProvider {
 
     boolean mayDo(User user, MMObjectNode nodeId, Operation operation) throws SecurityException;
 
+    boolean mayDoOnContext(MMObjectNode userNode, MMObjectNode contextNode, Operation operation, boolean checkOwnRights);
+    
     /**
      * Whether, or not,  the user  is allowed to grant the security operation to the group or user on the context
      * node.

@@ -21,7 +21,6 @@ import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.cache.Cache;
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.3 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.4 2009-01-04 18:57:14 nklasens Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -83,6 +82,10 @@ public  class BasicContextProvider implements ContextProvider {
     }
     protected int getMaxContextsInQuery() {
         return 50;
+    }
+
+    protected boolean disableContextChecks() {
+        return false;
     }
 
 
@@ -194,7 +197,7 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
 
-    protected MMObjectNode getContextNode(String context) {
+    public MMObjectNode getContextNode(String context) {
         Cache<String,MMObjectNode> contextCache = Caches.getContextCache();
         MMObjectNode contextNode = contextCache.get(context);
         if (contextNode == null && ! contextCache.contains(context)) {
@@ -419,11 +422,19 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
     protected boolean mayDoOnContext(User user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
+        return mayDoOnContext(user.getNode(), contextNode, operation, checkOwnRights);
+    }
 
+    public boolean mayDoOnContext(MMObjectNode userNode, MMObjectNode contextNode,
+            Operation operation, boolean checkOwnRights) {
+        if (disableContextChecks()) {
+            return true;
+        }
+        
         Set<MMObjectNode> groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
         if (checkOwnRights) {
-            if (groupsAndUsers.contains(user.getNode())) return true;
+            if (groupsAndUsers.contains(userNode)) return true;
         }
 
         Iterator<MMObjectNode> iter = groupsAndUsers.iterator();
@@ -435,15 +446,15 @@ public  class BasicContextProvider implements ContextProvider {
                 log.trace("checking group " + group);
             }
 
-            if(Groups.getBuilder().contains(group, user.getNode())) {
+            if(Groups.getBuilder().contains(group, userNode)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("User " + user.getNode().getStringValue("username") + " may " + operation + " according to context " + contextNode);
+                    log.debug("User " + userNode.getStringValue("username") + " may " + operation + " according to context " + contextNode);
                 }
                 return true;
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("User " + user.getNode().getStringValue("username") + " may not " + operation + " according to context " + contextNode);
+            log.debug("User " + userNode.getStringValue("username") + " may not " + operation + " according to context " + contextNode);
         }
         return false;
 
@@ -561,7 +572,7 @@ public  class BasicContextProvider implements ContextProvider {
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
             return Authorization.COMPLETE_CHECK;
         } else {
-            if (operation == Operation.READ && canReadAll()) {
+            if (operation == Operation.READ && (canReadAll() || disableContextChecks())) {
                 return Authorization.COMPLETE_CHECK;
             } else if (operation == Operation.READ) {
                 AllowingContexts ac = allowingContextsCache.get(userContext.getIdentifier());
