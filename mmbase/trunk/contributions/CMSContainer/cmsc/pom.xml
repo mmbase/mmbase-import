@@ -137,7 +137,7 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>easymock</groupId>
+			<groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
@@ -154,8 +154,8 @@
 
         <!-- Servlet/JSP -->
         <dependency>
-            <groupId>servletapi</groupId>
-            <artifactId>servletapi</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
             <version>2.4-20040521</version>
             <scope>provided</scope>
             <type>jar</type>
@@ -170,7 +170,7 @@
 
         <!-- jsp taglibs, jstl -->
         <dependency>
-            <groupId>jstl</groupId>
+  			<groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
             <scope>provided</scope>
