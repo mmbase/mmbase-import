@@ -36,9 +36,13 @@
                    var assetsMode = document.getElementsByTagName("option");3
                    for(i = 0; i < assetsMode.length; i++){
                       if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=list&offset='+offset;
+                          document.forms[0].searchShow.value = 'list';
+                          document.forms[0].submit();
+                          //document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=list&offset='+offset;
                       }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                         document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=thumbnail&offset='+offset;
+                          document.forms[0].searchShow.value = 'thumbnail';
+                          document.forms[0].submit();
+                         //document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=thumbnail&offset='+offset;
                       }
                    }
                 }
