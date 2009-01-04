@@ -1,4 +1,8 @@
                   <mm:write referid="action" jspvar="action" write="false"/>
+               <c:if test="${not empty strict}">
+                  <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
+                      <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
+               </c:if>
                <c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
                         <a href="<mm:url page="../WizardInitAction.do">
                            <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
