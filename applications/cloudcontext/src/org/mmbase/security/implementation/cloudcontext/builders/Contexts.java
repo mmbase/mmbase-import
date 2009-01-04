@@ -9,23 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
-import org.mmbase.security.implementation.cloudcontext.*;
-import org.mmbase.security.SecurityException;
-import org.mmbase.security.Authorization;
-import org.mmbase.bridge.Query;
-
 import java.util.*;
 
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
+import org.mmbase.bridge.Query;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
+import org.mmbase.security.SecurityException;
+import org.mmbase.security.implementation.cloudcontext.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.functions.*;
-import org.mmbase.cache.AggregatedResultCache;
 
 /**
  * Representation of a 'context', which can be read as a valid value of the 'owner' field of any
@@ -35,7 +28,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.63 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: Contexts.java,v 1.64 2009-01-04 18:57:14 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -87,12 +80,15 @@ public class Contexts extends MMObjectBuilder {
 
     private boolean readAll = false;
     private boolean allContextsPossible = true; // if you want to use security for workflow, then you want this to be false
-
+    private boolean disableContextChecks = false;
 
     private int     maxContextsInQuery = DEFAULT_MAX_CONTEXTS_IN_QUERY;
 
 
-    private BasicContextProvider provider = new BasicContextProvider(Contexts.this) {
+    private ContextProvider provider;
+    
+    protected ContextProvider createProvider() {
+        return new BasicContextProvider(Contexts.this) {
             @Override  protected boolean isAllContextsPossible() {
                 return Contexts.this.allContextsPossible;
             }
@@ -103,8 +99,11 @@ public class Contexts extends MMObjectBuilder {
             @Override  protected int getMaxContextsInQuery() {
                 return Contexts.this.maxContextsInQuery;
             }
+            @Override  protected boolean disableContextChecks() {
+                return Contexts.this.disableContextChecks;
+            }
         };
-
+    }
 
     /**
      * @javadoc
@@ -121,6 +120,11 @@ public class Contexts extends MMObjectBuilder {
             maxContextsInQuery = Integer.parseInt(s);
         }
 
+        s = getInitParameters().get("disableContextChecks");
+        if (! "".equals(s) && s != null) {
+            disableContextChecks = "true".equals(s);
+        }
+        provider = createProvider();
 
         return super.init();
     }
@@ -138,59 +142,14 @@ public class Contexts extends MMObjectBuilder {
     }
 
 
-
-
-    /**
-     * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(UserContext, int, Operation)
-     */
-    private  boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
-        // retrieve the node
-        MMObjectNode node       = getNode(nodeId);
-        return provider.mayDo(user, node, operation);
-    }
-
-
     protected boolean isOwnNode(User user, MMObjectNode node) {
         return Authenticate.getInstance().getUserProvider().isOwnNode(user, node);
     }
 
-    /**
-     * Returns whether user may do operation on a node with given context.
-     */
-
-    protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
-        return mayDo(user.getNode(), contextNode, operation, true);
-    }
 
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
-
-        Set<MMObjectNode> groupsAndUsers = provider.getGroupsAndUsers(contextNode, operation);
-
-        if (checkOwnRights) {
-            if (groupsAndUsers.contains(user)) return true;
-        }
-
-        Iterator<MMObjectNode> iter = groupsAndUsers.iterator();
-        // now checking if this user is in one of these groups.
-        while (iter.hasNext()) {
-            MMObjectNode group = iter.next();
-            if (! (group.getBuilder() instanceof Groups)) continue;
-            if (log.isDebugEnabled()) log.trace("checking group " + group);
-            if(Groups.getBuilder().contains(group, user)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("User " + user.getStringValue("username") + " may " + operation + " according to context " + contextNode);
-                }
-                return true;
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("User " + user.getStringValue("username") + " may not " + operation + " according to context " + contextNode);
-        }
-        return false;
-
+        return provider.mayDoOnContext(user, contextNode, operation, checkOwnRights);
     }
-
 
 
 

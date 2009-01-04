@@ -42,7 +42,12 @@
     one contexts is added to the query) grow. If the query would have to be more complex this is not
     done, but the result is checked.
     -->
-
+    <property name="disableContextChecks">false</property>
+    <!-- Basically, this turns off the whole idea of the cloudcontext security implementation.
+    The reason to have this option is to use the model of users, groups and be able to
+    use the full implementation when needed. Applications with the same codebase and different
+    security requirements can benefit from this. -->
+    
   </properties>
   <fieldlist>
     <field name="name">
