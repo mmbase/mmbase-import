@@ -9,7 +9,7 @@
  */
 package com.finalist.cmsc.module.luceusmodule.taglib;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Perform a Luceus FullIndex
@@ -32,7 +32,7 @@ public class FullIndexTag extends LuceusmoduleTag {
    @Override
    public void doTag() {
       if (isRunning()) {
-         if (erase && !StringUtil.isEmptyOrWhitespace(nodemanager)) {
+         if (erase && StringUtils.isNotBlank(nodemanager)) {
             throw new IllegalArgumentException("A *clean* FullIndex can not be executed together with a specific nodemanager type! Please remove either one of the two.");
          }
          getModule().startFullIndex(erase, nodemanager);
