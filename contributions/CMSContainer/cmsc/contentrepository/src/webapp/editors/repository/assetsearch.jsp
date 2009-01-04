@@ -403,10 +403,6 @@
                   <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                     <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
-                  <c:if test="${not empty strict}">
-                     <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
-                         <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
-                  </c:if>
                <%@ include file="searchIconsBar.jspf" %>
             </td>
             <td style="white-space: nowrap;" onMouseDown="objClick(this);">
