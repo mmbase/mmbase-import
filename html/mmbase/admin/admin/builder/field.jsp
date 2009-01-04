@@ -52,7 +52,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbname",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_name" />" target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbname&name=Name"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbname&name=Name"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -61,7 +61,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbmmbasetype",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="changetype.jsp?builder="+builder+"&field="+field%>" />"
+    <a href="<mm:url page='<%="changetype.jsp?builder="+builder+"&field="+field%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -70,7 +70,7 @@
   <td class="data"><%=cloud.getNodeManager(builder).getField(field).getDataType().toXml()%></td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#data_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="changetype.jsp?builder="+builder+"&field="+field%>" />"
+    <a href="<mm:url page='<%="changetype.jsp?builder="+builder+"&field="+field%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -79,7 +79,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbstate",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbstate&name=State"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbstate&name=State"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -88,7 +88,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbnotnull",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbnotnull&name=Required"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbnotnull&name=Required"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -97,7 +97,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbkey",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbkey&name=Unique/Key"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbkey&name=Unique/Key"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -106,7 +106,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbsize",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbsize&name=Size"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbsize&name=Size"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -125,7 +125,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorinput",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_input" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorinput&name=Input"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorinput&name=Input"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -134,7 +134,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorlist",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_list" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorlist&name=List"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorlist&name=List"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -143,7 +143,7 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorsearch",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_search" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorsearch&name=Search"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorsearch&name=Search"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -170,7 +170,7 @@
   <td class="data"><%=name.getStringValue("item2")%></td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -181,7 +181,7 @@
   <td class="data">&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newguiname&name=New&nbsp;Field&nbsp;Name"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newguiname&name=New&nbsp;Field&nbsp;Name"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -208,7 +208,7 @@
   <td class="data"><%=name.getStringValue("item2")%></td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_description" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=description&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=description&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -219,7 +219,7 @@
   <td class="data">&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_description" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newdescription&name=New&nbsp;Field&nbsp;Name"%>" />"
+    <a href="<mm:url page='<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newdescription&name=New&nbsp;Field&nbsp;Name"%>' />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -252,7 +252,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?builder="+builder%>' />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>
