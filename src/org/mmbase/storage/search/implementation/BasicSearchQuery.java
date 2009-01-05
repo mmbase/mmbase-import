@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.52 2009-01-05 14:30:12 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.53 2009-01-05 14:44:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery> {
@@ -62,6 +62,8 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * Whether this Query is cacheable.
      */
     private CachePolicy cachePolicy = CachePolicy.ALWAYS;
+
+    private boolean modifiable = true;
 
 
     /**
@@ -145,6 +147,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
     protected void copySteps(SearchQuery q) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         MMBase mmb = MMBase.getMMBase();
         steps = new ArrayList<Step>(q.getSteps().size());
         Iterator<Step> i = q.getSteps().iterator();
@@ -189,6 +192,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         fields = new ArrayList<StepField>(q.getFields().size());
         MMBase mmb = MMBase.getMMBase();
         for (StepField field : q.getFields()) {
@@ -206,6 +210,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         sortOrders = new ArrayList<SortOrder>(q.getSortOrders().size());
         MMBase mmb = MMBase.getMMBase();
         for (SortOrder sortOrder : q.getSortOrders()) {
@@ -321,6 +326,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @return This <code>BasicSearchQuery</code> instance.
     */
     public BasicSearchQuery setDistinct(boolean distinct) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.distinct = distinct;
         hasChangedHashcode = true;
         return this;
@@ -334,6 +340,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSearchQuery setMaxNumber(int maxNumber) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (maxNumber < -1) {
             throw new IllegalArgumentException( "Invalid maxNumber value: " + maxNumber);
         }
@@ -350,6 +357,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSearchQuery setOffset(int offset) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (offset < 0) {
             throw new IllegalArgumentException(
             "Invalid offset value: " + offset);
@@ -367,6 +375,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStep addStep(MMObjectBuilder builder) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         BasicStep step = new BasicStep(builder);
         steps.add(step);
         hasChangedHashcode = true;
@@ -386,6 +395,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalStateException when there is no previous step.
      */
     public BasicRelationStep addRelationStep(InsRel builder, MMObjectBuilder nextBuilder) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         int nrOfSteps = steps.size();
         if (nrOfSteps == 0) {
            throw new IllegalStateException("No previous step.");
@@ -410,6 +420,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      *         on an aggregating query.
      */
     public BasicStepField addField(Step step, CoreField fieldDefs) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (aggregating) {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
@@ -424,6 +435,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @since MMBase-1.8.2
      */
     public BasicStepField addFieldUnlessPresent(Step step, CoreField fieldDefs) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (aggregating) {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
@@ -454,7 +466,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * Add all fields of given step
      */
     protected void  addFields(Step step, MMObjectBuilder builder) {
-
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is important for microsoft JDBC.
@@ -469,6 +481,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
     public void removeFields() {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         fields.clear();
         hasChangedHashcode = true;
     }
@@ -485,6 +498,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      *         on an non-aggregating query.
      */
     public BasicAggregatedField addAggregatedField(Step step, CoreField field, int aggregationType) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (!aggregating) {
             throw new UnsupportedOperationException(
             "Adding aggregated field to non-aggregating query.");
@@ -503,6 +517,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSortOrder addSortOrder(StepField field) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (field == null) throw new IllegalArgumentException();
         BasicSortOrder sortOrder;
         if (field.getType() ==  Field.TYPE_DATETIME) {
@@ -522,6 +537,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public void setConstraint(Constraint constraint) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.constraint = constraint;
         hasChangedHashcode = true;
     }
@@ -574,7 +590,15 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
     public void setCachePolicy(CachePolicy policy) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.cachePolicy = policy;
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setModifiable(boolean m) {
+        modifiable = m;
     }
 
     // javadoc is inherited
