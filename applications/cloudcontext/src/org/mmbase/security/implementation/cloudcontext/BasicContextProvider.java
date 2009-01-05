@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.7 2009-01-05 14:46:05 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.8 2009-01-05 16:35:39 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -209,6 +209,8 @@ public  class BasicContextProvider implements ContextProvider {
             for (NodeSearchQuery query : getContextQueries()) {
                 try {
                     MMObjectBuilder contextBuilder = query.getBuilder();
+                    query = (NodeSearchQuery) query.clone();
+
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(contextBuilder.getField("name")), context);
                     query.setConstraint(constraint);
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(query).iterator();

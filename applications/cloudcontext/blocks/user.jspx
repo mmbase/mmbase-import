@@ -9,22 +9,35 @@
 
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" required="true" />
+
+  <mm:function id="authentication" set="cloudcontext" name="authentication" write="false" />
+
   <script type="text/javascript">
     $(document).ready(function() {
       Widgets.instance.twoMultiples("#mm_groups");
+      var validator = new MMBaseValidator();
+      validator.prefetchNodeManager('${authentication.userBuilder}');
+      validator.setup("#user_form");
     });
   </script>
-  <mm:node referid="node">
-    <mm:form>
+  <mm:form id="user_form">
+    <mm:node referid="node">
+
       <input type="hidden" name="node" value="${node}" />
       <table>
         <mm:fieldlist type="edit">
           <tr>
-            <th><mm:fieldinfo type="guiname" /></th>
-            <td><mm:fieldinfo type="input" /></td>
+            <th>
+              <mm:fieldinfo type="guiname" />
+            </th>
+            <td>
+              <mm:fieldinfo type="input" />
+              <mm:fieldinfo type="errors" />
+            </td>
           </tr>
         </mm:fieldlist>
       </table>
+
       <mm:function set="cloudcontext" name="authorization" write="false"><c:set var="queries" value="${_.contextProvider.contextQueries}"  /></mm:function>
       <mm:import externid="submit" />
       <mm:present referid="submit">
@@ -42,7 +55,6 @@
         </c:forEach>
       </table>
       <input type="submit" value="submit" name="submit" />
-
-    </mm:form>
-  </mm:node>
+    </mm:node>
+  </mm:form>
 </div>
