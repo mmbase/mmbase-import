@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.228 2008-09-24 15:25:24 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.229 2009-01-05 16:36:58 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
@@ -349,7 +349,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         try {
             return parent.getMMBase().getMMBaseCop().getAuthorization().getContext(user, getNumber());
         } catch (Exception e) {
-            log.warn(e);
+            log.warn(e.getMessage(), e);
             return getStringValue("owner");
         }
     }
