@@ -32,10 +32,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
+ * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.4 2009-01-04 18:57:14 nklasens Exp $
+ * @version $Id: BasicContextProvider.java,v 1.5 2009-01-05 10:27:25 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -430,7 +430,7 @@ public  class BasicContextProvider implements ContextProvider {
         if (disableContextChecks()) {
             return true;
         }
-        
+
         Set<MMObjectNode> groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
         if (checkOwnRights) {
