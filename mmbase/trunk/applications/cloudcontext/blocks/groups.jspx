@@ -11,7 +11,7 @@
 
   <p class="action">
     <mm:maycreate type="$nodetype">
-      <mm:link page="create_user">
+      <mm:link page="create_group">
         <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
       </mm:link>
     </mm:maycreate>
