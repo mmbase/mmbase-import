@@ -1,7 +1,6 @@
 <div
     class="help"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
   <jsp:output omit-xml-declaration="true" />
@@ -52,9 +51,15 @@
       </dd>
       <dt>mmbaseusers</dt>
       <dd>
-        Every user account is stored in an mmbaseusers object, which contains e.g. username,
-        password (encrypted) and 'default security context' (the security context of new nodes of this
-        user).
+        <p>
+          Every user account is stored in an mmbaseusers object, which contains e.g. username,
+          password (encrypted) and 'default security context' (the security context of new nodes of this
+          user).
+        </p>
+        <p>
+          The security implementation  can also have been overridden to use a different builder for this.
+          The current implementation uses: <em><mm:function set="cloudcontext" name="authentication">${_.userProvider.userBuilder.tableName}</mm:function></em>
+        </p>
       </dd>
       <dt>mmbasegroups</dt>
       <dd>
@@ -62,9 +67,27 @@
       </dd>
       <dt>mmbasecontexts</dt>
       <dd>
-        Rights are created by linking 'security contexts' objects to mmbasegroups or mmbaseusers objects.
-        Every node in the system is is associated with such a security context, which can be viewed
-        as the 'owner' of the node.
+        <p>
+          Rights are created by linking 'security contexts' objects to mmbasegroups or mmbaseusers objects.
+          Every node in the system is is associated with such a security context, which can be viewed
+          as the 'owner' of the node.
+        </p>
+        <p>
+          The security implemetation can have been overriden to use different builder(s) for this.
+          The current implementation uses:
+        </p>
+        <ol>
+          <mm:function set="cloudcontext" name="authorization" write="false">
+            <c:set var="queries" value="${_.contextProvider.contextQueries}"  />
+          </mm:function>
+          <c:forEach items="${queries}" var="q">
+            <mm:context>
+              <mm:listnodescontainer referid="q" id="query">
+                <li><mm:write value="${query.sql}" /></li>
+              </mm:listnodescontainer>
+            </mm:context>
+          </c:forEach>
+        </ol>
       </dd>
     </dl>
     <img src="${mm:link('/mmbase/components/cloudcontext/images/Security.jpg')}" />

@@ -93,9 +93,15 @@
       </dd>
       <dt>mmbaseusers</dt>
       <dd>
-        Elke gebruikers-account wordt opgeslagen in een mmbaseusers object, wat bijv. de username,
-        het wachtwoord (gecodeerd) en de 'default security context' bevat (de security context die nieuwe
-        objecten van deze gebruiker hebben).
+        <p>
+          Elke gebruikers-account wordt opgeslagen in een mmbaseusers object, wat bijv. de username,
+          het wachtwoord (gecodeerd) en de 'default security context' bevat (de security context die nieuwe
+          objecten van deze gebruiker hebben).
+        </p>
+        <p>
+          Het is mogelijk dat de implementatie is overridden om een ander object-type hiervoor te gebruiken.
+          De huidige inplementatie gebruikt het object-type: <em><mm:function set="cloudcontext" name="authentication">${_.userProvider.userBuilder.tableName}</mm:function></em>
+        </p>
       </dd>
       <dt>mmbasegroups</dt>
       <dd>
@@ -103,9 +109,27 @@
       </dd>
       <dt>mmbasecontexts</dt>
       <dd>
-        Rechten worden gecreëeerd door het leggen van relaties tussen 'security contexten' en
-        gebruikers en/of groepen. Elk mmbase object is geassocieerd met zo'n security context. De
-        security contexten kunnen gezien worden als de 'eigenaars'.
+        <p>
+          Rechten worden gecreëeerd door het leggen van relaties tussen 'security contexten' en
+          gebruikers en/of groepen. Elk mmbase object is geassocieerd met zo'n security context. De
+          security contexten kunnen gezien worden als de 'eigenaars'.
+        </p>
+        <p>
+          Het is mogelijk om de security implementatie zo te overriden dat er anders obecttype(s)
+          hiervoor worden gebruikt. De huidige implementatie gebruikt:
+        </p>
+        <ol>
+          <mm:function set="cloudcontext" name="authorization" write="false">
+            <c:set var="queries" value="${_.contextProvider.contextQueries}"  />
+          </mm:function>
+          <c:forEach items="${queries}" var="q">
+            <mm:context>
+              <mm:listnodescontainer referid="q" id="query">
+                <li><mm:write value="${query.sql}" /></li>
+              </mm:listnodescontainer>
+            </mm:context>
+          </c:forEach>
+        </ol>
       </dd>
     </dl>
     <img src="${mm:link('/mmbase/components/cloudcontext/images/Security.jpg')}" />
