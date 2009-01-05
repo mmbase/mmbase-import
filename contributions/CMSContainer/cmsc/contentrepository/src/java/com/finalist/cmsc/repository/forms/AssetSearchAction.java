@@ -68,6 +68,11 @@ public class AssetSearchAction extends PagerAction {
 
       String deleteAssetRequest = request.getParameter("deleteAssetRequest");
       String searchShow = request.getParameter("searchShow");
+      String strict = request.getParameter(STRICT);
+      //it is just for keep strict if search commit is false
+      if (StringUtils.isNotEmpty(strict)) {
+         request.setAttribute(STRICT, strict);
+      }
       if (StringUtils.isEmpty(searchShow)) {
          searchShow = (String)request.getSession().getAttribute("searchShow");
          if(StringUtils.isEmpty(searchShow)){
@@ -108,9 +113,8 @@ public class AssetSearchAction extends PagerAction {
 
       NodeManager nodeManager = cloud.getNodeManager(searchForm.getAssettypes());
       QueryStringComposer queryStringComposer = new QueryStringComposer();
-      if (StringUtils.isNotEmpty(request.getParameter(STRICT))) {
-         request.setAttribute(STRICT, request.getParameter(STRICT));
-         queryStringComposer.addParameter(STRICT, request.getParameter(STRICT));
+      if (StringUtils.isNotEmpty(strict)) {
+         queryStringComposer.addParameter(STRICT, strict);
       }
       if (StringUtils.isNotEmpty(request.getParameter(MODE))) {
          queryStringComposer.addParameter(MODE, request.getParameter(MODE));
