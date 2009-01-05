@@ -36,6 +36,7 @@
     </gui>
     <datatype base="list" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <property name="itemDataType" value="node" />
+      <required value="false" />
       <enumeration enforce="never">
         <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
           <sortorder field="name" />
