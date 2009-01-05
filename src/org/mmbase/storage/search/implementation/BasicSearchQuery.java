@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.50 2009-01-02 11:04:49 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.51 2009-01-05 09:32:28 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -444,28 +444,25 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
     // MM
-    /**
-     * Add all fields of given step
-     */
+
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
+        addFields(step, builder);
+    }
+    /**
+     * Add all fields of given step
+     */
+    public void  addFields(Step step, MMObjectBuilder builder) {
+
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is import for microsoft JDBC.
-        if (builder != null) {
-            for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-                if (field.inStorage()) {
-                    BasicStepField stepField = addField(step, field);
-                    mapField(field, stepField);
-                }
-            }
-        } else {
-            // this can e.g. happen during shut-down of mmbase
-            if (mmb.getState()) {
-                throw new RuntimeException("Step is describing non-existing builder " + step.getTableName());
-            } else {
-                log.debug("Step is describing non-existing builder " + step.getTableName());
+
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+            if (field.inStorage()) {
+                BasicStepField stepField = addField(step, field);
+                mapField(field, stepField);
             }
         }
         hasChangedHashcode = true;
