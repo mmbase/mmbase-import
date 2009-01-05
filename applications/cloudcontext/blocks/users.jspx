@@ -17,7 +17,7 @@
   <p class="action">
     <mm:maycreate type="$nodetype">
       <mm:link page="create_user">
-        <a href="${_}"><img src="${mm:link('images/mmbase-new.gif')}"  alt="+" title="create user"  /></a>
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
       </mm:link>
     </mm:maycreate>
     <mm:maycreate type="$nodetype" inverse="true">
@@ -124,7 +124,7 @@
                 <a onclick="document.getElementById('object${_node}').className = 'active'; "
                    href="${_}">
                   <fmt:message key="update" />
-                  <img src="${mm:link('images/mmbase-edit.gif')}"
+                  <img src="${mm:link('/mmbase/style/images/edit.png')}"
                        alt="" title="" />
                 </a>
               </mm:link>
@@ -137,7 +137,7 @@
                     <a onclick="confirm.js"
                        href="${_}">
                       <fmt:message key="delete" />
-                      <img src="${mm:link('location/images/mmbase-delete.gif')}"
+                      <img src="${mm:link('/mmbase/style/images/delete.png')}"
                            alt="" title="" />
                     </a>
                   </mm:link>

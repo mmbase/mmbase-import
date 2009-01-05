@@ -76,7 +76,12 @@
     <title xml:lang="nl">Groepen</title>
     <title xml:lang="en">Groups</title>
     <description xml:lang="en">Generic security editor</description>
-    <body jsp="groups.jspx" />
+    <body jsp="groups.jspx">
+      <param name="orderby" />
+      <param name="search" />
+      <param name="directions" />
+      <param regex="_.*" />
+    </body>
   </block>
 
 
