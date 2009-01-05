@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.53 2009-01-05 14:44:27 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.54 2009-01-05 16:34:39 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery> {
@@ -132,6 +132,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     public BasicSearchQuery clone() {
         try {
             BasicSearchQuery clone = (BasicSearchQuery) super.clone();
+            clone.setModifiable(true);
             clone.copySteps(this);
             clone.copyFields(this);
             clone.copySortOrders(this);
