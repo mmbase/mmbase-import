@@ -18,7 +18,7 @@
     });
   </script>
   <mm:form id="user_form">
-    <mm:createnode id="new_node" type="${authentication.userBuilder}">
+    <mm:createnode id="new_node" type="${authentication.userBuilder}" commitonclose="false">
       <table>
         <mm:fieldlist type="edit">
           <tr>

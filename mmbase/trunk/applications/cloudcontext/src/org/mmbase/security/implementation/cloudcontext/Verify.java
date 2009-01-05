@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.16 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: Verify.java,v 1.17 2009-01-05 17:01:43 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
@@ -104,8 +104,7 @@ public class Verify extends Authorization {
 
     }
 
-    @Override
-    public boolean check(UserContext user, Action ac, Parameters parameters) {
+    @Override public boolean check(UserContext user, Action ac, Parameters parameters) {
         return Actions.getBuilder().check((User) user, ac, parameters);
     }
 

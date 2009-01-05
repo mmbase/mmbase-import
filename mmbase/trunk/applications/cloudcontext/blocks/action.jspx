@@ -11,13 +11,10 @@
   <mm:import externid="node" required="true" />
   <script type="text/javascript">
     $(document).ready(function() {
-      Widgets.instance.twoMultiples("#mm_ingroups,#mm_containsgroups");
-      var validator = new MMBaseValidator();
-      validator.prefetchNodeManager('mmbasegroups');
-      validator.setup("#group_form");
+
     });
   </script>
-  <mm:form id="group_form">
+  <mm:form>
     <input type="hidden" name="node" value="${node}" />
     <mm:node referid="node">
       <table>
@@ -26,9 +23,6 @@
         </mm:fieldlist>
       </table>
       <table class="rights">
-        <mm:function set="cloudcontext" name="authorization" write="false">
-          <c:set var="queries" value="${_.contextProvider.contextQueries}"  />
-        </mm:function>
 
         <mm:import externid="submit" />
         <mm:present referid="submit">
