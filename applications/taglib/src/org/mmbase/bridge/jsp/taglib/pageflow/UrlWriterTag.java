@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.13 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: UrlWriterTag.java,v 1.14 2009-01-05 18:36:53 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class UrlWriterTag extends UrlTag  implements Writer {
-    private static final Logger log                   = Logging.getLoggerInstance(UrlTag.class);
+    private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
