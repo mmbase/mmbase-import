@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.29 2008-12-30 17:48:08 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.30 2009-01-05 13:57:52 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -112,33 +112,43 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         return query.getCloud();
     }
 
+    /**
+     * @TODO following code must be put in org.mmbase.bridge.util.Queries or
+     * org.mmbase.util.Casting or so.
+     * @since MMBase-1.9.1
+     */
+    private NodeQuery toNodeQuery(Object o) throws JspTagException {
+        if (o == null) return null;
+        if (o instanceof NodeQuery) {
+            return (NodeQuery) o;
+        } else if (o instanceof SearchQuery) {
+            SearchQuery q = (SearchQuery) o;
+            if (q.getSteps().size() != 1) throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
+            NodeQuery query = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
+            query.setConstraint(Queries.copyConstraint(q.getConstraint(), q.getSteps().get(0), query, query.getNodeStep()));
+            query.setOffset(q.getOffset());
+            query.setMaxNumber(q.getMaxNumber());
+            query.setDistinct(q.isDistinct());
+            return query;
+        } else {
+            // will give CCE.
+            return (NodeQuery) o;
+        }
+    }
+
     public int doStartTag() throws JspException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
+            query = toNodeQuery(getContextProvider().getContextContainer().getObject(cloneId));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
             query = (NodeQuery) query.clone();
         } else if (getReferid() != null) {
             Object o = getContextProvider().getContextContainer().getObject(getReferid());
-
-            // TODO following code must be put in org.mmbase.bridge.util.Queries or
-            // org.mmbase.util.Casting or so.
-            if (o instanceof NodeQuery) {
-                query = (NodeQuery) o;
-            } else if (o instanceof SearchQuery) {
-                SearchQuery q = (SearchQuery) o;
-                if (q.getSteps().size() != 1) throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
-                query = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
-                query.setConstraint(Queries.copyConstraint(q.getConstraint(), q.getSteps().get(0), query, query.getNodeStep()));
-                query.setOffset(q.getOffset());
-                query.setMaxNumber(q.getMaxNumber());
-                query.setDistinct(q.isDistinct());
-
-            }
+            query = toNodeQuery(o);
 
             if (query == null) {
                 throw new JspTagException("No query found in referred id " + getReferid());
