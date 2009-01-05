@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * listener to arrange invalidation of (entries of) them  when necessary.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Caches.java,v 1.2 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: Caches.java,v 1.3 2009-01-05 14:45:07 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class Caches {
@@ -180,15 +180,11 @@ public abstract class Caches {
                 }, 1000);
         }
     }
-    public static void waitForCacheInvalidation() {
+    public static void waitForCacheInvalidation() throws InterruptedException {
         while (invalidateScheduled) {
             log.service("waiting for cache invalidation");
             synchronized(Caches.class) {
-                try {
-                    Caches.class.wait();
-                } catch (InterruptedException ie) {
-                    // never mind
-                }
+                Caches.class.wait();
             }
         }
     }
