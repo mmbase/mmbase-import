@@ -4,8 +4,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:sec="http://www.mmbase.org/tags/mm/security"
-
-    class="mm_c c_cloudcontent b_context ${requestScope.className}"
+    class="mm_c c_cloudcontent b_group ${requestScope.className}"
     id="${requestScope.componentId}">
 
   <jsp:output omit-xml-declaration="true" />
