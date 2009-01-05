@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: EntityResolver.java,v 1.1 2008-09-03 23:41:47 michiel Exp $
+ * @version $Id: EntityResolver.java,v 1.2 2009-01-05 16:33:07 michiel Exp $
  */
 public class EntityResolver implements org.xml.sax.EntityResolver {
 
@@ -326,10 +326,11 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
             if (res != null) {
                 definitionStream = res.getStream();
             }
+            log.debug("Get definition stream by registered system id: " + systemId + " " + definitionStream);
         }
 
         if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
-
+            log.debug("No definition stream yet");
             //does systemId contain a mmbase-dtd
             if ((systemId == null) || (! systemId.startsWith(DOMAIN))) {
                 // it's a systemId we can't do anything with,
@@ -343,6 +344,9 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     // perhaps this should not be done if it is about resolving _entities_ rather then dtd.
                     log.debug("Not validating, no need to resolve DTD (?), returning empty resource for " + systemId);
                     return new InputSource(new ByteArrayInputStream(new byte[0]));
+                } else {
+                    log.debug("Cannot resolve " + systemId + ", leaving to parser.");
+                    return null;
                 }
             } else {
                 final String mmResource = systemId.substring(DOMAIN.length());
