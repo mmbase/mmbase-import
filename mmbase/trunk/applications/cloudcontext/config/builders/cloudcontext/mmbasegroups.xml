@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                      http://www.mmbase.org/xmlns/builder.xsd"                        
-  name="mmbasegroups" 
-  maintainer="www.mmbase.org" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
+  name="mmbasegroups"
+  maintainer="www.mmbase.org"
   version="0"
   extends="object"
   defaultcontextintypedef="security"
@@ -52,6 +53,8 @@
       </datatype>
     </field>
   </fieldlist>
+
+  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
 
   <!-- MM: Because the field 'name' is also marked 'unique', this results the following exception:
        java.sql.SQLException: Constraint already exists in statement [ALTER TABLE MMBASETESTS_MMBASEGROUPS ADD CONSTRAINT MMBASETESTS_MMBASEGROUPS_NAME_IDX UNIQUE (NAME)]

@@ -22,7 +22,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextBuilderFunctions.java,v 1.2 2009-01-05 12:09:24 michiel Exp $
+ * @version $Id: ContextBuilderFunctions.java,v 1.3 2009-01-05 12:43:23 michiel Exp $
  * MMBase-1.9.1
  */
 public class ContextBuilderFunctions {
@@ -59,7 +59,6 @@ public class ContextBuilderFunctions {
         MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
         BasicContextProvider prov = (BasicContextProvider) Verify.getInstance().getContextProvider();
         Collection<MMObjectNode> gau = prov.getGroupsAndUsers(contextNode, operation);
-        log.info("" + gau + " CONTAINS " + groupOrUserNode + " " + gau.contains(groupOrUserNode));
         return gau.contains(groupOrUserNode);
     }
 
