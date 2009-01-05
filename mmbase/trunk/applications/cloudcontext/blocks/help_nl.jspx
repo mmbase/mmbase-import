@@ -124,7 +124,7 @@
           </mm:function>
           <c:forEach items="${queries}" var="q">
             <mm:context>
-              <mm:listnodescontainer referid="q" id="query">
+              <mm:listnodescontainer clone="q" id="query">
                 <li><mm:write value="${query.sql}" /></li>
               </mm:listnodescontainer>
             </mm:context>
