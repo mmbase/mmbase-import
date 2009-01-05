@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.449 2008-12-22 14:50:00 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4503,6 +4503,14 @@ like the parameter list or the session (where ever it is available) --&gt;
       <info>
       </info>
       <since>MMBase-1.9</since>
+    </attribute>
+    <attribute>
+      <name>process</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <since>MMBase-1.9.1</since>
     </attribute>
     <example>
 &lt;mm:url referids="a?,name@b,c" page="codesamples/index.jsp"&gt;

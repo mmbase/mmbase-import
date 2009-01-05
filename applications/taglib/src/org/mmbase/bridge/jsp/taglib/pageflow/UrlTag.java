@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.122 2008-12-22 16:12:06 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.123 2009-01-05 18:36:53 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -48,6 +48,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     protected Attribute  absolute             = Attribute.NULL;
     private   Attribute  encode               = Attribute.NULL;
     private   Attribute  internal             = Attribute.NULL;
+    private   Attribute  process              = Attribute.NULL;
     protected Url        url;
 
     public void setReferids(String r) throws JspTagException {
@@ -91,6 +92,15 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         internal = getAttribute(i);
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+
+    public void setProcess(String p) throws JspTagException {
+        process = getAttribute(p, true);
+    }
+
     /**
      * @since MMBase-1.9
      */
@@ -104,6 +114,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     protected boolean escapeAmps() throws JspTagException {
         return escapeAmps.getBoolean(this, true);
     }
+
 
 
     public void addParameter(String key, Object value) throws JspTagException {
@@ -148,6 +159,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             ur = url;
         } else {
             ur = new Url(url, eu);
+            if (process.getBoolean(this, false)) {
+                ur.setProcess();
+            }
         }
         try {
             return ur.get(escapeAmps.getBoolean(this, true));
@@ -179,14 +193,23 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
                 extraParameters.putAll(u.params);
                 frameworkParameters.putAll(u.frameworkParams);
                 url = new Url(this, u, frameworkParameters, parameters, internal);
+                if (process.getBoolean(this, false)) {
+                    url.setProcess();
+                }
             } else {
                 url = new Url(this,
                               getPage(Casting.toString(o)),
                               frameworkParameters,
                               parameters, internal);
+                if (process.getBoolean(this, false)) {
+                    url.setProcess();
+                }
             }
         } else {
             url = new Url(this, getPage(getPage()), frameworkParameters, parameters, internal);
+            if (process.getBoolean(this, false)) {
+                url.setProcess();
+            }
         }
 
         if (getId() != null) {
