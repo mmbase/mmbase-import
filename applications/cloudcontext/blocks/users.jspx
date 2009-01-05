@@ -25,8 +25,8 @@
     </mm:maycreate>
   </p>
   <mm:form>
-    <caption><mm:nodeinfo nodetype="$nodetype" type="guitype" /></caption>
     <table>
+      <caption><mm:nodeinfo nodetype="$nodetype" type="guitype" /></caption>
       <mm:fieldlist nodetype="$nodetype" fields="$fields">
         <tr>
           <td><mm:fieldinfo type="guiname" /></td>
