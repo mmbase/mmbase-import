@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.41 2008-11-24 20:18:13 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.42 2009-01-05 18:36:02 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -85,10 +85,12 @@ public class BasicFramework extends Framework {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
         frameworkParameters.set(ACTION, state.getId());
-        Url url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        Url url = urlConverter.getProcessUrl(path, parameters, frameworkParameters, escapeAmps);
         if (url == Url.NOT) {
-            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps).getUrl();
+            log.debug("Fall back url");
+            return fallbackConverter.getProcessUrl(path, parameters, frameworkParameters, escapeAmps).getUrl();
         } else {
+            log.debug("Url converter url " + url);
             return url.getUrl();
         }
     }
