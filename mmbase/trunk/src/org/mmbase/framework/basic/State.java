@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.10 2008-09-01 21:05:02 michiel Exp $
+ * @version $Id: State.java,v 1.11 2009-01-05 18:53:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -53,6 +53,7 @@ public class State {
     private Renderer renderer = null;
     private Renderer.Type type = Renderer.Type.NOT;
     private Processor processor = null;
+    private Processor processed = null;
     private Parameters frameworkParameters = null;
     private final ServletRequest request;
     private final State previousState;
@@ -124,6 +125,9 @@ public class State {
         frameworkParameters = null;
         request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request", originalLocalizationContext);
     }
+    public void endProcess() {
+        processed = processor;
+    }
 
     /**
      * Whether something is rendered right now.
@@ -180,7 +184,7 @@ public class State {
     }
 
     protected boolean needsProcess() {
-        return id.equals(action);
+        return processed == null && id.equals(action);
     }
 
     /**
