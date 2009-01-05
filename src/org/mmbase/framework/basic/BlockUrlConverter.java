@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.14 2008-10-29 19:42:42 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.15 2009-01-05 17:49:48 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -161,8 +161,8 @@ public abstract class BlockUrlConverter implements UrlConverter {
      *
      */
     protected final Url getUrl(String path,
-                                  Map<String, Object> parameters,
-                                  Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
+                               Map<String, Object> parameters,
+                               Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         Block block = getBlock(path, frameworkParameters);
         if (block != null) {
             Map<String, Object> map = new HashMap<String, Object>();
