@@ -47,7 +47,7 @@
     The reason to have this option is to use the model of users, groups and be able to
     use the full implementation when needed. Applications with the same codebase and different
     security requirements can benefit from this. -->
-    
+
   </properties>
   <fieldlist>
     <field name="name">

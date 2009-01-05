@@ -25,5 +25,5 @@
       </mm:listnodes>
     </mm:listnodescontainer>
   </mm:functioncontainer>
-
+  <jsp:scriptlet>org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation();</jsp:scriptlet>
 </jsp:root>
