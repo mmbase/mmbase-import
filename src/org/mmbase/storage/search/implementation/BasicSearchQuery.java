@@ -23,10 +23,10 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.51 2009-01-05 09:32:28 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.52 2009-01-05 14:30:12 michiel Exp $
  * @since MMBase-1.7
  */
-public class BasicSearchQuery implements SearchQuery, Cloneable {
+public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery> {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
     /**
@@ -127,7 +127,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     }
 
 
-    public Object clone() {
+    public BasicSearchQuery clone() {
         try {
             BasicSearchQuery clone = (BasicSearchQuery) super.clone();
             clone.copySteps(this);
@@ -135,7 +135,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             clone.copySortOrders(this);
             Constraint c = getConstraint();
             if (c != null) {
-                clone.setConstraint(copyConstraint(this, c));
+                clone.setConstraint(copyConstraint(clone, c));
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -453,11 +453,11 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     /**
      * Add all fields of given step
      */
-    public void  addFields(Step step, MMObjectBuilder builder) {
+    protected void  addFields(Step step, MMObjectBuilder builder) {
 
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
-        // right order, which is import for microsoft JDBC.
+        // right order, which is important for microsoft JDBC.
 
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.inStorage()) {

@@ -35,7 +35,7 @@ import org.mmbase.storage.search.*;
  * </ul>
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.15 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.16 2009-01-05 14:30:12 michiel Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -62,7 +62,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
             throw new IllegalArgumentException("Invalid builder type, because this is a virtual builder: " + builder.getClass().getName());
         }
         Step step = super.addStep(builder);
-        addFields(step);
+        addFields(step, builder);
         this.builder = builder;
     }
 
@@ -114,8 +114,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
 
     // javadoc is inherited
     public BasicStep addStep(MMObjectBuilder builder) {
-        throw new UnsupportedOperationException(
-        "Adding more steps to NodeSearchQuery not supported.");
+        throw new UnsupportedOperationException("Adding more steps to NodeSearchQuery not supported.");
     }
 
     // javadoc is inherited
