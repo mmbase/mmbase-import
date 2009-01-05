@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.42 2009-01-05 18:36:02 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.43 2009-01-05 18:53:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -243,6 +243,7 @@ public class BasicFramework extends Framework {
                 log.service("Processing " + actualRenderer.getBlock() + " " + processor);
                 setBlockParametersForProcess(state, blockParameters);
                 processor.process(blockParameters);
+                state.endProcess();
             }
 
             state.render(actualRenderer);
