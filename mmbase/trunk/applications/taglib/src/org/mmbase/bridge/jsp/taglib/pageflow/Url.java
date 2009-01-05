@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.50 2008-12-22 14:51:49 michiel Exp $;
+ * @version $Id: Url.java,v 1.51 2009-01-05 18:36:53 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -189,11 +189,14 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         } else {
             if (process) {
                 result = framework.getProcessUrl(page, params, frameworkParameters, escapeamp);
+                if (log.isDebugEnabled()) {
+                    log.debug("Created normal process url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result);
+                }
             } else {
                 result = framework.getUrl(page, params, frameworkParameters, escapeamp);
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Created normal url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result + " fw");
+                if (log.isDebugEnabled()) {
+                    log.debug("Created normal url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result);
+                }
             }
         }
         {
