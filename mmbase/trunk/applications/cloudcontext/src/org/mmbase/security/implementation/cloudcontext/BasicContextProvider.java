@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.5 2009-01-05 10:27:25 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.6 2009-01-05 12:06:48 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -519,7 +519,6 @@ public  class BasicContextProvider implements ContextProvider {
             found.addAll(getGroupsOrUsers(contextNode, operation, Groups.getBuilder()));
             Caches.getOperationsCache().put(contextNode, operation, found);
         }
-
         return found;
     }
 
@@ -553,7 +552,7 @@ public  class BasicContextProvider implements ContextProvider {
             constraint.addChild(operationConstraint);
 
             query.setConstraint(constraint);
-
+            query.removeFields();
             query.addFields(relationStep.getNext());
 
             try {
