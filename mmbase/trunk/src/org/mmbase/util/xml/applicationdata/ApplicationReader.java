@@ -18,7 +18,7 @@ import org.mmbase.util.xml.EntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.2 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: ApplicationReader.java,v 1.3 2009-01-05 16:34:12 michiel Exp $
  */
 public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
 
@@ -77,15 +77,16 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
      * Get the version of this application
      */
     public int getVersion() {
-        String ver=getElementAttributeValue(root,"version");
-        if (!ver.equals(""))
+        String ver = getElementAttributeValue(root, "version");
+        if (!ver.equals("")) {
             try {
                 return Integer.parseInt(ver);
             } catch (Exception e) {
                 return -1;
             }
-        else
+        } else {
             return -1;
+        }
     }
 
     /**
@@ -208,8 +209,8 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
      */
     public List<Map<String,String>> getContextSources() {
         List<Map<String,String>> results=new ArrayList<Map<String,String>>();
-        for (Element n3: getChildElements("application.contextsourcelist","contextsource")) {
-            Map<String,String> bset = new HashMap<String,String>();
+        for (Element n3: getChildElements("application.contextsourcelist", "contextsource")) {
+            Map<String, String> bset = new HashMap<String, String>();
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"type");
             addAttribute(bset,n3,"goal");
