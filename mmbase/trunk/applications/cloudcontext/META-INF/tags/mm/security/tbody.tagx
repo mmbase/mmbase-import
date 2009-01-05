@@ -5,7 +5,6 @@
     version="2.0">
   <jsp:directive.attribute name="operations"  />
   <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
-  <jsp:directive.attribute name="page"  />
 
   <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
 
@@ -18,45 +17,39 @@
     </tr>
     <mm:functioncontainer referids="_node@grouporuser">
       <mm:listnodescontainer referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
-        <mm:listnodes id="thiscontext"
-                      max="200"
-                      >
+        <mm:listnodes
+            id="thiscontext"
+            max="200"
+            >
           <tr>
-          <td class="text">
-            <mm:import id="text">
-              <mm:nodeinfo type="gui" />
-              <mm:hasfield name="description"><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></mm:hasfield>
-            </mm:import>
-            <c:choose>
-              <c:when test="${empty page}">
-                <mm:write referid="text" escape="none" />
-              </c:when>
-              <c:otherwise>
-                <mm:link page="${page}" referids="thiscontext@context">
-                  <a href="${_}">
-                    <mm:write referid="text" escape="none" />
-                  </a>
-                </mm:link>
-              </c:otherwise>
-            </c:choose>
-          </td>
-          <mm:stringlist referid="ops">
-            <mm:param name="operation"><mm:write /></mm:param>
-            <mm:function name="parentsallow" id="pa" write="false" />
-            <mm:function name="allows" id="a" write="false" />
-            <td class="${pa ? 'parent' : ''}">
-              <mm:booleanfunction name="maygrant">
-                <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
-              </mm:booleanfunction>
-              <mm:booleanfunction name="maygrant" inverse="true">
-                <mm:booleanfunction name="allows">
-                  <jsp:text>X</jsp:text>
-                </mm:booleanfunction>
-              </mm:booleanfunction>
+            <td class="text">
+              <mm:import id="text">
+                <mm:nodeinfo type="gui" />
+                <mm:hasfield name="description"><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></mm:hasfield>
+              </mm:import>
+              <mm:link page="context" referids="thiscontext@node">
+                <a href="${_}">
+                  <mm:write referid="text" escape="none" />
+                </a>
+              </mm:link>
             </td>
-          </mm:stringlist>
-        </tr>
-      </mm:listnodes>
+            <mm:stringlist referid="ops">
+              <mm:param name="operation"><mm:write /></mm:param>
+              <mm:function name="parentsallow" id="pa" write="false" />
+              <mm:function name="allows" id="a" write="false" />
+              <td class="${pa ? 'parent' : ''}">
+                <mm:booleanfunction name="maygrant">
+                  <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
+                </mm:booleanfunction>
+                <mm:booleanfunction name="maygrant" inverse="true">
+                  <mm:booleanfunction name="allows">
+                    <jsp:text>X</jsp:text>
+                  </mm:booleanfunction>
+                </mm:booleanfunction>
+              </td>
+            </mm:stringlist>
+          </tr>
+        </mm:listnodes>
       </mm:listnodescontainer>
     </mm:functioncontainer>
   </tbody>
