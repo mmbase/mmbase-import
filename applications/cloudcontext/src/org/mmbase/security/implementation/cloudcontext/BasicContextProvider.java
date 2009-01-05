@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.6 2009-01-05 12:06:48 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.7 2009-01-05 14:46:05 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -49,6 +49,7 @@ public  class BasicContextProvider implements ContextProvider {
     public BasicContextProvider(NodeSearchQuery... q) {
         List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (NodeSearchQuery query : q) {
+            query.setModifiable(false);
             temp.add(query);
         }
         queries = Collections.unmodifiableList(temp);
@@ -59,7 +60,9 @@ public  class BasicContextProvider implements ContextProvider {
         List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (MMObjectBuilder bul : b) {
             if (bul == null) throw new IllegalArgumentException("Cannot add null to builder list");
-            temp.add(new NodeSearchQuery(bul));
+            NodeSearchQuery q = new NodeSearchQuery(bul);
+            q.setModifiable(false);
+            temp.add(q);
         }
         queries = Collections.unmodifiableList(temp);
     }
@@ -69,7 +72,9 @@ public  class BasicContextProvider implements ContextProvider {
         for (String bulName : b) {
             MMObjectBuilder bul = MMBase.getMMBase().getBuilder(bulName);
             if (bul == null) log.warn("Cannot add 'bulName' to builder list (it does not exist)");
-            temp.add(new NodeSearchQuery(bul));
+            NodeSearchQuery q = new NodeSearchQuery(bul);
+            q.setModifiable(false);
+            temp.add(q);
         }
         queries = Collections.unmodifiableList(temp);
     }
@@ -566,14 +571,13 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
-        Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = Caches.getAllowingContextsCache();
-
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
             return Authorization.COMPLETE_CHECK;
         } else {
             if (operation == Operation.READ && (canReadAll() || disableContextChecks())) {
                 return Authorization.COMPLETE_CHECK;
             } else if (operation == Operation.READ) {
+                Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = Caches.getAllowingContextsCache();
                 AllowingContexts ac = allowingContextsCache.get(userContext.getIdentifier());
                 if (ac == null) {
                     // smart stuff for query-modification
@@ -673,7 +677,7 @@ public  class BasicContextProvider implements ContextProvider {
                 }
 
             } else {
-                //not checking for READ: never mind, this is only used for read checks any way
+                //not checking for other operations than READ: never mind, this is only used for read checks any way
                 return Authorization.NO_CHECK;
             }
         }
