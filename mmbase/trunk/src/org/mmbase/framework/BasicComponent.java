@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.51 2008-10-15 13:03:53 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.52 2009-01-05 17:51:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -156,9 +156,9 @@ public class BasicComponent implements Component {
                 b.getDescription().fillFromXml("description", element);
                 b.getTitle().fillFromXml("title", element);
                 log.trace("Found block: " + blockName);
-                b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
-                b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
-                b.processor = getProcessor("process", element, b);
+                b.putRenderer(Renderer.Type.HEAD, getRenderer("head", element, b));
+                b.putRenderer(Renderer.Type.BODY, getRenderer("body", element, b));
+                b.setProcessor(getProcessor("process", element, b));
                 if (defaultBlock == null) defaultBlock = b;
                 blocks.put(blockName, b);
             }

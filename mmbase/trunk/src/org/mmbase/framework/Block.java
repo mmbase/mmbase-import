@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.41 2008-08-07 14:51:06 michiel Exp $
+ * @version $Id: Block.java,v 1.42 2009-01-05 17:51:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -45,9 +45,10 @@ public class Block {
     private static final Logger log = Logging.getLoggerInstance(Block.class);
 
     private final Map<Renderer.Type, Renderer> renderers = new EnumMap<Renderer.Type, Renderer>(Renderer.Type.class);
-    Processor processor;
+    private Processor processor;
 
-    protected Parameter.Wrapper specific;
+    protected Parameter[] specific;
+    protected Parameter[] paramDefinition = null;
 
     private final String name;
     private final String mimetype;
@@ -126,7 +127,7 @@ public class Block {
      * the block). Use {@link #getRenderer(Renderer.Type}).
      */
     Map<Renderer.Type, Renderer> getRenderers() {
-        return renderers;
+        return Collections.unmodifiableMap(renderers);
     }
 
     /**
@@ -148,13 +149,45 @@ public class Block {
     void addParameters(Parameter ... params) {
         List<Parameter> help = new ArrayList<Parameter>();
         if (specific != null) {
-            help.addAll(Arrays.asList(specific.getArguments()));
+            help.addAll(Arrays.asList(specific));
         }
         for (Parameter p : params) {
             help.add(p);
         }
-        specific = new Parameter.Wrapper(help.toArray(Parameter.emptyArray()));
+        specific = help.toArray(Parameter.emptyArray());
         log.debug("Set parameters of " + this + " to " + help);
+    }
+
+    private void addParameters(List<Parameter> list, Parameter[] params) {
+        for (Parameter p : params) {
+            if (! (p instanceof PatternParameter)) {
+                list.add(p);
+            }
+        }
+    }
+    private void addPatternParameters(List<Parameter> list, Parameter[] params) {
+        for (Parameter p : params) {
+            if (p instanceof PatternParameter) {
+                list.add(p);
+            }
+        }
+    }
+
+    private synchronized void calculateParameterDefinition() {
+        List<Parameter> list     = new ArrayList<Parameter>();
+
+        addParameters(list, specific);
+        addParameters(list, getRenderer(Renderer.Type.HEAD).getParameters());
+        addParameters(list, getRenderer(Renderer.Type.BODY).getParameters());
+        addParameters(list, getProcessor().getParameters());
+
+        addPatternParameters(list, specific);
+        addPatternParameters(list, getRenderer(Renderer.Type.HEAD).getParameters());
+        addPatternParameters(list, getRenderer(Renderer.Type.BODY).getParameters());
+        addPatternParameters(list, getProcessor().getParameters());
+
+        paramDefinition = list.toArray(Parameter.emptyArray());
+
     }
 
 
@@ -166,10 +199,10 @@ public class Block {
         if (specific == null) {
             return new AutodefiningParameters();
         } else {
-            return new Parameters(specific,
-                                  new Parameter.Wrapper(getRenderer(Renderer.Type.HEAD).getParameters()),
-                                  new Parameter.Wrapper(getRenderer(Renderer.Type.BODY).getParameters()),
-                                  new Parameter.Wrapper(getProcessor().getParameters()));
+            if (paramDefinition == null) {
+                calculateParameterDefinition();
+            }
+            return new Parameters(paramDefinition);
         }
     }
 
@@ -182,6 +215,17 @@ public class Block {
 
     public String toString() {
         return getName();
+    }
+
+    Processor setProcessor(Processor p) {
+        paramDefinition = null;
+        Processor r = processor;
+        processor = p;
+        return r;
+    }
+    Renderer putRenderer(Renderer.Type type, Renderer renderer) {
+        paramDefinition = null;
+        return renderers.put(type, renderer);
     }
 
     /**
