@@ -4,24 +4,26 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.attribute name="operations"  />
-  <jsp:directive.attribute name="type"  />
+  <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
 
   <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
 
   <mm:functioncontainer>
     <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-    <mm:listnodes id="thiscontext" type="${empty type ? 'mmbasecontext' : type}">
-      <mm:stringlist referid="ops">
-        <mm:param name="operation"><mm:write /></mm:param>
-        <mm:import id="right" externid="$_:$thiscontext" />
-        <mm:compare referid="right" value="on">
-          <mm:voidfunction name="grant" />
-        </mm:compare>
-        <mm:compare referid="right" value="on" inverse="true">
-          <mm:voidfunction  name="revoke" />
-        </mm:compare>
-      </mm:stringlist>
-    </mm:listnodes>
+    <mm:listnodescontainer referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
+      <mm:listnodes id="thiscontext">
+        <mm:stringlist referid="ops">
+          <mm:param name="operation"><mm:write /></mm:param>
+          <mm:import id="right" externid="$_:$thiscontext" />
+          <mm:compare referid="right" value="on">
+            <mm:voidfunction name="grant" />
+          </mm:compare>
+          <mm:compare referid="right" value="on" inverse="true">
+            <mm:voidfunction  name="revoke" />
+          </mm:compare>
+        </mm:stringlist>
+      </mm:listnodes>
+    </mm:listnodescontainer>
   </mm:functioncontainer>
 
 </jsp:root>

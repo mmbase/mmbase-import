@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.64 2009-01-04 18:57:14 nklasens Exp $
+ * @version $Id: Contexts.java,v 1.65 2009-01-05 12:09:24 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -43,22 +43,6 @@ public class Contexts extends MMObjectBuilder {
     static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
     public final static Parameter<String> PARAMETER_OPERATION   = new Parameter<String>("operation", String.class);
     public final static Parameter<String> PARAMETER_GROUPORUSER = new Parameter<String>("grouporuser", String.class);
-
-    private final static Parameter[] ALLOWS_PARAMETERS = {
-        PARAMETER_GROUPORUSER,
-        PARAMETER_OPERATION
-    };
-
-
-    public final static Parameter[] GRANT_PARAMETERS = {
-        PARAMETER_GROUPORUSER,
-        PARAMETER_OPERATION,
-        Parameter.USER
-    };
-
-    public final static Parameter[] REVOKE_PARAMETERS    = GRANT_PARAMETERS;
-    public final static Parameter[] MAYREVOKE_PARAMETERS = REVOKE_PARAMETERS;
-
 
     public final static Parameter[] MAY_PARAMETERS = {
         Parameter.USER,
@@ -86,7 +70,7 @@ public class Contexts extends MMObjectBuilder {
 
 
     private ContextProvider provider;
-    
+
     protected ContextProvider createProvider() {
         return new BasicContextProvider(Contexts.this) {
             @Override  protected boolean isAllContextsPossible() {
@@ -169,13 +153,6 @@ public class Contexts extends MMObjectBuilder {
     //********************************************************************************
 
 
-    /**
-     * @javadoc
-     */
-    protected boolean grant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, User user) {
-        return provider.grant(user, contextNode, groupOrUserNode, operation);
-    }
-
 
     /**
      * Makes sure unique values and not-null's are filed
@@ -187,21 +164,6 @@ public class Contexts extends MMObjectBuilder {
 
 
 
-
-    /**
-     */
-    protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, User user) {
-        return provider.mayRevoke(user, contextNode, groupOrUserNode, operation);
-    }
-
-
-
-    /**
-     * @javadoc
-     */
-    protected boolean revoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, User user) {
-        return provider.revoke(user, contextNode, groupOrUserNode, operation);
-    }
 
     /**
      * @javadoc
@@ -229,28 +191,12 @@ public class Contexts extends MMObjectBuilder {
         if (function.equals("info")) {
             List<Object> empty = new ArrayList<Object>();
             Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
-            info.put("grant",        "" + GRANT_PARAMETERS + " Grant a right");
-            info.put("revoke",       "" + REVOKE_PARAMETERS + " Revoke a right");
-            info.put("mayrevoke",    "" + MAYREVOKE_PARAMETERS + " Check if user may revoke a right");
             info.put("may",          "" + MAY_PARAMETERS + " Checks a right for another user than yourself");
 
             if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }
-        } else if (function.equals("grant")) {
-            Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
-            return grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"));
-        } else if (function.equals("revoke")) {
-            Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
-            return revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"));
-        } else if (function.equals("mayrevoke")) {
-            Parameters a = Functions.buildParameters(MAYREVOKE_PARAMETERS, args);
-            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), (User) a.get("user"))) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
             }
         } else if (function.equals("may")) {
             Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);

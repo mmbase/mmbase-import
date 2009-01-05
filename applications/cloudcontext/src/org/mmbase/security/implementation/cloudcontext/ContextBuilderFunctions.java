@@ -22,7 +22,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextBuilderFunctions.java,v 1.1 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id: ContextBuilderFunctions.java,v 1.2 2009-01-05 12:09:24 michiel Exp $
  * MMBase-1.9.1
  */
 public class ContextBuilderFunctions {
@@ -57,7 +57,10 @@ public class ContextBuilderFunctions {
 
         MMObjectNode contextNode = groups.getNode(context.getNumber());
         MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
-        return ((BasicContextProvider) Verify.getInstance().getContextProvider()).getGroupsAndUsers(contextNode, operation).contains(groupOrUserNode);
+        BasicContextProvider prov = (BasicContextProvider) Verify.getInstance().getContextProvider();
+        Collection<MMObjectNode> gau = prov.getGroupsAndUsers(contextNode, operation);
+        log.info("" + gau + " CONTAINS " + groupOrUserNode + " " + gau.contains(groupOrUserNode));
+        return gau.contains(groupOrUserNode);
     }
 
     public static  boolean maygrant(@Name("node") Node  context,
@@ -69,6 +72,41 @@ public class ContextBuilderFunctions {
         MMObjectNode contextNode = groups.getNode(context.getNumber());
         MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
         return Verify.getInstance().getContextProvider().mayGrant((User) user, contextNode, groupOrUserNode, operation);
+
+    }
+
+    public static  boolean mayrevoke(@Name("node") Node  context,
+                                     @Name("grouporuser") Node groupOrUser,
+                                     @Name("operation") Operation operation,
+                                     @Name("user") UserContext user) {
+        Groups groups = Groups.getBuilder();
+
+        MMObjectNode contextNode = groups.getNode(context.getNumber());
+        MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
+        return Verify.getInstance().getContextProvider().mayRevoke((User) user, contextNode, groupOrUserNode, operation);
+
+    }
+
+    public static  boolean grant(@Name("node") Node  context,
+                                 @Name("grouporuser") Node groupOrUser,
+                                 @Name("operation") Operation operation,
+                                 @Name("user") UserContext user) {
+        Groups groups = Groups.getBuilder();
+
+        MMObjectNode contextNode = groups.getNode(context.getNumber());
+        MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
+        return Verify.getInstance().getContextProvider().grant((User) user, contextNode, groupOrUserNode, operation);
+
+    }
+    public static  boolean revoke(@Name("node") Node  context,
+                                  @Name("grouporuser") Node groupOrUser,
+                                  @Name("operation") Operation operation,
+                                  @Name("user") UserContext user) {
+        Groups groups = Groups.getBuilder();
+
+        MMObjectNode contextNode = groups.getNode(context.getNumber());
+        MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
+        return Verify.getInstance().getContextProvider().revoke((User) user, contextNode, groupOrUserNode, operation);
 
     }
 }
