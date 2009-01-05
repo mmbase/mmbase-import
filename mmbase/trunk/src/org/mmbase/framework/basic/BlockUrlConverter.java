@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.15 2009-01-05 17:49:48 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.16 2009-01-05 18:36:02 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -189,12 +189,14 @@ public abstract class BlockUrlConverter implements UrlConverter {
                 log.debug("" + niceUrl + " does not start with " + request.getServletPath());
             }
 
-            Map<String, Object> params = framework.prefix(getState(frameworkParameters),
-                                                          blockParameters.toMap());
+            Map<String, Object> params = action ? blockParameters.toMap() :
+                framework.prefix(getState(frameworkParameters),
+                                 blockParameters.toMap());
             if (log.isDebugEnabled()) {
                 log.debug("Prefixed params " + params);
             }
             map.putAll(params);
+            if (action) map.put("_action", frameworkParameters.get("_action"));
 
             String u = BasicUrlConverter.getUrl(niceUrl.getUrl(), map, request, escapeAmps);
             log.debug("Returning actual url " + u);
@@ -213,8 +215,8 @@ public abstract class BlockUrlConverter implements UrlConverter {
     }
 
     public Url getProcessUrl(String path,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+                             Map<String, Object> parameters,
+                             Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
 
