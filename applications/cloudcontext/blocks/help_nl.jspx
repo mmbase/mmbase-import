@@ -46,7 +46,7 @@
     <tr><td></td><td class="text">Mag niet, en u kunt het niet toestaan</td></tr>
     <tr><td>X</td><td class="text">Mag, en u kunt het niet verbieden</td></tr>
     <tr><td class="parent"></td><td class="text">Mag van de bevattende groep, u mag het niet toestaan voor deze gebruiker/groep</td></tr>
-    <tr><td class="parent">X</td><td class="text">Mag van de gevattende grope, en ook voor deze gebruiker/groep, en u kunt het niet verbieden.</td></tr>
+    <tr><td class="parent">X</td><td class="text">Mag van de gevattende groep, en ook voor deze gebruiker/groep, en u kunt het niet verbieden.</td></tr>
   </table>
   <h2>Manier van werken</h2>
   <p>
