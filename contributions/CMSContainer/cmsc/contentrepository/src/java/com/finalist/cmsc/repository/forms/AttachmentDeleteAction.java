@@ -17,7 +17,7 @@ import org.mmbase.bridge.Node;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
-public class AssetDeleteAction extends MMBaseFormlessAction {
+public class AttachmentDeleteAction extends MMBaseFormlessAction {
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
@@ -32,12 +32,6 @@ public class AssetDeleteAction extends MMBaseFormlessAction {
       RepositoryUtil.removeCreationRelForAsset(objectNode);
       RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
 
-      String returnurl = request.getParameter("returnurl");
-
-      if (returnurl != null) {
-         return new ActionForward(returnurl, true);
-      }
-      String url = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + channelnumber;
-      return new ActionForward(url, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?&channelid=" + channelnumber, true);
    }
 }
