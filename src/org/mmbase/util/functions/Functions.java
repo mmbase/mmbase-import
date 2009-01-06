@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.19 2008-08-20 21:12:29 michiel Exp $
+ * @version $Id: Functions.java,v 1.20 2009-01-06 15:16:49 michiel Exp $
  */
 public class Functions {
 
@@ -63,7 +63,8 @@ public class Functions {
                 patterns = true;
             } else {
                 if (patterns) throw new IllegalArgumentException("PatternParameter's must be last in the definition");
-                list.add(firstPattern, d); firstPattern++;
+                list.add(firstPattern, d);
+                firstPattern++;
             }
         }
         return list;
