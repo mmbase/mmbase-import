@@ -33,13 +33,6 @@
   </descriptions>
   <properties>
     <!--
-        String identifying how the passwords must be stored in the database.  This can be a one-way
-        encryption.  This default to 'MD5', and that is quite ok. The disadvantage of MD5 is that it
-        is a one-way encryption, so you can never find the password back, and it must actually be
-        remembered by the client.
-    -->
-    <property name="encoding">MD5</property>
-    <!--
         With the option 'allowencodedpassword' you can actually sabotage the 'encoding' of the password again.
         When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly.
         This can perhaps have been stored in a cookie.
@@ -78,6 +71,12 @@
           <search>-1</search>
         </positions>
       </editor>
+    <!--
+        The datatype of the password fields determines how they are stored in the database.  This can be a one-way
+        encryption.  This default to 'md5password', and that is quite ok. The disadvantage of MD5 is that it
+        is a one-way encryption, so you can never find the password back, and it must actually be
+        remembered by the client, or reset by an administrator.
+    -->
       <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <required value="true" enforce="never" />
         <maxLength value="32" />
