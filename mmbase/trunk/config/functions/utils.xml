@@ -75,4 +75,10 @@
     <param name="repository" type="String"  />
   </function>
 
+ <function name="functionsets">
+    <type>class</type>
+    <class>org.mmbase.util.functions.FunctionSets</class>
+    <method>getFunctionSets</method>
+  </function>
+
 </functionset>
