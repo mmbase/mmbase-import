@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.11 2009-01-05 18:53:23 michiel Exp $
+ * @version $Id: State.java,v 1.12 2009-01-06 15:37:26 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -161,10 +161,13 @@ public class State {
         String b = getBlock().getComponent().getBundle();
         if (b != null) {
             Locale locale = (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request");
-            if (locale == null) org.mmbase.module.core.MMBase.getMMBase().getLocale();
+            if (locale == null) {
+                locale = org.mmbase.module.core.MMBase.getMMBase().getLocale();
+            }
             originalLocalizationContext = request.getAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request");
+            ResourceBundle bundle = ResourceBundle.getBundle(b, locale);
             request.setAttribute(Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                                 new LocalizationContext(ResourceBundle.getBundle(b, locale), Locale.getDefault()));
+                                 new LocalizationContext(bundle, Locale.getDefault()));
         }
     }
 
