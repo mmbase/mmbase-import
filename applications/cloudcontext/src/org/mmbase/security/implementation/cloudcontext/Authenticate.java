@@ -31,10 +31,11 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.30 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.31 2009-01-06 14:38:21 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
+
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
@@ -112,10 +113,23 @@ public class Authenticate extends Authentication {
 
     /**
      * {@inheritDoc}
+     *
+     <table>
+       <caption>Password comparison strategies</caption>
+       <tr><th>client provided</th><th>database</th><th>application to use</th><th>comments</th><tr>
+       <tr><td>plain</td><th>encoded</td><td>name/password</td><td>this is the default and most
+       sensible case</td></tr>
+       <tr><td>encoded</td><th>encoded</td><td>name/encodedpassword</td><td>The 'allowEnoded' property must be true for this to work.</td></tr>
+
+       <tr><td>plain</td><th>plain</td><td>name/password</td><td>this is the default if the password
+       set-processor is empty.</td></tr>
+
+       <tr><td>encoded</td><th>plain</td><td>name/encodedpassword</td><td></td></tr>
+     </table>
      */
-    @Override public UserContext login(String s, Map<String, ?> map, Object aobj[]) throws SecurityException  {
+    @Override public UserContext login(String type, Map<String, ?> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
-            log.trace("login-module: '" + s + "'");
+            log.trace("login-module: '" + type + "'");
         }
         MMObjectNode node = null;
         UserProvider users = getUserProvider();
@@ -125,16 +139,16 @@ public class Authenticate extends Authentication {
             throw new SecurityException(msg);
         }
         allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getUserBuilder().getInitParameter("allowencodedpassword"));
-        if ("anonymous".equals(s)) {
+        if ("anonymous".equals(type)) {
             node = users.getAnonymousUser();
             if (node == null) {
                 if (! warnedNoAnonymousUser) {
                     log.warn("No user node for anonymous found");
                     warnedNoAnonymousUser = true;
                 }
-                return new LocalAdmin("anonymous", s, Rank.getRank("anonymous"));
+                return new LocalAdmin("anonymous", type, Rank.getRank("anonymous"));
             }
-        } else if ("name/password".equals(s)) {
+        } else if ("name/password".equals(type)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("password");
             if(userName == null || password == null) {
@@ -143,25 +157,7 @@ public class Authenticate extends Authentication {
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, s);
-                    loggedInExtraAdmins.put(userName, user);
-                    return user;
-                }
-            }
-            node = users.getUser(userName, password, true);
-            if (node != null && ! users.isValid(node)) {
-                throw new SecurityException("Logged in an invalid user");
-            }
-        } else if (allowEncodedPassword && "name/encodedpassword".equals(s)) {
-            String userName = (String)map.get("username");
-            String password = (String)map.get("encodedpassword");
-            if(userName == null || password == null) {
-                throw new SecurityException("Expected the property 'username' and 'password' with login. But received " + map);
-            }
-            if (extraAdmins.containsKey(userName)) {
-                if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
-                    log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, s);
+                    User user = new LocalAdmin(userName, type);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
@@ -170,16 +166,34 @@ public class Authenticate extends Authentication {
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
-        } else if ("class".equals(s)) {
+        } else if (allowEncodedPassword && "name/encodedpassword".equals(type)) {
+            String userName = (String)map.get("username");
+            String password = (String)map.get("encodedpassword");
+            if(userName == null || password == null) {
+                throw new SecurityException("Expected the property 'username' and 'password' with login. But received " + map);
+            }
+            if (extraAdmins.containsKey(userName)) {
+                if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
+                    log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
+                    User user = new LocalAdmin(userName, type);
+                    loggedInExtraAdmins.put(userName, user);
+                    return user;
+                }
+            }
+            node = users.getUser(userName, password, true);
+            if (node != null && ! users.isValid(node)) {
+                throw new SecurityException("Logged in an invalid user");
+            }
+        } else if ("class".equals(type)) {
             ClassAuthentication.Login li = ClassAuthentication.classCheck("class", map);
             if (li == null) {
-                throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
+                throw new SecurityException("Class authentication failed  '" + type + "' (class not authorized)");
             }
             String userName = li.getMap().get(PARAMETER_USERNAME.getName());
             String rank     = li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                User user = new LocalAdmin(userName, s);
+                User user = new LocalAdmin(userName, type);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
@@ -188,21 +202,21 @@ public class Authenticate extends Authentication {
                         node = users.getUser(userName);
                     } catch (SecurityException se) {
                         log.service(se);
-                        return new LocalAdmin(userName, s, rank == null ? Rank.ADMIN : Rank.getRank(rank));
+                        return new LocalAdmin(userName, type, rank == null ? Rank.ADMIN : Rank.getRank(rank));
                     }
                 } else if (rank != null) {
                     node = users.getUserByRank(rank, userName);
                     log.debug("Class authentication to rank " + rank + " found node " + node);
                     if (node == null) {
-                        return new LocalAdmin(rank, s, Rank.getRank(rank));
+                        return new LocalAdmin(rank, type, Rank.getRank(rank));
                     }
                 }
             }
         } else {
-            throw new UnknownAuthenticationMethodException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
+            throw new UnknownAuthenticationMethodException("login module with name '" + type + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(node, getKey(), s);
+        return new User(node, getKey(), type);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
