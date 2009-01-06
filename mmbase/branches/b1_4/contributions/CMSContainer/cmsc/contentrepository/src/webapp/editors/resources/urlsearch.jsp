@@ -98,10 +98,10 @@
                                     <c:when test="${empty isValidUrl}">
                                         <fmt:message key="urlsearch.validurl.unknown" />
                                     </c:when>
-                                    <c:when test="${isValidUrl eq 0}">
+                                    <c:when test="${isValidUrl eq false}">
                                         <fmt:message key="urlsearch.validurl.invalid" />
                                     </c:when>
-                                    <c:when test="${isValidUrl eq 1}">
+                                    <c:when test="${isValidUrl eq true}">
                                         <fmt:message key="urlsearch.validurl.valid" />
                                     </c:when>
                                     <c:otherwise>
