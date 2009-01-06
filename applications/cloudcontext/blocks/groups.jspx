@@ -76,7 +76,6 @@
             </mm:link>
           </th>
         </mm:fieldlist>
-        <th><fmt:message key="rank" /></th>
         <th>
           <mm:link referids="search">
             <mm:compare referid="orderby" value="number">
@@ -97,25 +96,32 @@
       <mm:sortorder field="$orderby" direction="$directions" />
       <mm:listnodes id="group" varStatus="status">
         <tr id="object${_node}" class="${status.index % 2 eq 0 ? 'even' : 'odd'}">
-          <td>
-            <mm:present referid="extrauserlink">
-              <mm:include referids="user" page="$extrauserlink" notfound="skip"/>
-            </mm:present>
-          </td>
           <mm:fieldlist type="list">
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
           <td class="commands">
             <mm:maywrite>
               <mm:link referids="group@node" page="group">
-                <a onclick="document.getElementById('object${_node}').className = 'active'; "
-                   href="${_}">
+                <a href="${_}">
                   <fmt:message key="update" />
                   <img src="${mm:link('/mmbase/style/images/edit.png')}"
                        alt="" title="" />
                 </a>
               </mm:link>
             </mm:maywrite>
+            <mm:maydelete>
+              <mm:link
+                  process="true"
+                  referids="group@delete" page="groups">
+                <a
+                    class="confirm post"
+                    href="${_}">
+                  <fmt:message key="delete" />
+                  <img src="${mm:link('/mmbase/style/images/delete.png')}"
+                       alt="" title="" />
+                </a>
+              </mm:link>
+            </mm:maydelete>
           </td>
         </tr>
       </mm:listnodes>
