@@ -14,37 +14,30 @@ import org.mmbase.bridge.NodeManager;
 
 import com.finalist.util.http.BulkUploadUtil;
 
-public class AssetUploadAction extends AbstractUploadAction {
+public class AttachmentUploadAction extends AbstractUploadAction {
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
-      AssetUploadForm assetUploadForm = (AssetUploadForm) form;
-      String parentchannel = assetUploadForm.getParentchannel();
-      FormFile file = assetUploadForm.getFile();
+      AssetUploadForm attachmentUploadForm = (AssetUploadForm) form;
+      String parentchannel = attachmentUploadForm.getParentchannel();
+      FormFile file = attachmentUploadForm.getFile();
 
+      int nodeId = 0;
+      String exist = "0";
       String exceed = "no";
+      NodeManager manager = cloud.getNodeManager("attachments");
+      List<Integer> nodes = null;
 
       if (file.getFileSize() != 0 && file.getFileName() != null) {
-         String assetType = "";
-         if (isImage(file.getFileName())) {
-            assetType = "images";
-         } else {
-            assetType = "attachments";
-         }
-
-         List<Integer> nodes = null;
-         NodeManager manager = cloud.getNodeManager(assetType);
-
          int fileSize = file.getFileSize();
          if (maxFileSizeBiggerThan(fileSize)) {
             if (isNewFile(file, manager)) {
                nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-               request.setAttribute("uploadedAssets", nodes);
+               request.setAttribute("uploadedNodes", nodes.size());
             } else {
-               return new ActionForward(mapping.findForward(SUCCESS).getPath()
-                     + "?type=asset&direction=down&exist=1&exceed=" + exceed + "&parentchannel=" + parentchannel, true);
+               exist = "1";
             }
          } else {
             exceed = "yes";
@@ -52,7 +45,7 @@ public class AssetUploadAction extends AbstractUploadAction {
          // to archive the upload asset
          addRelationsForNodes(nodes, cloud);
       }
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&exist=0&exceed="
-            + exceed + "&parentchannel=" + parentchannel, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
+            + "&exceed=" + exceed + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);
    }
 }
