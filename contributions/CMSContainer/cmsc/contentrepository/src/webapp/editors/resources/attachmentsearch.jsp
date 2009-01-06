@@ -97,21 +97,33 @@
                         </th>
                         <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
                         <th nowrap="true"><a href="javascript:orderBy('filename')" class="headerlink" ><fmt:message key="attachmentsearch.filenamecolumn" /></a></th>
+                        <th nowrap="true"><fmt:message key="locate.creationchannelcolumn" /></th>
                         <th nowrap="true"><a href="javascript:orderBy('size')"><fmt:message key="attachmentsearch.filesizecolumn" /></a></th>
                         <th nowrap="true"><a href="javascript:orderBy('mimetype')" class="headerlink" ><fmt:message key="attachmentsearch.mimetypecolumn" /></a></th>
                      </tr>
                      <tbody class="hover">
+                     <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
+                        <mm:field id="trashnumber" name="number" write="false"/>
+                     </mm:node>
                         <c:set var="useSwapStyle">true</c:set>
-                        <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-                           <mm:field id="trashnumber" name="number" write="false"/>
-                        </mm:node>
                         <mm:listnodes referid="results">
-                        <mm:relatednodes role="creationrel" type="contentchannel">
-                           <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-                        </mm:relatednodes>
                         <mm:field name="number" jspvar="channelNumber" write="false"/>
                         <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
-                        <c:if test="${creationRelNumber != trashnumber}" >
+                        <mm:relatednodes role="creationrel" type="contentchannel">
+                           <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
+                           <mm:compare referid="trashnumber" referid2="creationnumber">
+                              <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
+                              <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
+                              <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
+                           </mm:compare>
+                           <mm:field name="number" jspvar="channelNumber" write="false"/>
+                           <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+                           <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
+                              <mm:field name="name" jspvar="channelName" write="false"/>
+                              <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
+                              <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
+                           </mm:compare>
+                        </mm:relatednodes>
                            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment escape="js-single-quotes"/>');</mm:import>
                            <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                               <td style="white-space:nowrap;">
@@ -135,6 +147,10 @@
                               </td>
                               <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
                               <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
+                              <td style="white-space: nowrap;" onMouseDown="objClick(this);">
+                                 <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
+                                    ${channelName}</a>
+                              </td>
                               <td onMouseDown="objClick(this);">
                                  <mm:field name="size" jspvar="filesize" write="false"/>
                                  <c:choose>
@@ -151,7 +167,6 @@
                               </td>
                               <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
                            </tr>
-                        </c:if>
                            <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                         </mm:listnodes>
                      </tbody>
