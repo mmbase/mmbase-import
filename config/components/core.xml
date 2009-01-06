@@ -111,6 +111,14 @@
     <body jsp="jobs.jspx" />
   </block>
 
+  <block name="functions"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Functions</title>
+    <title xml:lang="nl">Functies</title>
+    <body jsp="functions.jspx" />
+  </block>
+
   <block name="datatypes"
          classification="mmbase.tools mmbase.examples"
          mimetype="text/html">
