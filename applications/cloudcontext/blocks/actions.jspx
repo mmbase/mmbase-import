@@ -23,10 +23,10 @@
 
   </mm:form>
 
-  <mm:import id="orderby">number</mm:import>
-  <mm:import id="directions">down</mm:import>
+  <mm:import externid="orderby" from="request">number</mm:import>
+  <mm:import externid="directions" from="request">DOWN</mm:import>
   <mm:import externid="search" />
-  <table summary="Users">
+  <table summary="Actions">
 
     <mm:listnodescontainer type="$nodetype">
 
@@ -97,8 +97,9 @@
           </mm:fieldlist>
           <td class="commands">
             <mm:maywrite>
-              <mm:link referids="group@node" page="action">
-                <a onclick="document.getElementById('object${_node}').className = 'active'; "
+              <mm:link referids="group@node"
+                       page="action">
+                <a
                    href="${_}">
                   <fmt:message key="update" />
                   <img src="${mm:link('/mmbase/style/images/edit.png')}"
