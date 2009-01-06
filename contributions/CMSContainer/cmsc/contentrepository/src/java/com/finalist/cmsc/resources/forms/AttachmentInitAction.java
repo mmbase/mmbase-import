@@ -11,14 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AttachmentInitAction extends SearchInitAction {
 
+   private static final String CREATION = "creation";
+   private static final String CHANNELID = "channelid";
+   
    @Override
    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
       AttachmentForm searchForm = (AttachmentForm) actionForm;
 
+      String channelid = (String) httpServletRequest.getSession().getAttribute(CREATION);
       if (StringUtils.isEmpty(searchForm.getOrder())) {
          searchForm.setOrder("title");
       }
+      httpServletRequest.setAttribute(CHANNELID, channelid);
       return super.execute(actionMapping, actionForm, httpServletRequest, httpServletResponse);
    }
 }
