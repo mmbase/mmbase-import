@@ -14,6 +14,7 @@ import org.mmbase.security.implementation.cloudcontext.builders.Users;
 import java.util.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.module.core.*;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.core.CoreField;
 import org.mmbase.security.SecurityException;
 import org.mmbase.security.Rank;
@@ -27,14 +28,13 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUserProvider.java,v 1.1 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: BasicUserProvider.java,v 1.2 2009-01-06 11:42:10 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class BasicUserProvider implements UserProvider {
 
     private static final Logger log = Logging.getLoggerInstance(BasicUserProvider.class);
 
-    private static final CharTransformer md5 = new MD5();
 
     protected String statusField           = Users.FIELD_STATUS;
     protected String userNameField         = Users.FIELD_USERNAME;
@@ -112,7 +112,7 @@ public abstract class BasicUserProvider implements UserProvider {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL (" + encodedPassword + " != " + dbPassword + ")");
             }
-            return null;
+            throw new SecurityException("password for '" + userName + "' incorrect");
         }
     }
 
@@ -278,7 +278,8 @@ public abstract class BasicUserProvider implements UserProvider {
 
 
     public String encode(String e) {
-        return md5.transform(e);
+        org.mmbase.bridge.Field field = getUserBuilder().getField(getPasswordField());
+        return org.mmbase.util.Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_SET).process(null, field, e));
     }
 
     public MMObjectBuilder getUserBuilder() {

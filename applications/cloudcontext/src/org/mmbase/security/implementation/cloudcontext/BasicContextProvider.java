@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.8 2009-01-05 16:35:39 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.9 2009-01-06 11:42:10 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -433,7 +433,7 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
     public boolean mayDoOnContext(MMObjectNode userNode, MMObjectNode contextNode,
-            Operation operation, boolean checkOwnRights) {
+                                  Operation operation, boolean checkOwnRights) {
         if (disableContextChecks()) {
             return true;
         }
@@ -444,10 +444,8 @@ public  class BasicContextProvider implements ContextProvider {
             if (groupsAndUsers.contains(userNode)) return true;
         }
 
-        Iterator<MMObjectNode> iter = groupsAndUsers.iterator();
-        // now checking if this user is in one of these groups.
-        while (iter.hasNext()) {
-            MMObjectNode group = iter.next();
+
+        for (MMObjectNode group : groupsAndUsers) {
             if (! (group.getBuilder() instanceof Groups)) continue;
             if (log.isTraceEnabled()) {
                 log.trace("checking group " + group);
