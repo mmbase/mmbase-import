@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.60 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: Users.java,v 1.61 2009-01-06 11:45:25 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -60,7 +60,8 @@ public class Users extends MMObjectBuilder {
                 setDescription("Encodes a string like it would happen with a password, when it's stored in the database.");
             }
             public String getFunctionValue(Parameters parameters) {
-                return encode((String)parameters.get(0));
+                String e = (String)parameters.get(0);
+                return Users.this.provider.encode(e);
             }
     };
 
@@ -83,24 +84,12 @@ public class Users extends MMObjectBuilder {
             @Override protected boolean getUserNameCaseSensitive() {
                 return Users.this.userNameCaseSensitive;
             }
-            @Override public String encode(String e) {
-                return Users.this.encode(e);
-            }
         };
 
     // javadoc inherited
     public boolean init() {
 
-        String s = getInitParameters().get("encoding");
-        if (s == null) {
-            log.debug("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
-            encoder = new Encode("MD5");
-        } else {
-            encoder = new Encode(s);
-        }
-        log.service("Using " + encoder.getEncoding() + " as our encoding for password");
-
-        s = getInitParameters().get("userNameCaseSensitive");
+        String s = getInitParameters().get("userNameCaseSensitive");
         if (s != null) {
             userNameCaseSensitive = "true".equals(s);
             log.debug("property 'userNameCaseSensitive' set to '" +userNameCaseSensitive);
@@ -119,8 +108,6 @@ public class Users extends MMObjectBuilder {
      * The user with rank anonymous
      */
     static final String ANONYMOUS_USERNAME = "anonymous";
-
-    private Encode encoder = null;
 
     /**
      * @javadoc
@@ -240,13 +227,6 @@ public class Users extends MMObjectBuilder {
         }
     }
 
-
-    /**
-     * Encodes a password for storage (to avoid plain text passwords).
-     */
-    public String encode(String s)  {
-        return encoder.encode(s);
-    }
 
     /**
      * @javadoc
