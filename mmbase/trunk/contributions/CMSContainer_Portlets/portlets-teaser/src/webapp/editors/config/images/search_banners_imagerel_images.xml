@@ -23,7 +23,7 @@
       </field>
    </item>
    
-   <command name="search" nodepath="images" age="-1" fields="title,description">
+   <command name="assetsselector" nodepath="images" age="-1" fields="title,description">
       <prompt xml:lang="en">Search image</prompt>
       <prompt xml:lang="nl">Zoek afbeelding</prompt>
       <prompt xml:lang="zh">查找图片</prompt>
