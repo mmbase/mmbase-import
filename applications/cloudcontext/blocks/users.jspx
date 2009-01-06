@@ -38,8 +38,8 @@
 
   </mm:form>
 
-  <mm:import id="orderby">number</mm:import>
-  <mm:import id="directions">down</mm:import>
+  <mm:import externid="orderby">number</mm:import>
+  <mm:import externid="directions">DOWN</mm:import>
   <mm:import externid="search" />
   <table summary="Users">
 
@@ -51,6 +51,7 @@
           <mm:fieldinfo type="usesearchinput" />
         </mm:fieldlist>
       </mm:present>
+
 
       <mm:size id="totalsize" write="false" />
 
@@ -104,7 +105,9 @@
           </mm:link>
         </th>
       </tr>
+
       <mm:sortorder field="$orderby" direction="$directions" />
+
       <mm:listnodes id="user" varStatus="status">
         <tr id="object${_node}" class="${status.index % 2 eq 0 ? 'even' : 'odd'}">
           <td>
@@ -128,21 +131,16 @@
                 </a>
               </mm:link>
             </mm:maywrite>
-            <mm:function name="rank" >
-              <mm:compare value="ADMIN_INT" inverse="true">
-                <mm:maydelete>
-                  <mm:import id="prompt">reallydeleteusers</mm:import>
-                  <mm:link referids="user@delete" page="users" process="true">
-                    <a class="confirm post"
-                       href="${_}">
-                      <fmt:message key="delete" />
-                      <img src="${mm:link('/mmbase/style/images/delete.png')}"
-                           alt="X" title="" />
-                    </a>
-                  </mm:link>
-                </mm:maydelete>
-            </mm:compare>
-            </mm:function>
+            <mm:maydelete>
+              <mm:link referids="user@delete" page="users" process="true">
+                <a class="confirm post"
+                   href="${_}">
+                  <fmt:message key="delete" />
+                  <img src="${mm:link('/mmbase/style/images/delete.png')}"
+                       alt="X" title="" />
+                </a>
+              </mm:link>
+            </mm:maydelete>
           </td>
         </tr>
       </mm:listnodes>
