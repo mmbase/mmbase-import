@@ -1,5 +1,8 @@
 <%@page language="java" contentType="text/html;charset=utf-8"
 %><%@include file="globals.jsp" 
+%><%@page import="com.finalist.cmsc.repository.AssetElementUtil,
+                 com.finalist.cmsc.repository.RepositoryUtil,
+                 java.util.ArrayList"
 %><%@page import="java.util.Iterator,
    com.finalist.cmsc.mmbase.PropertiesUtil"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
@@ -53,12 +56,11 @@
          <div class="tab">
             <div class="body">
                <div>
-                  <a href="attachmentupload.jsp?uploadAction=${action}"><fmt:message key="attachments.upload.title" /></a>
+                  <a href="attachmentupload.jsp?uploadAction=${action}&channelid=${channelid}"><fmt:message key="attachments.upload.title" /></a>
                </div>
             </div>
          </div>
       </div>
-
       <div class="editor" style="height:500px">
          <div class="body">
             <mm:import id="searchinit"><c:url value='/editors/resources/AttachmentInitAction.do'/></mm:import>
@@ -100,11 +102,20 @@
                      </tr>
                      <tbody class="hover">
                         <c:set var="useSwapStyle">true</c:set>
+                        <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
+                           <mm:field id="trashnumber" name="number" write="false"/>
+                        </mm:node>
                         <mm:listnodes referid="results">
+                        <mm:relatednodes role="creationrel" type="contentchannel">
+                           <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
+                        </mm:relatednodes>
+                        <mm:field name="number" jspvar="channelNumber" write="false"/>
+                        <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+                        <c:if test="${creationRelNumber != trashnumber}" >
                            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:attachment escape="js-single-quotes"/>');</mm:import>
                            <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                               <td style="white-space:nowrap;">
-                                 <c:if test="${fn:length(results) >1}">
+                                 <c:if test="${(rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                                     <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['attachform'].elements.selectall.checked=false;"/>
                                  </c:if>
                                  <c:if test="${action != 'select'}">
@@ -140,6 +151,7 @@
                               </td>
                               <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
                            </tr>
+                        </c:if>
                            <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                         </mm:listnodes>
                      </tbody>
