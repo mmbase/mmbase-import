@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.31 2009-01-06 14:38:21 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.32 2009-01-06 17:08:15 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -127,7 +127,7 @@ public class Authenticate extends Authentication {
        <tr><td>encoded</td><th>plain</td><td>name/encodedpassword</td><td></td></tr>
      </table>
      */
-    @Override public UserContext login(String type, Map<String, ?> map, Object aobj[]) throws SecurityException  {
+    @Override public User login(String type, Map<String, ?> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + type + "'");
         }
