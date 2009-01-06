@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * esential properties of them are acquired.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UserProvider.java,v 1.1 2008-12-22 15:27:05 michiel Exp $
+ * @version $Id: UserProvider.java,v 1.2 2009-01-06 14:38:21 michiel Exp $
  * MMBase-1.9.1
  */
 public interface UserProvider {
@@ -33,6 +33,8 @@ public interface UserProvider {
     /**
      * Returns the node associated with a certain username/password combination,
      * or <code>null</code>
+     * @param encode Whether or not the user is requested usering the username/encodedpassword login
+     * 'type' see {@link Authenticate#login}.
      */
     MMObjectNode getUser(String user, String pw, boolean encoded);
 
