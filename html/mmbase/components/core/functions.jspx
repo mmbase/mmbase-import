@@ -16,10 +16,13 @@
     <ul>
     <c:forEach items="${functionsets}" var="entry">
       <li>
-        ${entry.key}
+        <p>${entry.key}: <mm:write value="${entry.value.description}" /></p>
         <ul>
           <c:forEach items="${entry.value.functions}" var="fun">
-            <li><mm:escape>${fun}</mm:escape></li>
+            <li>
+              <mm:escape>${fun}</mm:escape>
+              <p><mm:write value="${fun.description}" /></p>
+            </li>
           </c:forEach>
         </ul>
       </li>
