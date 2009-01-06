@@ -15,12 +15,12 @@ package org.mmbase.util.functions;
  * @see    FunctionSets
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: FunctionSet.java,v 1.9 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: FunctionSet.java,v 1.10 2009-01-06 15:16:49 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionSet extends FunctionProvider {
 
-    private String name;
+    private final String name;
     private String description;
 
     public FunctionSet(String name, String description) {

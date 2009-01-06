@@ -13,6 +13,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.XMLWriter;
 
 import java.io.*;
 import java.util.*;
@@ -36,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.34 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.35 2009-01-06 15:16:49 michiel Exp $
  */
 public class FunctionSets {
 
@@ -48,7 +49,7 @@ public class FunctionSets {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
-    private static final Map<String, FunctionSet> functionSets = new HashMap<String, FunctionSet>();
+    private static final Map<String, FunctionSet> functionSets = new TreeMap<String, FunctionSet>();
 
     static {
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
@@ -148,7 +149,7 @@ public class FunctionSets {
                             watcher.add(setResource);
                             decodeFunctionSet(watcher.getResourceLoader(), setResource, setName);
                         } catch (Throwable t) {
-                            log.error(t.getMessage());
+                            log.error(t.getClass() + " " +  t.getMessage(), t);
                         }
                     }
                 }
@@ -241,10 +242,14 @@ public class FunctionSets {
                     Function prev = functionSet.addFunction(fun);
                     if (prev != null && ! (prev.equals(fun))) {
                         log.warn("Replaced " + prev + " with " + fun + " in function set " + functionSet);
+                    } else {
+                        log.service("Found " + fun);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+            } else {
+                log.warn("No function name specified on " + XMLWriter.write(element));
             }
         }
     }
