@@ -10,7 +10,7 @@
   <mm:cloud rank="administrator">
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c c_core b_blobs ${requestScope.className}"
+      class="mm_c c_core b_blobs ${requestScope['org.mmbase.componentClassName']}"
       id="${requestScope['org.mmbase.componentId']}">
     <mm:import externid="convertnow" />
 
@@ -18,7 +18,7 @@
       <form>
         <input type="submit" name="convertnow" value="Convert"/>
         <p>
-          Convert all the blobs (fields with type 'BYTE' of MMBase) to the right storage location. 
+          Convert all the blobs (fields with type 'BYTE' of MMBase) to the right storage location.
           <a href="http://www.mmbase.org/docs17/releases/release-notes.txt">See release-notes of 1.7.0</a>.
           Before doing this, make sure that the 'old' blobdata dir is now WEB-INF/data. If you are
           converting from blobs-in-database, then only make sure this directory exists and is writeable.
