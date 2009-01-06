@@ -17,7 +17,7 @@
   <bundle name="org.mmbase.security.implementation.cloudcontext.editorresources.texts" />
 
   <block name="users" mimetype="text/html"
-         classification="mmbase.edit:200 mmbase.cloudsecurity:10">
+         classification="mmbase.edit:200 mmbase.security:10">
     <title xml:lang="nl">Gebruikers</title>
     <title xml:lang="en">Users</title>
     <description xml:lang="en">Generic security editor</description>
@@ -57,7 +57,7 @@
 
 
   <block name="groups"
-         classification="mmbase.cloudsecurity:20"
+         classification="mmbase.security:20"
          mimetype="text/html">
     <title xml:lang="nl">Groepen</title>
     <title xml:lang="en">Groups</title>
@@ -99,7 +99,7 @@
 
 
   <block name="contexts"
-         classification="mmbase.cloudsecurity:30"
+         classification="mmbase.security:30"
          mimetype="text/html">
     <title xml:lang="nl">Contexten</title>
     <title xml:lang="en">Contexts</title>
@@ -137,13 +137,19 @@
   </block>
 
   <block name="actions"
-         classification="mmbase.cloudsecurity:40"
+         classification="mmbase.security:40"
          mimetype="text/html">
     <title xml:lang="nl">Acties</title>
     <title xml:lang="en">Actions</title>
     <description xml:lang="en">Generic security editor</description>
     <xi:include href="cloudcontext_style.head.xml" />
-    <body jsp="actions.jspx" />
+    <body jsp="actions.jspx">
+      <param name="offset" type="java.lang.Integer" />
+      <param name="orderby" type="java.lang.String" />
+      <param name="directions" type="java.lang.String" />
+      <param name="search" type="java.lang.String" />
+      <param regex="_.*" />
+    </body>
   </block>
 
   <block name="action" mimetype="text/html">
@@ -158,7 +164,7 @@
   </block>
 
   <block name="help"
-         classification="mmbase.cloudsecurity:0"
+         classification="mmbase.security:0"
          mimetype="text/html">
     <title xml:lang="nl">Help</title>
     <title xml:lang="en">Help</title>
