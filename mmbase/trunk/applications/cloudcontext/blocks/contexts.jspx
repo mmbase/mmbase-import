@@ -82,7 +82,7 @@
       <tr>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
           <th>
-            <mm:link>
+            <mm:link referids="tab">
               <mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
               <mm:fieldinfo type="name">
                 <mm:compare referid2="orderby">
@@ -104,7 +104,8 @@
           </th>
         </mm:fieldlist>
         <th>
-          <mm:link referids="search">
+          <mm:link
+              referids="search,tab">
             <mm:compare referid="orderby" value="number">
               <mm:write referid="directions">
                 <mm:compare value="UP">
@@ -128,16 +129,26 @@
           </mm:fieldlist>
           <td class="commands">
             <mm:maywrite>
-              <mm:link referids="_node@node"
-                       page="context">
-                <a onclick="document.getElementById('object${_node}').className = 'active'; "
-                   href="${_}">
+              <mm:link
+                  referids="_node@node"
+                  page="context">
+                <a href="${_}">
                   <fmt:message key="update" />
                   <img src="${mm:link('/mmbase/style/images/edit.png')}"
                        alt="" title="" />
                 </a>
               </mm:link>
             </mm:maywrite>
+            <mm:maydelete>
+              <mm:link referids="_node@delete" page="contexts" process="true">
+                <a class="confirm post"
+                   href="${_}">
+                  <fmt:message key="delete" />
+                  <img src="${mm:link('/mmbase/style/images/delete.png')}"
+                       alt="X" title="" />
+                </a>
+              </mm:link>
+            </mm:maydelete>
           </td>
         </tr>
       </mm:listnodes>
