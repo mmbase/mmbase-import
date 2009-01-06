@@ -28,14 +28,14 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUserProvider.java,v 1.2 2009-01-06 11:42:10 michiel Exp $
+ * @version $Id: BasicUserProvider.java,v 1.3 2009-01-06 14:38:21 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class BasicUserProvider implements UserProvider {
 
     private static final Logger log = Logging.getLoggerInstance(BasicUserProvider.class);
 
-
+    private static MD5 md5 = new MD5();
     protected String statusField           = Users.FIELD_STATUS;
     protected String userNameField         = Users.FIELD_USERNAME;
     protected String passwordField         = Users.FIELD_PASSWORD;
@@ -45,8 +45,10 @@ public abstract class BasicUserProvider implements UserProvider {
     protected String lastLogonField        = Users.FIELD_LAST_LOGON;
 
     private final MMObjectBuilder userBuilder;
+    private Boolean dbPasswordsEncoded = null;
 
     public BasicUserProvider(MMObjectBuilder ub) {
+        if (ub == null) throw new IllegalArgumentException();
         userBuilder = ub;
     }
 
@@ -55,12 +57,25 @@ public abstract class BasicUserProvider implements UserProvider {
         return getUser("anonymous", "", true);
     }
 
-    public MMObjectNode getUser(String userName, String password, boolean encode) {
+    protected boolean isDbPasswordsEncoded() {
+        if (dbPasswordsEncoded == null) {
+            final String testString = "TEST";
+            dbPasswordsEncoded = ! testString.equals(passwordProcessorEncode(testString));
+            if (dbPasswordsEncoded) {
+                log.service("It was found that passwords in " + getUserBuilder() + " are encoded");
+            } else {
+                log.service("It was found that passwords in " + getUserBuilder() + " are not encoded");
+            }
+        }
+        return dbPasswordsEncoded;
+    }
+
+    public MMObjectNode getUser(final String userName, final String password, final boolean encoded) {
 
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
-        MMObjectNode user = getUser(userName);
+        final MMObjectNode user = getUser(userName);
 
         if (userName.equals("anonymous")) {
             log.debug("an anonymous username");
@@ -74,9 +89,20 @@ public abstract class BasicUserProvider implements UserProvider {
             log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
             return null;
         }
-        String encodedPassword = encode ? encode(password) : password;
-        String dbPassword = user.getStringValue(getPasswordField());
-        if (encodedPassword.equals(dbPassword)) {
+
+        final String userPassword;
+        final String dbPassword;
+
+        if (isDbPasswordsEncoded()) {
+            userPassword = encoded ? password : encode(password);
+            dbPassword = user.getStringValue(getPasswordField());
+        } else {
+            userPassword = password;
+            dbPassword = encoded ? encode(user.getStringValue(getPasswordField())) : user.getStringValue(getPasswordField());
+        }
+
+
+        if (userPassword.equals(dbPassword)) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
@@ -110,7 +136,7 @@ public abstract class BasicUserProvider implements UserProvider {
             return user;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL (" + encodedPassword + " != " + dbPassword + ")");
+                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " (encoded: " + encoded + ") --> PASSWORDS NOT EQUAL (" + userPassword + " != " + dbPassword + ")");
             }
             throw new SecurityException("password for '" + userName + "' incorrect");
         }
@@ -245,6 +271,10 @@ public abstract class BasicUserProvider implements UserProvider {
     }
 
 
+    protected boolean isStatusValid(MMObjectNode node) {
+        return node.getIntValue(getStatusField()) >= 0;
+    }
+
     /**
      * @javadoc
      */
@@ -267,7 +297,7 @@ public abstract class BasicUserProvider implements UserProvider {
                 valid = false;
             }
         }
-        if (node.getIntValue(getStatusField()) < 0) {
+        if (! isStatusValid(node)) {
             valid = false;
         }
         if (! valid) {
@@ -277,10 +307,25 @@ public abstract class BasicUserProvider implements UserProvider {
     }
 
 
-    public String encode(String e) {
+    protected final String passwordProcessorEncode(String e) {
         org.mmbase.bridge.Field field = getUserBuilder().getField(getPasswordField());
+        if (field == null) throw new IllegalStateException("No such field " + getPasswordField());
         return org.mmbase.util.Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_SET).process(null, field, e));
     }
+
+    protected final String clientEncode(String e) {
+        return md5.transform(e);
+    }
+
+
+    public String encode(String e) {
+        if (isDbPasswordsEncoded()) {
+            return passwordProcessorEncode(e);
+        } else {
+            return clientEncode(e);
+        }
+    }
+
 
     public MMObjectBuilder getUserBuilder() {
         return userBuilder;
