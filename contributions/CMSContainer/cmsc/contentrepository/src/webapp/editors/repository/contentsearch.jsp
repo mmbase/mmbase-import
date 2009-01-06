@@ -28,7 +28,7 @@
 <mm:import externid="results" jspvar="nodeList" vartype="List" />
 <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
-
+<c:set var="returnurl" value="${fn:replace(returnurl,'&amp;','&')}"/>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
    <div class="tabs">
 <c:if test="${param.index eq 'yes'}">
