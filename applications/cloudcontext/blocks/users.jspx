@@ -121,11 +121,10 @@
           <td class="commands">
             <mm:maywrite>
               <mm:link referids="user@node" page="user">
-                <a onclick="document.getElementById('object${_node}').className = 'active'; "
-                   href="${_}">
+                <a href="${_}">
                   <fmt:message key="update" />
                   <img src="${mm:link('/mmbase/style/images/edit.png')}"
-                       alt="" title="" />
+                       alt="edit" title="" />
                 </a>
               </mm:link>
             </mm:maywrite>
@@ -133,12 +132,12 @@
               <mm:compare value="ADMIN_INT" inverse="true">
                 <mm:maydelete>
                   <mm:import id="prompt">reallydeleteusers</mm:import>
-                  <mm:link referids="user" page="delete_user">
-                    <a onclick="confirm.js"
+                  <mm:link referids="user@delete" page="users" process="true">
+                    <a class="confirm post"
                        href="${_}">
                       <fmt:message key="delete" />
                       <img src="${mm:link('/mmbase/style/images/delete.png')}"
-                           alt="" title="" />
+                           alt="X" title="" />
                     </a>
                   </mm:link>
                 </mm:maydelete>

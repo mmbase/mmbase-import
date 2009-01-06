@@ -22,7 +22,9 @@
 
   <p class="action">
     <mm:maycreate type="$nodetype">
-      <mm:link page="create_context">
+      <mm:link
+          referids="nodetype"
+          page="create_context">
         <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
       </mm:link>
     </mm:maycreate>
