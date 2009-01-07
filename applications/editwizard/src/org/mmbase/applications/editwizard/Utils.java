@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import org.w3c.dom.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -38,7 +39,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.52 2008-09-04 05:58:11 michiel Exp $
+ * @version $Id: Utils.java,v 1.53 2009-01-07 20:39:58 nklasens Exp $
  */
 
 public class Utils {
@@ -718,5 +719,21 @@ public class Utils {
         }
         return text;
     }
+
+    /** Is nodelist empty
+     * @param list NodeList
+     * @return <code>true</code> when empty
+     */
+    public static  boolean isEmptyNodeList(NodeList list) {
+        return list == null || list.getLength() == 0;
+     }
+
+    /** Is nodelist not empty
+     * @param list NodeList
+     * @return <code>true</code> when not empty
+     */
+     public static  boolean isNotEmptyNodeList(NodeList list) {
+        return !isEmptyNodeList(list);
+     }
 
 }
