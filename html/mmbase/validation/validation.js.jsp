@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.56 2008-10-30 12:43:01 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.57 2009-01-07 18:30:06 michiel Exp $
  */
 
 
@@ -467,23 +467,22 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     }
     var dataType = MMBaseValidator.dataTypeCache[el.mm_key];
     if (dataType == null) {
-
-         var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
-         var params = this.getDataTypeArguments(key);
-         var self = this;
-         $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-                  complete: function(res, status){
-                      if (status == "success") {
-                           dataType = res.responseXML;
-                           MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
-                      }
-                  }
-                });
-         this.log("Found " + dataType);
+        var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
+        var params = this.getDataTypeArguments(key);
+        var self = this;
+        $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+                complete: function(res, status){
+                    if (status == "success") {
+                        dataType = res.responseXML;
+                        MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
+                    }
+                }
+               });
+        this.log("Found " + dataType);
 
 
     } else {
-         this.trace("Found in cache " + dataType);
+        this.trace("Found in cache " + dataType);
     }
     return dataType;
 }
