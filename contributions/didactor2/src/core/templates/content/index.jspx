@@ -33,10 +33,10 @@
         </c:choose>
 
         <mm:hasfunction name="sequence">
-          <mm:import from="cookie" id="maxsequence" externid="didactor_${education}_maxsequence" />
+          <mm:import from="cookie" id="maxsequence" externid="didactor_${education}_${user}_maxsequence" />
           <mm:function name="sequence" write="false">
             <c:if test="${empty maxsequence or _ gt maxsequence}">
-              <mm:write cookie="didactor_${education}_maxsequence" />
+              <mm:write cookie="didactor_${education}_${user}_maxsequence" />
             </c:if>
           </mm:function>
 
