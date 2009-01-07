@@ -21,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.20 2008-10-01 19:23:52 michiel Exp $
+ * @version $Id: Module.java,v 1.21 2009-01-07 20:59:38 michiel Exp $
  */
 public interface Module extends Descriptor, Comparable<Module> {
 
@@ -126,7 +126,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @since MMBase-1.8
      * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Collection getFunctions();
+    public Collection<Function<?>> getFunctions();
 
     /**
      * Returns a Function object.
