@@ -3,137 +3,59 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     class="student">
   <jsp:output omit-xml-declaration="true" />
-  <!--
-
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
-
-  -->
-
-  <!--
-      Let her administrate her 'goals'.
-  -->
-  <h2><di:translate key="assessment.goals" /></h2>
-
-  <div class="goals">
-    <mm:node number="$user">
-      <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
-        <mm-sr:relatednodes type="goals"
-                            icondir="${_}"
-                            role="posrel" orderby="posrel.pos" />
-      </mm:treefile>
-    </mm:node>
-  </div>
-
-  <h2><di:translate key="assessment.problems" /></h2>
-
-  <div class="problems">
-
-    <!--
-         show the learnblocks
-    -->
-    <mm:node number="${education}">
-      <span class="head problem">&amp;nbsp;</span>
-      <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
-        <mm:sortorder field="posrel.pos" />
-        <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-          <mm:addnode element="components" number="component.assessment" />
-        </c:if>
-
-        <mm:relatednodes id="learnBlock"  varStatus="status">
-          <!--
-               If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
-          -->
-          <mm:relation to="${user}" role="classrel" searchdir="source"
-                       notfound="null">
-            <c:if test="${empty _node and empty firstopenlesson}">
-              <mm:node node="learnBlock" id="firstopenlesson" />
-            </c:if>
-            <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
-              <mm:field name="name" node="learnBlock" />
-            </span>
-          </mm:relation>
-        </mm:relatednodes>
-      </mm:relatednodescontainer>
-
-      <span class="head delete">&amp;nbsp;</span>
-    </mm:node>
 
 
-    <!--
-         Now the problems, divided per type.
-         They can be edited by the user
-    -->
-    <mm:listnodes orderby="pos" type="problemtypes">
-      <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
+  <mm:import externid="stage">stage1-goals</mm:import>
 
-      <mm:treefile
-          write="false"
-          page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
-        <mm-sr:relatednodes
-            item="/assessment/matrix.div.jspx?sub=${sub}"
-            icondir="${_}"
-            path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
-          <jsp:attribute name="constraints">
-            <mm:addnode element="people" number="${user}" />
-          </jsp:attribute>
-        </mm-sr:relatednodes>
-      </mm:treefile>
-    </mm:listnodes>
-
-    <!--
-        Now links to the feed back pages
-    -->
-    <div>
-      <span class="head problem">
-        <di:translate key="assessment.feedback_coach" />:
-        <mm:link page="/c/shoutbox/index/">
-          <a href="${_}" name=""><di:translate key="assessment.messages"/></a>
-        </mm:link>
-      </span>
-
-    </div>
-
-    <!--
-         Finally, the user is given the option to 'close' the last open lesson
-    -->
-
-    <div style="clear: both;">
-
-      <mm:import externid="step" />
-
-      <c:if test="${! empty firstopenlesson}">
-
-        <mm:node number="$user">
-          <mm:function name="canCloseLesson" referids="firstopenlesson@lesson">
-            <c:choose>
-              <c:when test="${_}">
-
-                <mm:treefile page="/assessment/closelesson.jsp"
-                             objectlist="$includePath"
-                             write="false"
-                             >
-
-                  <form name="closelessonform" action="${_}"   method="post">
-                    <input type="hidden" name="coachmode" value="false"  />
-                    <input type="hidden" name="lesson" value="${firstopenlesson}"  />
-                    <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
-                        <input type="submit" class="formbutton" value="${_}" />
-                    </di:translate>
-                    </form>
-                </mm:treefile>
+  <mm:node number="$education">
+    <mm:function name="tree" />
+  </mm:node>
 
 
-              </c:when>
-              <c:otherwise>
-                <p><di:translate key="assessment.waitforfeedback" /></p>
-              </c:otherwise>
-            </c:choose>
-          </mm:function>
-        </mm:node>
+  <mm:node number="${education}">
+    <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
+      <mm:sortorder field="posrel.pos" />
+      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+        <mm:addnode element="components" number="component.assessment" />
       </c:if>
-    </div>
-  </div>
+      <mm:relatednodes id="learnBlock"  varStatus="status">
+        <!--
+            If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
+        -->
+        <mm:relation to="${user}" role="classrel" searchdir="source"
+                     notfound="null">
+          <c:if test="${empty _node and empty firstopenlesson}">
+            <mm:node node="learnBlock" id="firstopenlesson" />
+          </c:if>
+        </mm:relation>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:node>
+
+  FO: ${firstopenlesson}
+
+  <ul class="tabs">
+    <c:forEach items="stage1-goals,stage2-problems,stage3-problems" var="s">
+      <c:set var="settingname" value="opens_${s}" />
+
+      <c:if test="${! empty di:setting('assessment', settingname)}">
+
+      </c:if>
+      <c:if test="${empty di:setting('assessment', settingname)}">
+        <li class="${stage eq s ? 'current' : ''}">
+          <mm:link referids="s@stage">
+            <mm:param name="sub">assessment</mm:param>
+            <a href="${_}"><di:translate key="assessment.${s}" /></a>
+          </mm:link>
+        </li>
+      </c:if>
+    </c:forEach>
+  </ul>
+
+  <di:include page="/assessment/${stage}.jspx" />
+
+  <di:include page="/assessment/closelesson.link.jspx" />
+
 </div>
