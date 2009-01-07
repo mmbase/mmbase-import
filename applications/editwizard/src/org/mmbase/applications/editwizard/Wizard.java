@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.176 2008-12-30 12:48:03 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.177 2009-01-07 20:39:58 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -1450,7 +1450,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     NodeList descendants = null;
                     if (con!=null) descendants = Utils.selectNodeList(con,"descendants/descendant");
 
-                    if (descendants == null || descendants.getLength() == 0) {
+                    if (Utils.isEmptyNodeList(descendants)) {
                         fdatapath.append("object/@type='").append(destination).append('\'');
                     } else {
 
@@ -2214,11 +2214,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             String value = cmd.getValue();
             NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
             NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
-            if (originalNodesToUpdate == null) {
+            if (Utils.isEmptyNodeList(originalNodesToUpdate) ) {
                 originalNodesToUpdate = Utils.selectNodeList(loadedData, ".//*[@number='" + value + "']");
             }
 
-            if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
+            if (Utils.isNotEmptyNodeList(nodesToUpdate) || Utils.isNotEmptyNodeList(originalNodesToUpdate)) {
                 Node updatedNode = null;
 
                 try {
