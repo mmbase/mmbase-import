@@ -169,6 +169,7 @@
 
 			<c:if test="${imageShow eq 'list'}">
 				<table>
+            <c:if test="${action == 'search'}">
 					<tr class="listheader">
 						<th width="55"></th>
 						<th nowrap="true"><a href="javascript:orderBy('title')"
@@ -181,6 +182,7 @@
 							key="imagesearch.mimetypecolumn" /></a></th>
 						<th></th>
 					</tr>
+            </c:if>
 					<tbody class="hover">
 						<c:set var="useSwapStyle">true</c:set>
 						<mm:listnodes referid="results">
