@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Several functions on mmbase nodes which are used by didactor.
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.7 2009-01-02 09:36:10 michiel Exp $
+ * @version $Id: Functions.java,v 1.8 2009-01-07 17:08:54 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -39,6 +39,53 @@ public class Functions {
             parents = parent.getRelatedNodes("learnobjects", "posrel", "source");
         }
         return result;
+    }
+
+
+    /**
+     * Returns the education associated with the current learnobject
+     */
+    public Node education() {
+        Node parent = null;
+        NodeList parents = node.getRelatedNodes("learnobjects", "posrel", "source");
+        while (parents.size() > 0) {
+            if (parents.size() > 1) {
+                log.warn("Node " + node.getNumber() + " has more than 1 posrel parents: " + parents);
+            }
+            parent = parents.getNode(0);
+            parents = parent.getRelatedNodes("learnobjects", "posrel", "source");
+        }
+        if (parent != null) {
+            NodeList educations = parent.getRelatedNodes("education", "posrel", "source");
+            if (educations.size() > 0) {
+                return educations.getNode(0);
+            } else {
+                log.warn("No education found for " + node);
+                return null;
+            }
+        } else {
+            log.warn("No parents found for " + node + " don't know the education");
+            return null;
+        }
+    }
+
+    /**
+     * The sequence number in the tree of learnobjects in the current education.
+     */
+
+    public int sequence() {
+        Node education = education();
+        if (education != null) {
+            NodeList tree = (NodeList) education.getFunctionValue("tree", null);
+            int seq = 0;
+            for (Node leaf : tree) {
+                if (leaf.getNumber() == node.getNumber()) {
+                    return seq;
+                }
+                seq++;
+            }
+        }
+        return Integer.MAX_VALUE;
     }
 
     /*
