@@ -343,6 +343,7 @@
 				</positions>
 			</editor>
 			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+				<default value="today + 100 year - 2 week" />
 				<commitprocessor>
 					<class name="com.finalist.cmsc.repository.DerivedDateProcessorFactory">
 						<param name="field">expiredate</param>
