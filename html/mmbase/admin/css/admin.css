@@ -1,8 +1,11 @@
 /* MMBase admin css */
-head > title { text-transform: capitalize; }
 
-body
-{
+@import url(../../style/css/tabs.css);
+
+head > title {
+  text-transform: capitalize; }
+
+body {
 	margin: 0;
 	padding: 0;
 	font-size: small;
