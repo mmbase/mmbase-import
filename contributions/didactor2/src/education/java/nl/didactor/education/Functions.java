@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Several functions on mmbase nodes which are used by didactor.
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.8 2009-01-07 17:08:54 michiel Exp $
+ * @version $Id: Functions.java,v 1.9 2009-01-07 17:24:28 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -56,7 +56,7 @@ public class Functions {
             parents = parent.getRelatedNodes("learnobjects", "posrel", "source");
         }
         if (parent != null) {
-            NodeList educations = parent.getRelatedNodes("education", "posrel", "source");
+            NodeList educations = parent.getRelatedNodes("educations", "posrel", "source");
             if (educations.size() > 0) {
                 return educations.getNode(0);
             } else {
@@ -76,7 +76,7 @@ public class Functions {
     public int sequence() {
         Node education = education();
         if (education != null) {
-            NodeList tree = (NodeList) education.getFunctionValue("tree", null);
+            NodeList tree = (NodeList) education.getFunctionValue("tree", null).get();
             int seq = 0;
             for (Node leaf : tree) {
                 if (leaf.getNumber() == node.getNumber()) {
