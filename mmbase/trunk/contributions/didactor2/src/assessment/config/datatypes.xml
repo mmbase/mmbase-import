@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.2 2008-10-09 16:07:24 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.3 2009-01-07 17:05:47 michiel Exp $
 
   -->
 
@@ -23,6 +23,28 @@
       <entry value="6" xml:lang="en" display="Not much" />
       <entry value="8" xml:lang="en" display="Much" />
       <entry value="10" xml:lang="en" display="Very much" />
+    </enumeration>
+  </datatype>
+
+
+  <!--
+  it is actually quite silly that didactor does not use actual resourcebundles for translations,
+  because in that case I simply could have referred to that here.
+  -->
+  <datatype base="string" id="didactor_assessment_problemtypes">
+    <default value="problemtype_solvable" />
+    <required value="true" />
+    <minLength value="12" />
+    <enumeration>
+      <entry value="problemtype_unimportant" xml:lang="en" display="Unimportant problems" />
+      <entry value="problemtype_solvable"    xml:lang="en" display="Solvable problems" />
+      <entry value="problemtype_notsolvable" xml:lang="en" display="Not solvable problems" />
+
+
+      <entry value="problemtype_unimportant" xml:lang="nl" display="Onbelangrijk" />
+      <entry value="problemtype_solvable"    xml:lang="nl" display="Oplosbaar" />
+      <entry value="problemtype_notsolvable" xml:lang="nl" display="Onoplosbaar" />
+
     </enumeration>
   </datatype>
 

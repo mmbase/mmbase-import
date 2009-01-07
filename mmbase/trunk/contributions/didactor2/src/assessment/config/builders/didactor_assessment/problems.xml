@@ -35,5 +35,35 @@
         <maxLength value="65535" />
       </datatype>
     </field>
+
+    <field name="type" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="en">Type</guiname>
+      </gui>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="problemtype.default" />
+        <required value="true" />
+        <enumeration enforce="never">
+          <query type="problemtypes" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <sortorder field="name" />
+          </query>
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="type">problemtypes</param>
+            <param name="role">related</param>
+            <param name="searchDir">destination</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="type">problemtypes</param>
+            <param name="role">related</param>
+            <param name="searchDir">destination</param>
+          </class>
+        </getprocessor>
+      </datatype>
+    </field>
   </fieldlist>
 </builder>

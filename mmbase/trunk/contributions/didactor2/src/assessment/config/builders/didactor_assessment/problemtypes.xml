@@ -17,27 +17,29 @@
     <description xml:lang="en"></description>
   </descriptions>
   <fieldlist>
-   <field name="name">
-      <gui>
-        <guiname xml:lang="nl">Naam</guiname>
-        <guiname xml:lang="en">Name</guiname>
-      </gui>
-      <editor><positions><list>1</list></positions></editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <maxLength value="255" />
-      </datatype>
-    </field>
 
     <field name="key">
       <gui>
         <guiname xml:lang="nl">Sleutel</guiname>
         <guiname xml:lang="en">Key</guiname>
       </gui>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="didactor_assessment_problemtypes" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="name">
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
       <editor><positions><list>2</list></positions></editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
       </datatype>
     </field>
+
 
     <field name="description">
       <descriptions>
