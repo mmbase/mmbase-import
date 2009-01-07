@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorPortalPages" maintainer="didactor.nl" version="6" auto-deploy="true">
+<application name="DidactorPortalPages" maintainer="didactor.nl" version="7" auto-deploy="true">
   <requirements>
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -37,6 +37,7 @@
       <relation from="portalpagesnodes" to="simplexmlcontents" type="posrel" />
 
       <relation from="portalpagescontainers" to="portalpagesnodes" type="related" />
+      <relation from="educations" to="portalpagescontainers"       type="posrel" />
 
       <relation from="portalpagesnodes" to="portalpagesnodes" type="childppnn" />
       <relation from="simplecontents" to="images" type="posrel" />
