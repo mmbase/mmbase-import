@@ -17,7 +17,7 @@ import org.apache.commons.fileupload.FileItem;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.10.2.1 2007-05-08 15:12:29 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.10.2.2 2009-01-07 15:28:46 nklasens Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
@@ -79,4 +79,12 @@ public class BinaryDataType extends AbstractLengthDataType {
         validMimeTypes = pattern;
     }
 
+    /**
+     * Quick Fix for mmbase 1.8 branch. This is not needed in 1.9
+     * @param pattern
+     */
+    public void setValidMimeTypes(String pattern) {
+       validMimeTypes = Pattern.compile(pattern);
+   }
+    
 }
