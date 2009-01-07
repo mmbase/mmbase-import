@@ -116,7 +116,9 @@
          mimetype="text/html">
     <title xml:lang="en">Functions</title>
     <title xml:lang="nl">Functies</title>
-    <body jsp="functions.jspx" />
+    <body jsp="functions.jspx">
+      <param name="type" />
+    </body>
   </block>
 
   <block name="datatypes"
