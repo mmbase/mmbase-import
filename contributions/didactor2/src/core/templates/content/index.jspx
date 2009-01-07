@@ -25,11 +25,22 @@
             <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath">
               <mm:treeinclude debug="xml" page="${domain}${type}/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?,justposted?" />
             </mm:treehaspage>
-            <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath" inverse="true">
+            <mm:treehaspage page="${domain}${type}/index.jsp"
+                            objectlist="$includePath" inverse="true">
               <mm:treeinclude debug="xml" page="${domain}learnblocks/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?" />
             </mm:treehaspage>
           </c:otherwise>
         </c:choose>
+
+        <mm:hasfunction name="sequence">
+          <mm:import from="cookie" id="maxsequence" externid="didactor_${education}_maxsequence" />
+          <mm:function name="sequence" write="false">
+            <c:if test="${empty maxsequence or _ gt maxsequence}">
+              <mm:write cookie="didactor_${education}_maxsequence" />
+            </c:if>
+          </mm:function>
+
+        </mm:hasfunction>
 
         <di:blocks classification="after_content" />
 
