@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.41 2008-10-01 19:57:36 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.42 2009-01-07 20:59:38 michiel Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -269,7 +269,7 @@ public class ModuleHandler implements Module, InvocationHandler {
                cloudContext.equals(((Module)o).getCloudContext());
     };
 
-    public Collection getFunctions() {
+    public Collection<Function<?>> getFunctions() {
         return  mmbaseModule.getFunctions();
     }
 
