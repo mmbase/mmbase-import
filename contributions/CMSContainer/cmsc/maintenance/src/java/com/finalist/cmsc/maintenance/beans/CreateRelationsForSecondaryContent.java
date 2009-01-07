@@ -16,7 +16,7 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.versioning.VersioningException;
-
+import javax.servlet.jsp.PageContext;
 
 public class CreateRelationsForSecondaryContent {
 
@@ -34,11 +34,13 @@ public class CreateRelationsForSecondaryContent {
    private Cloud cloud;
    private Integer parentNumber;
    private String type ;
+   public PageContext ctx ;
    /** MMbase logging system */
    private static final Logger log = Logging.getLoggerInstance(CreateRelationsForSecondaryContent.class.getName());
 
-   public CreateRelationsForSecondaryContent(Cloud cloud) {
+   public CreateRelationsForSecondaryContent(Cloud cloud,PageContext pageContext) {
       this.cloud = cloud;
+      ctx =  pageContext;
    }
 
    public String execute(Integer parentNumber,String type) throws Exception {
@@ -64,6 +66,7 @@ public class CreateRelationsForSecondaryContent {
       NodeList assets = query.getList();
       
       log.info("Assets - Found total Assets: " + assets.size());
+      ctx.setAttribute("totalCount", assets.size());
       int counter = 0;
       
       for (int i = 0; i < assets.size(); i++) {
@@ -76,17 +79,13 @@ public class CreateRelationsForSecondaryContent {
                
                Node channel = getRelatedChannel(asset);
                if(channel == null) {
-                  log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +root.getNumber()+ " Asset elements.");
                   relation = RelationUtil.createRelation(asset, root, CREATIONREL);
                }
                else {
-                  log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +channel.getNumber()+ " Asset elements.");
                   relation = RelationUtil.createRelation(asset, channel, CREATIONREL);
-                  log.info("Assets - added relations to Asset element."+ asset.getNumber());
                }
             }
             else {
-               log.info("Assets - begin to add relation from  " + asset.getNumber()+" to channel " +root.getNumber()+ " Asset elements.");
                relation = RelationUtil.createRelation(asset, root, CREATIONREL);
             }
 
@@ -107,6 +106,7 @@ public class CreateRelationsForSecondaryContent {
             Publish.publish(relation);
          }*/
       }
+      ctx.setAttribute("addedRelationCount", counter);
       log.info("Assets - Added relations to " + counter + " Asset elements.");
   
       return "success";

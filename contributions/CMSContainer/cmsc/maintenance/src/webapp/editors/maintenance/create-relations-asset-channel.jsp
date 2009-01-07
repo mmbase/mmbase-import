@@ -35,11 +35,13 @@ Note:<ul>
    <c:if test="${param.type == 'root'}">
    <mm:write referid="number" jspvar="number" vartype="Integer">
       <% if(number < 1) {
-        new CreateRelationsForSecondaryContent(cloud).execute(number,null);
+        new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null);
+        out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
       }
       else {
        if(RepositoryUtil.isChannel(String.valueOf(number))) {
-         new CreateRelationsForSecondaryContent(cloud).execute(number,null);
+         new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null);
+         out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
        }
        else {
          out.println("The number should be a channel number!");
@@ -51,7 +53,8 @@ Note:<ul>
    <c:if test="${param.type == 'selfselect'}">
        <mm:write referid="number" jspvar="number" vartype="Integer">
       <%
-          new CreateRelationsForSecondaryContent(cloud).execute(number,"selfselect");
+          new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,"selfselect");
+          out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
       %>
             </mm:write>
    </c:if>
