@@ -8,27 +8,25 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="basic user">
-  <div
-      class="mm_c c_core b_functions ${requestScope.className}"
-      id="${requestScope['org.mmbase.componentId']}">
+    <div
+        class="mm_c c_core b_functions ${requestScope.className}"
+        id="${requestScope['org.mmbase.componentId']}">
 
-    <mm:function id="functionsets" set="utils" name="functionsets" write="false" />
-    <ul>
-    <c:forEach items="${functionsets}" var="entry">
-      <li>
-        <p>${entry.key}: <mm:write value="${entry.value.description}" /></p>
-        <ul>
-          <c:forEach items="${entry.value.functions}" var="fun">
-            <li>
-              <mm:escape>${fun}</mm:escape>
-              <p><mm:write value="${fun.description}" /></p>
-            </li>
-          </c:forEach>
-        </ul>
-      </li>
-    </c:forEach>
-    </ul>
-  </div>
+      <mm:import externid="type" from="request">sets</mm:import>
+
+      <ul class="tabs">
+        <c:forEach items="sets,nodes,builders,modules" var="t">
+          <li class="${type eq t ? 'current' : ''}">
+            <mm:link referids="t@type">
+              <a href="${_}">${t}</a>
+            </mm:link>
+          </li>
+        </c:forEach>
+      </ul>
+
+      <mm:include page="functions-${type}.jspx" />
+
+    </div>
   </mm:cloud>
 </mm:content>
 
