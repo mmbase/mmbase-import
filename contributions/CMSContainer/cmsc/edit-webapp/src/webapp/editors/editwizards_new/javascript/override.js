@@ -367,7 +367,15 @@ var Data = {
 
 function getAssets(type){    
     //alert(Data[type]);
+	var iWidth=800; 
+    var iHeight=200;
+	var xposition = 0;
+            var yposition = 0;
+            if ((parseInt(navigator.appVersion) >= 4)) {
+                xposition = (screen.width-iWidth ) / 2;
+                yposition = (screen.height-iHeight - 25) / 2;
+            }
 	var url='../../../../editors/repository/AssetSearchAction.do?assettypes='+type+'&title='+Data[type]+'&strict='+type;	
 	window.open(url, 
-	'contentselector', 'width=730,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');
+	'contentselector', 'width=730,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,left='+xposition+',top='+yposition+',menubar=no');
 }
