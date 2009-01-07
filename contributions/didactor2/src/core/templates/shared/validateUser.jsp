@@ -57,20 +57,15 @@
               <mm:compare referid="all_ok" value="true">
                 <mm:import id="all_ok" reset="true">false</mm:import>
                 <mm:node number="$user">
-                  <mm:relatednodes type="classes" role="classrel" id="classes" />
-                  <mm:relatednodescontainer path="classes,mmevents" element="mmevents">
-                    <mm:time id="now" time="now" write="false" />
-                    <mm:constraint field="start" operator="LESS" value="$now" />
-                    <mm:constraint field="stop" operator="GREATER" value="$now" />
-                    <mm:size>
-                      <mm:isgreaterthan value="0">
-                        <mm:import id="all_ok" reset="true">true</mm:import>
-                      </mm:isgreaterthan>
-                      <mm:compare value="0">
-                        <jsp:text>No current classes. Classes are ${classes}</jsp:text>
-                      </mm:compare>
-                    </mm:size>
-                  </mm:relatednodescontainer>
+                  <mm:function name="class" write="false">
+                    <mm:isempty>
+                      <jsp:text>No current classes. Classes are <mm:function name="classes"> </mm:function>
+                      </jsp:text>
+                    </mm:isempty>
+                    <mm:isnotempty>
+                      <mm:import id="all_ok" reset="true">true</mm:import>
+                    </mm:isnotempty>
+                  </mm:function>
                 </mm:node>
 
                 <mm:compare referid="all_ok" value="false">
