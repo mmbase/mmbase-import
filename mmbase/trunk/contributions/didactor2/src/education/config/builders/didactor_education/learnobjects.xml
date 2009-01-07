@@ -93,6 +93,15 @@
     <function key="madetestholder">
       <class>nl.didactor.education.Functions</class>
     </function>
+
+    <function key="madetestholder">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+
+    <function key="sequence">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+
     <function key="questions">
       <class>nl.didactor.education.functions.LearnObjectQuestions</class>
     </function>
