@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.33 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.34 2009-01-07 17:54:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType<Node> {
@@ -53,7 +53,7 @@ public class NodeDataType extends BasicDataType<Node> {
         }
     }
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
-        if (value == null) return null;
+        if (value == null || "".equals(value)) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
         if (preCast instanceof Node) {
             return preCast;
