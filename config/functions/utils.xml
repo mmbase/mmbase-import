@@ -81,4 +81,10 @@
     <method>getFunctionSets</method>
   </function>
 
+ <function name="modules">
+    <type>class</type>
+    <class>org.mmbase.module.Module</class>
+    <method>getModules</method>
+  </function>
+
 </functionset>
