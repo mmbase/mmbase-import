@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import org.w3c.dom.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -40,7 +41,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.41.2.4 2008-02-06 13:13:18 michiel Exp $
+ * @version $Id: Utils.java,v 1.41.2.5 2009-01-07 20:40:06 nklasens Exp $
  */
 
 public class Utils {
@@ -712,6 +713,14 @@ public class Utils {
     }
 
 
+    public static  boolean isEmptyNodeList(NodeList list) {
+       return list == null || list.getLength() == 0;
+    }
+
+    public static  boolean isNotEmptyNodeList(NodeList list) {
+       return !isEmptyNodeList(list);
+    }
+    
     /**
      * (Not used) method to post (http-post) xml to a url.
      *
