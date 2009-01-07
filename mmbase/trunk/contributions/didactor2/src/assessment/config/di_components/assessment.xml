@@ -16,7 +16,7 @@
     <setting name="needs_feedback_to_close_next_lesson"  type="boolean" default="false" />
 
 
-    <setting name="opens_stage1-gooals"    type="string"  default="" />
+    <setting name="opens_stage1-goals"     type="string"  default="" />
     <setting name="opens_stage2-problems"  type="string"  default="" />
     <setting name="opens_stage3-problems"  type="string"  default="" />
   </scope>
