@@ -7,18 +7,19 @@ To version: 1.6
 
 Execute the following steps below in the given order:
 
-Name: Add publishdate, expiredate, use_expirydate and m_status column to urls, images and attachments
+Name: Add publishdate, expiredate, use_expirydate and m_status column to urls, images and attachments. Making sure contentrepository gets updated with the new builder version 3.
 Goal: Add publishdate, expiredate, use_expirydate and m_status column to urls, images and attachments
 Type:  sql-script
 --- Start script ---
 ALTER TABLE mm_attachments ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
 ALTER TABLE mm_images ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
 ALTER TABLE mm_urls ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
+UPDATE mm_versions SET version = '2' WHERE name='contentrepository';
 
 ALTER TABLE live_attachments ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
 ALTER TABLE live_images ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
 ALTER TABLE live_urls ADD column (publishdate datetime default NULL,expiredate datetime default NULL,use_expirydate bit(1) NOT NULL,m_status text);
-
+UPDATE live_versions SET version = '2' WHERE name='contentrepository';
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
