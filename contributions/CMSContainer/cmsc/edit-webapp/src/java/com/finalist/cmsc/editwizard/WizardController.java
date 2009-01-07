@@ -266,11 +266,11 @@ public class WizardController {
                            RepositoryUtil.addCreationChannel(node, channelnr);
                         } 
                      }
-                     NodeManager ownerManager = cloud.getNodeManager(USER);
-                     int owners = node.countRelatedNodes(ownerManager, OWNERREL, DESTINATION);
-                     if (owners < 1) {  
-                       RelationUtil.createRelation(node, SecurityUtil.getUserNode(cloud), OWNERREL);
-                     }
+                   //  NodeManager ownerManager = cloud.getNodeManager(USER);
+                    // int owners = node.countRelatedNodes(ownerManager, OWNERREL, DESTINATION);
+                    // if (owners < 1) {  
+                   //    RelationUtil.createRelation(node, SecurityUtil.getUserNode(cloud), OWNERREL);
+                    // }
                      
 //                     if (!Workflow.hasWorkflow(node)) { 
 //                        Workflow.create(node, ""); 
