@@ -272,13 +272,13 @@ public class WizardController {
                        RelationUtil.createRelation(node, SecurityUtil.getUserNode(cloud), OWNERREL);
                      }
                      
-                     if (!Workflow.hasWorkflow(node)) { 
-                        Workflow.create(node, ""); 
-                     } 
-                     else
-                     { 
-                        Workflow.addUserToWorkflow(node);
-                     }
+//                     if (!Workflow.hasWorkflow(node)) { 
+//                        Workflow.create(node, ""); 
+//                     } 
+//                     else
+//                     { 
+//                        Workflow.addUserToWorkflow(node);
+//                     }
                      //add version for asset element
                      try {
                         Versioning.addVersion(node);
