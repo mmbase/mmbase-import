@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.10 2008-12-30 12:07:01 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.149.2.11 2009-01-07 20:40:06 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1379,7 +1379,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     NodeList descendants = null;
                     if (con!=null) descendants = Utils.selectNodeList(con,"descendants/descendant");
 
-                    if (descendants == null || descendants.getLength() == 0) {
+                    if (Utils.isEmptyNodeList(descendants)) {
                         fdatapath.append("object/@type='").append(destination).append('\'');
                     } else {
 
@@ -2134,11 +2134,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String value = cmd.getValue();
             NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
             NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
-            if (originalNodesToUpdate == null) {
+            if (Utils.isEmptyNodeList(originalNodesToUpdate) ) {
                 originalNodesToUpdate = Utils.selectNodeList(loadedData, ".//*[@number='" + value + "']");
             }
 
-            if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
+            if (Utils.isNotEmptyNodeList(nodesToUpdate) || Utils.isNotEmptyNodeList(originalNodesToUpdate)) {
                 Node updatedNode = null;
 
                 try {
@@ -2368,6 +2368,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
         }
     }
+
 
     /**
      * This method adds a listitem. It is used by the #processCommand method to add new items to a list. (Usually when the
