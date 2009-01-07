@@ -49,6 +49,9 @@ ALTER TABLE mm_images MODIFY title text NULL;
 ALTER TABLE live_images MODIFY title text NULL;
 ALTER TABLE live_urls ADD column title text NULL;
 ALTER TABLE live_urls MODIFY description text NULL;
+
+update mm_urls set title=name;
+update live_urls set title=name;
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
