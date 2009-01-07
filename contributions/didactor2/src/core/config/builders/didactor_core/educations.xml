@@ -166,6 +166,10 @@
       <class>nl.didactor.functions.Functions</class>
     </function>
 
+    <function key="tree">
+      <class>nl.didactor.functions.Functions</class>
+    </function>
+
     <function name="smartpath">
       <class>nl.didactor.functions.SmartPath</class>
     </function>
