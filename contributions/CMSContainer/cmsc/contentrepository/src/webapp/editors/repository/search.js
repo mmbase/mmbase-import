@@ -26,10 +26,12 @@
 
  function selectContenttype(initUrl) {
     // parentchannel is only there when linking is active...
-    try {
-       document.forms[0].parentchannel.value='';
-    } catch (e) {
-       ;
+    if(document.forms[0].parentchannel){
+        try {
+            document.forms[0].parentchannel.value='';
+        } catch (e) {
+            ;
+        }
     }
     // This doesn't work in IE...
     // document.forms[0].action=initUrl;
@@ -63,10 +65,12 @@ function selectElement(element, title, url, width, height, description) {
 
 function selectAssettype(initUrl) {
     // parentchannel is only there when linking is active...
-    try {
-       document.forms[0].parentchannel.value='';
-    } catch (e) {
-       ;
+    if(document.forms[0].parentchannel){
+        try {
+            document.forms[0].parentchannel.value='';
+        } catch (e) {
+            ;
+        }
     }
     // This doesn't work in IE...
     // document.forms[0].action=initUrl;
