@@ -90,12 +90,14 @@ public class ContentAction extends MMBaseAction {
             createdNumbers.put(String.valueOf(createdElement.getNumber()), createdElement);
          }
          addToRequest(request, "createdNumbers", createdNumbers);
+         //cmsc-1205 don't refresh channel tree when not necessary
+         String type = request.getParameter("type");
          //cmsc-144 make reorder icon show up
-         if(elementCount==2){
+         if(elementCount==2&& type != null){
         	 request.setAttribute("refresh", true);
          }
          //reset the show mode of assets in the session when enter another channel
-         if(request.getParameter("type")==null){
+         if(type==null){
             request.getSession().removeAttribute("show");
             request.getSession().removeAttribute("imageOnly");
            }

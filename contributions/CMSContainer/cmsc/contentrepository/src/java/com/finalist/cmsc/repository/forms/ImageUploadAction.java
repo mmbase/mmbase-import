@@ -16,6 +16,9 @@ import com.finalist.util.http.BulkUploadUtil;
 
 public class ImageUploadAction extends AbstractUploadAction {
 
+   private static final String ALL = "all";
+   private static final String CREATION = "creation";
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -23,6 +26,10 @@ public class ImageUploadAction extends AbstractUploadAction {
       AssetUploadForm imageUploadForm = (AssetUploadForm) form;
       String parentchannel = imageUploadForm.getParentchannel();
       FormFile file = imageUploadForm.getFile();
+
+      if (parentchannel.equalsIgnoreCase(ALL)) {
+         parentchannel = (String) request.getSession().getAttribute(CREATION);
+      }
 
       int nodeId = 0;
       String exist = "0";
@@ -43,6 +50,7 @@ public class ImageUploadAction extends AbstractUploadAction {
             } else {
                exceed = "yes";
             }
+            nodeId = nodes.get(0);
          }
          // to archive the upload asset
          addRelationsForNodes(nodes, cloud);
