@@ -10,10 +10,14 @@
 
 
 
-  <c:if test="${! empty firstopenlesson}">
+  <c:if test="${! empty lastlesson}">
 
     <mm:node number="$user">
-      <mm:function name="canCloseLesson" referids="firstopenlesson@lesson">
+      <mm:node referid="lastlesson">
+        <mm:nodeinfo type="gui" />
+      </mm:node>
+      <mm:function name="canCloseLesson"
+                   referids="lastlesson@lesson">
         <c:choose>
           <c:when test="${_}">
 
@@ -24,8 +28,8 @@
 
               <form name="closelessonform" action="${_}"   method="post">
                 <input type="hidden" name="coachmode" value="false"  />
-                <input type="hidden" name="lesson" value="${firstopenlesson}"  />
-                <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
+                <input type="hidden" name="lesson" value="${lastlesson}"  />
+                <di:translate key="assessment.close_and_send_to_coach" arg0="${lastlesson.name}">
                   <input type="submit" class="formbutton" value="${_}" />
                 </di:translate>
               </form>
