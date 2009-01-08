@@ -4,6 +4,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    style="clear: both;"
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="problem" />
@@ -11,18 +12,14 @@
     <mm:form id="difficulties">
       <mm:node number="${problem}">
         <input type="hidden" name="problem" value="${_node}" />
-        <ul>
-          <mm:listrelationscontainer type="learnblocks" role="posrel">
-            <mm:listrelations>
-              <li>
-                <mm:field name="pos" id="pos${_node}">
-                  <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
-                  <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
-                </mm:field>
-              </li>
-            </mm:listrelations>
-          </mm:listrelationscontainer>
-        </ul>
+        <mm:listrelationscontainer type="learnblocks" role="posrel">
+          <mm:listrelations>
+            <mm:field name="pos" id="pos${_node}">
+              <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
+              <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
+            </mm:field>
+          </mm:listrelations>
+        </mm:listrelationscontainer>
       </mm:node>
     </mm:form>
   </mm:cloud>

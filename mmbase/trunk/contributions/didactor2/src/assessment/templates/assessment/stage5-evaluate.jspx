@@ -21,19 +21,22 @@
   <mm:node referid="problem">
 
     <h2><mm:field name="name" /></h2>
-    <h2>Geef per les aan hoeveel last je van dit probleem had</h2>
+
+    <div>
+      <h2>Geef per les aan hoeveel last je van dit probleem had</h2>
+
+      <mm:node number="${education}">
+        <mm:nodelistfunction name="lessons">
+          <h4 class="mm_dt_didactor_assessment_troubles"><mm:nodeinfo type="gui" /></h4>
+        </mm:nodelistfunction>
+      </mm:node>
+      <mm:include page="/assessment/stage5-editdifficulties.jspx" />
+      <mm:link page="/assessment/stage5.js.jsp">
+        <script type="text/javascript" src="${_}" />
+      </mm:link>
+    </div>
 
 
-    <mm:node number="${education}">
-      <mm:nodelistfunction name="lessons">
-        <h4 class="learnblockName"><mm:nodeinfo type="gui" /></h4>
-      </mm:nodelistfunction>
-    </mm:node>
-
-    <mm:include page="/assessment/stage5-editdifficulties.jspx" />
-    <mm:link page="/assessment/stage5.js.jsp">
-      <script type="text/javascript" src="${_}" />
-    </mm:link>
 
 
     <div id="contentFrame">
