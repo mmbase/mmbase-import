@@ -31,18 +31,17 @@
         </mm:nodelistfunction>
       </mm:node>
       <mm:include page="/assessment/stage5-editdifficulties.jspx" />
-      <mm:link page="/assessment/stage5.js.jsp">
-        <script type="text/javascript" src="${_}" />
-      </mm:link>
     </div>
-
-
 
 
     <div id="contentFrame">
       <mm:include page="/education/tests/buildtest.jsp"
                   referids="test@learnobject" />
     </div>
+
+    <mm:link page="/assessment/stage5.js.jsp">
+      <script type="text/javascript" src="${_}" />
+    </mm:link>
 
 
   </mm:node>

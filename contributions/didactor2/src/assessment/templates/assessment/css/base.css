@@ -93,6 +93,10 @@ div.problems .mm_dt_didactor_assessment_troubles {
   width: 100px;
 }
 
+div.problems form input.formbutton {
+  display: none;
+}
+
 
 .closelesson input.formbutton {
   widht: 200px !important;
