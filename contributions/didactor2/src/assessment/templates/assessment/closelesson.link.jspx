@@ -8,16 +8,17 @@
     class="closelesson">
   <jsp:output omit-xml-declaration="true" />
 
+  <mm:import id="firstopenlesson" from="session" externid="firstopenlesson_${user}_${education}" />
 
 
-  <c:if test="${! empty lastlesson}">
+  <c:if test="${! empty firstopenlesson}">
 
     <mm:node number="$user">
-      <mm:node referid="lastlesson">
+      <mm:node referid="firstopenlesson">
         <mm:nodeinfo type="gui" />
       </mm:node>
       <mm:function name="canCloseLesson"
-                   referids="lastlesson@lesson">
+                   referids="firstopenlesson@lesson">
         <c:choose>
           <c:when test="${_}">
 
@@ -28,8 +29,8 @@
 
               <form name="closelessonform" action="${_}"   method="post">
                 <input type="hidden" name="coachmode" value="false"  />
-                <input type="hidden" name="lesson" value="${lastlesson}"  />
-                <di:translate key="assessment.close_and_send_to_coach" arg0="${lastlesson.name}">
+                <input type="hidden" name="lesson" value="${firstopenlesson}"  />
+                <di:translate key="assessment.close_and_send_to_coach" arg0="${firstopenlesson.name}">
                   <input type="submit" class="formbutton" value="${_}" />
                 </di:translate>
               </form>
