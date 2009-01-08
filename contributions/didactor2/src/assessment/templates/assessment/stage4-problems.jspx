@@ -8,31 +8,36 @@
   <jsp:output omit-xml-declaration="true" />
 
   <h2><di:translate key="assessment.problems" /></h2>
+  
+  <div>
+      <p>Dit is een overzicht van de problemen die je eerder hebt ingevoerd, en hoeveel last je er per les van had. Werk eventueel per probleem uit hoe je het gaat aanpakken (zie les 2).</p>
+  </div>
   <!--
       show the learnblocks
   -->
   <mm:node number="${education}">
-    <span class="head problem">&amp;nbsp;</span>
     <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
       <mm:sortorder field="posrel.pos" />
       <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
         <mm:addnode element="components" number="component.assessment" />
       </c:if>
-
+			
+			<div class="learnblockNames">
       <mm:relatednodes id="learnBlock"  varStatus="status">
         <!--
             If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
         -->
         <mm:relation to="${user}" role="classrel" searchdir="source"
                      notfound="null">
-          <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
+          <h4 class="learnblockItems">
             <mm:field name="name" node="learnBlock" />
-          </span>
+          </h4>
         </mm:relation>
       </mm:relatednodes>
+      </div>
     </mm:relatednodescontainer>
 
-    <span class="head delete">&amp;nbsp;</span>
+ 
   </mm:node>
 
 
@@ -41,10 +46,11 @@
       They can be edited by the user
   -->
   <mm:listnodes orderby="pos" type="problemtypes">
-    <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
+    <h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2>
 
     <mm:import externid="sub" />
     <mm:import externid="stage" />
+    
     <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
       <mm:addnode element="people" number="${user}" />
       <mm:sortorder field="posrel.pos" />
@@ -55,17 +61,5 @@
 
   </mm:listnodes>
 
-  <!--
-      Now links to the feed back pages
-  -->
-  <div>
-    <span class="head problem">
-      <di:translate key="assessment.feedback_coach" />:
-      <mm:link page="/c/shoutbox/index/">
-        <a href="${_}" name=""><di:translate key="assessment.messages"/></a>
-      </mm:link>
-    </span>
-
-  </div>
 
 </div>

@@ -10,7 +10,7 @@
   <mm:node id="container">
   <di:leaf
       icon="new_education"
-      branchPath=".."
+      branchPath=".||"
       >
     <mm:link referid="wizardjsp" referids="_node@origin,referrer">
       <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
@@ -24,7 +24,7 @@
     <mm:relatednodes varStatus="status">
       <di:leaf
           click="portal_node_${container}_${_node}"
-          branchPath="..${status.last ? '.' : ' '}"
+          branchPath=".|${status.last ? '.' : ' '}"
           >
         <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
           <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
