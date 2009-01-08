@@ -9,10 +9,10 @@ public class PagingStatusHolderTest extends TestCase {
 
       holder.setSort("mark.happy");
       holder.setDir("asc");
-      assertEquals("order by mark.happy asc",holder.getSortToken());
+      assertEquals(" order by mark.happy asc",holder.getSortToken());
 
       holder.setSort("mark.happy,zig.sad");
       holder.setDir("asc");
-      assertEquals("order by mark.happy asc , zig.sad asc",holder.getSortToken());      
+      assertEquals(" order by mark.happy asc , zig.sad asc",holder.getSortToken());      
    }
 }

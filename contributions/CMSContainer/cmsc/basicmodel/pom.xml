@@ -14,45 +14,33 @@
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-portlets</artifactId>
-            <version>${cmsc.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
+            <version>${cmsc.version}</version>            
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-taglib</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-utilities</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-cloudcontext</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-editwizard</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <build>
@@ -72,30 +60,30 @@
             </resource>
         </resources>
         <plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>native2ascii-maven-plugin</artifactId>
-				<version>1.0-alpha-1</version>
-				<configuration>
-					<dest>${basedir}/target/classes</dest>
-					<src>${basedir}/resources</src>
-				</configuration>
-				<executions>
-					<execution>
-					<id>native2ascii-utf8</id>
-						<goals>
-							<goal>native2ascii</goal>
-						</goals>
-						<configuration>
-							 <encoding>UTF-8</encoding>
-							 <includes>**/*.properties</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-                <artifactId>maven-war-plugin</artifactId>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-alpha-1</version>
                 <configuration>
+                    <dest>${basedir}/target/classes</dest>
+                    <src>${basedir}/resources</src>
+                </configuration>
+                <executions>
+                    <execution>
+                    <id>native2ascii-utf8</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                             <encoding>UTF-8</encoding>
+                             <includes>**/*.properties</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>                    
                     <webResources>
                         <resource>
                             <targetPath>WEB-INF/config</targetPath>
