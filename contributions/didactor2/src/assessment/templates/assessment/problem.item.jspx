@@ -18,7 +18,7 @@
       <mm:fieldinfo type="errors" />
     </mm:fieldlist>
 
-    <mm:import id="currentlesson" from="session" externid="firstopenlesson_${user}_${education}" />
+    <mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 
     <mm:present referid="currentlesson">
 
