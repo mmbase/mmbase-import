@@ -43,10 +43,10 @@ div.student ol {
   padding-left: 0px;
 }
 div.student div.problems {
-  background-color: #eee;
+  
 
 }
-div.student div.problems li {
+div.student div.problems li, div.student div.goals li {
   width: 100%;
   display: block;
   float: left;
@@ -65,40 +65,46 @@ div.problems.stage3 .list .mm_check_error {
   display: none;
 
 }
-div.problems h4 {
+div.problems.stage3 h4 {
   float: left;
   display: block;
   margin-right: 10px;
+  font-size:1em;
 
 }
-div.problems .list ol li input,
-div.problems .list ol li select {
+div.problems.stage3 .list ol li input,
+div.problems.stage3 .list ol li select {
   float: left;
   display: block;
   margin-right: 10px;
 }
 
-div.problems .mm_f_name,
-div.goals .mm_f_name {
-  width: 475px;
+div.problems .mm_f_name, div.goals .mm_f_name {
+	width: 475px;
 }
 
 div.problems.stage3 .mm_f_name {
   width: 250px;
 }
-div.problems .mm_f_type {
+div.problems.stage3 .mm_f_type {
   width: 100px;
 }
-div.problems .mm_dt_didactor_assessment_troubles {
+div.problems.stage3 .mm_dt_didactor_assessment_troubles {
   width: 100px;
 }
-
-div.problems form input.formbutton {
-  display: none;
-}
-
 
 .closelesson input.formbutton {
-  widht: 200px !important;
+	widht: 200px !important;
+}
+
+.mm_dt_didactor_assessment_troubles {
+	float: left;
+	width: 100px;
+	margin-right: 10px;
+	
+}
+
+.problemImpact {
+	margin-bottom: 30px;
 }
 
