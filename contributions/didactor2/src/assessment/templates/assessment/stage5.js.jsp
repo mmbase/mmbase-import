@@ -6,9 +6,11 @@ $(window).unload(function() {
 
     // Save difficulties first.
     var params = {};
+    
 
     $("#difficulties input[type='hidden']").each(function() {
         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+        
     });
     $("#difficulties input").each(function() {
         if (this.checked || this.type == 'text' || this.type == 'hidden' || this.type == 'password') {

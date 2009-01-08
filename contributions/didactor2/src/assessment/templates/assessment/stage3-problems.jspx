@@ -14,16 +14,17 @@
 
   <div>
     <mm:node referid="currentlesson">
-      Hoeveel last in <mm:nodeinfo type="gui" />
+      <p>Geef per probleem aan wat voor soort probleem het is en hoe veel last heb je op dit moment (tijdens <mm:nodeinfo type="gui" />) van dit probleem hebt.</p>
     </mm:node>
   </div>
 
 
 
-  <h4 class="mm_f_name">probleem</h4>
-  <h4 class="mm_f_type">soort</h4>
-  <h4 class="mm_dt_didactor_assessment_troubles">hoe veel last</h4>
-
+  <h4 class="mm_f_name">Probleem</h4>
+  <h4 class="mm_f_type">Soort</h4>
+  <h4 class="mm_dt_didactor_assessment_troubles">Hoe veel last</h4>
+	
+	<p>
   <mm:node number="${user}">
     <mm:treefile
         write="false"
@@ -36,5 +37,5 @@
       </mm-sr:relatednodes>
     </mm:treefile>
   </mm:node>
-
+	</p>
 </div>
