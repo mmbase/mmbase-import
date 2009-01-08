@@ -14,9 +14,6 @@
   <c:if test="${! empty currentlesson}">
 
     <mm:node number="$user">
-      <mm:node referid="currentlesson">
-        <mm:nodeinfo type="gui" />
-      </mm:node>
       <mm:function name="canCloseLesson"
                    referids="currentlesson@lesson">
         <c:choose>
