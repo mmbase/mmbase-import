@@ -468,12 +468,18 @@
     <function key="peopleClasses" name="classes">
       <class>nl.didactor.functions.PeopleClassFunction</class>
     </function>
+
+
     <function key="getBlockedLearnblocksForThisUser" name="blockedLearnBlocks">
+      <class>nl.didactor.component.assessment.LessonChecker</class>
+    </function>
+    <function key="getLessons" name="lessons">
       <class>nl.didactor.component.assessment.LessonChecker</class>
     </function>
     <function key="canCloseLesson">
       <class>nl.didactor.component.assessment.LessonChecker</class>
     </function>
+
     <function key="hasrole">
       <class>nl.didactor.util.ClassRoom</class>
     </function>

@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.9 2009-01-07 17:07:57 michiel Exp $
+ * @version $Id: Functions.java,v 1.10 2009-01-08 13:45:59 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -19,6 +19,17 @@ public class Functions {
 
     public void setNode(Node n) {
         node = n;
+    }
+
+
+    public  List<Node> learnblocks() {
+        Cloud cloud = node.getCloud();
+        NodeQuery q = Queries.createRelatedNodesQuery(node,
+                                                      cloud.getNodeManager("learnblocks"),
+                                                      "posrel",
+                                                      "destination");
+        Queries.addSortOrders(q, "posrel.pos", "UP");
+        return q.getNodeManager().getList(q);
     }
 
 

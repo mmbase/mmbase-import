@@ -111,8 +111,7 @@
             <mm:present referid="copybookNo">
               <!-- Determine if all questions are showed -->
               <c:choose>
-                <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
-
+                <c:when test="${fn:length(my_questions) + fn:length(givenanswers) gt fn:length(questions)}">
                   <input type="button"
                          disabled="disabled"
                          value="${di:translate('education.buttontextdone')}"
@@ -124,9 +123,9 @@
                     <input type="button"
                            value="${di:translate('education.buttontextprev')}"
                            class="formbutton"
-                           onclick="questionform.command.value='back'; postContent('${post}', questionform);" />
+                           onclick="document.forms.questionform.command.value='back'; postContent('${post}', document.forms.questionform);" />
                   </c:if>
-                  <c:if test="${learnobject.questionsperpage gt 0 or page * learnobject.questionsperpage lt fn:length(questions)}">
+                  <c:if test="${learnobject.questionsperpage gt 0 and page * learnobject.questionsperpage lt fn:length(questions)}">
                     <input type="button"
                            value="${di:translate('education.buttontextnext')}"
                            class="formbutton"
@@ -136,7 +135,7 @@
                     <input type="button"
                            value="${di:translate('education.buttontextdone')}"
                            class="formbutton"
-                           onclick="questionform.command.value='done'; postContent('${post}', questionform);" />
+                           onclick="document.forms.questionform.command.value='done'; postContent('${post}', document.forms.questionform);" />
                   </c:if>
                 </c:otherwise>
               </c:choose>
