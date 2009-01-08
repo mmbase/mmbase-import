@@ -8,6 +8,7 @@
   <mm:time time="today" write="false" id="today" />
   <mm:import externid="openSub" />
   <mm:import externid="object" />
+  <mm:import externid="n" />
 
 
   <mm:relatednodescontainer type="portalpagesnodes" searchdirs="destination">
@@ -23,7 +24,7 @@
           </mm:notpresent>
         </mm:first>
         <mm:nodeinfo type="type" id="type" write="false" />
-        <mm:link referids="_node@openSub" write="false">
+        <mm:link referids="_node@openSub,n?" write="false">
           <a href="${_}"
              class="${_node eq openSub  ? 'active' : ''}${status.first ? ' first' : ''} ${status.last ? 'last' : ''}">
             <mm:field name="name" />
@@ -49,8 +50,8 @@
                     </mm:first>
                   </mm:isempty>
                 </mm:first>
-                <mm:import id="bookmark"><mm:link referids="openSub" />#${_node}</mm:import>
-                <mm:link referids="_node@object">
+                <mm:import id="bookmark"><mm:link referids="openSub,n?" />#${_node}</mm:import>
+                <mm:link referids="_node@object,n?">
                   <a href="${_}"
                      id="a_${_node}"
                      class="${object eq _node.number ? 'active' : ''}${status.first ? ' first' : ''}${status.last ? ' last' :''}"
@@ -74,12 +75,13 @@
                     <mm:first>
                       <mm:remove referid="object" />
                       <mm:node id="object" />
+                      <mm:write request="object" referid="object" />
                     </mm:first>
                   </mm:isempty>
                   <mm:import id="firstItem" reset="true">first</mm:import>
                 </mm:first>
-                <mm:import id="bookmark"><mm:link referids="openSub" />#${_node}</mm:import>
-                <mm:link referids="_node@object">
+                <mm:import id="bookmark"><mm:link referids="openSub,n?" />#${_node}</mm:import>
+                <mm:link referids="_node@object,n?">
                   <a href="${_}"
                      id="a_${_node}"
                      class="${firstItem ne '' ? ' first' : ''}"
