@@ -9,11 +9,11 @@
 
   <h2><di:translate key="assessment.problems" /></h2>
 
-  <mm:import id="lastlesson" from="session" externid="lastlesson_${user}_${education}" />
+  <mm:import id="firstopenlesson" from="session" externid="firstopenlesson_${user}_${education}" />
 
 
   <div>
-    <mm:node referid="lastlesson">
+    <mm:node referid="firstopenlesson">
       Hoeveel last in <mm:nodeinfo type="gui" />
     </mm:node>
   </div>
