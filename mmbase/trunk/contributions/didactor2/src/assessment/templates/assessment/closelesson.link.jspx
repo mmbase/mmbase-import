@@ -9,6 +9,7 @@
   <jsp:output omit-xml-declaration="true" />
 
 
+
   <c:if test="${! empty firstopenlesson}">
 
     <mm:node number="$user">

@@ -24,17 +24,10 @@
   <span class="col problem">
     <div class="intro">
       <mm:field name="name">
-        <mm:fieldinfo type="input" />
-        <mm:fieldinfo type="errors" />
+
       </mm:field>
     </div>
-    <div class="extra">
-      <mm:field name="description">
-        <mm:fieldinfo type="guiname" />
-        <mm:fieldinfo type="input" />
-        <mm:fieldinfo type="errors" />
-      </mm:field>
-    </div>
+
   </span>
 
   <mm:node id="problem" number="${_node}" /> <!-- give current node an id, and put it in the current cloud -->
@@ -114,8 +107,8 @@
 
 
               </mm:relation>
-              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
-              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="value" />
+              
             </mm:field>
           </mm:listrelations>
         </mm:listrelationscontainer>
@@ -128,13 +121,13 @@
   </mm:node>
 
   <span class="col">
-    <mm-sr:delete source="${source}" icondir="${icondir}" />
+    
     <jsp:text> </jsp:text>
     <mm:present referid="test">
       <mm:link  referids="test,_node@problem">
         <mm:param name="sub">assessment</mm:param>
         <mm:param name="subsub">evaluate</mm:param>
-        <a href="${_}">Werk uit ${_node}</a>
+        <a href="${_}">Werk dit probleem uit</a>
       </mm:link>
     </mm:present>
   </span>

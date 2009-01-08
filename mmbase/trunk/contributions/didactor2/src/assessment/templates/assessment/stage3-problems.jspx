@@ -8,69 +8,20 @@
   <jsp:output omit-xml-declaration="true" />
 
   <h2><di:translate key="assessment.problems" /></h2>
-  <!--
-      show the learnblocks
-  -->
-  <mm:node number="${education}">
-    <span class="head problem">&amp;nbsp;</span>
-    <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
-      <mm:sortorder field="posrel.pos" />
-      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-        <mm:addnode element="components" number="component.assessment" />
-      </c:if>
-
-      <mm:relatednodes id="learnBlock"  varStatus="status">
-        <!--
-            If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
-        -->
-        <mm:relation to="${user}" role="classrel" searchdir="source"
-                     notfound="null">
-          <c:if test="${empty _node and empty firstopenlesson}">
-            <mm:node node="learnBlock" id="firstopenlesson" />
-          </c:if>
-          <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
-            <mm:field name="name" node="learnBlock" />
-          </span>
-        </mm:relation>
-      </mm:relatednodes>
-    </mm:relatednodescontainer>
-
-    <span class="head delete">&amp;nbsp;</span>
-  </mm:node>
-
-
-  <!--
-      Now the problems, divided per type.
-      They can be edited by the user
-  -->
-  <mm:listnodes orderby="pos" type="problemtypes">
-    <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
-
+  <h4>probleem</h4>
+  <h4>soort</h4>
+  <h4>hoe veel last</h4>
+  <mm:node number="${user}">
     <mm:treefile
         write="false"
         page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
       <mm-sr:relatednodes
-          item="/assessment/matrix.div.jspx?sub=${sub}"
           icondir="${_}"
-          path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
-        <jsp:attribute name="constraints">
-          <mm:addnode element="people" number="${user}" />
-        </jsp:attribute>
+          item="/assessment/problem.item.jspx"
+          path="posrel,problems"
+          orderby="posrel.pos" type="problems">
       </mm-sr:relatednodes>
     </mm:treefile>
-  </mm:listnodes>
-
-  <!--
-      Now links to the feed back pages
-  -->
-  <div>
-    <span class="head problem">
-      <di:translate key="assessment.feedback_coach" />:
-      <mm:link page="/c/shoutbox/index/">
-        <a href="${_}" name=""><di:translate key="assessment.messages"/></a>
-      </mm:link>
-    </span>
-
-  </div>
+  </mm:node>
 
 </div>

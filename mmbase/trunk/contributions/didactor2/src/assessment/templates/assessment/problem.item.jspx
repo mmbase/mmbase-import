@@ -6,6 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
+
   <mm:import externid="source" required="true" />
   <mm:import externid="confirm" />
   <mm:import externid="icondir" />
@@ -13,6 +14,30 @@
     <mm:fieldinfo type="input" />
     <mm:fieldinfo type="errors" />
   </mm:fieldlist>
+  
+  <mm:listrelationscontainer type="learnblocks" role="posrel">
+          <mm:listrelations id="relation">
+            <mm:field name="pos" id="pos${relation}">
+              <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
+                <!--
+                    This should make the 'trouble' readonly for already closed lessons.
+                    Sadly doesn't work very nicely becuase explicit datatypes does not influence gui value.
+                    Perhaps a bug.
+                    But also a consequence of insisting to use posrel for something which simply isn't.
+                    I hate the people who 'designed' this.
+
+                <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="${empty _node  ? 'input' : 'guivalue'}" />
+
+                -->
+
+
+              </mm:relation>
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
+            </mm:field>
+          </mm:listrelations>
+	</mm:listrelationscontainer>
+
   <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
 
 </jsp:root>
