@@ -22,6 +22,7 @@
             <mm:function id="stage_required" name="sequence" write="false" />
           </mm:node>
         </c:if>
+       
         <c:if test="${empty di:setting('assessment', settingname) or reached ge stage_required}">
           <li class="${stage eq s ? 'current' : ''}">
             <mm:link referids="s@stage">
