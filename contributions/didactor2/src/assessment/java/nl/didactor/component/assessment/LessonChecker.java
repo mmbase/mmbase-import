@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
  * Functionality are made accessible to front-end jsps using (node) functions (see e.g. people.xml).
  *
- * @version $Id: LessonChecker.java,v 1.5 2009-01-08 12:28:08 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.6 2009-01-08 13:46:18 michiel Exp $
  */
 
 public class LessonChecker {
@@ -54,7 +54,7 @@ public class LessonChecker {
      * education and to this component, if that setting is true.
      */
 
-    protected static List<Node> getLessons(@Required @Name("education") Node education) {
+    public static List<Node> getLessons(@Required @Name("node") Node education) {
         List<Node> result = new ArrayList<Node>();
         Cloud cloud = education.getCloud();
         NodeQuery q = Queries.createRelatedNodesQuery(education,
@@ -76,21 +76,14 @@ public class LessonChecker {
         return result;
     }
 
-    protected static List<Node> getLearnBlocks(@Required @Name("education") Node education) {
-        List<Node> result = new ArrayList<Node>();
+    private static List<Node> getLearnBlocks(Node education) {
         Cloud cloud = education.getCloud();
         NodeQuery q = Queries.createRelatedNodesQuery(education,
                                                       cloud.getNodeManager("learnblocks"),
                                                       "posrel",
                                                       "destination");
         Queries.addSortOrders(q, "posrel.pos", "UP");
-        NodeList relatedLearnBlocks = q.getNodeManager().getList(q);
-
-        for (Node learnBlock : relatedLearnBlocks) {
-            boolean related = Queries.count(AssessmentField.getRelationsQuery(learnBlock)) > 0;
-            result.add(learnBlock);
-        }
-        return result;
+        return  q.getNodeManager().getList(q);
     }
 
 
@@ -173,7 +166,6 @@ public class LessonChecker {
                }
            }
        }
-
        return resultSet;
     }
 

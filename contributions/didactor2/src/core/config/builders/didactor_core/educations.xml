@@ -170,6 +170,10 @@
       <class>nl.didactor.functions.Functions</class>
     </function>
 
+    <function key="learnblocks">
+      <class>nl.didactor.functions.Functions</class>
+    </function>
+
     <function name="smartpath">
       <class>nl.didactor.functions.SmartPath</class>
     </function>
@@ -181,6 +185,11 @@
     <function key="tests">
       <class>nl.didactor.education.functions.Tests</class>
     </function>
+
+    <function key="getLessons" name="lessons">
+      <class>nl.didactor.component.assessment.LessonChecker</class>
+    </function>
+
 
   </functionlist>
 </builder>

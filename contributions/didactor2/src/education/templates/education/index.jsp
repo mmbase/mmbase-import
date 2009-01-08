@@ -3,7 +3,6 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           >
   <di:html
       styleClass="education"
