@@ -20,28 +20,33 @@
 
   <mm:node referid="problem">
 
-    <h2><mm:field name="name" /></h2>
+    <mm:form>
+      <h2><mm:field name="name" /></h2>
 
-    <div clas="learnblockNames">
-      <h2>Geef per les aan hoeveel last je van dit probleem had</h2>
-      <mm:node number="${education}">
-        <mm:nodelistfunction name="lessons">
-          <h4 class="learnblockName"><mm:nodeinfo type="gui" /></h4>
-        </mm:nodelistfunction>
-      </mm:node>
+      <div clas="learnblockNames">
+        <h2>Geef per les aan hoeveel last je van dit probleem had</h2>
+        <mm:node number="${education}">
+          <mm:nodelistfunction name="lessons">
+            <h4 class="learnblockName"><mm:nodeinfo type="gui" /></h4>
+          </mm:nodelistfunction>
+        </mm:node>
+      </div>
+      <div class="problemLearnblock">
+        <mm:listrelationscontainer type="learnblocks" role="posrel">
+          <mm:listrelations id="relation">
+            <mm:field name="pos" id="pos${relation}">
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
+              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
+            </mm:field>
+          </mm:listrelations>
+        </mm:listrelationscontainer>
+      </div>
+    </mm:form>
+
+    <div id="contentFrame">
+      <mm:include page="/education/tests/buildtest.jsp"
+                  referids="test@learnobject" />
     </div>
-    <div class="problemLearnblock">
-      <mm:listrelationscontainer type="learnblocks" role="posrel">
-        <mm:listrelations id="relation">
-          <mm:field name="pos" id="pos${relation}">
-            <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
-            <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
-          </mm:field>
-        </mm:listrelations>
-      </mm:listrelationscontainer>
-    </div>
-    <mm:include page="/education/tests/buildtest.jsp"
-                referids="test@learnobject" />
 
   </mm:node>
 
