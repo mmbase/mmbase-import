@@ -15,7 +15,7 @@
         page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
       <mm-sr:relatednodes
           icondir="${_}"
-          item="/assessment/problem.item.jspx"
+          
           path="posrel,problems"
           orderby="posrel.pos" type="problems">
       </mm-sr:relatednodes>
