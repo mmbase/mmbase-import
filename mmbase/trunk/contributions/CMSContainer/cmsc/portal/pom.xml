@@ -18,37 +18,31 @@
             <groupId>finalist</groupId>
             <artifactId>cmsc-contentrepository</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-security</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-servicemanagement</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-sitemanagement</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-utilities</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
   <build>
