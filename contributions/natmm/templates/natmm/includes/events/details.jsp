@@ -68,7 +68,7 @@ String parentID = Evenement.findParentNumber(evenementID);
    <%
      boolean bTableFinished = true;
    %>
-   <mm:related path="posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam" orderby="deelnemers_categorie.naam">
+   <mm:related path="posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam">
       <mm:first>
          <div style="margin:0px 0px 5px 0px"><span class="colortitle">Kosten</span>
          <table width="100%" border="0" cellpadding="0" cellspacing="0">
