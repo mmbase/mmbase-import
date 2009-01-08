@@ -293,3 +293,15 @@ div.err
 	margin: 4px auto 4px auto;
 	padding: 0.7em;
 }
+
+div.codesample {
+  float: right;
+  background-color: #e6e9dd;
+  border: solid 1px #002828;
+  padding: 1ex;
+  margin-bottom: 1ex;
+  margin-left: 1ex;
+}
+div.codesample pre {
+  background-color: #fff;
+}
