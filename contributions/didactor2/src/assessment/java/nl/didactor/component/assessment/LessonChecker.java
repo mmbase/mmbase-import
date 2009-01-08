@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
  * Functionality are made accessible to front-end jsps using (node) functions (see e.g. people.xml).
  *
- * @version $Id: LessonChecker.java,v 1.4 2009-01-08 11:09:20 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.5 2009-01-08 12:28:08 michiel Exp $
  */
 
 public class LessonChecker {
@@ -197,6 +197,13 @@ public class LessonChecker {
         return false;
     }
 
+
+    public static Node getCurrentLesson(@Required @Name("education") Node education,
+                                        @Required @Name("node") Node user) {
+
+        List<Node> lessons = getLessons(education);
+        return null; // TODO
+    }
 
     /**
      * Determins whether a certain lesson can be closed by a certain user.
