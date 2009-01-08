@@ -25,9 +25,6 @@
         -->
         <mm:relation to="${user}" role="classrel" searchdir="source"
                      notfound="null">
-          <c:if test="${empty _node and empty firstopenlesson}">
-            <mm:node node="learnBlock" id="firstopenlesson" />
-          </c:if>
           <span class="head ${empty _node ? '' : 'closed'}" style="width: ${60 / status.count}%">
             <mm:field name="name" node="learnBlock" />
           </span>
