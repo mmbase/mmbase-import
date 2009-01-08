@@ -1,14 +1,6 @@
-<html>
-<head>
-<title>JForum - Administration interface</title>
-<meta http-equiv="Content-Type" content="text/html; charset=${encoding}">
-</head>
-
-<frameset rows="*" cols="170,*" framespacing="0" frameborder="NO" border="0">
-  <frame src="${contextPath}/jforum${extension}?module=admBase&action=menu" name="leftFrame" scrolling="NO" noresize>
-  <frame src="${contextPath}/jforum${extension}?module=admBase&action=main" name="main">
-</frameset>
-<noframes><body>
-
-</body></noframes>
-</html>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="forumline">
+	<tr>
+		<td width="170" valign="top"><iframe src="${contextPath}/jforum${extension}?module=admBase&action=menu" frameborder="NO" name="leftFrame" scrolling="NO" height="600" width="100%"></iframe></td>
+		<td valign="top"><iframe src="${contextPath}/jforum${extension}?module=admBase&action=main" frameborder="NO" name="main" scrolling="AUTO" height="600" width="100%"></iframe></td>
+	</tr>
+</table>
