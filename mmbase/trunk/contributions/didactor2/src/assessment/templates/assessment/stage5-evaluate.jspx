@@ -19,11 +19,14 @@
   </mm:link>
 
   <mm:node referid="problem">
+  	<p>
+			<a href="#" onclick="history.back(-1);">&amp;lt;&amp;lt;terug naar het overzicht</a>
+		</p>
+    <h2>Probleem:</h2>
+    <h4><mm:field name="name" /></h4>
 
-    <h2><mm:field name="name" /></h2>
-
-    <div>
-      <h2>Geef per les aan hoeveel last je van dit probleem had</h2>
+    <div class="problemImpact">
+      <h2>Wijzig eventueel per les hoeveel last je van dit probleem had</h2>
 
       <mm:node number="${education}">
         <mm:nodelistfunction name="lessons">
@@ -31,6 +34,11 @@
         </mm:nodelistfunction>
       </mm:node>
       <mm:include page="/assessment/stage5-editdifficulties.jspx" />
+
+      <mm:link page="/assessment/stage5.js.jsp">
+        <script type="text/javascript" src="${_}" />
+      </mm:link>
+
     </div>
 
 
