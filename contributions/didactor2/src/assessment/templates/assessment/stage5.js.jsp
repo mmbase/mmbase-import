@@ -35,8 +35,6 @@ $(window).unload(function() {
 
     // Then the test
     document.forms.questionform.command.value = 'done';
-    console.log("Now saving test");
-
 
     postContent(document.forms.questionform.action, document.forms.questionform, false);
 
