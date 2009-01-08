@@ -178,4 +178,9 @@
      <taglib-location>/WEB-INF/tld/lucenemodule.tld</taglib-location>
   </taglib>
 
+  <taglib>
+     <taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
+     <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+  </taglib>
+
 </web-app>
