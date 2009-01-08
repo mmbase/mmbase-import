@@ -18,7 +18,7 @@
     <mm:maxnumber value="1" />
     <mm:listnodes>
       <di:leaf
-          branchPath="."
+          branchPath=".|"
           click="portal_root_${_node}">
         <mm:link referid="listjsp" referids="containernode@origin,referrer">
           <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
@@ -35,20 +35,23 @@
     </mm:listnodes>
   </mm:listnodescontainer>
 
-  <mm:listnodes type="educations">
-      <di:leaf branchPath=".">
-        <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
-          <mm:param name="wizard">config/portalpages/posrel-portalpagescontainers</mm:param>
-          <a href="${_}" target="text">
-            Portal pages for <mm:nodeinfo type="gui" />
-          </a>
-        </mm:link>
-      </di:leaf>
+  <mm:listnodes id="e" type="educations" varStatus="status">
+    <di:leaf branchPath=".${status.last ? '.' : '|'}"
+             click="portal_root_${_node}">
+      <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
+        <mm:param name="wizard">config/portalpages/posrel-portalpagescontainers</mm:param>
+        <a href="${_}" target="text">
+          Portal pages for <mm:nodeinfo type="gui" />
+        </a>
+      </mm:link>
+    </di:leaf>
+    <div id="portal_root_${_node}">
       <mm:relatednodes role="posrel" type="portalpagescontainers">
-        <di:leaf branchPath="|.">
+        <di:leaf branchPath=".||">
           <mm:field name="name" />
-          <mm:include page="leaf.jspx" />
         </di:leaf>
+        <mm:include page="leaf.jspx" />
       </mm:relatednodes>
+    </div>
   </mm:listnodes>
 </jsp:root>

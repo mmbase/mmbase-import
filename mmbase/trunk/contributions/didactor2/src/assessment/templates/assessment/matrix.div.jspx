@@ -21,16 +21,12 @@
 
 
   <!-- Display the problem itself -->
-
-  <span class="col problem">
-    <div class="intro">
-      <mm:field name="name" />
-    </div>
-
-  </span>
-
+<div class="problemItem">
+	<mm:field name="name" /> &amp;nbsp;
+</div>  
   <mm:node id="problem" number="${_node}" /> <!-- give current node an id, and put it in the current cloud -->
 
+	 <div class="learnblockProblemItems">
   <!-- And, per lesson, how much trouble it gave -->
   <mm:node number="${education}">
     <mm:relatednodescontainer
@@ -44,8 +40,7 @@
 
       <mm:size id="size" write="false" />
       <mm:relatednodes id="learnBlock">
-        <span class="col" style="width: ${60 / size}%">
-
+        
         <!--
             Create the relation problem-posrel->learnBlock if that does not exist yet.  The
             'position' field is abused to indicate how much trouble the problem gave after this
@@ -87,37 +82,40 @@
              this relation, or only _see_ (if 'closed' lesson).
              That is, inidcate how much trouble the problem is now causing.
         -->
-
+				
+       
         <mm:listrelationscontainer type="problems" role="posrel">
           <mm:addnode element="problems" number="${problem}" />
+          
           <mm:listrelations id="relation">
             <mm:field name="pos" write="false">
               <!-- See MMB-1770 -->
               <fmt:bundle basename="nl.didactor.resources.troubles">
-                <fmt:message key="${_}" />
+                <span class="learnblockItems"><fmt:message key="${_}" /></span>
               </fmt:bundle>
             </mm:field>
           </mm:listrelations>
+        
         </mm:listrelationscontainer>
-        <jsp:text>&amp;#160;</jsp:text>
-      </span>
+        
+		 
 
 
       </mm:relatednodes>
     </mm:relatednodescontainer>
+   
   </mm:node>
 
   <mm:import externid="stage" />
   <mm:import externid="sub" />
 
-  <span class="col">
-
-    <jsp:text> </jsp:text>
     <mm:present referid="test">
       <mm:link  referids="test,_node@problem,sub?">
         <mm:param name="stage">stage5-evaluate</mm:param>
-        <a href="${_}">Werk dit probleem uit</a>
+        <span class="learnblockItems"><a href="${_}">uitwerken</a></span>
       </mm:link>
     </mm:present>
-  </span>
+   </div>
+
+
 </jsp:root>
