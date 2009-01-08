@@ -207,7 +207,7 @@ function requestContent(href, number) {
     scrollToTop();
 }
 
-function postContent(href, form) {
+function postContent(href, form, async) {
     loadIconOn();
     var params = {};
     $(form).find("textarea").each(function() {
@@ -220,7 +220,9 @@ function postContent(href, form) {
             }
         });
 
-    $.ajax({url: href, type: "POST", dataType: "xml", data: params,
+    var a = async == null ? true : async;
+
+    $.ajax({url: href, type: "POST", async: a, dataType: "xml", data: params,
                 complete: function(res, status) {
                 if (status == "success") {
                     var contentEl = document.getElementById('contentFrame');
