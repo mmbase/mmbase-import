@@ -77,6 +77,11 @@ div.problems.stage3 .list ol li select {
   display: block;
   margin-right: 10px;
 }
+
+div.problems .mm_f_name, div.goals .mm_f_name {
+	width: 475px;
+}
+
 div.problems.stage3 .mm_f_name {
   width: 250px;
 }
@@ -85,5 +90,9 @@ div.problems.stage3 .mm_f_type {
 }
 div.problems.stage3 .mm_dt_didactor_assessment_troubles {
   width: 100px;
+}
+
+.closelesson input.formbutton {
+	widht: 200px !important;
 }
 
