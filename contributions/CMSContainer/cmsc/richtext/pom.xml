@@ -14,13 +14,11 @@
             <groupId>finalist</groupId>
             <artifactId>cmsc-utilities</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

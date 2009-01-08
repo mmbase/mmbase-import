@@ -14,19 +14,16 @@
             <groupId>finalist</groupId>
             <artifactId>cmsc-utilities</artifactId>
             <version>${cmsc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mmbase</groupId>
             <artifactId>mmbase-cloudcontext</artifactId>
             <version>${mmbase.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.samba.jcifs</groupId>
