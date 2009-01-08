@@ -101,7 +101,13 @@ div.problems.stage3 .mm_dt_didactor_assessment_troubles {
 	float: left;
 	width: 100px;
 	margin-right: 10px;
+	font-size: 1.0em;
 	
+	
+}
+
+.mm_dt_didactor_assessment_troubles select {
+		margin-bottom: 30px;
 }
 
 .problemImpact {

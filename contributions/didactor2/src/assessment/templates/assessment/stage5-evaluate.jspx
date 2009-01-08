@@ -19,11 +19,12 @@
   </mm:link>
 
   <mm:node referid="problem">
-  	<p>
-			<a href="#" onclick="history.back(-1);">&amp;lt;&amp;lt;terug naar het overzicht</a>
-		</p>
+
+		<p><a href="#" onclick="history.back(-1);">&amp;lt;&amp;lt;terug naar het overzicht</a></p>
+    
     <h2>Probleem:</h2>
     <h4><mm:field name="name" /></h4>
+
 
     <div class="problemImpact">
       <h2>Wijzig eventueel per les hoeveel last je van dit probleem had</h2>
@@ -46,6 +47,7 @@
       <mm:include page="/education/tests/buildtest.jsp"
                   referids="test@learnobject" />
     </div>
+    <p>&amp;nbsp;</p><p></p>
 
     <mm:link page="/assessment/stage5.js.jsp">
       <script type="text/javascript" src="${_}" />
