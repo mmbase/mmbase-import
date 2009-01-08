@@ -49,15 +49,26 @@
         <mm:listrelationscontainer type="learnblocks" role="posrel">
           <mm:listrelations>
             <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
-              <mm:remove referid="lastlesson" />
-              <mm:node node="learnBlock" id="lastlesson" />
+              <mm:remove referid="lastclosedlesson" />
+              <mm:node node="learnBlock" id="lastclosedlesson" />
             </mm:relation>
           </mm:listrelations>
         </mm:listrelationscontainer>
+        <mm:relation to="${user}" notfound="null">
+          <c:if test="${! empty _node or empty firstopenlesson}">
+            <c:if test="${empty _node}">
+              <mm:node node="learnBlock" id="firstopenlesson" />
+            </c:if>
+          </c:if>
+        </mm:relation>
       </mm:relatednodes>
     </mm:relatednodescontainer>
+
   </mm:node>
-  <mm:write session="lastlesson" referid="lastlesson" />
+
+  <mm:write session="lastlesson_${user}_${education}"    value="${lastclosedlesson}" />
+  <mm:write session="firstopenlesson_${user}_${education}" referid="firstopenlesson" />
+
 
 
   <di:include page="/assessment/${stage}.jspx" />
