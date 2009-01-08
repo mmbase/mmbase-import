@@ -45,17 +45,14 @@
 
     <mm:import externid="sub" />
     <mm:import externid="stage" />
-    <mm:treefile
-        write="false"
-        page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
-      <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
-        <mm:addnode element="people" number="${user}" />
-        <mm:sortorder field="posrel.pos" />
-        <mm:relatednodes>
-          <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
-        </mm:relatednodes>
-      </mm:relatednodescontainer>
-    </mm:treefile>
+    <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
+      <mm:addnode element="people" number="${user}" />
+      <mm:sortorder field="posrel.pos" />
+      <mm:relatednodes>
+        <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+
   </mm:listnodes>
 
   <!--
