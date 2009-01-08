@@ -24,9 +24,7 @@
 
   <span class="col problem">
     <div class="intro">
-      <mm:field name="name">
-
-      </mm:field>
+      <mm:field name="name" />
     </div>
 
   </span>
