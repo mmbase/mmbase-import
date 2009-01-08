@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
-  <di:html xmlns:jsp="http://java.sun.com/JSP/Page"
-           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-           expires="0"
-           styleClass="assessment"
-           title_key="assessment.assessment_matrix"
-           css="/assessment/css/base.css" component="assessmment">
+  <di:html
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+      xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+      expires="0"
+      styleClass="assessment"
+      title_key="assessment.assessment_matrix"
+      css="/assessment/css/base.css"
+      component="assessmment">
     <mm:import externid="coachmode">
       <di:hasrole role="teacher">true</di:hasrole>
       <di:hasrole role="teacher" inverse="true">false</di:hasrole>

@@ -94,6 +94,7 @@
           <mm:addnode element="problems" number="${problem}" />
           <mm:listrelations id="relation">
             <mm:field name="pos" write="false">
+              <!-- See MMB-1770 -->
               <fmt:bundle basename="nl.didactor.resources.troubles">
                 <fmt:message key="${_}" />
               </fmt:bundle>
@@ -108,13 +109,15 @@
     </mm:relatednodescontainer>
   </mm:node>
 
+  <mm:import externid="stage" />
+  <mm:import externid="sub" />
+
   <span class="col">
 
     <jsp:text> </jsp:text>
     <mm:present referid="test">
-      <mm:link  referids="test,_node@problem">
-        <mm:param name="sub">assessment</mm:param>
-        <mm:param name="subsub">evaluate</mm:param>
+      <mm:link  referids="test,_node@problem,sub?">
+        <mm:param name="stage">stage5-evaluate</mm:param>
         <a href="${_}">Werk dit probleem uit</a>
       </mm:link>
     </mm:present>
