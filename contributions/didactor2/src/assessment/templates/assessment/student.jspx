@@ -72,6 +72,19 @@
 
   <di:include page="/assessment/${stage}.jspx" />
 
+  <!--
+      Now links to the feed back pages
+  -->
+  <div class="problemFeedback">
+    <p>
+      <h4 class="problemFeedback"><di:translate key="assessment.feedback_coach" />:
+      <mm:link page="/c/shoutbox/index/">
+        <a href="${_}" name="">bekijk <di:translate key="assessment.messages"/> voor deze les</a>
+      </mm:link>
+    </h4>
+		</p>
+  </div>
+
   <di:include page="/assessment/closelesson.link.jspx" />
 
 </div>
