@@ -4,13 +4,23 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    class="problems">
+    class="problems stage3">
   <jsp:output omit-xml-declaration="true" />
 
   <h2><di:translate key="assessment.problems" /></h2>
-  <h4>probleem</h4>
-  <h4>soort</h4>
-  <h4>hoe veel last</h4>
+
+  <div>
+    <mm:node referid="lastlesson">
+      Hoeveel last in <mm:nodeinfo type="gui" />
+    </mm:node>
+  </div>
+
+
+
+  <h4 class="mm_f_name">probleem</h4>
+  <h4 class="mm_f_type">soort</h4>
+  <h4 class="mm_dt_didactor_assessment_troubles">hoe veel last</h4>
+
   <mm:node number="${user}">
     <mm:treefile
         write="false"

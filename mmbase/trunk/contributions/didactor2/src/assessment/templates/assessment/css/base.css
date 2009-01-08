@@ -61,3 +61,29 @@ div.student a.create {
 }
 
 
+div.problems.stage3 .list .mm_check_error {
+  display: none;
+
+}
+div.problems.stage3 h4 {
+  float: left;
+  display: block;
+  margin-right: 10px;
+
+}
+div.problems.stage3 .list ol li input,
+div.problems.stage3 .list ol li select {
+  float: left;
+  display: block;
+  margin-right: 10px;
+}
+div.problems.stage3 .mm_f_name {
+  width: 250px;
+}
+div.problems.stage3 .mm_f_type {
+  width: 100px;
+}
+div.problems.stage3 .mm_dt_didactor_assessment_troubles {
+  width: 100px;
+}
+

@@ -2,6 +2,7 @@
     version="2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
@@ -10,34 +11,39 @@
   <mm:import externid="source" required="true" />
   <mm:import externid="confirm" />
   <mm:import externid="icondir" />
-  <mm:fieldlist fields="name,type">
-    <mm:fieldinfo type="input" />
-    <mm:fieldinfo type="errors" />
-  </mm:fieldlist>
-  
-  <mm:listrelationscontainer type="learnblocks" role="posrel">
-          <mm:listrelations id="relation">
-            <mm:field name="pos" id="pos${relation}">
-              <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
-                <!--
-                    This should make the 'trouble' readonly for already closed lessons.
-                    Sadly doesn't work very nicely becuase explicit datatypes does not influence gui value.
-                    Perhaps a bug.
-                    But also a consequence of insisting to use posrel for something which simply isn't.
-                    I hate the people who 'designed' this.
 
-                <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="${empty _node  ? 'input' : 'guivalue'}" />
+  <mm:node id="problem">
+    <mm:fieldlist fields="name,type">
+      <mm:fieldinfo type="input" />
+      <mm:fieldinfo type="errors" />
+    </mm:fieldlist>
 
-                -->
+    <mm:present referid="lastlesson">
 
+      <mm:relation to="${lastlesson}" role="posrel" notfound="null">
+        <c:if test="${empty _node}">
+          <mm:cloud>
+            <mm:node number="${lastlesson}" id="ll" />
+            <mm:node number="${problem}"    id="dest" />
+            <mm:createrelation id="new" source="ll" destination="dest" role="posrel" commitonclose="true">
+              <!-- default value of how much trouble -->
+              <mm:setfield name="pos">4</mm:setfield>
+            </mm:createrelation>
+          </mm:cloud>
+        </c:if>
+      </mm:relation>
 
-              </mm:relation>
-              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="input" />
-              <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="errors" />
-            </mm:field>
-          </mm:listrelations>
-	</mm:listrelationscontainer>
+      <mm:listrelationscontainer type="learnobjects" role="posrel">
+        <mm:addnode element="learnobjects" number="${sessionScope.lastlesson}" />
+        <mm:listrelations id="relation">
+          <mm:field name="pos" id="pos${relation}">
+            <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
+            <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
+          </mm:field>
+        </mm:listrelations>
+      </mm:listrelationscontainer>
+    </mm:present>
 
-  <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
-
+    <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
+  </mm:node>
 </jsp:root>
