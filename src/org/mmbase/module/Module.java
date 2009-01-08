@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.103 2008-08-26 22:34:12 michiel Exp $
+ * @version $Id: Module.java,v 1.104 2009-01-08 00:18:57 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -510,7 +510,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @return A HashTable with <module-name> --> Module-instance
      */
     private static synchronized Map<String, Module>  loadModulesFromDisk() {
-        Map<String, Module> results = new HashMap<String, Module>();
+        Map<String, Module> results = new TreeMap<String, Module>();
         ResourceLoader moduleLoader = getModuleLoader();
         Collection<String> modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + moduleLoader + " the following module XML's were found " + modules);
