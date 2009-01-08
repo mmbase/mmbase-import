@@ -43,17 +43,18 @@
   <mm:listnodes orderby="pos" type="problemtypes">
     <div class="inter"><di:translate key="assessment.${_node.key}" /></div>
 
+    <mm:import externid="sub" />
+    <mm:import externid="stage" />
     <mm:treefile
         write="false"
         page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
-      <mm-sr:relatednodes
-          item="/assessment/matrix.div.jspx?sub=${sub}"
-          icondir="${_}"
-          path="related,problems,posrel,people" orderby="posrel.pos" type="problems">
-        <jsp:attribute name="constraints">
-          <mm:addnode element="people" number="${user}" />
-        </jsp:attribute>
-      </mm-sr:relatednodes>
+      <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
+        <mm:addnode element="people" number="${user}" />
+        <mm:sortorder field="posrel.pos" />
+        <mm:relatednodes>
+          <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
     </mm:treefile>
   </mm:listnodes>
 

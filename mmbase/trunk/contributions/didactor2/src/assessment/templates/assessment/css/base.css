@@ -65,21 +65,22 @@ div.problems.stage3 .list .mm_check_error {
   display: none;
 
 }
-div.problems.stage3 h4 {
+div.problems h4 {
   float: left;
   display: block;
   margin-right: 10px;
 
 }
-div.problems.stage3 .list ol li input,
-div.problems.stage3 .list ol li select {
+div.problems .list ol li input,
+div.problems .list ol li select {
   float: left;
   display: block;
   margin-right: 10px;
 }
 
-div.problems .mm_f_name, div.goals .mm_f_name {
-	width: 475px;
+div.problems .mm_f_name,
+div.goals .mm_f_name {
+  width: 475px;
 }
 
 div.problems.stage3 .mm_f_name {
@@ -93,6 +94,6 @@ div.problems.stage3 .mm_dt_didactor_assessment_troubles {
 }
 
 .closelesson input.formbutton {
-	widht: 200px !important;
+  widht: 200px !important;
 }
 
