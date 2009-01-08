@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 
  * Functionality are made accessible to front-end jsps using (node) functions (see e.g. people.xml).
  *
- * @version $Id: LessonChecker.java,v 1.3 2008-12-04 16:34:28 michiel Exp $
+ * @version $Id: LessonChecker.java,v 1.4 2009-01-08 11:09:20 michiel Exp $
  */
 
 public class LessonChecker {
@@ -72,6 +72,23 @@ public class LessonChecker {
             if (related) {
                 result.add(learnBlock);
             }
+        }
+        return result;
+    }
+
+    protected static List<Node> getLearnBlocks(@Required @Name("education") Node education) {
+        List<Node> result = new ArrayList<Node>();
+        Cloud cloud = education.getCloud();
+        NodeQuery q = Queries.createRelatedNodesQuery(education,
+                                                      cloud.getNodeManager("learnblocks"),
+                                                      "posrel",
+                                                      "destination");
+        Queries.addSortOrders(q, "posrel.pos", "UP");
+        NodeList relatedLearnBlocks = q.getNodeManager().getList(q);
+
+        for (Node learnBlock : relatedLearnBlocks) {
+            boolean related = Queries.count(AssessmentField.getRelationsQuery(learnBlock)) > 0;
+            result.add(learnBlock);
         }
         return result;
     }
@@ -132,9 +149,14 @@ public class LessonChecker {
            return resultSet;
        }
 
+       List<Node> lessons = getLessons(education);
+       boolean foundALesson = false;
+
        boolean statusBlocked = false;
 
-       for (Node learnBlock : getLessons(education)) {
+       for (Node learnBlock : getLearnBlocks(education)) {
+
+           if (lessons.contains(learnBlock)) foundALesson = true;
 
            if (statusBlocked) {
                //It means the rest of learnblocks is closed.
@@ -146,7 +168,7 @@ public class LessonChecker {
                Node classrel = getClassRel(learnBlock, user);
                boolean closed = classrel != null;
                log.debug("" + learnBlock.getNumber() + " closed " + closed);
-               if (! closed) {
+               if (! closed && foundALesson) {
                    statusBlocked = true;
                }
            }

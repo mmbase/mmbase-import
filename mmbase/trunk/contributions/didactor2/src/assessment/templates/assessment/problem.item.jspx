@@ -18,14 +18,14 @@
       <mm:fieldinfo type="errors" />
     </mm:fieldlist>
 
-    <mm:import id="lastlesson" from="session" externid="lastlesson_${user}_${education}" />
+    <mm:import id="currentlesson" from="session" externid="firstopenlesson_${user}_${education}" />
 
-    <mm:present referid="lastlesson">
+    <mm:present referid="currentlesson">
 
-      <mm:relation to="${lastlesson}" role="posrel" notfound="null">
+      <mm:relation to="${currentlesson}" role="posrel" notfound="null">
         <c:if test="${empty _node}">
           <mm:cloud>
-            <mm:node number="${lastlesson}" id="ll" />
+            <mm:node number="${currentlesson}" id="ll" />
             <mm:node number="${problem}"    id="dest" />
             <mm:createrelation id="new" source="ll" destination="dest" role="posrel" commitonclose="true">
               <!-- default value of how much trouble -->
@@ -36,7 +36,7 @@
       </mm:relation>
 
       <mm:listrelationscontainer type="learnobjects" role="posrel">
-        <mm:addnode element="learnobjects" number="${lastlesson}" />
+        <mm:addnode element="learnobjects" number="${currentlesson}" />
         <mm:listrelations id="relation">
           <mm:field name="pos" id="pos${relation}">
             <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
