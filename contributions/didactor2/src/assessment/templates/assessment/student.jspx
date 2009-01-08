@@ -13,7 +13,7 @@
   <ul class="tabs">
     <mm:import from="cookie" externid="didactor_${education}_${user}_maxsequence" id="reached">0</mm:import>
 
-    <c:forEach items="stage1-goals,stage2-problems,stage3-problems" var="s">
+    <c:forEach items="stage1-goals,stage2-problems,stage3-problems,stage4-problems" var="s">
       <mm:context>
         <c:set var="settingname" value="opens_${s}" />
 
@@ -22,7 +22,7 @@
             <mm:function id="stage_required" name="sequence" write="false" />
           </mm:node>
         </c:if>
-       
+
         <c:if test="${empty di:setting('assessment', settingname) or reached ge stage_required}">
           <li class="${stage eq s ? 'current' : ''}">
             <mm:link referids="s@stage">
@@ -34,6 +34,31 @@
       </mm:context>
     </c:forEach>
   </ul>
+
+
+  <mm:node number="${education}">
+    <mm:relatednodescontainer
+        element="learnblocks"
+        searchdirs="destination"
+        path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}">
+      <mm:sortorder field="posrel.pos" />
+      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
+        <mm:addnode element="components" number="component.assessment" />
+      </c:if>
+      <mm:relatednodes id="learnBlock">
+        <mm:listrelationscontainer type="learnblocks" role="posrel">
+          <mm:listrelations>
+            <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
+              <mm:remove referid="lastlesson" />
+              <mm:node node="learnBlock" id="lastlesson" />
+            </mm:relation>
+          </mm:listrelations>
+        </mm:listrelationscontainer>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:node>
+  <mm:write session="lastlesson" referid="lastlesson" />
+
 
   <di:include page="/assessment/${stage}.jspx" />
 

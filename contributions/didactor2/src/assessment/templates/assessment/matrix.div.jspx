@@ -108,7 +108,7 @@
 
               </mm:relation>
               <mm:fieldinfo field="pos${relation}" datatype="didactor_assessment_troubles" type="value" />
-              
+
             </mm:field>
           </mm:listrelations>
         </mm:listrelationscontainer>
@@ -121,7 +121,7 @@
   </mm:node>
 
   <span class="col">
-    
+
     <jsp:text> </jsp:text>
     <mm:present referid="test">
       <mm:link  referids="test,_node@problem">
