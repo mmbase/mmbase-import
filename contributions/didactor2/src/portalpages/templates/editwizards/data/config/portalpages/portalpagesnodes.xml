@@ -3,6 +3,12 @@
 <wizard-schema id="empty">
   <title>Portal Pagina's Map Editor</title>
 
+
+
+  <action type="create">
+    <object type="portalpagesnodes" />
+  </action>
+
   <action type="load">
     <object type="portalpagesnodes"/>
     <relation destinationtype="simplecontents" role="related" searchdir="destination" />
@@ -86,10 +92,12 @@
     </list>
   </form-schema>
 
+  <!--
   <form-schema id="step2">
     <title xml:lang="nl">Alineas invoeren</title>
     <title xml:lang="en">Enter paragraphs</title>
     <field name="name" ftype="data"/>
     <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
   </form-schema>
+  -->
 </wizard-schema>

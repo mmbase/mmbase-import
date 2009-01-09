@@ -7,10 +7,11 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     >
 
+  <mm:import externid="branchPath">.||</mm:import>
   <mm:node id="container">
   <di:leaf
       icon="new_education"
-      branchPath=".||"
+      branchPath="${branchPath}"
       >
     <mm:link referid="wizardjsp" referids="_node@origin,referrer">
       <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
@@ -24,7 +25,7 @@
     <mm:relatednodes varStatus="status">
       <di:leaf
           click="portal_node_${container}_${_node}"
-          branchPath=".|${status.last ? '.' : ' '}"
+          branchPath="${branchPath}${status.last ? '.' : ' '}"
           >
         <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
           <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
@@ -39,7 +40,7 @@
             <c:when test="${_ eq 'portalpagesnodes'}">
               <di:leaf
                   icon="new_education"
-                  branchPath="..${status.last ? '.' : ' '} "
+                  branchPath="${branchPath}${status.last ? '.' : ' '} "
                   >
                 <mm:link referid="wizardjsp" referids="_node@origin">
                   <mm:param name="wizard">config/portalpages/leafmapportalpages-origin</mm:param>
@@ -51,7 +52,7 @@
             <c:when test="${_ eq 'simplecontents'}">
               <di:leaf
                   icon="new_education"
-                  branchPath="..${status.last ? '.' : ' '} "
+                  branchPath="${branchPath}${status.last ? '.' : ' '} "
                   >
                 <mm:link referid="wizardjsp" referids="_node@origin">
                   <mm:param name="wizard">config/portalpages/newsimplecontents</mm:param>
@@ -65,7 +66,7 @@
 
               <di:leaf
                   icon="kupu_icon"
-                  branchPath="..${status.last ? '.' : ' '} "
+                  branchPath="${branchPath}${status.last ? '.' : ' '} "
                   >
                 <di:kupulink
                     referrer="${referrer}"
@@ -79,7 +80,7 @@
             <c:otherwise>
               <di:leaf
                   icon=""
-                  branchPath="..${status.last ? '.' : ' '} "
+                  branchPath="${branchPath}${status.last ? '.' : ' '} "
                   >
                 UNKNONWN ${_}
               </di:leaf>
@@ -88,7 +89,7 @@
         </mm:stringlist>
 
         <mm:treeinclude page="/portalpages/backoffice/related_portalpagesnodes.jsp" objectlist="${includePath}">
-          <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
+          <mm:param name="branchPath">${branchPath}${status.last ? '.' : ' '}</mm:param>
         </mm:treeinclude>
 
       </div>
