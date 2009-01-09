@@ -147,6 +147,10 @@ h2.problemTypes {
   margin-bottom:30px;
 }
 
+.problems form .formbutton {
+  display: none;
+}
+
 .problemImpact {
   margin-bottom:30px;
 }
