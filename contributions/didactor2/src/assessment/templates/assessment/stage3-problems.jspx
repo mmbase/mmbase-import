@@ -13,14 +13,16 @@
 
 
   <div>
-      <p>Geef per probleem aan wat voor soort probleem het is en hoe veel last heb je op dit moment van dit probleem hebt.</p>
+      <p>Geef per probleem aan wat voor soort probleem het is<mm:isnotempty referid="currentlesson"> en hoe veel last heb je op dit moment van dit probleem hebt</mm:isnotempty>.</p>
   </div>
 
 
 
   <h4 class="mm_f_name">Probleem</h4>
   <h4 class="mm_f_type">Soort</h4>
-  <h4 class="mm_dt_didactor_assessment_troubles">Hoe veel last</h4>
+  <mm:isnotempty referid="currentlesson">
+  	<h4 class="mm_dt_didactor_assessment_troubles">Hoe veel last</h4>
+  </mm:isnotempty>
 	
 	<p>
   <mm:node number="${user}">
