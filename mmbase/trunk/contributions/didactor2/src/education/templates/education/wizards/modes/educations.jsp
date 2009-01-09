@@ -62,12 +62,11 @@
                     </li>
                   </di:has>
 
-                  <mm:import id="educationId" externid="e">${education}</mm:import>
+                  <mm:import externid="e">${education}</mm:import>
 
-                  <mm:isgreaterthan referid="number_of_educations" value="0">
-                    <!-- The Education starts from here -->
-                    <mm:node number="${educationId}">
-                      <li>
+                  <mm:node number="${provider}">
+                    <mm:relatednodes type="educations">
+                      <li class="${_node eq e ? 'active' : 'inactive'}">
                         <mm:link referid="wizardjsp" referids="_node@objectnumber">
                           <mm:param name="wizard">config/education/educations</mm:param>
                           <mm:param name="title"><di:translate key="education.editeducation" /></mm:param>
@@ -227,8 +226,8 @@
                             </mm:relatednodes>
                         </ul>
                       </li>
-                    </mm:node>
-                  </mm:isgreaterthan>
+                    </mm:relatednodes>
+                  </mm:node>
                 </ul>
               </li>
             </ul>
