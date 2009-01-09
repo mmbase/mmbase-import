@@ -29,7 +29,7 @@
             <jsp:scriptlet>points += score;</jsp:scriptlet>
           </c:when>
           <c:when test="${_ eq TESTSCORE_TBS}">
-            <mm:log>SCORE is sTBS, resetting complete score</mm:log>
+            <mm:log level="dbug">SCORE is sTBS, resetting complete score</mm:log>
             <mm:remove referid="totalscore"/>
             <mm:import id="totalscore"><mm:write referid="TESTSCORE_TBS"/></mm:import>
           </c:when>
