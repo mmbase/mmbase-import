@@ -46,6 +46,13 @@ div.student div.problems {
   
 
 }
+
+div.goals, div.problems {
+	display: block;
+	clear: left;
+	padding-top: 10px;
+}
+
 div.student div.problems li, div.student div.goals li {
   width: 100%;
   display: block;
@@ -96,37 +103,34 @@ div.problems.stage3 .mm_dt_didactor_assessment_troubles {
 }
 
 .learnblockNames, .learnblockProblemItems  {
-	margin-left: 200px;
-
+	
 	
 }  
 h2.problemTypes {
-		clear: both;
-		margin-top: 10px;
-		margin-bottom: 10px;
+
 }
 
 
 
 .learnblockItems {
-	float: left;
 	width: 65px;
+	
+}
+
+.problemName {
+	width: 220px;
 }
 
 .learnblockProblemItems {
-	margin-top: -1.8em;
-	margin-bottom: 5px;
 }
 
 .problemItem .learnblockNames {
-	display: inline;
-	margin-left: 50px;
+
 }
 
 
 .problemItem {
-	padding: 3px;
-	border:1px solid white;
+	border-bottom: solid 2px white;
 }
 
 
@@ -135,9 +139,6 @@ h4.learnblockItems {
 	font-weight: bold;
 }
 
-.problemItem {
-	clear: both;
-}
 
 .closelesson input.formbutton {
 	widht: 200px !important;

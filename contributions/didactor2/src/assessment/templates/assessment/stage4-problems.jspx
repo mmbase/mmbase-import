@@ -15,6 +15,7 @@
   <!--
       show the learnblocks
   -->
+  <table cellpadding="2" cellspacing="0" border="0">
   <mm:node number="${education}">
     <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
       <mm:sortorder field="posrel.pos" />
@@ -22,32 +23,35 @@
         <mm:addnode element="components" number="component.assessment" />
       </c:if>
 			
-			<div class="learnblockNames">
+			<tr class="learnblockNames">
+			<td class="problemName">&amp;nbsp;</td>
       <mm:relatednodes id="learnBlock"  varStatus="status">
         <!--
             If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
         -->
         <mm:relation to="${user}" role="classrel" searchdir="source"
                      notfound="null">
-          <h4 class="learnblockItems">
+          <td class="learnblockItems">
             <mm:field name="name" node="learnBlock" />
-          </h4>
+          </td>
         </mm:relation>
       </mm:relatednodes>
-      </div>
+      </tr>
     </mm:relatednodescontainer>
 
  
   </mm:node>
-
+  
 
   <!--
       Now the problems, divided per type.
       They can be edited by the user
   -->
   <mm:listnodes orderby="pos" type="problemtypes">
-    <h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2>
-
+  <tr>
+  
+    <td colspan="7"><h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2></td>
+	</tr>
     <mm:import externid="sub" />
     <mm:import externid="stage" />
     
@@ -60,6 +64,9 @@
     </mm:relatednodescontainer>
 
   </mm:listnodes>
+  
+  </table>
+
 
 
 </div>
