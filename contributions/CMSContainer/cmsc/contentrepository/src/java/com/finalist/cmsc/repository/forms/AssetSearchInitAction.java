@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AssetSearchInitAction extends MMBaseAction {
 
+   private static final String CREATION = "creation";
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -56,7 +58,15 @@ public class AssetSearchInitAction extends MMBaseAction {
          }
       }
       addToRequest(request, "typesList", typesList);
-
+      String parentchannel = (String) request.getSession().getAttribute(CREATION);
+      if (StringUtils.isNotEmpty(parentchannel)) {
+         request.setAttribute("parentchannel", parentchannel);
+      }
+      String insertAsset = request.getParameter("insertAsset");
+      if (StringUtils.isNotEmpty(insertAsset)) {
+         request.setAttribute("insertAsset", insertAsset);
+         return mapping.findForward("insertAsset");
+      }
       return mapping.findForward("searchoptions");
    }
 

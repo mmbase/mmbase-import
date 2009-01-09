@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -22,11 +23,17 @@ public class AssetUploadAction extends AbstractUploadAction {
 
       AssetUploadForm assetUploadForm = (AssetUploadForm) form;
       String parentchannel = assetUploadForm.getParentchannel();
+      String insertAsset = assetUploadForm.getInsertAsset();
       FormFile file = assetUploadForm.getFile();
 
-      String exceed = "no";
+      String exceed = "yes";
+      String exist = "1";
+      String url = "";
+      int nodeId = 0;
+      int fileSize = file.getFileSize();
 
-      if (file.getFileSize() != 0 && file.getFileName() != null) {
+      if (maxFileSizeBiggerThan(fileSize) && file.getFileName() != null) {
+         exceed = "no";
          String assetType = "";
          if (isImage(file.getFileName())) {
             assetType = "images";
@@ -34,25 +41,29 @@ public class AssetUploadAction extends AbstractUploadAction {
             assetType = "attachments";
          }
 
-         List<Integer> nodes = null;
          NodeManager manager = cloud.getNodeManager(assetType);
 
-         int fileSize = file.getFileSize();
-         if (maxFileSizeBiggerThan(fileSize)) {
-            if (isNewFile(file, manager)) {
-               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-               request.setAttribute("uploadedAssets", nodes);
-            } else {
-               return new ActionForward(mapping.findForward(SUCCESS).getPath()
-                     + "?type=asset&direction=down&exist=1&exceed=" + exceed + "&parentchannel=" + parentchannel, true);
+         if (isNewFile(file, manager)) {
+            exist = "0";
+            List<Integer> nodes = null;
+            nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+            request.setAttribute("uploadedAssets", nodes);
+            // to archive the upload asset
+            if (nodes != null) {
+               addRelationsForNodes(nodes, cloud);
+               nodeId = nodes.get(0);
             }
-         } else {
-            exceed = "yes";
          }
-         // to archive the upload asset
-         addRelationsForNodes(nodes, cloud);
       }
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&exist=0&exceed="
-            + exceed + "&parentchannel=" + parentchannel, true);
+      if (StringUtils.isNotEmpty(insertAsset)) {
+         if (insertAsset.equalsIgnoreCase("insertAsset")) {
+            url = mapping.findForward("insertAsset").getPath() + "&uploadAction=select&exist=" + exist + "&exceed="
+                  + exceed + "&parentchannel=" + parentchannel + "&uploadedNodes=" + nodeId;
+         }
+      } else {
+         url = mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&exist=" + exist + "&exceed="
+               + exceed + "&parentchannel=" + parentchannel;
+      }
+      return new ActionForward(url, true);
    }
 }

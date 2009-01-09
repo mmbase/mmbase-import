@@ -7,6 +7,7 @@ import org.apache.struts.upload.FormFile;
 public class AssetUploadForm extends ActionForm {
 
    private String parentchannel;
+   private String insertAsset;
    private FormFile file;
 
    public String getParentchannel() {
@@ -23,5 +24,13 @@ public class AssetUploadForm extends ActionForm {
 
    public void setFile(FormFile file) {
       this.file = file;
+   }
+
+   public void setInsertAsset(String insertAsset) {
+      this.insertAsset = insertAsset;
+   }
+
+   public String getInsertAsset() {
+      return insertAsset;
    }
 }
