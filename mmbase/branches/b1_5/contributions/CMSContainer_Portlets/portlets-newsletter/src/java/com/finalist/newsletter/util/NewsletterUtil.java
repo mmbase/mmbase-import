@@ -3,6 +3,7 @@ package com.finalist.newsletter.util;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedSet;
@@ -549,7 +550,7 @@ public abstract class NewsletterUtil {
       RelationUtil.createRelation(newsletterNode, scheduleNode, POSREL);
    }
 
-   public static List<Schedule> getSchedulesBynewsletterId(int id) {
+   public static List<Schedule> getSchedulesBynewsletterId(int id,Locale language) {
       List<Schedule> schedules = new ArrayList<Schedule>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(id);
@@ -559,18 +560,25 @@ public abstract class NewsletterUtil {
          Schedule schedule = new Schedule();
          schedule.setId(scheduleNode.getIntValue(NUMBER));
          schedule.setExpression(scheduleNode.getStringValue("expression"));
+         if(null!=language){
+            schedule.setScheduleDescription(getScheduleMessageByExpression(scheduleNode.getStringValue("expression"),language));
+         }else{
          schedule.setScheduleDescription(getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
+         }
          schedules.add(schedule);
       }
       return schedules;
    }
 
-   public static String getScheduleMessageByExpression(String expression) {
+   public static String getScheduleMessageByExpression(String expression,Locale language) {
       if (StringUtils.isEmpty(expression)) {
          return "";
       }
       StringBuilder scheduleMessage = null;
       ResourceBundle rb = ResourceBundle.getBundle("cmsc-calendar");
+      if(null!=language){
+         rb = ResourceBundle.getBundle("cmsc-calendar",language);
+      }
       String[] expressions = expression.split("\\|");
       String type;
       if (expressions == null || expressions.length == 0) {
@@ -721,9 +729,15 @@ public abstract class NewsletterUtil {
       scheduleNode.commit();
    }
    
+   public static String getScheduleMessageByExpression(String stringValue) {
+      return getScheduleMessageByExpression(stringValue,null);
+   }
    public static void addNewsletterCreationChannel(int newsletterId ,int editionId) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       RelationManager relManager = cloud.getRelationManager(NEWSLETTER, NEWSLETTERPUBLICATION, RELATED);
       relManager.createRelation(cloud.getNode(newsletterId), cloud.getNode(editionId)).commit();
+   }
+   public static void getSchedulesBynewsletterId(Integer valueOf) {
+      getSchedulesBynewsletterId(valueOf,null);
    }
 }

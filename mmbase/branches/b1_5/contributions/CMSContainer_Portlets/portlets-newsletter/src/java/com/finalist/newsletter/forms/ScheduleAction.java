@@ -4,6 +4,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.*;
 import org.apache.struts.actions.DispatchAction;
 
@@ -92,7 +93,8 @@ public class ScheduleAction  extends DispatchAction{
       response.setCharacterEncoding("utf-8");
       StringBuffer sb = new StringBuffer();
       String newsletterId = request.getParameter("newsletterid");
-      List<Schedule> schedules = NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(newsletterId));
+      Locale language=(Locale) request.getSession().getAttribute(Globals.LOCALE_KEY);
+      List<Schedule> schedules = NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(newsletterId),language);
       for(Schedule schedule : schedules) {
          sb.append("<schedule>");
          sb.append("<number>"+schedule.getId()+"</number>");
