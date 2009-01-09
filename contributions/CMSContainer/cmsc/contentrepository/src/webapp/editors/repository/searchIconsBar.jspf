@@ -35,6 +35,7 @@
                      </c:if>
                   </cmsc:hasfeature>
                </mm:compare>
+<c:if test="${empty insertAsset}">
                <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
                <a href="javascript:deleteAsset('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
                   <img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
@@ -43,3 +44,4 @@
             <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
                <a href="javascript:deleteAsset('<mm:field name='number'/>')"><img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/></a>
             </c:if>
+</c:if>
