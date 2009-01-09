@@ -8,6 +8,7 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:content
+      postprocessor="none"
       type="text/xml" expires="0">
     <mm:import externid="problem" required="true" />
     <mm:import externid="submit" />
@@ -23,13 +24,18 @@
             <mm:relation to="${problem}">
               <mm:field name="pos" id="pos${_node}">
                 <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
-                <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
+                <mm:present referid="submit">
+                  <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
+                </mm:present>
               </mm:field>
             </mm:relation>
           </mm:nodelistfunction>
           <mm:present referid="submit">
             <mm:commit />
           </mm:present>
+          <mm:notpresent referid="submit">
+            <mm:cancel />
+          </mm:notpresent>
         </mm:form>
       </mm:node>
     </mm:cloud>
