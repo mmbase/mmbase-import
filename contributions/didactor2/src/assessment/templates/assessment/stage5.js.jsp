@@ -7,6 +7,7 @@ $(window).unload(function() {
     // Save difficulties first.
     var params = {};
 
+    params['submit'] = true;
 
     $("#difficulties input[type='hidden']").each(function() {
         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
