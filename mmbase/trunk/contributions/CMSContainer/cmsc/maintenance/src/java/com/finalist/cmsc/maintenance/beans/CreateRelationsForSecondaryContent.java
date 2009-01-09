@@ -88,9 +88,9 @@ public class CreateRelationsForSecondaryContent {
             else {
                relation = RelationUtil.createRelation(asset, root, CREATIONREL);
             }
-
-            Publish.publish(relation); // This method checks if it need to publish
-                                       // otherwise, it doesn't harm anyone
+            if(Publish.isPublishable(relation)) {
+               Publish.publish(relation); // This method checks if it need to publish
+            }                        // otherwise, it doesn't harm anyone
          }
          //Add a version for a asset element.
          try {
