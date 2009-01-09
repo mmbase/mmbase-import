@@ -72,14 +72,7 @@
             <a href="#"><fmt:message key="asset.search.title" /></a>
          </div>
       </div>
-   </div>
-    <div class="tab">
-        <div class="body">
-            <div>
-               <a href="../resources/attachmentupload.jsp?uploadAction=${action}&parentchannel=${parentchannel}&insertAsset=insertAsset" ><fmt:message key="asset.upload.title" /></a>
-            </div>
-        </div>
-    </div>
+</div>
 </c:if>
 </div>
    <div class="editor">
@@ -153,24 +146,12 @@
    <mm:list referid="results">
       <mm:first>
          <%@include file="../repository/searchpages.jsp" %>
-            <mm:hasrank minvalue="siteadmin">
-               <c:if test="${fn:length(results) >1}">
-               <div align="left">
-                  <input type="submit" class="button" name="massdelete" 
-                        onclick="javascript:deleteAsset('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>')"
-                        value="<fmt:message key="asset.delete.massdelete" />"/>
-               </div>
-               </c:if>
-            </mm:hasrank>
          <form action="" name="linkForm" method="post">
             <table>
             <thead>
                <tr>
                   <th>
                      <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-                     <c:if test="${fn:length(results) >1}">
-                        <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
-                     </c:if>
                   </th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
@@ -224,12 +205,6 @@
 </c:if>
          <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
             <td style="white-space: nowrap;">
-                  <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
-                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-                  </c:if>
-                  <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
-                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-                  </c:if>
                <%@ include file="../repository/searchIconsBar.jspf" %>
             </td>
             <td style="white-space: nowrap;" onMouseDown="objClick(this);">
@@ -281,15 +256,6 @@
    </tbody>
    </table>
    </form>
-   <mm:hasrank minvalue="siteadmin">
-      <c:if test="${fn:length(results) >1}">
-      <div align="left">
-         <input type="submit" class="button" name="massdelete" 
-               onclick="javascript:deleteAsset('massdelete','<fmt:message key="recyclebin.massremoveconfirm"/>')"
-               value="<fmt:message key="asset.delete.massdelete" />"/>
-      </div>
-      </c:if>
-   </mm:hasrank>
          <%@include file="../repository/searchpages.jsp" %>
    </mm:last>
    </mm:list>
@@ -309,7 +275,24 @@
             <mm:field name="number" jspvar="channelNumber" write="false"/>
             <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
          </mm:relatednodes>
-
+<c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+<c:if test="${assettype == 'attachments'}">
+         <mm:import id="url">
+            javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>',
+                                       '<mm:attachment escape="js-single-quotes"/>');
+         </mm:import>
+</c:if>
+<c:if test="${assettype == 'images'}">
+            <mm:field name="description" escape="js-single-quotes" jspvar="description">
+               <mm:field name="title" escape="js-single-quotes" jspvar="title">
+            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+               </mm:field>
+            </mm:field>
+</c:if>
+<c:if test="${assettype == 'urls'}">
+         <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
+                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+</c:if>
          <div class="thumbnail_show" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
             <div class="thumbnail_operation">
                <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border: 1px solid #eaedff" >
@@ -318,7 +301,7 @@
             </div>
             <div class="thumbnail_body" >
                <div class="thumbnail_img" onMouseOver="this.style.background = 'yellow';" onMouseOut="this.style.background = 'white';">
-                   <a href="javascript:showInfo('<mm:nodeinfo type="type"/>', '<mm:field name="number" />')">
+                   <a href="<mm:write referid="url"/>">
                      <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
                      <c:if test="${typedef eq 'images'}">
                         <img src="<mm:image template="s(120x100)"/>" alt=""/>
