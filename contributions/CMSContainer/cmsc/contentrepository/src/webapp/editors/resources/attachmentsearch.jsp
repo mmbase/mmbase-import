@@ -211,6 +211,17 @@
                                        '<mm:attachment escape="js-single-quotes"/>');
          </mm:import>
 </c:if>
+<c:if test="${assettype == 'images'}">
+            <mm:field name="description" escape="js-single-quotes" jspvar="description">
+               <mm:field name="title" escape="js-single-quotes" jspvar="title">
+            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+               </mm:field>
+            </mm:field>
+</c:if>
+<c:if test="${assettype == 'urls'}">
+         <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
+                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+</c:if>
          <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
             <td style="white-space: nowrap;">
                   <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">

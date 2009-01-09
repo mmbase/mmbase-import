@@ -28,11 +28,16 @@ public class AssetUploadAction extends AbstractUploadAction {
 
       String exceed = "yes";
       String exist = "1";
+      String emptyFile = "no";
       String url = "";
       int nodeId = 0;
       int fileSize = file.getFileSize();
 
-      if (maxFileSizeBiggerThan(fileSize) && file.getFileName() != null) {
+      if( fileSize == 0 || StringUtils.isEmpty(file.getFileName())){
+         emptyFile = "yes";
+      }
+      
+      if (maxFileSizeBiggerThan(fileSize)&&emptyFile.equalsIgnoreCase("no")) {
          exceed = "no";
          String assetType = "";
          if (isImage(file.getFileName())) {
@@ -55,15 +60,29 @@ public class AssetUploadAction extends AbstractUploadAction {
             }
          }
       }
-      if (StringUtils.isNotEmpty(insertAsset)) {
-         if (insertAsset.equalsIgnoreCase("insertAsset")) {
-            url = mapping.findForward("insertAsset").getPath() + "&uploadAction=select&exist=" + exist + "&exceed="
-                  + exceed + "&parentchannel=" + parentchannel + "&uploadedNodes=" + nodeId;
+      if(emptyFile.equalsIgnoreCase("no")){
+         if (StringUtils.isNotEmpty(insertAsset)) {
+            if (insertAsset.equalsIgnoreCase("insertAsset")) {
+               url = mapping.findForward("insertAsset").getPath() + "&uploadAction=select&exist=" + exist + "&exceed="
+                     + exceed + "&parentchannel=" + parentchannel + "&uploadedNodes=" + nodeId;
+            }
+         } else {
+            url = mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&exist=" + exist + "&exceed="
+                  + exceed + "&parentchannel=" + parentchannel;
          }
-      } else {
-         url = mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down&exist=" + exist + "&exceed="
-               + exceed + "&parentchannel=" + parentchannel;
+      }else{
+         if (StringUtils.isNotEmpty(insertAsset)) {
+            if (insertAsset.equalsIgnoreCase("insertAsset")) {
+               url = mapping.findForward("insertAsset").getPath() + "&uploadAction=select" +
+                  "&parentchannel=" + parentchannel + "&uploadedNodes=" + nodeId+"&emptyFile="+ emptyFile;
+            }
+         } else {
+            url = mapping.findForward(SUCCESS).getPath() + "?type=asset&direction=down" +
+               "&parentchannel=" + parentchannel+"&emptyFile="+ emptyFile;
+         }
       }
+      
+      
       return new ActionForward(url, true);
    }
 }
