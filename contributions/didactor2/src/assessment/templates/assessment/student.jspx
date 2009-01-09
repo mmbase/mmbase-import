@@ -69,7 +69,7 @@
 
       <mm:link page="/education/">
       	<mm:param name="learnobject">${currentlesson}</mm:param>
-        <a href="${_}" name="">bekijk <di:translate key="assessment.messages"/>&amp;lt;&amp;lt; terug naar de les</a>
+        <a href="${_}" name="">&amp;lt;&amp;lt; terug naar de les</a>
       </mm:link>
 
   <mm:write session="lastlesson_${user}_${education}"    value="${lastclosedlesson}" />
