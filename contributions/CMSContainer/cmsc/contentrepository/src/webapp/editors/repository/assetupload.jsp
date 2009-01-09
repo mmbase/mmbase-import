@@ -22,6 +22,11 @@
                <td style="color:red;"><fmt:message key="asset.upload.existed" /></td>
             </tr>
          </c:if>
+         <c:if test="${param.emptyFile=='yes'}">
+            <tr>
+               <td style="color:red;"><fmt:message key="asset.upload.emptyfile" /></td>
+            </tr>
+         </c:if>
          <c:if test="${param.exceed == 'yes'}">
             <tr>
                <td style="color:red;"><fmt:message key="asset.upload.size.exceed"/></td>
