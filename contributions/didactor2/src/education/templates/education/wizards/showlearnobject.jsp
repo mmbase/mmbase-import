@@ -10,11 +10,7 @@
 
   <mm:nodeinfo id="objecttype" type="type" write="false" />
 
-  <di:leaf styleClass="self"
-           icon="edit_learnobject"
-           branch="${b}"
-           branchOffset="1"
-           branchPath="${branchPath}">
+  <li>
     <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
       <mm:param name="wizard">config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" /></mm:param>
       <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
@@ -50,6 +46,6 @@
         <a href="${_}" target="text"><img src="gfx/versions.gif" border="0" /></a>
       </mm:link>
     </mm:node>
-  </di:leaf>
+  </li>
 
 </jsp:root>

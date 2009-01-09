@@ -8,22 +8,18 @@
   <mm:import externid="wizardjsp" from="request" />
   <mm:import  externid="b" from="request" />
 
-  <di:leaf styleClass="newflashpages"
-           icon="new_education"
-           branch="${b}"
-           branchOffset="1"
-           branchPath="${branchPath} ">
-    <mm:nodeinfo id="guitype" nodetype="flashpages" type="guitype" write="false" />
 
-    <mm:link referid="wizardjsp" referids="_node@origin">
-      <mm:param name="wizard">config/flashpages/flashpages-origin</mm:param>
-      <mm:param name="objectnumber">new</mm:param>
-      <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-      <a href="${_}"
-         title="${di:translate('education.new')} ${guitype}"
-         target="text"><di:translate key="education.new" /> ${guitype}</a>
-    </mm:link>
 
-  </di:leaf>
+  <mm:nodeinfo id="guitype" nodetype="flashpages" type="guitype" write="false" />
+
+  <mm:link referid="wizardjsp" referids="_node@origin">
+    <mm:param name="wizard">config/flashpages/flashpages-origin</mm:param>
+    <mm:param name="objectnumber">new</mm:param>
+    <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+    <a href="${_}"
+       title="${di:translate('education.new')} ${guitype}"
+       target="text"><di:translate key="education.new" /> ${guitype}</a>
+  </mm:link>
+
 
 </jsp:root>

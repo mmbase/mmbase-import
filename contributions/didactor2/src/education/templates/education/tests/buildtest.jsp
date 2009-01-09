@@ -1,11 +1,13 @@
 <jsp:root
-    xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     >
-  <mm:content type="application/xml" postprocessor="reducespace" expires="0">
+  <mm:content type="application/xml" expires="0">
+
     <mm:cloud rank="didactor user">
 
       <mm:import externid="learnobject" required="true"/>
@@ -111,7 +113,7 @@
             <mm:present referid="copybookNo">
               <!-- Determine if all questions are showed -->
               <c:choose>
-                <c:when test="${fn:length(my_questions) + fn:length(givenanswers) gt fn:length(questions)}">
+                <c:when test="${fn:length(my_questions) lt fn:length(questions)}">
                   <input type="button"
                          disabled="disabled"
                          value="${di:translate('education.buttontextdone')}"

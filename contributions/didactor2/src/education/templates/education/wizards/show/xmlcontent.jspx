@@ -10,48 +10,40 @@
              externid="b" required="true" />
   <mm:import externid="branchPath" required="true" />
 
-  <di:leaf styleClass="self"
-           icon="kupu_icon"
-           branchOffset="1"
-           branchPath="${branchPath}"
-           branch="${b}">
+  <di:icon name="kupu_icon" />
+  <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
 
-    <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+    <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
+    <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
+    <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
+    <mm:param name="language">${locale.language}</mm:param>
 
-      <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
-      <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
-      <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
-      <mm:param name="language">${locale.language}</mm:param>
+    <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="background">
+      <mm:relatednodescontainer id="current" type="images" role="background">
+        <mm:maxnumber value="1" />
+      </mm:relatednodescontainer>
+      <mm:listnodescontainer id="repository" type="images" />
+      <mm:write session="${prefix}current"    referid="current" />
+      <mm:write session="${prefix}repository" referid="repository" />
+      <mm:param name="tools">searchrelate</mm:param>
+    </mm:hasrelationmanager>
 
-      <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="background">
-        <mm:relatednodescontainer id="current" type="images" role="background">
-          <mm:maxnumber value="1" />
-        </mm:relatednodescontainer>
-        <mm:listnodescontainer id="repository" type="images" />
-        <mm:write session="${prefix}current"    referid="current" />
-        <mm:write session="${prefix}repository" referid="repository" />
-        <mm:param name="tools">searchrelate</mm:param>
-      </mm:hasrelationmanager>
-
-      <a href="${_}"
-         target="text">
-        <mm:import id="href">
-          <mm:hasfield name="name">
-            <mm:field name="name" />
-          </mm:hasfield>
-          <mm:hasfield name="title">
-            <mm:field name="title" />
-          </mm:hasfield>
-        </mm:import>
-        <mm:write escape="none" referid="href" write="true">
-          <mm:isempty>
-            <mm:field name="number" />
-          </mm:isempty>
-        </mm:write>
-      </a>
-    </mm:link>
-
-
-  </di:leaf>
+    <a href="${_}"
+       target="text">
+      <mm:import id="href">
+        <mm:hasfield name="name">
+          <mm:field name="name" />
+        </mm:hasfield>
+        <mm:hasfield name="title">
+          <mm:field name="title" />
+        </mm:hasfield>
+      </mm:import>
+      <mm:write escape="none" referid="href" write="true">
+        <mm:isempty>
+          <mm:field name="number" />
+        </mm:isempty>
+      </mm:write>
+    </a>
+  </mm:link>
 
 </jsp:root>
