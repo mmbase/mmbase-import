@@ -12,9 +12,8 @@
       <jsp:directive.include file="../mode.include.jsp" />
 
       <di:has editcontext="contentelementen">
-        <ul class="tree">
-          <a href="javascript:clickNode('content_metadata_0')"
-             title="${di:translate('education.educationmenucontentmetadata')}">
+        <ul class="treeview">
+          <a title="${di:translate('education.educationmenucontentmetadata')}">
             <di:translate key="education.educationmenucontentmetadata" />
           </a>
           <mm:import jspvar="langLocale"><mm:write referid="language" /></mm:import>

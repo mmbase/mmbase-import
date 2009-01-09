@@ -25,7 +25,7 @@
               Educations come from here
           -->
           <di:has editcontext="opleidingen"><!-- TODO DUTCH. 'opleidingen' means 'educations' -->
-            <ul class="tree">
+            <ul class="treeview">
               <li>
                 <mm:link referid="listjsp${forbidtemplate}"
                          referids="provider">
