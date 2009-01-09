@@ -13,9 +13,7 @@
 
 
   <div>
-    <mm:node referid="currentlesson">
-      <p>Geef per probleem aan wat voor soort probleem het is en hoe veel last heb je op dit moment (tijdens <mm:nodeinfo type="gui" />) van dit probleem hebt.</p>
-    </mm:node>
+      <p>Geef per probleem aan wat voor soort probleem het is en hoe veel last heb je op dit moment van dit probleem hebt.</p>
   </div>
 
 
