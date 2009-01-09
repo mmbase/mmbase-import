@@ -70,7 +70,7 @@
 
 	<mm:link page="/education/"> 
 		<mm:param name="learnobject">${currentlesson}</mm:param>
-		<a href="${_}">&amp;lt; terug naar de lessen</a>
+		<a href="${_}">&amp;lt; terug naar de les</a>
 	</mm:link>
 
   <di:include page="/assessment/${stage}.jspx" />
