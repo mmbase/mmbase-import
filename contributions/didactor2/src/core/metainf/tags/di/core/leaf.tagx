@@ -10,6 +10,7 @@
                    In the edit-environment horrible trees are constructed with tables in tables and spacers and what not.
                    This helps at least keeping the jsp more or less tidy."
       />
+  <!-- DEPRECATED, WILL THROW AWAY -->
   <jsp:directive.attribute name="icon"   type="java.lang.String"   />
   <jsp:directive.attribute name="click"  type="java.lang.String"   />
   <jsp:directive.attribute name="open"   type="java.lang.Boolean"   />

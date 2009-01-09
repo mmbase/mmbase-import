@@ -153,7 +153,7 @@
             <script>
               function chooseEducation(eid) {
               if (eid != 0) {
-              document.location.href = "?mode=educations&amp;e=" + eid;
+              document.location.href = "?mode=educations&amp;amp;e=" + eid;
               }
               }
             </script>
