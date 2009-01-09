@@ -17,43 +17,36 @@
     <mm:constraint field="number" operator="IN" inverse="true"  value="${relatedcontainers}" />
     <mm:maxnumber value="1" />
     <mm:listnodes>
-      <di:leaf
-          branchPath=".|"
-          click="portal_root_${_node}">
+      <li>
         <mm:link referid="listjsp" referids="containernode@origin,referrer">
           <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
           <mm:param name="nodepath">portalpagesnodes</mm:param>
           <mm:param name="fields">name</mm:param>
           <mm:param name="searchfields">name</mm:param>
           <mm:param name="metadata">yes</mm:param>
-          <td><nobr><a href="${_}" title="portal pagina's" target="text">Portal Pagina's</a></nobr></td> <!-- I18N ? -->
+          <a href="${_}" title="portal pagina's" target="text">Portal Pagina's</a> <!-- I18N ? -->
         </mm:link>
-      </di:leaf>
-      <div id="portal_root_${_node}">
         <mm:include page="leaf.jspx" />
-      </div>
+      </li>
     </mm:listnodes>
   </mm:listnodescontainer>
 
   <mm:listnodes id="e" type="educations" varStatus="status">
-    <di:leaf branchPath=".${status.last ? '.' : '|'}"
-             click="portal_root_${_node}">
-      <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
-        <mm:param name="wizard">config/portalpages/posrel-portalpagescontainers</mm:param>
-        <a href="${_}" target="text">
-          Portal pages for <mm:nodeinfo type="gui" />
-        </a>
-      </mm:link>
-    </di:leaf>
-    <div id="portal_root_${_node}">
-      <mm:relatednodes role="posrel" type="portalpagescontainers">
-        <di:leaf branchPath=".||">
-          <mm:field name="name" />
-        </di:leaf>
-        <mm:include page="leaf.jspx">
-          <mm:param name="branchPath">.|||</mm:param>
-        </mm:include>
-      </mm:relatednodes>
-    </div>
+    <li>
+      <span class="folder">
+        <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
+          <mm:param name="wizard">config/portalpages/posrel-portalpagescontainers</mm:param>
+          <a href="${_}" target="text">Portal pages for <mm:nodeinfo type="gui" /></a>
+        </mm:link>
+      </span>
+      <ul>
+        <mm:relatednodes role="posrel" type="portalpagescontainers">
+          <li>
+            <mm:field name="name" />
+            <mm:include page="leaf.jspx" />
+          </li>
+        </mm:relatednodes>
+      </ul>
+    </li>
   </mm:listnodes>
 </jsp:root>

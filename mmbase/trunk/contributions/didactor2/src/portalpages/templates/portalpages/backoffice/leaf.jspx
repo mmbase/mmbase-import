@@ -9,91 +9,70 @@
 
   <mm:import externid="branchPath">.||</mm:import>
   <mm:node id="container">
-  <di:leaf
-      icon="new_education"
-      branchPath="${branchPath}"
-      >
-    <mm:link referid="wizardjsp" referids="_node@origin,referrer">
-      <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
-      <mm:param name="objectnumber">new</mm:param>
-      <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td> <!-- WTF WTF -->
-    </mm:link>
-  </di:leaf>
-  <mm:relatednodescontainer type="portalpagesnodes" searchdirs="destination" >
-    <mm:sortorder field="number" direction="up" />
-
-    <mm:relatednodes varStatus="status">
-      <di:leaf
-          click="portal_node_${container}_${_node}"
-          branchPath="${branchPath}${status.last ? '.' : ' '}"
-          >
-        <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
-          <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
-          <td><a href="${_}" title="edit" target="text"><mm:field name="name"/></a></td>
+    <ul>
+      <li>
+        <di:icon name="new_education" />
+        <mm:link referid="wizardjsp" referids="_node@origin,referrer">
+          <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}" title="nieuwe map" target="text">nieuwe map</a> <!-- WTF WTF -->
         </mm:link>
-      </di:leaf>
-      <div id="portal_node_${container}_${_node}" style="display:none">
+      </li>
+      <mm:relatednodescontainer type="portalpagesnodes" searchdirs="destination" >
+        <mm:sortorder field="number" direction="up" />
 
-        <di:getsetting setting="new_contents" component="portalpages" vartype="list" id="new_contents" write="false" />
-        <mm:stringlist referid="new_contents">
-          <c:choose>
-            <c:when test="${_ eq 'portalpagesnodes'}">
-              <di:leaf
-                  icon="new_education"
-                  branchPath="${branchPath}${status.last ? '.' : ' '} "
-                  >
-                <mm:link referid="wizardjsp" referids="_node@origin">
-                  <mm:param name="wizard">config/portalpages/leafmapportalpages-origin</mm:param>
-                  <mm:param name="objectnumber">new</mm:param>
-                  <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td>
-                </mm:link>
-              </di:leaf>
-            </c:when>
-            <c:when test="${_ eq 'simplecontents'}">
-              <di:leaf
-                  icon="new_education"
-                  branchPath="${branchPath}${status.last ? '.' : ' '} "
-                  >
-                <mm:link referid="wizardjsp" referids="_node@origin">
-                  <mm:param name="wizard">config/portalpages/newsimplecontents</mm:param>
-                  <mm:param name="objectnumber">new</mm:param>
-                  <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
-                </mm:link>
-              </di:leaf>
-            </c:when>
-            <c:when test="${_ eq 'simplexmlcontents'}">
+        <mm:relatednodes varStatus="status">
+          <li>
+            <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
+              <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
+              <a href="${_}" title="edit" target="text"><mm:field name="name"/></a>
+            </mm:link>
+            <ul>
+              <di:getsetting setting="new_contents" component="portalpages" vartype="list" id="new_contents" write="false" />
+              <mm:stringlist referid="new_contents">
+                <li>
+                  <c:choose>
+                    <c:when test="${_ eq 'portalpagesnodes'}">
+                      <di:icon name="new_education" />
+                      <mm:link referid="wizardjsp" referids="_node@origin">
+                        <mm:param name="wizard">config/portalpages/leafmapportalpages-origin</mm:param>
+                        <mm:param name="objectnumber">new</mm:param>
+                        <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td>
+                      </mm:link>
+                    </c:when>
+                    <c:when test="${_ eq 'simplecontents'}">
+                      <di:icon name="new_education" />
+                      <mm:link referid="wizardjsp" referids="_node@origin">
+                        <mm:param name="wizard">config/portalpages/newsimplecontents</mm:param>
+                        <mm:param name="objectnumber">new</mm:param>
+                        <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
+                      </mm:link>
+                    </c:when>
+                    <c:when test="${_ eq 'simplexmlcontents'}">
+                      <di:icon name="kupu_icon" />
+                      <di:kupulink
+                          referrer="${referrer}"
+                          node="new"
+                          wizard="config/portalpages/simplexmlcontents"
+                          >
+                        <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
+                      </di:kupulink>
+                    </c:when>
+                    <c:otherwise>
+                      UNKNONWN ${_}
 
+                    </c:otherwise>
+                  </c:choose>
+                </li>
+              </mm:stringlist>
 
-              <di:leaf
-                  icon="kupu_icon"
-                  branchPath="${branchPath}${status.last ? '.' : ' '} "
-                  >
-                <di:kupulink
-                    referrer="${referrer}"
-                    node="new"
-                    wizard="config/portalpages/simplexmlcontents"
-                    >
-                  <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
-                </di:kupulink>
-              </di:leaf>
-            </c:when>
-            <c:otherwise>
-              <di:leaf
-                  icon=""
-                  branchPath="${branchPath}${status.last ? '.' : ' '} "
-                  >
-                UNKNONWN ${_}
-              </di:leaf>
-            </c:otherwise>
-          </c:choose>
-        </mm:stringlist>
-
-        <mm:treeinclude page="/portalpages/backoffice/related_portalpagesnodes.jsp" objectlist="${includePath}">
-          <mm:param name="branchPath">${branchPath}${status.last ? '.' : ' '}</mm:param>
-        </mm:treeinclude>
-
-      </div>
-    </mm:relatednodes>
-  </mm:relatednodescontainer>
+              <mm:treeinclude page="/portalpages/backoffice/related_portalpagesnodes.jsp" objectlist="${includePath}">
+                <mm:param name="branchPath">${branchPath}${status.last ? '.' : ' '}</mm:param>
+              </mm:treeinclude>
+            </ul>
+          </li>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </ul>
   </mm:node>
 </jsp:root>
