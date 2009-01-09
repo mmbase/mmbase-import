@@ -11,35 +11,38 @@
 
 
   <mm:node number="${education}">
-    <mm:relatednodescontainer
-        element="learnblocks"
-        searchdirs="destination"
-        path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}">
-      <mm:sortorder field="posrel.pos" />
-      <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-        <mm:addnode element="components" number="component.assessment" />
-      </c:if>
-      <mm:relatednodes id="learnBlock">
-        <mm:listrelationscontainer type="learnblocks" role="posrel">
-          <mm:listrelations>
-            <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
-              <mm:remove referid="lastclosedlesson" />
-              <mm:node node="learnBlock" id="lastclosedlesson" />
-            </mm:relation>
-          </mm:listrelations>
-        </mm:listrelationscontainer>
-        <mm:relation to="${user}" notfound="null">
-          <c:if test="${! empty _node or empty currentlesson}">
-            <c:if test="${empty _node}">
-              <mm:node node="learnBlock" id="currentlesson">
-                <mm:function id="reached" name="sequence" write="false" />
-              </mm:node>
-            </c:if>
+
+    <mm:nodelistfunction id="learnBlock" name="lessons">
+      <mm:listrelationscontainer type="learnblocks" role="posrel">
+        <mm:listrelations>
+          <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
+            <mm:remove referid="lastclosedlesson" />
+            <mm:node node="learnBlock" id="lastclosedlesson" />
+          </mm:relation>
+        </mm:listrelations>
+      </mm:listrelationscontainer>
+      <mm:relation to="${user}" notfound="null">
+        <c:if test="${empty currentlesson}">
+          <c:if test="${empty _node}">
+            <mm:node node="learnBlock" id="currentlesson">
+              <mm:function id="reached" name="sequence" write="false" />
+            </mm:node>
           </c:if>
-        </mm:relation>
-      </mm:relatednodes>
-    </mm:relatednodescontainer>
+        </c:if>
+      </mm:relation>
+
+      <mm:last>
+        <c:if test="${empty currentlesson}">
+          <mm:node node="learnBlock">
+            <mm:function id="reached" name="sequence" write="false" />
+          </mm:node>
+        </c:if>
+      </mm:last>
+
+    </mm:nodelistfunction>
   </mm:node>
+
+
 
   <ul class="tabs">
     <c:forEach items="stage1-goals,stage2-problems,stage3-problems,stage4-problems" var="s">
@@ -66,12 +69,9 @@
 
 
   <mm:write session="lastlesson_${user}_${education}"    value="${lastclosedlesson}" />
-  <mm:write session="currentlesson_${user}_${education}" referid="currentlesson" />
+  <mm:write session="currentlesson_${user}_${education}" value="${currentlesson}" />
 
-	<mm:link page="/education/"> 
-		<mm:param name="learnobject">${currentlesson}</mm:param>
-		<a href="${_}">&amp;lt; terug naar de les</a>
-	</mm:link>
+
 
   <di:include page="/assessment/${stage}.jspx" />
 
@@ -82,8 +82,6 @@
     <p>
       <h4 class="problemFeedback"><di:translate key="assessment.feedback_coach" />:
       <mm:link page="/c/shoutbox/index/">
-      	<mm:param name="_reference">${currentlesson}</mm:param>
-      	<mm:param name="self">not</mm:param>
         <a href="${_}" name="">bekijk <di:translate key="assessment.messages"/> voor deze les</a>
       </mm:link>
     </h4>
