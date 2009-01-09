@@ -62,7 +62,6 @@
           <tr class="problemItem"><td colspan="7">--</td></tr>
         </c:if>
         <mm:relatednodes>
-
           <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
           <tr><td colspan="7"><jsp:text> </jsp:text></td></tr>
         </mm:relatednodes>

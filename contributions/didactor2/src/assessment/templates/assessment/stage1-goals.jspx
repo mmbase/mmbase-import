@@ -13,9 +13,7 @@
   <h2><di:translate key="assessment.goals" /></h2>
 
   <div>
-   
       <p>Som de dingen op die echt belangrijk zijn in jouw leven.</p>
-
   </div>
 
   <mm:node number="$user">
