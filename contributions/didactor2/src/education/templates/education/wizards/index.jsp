@@ -22,7 +22,7 @@
 
     <script type="text/javascript">
       $(document).ready(function() {
-        $('ul.tree').treeview({
+        $('ul.treeview').treeview({
           collapsed: true,
           persist: "cookie"
         }
