@@ -13,6 +13,7 @@
   -->
   <mm:import externid="problem" required="true" />
   <mm:import externid="test"    required="true" />
+  <mm:import externid="sub" />
 
   <mm:link page="/content/js/open.jsp">
     <script type="text/javascript" src="${_}"> </script>
@@ -20,37 +21,33 @@
 
   <mm:node referid="problem">
 
-		<p><a href="#" onclick="history.back(-1);">&amp;lt;&amp;lt;terug naar het overzicht</a></p>
+
+    <mm:link referids="sub?">
+      <mm:param name="stage">stage4-problems</mm:param>
+      <p><a href="${_}">&amp;lt;&amp;lt;terug naar het overzicht</a></p>
+    </mm:link>
 
     <h2>Probleem:</h2>
     <h4><mm:field name="name" /></h4>
 
-
     <div class="problemImpact">
       <h2>Wijzig eventueel per les hoeveel last je van dit probleem had</h2>
 
-      <mm:node number="${education}">
-        <mm:nodelistfunction name="lessons">
-          <h4 class="mm_dt_didactor_assessment_troubles"><mm:nodeinfo type="gui" /></h4>
-        </mm:nodelistfunction>
-      </mm:node>
+      <mm:include page="/assessment/stage5-editdifficulties.jspx" />
 
-
-      <mm:link page="/assessment/stage5.js.jsp">
-        <script type="text/javascript" src="${_}" />
-      </mm:link>
     </div>
 
-
-    <div id="contentFrame">
+    <div id="contentFrame" style="clear: both;">
       <mm:include page="/education/tests/buildtest.jsp"
                   referids="test@learnobject" />
     </div>
 
-    <mm:link page="/assessment/stage5.js.jsp">
-      <script type="text/javascript" src="${_}" />
-    </mm:link>
 
+    <mm:link page="/assessment/stage5.js.jsp">
+      <script type="text/javascript" src="${_}">
+        <jsp:text> </jsp:text>
+      </script>
+    </mm:link>
 
   </mm:node>
 
