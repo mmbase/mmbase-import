@@ -13,7 +13,7 @@
       <p>Dit is een overzicht van de problemen die je eerder hebt ingevoerd, en hoeveel last je er per les van had. Werk eventueel per probleem uit hoe je het gaat aanpakken (zie les 2).</p>
   </div>
   <!--
-      show the learnblocks
+      show the learnblocks, sorry for using tables :-( couldn't get it to work otherwise....
   -->
   <table cellpadding="2" cellspacing="0" border="0">
   <mm:node number="${education}">
@@ -23,20 +23,20 @@
         <mm:addnode element="components" number="component.assessment" />
       </c:if>
 			
-			<tr class="learnblockNames">
-			<td class="problemName">&amp;nbsp;</td>
+			<mm:import id="blocknames" escape="text/plain">
       <mm:relatednodes id="learnBlock"  varStatus="status">
         <!--
             If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
         -->
         <mm:relation to="${user}" role="classrel" searchdir="source"
                      notfound="null">
-          <td class="learnblockItems">
+          <td class="learnblockItemsTitle">
             <mm:field name="name" node="learnBlock" />
           </td>
         </mm:relation>
       </mm:relatednodes>
-      </tr>
+      <td class="learnblockItemsTitle"><jsp:text> </jsp:text></td>
+      </mm:import>
     </mm:relatednodescontainer>
 
  
@@ -49,8 +49,8 @@
   -->
   <mm:listnodes orderby="pos" type="problemtypes">
   <tr>
-  
-    <td colspan="7"><h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2></td>
+    <td><h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2></td>
+	  <mm:write referid="blocknames" escape="text/plain"/>
 	</tr>
     <mm:import externid="sub" />
     <mm:import externid="stage" />
@@ -58,11 +58,17 @@
     <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
       <mm:addnode element="people" number="${user}" />
       <mm:sortorder field="posrel.pos" />
+      <mm:size id="size" write="false"/>
+      <c:if test="${size eq 0}">
+      	<tr class="problemItem"><td colspan="7">--</td></tr>
+      </c:if>
       <mm:relatednodes>
+
         <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
+        <tr><td colspan="7"><jsp:text> </jsp:text></td></tr>
       </mm:relatednodes>
     </mm:relatednodescontainer>
-
+<tr class="problemTypeSpacer"><td colspan="7"><jsp:text> </jsp:text></td></tr>
   </mm:listnodes>
   
   </table>
